@@ -202,8 +202,8 @@ const GymAdminPostJob: React.FC = () => {
 
   if (fetchLoading) {
     return (
-      <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-3xl p-16 text-center text-sm text-[#57534E] flex flex-col items-center justify-center gap-3">
-        <div className="w-8 h-8 border-2 border-[#B76E79] border-t-transparent rounded-full animate-spin" />
+      <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-3xl p-16 text-center text-sm text-[#64748B] flex flex-col items-center justify-center gap-3">
+        <div className="w-8 h-8 border-2 border-[#FDBA74] border-t-transparent rounded-full animate-spin" />
         <span>Loading job vacancy details...</span>
       </div>
     );
@@ -215,41 +215,41 @@ const GymAdminPostJob: React.FC = () => {
       <div className="flex items-center justify-between">
         <Link
           to="/admin/hiring/jobs"
-          className="text-xs font-bold text-[#57534E] hover:text-[#B76E79] flex items-center gap-1.5 transition-colors"
+          className="text-xs font-bold text-[#64748B] hover:text-[#EA580C] flex items-center gap-1.5 transition-colors"
         >
           <ArrowLeft size={16} />
           <span>Back to Manage Vacancies</span>
         </Link>
-        <span className="text-xs text-[#57534E] font-mono">
-          Gym: <span className="text-[#292524] font-bold">{gymData?.name || 'Your Gym'}</span>
+        <span className="text-xs text-[#64748B] font-mono">
+          Gym: <span className="text-[#111827] font-bold">{gymData?.name || 'Your Gym'}</span>
         </span>
       </div>
 
       {/* Main Form Header Card */}
-      <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-3xl p-6 sm:p-8 shadow-xl relative overflow-hidden">
+      <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-3xl p-6 sm:p-8 shadow-xl relative overflow-hidden">
         <div className="flex items-center gap-3.5 mb-2">
-          <div className="w-12 h-12 rounded-2xl bg-[#B76E79]/10 text-[#B76E79] flex items-center justify-center shrink-0 border border-[#B76E79]/20">
+          <div className="w-12 h-12 rounded-2xl bg-[#FFF7ED] text-[#EA580C] flex items-center justify-center shrink-0 border border-[#FFEDD5]">
             <Briefcase size={24} />
           </div>
           <div>
-            <h1 className="text-2xl font-black text-[#292524] tracking-tight">
+            <h1 className="text-2xl font-black text-[#111827] tracking-tight">
               {isEdit ? 'Edit Trainer Vacancy' : 'Post a Trainer Job Vacancy'}
             </h1>
-            <p className="text-xs text-[#57534E] mt-0.5">
+            <p className="text-xs text-[#64748B] mt-0.5">
               Fill in the job details, qualifications, and salary expectations to attract certified coaches.
             </p>
           </div>
         </div>
 
         {error && (
-          <div className="mt-4 p-3.5 rounded-xl bg-red-950/40 border border-red-500/30 text-red-400 text-xs flex items-center gap-2">
+          <div className="mt-4 p-3.5 rounded-xl bg-red-50 border border-red-500/30 text-[#B91C1C] text-xs flex items-center gap-2">
             <AlertCircle size={16} className="shrink-0" />
             <span>{error}</span>
           </div>
         )}
 
         {success && (
-          <div className="mt-4 p-3.5 rounded-xl bg-emerald-950/40 border border-emerald-500/30 text-emerald-400 text-xs flex items-center gap-2">
+          <div className="mt-4 p-3.5 rounded-xl bg-emerald-50 border border-emerald-500/30 text-[#15803D] text-xs flex items-center gap-2">
             <CheckCircle2 size={16} className="shrink-0" />
             <span>{success}</span>
           </div>
@@ -259,27 +259,27 @@ const GymAdminPostJob: React.FC = () => {
           {/* 1. Basic Info Row */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold text-[#292524] mb-1.5">
-                Job Title <span className="text-red-400">*</span>
+              <label className="block text-xs font-bold text-[#111827] mb-1.5">
+                Job Title <span className="text-[#B91C1C]">*</span>
               </label>
               <input
                 type="text"
                 value={formData.title}
                 onChange={e => setFormData({ ...formData, title: e.target.value })}
                 placeholder="e.g. Senior Strength & Conditioning Coach"
-                className="w-full px-4 py-2.5 bg-[#F3E8E8] border border-[#E7DADD] rounded-xl text-xs text-[#292524] placeholder:text-[#57534E]/50 focus:outline-none focus:border-[#B76E79]"
+                className="w-full px-4 py-2.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs text-[#111827] placeholder:text-[#64748B]/50 focus:outline-none focus:border-[#FDBA74]"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#292524] mb-1.5">
+              <label className="block text-xs font-bold text-[#111827] mb-1.5">
                 Gym / Facility Name
               </label>
-              <div className="flex items-center gap-2 px-4 py-2.5 bg-[#F3E8E8]/70 border border-[#E7DADD] rounded-xl text-xs text-[#57534E]">
-                <Building2 size={15} className="text-[#B76E79]" />
-                <span className="font-semibold text-[#292524]">{gymData?.name || 'Auto-linked to Your Gym'}</span>
-                <span className="text-[10px] ml-auto text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full font-bold">Verified Gym</span>
+              <div className="flex items-center gap-2 px-4 py-2.5 bg-[#F8FAFC]/70 border border-[#E2E8F0] rounded-xl text-xs text-[#64748B]">
+                <Building2 size={15} className="text-[#EA580C]" />
+                <span className="font-semibold text-[#111827]">{gymData?.name || 'Auto-linked to Your Gym'}</span>
+                <span className="text-[10px] ml-auto text-[#15803D] bg-emerald-500/10 px-2 py-0.5 rounded-full font-bold">Verified Gym</span>
               </div>
             </div>
           </div>
@@ -287,13 +287,13 @@ const GymAdminPostJob: React.FC = () => {
           {/* 2. Employment Type, Required Experience & Vacancies */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className="block text-xs font-bold text-[#292524] mb-1.5">
-                Employment Type <span className="text-red-400">*</span>
+              <label className="block text-xs font-bold text-[#111827] mb-1.5">
+                Employment Type <span className="text-[#B91C1C]">*</span>
               </label>
               <select
                 value={formData.employmentType}
                 onChange={e => setFormData({ ...formData, employmentType: e.target.value as any })}
-                className="w-full px-4 py-2.5 bg-[#F3E8E8] border border-[#E7DADD] rounded-xl text-xs text-[#292524] focus:outline-none focus:border-[#B76E79]"
+                className="w-full px-4 py-2.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs text-[#111827] focus:outline-none focus:border-[#FDBA74]"
               >
                 <option value="Full-time">Full-time</option>
                 <option value="Part-time">Part-time</option>
@@ -302,13 +302,13 @@ const GymAdminPostJob: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#292524] mb-1.5">
-                Required Experience <span className="text-red-400">*</span>
+              <label className="block text-xs font-bold text-[#111827] mb-1.5">
+                Required Experience <span className="text-[#B91C1C]">*</span>
               </label>
               <select
                 value={formData.experience}
                 onChange={e => setFormData({ ...formData, experience: e.target.value })}
-                className="w-full px-4 py-2.5 bg-[#F3E8E8] border border-[#E7DADD] rounded-xl text-xs text-[#292524] focus:outline-none focus:border-[#B76E79]"
+                className="w-full px-4 py-2.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs text-[#111827] focus:outline-none focus:border-[#FDBA74]"
               >
                 <option value="Fresher / Entry Level">Fresher / Entry Level</option>
                 <option value="1-2 Years">1-2 Years</option>
@@ -319,8 +319,8 @@ const GymAdminPostJob: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#292524] mb-1.5">
-                Number of Vacancies <span className="text-red-400">*</span>
+              <label className="block text-xs font-bold text-[#111827] mb-1.5">
+                Number of Vacancies <span className="text-[#B91C1C]">*</span>
               </label>
               <input
                 type="number"
@@ -328,17 +328,17 @@ const GymAdminPostJob: React.FC = () => {
                 max="50"
                 value={formData.vacanciesCount}
                 onChange={e => setFormData({ ...formData, vacanciesCount: Math.max(1, parseInt(e.target.value) || 1) })}
-                className="w-full px-4 py-2.5 bg-[#F3E8E8] border border-[#E7DADD] rounded-xl text-xs text-[#292524] focus:outline-none focus:border-[#B76E79]"
+                className="w-full px-4 py-2.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs text-[#111827] focus:outline-none focus:border-[#FDBA74]"
               />
             </div>
           </div>
 
           {/* 3. Expertise & Coaching Domains */}
           <div>
-            <label className="block text-xs font-bold text-[#292524] mb-1.5">
+            <label className="block text-xs font-bold text-[#111827] mb-1.5">
               Coaching Domains & Expertise
             </label>
-            <p className="text-[11px] text-[#57534E] mb-3">
+            <p className="text-[11px] text-[#64748B] mb-3">
               Select all specializations you are looking for in this trainer.
             </p>
             <div className="flex flex-wrap gap-2 mb-3">
@@ -351,8 +351,8 @@ const GymAdminPostJob: React.FC = () => {
                     onClick={() => toggleExpertise(skill)}
                     className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all border ${
                       selected
-                        ? 'bg-[#B76E79] text-white border-[#B76E79] shadow-sm shadow-[#B76E79]/20'
-                        : 'bg-[#F3E8E8] text-[#57534E] hover:text-[#292524] border-[#E7DADD] hover:border-[#B76E79]/40'
+                        ? 'bg-[#C2410C] text-white border-[#FDBA74] shadow-sm shadow-orange-500/15'
+                        : 'bg-[#F8FAFC] text-[#64748B] hover:text-[#111827] border-[#E2E8F0] hover:border-[#FFEDD5]'
                     }`}
                   >
                     {skill}
@@ -367,17 +367,17 @@ const GymAdminPostJob: React.FC = () => {
                 onChange={e => setFormData({ ...formData, customExpertiseInput: e.target.value })}
                 onKeyDown={handleAddCustomExpertise}
                 placeholder="Type other custom skill and press Enter..."
-                className="w-full max-w-sm px-3.5 py-2 bg-[#F3E8E8] border border-[#E7DADD] rounded-xl text-xs text-[#292524] placeholder:text-[#57534E]/50 focus:outline-none focus:border-[#B76E79]"
+                className="w-full max-w-sm px-3.5 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs text-[#111827] placeholder:text-[#64748B]/50 focus:outline-none focus:border-[#FDBA74]"
               />
             </div>
           </div>
 
           {/* 4. Training Mode */}
           <div>
-            <label className="block text-xs font-bold text-[#292524] mb-1.5">
-              Training Mode <span className="text-red-400">*</span>
+            <label className="block text-xs font-bold text-[#111827] mb-1.5">
+              Training Mode <span className="text-[#B91C1C]">*</span>
             </label>
-            <p className="text-[11px] text-[#57534E] mb-3">
+            <p className="text-[11px] text-[#64748B] mb-3">
               Select how the trainer will conduct sessions.
             </p>
             <div className="flex flex-wrap gap-3">
@@ -400,19 +400,19 @@ const GymAdminPostJob: React.FC = () => {
                     onClick={() => setFormData({ ...formData, trainingMode: mode })}
                     className={`flex items-center gap-2.5 px-4 py-3 rounded-2xl border text-left transition-all ${
                       selected
-                        ? 'bg-[#B76E79]/10 border-[#B76E79] text-[#B76E79] shadow-sm shadow-[#B76E79]/20'
-                        : 'bg-[#F3E8E8] border-[#E7DADD] text-[#57534E] hover:border-[#B76E79]/40 hover:text-[#292524]'
+                        ? 'bg-[#FFF7ED] border-[#FDBA74] text-[#EA580C] shadow-sm shadow-orange-500/15'
+                        : 'bg-[#F8FAFC] border-[#E2E8F0] text-[#64748B] hover:border-[#FFEDD5] hover:text-[#111827]'
                     }`}
                   >
                     <span className="text-lg">{icons[mode]}</span>
                     <div>
-                      <div className={`text-xs font-bold ${selected ? 'text-[#B76E79]' : 'text-[#292524]'}`}>
+                      <div className={`text-xs font-bold ${selected ? 'text-[#EA580C]' : 'text-[#111827]'}`}>
                         {mode}
                       </div>
-                      <div className="text-[10px] text-[#57534E]">{descriptions[mode]}</div>
+                      <div className="text-[10px] text-[#64748B]">{descriptions[mode]}</div>
                     </div>
                     {selected && (
-                      <CheckCircle2 size={15} className="ml-auto text-[#B76E79] shrink-0" />
+                      <CheckCircle2 size={15} className="ml-auto text-[#EA580C] shrink-0" />
                     )}
                   </button>
                 );
@@ -421,10 +421,10 @@ const GymAdminPostJob: React.FC = () => {
           </div>
 
           {/* 5. Compensation / Salary Range */}
-          <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-2xl p-4 space-y-3">
+          <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl p-4 space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-[#292524] flex items-center gap-1.5">
-                <IndianRupee size={15} className="text-[#B76E79]" />
+              <span className="text-xs font-bold text-[#111827] flex items-center gap-1.5">
+                <IndianRupee size={15} className="text-[#EA580C]" />
                 <span>Salary & Compensation Structure</span>
               </span>
               <label className="flex items-center gap-2 cursor-pointer select-none">
@@ -432,41 +432,41 @@ const GymAdminPostJob: React.FC = () => {
                   type="checkbox"
                   checked={formData.isSalaryNegotiable}
                   onChange={e => setFormData({ ...formData, isSalaryNegotiable: e.target.checked })}
-                  className="rounded text-[#B76E79] focus:ring-0 bg-[#F3E8E8] border-[#E7DADD]"
+                  className="rounded text-[#EA580C] focus:ring-0 bg-[#F8FAFC] border-[#E2E8F0]"
                 />
-                <span className="text-xs text-[#57534E]">Negotiable for top candidates</span>
+                <span className="text-xs text-[#64748B]">Negotiable for top candidates</span>
               </label>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>
-                <label className="block text-[11px] text-[#57534E] mb-1">Min Salary (₹)</label>
+                <label className="block text-[11px] text-[#64748B] mb-1">Min Salary (₹)</label>
                 <input
                   type="number"
                   placeholder="e.g. 25000"
                   value={formData.salaryMin}
                   onChange={e => setFormData({ ...formData, salaryMin: e.target.value })}
-                  className="w-full px-3.5 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-xs text-[#292524] focus:outline-none focus:border-[#B76E79]"
+                  className="w-full px-3.5 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-xs text-[#111827] focus:outline-none focus:border-[#FDBA74]"
                 />
               </div>
 
               <div>
-                <label className="block text-[11px] text-[#57534E] mb-1">Max Salary (₹)</label>
+                <label className="block text-[11px] text-[#64748B] mb-1">Max Salary (₹)</label>
                 <input
                   type="number"
                   placeholder="e.g. 45000"
                   value={formData.salaryMax}
                   onChange={e => setFormData({ ...formData, salaryMax: e.target.value })}
-                  className="w-full px-3.5 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-xs text-[#292524] focus:outline-none focus:border-[#B76E79]"
+                  className="w-full px-3.5 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-xs text-[#111827] focus:outline-none focus:border-[#FDBA74]"
                 />
               </div>
 
               <div>
-                <label className="block text-[11px] text-[#57534E] mb-1">Payment Frequency</label>
+                <label className="block text-[11px] text-[#64748B] mb-1">Payment Frequency</label>
                 <select
                   value={formData.salaryType}
                   onChange={e => setFormData({ ...formData, salaryType: e.target.value as any })}
-                  className="w-full px-3.5 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-xs text-[#292524] focus:outline-none focus:border-[#B76E79]"
+                  className="w-full px-3.5 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-xs text-[#111827] focus:outline-none focus:border-[#FDBA74]"
                 >
                   <option value="Monthly">Per Month</option>
                   <option value="Hourly">Per Hour</option>
@@ -480,48 +480,48 @@ const GymAdminPostJob: React.FC = () => {
           {/* 5. Location, Working Hours & Application Deadline */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className="block text-xs font-bold text-[#292524] mb-1.5 flex items-center gap-1.5">
-                <MapPin size={13} className="text-[#B76E79]" /> Location <span className="text-red-400">*</span>
+              <label className="block text-xs font-bold text-[#111827] mb-1.5 flex items-center gap-1.5">
+                <MapPin size={13} className="text-[#EA580C]" /> Location <span className="text-[#B91C1C]">*</span>
               </label>
               <input
                 type="text"
                 value={formData.location}
                 onChange={e => setFormData({ ...formData, location: e.target.value })}
                 placeholder="e.g. Indiranagar, Bangalore"
-                className="w-full px-4 py-2.5 bg-[#F3E8E8] border border-[#E7DADD] rounded-xl text-xs text-[#292524] focus:outline-none focus:border-[#B76E79]"
+                className="w-full px-4 py-2.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs text-[#111827] focus:outline-none focus:border-[#FDBA74]"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#292524] mb-1.5 flex items-center gap-1.5">
-                <Clock size={13} className="text-[#B76E79]" /> Working Hours / Shift
+              <label className="block text-xs font-bold text-[#111827] mb-1.5 flex items-center gap-1.5">
+                <Clock size={13} className="text-[#EA580C]" /> Working Hours / Shift
               </label>
               <input
                 type="text"
                 value={formData.workingHours}
                 onChange={e => setFormData({ ...formData, workingHours: e.target.value })}
                 placeholder="e.g. 6:00 AM - 2:00 PM or Flexible"
-                className="w-full px-4 py-2.5 bg-[#F3E8E8] border border-[#E7DADD] rounded-xl text-xs text-[#292524] focus:outline-none focus:border-[#B76E79]"
+                className="w-full px-4 py-2.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs text-[#111827] focus:outline-none focus:border-[#FDBA74]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#292524] mb-1.5 flex items-center gap-1.5">
-                <Calendar size={13} className="text-[#B76E79]" /> Application Deadline
+              <label className="block text-xs font-bold text-[#111827] mb-1.5 flex items-center gap-1.5">
+                <Calendar size={13} className="text-[#EA580C]" /> Application Deadline
               </label>
               <input
                 type="date"
                 value={formData.deadline}
                 onChange={e => setFormData({ ...formData, deadline: e.target.value })}
-                className="w-full px-4 py-2.5 bg-[#F3E8E8] border border-[#E7DADD] rounded-xl text-xs text-[#292524] focus:outline-none focus:border-[#B76E79]"
+                className="w-full px-4 py-2.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs text-[#111827] focus:outline-none focus:border-[#FDBA74]"
               />
               {formData.deadline && new Date(formData.deadline).setHours(23, 59, 59, 999) < Date.now() ? (
-                <p className="text-[11px] text-red-400 mt-1 flex items-center gap-1 font-semibold">
+                <p className="text-[11px] text-[#B91C1C] mt-1 flex items-center gap-1 font-semibold">
                   <AlertCircle size={12} /> Deadline expired: This job vacancy will be shown as over.
                 </p>
               ) : (
-                <p className="text-[10px] text-[#57534E] mt-1">
+                <p className="text-[10px] text-[#64748B] mt-1">
                   Once this deadline is completed, the job vacancy will automatically be shown as over.
                 </p>
               )}
@@ -530,22 +530,22 @@ const GymAdminPostJob: React.FC = () => {
 
           {/* 6. Job Description */}
           <div>
-            <label className="block text-xs font-bold text-[#292524] mb-1.5">
-              Job Description <span className="text-red-400">*</span>
+            <label className="block text-xs font-bold text-[#111827] mb-1.5">
+              Job Description <span className="text-[#B91C1C]">*</span>
             </label>
             <textarea
               rows={4}
               value={formData.description}
               onChange={e => setFormData({ ...formData, description: e.target.value })}
               placeholder="Provide a compelling overview of this role, the gym environment, and what makes your fitness community unique..."
-              className="w-full px-4 py-3 bg-[#F3E8E8] border border-[#E7DADD] rounded-xl text-xs text-[#292524] placeholder:text-[#57534E]/50 focus:outline-none focus:border-[#B76E79] leading-relaxed"
+              className="w-full px-4 py-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs text-[#111827] placeholder:text-[#64748B]/50 focus:outline-none focus:border-[#FDBA74] leading-relaxed"
               required
             />
           </div>
 
           {/* 7. Key Responsibilities */}
           <div>
-            <label className="block text-xs font-bold text-[#292524] mb-1.5">
+            <label className="block text-xs font-bold text-[#111827] mb-1.5">
               Key Responsibilities
             </label>
             <textarea
@@ -556,14 +556,14 @@ const GymAdminPostJob: React.FC = () => {
 • Conduct client fitness assessments and 1-on-1 personal training sessions.
 • Guide members on proper posture, breathing, and safe machine usage.
 • Design customized strength and cardio programs using Gymora AI tools."
-              className="w-full px-4 py-3 bg-[#F3E8E8] border border-[#E7DADD] rounded-xl text-xs text-[#292524] placeholder:text-[#57534E]/50 focus:outline-none focus:border-[#B76E79] leading-relaxed font-sans"
+              className="w-full px-4 py-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs text-[#111827] placeholder:text-[#64748B]/50 focus:outline-none focus:border-[#FDBA74] leading-relaxed font-sans"
             />
           </div>
 
           {/* 8. Qualifications & Certifications */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold text-[#292524] mb-1.5">
+              <label className="block text-xs font-bold text-[#111827] mb-1.5">
                 Required Qualifications
               </label>
               <input
@@ -571,12 +571,12 @@ const GymAdminPostJob: React.FC = () => {
                 value={formData.qualifications}
                 onChange={e => setFormData({ ...formData, qualifications: e.target.value })}
                 placeholder="e.g. Degree in Physical Education or Sports Science"
-                className="w-full px-4 py-2.5 bg-[#F3E8E8] border border-[#E7DADD] rounded-xl text-xs text-[#292524] focus:outline-none focus:border-[#B76E79]"
+                className="w-full px-4 py-2.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs text-[#111827] focus:outline-none focus:border-[#FDBA74]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#292524] mb-1.5">
+              <label className="block text-xs font-bold text-[#111827] mb-1.5">
                 Preferred Certifications
               </label>
               <input
@@ -584,16 +584,16 @@ const GymAdminPostJob: React.FC = () => {
                 value={formData.certifications}
                 onChange={e => setFormData({ ...formData, certifications: e.target.value })}
                 placeholder="e.g. ACE, NASM, ISSA, CSCS, CPR / AED"
-                className="w-full px-4 py-2.5 bg-[#F3E8E8] border border-[#E7DADD] rounded-xl text-xs text-[#292524] focus:outline-none focus:border-[#B76E79]"
+                className="w-full px-4 py-2.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs text-[#111827] focus:outline-none focus:border-[#FDBA74]"
               />
             </div>
           </div>
 
           {/* Action Buttons */}
-          <div className="pt-6 border-t border-[#E7DADD] flex flex-col sm:flex-row items-center justify-end gap-3">
+          <div className="pt-6 border-t border-[#E2E8F0] flex flex-col sm:flex-row items-center justify-end gap-3">
             <Link
               to="/admin/hiring/jobs"
-              className="w-full sm:w-auto px-5 py-2.5 bg-[#F3E8E8] hover:bg-[#E7DADD] text-xs font-bold text-[#57534E] hover:text-[#292524] rounded-xl transition-all text-center"
+              className="w-full sm:w-auto px-5 py-2.5 bg-[#F8FAFC] hover:bg-[#E2E8F0] text-xs font-bold text-[#64748B] hover:text-[#111827] rounded-xl transition-all text-center"
             >
               Cancel
             </Link>
@@ -602,9 +602,9 @@ const GymAdminPostJob: React.FC = () => {
               type="button"
               onClick={() => handleSubmit('Draft')}
               disabled={loading}
-              className="w-full sm:w-auto px-5 py-2.5 bg-[#FFFFFF] hover:bg-[#F3E8E8] border border-[#E7DADD] hover:border-[#B76E79]/50 text-xs font-bold text-[#292524] rounded-xl transition-all flex items-center justify-center gap-2"
+              className="w-full sm:w-auto px-5 py-2.5 bg-[#FFFFFF] hover:bg-[#FFF7ED] border border-[#E2E8F0] hover:border-[#FFEDD5] text-xs font-bold text-[#111827] rounded-xl transition-all flex items-center justify-center gap-2"
             >
-              <Save size={15} className="text-[#B76E79]" />
+              <Save size={15} className="text-[#EA580C]" />
               <span>Save as Draft</span>
             </button>
 
@@ -612,7 +612,7 @@ const GymAdminPostJob: React.FC = () => {
               type="button"
               onClick={() => handleSubmit('Published')}
               disabled={loading}
-              className="w-full sm:w-auto px-7 py-2.5 bg-[#B76E79] hover:bg-[#9F5965] text-white text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#B76E79]/20"
+              className="w-full sm:w-auto px-7 py-2.5 bg-[#C2410C] hover:bg-[#9A3412] text-white text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-orange-500/15"
             >
               {loading ? (
                 <div className="w-4 h-4 border-2 border-[#FFFFFF] border-t-transparent rounded-full animate-spin" />

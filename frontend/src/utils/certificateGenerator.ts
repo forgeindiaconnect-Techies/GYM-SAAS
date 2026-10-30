@@ -25,7 +25,7 @@ export const generateAwardCertificatePDF = (data: CertificateData): void => {
   doc.setFillColor(252, 253, 252);
   doc.rect(0, 0, width, height, 'F');
 
-  // Outer Decorative Border - Emerald #B76E79
+  // Outer Decorative Border - Emerald #F97316
   doc.setDrawColor(22, 125, 120);
   doc.setLineWidth(3);
   doc.rect(10, 10, width - 20, height - 20);

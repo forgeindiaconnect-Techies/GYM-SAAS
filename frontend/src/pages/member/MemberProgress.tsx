@@ -76,7 +76,7 @@ const MemberProgress: React.FC = () => {
   const getMealIcon = (type: string) => {
     const lower = (type || '').toLowerCase();
     if (lower.includes('morning') || lower.includes('hydration')) return <Sun size={15} className="text-amber-500" />;
-    if (lower.includes('breakfast')) return <Coffee size={15} className="text-[#B76E79]" />;
+    if (lower.includes('breakfast')) return <Coffee size={15} className="text-[#EA580C]" />;
     if (lower.includes('lunch')) return <Utensils size={15} className="text-emerald-500" />;
     if (lower.includes('dinner')) return <Moon size={15} className="text-indigo-500" />;
     return <Apple size={15} className="text-rose-500" />;
@@ -140,23 +140,23 @@ const MemberProgress: React.FC = () => {
   return (
     <div className="max-w-6xl mx-auto space-y-6 md:space-y-8 pb-20 animate-fade-in">
       {/* ── Top Header Banner with Mode Switcher (Workout Plan vs Diet Plan) ── */}
-      <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1.5">
             <span className={`px-2.5 py-0.5 rounded-full text-xs font-black uppercase tracking-wider flex items-center gap-1.5 ${
-              activePlanType === 'workout' ? 'bg-[#F3E8E8] text-[#9F5965]' : 'bg-[#F3E8E8] text-[#B76E79]'
+              activePlanType === 'workout' ? 'bg-[#F8FAFC] text-[#9A3412]' : 'bg-[#F8FAFC] text-[#EA580C]'
             }`}>
               <CheckCircle2 size={13} />
               <span>{activePlanType === 'workout' ? 'Personal Workout Progress' : 'Nutrition & Diet Progress'}</span>
             </span>
-            <span className="text-xs text-[#57534E] font-semibold">
+            <span className="text-xs text-[#64748B] font-semibold">
               • {activePlanType === 'workout' ? 'Live Training Tracker' : 'Live Meal Adherence'}
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-[#292524] tracking-tight mb-1">
+          <h1 className="text-2xl sm:text-3xl font-black text-[#111827] tracking-tight mb-1">
             {activePlanType === 'workout' ? 'Workout Progress' : 'Diet Work Plan Progress'}
           </h1>
-          <p className="text-[#57534E] text-xs sm:text-sm max-w-2xl">
+          <p className="text-[#64748B] text-xs sm:text-sm max-w-2xl">
             {activePlanType === 'workout'
               ? 'Track your workout streak, completed animated exercises, sets, and training adherence.'
               : 'Track your daily nutrition goals, completed meals, calorie intake, and macronutrient balance.'}
@@ -164,7 +164,7 @@ const MemberProgress: React.FC = () => {
         </div>
 
         {/* ── Option Switcher Buttons: Workout Plan vs Diet Plan ── */}
-        <div className="flex items-center bg-[#F3E8E8] p-1.5 rounded-2xl border border-[#E7DADD] shrink-0 shadow-inner">
+        <div className="flex items-center bg-[#F8FAFC] p-1.5 rounded-2xl border border-[#E2E8F0] shrink-0 shadow-inner">
           <button
             onClick={() => {
               setActivePlanType('workout');
@@ -172,8 +172,8 @@ const MemberProgress: React.FC = () => {
             }}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-extrabold text-xs transition-all cursor-pointer ${
               activePlanType === 'workout'
-                ? 'bg-[#FFFFFF] text-[#B76E79] shadow-sm'
-                : 'text-[#57534E] hover:text-[#292524]'
+                ? 'bg-[#FFFFFF] text-[#EA580C] shadow-sm'
+                : 'text-[#64748B] hover:text-[#111827]'
             }`}
           >
             <Dumbbell size={16} />
@@ -186,8 +186,8 @@ const MemberProgress: React.FC = () => {
             }}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-extrabold text-xs transition-all cursor-pointer ${
               activePlanType === 'diet'
-                ? 'bg-[#FFFFFF] text-[#B76E79] shadow-sm'
-                : 'text-[#57534E] hover:text-[#292524]'
+                ? 'bg-[#FFFFFF] text-[#EA580C] shadow-sm'
+                : 'text-[#64748B] hover:text-[#111827]'
             }`}
           >
             <Utensils size={16} />
@@ -201,76 +201,76 @@ const MemberProgress: React.FC = () => {
         <div className="space-y-6 animate-in fade-in">
           {/* Top 4 Workout Progress Metric Cards */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-5 shadow-xs hover:border-[#B76E79]/40 transition-all">
+            <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-5 shadow-xs hover:border-[#FFEDD5] transition-all">
               <div className="flex justify-between items-start mb-2">
-                <span className="text-xs font-bold text-[#57534E] uppercase tracking-wider">Total Workouts</span>
-                <Dumbbell size={18} className="text-[#B76E79]" />
+                <span className="text-xs font-bold text-[#64748B] uppercase tracking-wider">Total Workouts</span>
+                <Dumbbell size={18} className="text-[#EA580C]" />
               </div>
               <div className="flex items-baseline gap-1">
-                <span className="text-2xl sm:text-3xl font-black text-[#292524]">
+                <span className="text-2xl sm:text-3xl font-black text-[#111827]">
                   {workoutStats?.totalWorkouts || 0}
                 </span>
-                <span className="text-xs text-[#57534E] font-bold">sessions</span>
+                <span className="text-xs text-[#64748B] font-bold">sessions</span>
               </div>
-              <span className="text-[11px] text-[#B76E79] font-semibold mt-1 block">
+              <span className="text-[11px] text-[#EA580C] font-semibold mt-1 block">
                 {workoutStats?.weeklyWorkoutCount || 0} workouts this week
               </span>
             </div>
 
-            <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-5 shadow-xs hover:border-[#B76E79]/40 transition-all">
+            <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-5 shadow-xs hover:border-[#FFEDD5] transition-all">
               <div className="flex justify-between items-start mb-2">
-                <span className="text-xs font-bold text-[#57534E] uppercase tracking-wider">Exercises Done</span>
-                <CheckCircle2 size={18} className="text-[#B76E79]" />
+                <span className="text-xs font-bold text-[#64748B] uppercase tracking-wider">Exercises Done</span>
+                <CheckCircle2 size={18} className="text-[#EA580C]" />
               </div>
               <div className="flex items-baseline gap-1">
-                <span className="text-2xl sm:text-3xl font-black text-[#B76E79]">
+                <span className="text-2xl sm:text-3xl font-black text-[#EA580C]">
                   {workoutStats?.totalExercisesCompleted || 0}
                 </span>
-                <span className="text-xs text-[#57534E] font-bold">completed</span>
+                <span className="text-xs text-[#64748B] font-bold">completed</span>
               </div>
-              <span className="text-[11px] text-[#57534E] font-semibold mt-1 block">
+              <span className="text-[11px] text-[#64748B] font-semibold mt-1 block">
                 Across all plan routines
               </span>
             </div>
 
-            <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-5 shadow-xs hover:border-[#B76E79]/40 transition-all">
+            <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-5 shadow-xs hover:border-[#FFEDD5] transition-all">
               <div className="flex justify-between items-start mb-2">
-                <span className="text-xs font-bold text-[#57534E] uppercase tracking-wider">Workout Streak</span>
+                <span className="text-xs font-bold text-[#64748B] uppercase tracking-wider">Workout Streak</span>
                 <Flame size={18} className="text-amber-500 fill-amber-500" />
               </div>
               <div className="flex items-baseline gap-1">
                 <span className="text-2xl sm:text-3xl font-black text-amber-600">
                   {workoutStats?.workoutStreak || 0}
                 </span>
-                <span className="text-xs text-[#57534E] font-bold">days streak</span>
+                <span className="text-xs text-[#64748B] font-bold">days streak</span>
               </div>
               <span className="text-[11px] text-amber-700 font-semibold mt-1 block">
                 🔥 Keep consistency alive!
               </span>
             </div>
 
-            <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-5 shadow-xs hover:border-[#B76E79]/40 transition-all">
+            <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-5 shadow-xs hover:border-[#FFEDD5] transition-all">
               <div className="flex justify-between items-start mb-2">
-                <span className="text-xs font-bold text-[#57534E] uppercase tracking-wider">Total Time</span>
-                <Clock size={18} className="text-[#B76E79]" />
+                <span className="text-xs font-bold text-[#64748B] uppercase tracking-wider">Total Time</span>
+                <Clock size={18} className="text-[#EA580C]" />
               </div>
               <div className="flex items-baseline gap-1">
-                <span className="text-2xl sm:text-3xl font-black text-[#292524]">
+                <span className="text-2xl sm:text-3xl font-black text-[#111827]">
                   {workoutStats?.totalWorkoutMinutes || 0}
                 </span>
-                <span className="text-xs text-[#57534E] font-bold">minutes</span>
+                <span className="text-xs text-[#64748B] font-bold">minutes</span>
               </div>
-              <span className="text-[11px] text-[#57534E] font-semibold mt-1 block">
+              <span className="text-[11px] text-[#64748B] font-semibold mt-1 block">
                 Logged training time
               </span>
             </div>
           </div>
 
           {/* Completion Percentage Banner */}
-          <div className="bg-gradient-to-r from-[#FFFFFF] to-[#F3E8E8] text-white rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-sm relative overflow-hidden flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+          <div className="bg-gradient-to-r from-[#FFFFFF] to-[#F8FAFC] text-white rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-sm relative overflow-hidden flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
             <div className="space-y-2 max-w-xl">
               <div className="flex items-center gap-2">
-                <span className="px-3 py-1 bg-[#FFFFFF]/10 rounded-full text-xs font-extrabold uppercase tracking-wider text-[#B76E79]">
+                <span className="px-3 py-1 bg-[#FFFFFF]/10 rounded-full text-xs font-extrabold uppercase tracking-wider text-[#EA580C]">
                   Plan Completion Rate
                 </span>
                 {workoutStats?.completedCount !== undefined && (
@@ -287,7 +287,7 @@ const MemberProgress: React.FC = () => {
               </p>
               <div className="w-full h-3 bg-[#FFFFFF]/20 rounded-full overflow-hidden mt-3">
                 <div
-                  className="h-full bg-gradient-to-r from-[#B76E79] to-emerald-400 rounded-full transition-all duration-700"
+                  className="h-full bg-gradient-to-r from-[#EA580C] to-emerald-400 rounded-full transition-all duration-700"
                   style={{ width: `${workoutStats?.completionPercentage || 0}%` }}
                 ></div>
               </div>
@@ -295,26 +295,26 @@ const MemberProgress: React.FC = () => {
 
             <Link
               to="/member/workout"
-              className="px-6 py-3.5 bg-gradient-to-r from-[#B76E79] to-[#9F5965] hover:opacity-95 text-[#292524] rounded-xl text-sm font-black transition-all shadow-sm flex items-center gap-2 shrink-0 cursor-pointer"
+              className="px-6 py-3.5 bg-gradient-to-r from-[#EA580C] to-[#C2410C] hover:opacity-95 text-[#111827] rounded-xl text-sm font-black transition-all shadow-sm flex items-center gap-2 shrink-0 cursor-pointer"
             >
               <PlayCircle size={18} /> Continue Workout
             </Link>
           </div>
 
           {/* ===================== DAY-WISE WORKPLAN COMPLETED DETAILS ===================== */}
-          <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-xs space-y-6">
+          <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-xs space-y-6">
             {/* ── Dropdown Controls Header ── */}
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b border-[#E7DADD]">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b border-[#E2E8F0]">
               <div>
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-[#F3E8E8] text-[#B76E79] flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-lg bg-[#F8FAFC] text-[#EA580C] flex items-center justify-center">
                     <Calendar size={18} />
                   </div>
-                  <h3 className="text-xl font-extrabold text-[#292524] tracking-tight">
+                  <h3 className="text-xl font-extrabold text-[#111827] tracking-tight">
                     Day-Wise Workplan Completed Details
                   </h3>
                 </div>
-                <p className="text-xs text-[#57534E] mt-1">
+                <p className="text-xs text-[#64748B] mt-1">
                   Choose any day from Monday to Sunday to inspect completed animated exercises, logged sets, and adherence.
                 </p>
               </div>
@@ -324,7 +324,7 @@ const MemberProgress: React.FC = () => {
                 <select
                   value={selectedDay}
                   onChange={(e) => setSelectedDay(e.target.value)}
-                  className="w-full bg-[#F3E8E8] border-2 border-[#E7DADD] hover:border-[#B76E79] text-[#292524] text-xs sm:text-sm font-bold rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#B76E79]/30 shadow-xs cursor-pointer appearance-none pr-10 transition-colors"
+                  className="w-full bg-[#F8FAFC] border-2 border-[#E2E8F0] hover:border-[#FDBA74] text-[#111827] text-xs sm:text-sm font-bold rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#F97316]/30 shadow-xs cursor-pointer appearance-none pr-10 transition-colors"
                 >
                   <option value="all">📅 All Days - Weekly Workplan Overview</option>
                   <option value="Monday">💪 Monday Workplan Completed Details</option>
@@ -335,7 +335,7 @@ const MemberProgress: React.FC = () => {
                   <option value="Saturday">🏃 Saturday Workplan Completed Details</option>
                   <option value="Sunday">🧘 Sunday Workplan Completed Details</option>
                 </select>
-                <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-[#57534E]">
+                <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-[#64748B]">
                   <ChevronDown size={18} />
                 </div>
               </div>
@@ -348,7 +348,7 @@ const MemberProgress: React.FC = () => {
                 className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer shrink-0 ${
                   selectedDay === 'all'
                     ? 'bg-[#FFFFFF] text-white shadow-xs'
-                    : 'bg-[#F3E8E8] text-[#57534E] hover:bg-[#F3E8E8]'
+                    : 'bg-[#F8FAFC] text-[#64748B] hover:bg-[#FFF7ED]'
                 }`}
               >
                 All Days
@@ -362,14 +362,14 @@ const MemberProgress: React.FC = () => {
                     onClick={() => setSelectedDay(d)}
                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer shrink-0 ${
                       isSelected
-                        ? 'bg-[#B76E79] text-white shadow-xs scale-102 ring-2 ring-orange-300/60'
-                        : 'bg-[#F3E8E8] text-[#292524] hover:bg-[#F3E8E8] hover:text-[#292524]'
+                        ? 'bg-[#C2410C] text-white shadow-xs scale-102 ring-2 ring-orange-300/60'
+                        : 'bg-[#F8FAFC] text-[#111827] hover:bg-[#FFF7ED] hover:text-[#111827]'
                     }`}
                   >
                     <span>{d.slice(0, 3)}</span>
                     {dInfo && dInfo.completedCount > 0 && (
                       <span className={`w-4 h-4 rounded-full text-[9px] font-black flex items-center justify-center ${
-                        isSelected ? 'bg-[#FFFFFF] text-[#B76E79]' : 'bg-[#F3E8E8] text-[#B76E79]'
+                        isSelected ? 'bg-[#FFFFFF] text-[#EA580C]' : 'bg-[#F8FAFC] text-[#EA580C]'
                       }`}>
                         ✓
                       </span>
@@ -383,38 +383,38 @@ const MemberProgress: React.FC = () => {
             {selectedDay !== 'all' ? (
               <div className="space-y-4 animate-in fade-in">
                 {/* Day Highlights Banner */}
-                <div className="bg-gradient-to-br from-[#F3E8E8] to-[#F3E8E8] border border-[#E7DADD]/90 rounded-2xl p-5 sm:p-6 shadow-xs">
+                <div className="bg-gradient-to-br from-[#F8FAFC] to-[#F8FAFC] border border-[#E2E8F0]/90 rounded-2xl p-5 sm:p-6 shadow-xs">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-[#F3E8E8] text-[#9F5965]">
+                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-[#F8FAFC] text-[#9A3412]">
                           {activeDayWorkout.dayName} WORKPLAN
                         </span>
-                        <span className="text-xs text-[#57534E] font-semibold">• Assigned Routine</span>
+                        <span className="text-xs text-[#64748B] font-semibold">• Assigned Routine</span>
                       </div>
-                      <h4 className="text-lg sm:text-xl font-black text-[#292524]">
+                      <h4 className="text-lg sm:text-xl font-black text-[#111827]">
                         {activeDayWorkout.focusArea}
                       </h4>
-                      <p className="text-xs text-[#57534E] mt-0.5">
+                      <p className="text-xs text-[#64748B] mt-0.5">
                         {activeDayWorkout.completedCount} of {activeDayWorkout.totalCount} exercises completed ({activeDayWorkout.completionPct}% adherence)
                       </p>
                     </div>
 
                     <div className="flex items-center gap-2 self-start sm:self-auto">
-                      <div className="bg-[#FFFFFF] px-3 py-1.5 rounded-xl border border-[#E7DADD] text-center">
-                        <span className="text-[9px] font-bold uppercase text-[#57534E] block">Sets Done</span>
-                        <strong className="text-sm font-black text-[#292524]">{activeDayWorkout.totalSetsLogged} Sets</strong>
+                      <div className="bg-[#FFFFFF] px-3 py-1.5 rounded-xl border border-[#E2E8F0] text-center">
+                        <span className="text-[9px] font-bold uppercase text-[#64748B] block">Sets Done</span>
+                        <strong className="text-sm font-black text-[#111827]">{activeDayWorkout.totalSetsLogged} Sets</strong>
                       </div>
-                      <div className="bg-[#FFFFFF] px-3 py-1.5 rounded-xl border border-[#E7DADD] text-center">
-                        <span className="text-[9px] font-bold uppercase text-[#57534E] block">Duration</span>
-                        <strong className="text-sm font-black text-[#B76E79]">{activeDayWorkout.totalMinutes} min</strong>
+                      <div className="bg-[#FFFFFF] px-3 py-1.5 rounded-xl border border-[#E2E8F0] text-center">
+                        <span className="text-[9px] font-bold uppercase text-[#64748B] block">Duration</span>
+                        <strong className="text-sm font-black text-[#EA580C]">{activeDayWorkout.totalMinutes} min</strong>
                       </div>
                       <div className={`px-3 py-1.5 rounded-xl border text-center ${
                         activeDayWorkout.isFullyCompleted
-                          ? 'bg-[#F3E8E8] border-[#E7DADD] text-[#B76E79]'
+                          ? 'bg-[#F8FAFC] border-[#E2E8F0] text-[#EA580C]'
                           : activeDayWorkout.isInProgress
                           ? 'bg-amber-50 border-amber-300 text-amber-800'
-                          : 'bg-[#F3E8E8] border-[#E7DADD] text-[#57534E]'
+                          : 'bg-[#F8FAFC] border-[#E2E8F0] text-[#64748B]'
                       }`}>
                         <span className="text-[9px] font-bold uppercase block">Status</span>
                         <strong className="text-xs font-black">
@@ -425,9 +425,9 @@ const MemberProgress: React.FC = () => {
                   </div>
 
                   {/* Day Completion Bar */}
-                  <div className="w-full h-2.5 bg-[#F3E8E8]/80 rounded-full overflow-hidden mt-4">
+                  <div className="w-full h-2.5 bg-[#F8FAFC]/80 rounded-full overflow-hidden mt-4">
                     <div
-                      className="h-full bg-gradient-to-r from-[#B76E79] to-emerald-500 rounded-full transition-all duration-700"
+                      className="h-full bg-gradient-to-r from-[#EA580C] to-emerald-500 rounded-full transition-all duration-700"
                       style={{ width: `${activeDayWorkout.completionPct}%` }}
                     />
                   </div>
@@ -435,7 +435,7 @@ const MemberProgress: React.FC = () => {
 
                 {/* Day Exercise List */}
                 <div className="space-y-3">
-                  <div className="flex items-center justify-between text-xs font-bold text-[#57534E] px-1">
+                  <div className="flex items-center justify-between text-xs font-bold text-[#64748B] px-1">
                     <span>{activeDayWorkout.dayName} Completed &amp; Scheduled Routines</span>
                     <span>{activeDayWorkout.exercises.length} Exercises Total</span>
                   </div>
@@ -445,22 +445,22 @@ const MemberProgress: React.FC = () => {
                       key={ex.id || idx}
                       className={`p-4 rounded-2xl border transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
                         ex.isCompleted
-                          ? 'bg-[#F3E8E8]/30 border-[#E7DADD] hover:border-[#E7DADD] shadow-xs'
-                          : 'bg-[#F3E8E8] border-[#E7DADD] hover:border-[#E7DADD]'
+                          ? 'bg-[#FFF7ED] border-[#E2E8F0] hover:border-[#E2E8F0] shadow-xs'
+                          : 'bg-[#F8FAFC] border-[#E2E8F0] hover:border-[#E2E8F0]'
                       }`}
                     >
                       <div className="flex items-center gap-3">
                         <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 font-black text-sm ${
                           ex.isCompleted
-                            ? 'bg-[#F3E8E8] text-[#B76E79]'
-                            : 'bg-[#F3E8E8] text-[#B76E79]'
+                            ? 'bg-[#F8FAFC] text-[#EA580C]'
+                            : 'bg-[#F8FAFC] text-[#EA580C]'
                         }`}>
                           {ex.isCompleted ? <CheckCircle2 size={20} /> : idx + 1}
                         </div>
                         <div>
-                          <h5 className="font-extrabold text-sm text-[#292524]">{ex.name}</h5>
-                          <p className="text-xs text-[#57534E] mt-0.5">
-                            Target Muscle: <strong className="text-[#292524]">{ex.muscle}</strong> • Target: {ex.sets} Sets × {ex.reps} Reps
+                          <h5 className="font-extrabold text-sm text-[#111827]">{ex.name}</h5>
+                          <p className="text-xs text-[#64748B] mt-0.5">
+                            Target Muscle: <strong className="text-[#111827]">{ex.muscle}</strong> • Target: {ex.sets} Sets × {ex.reps} Reps
                           </p>
                         </div>
                       </div>
@@ -468,21 +468,21 @@ const MemberProgress: React.FC = () => {
                       <div className="flex items-center gap-3 self-end sm:self-auto text-xs">
                         {ex.isCompleted ? (
                           <div className="flex items-center gap-2">
-                            <span className="px-2.5 py-1 rounded-full text-[10px] font-black uppercase bg-[#F3E8E8] text-[#B76E79] border border-[#E7DADD] flex items-center gap-1">
+                            <span className="px-2.5 py-1 rounded-full text-[10px] font-black uppercase bg-[#F8FAFC] text-[#EA580C] border border-[#E2E8F0] flex items-center gap-1">
                               <Check size={11} /> Completed
                             </span>
-                            <span className="text-[11px] text-[#57534E] font-medium">
+                            <span className="text-[11px] text-[#64748B] font-medium">
                               {ex.loggedSets} Sets Done • {Math.round(ex.loggedDuration)}s
                             </span>
                           </div>
                         ) : (
                           <div className="flex items-center gap-2">
-                            <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase bg-[#F3E8E8] text-[#57534E] border border-[#E7DADD]">
+                            <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase bg-[#F8FAFC] text-[#64748B] border border-[#E2E8F0]">
                               Pending
                             </span>
                             <Link
                               to="/member/workout"
-                              className="px-3 py-1 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold rounded-lg text-xs font-bold transition-colors flex items-center gap-1 cursor-pointer"
+                              className="px-3 py-1 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold rounded-lg text-xs font-bold transition-colors flex items-center gap-1 cursor-pointer"
                             >
                               <span>Start</span>
                               <PlayCircle size={12} />
@@ -501,38 +501,38 @@ const MemberProgress: React.FC = () => {
                   <div
                     key={d.dayName}
                     onClick={() => setSelectedDay(d.dayName)}
-                    className="p-5 rounded-2xl border border-[#E7DADD] bg-[#F3E8E8] hover:border-[#B76E79] hover:shadow-xs transition-all cursor-pointer group flex flex-col justify-between"
+                    className="p-5 rounded-2xl border border-[#E2E8F0] bg-[#F8FAFC] hover:border-[#FDBA74] hover:shadow-xs transition-all cursor-pointer group flex flex-col justify-between"
                   >
                     <div>
                       <div className="flex items-center justify-between mb-2">
-                        <span className="font-extrabold text-sm text-[#292524] group-hover:text-[#B76E79] transition-colors">
+                        <span className="font-extrabold text-sm text-[#111827] group-hover:text-[#EA580C] transition-colors">
                           {d.dayName}
                         </span>
                         <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${
                           d.isFullyCompleted
-                            ? 'bg-[#F3E8E8] text-[#B76E79]'
+                            ? 'bg-[#F8FAFC] text-[#EA580C]'
                             : d.isInProgress
-                            ? 'bg-[#F3E8E8] text-[#B76E79]'
-                            : 'bg-[#F3E8E8] text-[#57534E]'
+                            ? 'bg-[#F8FAFC] text-[#EA580C]'
+                            : 'bg-[#F8FAFC] text-[#64748B]'
                         }`}>
                           {d.completionPct}% Done
                         </span>
                       </div>
-                      <p className="text-xs text-[#57534E] font-semibold mb-3 truncate">
+                      <p className="text-xs text-[#64748B] font-semibold mb-3 truncate">
                         {d.focusArea}
                       </p>
 
-                      <div className="w-full h-2 bg-[#F3E8E8] rounded-full overflow-hidden mb-3">
+                      <div className="w-full h-2 bg-[#F8FAFC] rounded-full overflow-hidden mb-3">
                         <div
-                          className="h-full bg-gradient-to-r from-[#B76E79] to-emerald-500 rounded-full transition-all duration-500"
+                          className="h-full bg-gradient-to-r from-[#EA580C] to-emerald-500 rounded-full transition-all duration-500"
                           style={{ width: `${d.completionPct}%` }}
                         />
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between text-xs text-[#57534E] pt-3 border-t border-[#E7DADD]">
+                    <div className="flex items-center justify-between text-xs text-[#64748B] pt-3 border-t border-[#E2E8F0]">
                       <span>{d.completedCount} / {d.totalCount} Exercises</span>
-                      <span className="font-bold text-[#B76E79] group-hover:translate-x-0.5 transition-transform flex items-center gap-1">
+                      <span className="font-bold text-[#EA580C] group-hover:translate-x-0.5 transition-transform flex items-center gap-1">
                         <span>Inspect</span> &rarr;
                       </span>
                     </div>
@@ -543,15 +543,15 @@ const MemberProgress: React.FC = () => {
           </div>
 
           {/* Exercise Completion Activity Log */}
-          <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-xs space-y-4">
+          <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-xs space-y-4">
             <div className="flex justify-between items-center">
               <div>
-                <h3 className="text-xl font-bold text-[#292524]">Completed Exercise Logs</h3>
-                <p className="text-xs text-[#57534E]">Chronological history of completed exercise animations and sets</p>
+                <h3 className="text-xl font-bold text-[#111827]">Completed Exercise Logs</h3>
+                <p className="text-xs text-[#64748B]">Chronological history of completed exercise animations and sets</p>
               </div>
               <button
                 onClick={fetchWorkoutProgress}
-                className="p-2 text-[#57534E] hover:text-[#FFFFFF] hover:bg-[#F3E8E8] rounded-xl transition-colors cursor-pointer"
+                className="p-2 text-[#64748B] hover:text-[#C2410C] hover:bg-[#FFF7ED] rounded-xl transition-colors cursor-pointer"
                 title="Refresh logs"
               >
                 <RefreshCw size={16} />
@@ -559,20 +559,20 @@ const MemberProgress: React.FC = () => {
             </div>
 
             {loadingWorkoutProgress ? (
-              <div className="text-center py-12 text-[#57534E]">
-                <Loader2 className="animate-spin mx-auto mb-2 text-[#B76E79]" size={28} />
+              <div className="text-center py-12 text-[#64748B]">
+                <Loader2 className="animate-spin mx-auto mb-2 text-[#EA580C]" size={28} />
                 <p className="text-xs font-semibold">Loading workout records...</p>
               </div>
             ) : workoutHistory.length === 0 ? (
-              <div className="p-8 text-center bg-[#F3E8E8] border border-dashed border-[#E7DADD] rounded-2xl">
-                <Dumbbell size={36} className="mx-auto text-[#57534E] mb-2" />
-                <p className="font-bold text-[#292524] text-sm">No exercises completed yet</p>
-                <p className="text-xs text-[#57534E] mt-1 mb-4">
+              <div className="p-8 text-center bg-[#F8FAFC] border border-dashed border-[#E2E8F0] rounded-2xl">
+                <Dumbbell size={36} className="mx-auto text-[#64748B] mb-2" />
+                <p className="font-bold text-[#111827] text-sm">No exercises completed yet</p>
+                <p className="text-xs text-[#64748B] mt-1 mb-4">
                   Go to &quot;My Workout Plan&quot;, tap &quot;Start Workout&quot;, and log your first completed exercise!
                 </p>
                 <Link
                   to="/member/workout"
-                  className="px-4 py-2 bg-[#B76E79] text-white font-bold rounded-xl text-xs font-bold hover:bg-[#9F5965] transition-colors cursor-pointer"
+                  className="px-4 py-2 bg-[#C2410C] text-white font-bold rounded-xl text-xs font-bold hover:bg-[#9A3412] transition-colors cursor-pointer"
                 >
                   Go to Workout Plan
                 </Link>
@@ -582,25 +582,25 @@ const MemberProgress: React.FC = () => {
                 {workoutHistory.map((item: any) => (
                   <div
                     key={item._id}
-                    className="p-4 bg-[#F3E8E8] hover:bg-[#F3E8E8]/20 border border-[#E7DADD] rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-colors"
+                    className="p-4 bg-[#F8FAFC] hover:bg-[#FFF7ED]/20 border border-[#E2E8F0] rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-colors"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-[#F3E8E8] text-[#B76E79] flex items-center justify-center shrink-0">
+                      <div className="w-10 h-10 rounded-xl bg-[#F8FAFC] text-[#EA580C] flex items-center justify-center shrink-0">
                         <CheckCircle2 size={20} />
                       </div>
                       <div>
-                        <h4 className="font-bold text-sm text-[#292524]">{item.exerciseId?.name || item.exerciseName || 'Exercise'}</h4>
-                        <p className="text-xs text-[#57534E]">
+                        <h4 className="font-bold text-sm text-[#111827]">{item.exerciseId?.name || item.exerciseName || 'Exercise'}</h4>
+                        <p className="text-xs text-[#64748B]">
                           {item.dayName || 'Workout'} • {item.completedSets || 3} Sets completed • {Math.round(item.duration || 60)}s elapsed
                         </p>
                       </div>
                     </div>
 
                     <div className="flex items-center gap-4 text-xs">
-                      <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase bg-[#F3E8E8] text-[#B76E79]">
+                      <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase bg-[#F8FAFC] text-[#EA580C]">
                         {item.status || 'Completed'}
                       </span>
-                      <span className="text-[#57534E] font-medium">
+                      <span className="text-[#64748B] font-medium">
                         {new Date(item.completedAt).toLocaleString([], {
                           month: 'short',
                           day: 'numeric',
@@ -622,76 +622,76 @@ const MemberProgress: React.FC = () => {
         <div className="space-y-6 animate-in fade-in">
           {/* Top 4 Diet Progress Metric Cards */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-5 shadow-xs hover:border-[#E7DADD]/40 transition-all">
+            <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-5 shadow-xs hover:border-[#E2E8F0]/40 transition-all">
               <div className="flex justify-between items-start mb-2">
-                <span className="text-xs font-bold text-[#57534E] uppercase tracking-wider">Meals Completed</span>
-                <CheckCircle2 size={18} className="text-[#B76E79]" />
+                <span className="text-xs font-bold text-[#64748B] uppercase tracking-wider">Meals Completed</span>
+                <CheckCircle2 size={18} className="text-[#EA580C]" />
               </div>
               <div className="flex items-baseline gap-1">
-                <span className="text-2xl sm:text-3xl font-black text-[#B76E79]">
+                <span className="text-2xl sm:text-3xl font-black text-[#EA580C]">
                   {dietOverview?.stats?.totalMealsCompleted || 0}
                 </span>
-                <span className="text-xs text-[#57534E] font-bold">/ {dietOverview?.stats?.totalMealsPlanned || 42}</span>
+                <span className="text-xs text-[#64748B] font-bold">/ {dietOverview?.stats?.totalMealsPlanned || 42}</span>
               </div>
-              <span className="text-[11px] text-[#B76E79] font-semibold mt-1 block">
+              <span className="text-[11px] text-[#EA580C] font-semibold mt-1 block">
                 {dietOverview?.stats?.completionPercentage || 0}% adherence
               </span>
             </div>
 
-            <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-5 shadow-xs hover:border-[#E7DADD]/40 transition-all">
+            <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-5 shadow-xs hover:border-[#E2E8F0]/40 transition-all">
               <div className="flex justify-between items-start mb-2">
-                <span className="text-xs font-bold text-[#57534E] uppercase tracking-wider">Pending Meals</span>
+                <span className="text-xs font-bold text-[#64748B] uppercase tracking-wider">Pending Meals</span>
                 <Clock size={18} className="text-amber-600" />
               </div>
               <div className="flex items-baseline gap-1">
                 <span className="text-2xl sm:text-3xl font-black text-amber-700">
                   {dietOverview?.stats?.pendingMeals !== undefined ? dietOverview.stats.pendingMeals : 42}
                 </span>
-                <span className="text-xs text-[#57534E] font-bold">meals</span>
+                <span className="text-xs text-[#64748B] font-bold">meals</span>
               </div>
-              <span className="text-[11px] text-[#57534E] font-semibold mt-1 block">
+              <span className="text-[11px] text-[#64748B] font-semibold mt-1 block">
                 Across 7-day nutrition cycle
               </span>
             </div>
 
-            <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-5 shadow-xs hover:border-[#E7DADD]/40 transition-all">
+            <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-5 shadow-xs hover:border-[#E2E8F0]/40 transition-all">
               <div className="flex justify-between items-start mb-2">
-                <span className="text-xs font-bold text-[#57534E] uppercase tracking-wider">Calories Logged</span>
-                <Flame size={18} className="text-[#B76E79]" />
+                <span className="text-xs font-bold text-[#64748B] uppercase tracking-wider">Calories Logged</span>
+                <Flame size={18} className="text-[#EA580C]" />
               </div>
               <div className="flex items-baseline gap-1">
-                <span className="text-2xl sm:text-3xl font-black text-[#B76E79]">
+                <span className="text-2xl sm:text-3xl font-black text-[#EA580C]">
                   {(dietOverview?.stats?.totalCaloriesLogged || 0).toLocaleString()}
                 </span>
-                <span className="text-xs text-[#57534E] font-bold">kcal</span>
+                <span className="text-xs text-[#64748B] font-bold">kcal</span>
               </div>
-              <span className="text-[11px] text-[#B76E79] font-semibold mt-1 block">
+              <span className="text-[11px] text-[#EA580C] font-semibold mt-1 block">
                 Total energy logged
               </span>
             </div>
 
-            <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-5 shadow-xs hover:border-[#E7DADD]/40 transition-all">
+            <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-5 shadow-xs hover:border-[#E2E8F0]/40 transition-all">
               <div className="flex justify-between items-start mb-2">
-                <span className="text-xs font-bold text-[#57534E] uppercase tracking-wider">Protein Intake</span>
+                <span className="text-xs font-bold text-[#64748B] uppercase tracking-wider">Protein Intake</span>
                 <Apple size={18} className="text-indigo-600" />
               </div>
               <div className="flex items-baseline gap-1">
                 <span className="text-2xl sm:text-3xl font-black text-indigo-700">
                   {dietOverview?.stats?.totalProteinLogged || 0}
                 </span>
-                <span className="text-xs text-[#57534E] font-bold">grams</span>
+                <span className="text-xs text-[#64748B] font-bold">grams</span>
               </div>
-              <span className="text-[11px] text-[#57534E] font-semibold mt-1 block">
+              <span className="text-[11px] text-[#64748B] font-semibold mt-1 block">
                 Muscle recovery macros
               </span>
             </div>
           </div>
 
           {/* Diet Completion Percentage Banner */}
-          <div className="bg-gradient-to-r from-[#064E3B] to-[#F3E8E8] text-white rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-sm relative overflow-hidden flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+          <div className="bg-gradient-to-r from-[#064E3B] to-[#F8FAFC] text-white rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-sm relative overflow-hidden flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
             <div className="space-y-2 max-w-xl">
               <div className="flex items-center gap-2">
-                <span className="px-3 py-1 bg-[#FFFFFF]/10 rounded-full text-xs font-extrabold uppercase tracking-wider text-[#B76E79]">
+                <span className="px-3 py-1 bg-[#FFFFFF]/10 rounded-full text-xs font-extrabold uppercase tracking-wider text-[#EA580C]">
                   Diet Plan Completion Rate
                 </span>
                 <span className="text-xs text-white/70 font-semibold">
@@ -714,26 +714,26 @@ const MemberProgress: React.FC = () => {
 
             <Link
               to="/member/diet"
-              className="px-6 py-3.5 bg-gradient-to-r from-emerald-400 to-teal-400 hover:opacity-95 text-[#F3E8E8] rounded-xl text-sm font-black transition-all shadow-sm flex items-center gap-2 shrink-0 cursor-pointer"
+              className="px-6 py-3.5 bg-gradient-to-r from-emerald-400 to-teal-400 hover:opacity-95 text-[#F8FAFC] rounded-xl text-sm font-black transition-all shadow-sm flex items-center gap-2 shrink-0 cursor-pointer"
             >
               <Utensils size={18} /> View &amp; Log Diet Plan
             </Link>
           </div>
 
           {/* ===================== DAY-WISE DIET PLAN COMPLETED DETAILS ===================== */}
-          <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-xs space-y-6">
+          <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-xs space-y-6">
             {/* ── Dropdown Controls Header ── */}
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b border-[#E7DADD]">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b border-[#E2E8F0]">
               <div>
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-[#F3E8E8] text-[#B76E79] flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-lg bg-[#F8FAFC] text-[#EA580C] flex items-center justify-center">
                     <Utensils size={18} />
                   </div>
-                  <h3 className="text-xl font-extrabold text-[#292524] tracking-tight">
+                  <h3 className="text-xl font-extrabold text-[#111827] tracking-tight">
                     Day-Wise Diet Plan Completed Details
                   </h3>
                 </div>
-                <p className="text-xs text-[#57534E] mt-1">
+                <p className="text-xs text-[#64748B] mt-1">
                   Choose any day to inspect completed meals, consumed calories, target macros, and nutritional adherence.
                 </p>
               </div>
@@ -743,7 +743,7 @@ const MemberProgress: React.FC = () => {
                 <select
                   value={selectedDay}
                   onChange={(e) => setSelectedDay(e.target.value)}
-                  className="w-full bg-[#F3E8E8] border-2 border-[#E7DADD] hover:border-[#E7DADD] text-[#292524] text-xs sm:text-sm font-bold rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 shadow-xs cursor-pointer appearance-none pr-10 transition-colors"
+                  className="w-full bg-[#F8FAFC] border-2 border-[#E2E8F0] hover:border-[#E2E8F0] text-[#111827] text-xs sm:text-sm font-bold rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 shadow-xs cursor-pointer appearance-none pr-10 transition-colors"
                 >
                   <option value="all">🥗 All Days - Weekly Diet Overview</option>
                   <option value="Monday">🥑 Monday Diet Completed Details</option>
@@ -754,7 +754,7 @@ const MemberProgress: React.FC = () => {
                   <option value="Saturday">🥗 Saturday Diet Completed Details</option>
                   <option value="Sunday">🍵 Sunday Diet Completed Details</option>
                 </select>
-                <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-[#57534E]">
+                <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-[#64748B]">
                   <ChevronDown size={18} />
                 </div>
               </div>
@@ -767,7 +767,7 @@ const MemberProgress: React.FC = () => {
                 className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer shrink-0 ${
                   selectedDay === 'all'
                     ? 'bg-[#FFFFFF] text-white shadow-xs'
-                    : 'bg-[#F3E8E8] text-[#57534E] hover:bg-[#F3E8E8]'
+                    : 'bg-[#F8FAFC] text-[#64748B] hover:bg-[#FFF7ED]'
                 }`}
               >
                 All Days
@@ -781,14 +781,14 @@ const MemberProgress: React.FC = () => {
                     onClick={() => setSelectedDay(d)}
                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer shrink-0 ${
                       isSelected
-                        ? 'bg-[#B76E79] text-white shadow-xs scale-102 ring-2 ring-emerald-300/60'
-                        : 'bg-[#F3E8E8] text-[#292524] hover:bg-[#F3E8E8] hover:text-[#292524]'
+                        ? 'bg-[#C2410C] text-white shadow-xs scale-102 ring-2 ring-emerald-300/60'
+                        : 'bg-[#F8FAFC] text-[#111827] hover:bg-[#FFF7ED] hover:text-[#111827]'
                     }`}
                   >
                     <span>{d.slice(0, 3)}</span>
                     {dData && dData.completedMeals > 0 && (
                       <span className={`w-4 h-4 rounded-full text-[9px] font-black flex items-center justify-center ${
-                        isSelected ? 'bg-[#FFFFFF] text-[#B76E79]' : 'bg-[#F3E8E8] text-[#B76E79]'
+                        isSelected ? 'bg-[#FFFFFF] text-[#EA580C]' : 'bg-[#F8FAFC] text-[#EA580C]'
                       }`}>
                         ✓
                       </span>
@@ -802,73 +802,73 @@ const MemberProgress: React.FC = () => {
             {selectedDay !== 'all' && activeDayDiet ? (
               <div className="space-y-4 animate-in fade-in">
                 {/* Day Highlights Banner */}
-                <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-5 sm:p-6 shadow-xs">
+                <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-5 sm:p-6 shadow-xs">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-[#F3E8E8] text-[#B76E79]">
+                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-[#F8FAFC] text-[#EA580C]">
                           {selectedDay} NUTRITION
                         </span>
-                        <span className="text-xs text-[#57534E] font-semibold">• Macro Plan</span>
+                        <span className="text-xs text-[#64748B] font-semibold">• Macro Plan</span>
                       </div>
-                      <h4 className="text-lg sm:text-xl font-black text-[#292524]">
+                      <h4 className="text-lg sm:text-xl font-black text-[#111827]">
                         {activeDayDiet.focus}
                       </h4>
-                      <p className="text-xs text-[#57534E] mt-0.5">
+                      <p className="text-xs text-[#64748B] mt-0.5">
                         {activeDayDiet.completedMeals} of {activeDayDiet.totalMeals} meals completed ({activeDayDiet.completionPercentage}% adherence)
                       </p>
                     </div>
 
                     <div className="flex items-center gap-2 self-start sm:self-auto">
-                      <div className="bg-[#FFFFFF] px-3 py-1.5 rounded-xl border border-[#E7DADD] text-center">
-                        <span className="text-[9px] font-bold uppercase text-[#57534E] block">Consumed</span>
-                        <strong className="text-sm font-black text-[#B76E79]">{activeDayDiet.consumedCalories} kcal</strong>
+                      <div className="bg-[#FFFFFF] px-3 py-1.5 rounded-xl border border-[#E2E8F0] text-center">
+                        <span className="text-[9px] font-bold uppercase text-[#64748B] block">Consumed</span>
+                        <strong className="text-sm font-black text-[#EA580C]">{activeDayDiet.consumedCalories} kcal</strong>
                       </div>
-                      <div className="bg-[#FFFFFF] px-3 py-1.5 rounded-xl border border-[#E7DADD] text-center">
-                        <span className="text-[9px] font-bold uppercase text-[#57534E] block">Target</span>
-                        <strong className="text-sm font-black text-[#292524]">{activeDayDiet.targetCalories} kcal</strong>
+                      <div className="bg-[#FFFFFF] px-3 py-1.5 rounded-xl border border-[#E2E8F0] text-center">
+                        <span className="text-[9px] font-bold uppercase text-[#64748B] block">Target</span>
+                        <strong className="text-sm font-black text-[#111827]">{activeDayDiet.targetCalories} kcal</strong>
                       </div>
-                      <div className="bg-[#FFFFFF] px-3 py-1.5 rounded-xl border border-[#E7DADD] text-center">
-                        <span className="text-[9px] font-bold uppercase text-[#57534E] block">Protein</span>
+                      <div className="bg-[#FFFFFF] px-3 py-1.5 rounded-xl border border-[#E2E8F0] text-center">
+                        <span className="text-[9px] font-bold uppercase text-[#64748B] block">Protein</span>
                         <strong className="text-sm font-black text-indigo-700">{activeDayDiet.consumedProtein}g / {activeDayDiet.targetProtein}g</strong>
                       </div>
                     </div>
                   </div>
 
                   {/* Day Completion Bar */}
-                  <div className="w-full h-2.5 bg-[#F3E8E8]/80 rounded-full overflow-hidden mt-4">
+                  <div className="w-full h-2.5 bg-[#F8FAFC]/80 rounded-full overflow-hidden mt-4">
                     <div
-                      className="h-full bg-gradient-to-r from-emerald-400 to-[#9F5965] rounded-full transition-all duration-700"
+                      className="h-full bg-gradient-to-r from-emerald-400 to-[#C2410C] rounded-full transition-all duration-700"
                       style={{ width: `${activeDayDiet.completionPercentage}%` }}
                     />
                   </div>
                 </div>
 
                 {/* Day Meals List */}
-                <div className="divide-y divide-stone-100 border border-[#E7DADD] rounded-2xl overflow-hidden bg-[#FFFFFF] shadow-xs">
+                <div className="divide-y divide-stone-100 border border-[#E2E8F0] rounded-2xl overflow-hidden bg-[#FFFFFF] shadow-xs">
                   {(activeDayDiet.meals || []).map((m: any) => (
                     <div
                       key={m.id}
                       className={`p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-colors ${
-                        m.completed ? 'bg-[#F3E8E8]/20' : 'bg-[#FFFFFF]'
+                        m.completed ? 'bg-[#FFF7ED]' : 'bg-[#FFFFFF]'
                       }`}
                     >
                       <div className="flex items-start gap-3">
                         <div className={`mt-0.5 w-7 h-7 rounded-full flex items-center justify-center shrink-0 ${
-                          m.completed ? 'bg-[#B76E79] text-white' : 'border-2 border-[#E7DADD] text-transparent'
+                          m.completed ? 'bg-[#C2410C] text-white' : 'border-2 border-[#E2E8F0] text-transparent'
                         }`}>
                           <CheckCircle2 size={18} />
                         </div>
                         <div>
                           <div className="flex items-center gap-2">
                             {getMealIcon(m.type)}
-                            <span className="text-xs font-bold text-[#57534E] uppercase">{m.time}</span>
-                            <span className="font-extrabold text-sm text-[#292524]">{m.type}</span>
+                            <span className="text-xs font-bold text-[#64748B] uppercase">{m.time}</span>
+                            <span className="font-extrabold text-sm text-[#111827]">{m.type}</span>
                           </div>
                           <ul className="mt-1.5 space-y-0.5">
                             {(m.items || []).map((item: string, i: number) => (
-                              <li key={i} className="text-xs text-[#57534E] flex items-center gap-1.5">
-                                <span className="w-1.5 h-1.5 rounded-full bg-[#B76E79] shrink-0" />
+                              <li key={i} className="text-xs text-[#64748B] flex items-center gap-1.5">
+                                <span className="w-1.5 h-1.5 rounded-full bg-[#C2410C] shrink-0" />
                                 <span>{item}</span>
                               </li>
                             ))}
@@ -877,14 +877,14 @@ const MemberProgress: React.FC = () => {
                       </div>
 
                       <div className="text-right shrink-0 self-end sm:self-auto">
-                        <span className="text-xs font-black text-[#292524] block">{m.calories} kcal</span>
-                        <span className="text-[10px] text-[#57534E] block">P: {m.protein}g • C: {m.carbs}g • F: {m.fats}g</span>
+                        <span className="text-xs font-black text-[#111827] block">{m.calories} kcal</span>
+                        <span className="text-[10px] text-[#64748B] block">P: {m.protein}g • C: {m.carbs}g • F: {m.fats}g</span>
                         {m.completed ? (
-                          <span className="inline-block mt-1 px-2.5 py-0.5 rounded text-[10px] font-bold bg-[#F3E8E8] text-[#B76E79] border border-[#E7DADD]">
+                          <span className="inline-block mt-1 px-2.5 py-0.5 rounded text-[10px] font-bold bg-[#F8FAFC] text-[#EA580C] border border-[#E2E8F0]">
                             ✓ Completed
                           </span>
                         ) : (
-                          <span className="inline-block mt-1 px-2.5 py-0.5 rounded text-[10px] font-bold bg-[#F3E8E8] text-[#57534E] border border-[#E7DADD]">
+                          <span className="inline-block mt-1 px-2.5 py-0.5 rounded text-[10px] font-bold bg-[#F8FAFC] text-[#64748B] border border-[#E2E8F0]">
                             Pending
                           </span>
                         )}
@@ -903,38 +903,38 @@ const MemberProgress: React.FC = () => {
                     <div
                       key={d}
                       onClick={() => setSelectedDay(d)}
-                      className="p-5 rounded-2xl border border-[#E7DADD] bg-[#F3E8E8] hover:border-[#B76E79] hover:shadow-xs transition-all cursor-pointer group flex flex-col justify-between"
+                      className="p-5 rounded-2xl border border-[#E2E8F0] bg-[#F8FAFC] hover:border-[#FDBA74] hover:shadow-xs transition-all cursor-pointer group flex flex-col justify-between"
                     >
                       <div>
                         <div className="flex items-center justify-between mb-2">
-                          <span className="font-extrabold text-sm text-[#292524] group-hover:text-[#B76E79] transition-colors">
+                          <span className="font-extrabold text-sm text-[#111827] group-hover:text-[#EA580C] transition-colors">
                             {d}
                           </span>
                           <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${
                             dData.completionPercentage === 100
-                              ? 'bg-[#F3E8E8] text-[#B76E79]'
+                              ? 'bg-[#F8FAFC] text-[#EA580C]'
                               : dData.completionPercentage > 0
-                              ? 'bg-[#F3E8E8] text-[#B76E79]'
-                              : 'bg-[#F3E8E8] text-[#57534E]'
+                              ? 'bg-[#F8FAFC] text-[#EA580C]'
+                              : 'bg-[#F8FAFC] text-[#64748B]'
                           }`}>
                             {dData.completionPercentage}% Done
                           </span>
                         </div>
-                        <p className="text-xs text-[#57534E] font-semibold mb-3 truncate">
+                        <p className="text-xs text-[#64748B] font-semibold mb-3 truncate">
                           {dData.focus}
                         </p>
 
-                        <div className="w-full h-2 bg-[#F3E8E8] rounded-full overflow-hidden mb-3">
+                        <div className="w-full h-2 bg-[#F8FAFC] rounded-full overflow-hidden mb-3">
                           <div
-                            className="h-full bg-gradient-to-r from-emerald-400 to-[#9F5965] rounded-full transition-all duration-500"
+                            className="h-full bg-gradient-to-r from-emerald-400 to-[#C2410C] rounded-full transition-all duration-500"
                             style={{ width: `${dData.completionPercentage}%` }}
                           />
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-between text-xs text-[#57534E] pt-3 border-t border-[#E7DADD]">
+                      <div className="flex items-center justify-between text-xs text-[#64748B] pt-3 border-t border-[#E2E8F0]">
                         <span>{dData.completedMeals} / {dData.totalMeals} Meals</span>
-                        <span className="font-bold text-[#B76E79] group-hover:translate-x-0.5 transition-transform flex items-center gap-1">
+                        <span className="font-bold text-[#EA580C] group-hover:translate-x-0.5 transition-transform flex items-center gap-1">
                           <span>Inspect</span> &rarr;
                         </span>
                       </div>
@@ -946,19 +946,19 @@ const MemberProgress: React.FC = () => {
           </div>
 
           {/* Meal Completion Activity Log */}
-          <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-xs space-y-4">
+          <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-xs space-y-4">
             <div className="flex justify-between items-center">
               <div>
-                <h3 className="text-xl font-bold text-[#292524]">
+                <h3 className="text-xl font-bold text-[#111827]">
                   {selectedDay !== 'all' ? `${selectedDay} Completed Meal Logs` : 'Completed Meal Logs'}
                 </h3>
-                <p className="text-xs text-[#57534E]">
+                <p className="text-xs text-[#64748B]">
                   {selectedDay !== 'all' ? `Logged nutrition entries for ${selectedDay}` : 'Chronological history of completed nutrition and meal intakes'}
                 </p>
               </div>
               <button
                 onClick={fetchDietProgress}
-                className="p-2 text-[#57534E] hover:text-[#FFFFFF] hover:bg-[#F3E8E8] rounded-xl transition-colors cursor-pointer"
+                className="p-2 text-[#64748B] hover:text-[#C2410C] hover:bg-[#FFF7ED] rounded-xl transition-colors cursor-pointer"
                 title="Refresh logs"
               >
                 <RefreshCw size={16} />
@@ -966,20 +966,20 @@ const MemberProgress: React.FC = () => {
             </div>
 
             {loadingDietProgress ? (
-              <div className="text-center py-12 text-[#57534E]">
-                <Loader2 className="animate-spin mx-auto mb-2 text-[#B76E79]" size={28} />
+              <div className="text-center py-12 text-[#64748B]">
+                <Loader2 className="animate-spin mx-auto mb-2 text-[#EA580C]" size={28} />
                 <p className="text-xs font-semibold">Loading meal records...</p>
               </div>
             ) : dietHistory.length === 0 ? (
-              <div className="p-8 text-center bg-[#F3E8E8] border border-dashed border-[#E7DADD] rounded-2xl">
-                <Utensils size={36} className="mx-auto text-[#57534E] mb-2" />
-                <p className="font-bold text-[#292524] text-sm">No meals logged yet</p>
-                <p className="text-xs text-[#57534E] mt-1 mb-4">
+              <div className="p-8 text-center bg-[#F8FAFC] border border-dashed border-[#E2E8F0] rounded-2xl">
+                <Utensils size={36} className="mx-auto text-[#64748B] mb-2" />
+                <p className="font-bold text-[#111827] text-sm">No meals logged yet</p>
+                <p className="text-xs text-[#64748B] mt-1 mb-4">
                   Go to &quot;My Diet Plan&quot;, check off your completed meals, and track your nutrition streak!
                 </p>
                 <Link
                   to="/member/diet"
-                  className="px-4 py-2 bg-[#B76E79] text-white font-bold rounded-xl text-xs font-bold hover:bg-[#9F5965] transition-colors cursor-pointer"
+                  className="px-4 py-2 bg-[#C2410C] text-white font-bold rounded-xl text-xs font-bold hover:bg-[#9A3412] transition-colors cursor-pointer"
                 >
                   Go to Diet Plan
                 </Link>
@@ -992,27 +992,27 @@ const MemberProgress: React.FC = () => {
                 ).map((item: any) => (
                   <div
                     key={item._id}
-                    className="p-4 bg-[#F3E8E8] hover:bg-[#F3E8E8]/20 border border-[#E7DADD] rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-colors"
+                    className="p-4 bg-[#F8FAFC] hover:bg-[#FFF7ED]/20 border border-[#E2E8F0] rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-colors"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-[#F3E8E8] text-[#B76E79] flex items-center justify-center shrink-0">
+                      <div className="w-10 h-10 rounded-xl bg-[#F8FAFC] text-[#EA580C] flex items-center justify-center shrink-0">
                         {getMealIcon(item.mealType)}
                       </div>
                       <div>
-                        <h4 className="font-bold text-sm text-[#292524]">
+                        <h4 className="font-bold text-sm text-[#111827]">
                           {item.dayName} • {item.mealType}
                         </h4>
-                        <p className="text-xs text-[#57534E]">
+                        <p className="text-xs text-[#64748B]">
                           {item.calories} kcal • {item.protein}g Protein • {Array.isArray(item.items) ? item.items.join(', ') : item.items}
                         </p>
                       </div>
                     </div>
 
                     <div className="flex items-center gap-4 text-xs">
-                      <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase bg-[#F3E8E8] text-[#B76E79]">
+                      <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase bg-[#F8FAFC] text-[#EA580C]">
                         Completed
                       </span>
-                      <span className="text-[#57534E] font-medium">
+                      <span className="text-[#64748B] font-medium">
                         {item.completedAt
                           ? new Date(item.completedAt).toLocaleString([], {
                               month: 'short',

@@ -492,15 +492,15 @@ export const GymExerciseVideos = () => {
     <div className="space-y-6 max-w-7xl mx-auto pb-12">
       {/* Page Header */}
       <div className="bg-gradient-to-r from-[#FFFFFF] via-[#FFFFFF] to-[#FFFFFF] rounded-3xl p-6 md:p-8 text-white shadow-xl relative overflow-hidden">
-        <div className="absolute right-0 top-0 bottom-0 w-1/3 bg-gradient-to-l from-[#B76E79]/20 to-transparent pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-1/3 bg-gradient-to-l from-[#EA580C]/20 to-transparent pointer-events-none" />
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#B76E79]/20 text-[#B76E79] text-xs font-bold mb-3 border border-[#B76E79]/30">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FFF7ED] text-[#EA580C] text-xs font-bold mb-3 border border-[#FFEDD5]">
               <Sparkles size={14} /> Tamil & English Fitness Training Videos
             </div>
             <h1 className="text-2xl md:text-4xl font-extrabold tracking-tight">Gym Exercise Videos</h1>
-            <p className="text-[#57534E] text-sm md:text-base mt-2 leading-relaxed">
-              Watch instructional gym workout videos with step-by-step technique tips in both <span className="text-[#B76E79] font-bold">Tamil (தமிழ்)</span> and <span className="text-[#B76E79] font-bold">English</span>.
+            <p className="text-[#64748B] text-sm md:text-base mt-2 leading-relaxed">
+              Watch instructional gym workout videos with step-by-step technique tips in both <span className="text-[#EA580C] font-bold">Tamil (தமிழ்)</span> and <span className="text-[#EA580C] font-bold">English</span>.
             </p>
           </div>
 
@@ -508,7 +508,7 @@ export const GymExerciseVideos = () => {
           <div className="shrink-0 flex items-center">
             <button
               onClick={handleOpenModal}
-              className="px-5 py-3 bg-gradient-to-r from-[#B76E79] to-[#9F5965] hover:from-[#9F5965] hover:to-[#B76E79] text-[#FFFFFF] font-bold font-bold rounded-2xl shadow-lg hover:shadow-[#B76E79]/15 transition-all flex items-center gap-2 text-xs sm:text-sm cursor-pointer transform hover:-translate-y-0.5 active:translate-y-0"
+              className="px-5 py-3 bg-gradient-to-r from-[#EA580C] to-[#C2410C] hover:from-[#9A3412] hover:to-[#EA580C] text-[#FFFFFF] font-bold font-bold rounded-2xl shadow-lg hover:shadow-orange-500/15 transition-all flex items-center gap-2 text-xs sm:text-sm cursor-pointer transform hover:-translate-y-0.5 active:translate-y-0"
             >
               <Plus size={18} className="stroke-[2.5]" />
               <span>Add Exercise Manually</span>
@@ -518,20 +518,20 @@ export const GymExerciseVideos = () => {
       </div>
 
       {/* Language Filter & Search Bar Header */}
-      <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-4 md:p-5 shadow-sm space-y-4">
+      <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-4 md:p-5 shadow-sm space-y-4">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           
           {/* Language Selector Tabs */}
-          <div className="flex items-center gap-2 bg-[#F3E8E8] p-1.5 rounded-xl border border-[#E7DADD]">
-            <Globe size={16} className="text-[#B76E79] ml-2 shrink-0" />
+          <div className="flex items-center gap-2 bg-[#F8FAFC] p-1.5 rounded-xl border border-[#E2E8F0]">
+            <Globe size={16} className="text-[#EA580C] ml-2 shrink-0" />
             {(['All', 'Tamil', 'English'] as const).map((lang) => (
               <button
                 key={lang}
                 onClick={() => setSelectedLanguage(lang)}
                 className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                   selectedLanguage === lang
-                    ? 'bg-[#B76E79] text-white shadow-sm'
-                    : 'text-[#57534E] hover:text-[#FFFFFF] hover:bg-[#F3E8E8]'
+                    ? 'bg-[#C2410C] text-white shadow-sm'
+                    : 'text-[#64748B] hover:text-[#C2410C] hover:bg-[#FFF7ED]'
                 }`}
               >
                 {lang === 'Tamil' ? 'Tamil (தமிழ்)' : lang}
@@ -542,18 +542,18 @@ export const GymExerciseVideos = () => {
           {/* Search Box & Quick Add Button */}
           <div className="flex items-center gap-3 flex-1 max-w-xl">
             <div className="relative flex-1">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#57534E]" size={16} />
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#64748B]" size={16} />
               <input
                 type="text"
                 placeholder="Search by workout, muscle, Tamil or English name..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-[#F3E8E8] border border-[#E7DADD] rounded-xl pl-10 pr-4 py-2.5 text-xs sm:text-sm text-[#292524] outline-none focus:border-[#B76E79] transition-colors"
+                className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl pl-10 pr-4 py-2.5 text-xs sm:text-sm text-[#111827] outline-none focus:border-[#FDBA74] transition-colors"
               />
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#57534E] hover:text-[#FFFFFF]"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#64748B] hover:text-[#C2410C]"
                 >
                   <X size={14} />
                 </button>
@@ -562,7 +562,7 @@ export const GymExerciseVideos = () => {
 
             <button
               onClick={handleOpenModal}
-              className="hidden sm:flex items-center gap-1.5 px-3.5 py-2.5 bg-[#F3E8E8] border border-[#B76E79]/50 text-[#B76E79] hover:bg-[#B76E79] hover:text-[#FFFFFF] font-bold rounded-xl text-xs font-bold transition-colors cursor-pointer shrink-0"
+              className="hidden sm:flex items-center gap-1.5 px-3.5 py-2.5 bg-[#F8FAFC] border border-[#FFEDD5] text-[#EA580C] hover:bg-[#C2410C] hover:text-[#FFFFFF] font-bold rounded-xl text-xs font-bold transition-colors cursor-pointer shrink-0"
               title="Add exercise manually"
             >
               <Plus size={15} />
@@ -572,9 +572,9 @@ export const GymExerciseVideos = () => {
         </div>
 
         {/* Category Pills */}
-        <div className="flex items-center gap-2 overflow-x-auto custom-scrollbar pt-2 border-t border-[#E7DADD]/60">
-          <Filter size={14} className="text-[#57534E] shrink-0" />
-          <span className="text-xs font-bold text-[#57534E] uppercase mr-1 shrink-0">Category:</span>
+        <div className="flex items-center gap-2 overflow-x-auto custom-scrollbar pt-2 border-t border-[#E2E8F0]/60">
+          <Filter size={14} className="text-[#64748B] shrink-0" />
+          <span className="text-xs font-bold text-[#64748B] uppercase mr-1 shrink-0">Category:</span>
           {categories.map((cat) => (
             <button
               key={cat}
@@ -582,7 +582,7 @@ export const GymExerciseVideos = () => {
               className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all whitespace-nowrap cursor-pointer shrink-0 ${
                 selectedCategory === cat
                   ? 'bg-[#FFFFFF] text-white shadow-xs'
-                  : 'bg-[#F3E8E8] border border-[#E7DADD] text-[#57534E] hover:border-[#B76E79]/40 hover:text-[#B76E79]'
+                  : 'bg-[#F8FAFC] border border-[#E2E8F0] text-[#64748B] hover:border-[#FFEDD5] hover:text-[#EA580C]'
               }`}
             >
               {cat}
@@ -593,15 +593,15 @@ export const GymExerciseVideos = () => {
 
       {/* Pending Customer Video Requests Banner */}
       {pendingVideoRequests.length > 0 && (
-        <div className="bg-gradient-to-r from-orange-50 to-amber-50 border border-[#E7DADD] rounded-2xl p-5 shadow-sm space-y-3">
+        <div className="bg-gradient-to-r from-orange-50 to-amber-50 border border-[#E2E8F0] rounded-2xl p-5 shadow-sm space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="w-8 h-8 rounded-lg bg-[#B76E79] text-white font-bold flex items-center justify-center font-bold text-xs">
+              <span className="w-8 h-8 rounded-lg bg-[#C2410C] text-white font-bold flex items-center justify-center font-bold text-xs">
                 {pendingVideoRequests.length}
               </span>
               <div>
-                <h3 className="text-sm font-bold text-[#292524]">Pending Customer Video Approvals</h3>
-                <p className="text-xs text-[#57534E]">Customers requested gym exercise video guidance. Click Approve to grant access directly to their dashboard.</p>
+                <h3 className="text-sm font-bold text-[#111827]">Pending Customer Video Approvals</h3>
+                <p className="text-xs text-[#64748B]">Customers requested gym exercise video guidance. Click Approve to grant access directly to their dashboard.</p>
               </div>
             </div>
             <span className="text-xs font-semibold px-2.5 py-1 bg-amber-100 text-amber-800 rounded-full border border-amber-300">
@@ -611,24 +611,24 @@ export const GymExerciseVideos = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
             {pendingVideoRequests.map((req) => (
-              <div key={req._id} className="bg-[#FFFFFF] rounded-xl p-4 border border-[#E7DADD] shadow-2xs flex flex-col justify-between space-y-3">
+              <div key={req._id} className="bg-[#FFFFFF] rounded-xl p-4 border border-[#E2E8F0] shadow-2xs flex flex-col justify-between space-y-3">
                 <div>
                   <div className="flex items-center justify-between">
-                    <span className="font-bold text-sm text-[#292524]">
+                    <span className="font-bold text-sm text-[#111827]">
                       {req.customerId?.firstName} {req.customerId?.lastName}
                     </span>
-                    <span className="text-[11px] text-[#57534E]">
+                    <span className="text-[11px] text-[#64748B]">
                       {new Date(req.createdAt).toLocaleDateString()}
                     </span>
                   </div>
-                  <p className="text-xs font-semibold text-[#B76E79] mt-0.5">{req.title}</p>
-                  <p className="text-xs text-[#57534E] mt-1 line-clamp-2 italic">&ldquo;{req.customerMessage}&rdquo;</p>
+                  <p className="text-xs font-semibold text-[#EA580C] mt-0.5">{req.title}</p>
+                  <p className="text-xs text-[#64748B] mt-1 line-clamp-2 italic">&ldquo;{req.customerMessage}&rdquo;</p>
                 </div>
 
                 <button
                   onClick={() => handleQuickApproveRequest(req._id)}
                   disabled={approvingRequestId === req._id}
-                  className="w-full py-2 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold font-bold rounded-xl text-xs transition-all flex items-center justify-center gap-1.5 shadow-sm disabled:opacity-50"
+                  className="w-full py-2 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold font-bold rounded-xl text-xs transition-all flex items-center justify-center gap-1.5 shadow-sm disabled:opacity-50"
                 >
                   {approvingRequestId === req._id ? (
                     <>
@@ -648,13 +648,13 @@ export const GymExerciseVideos = () => {
 
       {/* Videos Grid */}
       {filteredVideos.length === 0 ? (
-        <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-12 text-center text-[#57534E] space-y-3">
+        <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-12 text-center text-[#64748B] space-y-3">
           <Video size={44} className="mx-auto text-amber-500/70" />
-          <h3 className="text-lg font-bold text-[#292524]">No videos found</h3>
+          <h3 className="text-lg font-bold text-[#111827]">No videos found</h3>
           <p className="text-xs max-w-sm mx-auto">Try adjusting your language, category, or search filters, or click the button below to add your own exercise manually.</p>
           <button
             onClick={handleOpenModal}
-            className="mt-2 inline-flex items-center gap-2 px-4 py-2 bg-[#B76E79] text-white font-bold text-xs font-bold rounded-xl hover:bg-[#9F5965] transition-colors"
+            className="mt-2 inline-flex items-center gap-2 px-4 py-2 bg-[#C2410C] text-white font-bold text-xs font-bold rounded-xl hover:bg-[#9A3412] transition-colors"
           >
             <Plus size={15} /> Add Custom Exercise
           </button>
@@ -670,10 +670,10 @@ export const GymExerciseVideos = () => {
             return (
               <div
                 key={video.id}
-                className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl overflow-hidden shadow-sm hover:shadow-md hover:border-[#B76E79]/40 transition-all flex flex-col group relative"
+                className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl overflow-hidden shadow-sm hover:shadow-md hover:border-[#FFEDD5] transition-all flex flex-col group relative"
               >
                 {/* Thumbnail Container */}
-                <div className="relative bg-[#F3E8E8] aspect-video overflow-hidden group cursor-pointer" onClick={() => setActiveVideo(video)}>
+                <div className="relative bg-[#F8FAFC] aspect-video overflow-hidden group cursor-pointer" onClick={() => setActiveVideo(video)}>
                   <img
                     src={thumbUrl}
                     alt={video.title}
@@ -684,7 +684,7 @@ export const GymExerciseVideos = () => {
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 opacity-90 group-hover:opacity-100"
                   />
                   <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors flex items-center justify-center">
-                    <div className="w-14 h-14 rounded-full bg-[#B76E79] text-white font-bold flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                    <div className="w-14 h-14 rounded-full bg-[#C2410C] text-white font-bold flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
                       <Play size={24} className="ml-1 fill-white" />
                     </div>
                   </div>
@@ -698,13 +698,13 @@ export const GymExerciseVideos = () => {
                   <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5">
                     <span className={`text-[11px] font-extrabold px-2.5 py-1 rounded-full shadow-md border ${
                       video.language === 'Tamil'
-                        ? 'bg-[#B76E79] text-white border-[#E7DADD]'
-                        : 'bg-[#B76E79] text-white border-[#E7DADD]'
+                        ? 'bg-[#C2410C] text-white border-[#E2E8F0]'
+                        : 'bg-[#C2410C] text-white border-[#E2E8F0]'
                     }`}>
                       {video.language === 'Tamil' ? 'தமிழ் (Tamil)' : 'English'}
                     </span>
                     {video.isCustom && (
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#B76E79] text-white font-bold shadow-xs border border-[#E7DADD]">
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#C2410C] text-white font-bold shadow-xs border border-[#E2E8F0]">
                         Manual
                       </span>
                     )}
@@ -726,7 +726,7 @@ export const GymExerciseVideos = () => {
                 <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
                   <div>
                     <div className="flex items-center gap-2 mb-2">
-                      <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-[#F3E8E8] text-[#57534E] border border-[#E7DADD]">
+                      <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-[#F8FAFC] text-[#64748B] border border-[#E2E8F0]">
                         {video.category}
                       </span>
                       <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-amber-50 text-amber-700 border border-amber-200">
@@ -734,27 +734,27 @@ export const GymExerciseVideos = () => {
                       </span>
                     </div>
 
-                    <h3 className="font-bold text-[#292524] text-base leading-snug group-hover:text-[#B76E79] transition-colors">
+                    <h3 className="font-bold text-[#111827] text-base leading-snug group-hover:text-[#EA580C] transition-colors">
                       {video.title}
                     </h3>
                     {video.titleTamil && (
-                      <p className="text-xs font-semibold text-[#B76E79] mt-1 font-sans">
+                      <p className="text-xs font-semibold text-[#EA580C] mt-1 font-sans">
                         {video.titleTamil}
                       </p>
                     )}
 
-                    <p className="text-xs text-[#57534E] mt-2 line-clamp-2 leading-relaxed">
+                    <p className="text-xs text-[#64748B] mt-2 line-clamp-2 leading-relaxed">
                       {video.language === 'Tamil' && video.descriptionTamil ? video.descriptionTamil : video.description}
                     </p>
                   </div>
 
                   {/* Footer specs */}
-                  <div className="pt-3 border-t border-[#E7DADD]/60 space-y-2">
-                    <div className="flex items-center justify-between text-xs text-[#57534E]">
+                  <div className="pt-3 border-t border-[#E2E8F0]/60 space-y-2">
+                    <div className="flex items-center justify-between text-xs text-[#64748B]">
                       <span className="flex items-center gap-1.5 font-medium truncate max-w-[140px]" title={video.equipment}>
-                        <Dumbbell size={13} className="text-[#B76E79] shrink-0" /> {video.equipment}
+                        <Dumbbell size={13} className="text-[#EA580C] shrink-0" /> {video.equipment}
                       </span>
-                      <span className="font-bold text-[#292524] truncate max-w-[130px]" title={video.targetMuscle}>
+                      <span className="font-bold text-[#111827] truncate max-w-[130px]" title={video.targetMuscle}>
                         {video.targetMuscle.split(',')[0]}
                       </span>
                     </div>
@@ -762,13 +762,13 @@ export const GymExerciseVideos = () => {
                     <div className="flex items-center gap-2 mt-2">
                       <button
                         onClick={() => setActiveVideo(video)}
-                        className="flex-1 py-2 bg-[#F3E8E8] border border-[#E7DADD] text-[#B76E79] font-bold rounded-xl hover:bg-[#F3E8E8] transition-all flex items-center justify-center gap-1.5 text-xs cursor-pointer shadow-2xs"
+                        className="flex-1 py-2 bg-[#F8FAFC] border border-[#E2E8F0] text-[#EA580C] font-bold rounded-xl hover:bg-[#FFF7ED] transition-all flex items-center justify-center gap-1.5 text-xs cursor-pointer shadow-2xs"
                       >
                         <Play size={13} className="fill-current" /> Watch Video
                       </button>
                       <button
                         onClick={() => openApproveModal(video)}
-                        className="flex-1 py-2 bg-gradient-to-r from-[#B76E79] to-[#9F5965] hover:from-emerald-700 hover:to-[#9F5965] text-[#FFFFFF] font-bold font-bold rounded-xl transition-all flex items-center justify-center gap-1.5 text-xs cursor-pointer shadow-sm active:scale-95 shadow-emerald-600/20"
+                        className="flex-1 py-2 bg-gradient-to-r from-[#EA580C] to-[#C2410C] hover:from-emerald-700 hover:to-[#C2410C] text-[#FFFFFF] font-bold font-bold rounded-xl transition-all flex items-center justify-center gap-1.5 text-xs cursor-pointer shadow-sm active:scale-95 shadow-emerald-600/20"
                         title="Approve this video for customer dashboard"
                       >
                         <CheckCircle2 size={13} /> Approval
@@ -785,25 +785,25 @@ export const GymExerciseVideos = () => {
       {/* Video Modal Player */}
       {activeVideo && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-xs z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
-          <div className="bg-[#FFFFFF] rounded-3xl max-w-4xl w-full overflow-hidden shadow-2xl border border-[#E7DADD] my-auto animate-in zoom-in-95 duration-150">
+          <div className="bg-[#FFFFFF] rounded-3xl max-w-4xl w-full overflow-hidden shadow-2xl border border-[#E2E8F0] my-auto animate-in zoom-in-95 duration-150">
             {/* Modal Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-[#E7DADD] bg-[#F3E8E8]">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-[#E2E8F0] bg-[#F8FAFC]">
               <div className="flex items-center gap-3">
-                <span className={`text-xs font-bold px-2.5 py-1 rounded-full text-white ${activeVideo.language === 'Tamil' ? 'bg-[#B76E79]' : 'bg-[#B76E79]'}`}>
+                <span className={`text-xs font-bold px-2.5 py-1 rounded-full text-white ${activeVideo.language === 'Tamil' ? 'bg-[#C2410C]' : 'bg-[#C2410C]'}`}>
                   {activeVideo.language === 'Tamil' ? 'தமிழ்' : 'English'}
                 </span>
                 <div>
-                  <h2 className="font-bold text-[#292524] text-base md:text-lg leading-tight">
+                  <h2 className="font-bold text-[#111827] text-base md:text-lg leading-tight">
                     {activeVideo.title}
                   </h2>
                   {activeVideo.titleTamil && (
-                    <p className="text-xs text-[#B76E79] font-semibold">{activeVideo.titleTamil}</p>
+                    <p className="text-xs text-[#EA580C] font-semibold">{activeVideo.titleTamil}</p>
                   )}
                 </div>
               </div>
               <button
                 onClick={() => setActiveVideo(null)}
-                className="w-9 h-9 rounded-full bg-[#F3E8E8] hover:bg-[#F3E8E8] text-[#57534E] hover:text-[#FFFFFF] flex items-center justify-center transition-colors cursor-pointer"
+                className="w-9 h-9 rounded-full bg-[#F8FAFC] hover:bg-[#FFF7ED] text-[#64748B] hover:text-[#C2410C] flex items-center justify-center transition-colors cursor-pointer"
               >
                 <X size={18} />
               </button>
@@ -835,7 +835,7 @@ export const GymExerciseVideos = () => {
                 />
               ) : (
                 <div className="text-white text-center p-8">
-                  <Play size={40} className="mx-auto mb-2 text-[#B76E79]" />
+                  <Play size={40} className="mx-auto mb-2 text-[#EA580C]" />
                   <p className="text-sm font-semibold">Video preview not available</p>
                 </div>
               )}
@@ -843,29 +843,29 @@ export const GymExerciseVideos = () => {
 
             {/* Modal Content / Form Tips */}
             <div className="p-6 space-y-4 max-h-[40vh] overflow-y-auto custom-scrollbar">
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-3 bg-[#F3E8E8] rounded-xl border border-[#E7DADD] text-xs">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-3 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0] text-xs">
                 <div>
-                  <span className="text-[#57534E] block font-medium">Category</span>
-                  <span className="font-bold text-[#292524]">{activeVideo.category}</span>
+                  <span className="text-[#64748B] block font-medium">Category</span>
+                  <span className="font-bold text-[#111827]">{activeVideo.category}</span>
                 </div>
                 <div>
-                  <span className="text-[#57534E] block font-medium">Target Muscle</span>
-                  <span className="font-bold text-[#292524]">{activeVideo.targetMuscle}</span>
+                  <span className="text-[#64748B] block font-medium">Target Muscle</span>
+                  <span className="font-bold text-[#111827]">{activeVideo.targetMuscle}</span>
                 </div>
                 <div>
-                  <span className="text-[#57534E] block font-medium">Equipment</span>
-                  <span className="font-bold text-[#292524]">{activeVideo.equipment}</span>
+                  <span className="text-[#64748B] block font-medium">Equipment</span>
+                  <span className="font-bold text-[#111827]">{activeVideo.equipment}</span>
                 </div>
               </div>
 
               <div>
-                <h4 className="font-bold text-[#292524] text-sm mb-2 flex items-center gap-1.5">
-                  <CheckCircle2 size={16} className="text-[#B76E79]" /> Technique & Execution Tips
+                <h4 className="font-bold text-[#111827] text-sm mb-2 flex items-center gap-1.5">
+                  <CheckCircle2 size={16} className="text-[#EA580C]" /> Technique & Execution Tips
                 </h4>
-                <ul className="space-y-1.5 text-xs text-[#57534E]">
+                <ul className="space-y-1.5 text-xs text-[#64748B]">
                   {activeVideo.tips.map((tip, idx) => (
-                    <li key={idx} className="flex items-start gap-2 bg-[#F3E8E8] p-2 rounded-lg border border-[#E7DADD]">
-                      <span className="w-4 h-4 rounded-full bg-[#B76E79]/10 text-[#B76E79] font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">
+                    <li key={idx} className="flex items-start gap-2 bg-[#F8FAFC] p-2 rounded-lg border border-[#E2E8F0]">
+                      <span className="w-4 h-4 rounded-full bg-[#FFF7ED] text-[#EA580C] font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">
                         {idx + 1}
                       </span>
                       <span>{tip}</span>
@@ -881,22 +881,22 @@ export const GymExerciseVideos = () => {
       {/* "Add Exercise Manually" Modal */}
       {showAddModal && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-xs z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
-          <div className="bg-[#FFFFFF] rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl border border-[#E7DADD] my-auto animate-in zoom-in-95 duration-150">
+          <div className="bg-[#FFFFFF] rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl border border-[#E2E8F0] my-auto animate-in zoom-in-95 duration-150">
             {/* Modal Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-[#E7DADD] bg-gradient-to-r from-stone-900 to-stone-800 text-white">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-[#E2E8F0] bg-gradient-to-r from-stone-900 to-stone-800 text-white">
               <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-xl bg-[#B76E79] flex items-center justify-center text-[#292524] shadow-md">
+                <div className="w-9 h-9 rounded-xl bg-[#C2410C] flex items-center justify-center text-[#111827] shadow-md">
                   <Dumbbell size={20} />
                 </div>
                 <div>
                   <h3 className="font-extrabold text-base sm:text-lg">Add Exercise Manually</h3>
-                  <p className="text-[#57534E] text-xs">Add a custom workout video with technique tips</p>
+                  <p className="text-[#64748B] text-xs">Add a custom workout video with technique tips</p>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={() => setShowAddModal(false)}
-                className="w-8 h-8 rounded-full bg-[#FFFFFF] hover:bg-[#FFFFFF] text-[#292524] flex items-center justify-center transition-colors cursor-pointer"
+                className="w-8 h-8 rounded-full bg-[#FFFFFF] hover:bg-[#FFFFFF] text-[#111827] flex items-center justify-center transition-colors cursor-pointer"
               >
                 <X size={16} />
               </button>
@@ -912,7 +912,7 @@ export const GymExerciseVideos = () => {
               )}
 
               {addSuccessMsg && (
-                <div className="p-3 bg-[#F3E8E8] border border-[#E7DADD] rounded-xl text-[#B76E79] text-xs flex items-center gap-2">
+                <div className="p-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-[#EA580C] text-xs flex items-center gap-2">
                   <CheckCircle2 size={16} className="shrink-0" />
                   <span>Exercise video added successfully!</span>
                 </div>
@@ -920,8 +920,8 @@ export const GymExerciseVideos = () => {
 
               {/* Row 1: Exercise Name */}
               <div>
-                <label className="block text-xs font-bold text-[#292524] mb-1">
-                  Exercise Name <span className="text-[#B76E79]">*</span>
+                <label className="block text-xs font-bold text-[#111827] mb-1">
+                  Exercise Name <span className="text-[#EA580C]">*</span>
                 </label>
                 <input
                   type="text"
@@ -929,20 +929,20 @@ export const GymExerciseVideos = () => {
                   placeholder="e.g. Incline Dumbbell Fly"
                   value={formName}
                   onChange={(e) => setFormName(e.target.value)}
-                  className="w-full bg-[#F3E8E8] border border-[#E7DADD] rounded-xl px-3.5 py-2.5 text-xs text-[#292524] outline-none focus:border-[#B76E79]"
+                  className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-3.5 py-2.5 text-xs text-[#111827] outline-none focus:border-[#FDBA74]"
                 />
               </div>
 
               {/* Row 2: Category, Language, Difficulty */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-[#292524] mb-1">
-                    Category <span className="text-[#B76E79]">*</span>
+                  <label className="block text-xs font-bold text-[#111827] mb-1">
+                    Category <span className="text-[#EA580C]">*</span>
                   </label>
                   <select
                     value={formCategory}
                     onChange={(e) => setFormCategory(e.target.value as any)}
-                    className="w-full bg-[#F3E8E8] border border-[#E7DADD] rounded-xl px-3 py-2.5 text-xs text-[#292524] outline-none focus:border-[#B76E79]"
+                    className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-3 py-2.5 text-xs text-[#111827] outline-none focus:border-[#FDBA74]"
                   >
                     <option value="Chest">Chest</option>
                     <option value="Back">Back</option>
@@ -953,26 +953,26 @@ export const GymExerciseVideos = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-[#292524] mb-1">
-                    Language <span className="text-[#B76E79]">*</span>
+                  <label className="block text-xs font-bold text-[#111827] mb-1">
+                    Language <span className="text-[#EA580C]">*</span>
                   </label>
                   <select
                     value={formLanguage}
                     onChange={(e) => setFormLanguage(e.target.value as any)}
-                    className="w-full bg-[#F3E8E8] border border-[#E7DADD] rounded-xl px-3 py-2.5 text-xs text-[#292524] outline-none focus:border-[#B76E79]"
+                    className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-3 py-2.5 text-xs text-[#111827] outline-none focus:border-[#FDBA74]"
                   >
                     <option value="Tamil">Tamil (தமிழ்)</option>
                     <option value="English">English</option>
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-[#292524] mb-1">
+                  <label className="block text-xs font-bold text-[#111827] mb-1">
                     Difficulty Level
                   </label>
                   <select
                     value={formLevel}
                     onChange={(e) => setFormLevel(e.target.value as any)}
-                    className="w-full bg-[#F3E8E8] border border-[#E7DADD] rounded-xl px-3 py-2.5 text-xs text-[#292524] outline-none focus:border-[#B76E79]"
+                    className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-3 py-2.5 text-xs text-[#111827] outline-none focus:border-[#FDBA74]"
                   >
                     <option value="Beginner">Beginner</option>
                     <option value="Intermediate">Intermediate</option>
@@ -984,44 +984,44 @@ export const GymExerciseVideos = () => {
               {/* Row 3: Duration & Video Link */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-[#292524] mb-1">
-                    Duration <span className="text-[#B76E79]">*</span>
+                  <label className="block text-xs font-bold text-[#111827] mb-1">
+                    Duration <span className="text-[#EA580C]">*</span>
                   </label>
                   <div className="relative">
-                    <Clock size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#57534E]" />
+                    <Clock size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#64748B]" />
                     <input
                       type="text"
                       required
                       placeholder="e.g. 8:30"
                       value={formDuration}
                       onChange={(e) => setFormDuration(e.target.value)}
-                      className="w-full bg-[#F3E8E8] border border-[#E7DADD] rounded-xl pl-9 pr-3 py-2.5 text-xs text-[#292524] outline-none focus:border-[#B76E79]"
+                      className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl pl-9 pr-3 py-2.5 text-xs text-[#111827] outline-none focus:border-[#FDBA74]"
                     />
                   </div>
                 </div>
                 <div className="sm:col-span-2">
-                  <label className="block text-xs font-bold text-[#292524] mb-1">
-                    Video Link / YouTube URL <span className="text-[#B76E79]">*</span>
+                  <label className="block text-xs font-bold text-[#111827] mb-1">
+                    Video Link / YouTube URL <span className="text-[#EA580C]">*</span>
                   </label>
                   <div className="relative">
-                    <Video size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#57534E]" />
+                    <Video size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#64748B]" />
                     <input
                       type="text"
                       required
                       placeholder="e.g. https://www.youtube.com/watch?v=... or ID"
                       value={formVideoLink}
                       onChange={(e) => setFormVideoLink(e.target.value)}
-                      className="w-full bg-[#F3E8E8] border border-[#E7DADD] rounded-xl pl-9 pr-3 py-2.5 text-xs text-[#292524] outline-none focus:border-[#B76E79]"
+                      className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl pl-9 pr-3 py-2.5 text-xs text-[#111827] outline-none focus:border-[#FDBA74]"
                     />
                   </div>
-                  <p className="text-[11px] text-[#57534E] mt-1">Supports full YouTube link, share link (youtu.be), embed link, or MP4 URL.</p>
+                  <p className="text-[11px] text-[#64748B] mt-1">Supports full YouTube link, share link (youtu.be), embed link, or MP4 URL.</p>
                 </div>
               </div>
 
               {/* Row 4: Target Muscle & Equipment */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-[#292524] mb-1">
+                  <label className="block text-xs font-bold text-[#111827] mb-1">
                     Target Muscle(s)
                   </label>
                   <input
@@ -1029,11 +1029,11 @@ export const GymExerciseVideos = () => {
                     placeholder="e.g. Pectoralis Major, Front Deltoids"
                     value={formTargetMuscle}
                     onChange={(e) => setFormTargetMuscle(e.target.value)}
-                    className="w-full bg-[#F3E8E8] border border-[#E7DADD] rounded-xl px-3.5 py-2.5 text-xs text-[#292524] outline-none focus:border-[#B76E79]"
+                    className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-3.5 py-2.5 text-xs text-[#111827] outline-none focus:border-[#FDBA74]"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-[#292524] mb-1">
+                  <label className="block text-xs font-bold text-[#111827] mb-1">
                     Equipment Required
                   </label>
                   <input
@@ -1041,14 +1041,14 @@ export const GymExerciseVideos = () => {
                     placeholder="e.g. Dumbbells & Incline Bench"
                     value={formEquipment}
                     onChange={(e) => setFormEquipment(e.target.value)}
-                    className="w-full bg-[#F3E8E8] border border-[#E7DADD] rounded-xl px-3.5 py-2.5 text-xs text-[#292524] outline-none focus:border-[#B76E79]"
+                    className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-3.5 py-2.5 text-xs text-[#111827] outline-none focus:border-[#FDBA74]"
                   />
                 </div>
               </div>
 
               {/* Row 5: Description */}
               <div>
-                <label className="block text-xs font-bold text-[#292524] mb-1">
+                <label className="block text-xs font-bold text-[#111827] mb-1">
                   Description / Instructions
                 </label>
                 <textarea
@@ -1056,30 +1056,30 @@ export const GymExerciseVideos = () => {
                   placeholder="Brief overview of the exercise and proper execution form..."
                   value={formDescription}
                   onChange={(e) => setFormDescription(e.target.value)}
-                  className="w-full bg-[#F3E8E8] border border-[#E7DADD] rounded-xl p-3 text-xs text-[#292524] outline-none focus:border-[#B76E79] resize-none"
+                  className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-3 text-xs text-[#111827] outline-none focus:border-[#FDBA74] resize-none"
                 />
               </div>
 
               {/* Row 7: Technique Tips */}
               <div>
-                <label className="block text-xs font-bold text-[#292524] mb-1.5 flex items-center justify-between">
+                <label className="block text-xs font-bold text-[#111827] mb-1.5 flex items-center justify-between">
                   <span>Step-by-Step Technique Tips</span>
-                  <span className="text-[11px] text-[#57534E] font-normal">{formTips.length} tips added</span>
+                  <span className="text-[11px] text-[#64748B] font-normal">{formTips.length} tips added</span>
                 </label>
 
                 <div className="space-y-1.5 mb-2">
                   {formTips.map((tip, idx) => (
-                    <div key={idx} className="flex items-center justify-between gap-2 p-2 bg-[#F3E8E8] border border-[#E7DADD] rounded-lg text-xs">
+                    <div key={idx} className="flex items-center justify-between gap-2 p-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs">
                       <div className="flex items-center gap-2">
-                        <span className="w-4 h-4 rounded-full bg-[#B76E79]/20 text-[#B76E79] font-bold text-[10px] flex items-center justify-center shrink-0">
+                        <span className="w-4 h-4 rounded-full bg-[#FFF7ED] text-[#EA580C] font-bold text-[10px] flex items-center justify-center shrink-0">
                           {idx + 1}
                         </span>
-                        <span className="text-[#292524]">{tip}</span>
+                        <span className="text-[#111827]">{tip}</span>
                       </div>
                       <button
                         type="button"
                         onClick={() => handleRemoveTip(idx)}
-                        className="text-[#57534E] hover:text-red-500 transition-colors cursor-pointer"
+                        className="text-[#64748B] hover:text-red-500 transition-colors cursor-pointer"
                       >
                         <X size={14} />
                       </button>
@@ -1099,12 +1099,12 @@ export const GymExerciseVideos = () => {
                         handleAddTip();
                       }
                     }}
-                    className="flex-1 bg-[#F3E8E8] border border-[#E7DADD] rounded-xl px-3 py-2 text-xs text-[#292524] outline-none focus:border-[#B76E79]"
+                    className="flex-1 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-3 py-2 text-xs text-[#111827] outline-none focus:border-[#FDBA74]"
                   />
                   <button
                     type="button"
                     onClick={handleAddTip}
-                    className="px-3.5 py-2 bg-[#F3E8E8] hover:bg-[#B76E79] hover:text-[#FFFFFF] font-bold text-[#292524] font-bold rounded-xl text-xs transition-colors cursor-pointer"
+                    className="px-3.5 py-2 bg-[#F8FAFC] hover:bg-[#C2410C] hover:text-[#FFFFFF] font-bold text-[#111827] font-bold rounded-xl text-xs transition-colors cursor-pointer"
                   >
                     + Add Tip
                   </button>
@@ -1112,17 +1112,17 @@ export const GymExerciseVideos = () => {
               </div>
 
               {/* Modal Footer Actions */}
-              <div className="pt-4 border-t border-[#E7DADD] flex items-center justify-end gap-3">
+              <div className="pt-4 border-t border-[#E2E8F0] flex items-center justify-end gap-3">
                 <button
                   type="button"
                   onClick={() => setShowAddModal(false)}
-                  className="px-4 py-2.5 rounded-xl border border-[#E7DADD] text-[#57534E] hover:bg-[#F3E8E8] font-bold text-xs transition-colors cursor-pointer"
+                  className="px-4 py-2.5 rounded-xl border border-[#E2E8F0] text-[#64748B] hover:bg-[#FFF7ED] font-bold text-xs transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#B76E79] to-[#9F5965] hover:from-[#9F5965] hover:to-[#B76E79] text-[#FFFFFF] font-bold font-bold text-xs shadow-md transition-all flex items-center gap-1.5 cursor-pointer"
+                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#EA580C] to-[#C2410C] hover:from-[#9A3412] hover:to-[#EA580C] text-[#FFFFFF] font-bold font-bold text-xs shadow-md transition-all flex items-center gap-1.5 cursor-pointer"
                 >
                   <Plus size={15} /> Save & Add Exercise
                 </button>
@@ -1135,33 +1135,33 @@ export const GymExerciseVideos = () => {
       {/* ===================== APPROVE VIDEO FOR CLIENT MODAL ===================== */}
       {approveModalVideo && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-150">
-          <div className="bg-[#FFFFFF] rounded-2xl max-w-md w-full shadow-2xl border border-[#E7DADD] overflow-hidden">
-            <div className="p-5 border-b border-[#E7DADD] flex justify-between items-center bg-[#F3E8E8]">
+          <div className="bg-[#FFFFFF] rounded-2xl max-w-md w-full shadow-2xl border border-[#E2E8F0] overflow-hidden">
+            <div className="p-5 border-b border-[#E2E8F0] flex justify-between items-center bg-[#F8FAFC]">
               <div className="flex items-center gap-2">
-                <CheckCircle2 size={20} className="text-[#B76E79]" />
-                <h3 className="font-bold text-[#292524] text-base">Approve Video Access</h3>
+                <CheckCircle2 size={20} className="text-[#EA580C]" />
+                <h3 className="font-bold text-[#111827] text-base">Approve Video Access</h3>
               </div>
               <button 
                 onClick={() => setApproveModalVideo(null)}
-                className="p-1.5 text-[#57534E] hover:text-[#FFFFFF] hover:bg-[#F3E8E8] rounded-lg"
+                className="p-1.5 text-[#64748B] hover:text-[#C2410C] hover:bg-[#FFF7ED] rounded-lg"
               >
                 <X size={18} />
               </button>
             </div>
 
             <form onSubmit={handleApproveVideoToClient} className="p-5 space-y-4">
-              <div className="p-3 bg-[#F3E8E8] border border-[#E7DADD] rounded-xl text-xs text-[#B76E79]">
+              <div className="p-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs text-[#EA580C]">
                 Approving <strong>{approveModalVideo.title}</strong> ({approveModalVideo.category} • {approveModalVideo.duration}) directly to customer dashboard.
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#57534E] uppercase tracking-wider mb-2">
+                <label className="block text-xs font-bold text-[#64748B] uppercase tracking-wider mb-2">
                   Select Customer / Gym Member *
                 </label>
                 <select
                   value={selectedClientId}
                   onChange={(e) => setSelectedClientId(e.target.value)}
-                  className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-[#B76E79]"
+                  className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-[#FDBA74]"
                   required
                 >
                   <option value="">-- Choose a customer --</option>
@@ -1174,7 +1174,7 @@ export const GymExerciseVideos = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#57534E] uppercase tracking-wider mb-2">
+                <label className="block text-xs font-bold text-[#64748B] uppercase tracking-wider mb-2">
                   Coach Guidance & Training Focus
                 </label>
                 <textarea
@@ -1182,28 +1182,28 @@ export const GymExerciseVideos = () => {
                   value={coachNotes}
                   onChange={(e) => setCoachNotes(e.target.value)}
                   placeholder="e.g. Focus on keeping elbows tucked and pause at bottom for 1 second..."
-                  className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl p-3 text-xs outline-none focus:border-[#B76E79] resize-none"
+                  className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl p-3 text-xs outline-none focus:border-[#FDBA74] resize-none"
                 />
               </div>
 
               {approvalSuccess && (
-                <div className="p-3 bg-[#F3E8E8] border border-[#E7DADD] text-[#B76E79] rounded-xl text-xs font-semibold flex items-center gap-2">
+                <div className="p-3 bg-[#F8FAFC] border border-[#E2E8F0] text-[#EA580C] rounded-xl text-xs font-semibold flex items-center gap-2">
                   <CheckCircle2 size={16} /> {approvalSuccess}
                 </div>
               )}
 
-              <div className="pt-3 flex justify-end gap-2 border-t border-[#E7DADD]">
+              <div className="pt-3 flex justify-end gap-2 border-t border-[#E2E8F0]">
                 <button
                   type="button"
                   onClick={() => setApproveModalVideo(null)}
-                  className="px-4 py-2 rounded-xl text-xs font-bold text-[#57534E] hover:bg-[#F3E8E8]"
+                  className="px-4 py-2 rounded-xl text-xs font-bold text-[#64748B] hover:bg-[#FFF7ED]"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={!selectedClientId || isSubmittingApproval}
-                  className="px-5 py-2.5 rounded-xl text-xs font-bold bg-[#B76E79] text-white font-bold hover:bg-[#9F5965] disabled:opacity-50 transition-all flex items-center gap-1.5 shadow-sm active:scale-95 shadow-emerald-600/20"
+                  className="px-5 py-2.5 rounded-xl text-xs font-bold bg-[#C2410C] text-white font-bold hover:bg-[#9A3412] disabled:opacity-50 transition-all flex items-center gap-1.5 shadow-sm active:scale-95 shadow-emerald-600/20"
                 >
                   {isSubmittingApproval ? (
                     <>

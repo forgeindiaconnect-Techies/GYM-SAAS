@@ -6,24 +6,24 @@ const MemberWorkout = () => {
       <div className="flex justify-between items-end">
         <div>
           <h1 className="text-3xl font-bold">Workout Plan</h1>
-          <p className="text-[#57534E]">Your customized routine for today</p>
+          <p className="text-[#64748B]">Your customized routine for today</p>
         </div>
-        <button className="bg-[#B76E79] text-white font-bold px-4 py-2 rounded-xl font-bold flex items-center gap-2 hover:bg-[#9F5965] transition-colors">
+        <button className="bg-[#C2410C] text-white font-bold px-4 py-2 rounded-xl font-bold flex items-center gap-2 hover:bg-[#9A3412] transition-colors">
           <Plus size={18} /> Custom Workout
         </button>
       </div>
 
-      <div className="bg-gradient-to-r from-[#FFFFFF] to-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-6 flex flex-col md:flex-row justify-between items-center gap-6">
+      <div className="bg-gradient-to-r from-[#FFFFFF] to-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-6 flex flex-col md:flex-row justify-between items-center gap-6">
         <div>
-          <div className="inline-block px-3 py-1 bg-[#B76E79]/10 text-[#B76E79] rounded-full text-xs font-bold mb-3">TODAY'S FOCUS</div>
+          <div className="inline-block px-3 py-1 bg-[#FFF7ED] text-[#EA580C] rounded-full text-xs font-bold mb-3">TODAY'S FOCUS</div>
           <h2 className="text-2xl font-bold mb-2">Upper Body Power</h2>
-          <div className="flex gap-4 text-sm text-[#57534E]">
+          <div className="flex gap-4 text-sm text-[#64748B]">
             <span className="flex items-center gap-1"><Clock size={16} /> 45 Mins</span>
             <span className="flex items-center gap-1"><Flame size={16} /> 320 kcal</span>
             <span className="flex items-center gap-1"><Dumbbell size={16} /> Intermediate</span>
           </div>
         </div>
-        <button className="w-full md:w-auto px-8 py-3 bg-[#B76E79] text-white font-bold font-bold rounded-xl flex items-center justify-center gap-2 hover:scale-105 transition-transform">
+        <button className="w-full md:w-auto px-8 py-3 bg-[#C2410C] text-white font-bold font-bold rounded-xl flex items-center justify-center gap-2 hover:scale-105 transition-transform">
           <Play size={18} fill="currentColor" /> Start Workout
         </button>
       </div>
@@ -39,32 +39,32 @@ const MemberWorkout = () => {
             { name: 'Overhead Press', sets: '3', reps: '8-10', weight: '40kg' },
             { name: 'Tricep Pushdown', sets: '3', reps: '15', weight: '20kg' },
           ].map((ex, i) => (
-            <div key={i} className="bg-[#FFFFFF] border border-[#E7DADD] rounded-xl p-4 flex items-center justify-between group hover:border-[#B76E79]/50 transition-colors">
+            <div key={i} className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl p-4 flex items-center justify-between group hover:border-[#FFEDD5] transition-colors">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-[#F3E8E8] rounded-lg flex items-center justify-center font-bold text-[#B76E79] border border-[#E7DADD]">
+                <div className="w-12 h-12 bg-[#F8FAFC] rounded-lg flex items-center justify-center font-bold text-[#EA580C] border border-[#E2E8F0]">
                   {i + 1}
                 </div>
                 <div>
                   <h4 className="font-bold text-lg">{ex.name}</h4>
-                  <p className="text-sm text-[#57534E]">{ex.sets} Sets × {ex.reps} Reps</p>
+                  <p className="text-sm text-[#64748B]">{ex.sets} Sets × {ex.reps} Reps</p>
                 </div>
               </div>
               <div className="text-right">
-                <span className="text-[#B76E79] font-bold">{ex.weight}</span>
+                <span className="text-[#EA580C] font-bold">{ex.weight}</span>
               </div>
             </div>
           ))}
         </div>
         
         <div className="space-y-6">
-          <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-6">
+          <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-6">
             <h3 className="font-bold mb-4">Weekly Progress</h3>
             <div className="space-y-3">
               {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day, i) => (
                 <div key={i} className="flex items-center justify-between">
-                  <span className="text-sm text-[#57534E] w-8">{day}</span>
-                  <div className="flex-1 mx-3 h-2 bg-[#F3E8E8] rounded-full overflow-hidden">
-                    <div className={`h-full rounded-full ${[0, 2, 4].includes(i) ? 'bg-[#B76E79]' : i === 1 ? 'bg-[#B76E79]/50' : ''}`} style={{ width: [0, 2, 4].includes(i) ? '100%' : i === 1 ? '50%' : '0%' }}></div>
+                  <span className="text-sm text-[#64748B] w-8">{day}</span>
+                  <div className="flex-1 mx-3 h-2 bg-[#F8FAFC] rounded-full overflow-hidden">
+                    <div className={`h-full rounded-full ${[0, 2, 4].includes(i) ? 'bg-[#C2410C]' : i === 1 ? 'bg-[#FFF7ED]' : ''}`} style={{ width: [0, 2, 4].includes(i) ? '100%' : i === 1 ? '50%' : '0%' }}></div>
                   </div>
                   <span className="text-xs w-6 text-right">
                     {[0, 2, 4].includes(i) ? '✓' : i === 1 ? 'Half' : '-'}

@@ -6,13 +6,13 @@ import MemberStoreTabs from '../../components/Member/MemberStoreTabs';
 
 const statusColor: Record<string, string> = {
   'Pending': 'bg-yellow-100 text-yellow-700',
-  'Confirmed': 'bg-[#F3E8E8] text-[#B76E79]',
-  'Preparing': 'bg-[#F3E8E8] text-[#B76E79]',
-  'Ready for Pickup': 'bg-[#F3E8E8] text-[#B76E79]',
+  'Confirmed': 'bg-[#F8FAFC] text-[#EA580C]',
+  'Preparing': 'bg-[#F8FAFC] text-[#EA580C]',
+  'Ready for Pickup': 'bg-[#F8FAFC] text-[#EA580C]',
   'Out for Delivery': 'bg-indigo-100 text-indigo-700',
-  'Completed': 'bg-[#F3E8E8]/10 text-[#B76E79]',
+  'Completed': 'bg-[#FFF7ED] text-[#EA580C]',
   'Cancelled': 'bg-red-100 text-red-700',
-  'Refunded': 'bg-[#F3E8E8] text-[#B76E79]',
+  'Refunded': 'bg-[#F8FAFC] text-[#EA580C]',
 };
 
 /* ── Zigzag Timeline Component ─────────────────────────────── */
@@ -34,7 +34,7 @@ const ZigzagTimeline = ({ order }: { order: any }) => {
   return (
     <div className="relative">
       {/* Center vertical line */}
-      <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-[#E7DADD] -translate-x-1/2" />
+      <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-[#E2E8F0] -translate-x-1/2" />
       <div className="space-y-6">
         {steps.map((h: any, i: number, arr: any[]) => {
           const isReached = !h.future;
@@ -45,26 +45,26 @@ const ZigzagTimeline = ({ order }: { order: any }) => {
           const dotColor = isCancelStatus
             ? 'bg-red-500 shadow-[0_0_0_4px_rgba(220,38,38,0.15)]'
             : isLastReached
-            ? 'bg-[#B76E79] shadow-[0_0_0_4px_rgba(22,74,74,0.15)]'
+            ? 'bg-[#C2410C] shadow-[0_0_0_4px_rgba(22,74,74,0.15)]'
             : isReached
-            ? 'bg-[#F3E8E8]'
-            : 'bg-[#E7DADD]';
+            ? 'bg-[#F8FAFC]'
+            : 'bg-[#E2E8F0]';
 
           const cardBg = isReached
             ? isCancelStatus
               ? 'bg-red-50 border-red-200'
               : isLastReached
-              ? 'bg-[#F3E8E8] border-[#F3E8E8]'
-              : 'bg-[#F3E8E8] border-[#E7DADD]'
-            : 'bg-[#F3E8E8] border-[#E7DADD] opacity-50';
+              ? 'bg-[#F8FAFC] border-[#F8FAFC]'
+              : 'bg-[#F8FAFC] border-[#E2E8F0]'
+            : 'bg-[#F8FAFC] border-[#E2E8F0] opacity-50';
 
           const labelColor = isCancelStatus
             ? 'text-red-600'
             : isLastReached
-            ? 'text-[#B76E79]'
+            ? 'text-[#EA580C]'
             : isReached
-            ? 'text-[#57534E]'
-            : 'text-[#57534E]';
+            ? 'text-[#64748B]'
+            : 'text-[#64748B]';
 
           return (
             <div key={i} className="relative flex items-center justify-between gap-2">
@@ -74,12 +74,12 @@ const ZigzagTimeline = ({ order }: { order: any }) => {
                   <div className={`rounded-xl border p-3 text-right ${cardBg}`}>
                     <p className={`font-bold text-sm ${labelColor}`}>{h.status}</p>
                     {isReached ? (
-                      <p className="text-[11px] text-[#57534E] mt-0.5 leading-snug">
+                      <p className="text-[11px] text-[#64748B] mt-0.5 leading-snug">
                         {new Date(h.at).toLocaleString()}
                         {h.note && h.note !== h.status ? <><br /><span className="italic">{h.note}</span></> : ''}
                       </p>
                     ) : (
-                      <p className="text-[11px] text-[#57534E] mt-0.5">Upcoming step</p>
+                      <p className="text-[11px] text-[#64748B] mt-0.5">Upcoming step</p>
                     )}
                   </div>
                 ) : <div />}
@@ -104,12 +104,12 @@ const ZigzagTimeline = ({ order }: { order: any }) => {
                   <div className={`rounded-xl border p-3 ${cardBg}`}>
                     <p className={`font-bold text-sm ${labelColor}`}>{h.status}</p>
                     {isReached ? (
-                      <p className="text-[11px] text-[#57534E] mt-0.5 leading-snug">
+                      <p className="text-[11px] text-[#64748B] mt-0.5 leading-snug">
                         {new Date(h.at).toLocaleString()}
                         {h.note && h.note !== h.status ? <><br /><span className="italic">{h.note}</span></> : ''}
                       </p>
                     ) : (
-                      <p className="text-[11px] text-[#57534E] mt-0.5">Upcoming step</p>
+                      <p className="text-[11px] text-[#64748B] mt-0.5">Upcoming step</p>
                     )}
                   </div>
                 ) : <div />}
@@ -172,14 +172,14 @@ const MemberOrders = () => {
     <div className="space-y-6">
       <MemberStoreTabs />
       <div>
-        <h1 className="text-3xl font-bold text-[#292524] tracking-tight">My Orders</h1>
-        <p className="text-[#57534E] mt-1">Track your gym store orders from placement to pickup/delivery.</p>
+        <h1 className="text-3xl font-bold text-[#111827] tracking-tight">My Orders</h1>
+        <p className="text-[#64748B] mt-1">Track your gym store orders from placement to pickup/delivery.</p>
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-[#E7DADD] space-x-6 overflow-x-auto">
+      <div className="flex border-b border-[#E2E8F0] space-x-6 overflow-x-auto">
         {['all', 'Pending', 'Confirmed', 'Preparing', 'Ready for Pickup', 'Out for Delivery', 'Completed', 'Cancelled'].map((s) => (
-          <button key={s} onClick={() => setStatus(s)} className={`py-3 font-semibold text-sm transition-colors border-b-2 whitespace-nowrap ${status === s ? 'border-[#B76E79] text-[#B76E79]' : 'border-transparent text-[#57534E] hover:text-[#FFFFFF]'}`}>
+          <button key={s} onClick={() => setStatus(s)} className={`py-3 font-semibold text-sm transition-colors border-b-2 whitespace-nowrap ${status === s ? 'border-[#FDBA74] text-[#EA580C]' : 'border-transparent text-[#64748B] hover:text-[#C2410C]'}`}>
             {s === 'all' ? 'All Orders' : s === 'Cancelled' ? 'Cancelled / Refunded' : s}
           </button>
         ))}
@@ -187,33 +187,33 @@ const MemberOrders = () => {
 
       {/* Order List */}
       {loading ? (
-        <div className="flex justify-center py-24"><Loader2 className="animate-spin text-[#B76E79]" size={40} /></div>
+        <div className="flex justify-center py-24"><Loader2 className="animate-spin text-[#EA580C]" size={40} /></div>
       ) : orders.length === 0 ? (
-        <div className="text-center py-20 bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl">
-          <ShoppingBag className="mx-auto text-[#B76E79]/30 mb-4" size={52} />
-          <p className="text-[#57534E] font-medium mb-4">No orders here yet.</p>
-          <button onClick={() => navigate('/member/store')} className="px-5 py-2.5 bg-gradient-to-r from-[#B76E79] to-[#9F5965] text-[#FFFFFF] font-bold font-bold rounded-xl shadow-lg shadow-[#B76E79]/15 hover:opacity-90 transition-opacity">
+        <div className="text-center py-20 bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl">
+          <ShoppingBag className="mx-auto text-[#EA580C]/30 mb-4" size={52} />
+          <p className="text-[#64748B] font-medium mb-4">No orders here yet.</p>
+          <button onClick={() => navigate('/member/store')} className="px-5 py-2.5 bg-gradient-to-r from-[#EA580C] to-[#C2410C] text-[#FFFFFF] font-bold font-bold rounded-xl shadow-lg shadow-orange-500/15 hover:opacity-90 transition-opacity">
             Browse Store
           </button>
         </div>
       ) : (
         <div className="space-y-4">
           {orders.map((o) => (
-            <div key={o._id} className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-5 hover:border-[#B76E79]/30 hover:shadow-md transition-all">
+            <div key={o._id} className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-5 hover:border-[#FFEDD5] hover:shadow-md transition-all">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
 
                 {/* Left: item count + order info */}
                 <div className="flex items-start sm:items-center gap-4">
-                  <div className={`w-14 h-14 rounded-xl flex flex-col items-center justify-center shrink-0 ${o.status === 'Completed' ? 'bg-green-50 text-green-700 border border-green-200' : o.status === 'Cancelled' || o.status === 'Refunded' ? 'bg-red-50 text-red-700 border border-red-200' : 'bg-[#F3E8E8] text-[#B76E79] border border-[#E7DADD]'}`}>
+                  <div className={`w-14 h-14 rounded-xl flex flex-col items-center justify-center shrink-0 ${o.status === 'Completed' ? 'bg-green-50 text-green-700 border border-green-200' : o.status === 'Cancelled' || o.status === 'Refunded' ? 'bg-red-50 text-red-700 border border-red-200' : 'bg-[#F8FAFC] text-[#EA580C] border border-[#E2E8F0]'}`}>
                     <span className="text-lg font-black leading-none mb-0.5">{o.items.reduce((s: number, i: any) => s + i.quantity, 0)}</span>
                     <span className="text-[10px] font-bold uppercase tracking-wider">Items</span>
                   </div>
                   <div>
-                    <p className="font-black text-[#292524] text-lg mb-1 tracking-tight">{o.orderNumber}</p>
-                    <div className="flex flex-wrap items-center gap-2 text-xs text-[#57534E]">
+                    <p className="font-black text-[#111827] text-lg mb-1 tracking-tight">{o.orderNumber}</p>
+                    <div className="flex flex-wrap items-center gap-2 text-xs text-[#64748B]">
                       <span className="font-medium">{new Date(o.createdAt).toLocaleDateString()} at {new Date(o.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                       <span className="w-1 h-1 rounded-full bg-gray-300" />
-                      <span className={`font-semibold inline-flex items-center gap-1 ${o.fulfilmentType === 'Delivery' ? 'text-[#B76E79]' : 'text-amber-600'}`}>
+                      <span className={`font-semibold inline-flex items-center gap-1 ${o.fulfilmentType === 'Delivery' ? 'text-[#EA580C]' : 'text-amber-600'}`}>
                         {o.fulfilmentType === 'Delivery' ? <Truck size={12} /> : <MapPin size={12} />}
                         {o.fulfilmentType === 'Delivery' ? 'Delivery' : 'Gym Pickup'}
                       </span>
@@ -222,10 +222,10 @@ const MemberOrders = () => {
                 </div>
 
                 {/* Right: price + status + TWO BUTTONS */}
-                <div className="flex items-center justify-between sm:justify-end gap-4 sm:border-l sm:border-[#E7DADD] sm:pl-6 mt-2 sm:mt-0 pt-3 sm:pt-0 border-t border-[#E7DADD] sm:border-t-0">
+                <div className="flex items-center justify-between sm:justify-end gap-4 sm:border-l sm:border-[#E2E8F0] sm:pl-6 mt-2 sm:mt-0 pt-3 sm:pt-0 border-t border-[#E2E8F0] sm:border-t-0">
                   <div className="flex flex-col gap-1.5 min-w-[90px]">
-                    <p className="font-black text-[#B76E79] text-xl leading-none">₹{o.total}</p>
-                    <span className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider inline-block text-center w-fit ${statusColor[o.status] || 'bg-[#F3E8E8] text-[#292524]'}`}>{o.status}</span>
+                    <p className="font-black text-[#EA580C] text-xl leading-none">₹{o.total}</p>
+                    <span className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider inline-block text-center w-fit ${statusColor[o.status] || 'bg-[#F8FAFC] text-[#111827]'}`}>{o.status}</span>
                   </div>
 
                   {/* ── TWO SEPARATE BUTTONS ── */}
@@ -233,16 +233,16 @@ const MemberOrders = () => {
                     {/* View Details */}
                     <button
                       onClick={() => { setSelected(o); setCancelPrompt(false); setCancelReason(''); }}
-                      className="px-4 py-2 bg-[#FFFFFF] border border-[#E7DADD] text-[#292524] rounded-xl hover:bg-[#F3E8E8] hover:border-[#B76E79] transition-all text-xs font-bold inline-flex items-center gap-1.5 shadow-sm group"
+                      className="px-4 py-2 bg-[#FFFFFF] border border-[#E2E8F0] text-[#111827] rounded-xl hover:bg-[#FFF7ED] hover:border-[#FDBA74] transition-all text-xs font-bold inline-flex items-center gap-1.5 shadow-sm group"
                     >
-                      <Eye size={14} className="text-[#9F5965] group-hover:text-[#B76E79] transition-colors" />
+                      <Eye size={14} className="text-[#9A3412] group-hover:text-[#EA580C] transition-colors" />
                       View Details
                     </button>
 
                     {/* Track Order */}
                     <button
                       onClick={() => setTracking(o)}
-                      className="px-4 py-2 bg-gradient-to-r from-[#B76E79] to-[#9F5965] text-[#FFFFFF] font-bold rounded-xl hover:opacity-90 transition-opacity text-xs font-bold inline-flex items-center gap-1.5 shadow-sm shadow-[#B76E79]/15"
+                      className="px-4 py-2 bg-gradient-to-r from-[#EA580C] to-[#C2410C] text-[#FFFFFF] font-bold rounded-xl hover:opacity-90 transition-opacity text-xs font-bold inline-flex items-center gap-1.5 shadow-sm shadow-orange-500/15"
                     >
                       <Navigation size={14} />
                       Track Order
@@ -262,16 +262,16 @@ const MemberOrders = () => {
       {selected && (
         <div className="fixed inset-0 z-50 p-4 bg-black/50 backdrop-blur-sm overflow-y-auto">
           <div className="bg-[#FFFFFF] rounded-2xl max-w-xl w-full p-6 shadow-2xl relative mx-auto mt-16 mb-16">
-            <button onClick={() => setSelected(null)} className="absolute top-4 right-4 text-[#57534E] hover:text-[#292524]"><X size={22} /></button>
+            <button onClick={() => setSelected(null)} className="absolute top-4 right-4 text-[#64748B] hover:text-[#111827]"><X size={22} /></button>
 
             {/* Header */}
             <div className="flex items-center justify-between pr-8 mb-2">
-              <h2 className="text-2xl font-bold text-[#292524]">{selected.orderNumber}</h2>
+              <h2 className="text-2xl font-bold text-[#111827]">{selected.orderNumber}</h2>
               <span className={`px-3 py-1 rounded-full text-xs font-bold ${statusColor[selected.status]}`}>
                 {selected.status === 'Cancelled' ? 'Cancelled / Refunded' : selected.status}
               </span>
             </div>
-            <p className="text-sm text-[#57534E] mb-5">
+            <p className="text-sm text-[#64748B] mb-5">
               Placed {new Date(selected.createdAt).toLocaleString()} ·{' '}
               {selected.fulfilmentType === 'Delivery'
                 ? <span className="inline-flex items-center gap-1 font-semibold"><Truck size={14} /> Delivery</span>
@@ -283,43 +283,43 @@ const MemberOrders = () => {
             )}
 
             {/* Items */}
-            <div className="border border-[#E7DADD] rounded-xl overflow-hidden mb-4">
-              <div className="px-4 py-3 bg-[#F3E8E8] font-bold text-[#292524] text-sm border-b border-[#E7DADD]">Items Ordered</div>
+            <div className="border border-[#E2E8F0] rounded-xl overflow-hidden mb-4">
+              <div className="px-4 py-3 bg-[#F8FAFC] font-bold text-[#111827] text-sm border-b border-[#E2E8F0]">Items Ordered</div>
               {selected.items.map((it: any, idx: number) => (
-                <div key={idx} className="flex items-center justify-between px-4 py-3 border-b border-[#F3E8E8] last:border-0">
+                <div key={idx} className="flex items-center justify-between px-4 py-3 border-b border-[#F8FAFC] last:border-0">
                   <div>
                     <div className="flex items-center gap-1.5 flex-wrap my-0.5">
-                      <p className="font-semibold text-[#292524] text-sm mr-2">{it.name}</p>
+                      <p className="font-semibold text-[#111827] text-sm mr-2">{it.name}</p>
                       {it.attributes && Object.entries(it.attributes).map(([k, v]) => (
-                        <span key={k} className="text-[10px] bg-[#F3E8E8] text-[#292524] px-1.5 py-0.5 rounded font-medium">{String(v)}</span>
+                        <span key={k} className="text-[10px] bg-[#F8FAFC] text-[#111827] px-1.5 py-0.5 rounded font-medium">{String(v)}</span>
                       ))}
                     </div>
-                    <p className="text-xs text-[#57534E]">Qty {it.quantity} × ₹{it.unitPrice}</p>
+                    <p className="text-xs text-[#64748B]">Qty {it.quantity} × ₹{it.unitPrice}</p>
                   </div>
-                  <p className="font-bold text-[#292524]">₹{it.total}</p>
+                  <p className="font-bold text-[#111827]">₹{it.total}</p>
                 </div>
               ))}
-              <div className="px-4 py-3 bg-[#F3E8E8] flex justify-between text-sm">
-                <span className="text-[#57534E]">{selected.discount ? `Subtotal ₹${selected.subtotal} − discount ₹${selected.discount}` : 'Total'}</span>
-                <span className="font-black text-[#292524]">₹{selected.total}</span>
+              <div className="px-4 py-3 bg-[#F8FAFC] flex justify-between text-sm">
+                <span className="text-[#64748B]">{selected.discount ? `Subtotal ₹${selected.subtotal} − discount ₹${selected.discount}` : 'Total'}</span>
+                <span className="font-black text-[#111827]">₹{selected.total}</span>
               </div>
             </div>
 
             {/* Payment Info */}
-            <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-xl p-4 mb-4">
-              <p className="text-xs text-[#57534E] font-semibold uppercase mb-2">Payment</p>
-              <p className="font-bold text-[#292524]">{selected.paymentMethod} · ₹{selected.total}</p>
+            <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-4 mb-4">
+              <p className="text-xs text-[#64748B] font-semibold uppercase mb-2">Payment</p>
+              <p className="font-bold text-[#111827]">{selected.paymentMethod} · ₹{selected.total}</p>
               {selected.paymentMethod === 'Net Banking' && selected.bankName && (
-                <p className="text-sm text-[#57534E] mt-0.5">Bank: <span className="font-semibold">{selected.bankName}</span></p>
+                <p className="text-sm text-[#64748B] mt-0.5">Bank: <span className="font-semibold">{selected.bankName}</span></p>
               )}
-              <p className="text-xs text-[#292524] font-medium mt-1 font-semibold">{selected.paymentStatus}</p>
+              <p className="text-xs text-[#111827] font-medium mt-1 font-semibold">{selected.paymentStatus}</p>
             </div>
 
             {/* Delivery Address */}
             {selected.deliveryDetails && (
-              <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-xl p-4 mb-4">
-                <p className="text-xs text-[#57534E] font-semibold uppercase mb-2">Delivery Address</p>
-                <p className="text-sm text-[#57534E]">
+              <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-4 mb-4">
+                <p className="text-xs text-[#64748B] font-semibold uppercase mb-2">Delivery Address</p>
+                <p className="text-sm text-[#64748B]">
                   {selected.deliveryDetails.name} · {selected.deliveryDetails.phone}<br />
                   {selected.deliveryDetails.address}, {selected.deliveryDetails.city}, {selected.deliveryDetails.state} — {selected.deliveryDetails.pinCode}
                 </p>
@@ -328,7 +328,7 @@ const MemberOrders = () => {
 
             {/* Cancel Order (Pending only) */}
             {selected.status === 'Pending' && (
-              <div className="mt-4 pt-4 border-t border-[#E7DADD]">
+              <div className="mt-4 pt-4 border-t border-[#E2E8F0]">
                 {!cancelPrompt ? (
                   <button onClick={() => setCancelPrompt(true)} className="w-full py-3 bg-red-50 text-red-600 font-bold rounded-xl hover:bg-red-100 transition-colors flex items-center justify-center gap-2">
                     <XCircle size={17} /> Cancel Order
@@ -345,7 +345,7 @@ const MemberOrders = () => {
                       <option value="Other">Other</option>
                     </select>
                     <div className="flex gap-2 pt-1">
-                      <button onClick={() => { setCancelPrompt(false); setCancelReason(''); }} className="flex-1 py-2 bg-[#FFFFFF] text-[#292524] border border-[#E7DADD] font-bold rounded-lg hover:bg-[#F3E8E8] transition-colors text-sm">Nevermind</button>
+                      <button onClick={() => { setCancelPrompt(false); setCancelReason(''); }} className="flex-1 py-2 bg-[#FFFFFF] text-[#111827] border border-[#E2E8F0] font-bold rounded-lg hover:bg-[#FFF7ED] transition-colors text-sm">Nevermind</button>
                       <button onClick={() => cancelOrder(selected._id, cancelReason)} disabled={cancelling || !cancelReason} className="flex-1 py-2 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 text-sm flex items-center justify-center gap-2">
                         {cancelling ? <Loader2 className="animate-spin" size={14} /> : 'Confirm Cancel'}
                       </button>
@@ -364,21 +364,21 @@ const MemberOrders = () => {
       {tracking && (
         <div className="fixed inset-0 z-50 p-4 bg-black/50 backdrop-blur-sm overflow-y-auto">
           <div className="bg-[#FFFFFF] rounded-2xl max-w-xl w-full p-6 shadow-2xl relative mx-auto mt-16 mb-16">
-            <button onClick={() => setTracking(null)} className="absolute top-4 right-4 text-[#57534E] hover:text-[#292524]"><X size={22} /></button>
+            <button onClick={() => setTracking(null)} className="absolute top-4 right-4 text-[#64748B] hover:text-[#111827]"><X size={22} /></button>
 
             {/* Header */}
             <div className="flex items-center gap-3 mb-1">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#B76E79] to-[#9F5965] flex items-center justify-center">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#EA580C] to-[#C2410C] flex items-center justify-center">
                 <Navigation size={17} className="text-white" />
               </div>
               <div>
-                <h2 className="text-xl font-bold text-[#292524]">Track Order</h2>
-                <p className="text-xs text-[#57534E] font-semibold">{tracking.orderNumber}</p>
+                <h2 className="text-xl font-bold text-[#111827]">Track Order</h2>
+                <p className="text-xs text-[#64748B] font-semibold">{tracking.orderNumber}</p>
               </div>
               <span className={`ml-auto px-3 py-1 rounded-full text-xs font-bold ${statusColor[tracking.status]}`}>{tracking.status}</span>
             </div>
 
-            <p className="text-xs text-[#57534E] mb-6 mt-2">
+            <p className="text-xs text-[#64748B] mb-6 mt-2">
               {tracking.fulfilmentType === 'Delivery'
                 ? <span className="inline-flex items-center gap-1"><Truck size={12} /> Delivery order</span>
                 : <span className="inline-flex items-center gap-1"><MapPin size={12} /> Gym Pickup order</span>}

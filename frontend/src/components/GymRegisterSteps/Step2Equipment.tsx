@@ -34,16 +34,16 @@ const Step2Equipment: React.FC<StepProps> = ({ form, set, errors, inputCls }) =>
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center border-b border-[#E7DADD] pb-2">
-        <h2 className="text-lg font-semibold text-[#292524]">Gym Equipment</h2>
-        <span className="text-sm text-[#57534E]">{(form.equipment || []).length} items added</span>
+      <div className="flex justify-between items-center border-b border-[#E2E8F0] pb-2">
+        <h2 className="text-lg font-semibold text-[#111827]">Gym Equipment</h2>
+        <span className="text-sm text-[#64748B]">{(form.equipment || []).length} items added</span>
       </div>
 
-      <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-xl p-6 space-y-4">
-        <h3 className="text-sm font-medium text-[#292524] mb-4">Add New Equipment</h3>
+      <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl p-6 space-y-4">
+        <h3 className="text-sm font-medium text-[#111827] mb-4">Add New Equipment</h3>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs text-[#57534E] mb-1">Category *</label>
+            <label className="block text-xs text-[#64748B] mb-1">Category *</label>
             <select 
               value={newItem.category} 
               onChange={e => setNewItem({...newItem, category: e.target.value})}
@@ -54,7 +54,7 @@ const Step2Equipment: React.FC<StepProps> = ({ form, set, errors, inputCls }) =>
             </select>
           </div>
           <div>
-            <label className="block text-xs text-[#57534E] mb-1">Equipment Name *</label>
+            <label className="block text-xs text-[#64748B] mb-1">Equipment Name *</label>
             <input 
               value={newItem.name} 
               onChange={e => setNewItem({...newItem, name: e.target.value})}
@@ -66,7 +66,7 @@ const Step2Equipment: React.FC<StepProps> = ({ form, set, errors, inputCls }) =>
 
         <div className="grid grid-cols-3 gap-4">
           <div>
-            <label className="block text-xs text-[#57534E] mb-1">Quantity *</label>
+            <label className="block text-xs text-[#64748B] mb-1">Quantity *</label>
             <input 
               type="number"
               value={newItem.quantity} 
@@ -76,7 +76,7 @@ const Step2Equipment: React.FC<StepProps> = ({ form, set, errors, inputCls }) =>
             />
           </div>
           <div>
-            <label className="block text-xs text-[#57534E] mb-1">Brand (Optional)</label>
+            <label className="block text-xs text-[#64748B] mb-1">Brand (Optional)</label>
             <input 
               value={newItem.brand} 
               onChange={e => setNewItem({...newItem, brand: e.target.value})}
@@ -85,7 +85,7 @@ const Step2Equipment: React.FC<StepProps> = ({ form, set, errors, inputCls }) =>
             />
           </div>
           <div>
-            <label className="block text-xs text-[#57534E] mb-1">Condition *</label>
+            <label className="block text-xs text-[#64748B] mb-1">Condition *</label>
             <select 
               value={newItem.condition} 
               onChange={e => setNewItem({...newItem, condition: e.target.value})}
@@ -99,7 +99,7 @@ const Step2Equipment: React.FC<StepProps> = ({ form, set, errors, inputCls }) =>
 
         <div className="grid grid-cols-2 gap-4 items-end">
           <div>
-            <label className="block text-xs text-[#57534E] mb-1">Availability</label>
+            <label className="block text-xs text-[#64748B] mb-1">Availability</label>
             <select 
               value={newItem.availability} 
               onChange={e => setNewItem({...newItem, availability: e.target.value})}
@@ -110,7 +110,7 @@ const Step2Equipment: React.FC<StepProps> = ({ form, set, errors, inputCls }) =>
             </select>
           </div>
           <div>
-            <button type="button" onClick={addItem} className="w-full flex items-center justify-center space-x-2 py-3 bg-[#FFFFFF] border border-[#B76E79] text-[#B76E79] rounded-xl hover:bg-[#B76E79]/10 transition-colors">
+            <button type="button" onClick={addItem} className="w-full flex items-center justify-center space-x-2 py-3 bg-[#FFFFFF] border border-[#FDBA74] text-[#EA580C] rounded-xl hover:bg-[#FFF7ED] transition-colors">
               <Plus size={16} />
               <span>Add Equipment</span>
             </button>
@@ -118,26 +118,26 @@ const Step2Equipment: React.FC<StepProps> = ({ form, set, errors, inputCls }) =>
         </div>
       </div>
       
-      {errors.equipment && <p className="text-[#B76E79] text-xs">{errors.equipment}</p>}
+      {errors.equipment && <p className="text-[#EA580C] text-xs">{errors.equipment}</p>}
 
       {form.equipment && form.equipment.length > 0 && (
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-medium text-[#292524]">Added Equipment</h3>
-            <span className="text-[10px] text-[#57534E] italic">Add more, or click 'Next' below to continue</span>
+            <h3 className="text-sm font-medium text-[#111827]">Added Equipment</h3>
+            <span className="text-[10px] text-[#64748B] italic">Add more, or click 'Next' below to continue</span>
           </div>
           {form.equipment.map((item: any, i: number) => (
-            <div key={i} className="flex items-center justify-between bg-[#FFFFFF] border border-[#E7DADD] p-4 rounded-xl">
+            <div key={i} className="flex items-center justify-between bg-[#FFFFFF] border border-[#E2E8F0] p-4 rounded-xl">
               <div className="flex items-center space-x-4">
-                <div className="w-10 h-10 bg-[#FFFFFF] border border-[#E7DADD] rounded-lg flex items-center justify-center text-[#B76E79]">
+                <div className="w-10 h-10 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg flex items-center justify-center text-[#EA580C]">
                   <Dumbbell size={20} />
                 </div>
                 <div>
-                  <h4 className="text-sm font-medium text-[#292524]">{item.name} <span className="text-xs text-[#57534E]">x{item.quantity}</span></h4>
-                  <p className="text-xs text-[#57534E]">{item.category} • {item.condition} • {item.availability}</p>
+                  <h4 className="text-sm font-medium text-[#111827]">{item.name} <span className="text-xs text-[#64748B]">x{item.quantity}</span></h4>
+                  <p className="text-xs text-[#64748B]">{item.category} • {item.condition} • {item.availability}</p>
                 </div>
               </div>
-              <button type="button" onClick={() => removeItem(i)} className="p-2 text-[#57534E] hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors">
+              <button type="button" onClick={() => removeItem(i)} className="p-2 text-[#64748B] hover:text-[#B91C1C] hover:bg-red-500/10 rounded-lg transition-colors">
                 <Trash2 size={16} />
               </button>
             </div>

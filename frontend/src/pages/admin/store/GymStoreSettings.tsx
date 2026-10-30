@@ -17,7 +17,7 @@ const GymStoreSettings = () => {
   }, [user?.id]);
 
   if (loading) {
-    return <div className="flex justify-center py-24"><Loader2 className="animate-spin text-[#B76E79]" size={40} /></div>;
+    return <div className="flex justify-center py-24"><Loader2 className="animate-spin text-[#EA580C]" size={40} /></div>;
   }
 
   const ent = status?.enabled
@@ -37,25 +37,25 @@ const GymStoreSettings = () => {
   return (
     <div className="max-w-3xl space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-[#292524] tracking-tight">Store Settings</h1>
-        <p className="text-[#57534E] mt-1">Gym Store feature status and configuration.</p>
+        <h1 className="text-3xl font-bold text-[#111827] tracking-tight">Store Settings</h1>
+        <p className="text-[#64748B] mt-1">Gym Store feature status and configuration.</p>
       </div>
 
       {status?.enabled ? (
         <>
-          <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-6 flex items-start gap-4">
-            <div className="w-12 h-12 rounded-xl bg-green-100 text-[#B76E79] flex items-center justify-center shrink-0">
+          <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-6 flex items-start gap-4">
+            <div className="w-12 h-12 rounded-xl bg-green-100 text-[#EA580C] flex items-center justify-center shrink-0">
               <Store size={24} />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-[#292524] flex items-center gap-2">
-                Gym Store is Active <CheckCircle2 size={18} className="text-[#B76E79]" />
+              <h2 className="text-xl font-bold text-[#111827] flex items-center gap-2">
+                Gym Store is Active <CheckCircle2 size={18} className="text-[#EA580C]" />
               </h2>
-              <p className="text-[#57534E] mt-1">
+              <p className="text-[#64748B] mt-1">
                 Your <span className="font-semibold">{ent?.plan}</span> subscription ({ent?.status}) unlocks the full gym store.
                 {ent?.expiry && ` Your plan renews/expires on ${new Date(ent.expiry).toLocaleDateString()}.`}
               </p>
-              <p className="text-[#57534E] mt-2 text-sm">
+              <p className="text-[#64748B] mt-2 text-sm">
                 Show the store to members by adding products, setting stock, and publishing them as <span className="font-semibold">Active</span>{' '}
                 with availability set to <span className="font-semibold">Online</span> or <span className="font-semibold">Both</span>.
               </p>
@@ -64,30 +64,30 @@ const GymStoreSettings = () => {
 
           <div className="grid grid-cols-2 gap-4">
             {features.map((f) => (
-              <div key={f} className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-4 flex items-start gap-3">
-                <CheckCircle2 className="text-[#B76E79] shrink-0 mt-0.5" size={18} />
-                <p className="text-sm text-[#292524] font-medium">{f}</p>
+              <div key={f} className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-4 flex items-start gap-3">
+                <CheckCircle2 className="text-[#EA580C] shrink-0 mt-0.5" size={18} />
+                <p className="text-sm text-[#111827] font-medium">{f}</p>
               </div>
             ))}
           </div>
         </>
       ) : (
-        <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-6">
-          <h2 className="text-xl font-bold text-[#292524] mb-2">Gym Store is not active for your gym</h2>
-          <p className="text-[#57534E] mb-4">
-            Upgrade to <span className="font-bold text-[#B76E79]">Premium</span> to unlock the full store. Your current plan:{' '}
+        <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-6">
+          <h2 className="text-xl font-bold text-[#111827] mb-2">Gym Store is not active for your gym</h2>
+          <p className="text-[#64748B] mb-4">
+            Upgrade to <span className="font-bold text-[#EA580C]">Premium</span> to unlock the full store. Your current plan:{' '}
             <span className="font-semibold">{status?.userEntitlement?.plan || 'Basic'}</span> (
             {status?.userEntitlement?.status || 'Inactive'}).
           </p>
-          <Link to="/admin/subscription" className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#B76E79] to-[#9F5965] text-[#FFFFFF] font-bold font-bold rounded-xl shadow-lg shadow-[#B76E79]/15 hover:opacity-90 transition-opacity">
+          <Link to="/admin/subscription" className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#EA580C] to-[#C2410C] text-[#FFFFFF] font-bold font-bold rounded-xl shadow-lg shadow-orange-500/15 hover:opacity-90 transition-opacity">
             Upgrade to Premium <ArrowRight size={16} />
           </Link>
         </div>
       )}
 
-      <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-6">
-        <h2 className="text-lg font-bold text-[#292524] mb-3">How the store works</h2>
-        <ol className="space-y-3 text-sm text-[#57534E] list-decimal list-inside pl-1">
+      <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-6">
+        <h2 className="text-lg font-bold text-[#111827] mb-3">How the store works</h2>
+        <ol className="space-y-3 text-sm text-[#64748B] list-decimal list-inside pl-1">
           <li>Add products and set stock in <span className="font-semibold">Products</span> and <span className="font-semibold">Inventory</span>.</li>
           <li>Members see your live store in their dashboard and can place orders online.</li>
           <li>You'll get a notification for every new order — advance it through{' '}

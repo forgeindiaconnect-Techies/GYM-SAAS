@@ -138,18 +138,18 @@ const LandingPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFFFFF] text-[#FFFFFF] selection:bg-[#B76E79] selection:text-[#FFFFFF] font-bold">
+    <div className="min-h-screen bg-[#FFFFFF] text-[#1F2937] selection:bg-[#C2410C] selection:text-[#FFFFFF] font-bold">
       {/* Navigation */}
-      <nav className="border-b border-[#E7DADD] bg-[#F3E8E8]/95 backdrop-blur-md sticky top-0 z-50">
+      <nav className="border-b border-[#E2E8F0] bg-[#FFFFFF]/95 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-[1600px] w-full mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4 xl:gap-8">
           {/* Left Brand & Navigation Group */}
           <div className="flex items-center gap-6 xl:gap-10 shrink-0">
             {/* Logo — scrolls to top */}
             <button onClick={scrollToTop} className="flex items-center space-x-2.5 group cursor-pointer shrink-0 select-none">
-              <div className="w-10 h-10 bg-gradient-to-br from-[#B76E79] to-[#9F5965] rounded-xl flex items-center justify-center shadow-lg shadow-[#B76E79]/20">
+              <div className="w-10 h-10 bg-gradient-to-br from-[#EA580C] to-[#C2410C] rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/15">
                 <Activity className="text-[#FFFFFF]" size={22} strokeWidth={2.5} />
               </div>
-              <span className="text-2xl font-black tracking-tight text-[#FFFFFF] group-hover:text-[#B76E79] transition-colors">
+              <span className="text-2xl font-black tracking-tight text-[#111827] group-hover:text-[#EA580C] transition-colors">
                 Gymora
               </span>
             </button>
@@ -157,11 +157,11 @@ const LandingPage = () => {
 
           {/* Right Action Controls */}
           <div className="flex items-center gap-2 xl:gap-2.5 shrink-0 flex-nowrap">
-            <Link to="/login" id="nav-login" className="px-3.5 py-2 rounded-xl text-xs xl:text-sm font-bold text-[#FFFFFF] bg-[#B76E79] hover:bg-[#9F5965] transition-all shadow-md shadow-[#B76E79]/20 flex items-center justify-center shrink-0 whitespace-nowrap">
+            <Link to="/login" id="nav-login" className="px-3.5 py-2 rounded-xl text-xs xl:text-sm font-bold text-[#FFFFFF] bg-[#C2410C] hover:bg-[#9A3412] transition-all shadow-md shadow-orange-500/15 flex items-center justify-center shrink-0 whitespace-nowrap">
               Log In
             </Link>
 
-            <Link to="/gyms" state={{ openEnquiry: true }} className="px-3.5 py-2 rounded-xl text-xs xl:text-sm font-bold text-[#FFFFFF] bg-[#B76E79] hover:bg-[#9F5965] transition-all shadow-md shadow-[#B76E79]/20 flex items-center gap-1.5 shrink-0 whitespace-nowrap">
+            <Link to="/gyms" state={{ openEnquiry: true }} className="px-3.5 py-2 rounded-xl text-xs xl:text-sm font-bold text-[#FFFFFF] bg-[#C2410C] hover:bg-[#9A3412] transition-all shadow-md shadow-orange-500/15 flex items-center gap-1.5 shrink-0 whitespace-nowrap">
               <span>Enquire Now</span>
             </Link>
           </div>
@@ -171,37 +171,26 @@ const LandingPage = () => {
       {/* Hero Section */}
       <main>
         <section className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20">
-          <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#B76E79]/15 via-[#FFFFFF]/0 to-[#FFFFFF]/0 pointer-events-none"></div>
+          <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#EA580C]/15 via-[#FFFFFF]/0 to-[#FFFFFF]/0 pointer-events-none"></div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
             {/* Left Content */}
             <div className="lg:col-span-7 text-center lg:text-left">
-              <span className="px-4 py-1.5 rounded-full bg-[#B76E79]/15 border border-[#B76E79]/30 text-[#B76E79] text-xs sm:text-sm font-semibold inline-flex items-center gap-2 mb-6 shadow-sm">
+              <span className="px-4 py-1.5 rounded-full bg-[#FFF7ED] border border-[#FFEDD5] text-[#EA580C] text-xs sm:text-sm font-semibold inline-flex items-center gap-2 mb-6 shadow-sm">
                 <span>✨</span> The Future of Fitness is Here
               </span>
-              <h1 className="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight mb-6 leading-tight text-[#292524]">
-                Your Personal <span className="text-[#B76E79]">AI Fitness Coach</span> <br className="hidden sm:block" /> + Human Trainer
+              <h1 className="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight mb-6 leading-tight text-[#111827]">
+                Your Personal <span className="text-[#EA580C]">AI Fitness Coach</span> <br className="hidden sm:block" /> + Human Trainer
               </h1>
-              <p className="text-base sm:text-lg text-[#292524] max-w-2xl mx-auto lg:mx-0 mb-8 leading-relaxed font-normal">
+              <p className="text-base sm:text-lg text-[#111827] max-w-2xl mx-auto lg:mx-0 mb-8 leading-relaxed font-normal">
                 Get personalized AI-generated workout and diet plans. Connect with professional trainers and discover the best gyms near you.
               </p>
 
-              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 mb-6">
-                <Link to="/gyms" className="w-full sm:w-auto px-7 py-3.5 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold rounded-xl transition-all flex items-center justify-center space-x-2 shadow-lg shadow-[#B76E79]/20 hover:shadow-[#B76E79]/40">
-                  <span>Find a Gym</span>
-                  <ArrowRight size={18} />
-                </Link>
-                <Link to="/gym-owner-introduction" className="w-full sm:w-auto px-7 py-3.5 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold rounded-xl transition-all flex items-center justify-center space-x-2 shadow-lg shadow-[#B76E79]/20 hover:shadow-[#B76E79]/40">
-                  <span>Manage Your Gym</span>
-                  <ArrowRight size={18} />
-                </Link>
-              </div>
-
               {/* Role Portals Quick Access */}
-              <div className="inline-flex flex-wrap sm:flex-nowrap items-center gap-2 p-1.5 rounded-2xl bg-[#F3E8E8]/90 border border-[#E7DADD] backdrop-blur-md shadow-xl">
+              <div className="inline-flex flex-wrap sm:flex-nowrap items-center gap-2 p-1.5 rounded-2xl bg-[#FFFFFF]/95 border border-[#E2E8F0] backdrop-blur-md shadow-xl">
                 <Link
                   to="/portal/gym-owner"
-                  className="px-5 py-2.5 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold rounded-xl text-xs sm:text-sm transition-all flex items-center justify-center gap-2 shadow-md shadow-[#B76E79]/20 group hover:scale-[1.02] whitespace-nowrap"
+                  className="px-5 py-2.5 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold rounded-xl text-xs sm:text-sm transition-all flex items-center justify-center gap-2 shadow-md shadow-orange-500/15 group hover:scale-[1.02] whitespace-nowrap"
                 >
                   <Building2 size={16} className="text-[#FFFFFF]" />
                   <span>Gym Owner</span>
@@ -209,7 +198,7 @@ const LandingPage = () => {
 
                 <Link
                   to="/trainers"
-                  className="px-5 py-2.5 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold rounded-xl text-xs sm:text-sm transition-all flex items-center justify-center gap-2 shadow-md shadow-[#B76E79]/20 group hover:scale-[1.02] whitespace-nowrap"
+                  className="px-5 py-2.5 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold rounded-xl text-xs sm:text-sm transition-all flex items-center justify-center gap-2 shadow-md shadow-orange-500/15 group hover:scale-[1.02] whitespace-nowrap"
                 >
                   <UserCheck size={16} className="text-[#FFFFFF]" />
                   <span>Trainers</span>
@@ -217,7 +206,7 @@ const LandingPage = () => {
 
                 <Link
                   to="/portal/customer"
-                  className="px-5 py-2.5 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold rounded-xl text-xs sm:text-sm transition-all flex items-center justify-center gap-2 shadow-md shadow-[#B76E79]/20 group hover:scale-[1.02] whitespace-nowrap"
+                  className="px-5 py-2.5 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold rounded-xl text-xs sm:text-sm transition-all flex items-center justify-center gap-2 shadow-md shadow-orange-500/15 group hover:scale-[1.02] whitespace-nowrap"
                 >
                   <User size={16} className="text-[#FFFFFF]" />
                   <span>Customer</span>
@@ -227,7 +216,7 @@ const LandingPage = () => {
 
             {/* Right Video Container: Super Admin Platform Video */}
             <div className="lg:col-span-5 relative">
-              <div className="relative rounded-3xl overflow-hidden border border-[#E7DADD] shadow-2xl shadow-black bg-[#FFFFFF] group">
+              <div className="relative rounded-3xl overflow-hidden border border-[#E2E8F0] shadow-2xl shadow-black bg-[#FFFFFF] group">
                 <video
                   src="/videos/superadmin.mp4"
                   autoPlay
@@ -243,86 +232,98 @@ const LandingPage = () => {
         </section>
 
         {/* Choose Your Dedicated Portal Section */}
-        <section className="border-t border-[#E7DADD] bg-[#FFFFFF] py-20" id="portals">
+        <section className="border-t border-[#E2E8F0] bg-[#FFFFFF] py-20" id="portals">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center max-w-2xl mx-auto mb-14">
-              <span className="px-3.5 py-1.5 rounded-full bg-[#B76E79]/10 border border-[#B76E79]/25 text-[#B76E79] text-xs font-semibold inline-flex items-center gap-1.5 mb-4">
+              <span className="px-3.5 py-1.5 rounded-full bg-[#FFF7ED] border border-[#FFEDD5] text-[#EA580C] text-xs font-semibold inline-flex items-center gap-1.5 mb-4">
                 <Sparkles size={13} />
                 <span>Tailored Ecosystems</span>
               </span>
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-[#292524] tracking-tight mb-3">
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-[#111827] tracking-tight mb-3">
                 Choose Your Dedicated Portal
               </h2>
-              <p className="text-sm sm:text-base text-[#57534E]">
+              <p className="text-sm sm:text-base text-[#64748B]">
                 Access the specialized public environment built for your role—with dedicated tools, workflows, and instant sign-in.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {/* Customer Portal Card */}
-              <div className="bg-[#FFFFFF] border border-[#E7DADD] hover:border-[#B76E79]/50 rounded-2xl p-7 flex flex-col justify-between transition-all group shadow-sm hover:shadow-teal-500/5">
-                <div>
-                  <div className="w-12 h-12 rounded-xl bg-[#B76E79]/10 text-[#B76E79] flex items-center justify-center mb-5 group-hover:scale-105 transition-transform">
-                    <User size={24} />
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+              {/* Left Side: Related Platform Ecosystem Image */}
+              <div className="lg:col-span-5 relative">
+                <div className="relative rounded-3xl overflow-hidden border border-[#E2E8F0] shadow-xl bg-[#FFFFFF] group h-full min-h-[340px] sm:min-h-[420px] flex flex-col justify-end">
+                  <img 
+                    src="/gym-landing-image-1.jpg" 
+                    alt="Gymora Dedicated Portals Ecosystem" 
+                    className="absolute inset-0 w-full h-full object-cover object-center block group-hover:scale-105 transition-transform duration-700"
+                  />
+                  <div className="relative z-10 bg-gradient-to-t from-black/80 via-black/35 to-transparent p-6 sm:p-7 flex flex-col justify-end">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#C2410C] text-white w-fit mb-2 shadow-sm">
+                      <Sparkles size={12} />
+                      <span>Unified Fitness Ecosystem</span>
+                    </span>
+                    <h3 className="text-white text-lg sm:text-xl font-bold">One Platform, Three Tailored Portals</h3>
+                    <p className="text-gray-200 text-xs sm:text-sm mt-1 leading-relaxed">
+                      Connecting gym owners, personal trainers, and customers in a unified fitness experience.
+                    </p>
                   </div>
-                  <h3 className="text-xl font-bold text-[#292524] mb-2">Customer</h3>
-                  <p className="text-sm text-[#57534E] leading-relaxed mb-6 font-normal">
-                    Your personalized digital fitness companion. Enjoy AI workout and diet generation, book 1-on-1 certified trainers, track progress milestones, and discover top gyms.
-                  </p>
-                </div>
-                <div>
-                  <Link
-                    to="/portal/customer"
-                    className="w-full py-3 px-4 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold rounded-xl text-xs sm:text-sm transition-all flex items-center justify-center gap-2 shadow-md shadow-[#B76E79]/20"
-                  >
-                    <span>Customer</span>
-                    <ArrowRight size={15} />
-                  </Link>
                 </div>
               </div>
 
-              {/* Trainer Portal Card */}
-              <div className="bg-[#FFFFFF] border border-[#E7DADD] hover:border-[#B76E79]/50 rounded-2xl p-7 flex flex-col justify-between transition-all group shadow-sm hover:shadow-teal-500/5">
-                <div>
-                  <div className="w-12 h-12 rounded-xl bg-[#B76E79]/10 text-[#B76E79] flex items-center justify-center mb-5 group-hover:scale-105 transition-transform">
-                    <UserCheck size={24} />
+              {/* Right Side: 3 Dedicated Portal Cards */}
+              <div className="lg:col-span-7 flex flex-col gap-4 justify-between">
+                {/* Customer Portal Card */}
+                <Link
+                  to="/portal/customer"
+                  className="bg-[#FFFFFF] border border-[#E2E8F0] hover:border-[#FDBA74] rounded-2xl p-6 transition-all group shadow-sm hover:shadow-md hover:-translate-y-0.5 block flex-1"
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-[#FFF7ED] text-[#EA580C] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                      <User size={24} />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold text-[#111827] group-hover:text-[#EA580C] transition-colors mb-1">Customer</h3>
+                      <p className="text-sm text-[#64748B] leading-relaxed font-normal">
+                        Your personalized digital fitness companion. Enjoy AI workout and diet generation, book 1-on-1 certified trainers, track progress milestones, and discover top gyms.
+                      </p>
+                    </div>
                   </div>
-                  <h3 className="text-xl font-bold text-[#292524] mb-2">Trainer</h3>
-                  <p className="text-sm text-[#57534E] leading-relaxed mb-6 font-normal">
-                    The dedicated career and coaching hub for fitness professionals. Showcase your certified expertise, explore gym opportunities, and guide clients towards their goals.
-                  </p>
-                </div>
-                <div>
-                  <Link
-                    to="/trainers"
-                    className="w-full py-3 px-4 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold rounded-xl text-xs sm:text-sm transition-all flex items-center justify-center gap-2 shadow-md shadow-[#B76E79]/20"
-                  >
-                    <span>Trainer</span>
-                    <ArrowRight size={15} />
-                  </Link>
-                </div>
-              </div>
+                </Link>
 
-              {/* Gym Owner Portal Card */}
-              <div className="bg-[#FFFFFF] border border-[#E7DADD] hover:border-[#B76E79]/50 rounded-2xl p-7 flex flex-col justify-between transition-all group shadow-sm hover:shadow-teal-500/5">
-                <div>
-                  <div className="w-12 h-12 rounded-xl bg-[#B76E79]/10 text-[#B76E79] flex items-center justify-center mb-5 group-hover:scale-105 transition-transform">
-                    <Building2 size={24} />
+                {/* Trainer Portal Card */}
+                <Link
+                  to="/trainers"
+                  className="bg-[#FFFFFF] border border-[#E2E8F0] hover:border-[#FDBA74] rounded-2xl p-6 transition-all group shadow-sm hover:shadow-md hover:-translate-y-0.5 block flex-1"
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-[#FFF7ED] text-[#EA580C] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                      <UserCheck size={24} />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold text-[#111827] group-hover:text-[#EA580C] transition-colors mb-1">Trainer</h3>
+                      <p className="text-sm text-[#64748B] leading-relaxed font-normal">
+                        The dedicated career and coaching hub for fitness professionals. Showcase your certified expertise, explore gym opportunities, and guide clients towards their goals.
+                      </p>
+                    </div>
                   </div>
-                  <h3 className="text-xl font-bold text-[#292524] mb-2">Gym Owner</h3>
-                  <p className="text-sm text-[#57534E] leading-relaxed mb-6 font-normal">
-                    The complete operational engine for fitness clubs. Manage members, trainer rosters, biometric/QR check-ins, offline POS sales, and automated financial reports.
-                  </p>
-                </div>
-                <div>
-                  <Link
-                    to="/portal/gym-owner"
-                    className="w-full py-3 px-4 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold rounded-xl text-xs sm:text-sm transition-all flex items-center justify-center gap-2 shadow-md shadow-[#B76E79]/20"
-                  >
-                    <span>Gym Owner</span>
-                    <ArrowRight size={15} />
-                  </Link>
-                </div>
+                </Link>
+
+                {/* Gym Owner Portal Card */}
+                <Link
+                  to="/portal/gym-owner"
+                  className="bg-[#FFFFFF] border border-[#E2E8F0] hover:border-[#FDBA74] rounded-2xl p-6 transition-all group shadow-sm hover:shadow-md hover:-translate-y-0.5 block flex-1"
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-[#FFF7ED] text-[#EA580C] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                      <Building2 size={24} />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold text-[#111827] group-hover:text-[#EA580C] transition-colors mb-1">Gym Owner</h3>
+                      <p className="text-sm text-[#64748B] leading-relaxed font-normal">
+                        The complete operational engine for fitness clubs. Manage members, trainer rosters, biometric/QR check-ins, offline POS sales, and automated financial reports.
+                      </p>
+                    </div>
+                  </div>
+                </Link>
               </div>
             </div>
           </div>
@@ -331,66 +332,22 @@ const LandingPage = () => {
         {/* Trainer Recruitment & Careers Hub Section */}
         <TrainerRecruitmentSection />
 
-        {/* Feature Highlights */}
-        <section className="border-t border-[#E7DADD] bg-[#F3E8E8] py-24" id="features">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-[#FFFFFF]">Everything You Need to Succeed</h2>
-              <p className="text-[#57534E]">A complete ecosystem designed for members, trainers, and gym owners.</p>
-            </div>
-
-            <div className="grid md:grid-cols-3 gap-8">
-              {/* Feature 1 */}
-              <div className="bg-[#FFFFFF] p-8 rounded-2xl border border-[#E7DADD] hover:border-[#B76E79]/50 hover:shadow-xl transition-all">
-                <div className="w-12 h-12 bg-[#B76E79]/15 rounded-xl flex items-center justify-center mb-6 text-[#B76E79]">
-                  <Bot size={24} />
-                </div>
-                <h3 className="text-xl font-semibold mb-3 text-[#FFFFFF]">AI Coach</h3>
-                <p className="text-[#57534E] leading-relaxed">
-                  Advanced AI analyzes your profile to generate highly optimized, dynamic workout and diet plans tailored just for you.
-                </p>
-              </div>
-
-              {/* Feature 2 */}
-              <div className="bg-[#FFFFFF] p-8 rounded-2xl border border-[#E7DADD] hover:border-[#B76E79]/50 hover:shadow-xl transition-all">
-                <div className="w-12 h-12 bg-[#B76E79]/15 rounded-xl flex items-center justify-center mb-6 text-[#B76E79]">
-                  <User size={24} />
-                </div>
-                <h3 className="text-xl font-semibold mb-3 text-[#FFFFFF]">Human Trainers</h3>
-                <p className="text-[#57534E] leading-relaxed">
-                  Need a push? Book certified online or offline personal trainers to guide your fitness journey and perfect your form.
-                </p>
-              </div>
-
-              {/* Feature 3 */}
-              <div className="bg-[#FFFFFF] p-8 rounded-2xl border border-[#E7DADD] hover:border-[#B76E79]/50 hover:shadow-xl transition-all">
-                <div className="w-12 h-12 bg-[#B76E79]/15 rounded-xl flex items-center justify-center mb-6 text-[#B76E79]">
-                  <MapPin size={24} />
-                </div>
-                <h3 className="text-xl font-semibold mb-3 text-[#FFFFFF]">Gym Discovery</h3>
-                <p className="text-[#57534E] leading-relaxed">
-                  Search, filter, and join premium gyms near you. Manage your memberships, track daily attendance and never miss a beat.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
 
         {/* Video Tour Section */}
         <section className="py-24 relative overflow-hidden bg-[#FFFFFF]" id="video-tour">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col lg:flex-row items-center gap-16">
               <div className="lg:w-1/2">
-                <h2 className="text-3xl md:text-5xl font-bold mb-6 text-[#FFFFFF]">See the <span className="text-[#B76E79]">Platform</span> in Action</h2>
-                <p className="text-lg text-[#57534E] mb-8">
+                <h2 className="text-3xl md:text-5xl font-bold mb-6 text-[#111827]">See the <span className="text-[#EA580C]">Platform</span> in Action</h2>
+                <p className="text-lg text-[#64748B] mb-8">
                   Watch our quick tour to see how Gymora seamlessly integrates AI planning, human coaching, and gym access all in one sleek app.
                 </p>
                 <div className="flex space-x-4">
-                  <div className="flex items-center space-x-2 text-[#B76E79]">
+                  <div className="flex items-center space-x-2 text-[#EA580C]">
                     <Star fill="currentColor" size={20} />
-                    <span className="font-bold text-[#FFFFFF]">4.9/5</span>
+                    <span className="font-bold text-[#111827]">4.9/5</span>
                   </div>
-                  <span className="text-[#57534E]">from 10k+ verified gym users</span>
+                  <span className="text-[#64748B]">from 10k+ verified gym users</span>
                 </div>
               </div>
               <div className="lg:w-1/2 w-full flex flex-col space-y-6">
@@ -401,10 +358,10 @@ const LandingPage = () => {
                     title: 'Platform Overview & Tour'
                   })}
                 >
-                  <div className="absolute inset-0 bg-[#B76E79] rounded-2xl transform translate-x-2 translate-y-2 opacity-20 group-hover:translate-x-4 group-hover:translate-y-4 transition-transform"></div>
-                  <div className="relative rounded-2xl overflow-hidden border border-[#E7DADD] aspect-video bg-[#FFFFFF] flex items-center justify-center">
+                  <div className="absolute inset-0 bg-[#C2410C] rounded-2xl transform translate-x-2 translate-y-2 opacity-20 group-hover:translate-x-4 group-hover:translate-y-4 transition-transform"></div>
+                  <div className="relative rounded-2xl overflow-hidden border border-[#E2E8F0] aspect-video bg-[#FFFFFF] flex items-center justify-center">
                     <img src="/images/app-mockup.png" alt="App Tour" className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" />
-                    <div className="w-20 h-20 bg-[#B76E79] rounded-full flex items-center justify-center text-[#FFFFFF] font-bold z-10 hover:scale-110 transition-transform shadow-[0_0_30px_rgba(183,110,121,0.45)]">
+                    <div className="w-20 h-20 bg-[#C2410C] rounded-full flex items-center justify-center text-[#FFFFFF] font-bold z-10 hover:scale-110 transition-transform shadow-[0_0_30px_rgba(183,110,121,0.45)]">
                       <PlayCircle size={40} fill="currentColor" className="ml-1" />
                     </div>
                   </div>
@@ -413,7 +370,7 @@ const LandingPage = () => {
                 {/* Related Videos */}
                 <div>
                   <h3 className="text-[#FFFFFF] font-bold mb-3 flex items-center space-x-2">
-                    <PlayCircle size={16} className="text-[#B76E79]" />
+                    <PlayCircle size={16} className="text-[#EA580C]" />
                     <span>Related Videos</span>
                   </h3>
                   <div className="grid grid-cols-2 gap-4">
@@ -436,16 +393,16 @@ const LandingPage = () => {
                         className="group cursor-pointer"
                         onClick={() => setActiveVideo({ url: video.url, title: video.title })}
                       >
-                        <div className="relative aspect-video rounded-xl overflow-hidden border border-[#E7DADD] mb-2 bg-[#FFFFFF]">
+                        <div className="relative aspect-video rounded-xl overflow-hidden border border-[#E2E8F0] mb-2 bg-[#FFFFFF]">
                           <img src={video.img} alt={video.title} className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-40 group-hover:scale-110 transition-all duration-500" />
                           <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                            <PlayCircle size={28} className="text-[#B76E79] drop-shadow-md" />
+                            <PlayCircle size={28} className="text-[#EA580C] drop-shadow-md" />
                           </div>
                           <div className="absolute bottom-2 right-2 bg-black/85 backdrop-blur-sm text-white text-[10px] font-bold px-1.5 py-0.5 rounded shadow-sm">
                             {video.time}
                           </div>
                         </div>
-                        <p className="text-xs text-[#57534E] group-hover:text-[#B76E79] transition-colors line-clamp-1 font-semibold">{video.title}</p>
+                        <p className="text-xs text-[#64748B] group-hover:text-[#EA580C] transition-colors line-clamp-1 font-semibold">{video.title}</p>
                       </div>
                     ))}
                   </div>
@@ -456,11 +413,11 @@ const LandingPage = () => {
         </section>
 
         {/* How It Works Section */}
-        <section className="border-t border-[#E7DADD] bg-[#F3E8E8] py-24" id="how-it-works">
+        <section className="border-t border-[#E2E8F0] bg-[#F8FAFC] py-24" id="how-it-works">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h2 className="text-3xl md:text-4xl font-bold mb-4 text-[#FFFFFF]">How It Works</h2>
-              <p className="text-[#57534E]">Your journey to peak fitness in 4 simple steps.</p>
+              <p className="text-[#64748B]">Your journey to peak fitness in 4 simple steps.</p>
             </div>
             <div className="grid md:grid-cols-4 gap-8 text-center">
               {[
@@ -470,12 +427,12 @@ const LandingPage = () => {
                 { step: '4', title: 'Track Progress', desc: 'Monitor your gains and stay on top of your daily routines.', icon: TrendingUp }
               ].map((item, idx) => (
                 <div key={idx} className="relative flex flex-col items-center">
-                  <div className="w-16 h-16 bg-[#FFFFFF] border border-[#E7DADD] rounded-full flex items-center justify-center text-[#B76E79] font-bold text-xl z-10 mb-6 shadow-md shadow-[#B76E79]/10">
+                  <div className="w-16 h-16 bg-[#FFFFFF] border border-[#E2E8F0] rounded-full flex items-center justify-center text-[#EA580C] font-bold text-xl z-10 mb-6 shadow-md shadow-orange-500/15">
                     {item.step}
                   </div>
-                  <item.icon size={32} className="text-[#57534E] mb-4" />
+                  <item.icon size={32} className="text-[#64748B] mb-4" />
                   <h3 className="text-lg font-semibold mb-2 text-[#FFFFFF]">{item.title}</h3>
-                  <p className="text-sm text-[#57534E] leading-relaxed">{item.desc}</p>
+                  <p className="text-sm text-[#64748B] leading-relaxed">{item.desc}</p>
                 </div>
               ))}
             </div>
@@ -487,12 +444,12 @@ const LandingPage = () => {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col md:flex-row justify-between items-end mb-12">
               <div>
-                <h2 className="text-3xl md:text-4xl font-bold mb-4 text-[#FFFFFF]">Discover Premium <span className="text-[#B76E79]">Gyms</span></h2>
-                <p className="text-[#57534E] max-w-xl">Find and join the best fitness centers in your area. Use your Gymora membership to access state-of-the-art facilities.</p>
+                <h2 className="text-3xl md:text-4xl font-bold mb-4 text-[#FFFFFF]">Discover Premium <span className="text-[#EA580C]">Gyms</span></h2>
+                <p className="text-[#64748B] max-w-xl">Find and join the best fitness centers in your area. Use your Gymora membership to access state-of-the-art facilities.</p>
               </div>
               <Link
                 to="/gyms"
-                className="hidden md:flex items-center space-x-2 text-[#B76E79] hover:text-[#9F5965] transition-colors font-semibold mt-4 md:mt-0"
+                className="hidden md:flex items-center space-x-2 text-[#EA580C] hover:text-[#9A3412] transition-colors font-semibold mt-4 md:mt-0"
               >
                 <span>View All Gyms</span>
                 <ArrowRight size={20} />
@@ -501,7 +458,7 @@ const LandingPage = () => {
 
             {gymsLoading ? (
               <div className="flex justify-center py-16">
-                <Loader2 className="animate-spin text-[#B76E79]" size={40} />
+                <Loader2 className="animate-spin text-[#EA580C]" size={40} />
               </div>
             ) : featuredGyms.length === 0 ? (
               <div className="grid md:grid-cols-3 gap-8">
@@ -510,23 +467,23 @@ const LandingPage = () => {
                   { name: 'Apex Athletics', location: 'Westside District', rating: 4.8, image: 'https://images.unsplash.com/photo-1540497077202-7c8a3999166f?q=80&w=1470&auto=format&fit=crop', tags: ['CrossFit', 'Sauna'] },
                   { name: 'Velocity Fitness Studio', location: 'North Hills', rating: 4.7, image: 'https://images.unsplash.com/photo-1571902943202-507ec2618e8f?q=80&w=1375&auto=format&fit=crop', tags: ['Cardio', 'Pool'] }
                 ].map((gym, idx) => (
-                  <div key={idx} className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl overflow-hidden group cursor-pointer hover:border-[#B76E79]/50 transition-colors">
+                  <div key={idx} className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl overflow-hidden group cursor-pointer hover:border-[#FFEDD5] transition-colors">
                     <div className="h-48 overflow-hidden relative">
                       <img src={gym.image} alt={gym.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-                      <div className="absolute top-4 right-4 bg-black/75 backdrop-blur-md px-2 py-1 rounded-lg flex items-center space-x-1 border border-[#E7DADD]">
-                        <Star size={14} className="text-[#B76E79]" fill="currentColor" />
+                      <div className="absolute top-4 right-4 bg-black/75 backdrop-blur-md px-2 py-1 rounded-lg flex items-center space-x-1 border border-[#E2E8F0]">
+                        <Star size={14} className="text-[#EA580C]" fill="currentColor" />
                         <span className="text-xs font-bold text-white">{gym.rating}</span>
                       </div>
                     </div>
                     <div className="p-6">
                       <h3 className="text-xl font-bold mb-1 text-[#FFFFFF]">{gym.name}</h3>
-                      <div className="flex items-center space-x-1 text-[#57534E] text-sm mb-4">
-                        <MapPin size={14} className="text-[#B76E79]" />
+                      <div className="flex items-center space-x-1 text-[#64748B] text-sm mb-4">
+                        <MapPin size={14} className="text-[#EA580C]" />
                         <span>{gym.location}</span>
                       </div>
                       <div className="flex flex-wrap gap-2">
                         {gym.tags.map((tag, tIdx) => (
-                          <span key={tIdx} className="text-xs font-medium px-2 py-1 bg-[#F3E8E8] rounded-md text-[#57534E] border border-[#E7DADD]">{tag}</span>
+                          <span key={tIdx} className="text-xs font-medium px-2 py-1 bg-[#F8FAFC] rounded-md text-[#64748B] border border-[#E2E8F0]">{tag}</span>
                         ))}
                       </div>
                     </div>
@@ -539,31 +496,31 @@ const LandingPage = () => {
                   <Link
                     key={gym._id}
                     to={`/gyms/${gym._id}`}
-                    className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl overflow-hidden group hover:border-[#B76E79]/60 hover:shadow-[0_0_25px_rgba(183,110,121,0.2)] transition-all duration-300 block"
+                    className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl overflow-hidden group hover:border-[#FFEDD5] hover:shadow-[0_0_25px_rgba(183,110,121,0.2)] transition-all duration-300 block"
                   >
                     <div className="h-48 overflow-hidden relative">
                       {gym.logo ? (
                         <img src={gym.logo} alt={gym.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                       ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-[#F3E8E8] to-[#F3E8E8] flex items-center justify-center">
-                          <Activity size={48} className="text-[#B76E79]" />
+                        <div className="w-full h-full bg-gradient-to-br from-[#F8FAFC] to-[#F8FAFC] flex items-center justify-center">
+                          <Activity size={48} className="text-[#EA580C]" />
                         </div>
                       )}
-                      <div className="absolute top-4 right-4 bg-black/75 backdrop-blur-md px-2.5 py-1 rounded-lg flex items-center space-x-1 border border-[#E7DADD]">
-                        <Star size={14} className="text-[#B76E79]" fill="currentColor" />
+                      <div className="absolute top-4 right-4 bg-black/75 backdrop-blur-md px-2.5 py-1 rounded-lg flex items-center space-x-1 border border-[#E2E8F0]">
+                        <Star size={14} className="text-[#EA580C]" fill="currentColor" />
                         <span className="text-white text-xs font-bold">{gym.rating || 4.5}</span>
                       </div>
                       {gym.gymType && (
-                        <div className="absolute top-4 left-4 bg-[#B76E79] text-white font-bold text-xs font-bold px-2.5 py-1 rounded-full shadow-sm">
+                        <div className="absolute top-4 left-4 bg-[#C2410C] text-white font-bold text-xs font-bold px-2.5 py-1 rounded-full shadow-sm">
                           {gym.gymType}
                         </div>
                       )}
                     </div>
                     <div className="p-6">
-                      <h3 className="text-xl font-bold mb-1 text-[#FFFFFF] group-hover:text-[#B76E79] transition-colors">{gym.name}</h3>
-                      <div className="flex items-start space-x-1.5 text-[#57534E] text-sm mb-4">
-                        <MapPin size={15} className="text-[#B76E79] shrink-0 mt-0.5" />
-                        <div className="line-clamp-2 text-xs font-medium text-[#57534E]">
+                      <h3 className="text-xl font-bold mb-1 text-[#FFFFFF] group-hover:text-[#EA580C] transition-colors">{gym.name}</h3>
+                      <div className="flex items-start space-x-1.5 text-[#64748B] text-sm mb-4">
+                        <MapPin size={15} className="text-[#EA580C] shrink-0 mt-0.5" />
+                        <div className="line-clamp-2 text-xs font-medium text-[#64748B]">
                           {[
                             gym.location?.address,
                             gym.location?.area,
@@ -574,16 +531,16 @@ const LandingPage = () => {
                       </div>
                       <div className="flex flex-wrap gap-2 mb-6">
                         {(gym.facilities || []).slice(0, 2).map((tag: string, tIdx: number) => (
-                          <span key={tIdx} className="text-xs font-medium px-2.5 py-1 bg-[#F3E8E8] rounded-md text-[#57534E] border border-[#E7DADD]">{tag}</span>
+                          <span key={tIdx} className="text-xs font-medium px-2.5 py-1 bg-[#F8FAFC] rounded-md text-[#64748B] border border-[#E2E8F0]">{tag}</span>
                         ))}
                         {gym.facilities?.length > 2 && (
-                          <span className="text-xs font-medium px-2.5 py-1 bg-[#B76E79]/15 text-[#B76E79] rounded-md border border-[#B76E79]/30">
+                          <span className="text-xs font-medium px-2.5 py-1 bg-[#FFF7ED] text-[#EA580C] rounded-md border border-[#FFEDD5]">
                             +{gym.facilities.length - 2}
                           </span>
                         )}
                       </div>
-                      <div className="pt-4 border-t border-[#E7DADD] flex items-center justify-end">
-                        <div className="px-5 py-2 bg-[#B76E79] text-white font-bold rounded-xl text-sm font-bold transition-colors shadow-md shadow-[#B76E79]/20 hover:bg-[#9F5965]">
+                      <div className="pt-4 border-t border-[#E2E8F0] flex items-center justify-end">
+                        <div className="px-5 py-2 bg-[#C2410C] text-white font-bold rounded-xl text-sm font-bold transition-colors shadow-md shadow-orange-500/15 hover:bg-[#9A3412]">
                           View Details
                         </div>
                       </div>
@@ -595,7 +552,7 @@ const LandingPage = () => {
 
             {/* Mobile View All link */}
             <div className="mt-8 text-center md:hidden">
-              <Link to="/gyms" className="inline-flex items-center gap-2 text-[#B76E79] hover:text-[#9F5965] font-semibold">
+              <Link to="/gyms" className="inline-flex items-center gap-2 text-[#EA580C] hover:text-[#9A3412] font-semibold">
                 View All Gyms <ArrowRight size={18} />
               </Link>
             </div>
@@ -603,9 +560,9 @@ const LandingPage = () => {
         </section>
 
         {/* Platform Stats */}
-        <section className="border-t border-[#E7DADD] bg-[#F3E8E8] py-20">
+        <section className="border-t border-[#E2E8F0] bg-[#F8FAFC] py-20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 divide-x divide-[#E7DADD]">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 divide-x divide-[#E2E8F0]">
               {[
                 { label: 'Active Members', value: '50K+' },
                 { label: 'Partner Gyms', value: '1,200+' },
@@ -613,8 +570,8 @@ const LandingPage = () => {
                 { label: 'Workouts Logged', value: '2M+' }
               ].map((stat, idx) => (
                 <div key={idx} className={`text-center ${idx % 2 === 0 ? 'pr-8' : 'pl-8 md:pl-0'} ${idx > 0 && idx % 2 === 0 ? 'pl-8 border-l-0 md:border-l' : ''}`}>
-                  <div className="text-4xl md:text-5xl font-extrabold text-[#B76E79] mb-2 tracking-tight">{stat.value}</div>
-                  <div className="text-[#57534E] font-medium text-sm md:text-base uppercase tracking-wider">{stat.label}</div>
+                  <div className="text-4xl md:text-5xl font-extrabold text-[#EA580C] mb-2 tracking-tight">{stat.value}</div>
+                  <div className="text-[#64748B] font-medium text-sm md:text-base uppercase tracking-wider">{stat.label}</div>
                 </div>
               ))}
             </div>
@@ -625,27 +582,27 @@ const LandingPage = () => {
         <section className="py-24 bg-[#FFFFFF]" id="pricing">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
-              <div className="inline-flex items-center space-x-2 bg-[#B76E79]/15 border border-[#B76E79]/30 rounded-full px-4 py-1.5 text-[#B76E79] text-xs font-bold uppercase tracking-widest mb-5">
+              <div className="inline-flex items-center space-x-2 bg-[#FFF7ED] border border-[#FFEDD5] rounded-full px-4 py-1.5 text-[#EA580C] text-xs font-bold uppercase tracking-widest mb-5">
                 <span>SaaS Platform Pricing for Gyms</span>
               </div>
-              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-[#FFFFFF]">Power Your Gym. Choose Your Plan.</h2>
-              <p className="text-[#57534E] mb-8 max-w-xl mx-auto">All plans give your gym access to the Gymora platform. Scale as your gym grows.</p>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-[#111827]">Power Your Gym. Choose Your Plan.</h2>
+              <p className="text-[#64748B] mb-8 max-w-xl mx-auto">All plans give your gym access to the Gymora platform. Scale as your gym grows.</p>
 
               <div className="flex items-center justify-center gap-4 flex-wrap">
-                <span className={`text-sm font-semibold transition-colors ${!isAnnual ? 'text-[#FFFFFF]' : 'text-[#57534E]'}`}>Monthly</span>
+                <span className={`text-sm font-semibold transition-colors ${!isAnnual ? 'text-[#111827]' : 'text-[#64748B]'}`}>Monthly</span>
                 <button
                   onClick={() => setIsAnnual(!isAnnual)}
                   aria-pressed={isAnnual}
-                  className={`relative inline-flex h-8 w-16 items-center rounded-full transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-[#B76E79] focus:ring-offset-2 ${isAnnual ? 'bg-[#B76E79]' : 'bg-[#E7DADD]'}`}
+                  className={`relative inline-flex h-8 w-16 items-center rounded-full transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-[#F97316] focus:ring-offset-2 ${isAnnual ? 'bg-[#C2410C]' : 'bg-[#E2E8F0]'}`}
                 >
                   <span className={`inline-block h-6 w-6 transform rounded-full bg-[#FFFFFF] shadow-md transition-transform duration-300 ${isAnnual ? 'translate-x-9' : 'translate-x-1'}`} />
                 </button>
                 <div className="flex items-center gap-2">
-                  <span className={`text-sm font-semibold transition-colors ${isAnnual ? 'text-[#FFFFFF]' : 'text-[#57534E]'}`}>Annual</span>
+                  <span className={`text-sm font-semibold transition-colors ${isAnnual ? 'text-[#111827]' : 'text-[#64748B]'}`}>Annual</span>
                   {isAnnual ? (
-                    <span className="inline-flex items-center gap-1 bg-[#B76E79]/15 text-[#B76E79] border border-[#B76E79]/30 text-xs px-3 py-1 rounded-full font-bold">🎁 2 months FREE — Save up to 25%</span>
+                    <span className="inline-flex items-center gap-1 bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5] text-xs px-3 py-1 rounded-full font-bold">🎁 2 months FREE — Save up to 25%</span>
                   ) : (
-                    <span className="text-xs bg-[#FFFFFF] text-[#B76E79] border border-[#E7DADD] px-3 py-1 rounded-full">Switch to annual & save up to 25%</span>
+                    <span className="text-xs bg-[#FFFFFF] text-[#EA580C] border border-[#E2E8F0] px-3 py-1 rounded-full">Switch to annual & save up to 25%</span>
                   )}
                 </div>
               </div>
@@ -662,13 +619,13 @@ const LandingPage = () => {
                   features: ['Basic Gym Profile', 'Basic Member Management', 'Basic Attendance', 'Basic AI Fitness Assessment', '1 AI Workout Plan', 'Basic Diet Recommendation', 'Limited AI Chat', 'Basic Progress Tracking'],
                   locked: ['Advanced Analytics', 'Trainer Booking', '1-on-1 Coaching'],
                   savings: null, buttonText: 'Start Free Trial', popular: false, trial: true,
-                  defaultBorder: 'border-[#E7DADD] border-dashed',
-                  selBorder: 'border-[#B76E79]',
-                  selBar: 'bg-[#B76E79]',
-                  priceColor: 'text-[#FFFFFF]',
-                  checkColor: 'text-[#B76E79]',
-                  btnDefault: 'bg-[#B76E79] text-white hover:bg-[#9F5965] shadow-md shadow-[#B76E79]/20',
-                  btnSelected: 'bg-[#9F5965] text-white',
+                  defaultBorder: 'border-[#E2E8F0] border-dashed',
+                  selBorder: 'border-[#FDBA74]',
+                  selBar: 'bg-[#C2410C]',
+                  priceColor: 'text-[#111827]',
+                  checkColor: 'text-[#EA580C]',
+                  btnDefault: 'bg-[#C2410C] text-white hover:bg-[#9A3412] shadow-md shadow-orange-500/15',
+                  btnSelected: 'bg-[#9A3412] text-white',
                 },
                 {
                   key: 'SILVER',
@@ -679,13 +636,13 @@ const LandingPage = () => {
                   features: ['Gym Profile Management', 'Member Management', 'Trainer & Staff Management', 'AI Fitness Assessment', 'Basic AI Workout & Diet Plans', 'AI Chat Assistant', 'Basic Reports (3 types)', 'Membership Tracking'],
                   locked: ['Advanced Analytics', 'Trainer Booking', '1-on-1 Coaching'],
                   savings: isAnnual ? '💰 Save ₹1,598 vs monthly billing' : null, buttonText: 'Choose Silver', popular: false, trial: false,
-                  defaultBorder: 'border-[#E7DADD]',
-                  selBorder: 'border-[#B76E79]',
-                  selBar: 'bg-[#B76E79]',
-                  priceColor: 'text-[#FFFFFF]',
-                  checkColor: 'text-[#B76E79]',
-                  btnDefault: 'bg-[#B76E79] text-white hover:bg-[#9F5965] shadow-md shadow-[#B76E79]/20',
-                  btnSelected: 'bg-[#9F5965] text-white',
+                  defaultBorder: 'border-[#E2E8F0]',
+                  selBorder: 'border-[#FDBA74]',
+                  selBar: 'bg-[#C2410C]',
+                  priceColor: 'text-[#111827]',
+                  checkColor: 'text-[#EA580C]',
+                  btnDefault: 'bg-[#C2410C] text-white hover:bg-[#9A3412] shadow-md shadow-orange-500/15',
+                  btnSelected: 'bg-[#9A3412] text-white',
                 },
                 {
                   key: 'GOLD',
@@ -696,13 +653,13 @@ const LandingPage = () => {
                   features: ['Everything in Silver', 'Advanced AI Workout & Diet Plans', 'AI Fitness Assistant', 'Goal-Based Workout Recs', 'Trainer Discovery & Booking', 'Trainer Scheduling', 'Detailed Progress Analytics', 'Revenue & Membership Analytics'],
                   locked: ['1-on-1 Coaching', 'Live Trainer Sessions'],
                   savings: isAnnual ? '💰 Save ₹4,498 vs monthly billing' : null, buttonText: 'Choose Gold', popular: true, trial: false,
-                  defaultBorder: 'border-[#B76E79]/50 border-2',
-                  selBorder: 'border-[#B76E79]',
-                  selBar: 'bg-[#B76E79]',
-                  priceColor: 'text-[#FFFFFF]',
-                  checkColor: 'text-[#B76E79]',
-                  btnDefault: 'bg-[#B76E79] text-white font-bold hover:bg-[#9F5965] shadow-md shadow-[#B76E79]/20',
-                  btnSelected: 'bg-[#9F5965] text-white font-bold',
+                  defaultBorder: 'border-[#FFEDD5] border-2',
+                  selBorder: 'border-[#FDBA74]',
+                  selBar: 'bg-[#C2410C]',
+                  priceColor: 'text-[#111827]',
+                  checkColor: 'text-[#EA580C]',
+                  btnDefault: 'bg-[#C2410C] text-white font-bold hover:bg-[#9A3412] shadow-md shadow-orange-500/15',
+                  btnSelected: 'bg-[#9A3412] text-white font-bold',
                 },
                 {
                   key: 'PREMIUM',
@@ -713,13 +670,13 @@ const LandingPage = () => {
                   features: ['Everything in Gold', '1-on-1 Online Coaching', 'Live Trainer Sessions', 'Priority Trainer Booking', 'AI + Trainer Hybrid Recs', 'Branch-wise Analytics', 'Member Retention Analytics', 'Priority Support & Monthly Review'],
                   locked: [],
                   savings: isAnnual ? '💰 Save ₹7,498 vs monthly billing' : null, buttonText: 'Choose Premium', popular: false, trial: false,
-                  defaultBorder: 'border-[#E7DADD]',
-                  selBorder: 'border-[#B76E79]',
-                  selBar: 'bg-[#B76E79]',
-                  priceColor: 'text-[#FFFFFF]',
-                  checkColor: 'text-[#B76E79]',
-                  btnDefault: 'bg-[#B76E79] text-white hover:bg-[#9F5965] shadow-md shadow-[#B76E79]/20',
-                  btnSelected: 'bg-[#9F5965] text-white',
+                  defaultBorder: 'border-[#E2E8F0]',
+                  selBorder: 'border-[#FDBA74]',
+                  selBar: 'bg-[#C2410C]',
+                  priceColor: 'text-[#111827]',
+                  checkColor: 'text-[#EA580C]',
+                  btnDefault: 'bg-[#C2410C] text-white hover:bg-[#9A3412] shadow-md shadow-orange-500/15',
+                  btnSelected: 'bg-[#9A3412] text-white',
                 }
               ].map((plan, idx) => {
                 const isSelected = selectedPlan === plan.key;
@@ -727,10 +684,10 @@ const LandingPage = () => {
                   <div
                     key={idx}
                     onClick={() => setSelectedPlan(isSelected ? null : plan.key)}
-                    className={`relative flex flex-col bg-[#FFFFFF] rounded-2xl cursor-pointer transition-all duration-300 overflow-hidden border-2 text-[#FFFFFF]
+                    className={`relative flex flex-col bg-[#FFFFFF] rounded-2xl cursor-pointer transition-all duration-300 overflow-hidden border-2 text-[#1F2937]
                       ${isSelected
-                        ? `${(plan as any).selBorder} shadow-2xl -translate-y-2 ring-1 ring-[#B76E79]/50`
-                        : `${(plan as any).defaultBorder} hover:-translate-y-1 hover:border-[#B76E79]/50 hover:shadow-xl`
+                        ? `${(plan as any).selBorder} shadow-2xl -translate-y-2 ring-1 ring-[#F97316]/50`
+                        : `${(plan as any).defaultBorder} hover:-translate-y-1 hover:border-[#FFEDD5] hover:shadow-xl`
                       }`}
                   >
                     {/* Accent bar when selected */}
@@ -739,7 +696,7 @@ const LandingPage = () => {
                     )}
 
                     {plan.popular && (
-                      <div className="bg-[#B76E79] text-[#F3E8E8] text-[10px] font-extrabold text-center py-1.5 uppercase tracking-widest">
+                      <div className="bg-[#C2410C] text-[#F8FAFC] text-[10px] font-extrabold text-center py-1.5 uppercase tracking-widest">
                         ⭐ Most Popular
                       </div>
                     )}
@@ -752,10 +709,10 @@ const LandingPage = () => {
 
                     <div className="p-6 flex flex-col flex-1">
                       <div className="flex items-center justify-between mb-3">
-                        <h3 className="text-base font-bold text-[#FFFFFF]">{plan.name}</h3>
+                        <h3 className="text-base font-bold text-[#111827]">{plan.name}</h3>
                         <span className={`text-[10px] px-2.5 py-1 rounded-md font-extrabold uppercase tracking-wider ${plan.popular
-                            ? 'bg-[#B76E79]/20 text-[#B76E79] border border-[#B76E79]/30 shadow-xs'
-                            : 'bg-[#F3E8E8] text-[#57534E] border border-[#E7DADD]'
+                            ? 'bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5] shadow-xs'
+                            : 'bg-[#F8FAFC] text-[#64748B] border border-[#E2E8F0]'
                           }`}>
                           {plan.badge}
                         </span>
@@ -764,30 +721,30 @@ const LandingPage = () => {
                       <div className="mb-3">
                         <div className="flex items-baseline gap-1">
                           <span className={`text-3xl font-black ${(plan as any).priceColor}`}>{plan.price}</span>
-                          <span className="text-[#57534E] text-sm">{plan.period}</span>
+                          <span className="text-[#64748B] text-sm">{plan.period}</span>
                         </div>
-                        {(plan as any).annualTotal && <p className="text-[#57534E] text-xs mt-0.5">{(plan as any).annualTotal}</p>}
-                        {plan.savings && <p className="text-[#B76E79] text-xs mt-1 font-semibold">{plan.savings}</p>}
+                        {(plan as any).annualTotal && <p className="text-[#64748B] text-xs mt-0.5">{(plan as any).annualTotal}</p>}
+                        {plan.savings && <p className="text-[#EA580C] text-xs mt-1 font-semibold">{plan.savings}</p>}
                         {!isAnnual && !plan.trial && (
-                          <p className="text-[#57534E] text-xs mt-0.5">or save 25% with annual</p>
+                          <p className="text-[#64748B] text-xs mt-0.5">or save 25% with annual</p>
                         )}
                       </div>
 
-                      <div className="bg-[#F3E8E8] rounded-xl px-3 py-2 mb-4 border border-[#E7DADD]">
-                        <p className="text-[10px] uppercase tracking-wider font-bold mb-0.5 text-[#57534E]">Platform Limits</p>
-                        <p className="text-xs text-[#FFFFFF] font-medium">{plan.limits}</p>
+                      <div className="bg-[#F8FAFC] rounded-xl px-3 py-2 mb-4 border border-[#E2E8F0]">
+                        <p className="text-[10px] uppercase tracking-wider font-bold mb-0.5 text-[#64748B]">Platform Limits</p>
+                        <p className="text-xs text-[#1F2937] font-medium">{plan.limits}</p>
                       </div>
 
                       <ul className="space-y-1.5 mb-4 flex-1">
                         {plan.features.map((feature, fIdx) => (
-                          <li key={fIdx} className="flex items-start gap-2 text-xs text-[#FFFFFF]">
+                          <li key={fIdx} className="flex items-start gap-2 text-xs text-[#1F2937]">
                             <CheckCircle size={13} className={`shrink-0 mt-0.5 ${(plan as any).checkColor}`} />
                             <span>{feature}</span>
                           </li>
                         ))}
                         {plan.locked.map((feature, fIdx) => (
-                          <li key={`locked-${fIdx}`} className="flex items-start gap-2 text-xs text-[#57534E]/60">
-                            <XCircle size={13} className="shrink-0 mt-0.5 text-[#57534E]/40" />
+                          <li key={`locked-${fIdx}`} className="flex items-start gap-2 text-xs text-[#64748B]/60">
+                            <XCircle size={13} className="shrink-0 mt-0.5 text-[#64748B]/40" />
                             <span className="line-through">{feature}</span>
                           </li>
                         ))}
@@ -812,12 +769,12 @@ const LandingPage = () => {
         </section>
 
         {/* Testimonials */}
-        <section className="border-t border-[#E7DADD] bg-[#F3E8E8] py-24" id="testimonials">
+        <section className="border-t border-[#E2E8F0] bg-[#F8FAFC] py-24" id="testimonials">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-10">
-              <span className="text-[#B76E79] text-xs font-bold uppercase tracking-widest mb-2 block">Real Community Feedback</span>
+              <span className="text-[#EA580C] text-xs font-bold uppercase tracking-widest mb-2 block">Real Community Feedback</span>
               <h2 className="text-3xl md:text-4xl font-bold mb-4 text-[#FFFFFF]">Don't Just Take Our Word For It</h2>
-              <p className="text-[#57534E] max-w-2xl mx-auto">See what our real gym owners, certified trainers, and active members are saying about Gymora.</p>
+              <p className="text-[#64748B] max-w-2xl mx-auto">See what our real gym owners, certified trainers, and active members are saying about Gymora.</p>
             </div>
 
             {/* Role Filter Tabs */}
@@ -825,8 +782,8 @@ const LandingPage = () => {
               <button
                 onClick={() => setCommunityFilter('all')}
                 className={`px-4 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all cursor-pointer ${communityFilter === 'all'
-                    ? 'bg-[#B76E79] text-white shadow-md shadow-[#B76E79]/20'
-                    : 'bg-[#FFFFFF] text-[#57534E] hover:text-[#FFFFFF] border border-[#E7DADD]'
+                    ? 'bg-[#C2410C] text-white shadow-md shadow-orange-500/15'
+                    : 'bg-[#FFFFFF] text-[#64748B] hover:text-[#C2410C] border border-[#E2E8F0]'
                   }`}
               >
                 All Showcase ({communityCounts.total || 3})
@@ -834,8 +791,8 @@ const LandingPage = () => {
               <button
                 onClick={() => setCommunityFilter('member')}
                 className={`px-4 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all cursor-pointer ${communityFilter === 'member'
-                    ? 'bg-[#B76E79] text-white shadow-md shadow-[#B76E79]/20'
-                    : 'bg-[#FFFFFF] text-[#57534E] hover:text-[#FFFFFF] border border-[#E7DADD]'
+                    ? 'bg-[#C2410C] text-white shadow-md shadow-orange-500/15'
+                    : 'bg-[#FFFFFF] text-[#64748B] hover:text-[#C2410C] border border-[#E2E8F0]'
                   }`}
               >
                 Members ({communityCounts.members || 0})
@@ -843,8 +800,8 @@ const LandingPage = () => {
               <button
                 onClick={() => setCommunityFilter('trainer')}
                 className={`px-4 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all cursor-pointer ${communityFilter === 'trainer'
-                    ? 'bg-[#B76E79] text-white shadow-md shadow-[#B76E79]/20'
-                    : 'bg-[#FFFFFF] text-[#57534E] hover:text-[#FFFFFF] border border-[#E7DADD]'
+                    ? 'bg-[#C2410C] text-white shadow-md shadow-orange-500/15'
+                    : 'bg-[#FFFFFF] text-[#64748B] hover:text-[#C2410C] border border-[#E2E8F0]'
                   }`}
               >
                 Trainers ({communityCounts.trainers || 0})
@@ -852,8 +809,8 @@ const LandingPage = () => {
               <button
                 onClick={() => setCommunityFilter('owner')}
                 className={`px-4 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all cursor-pointer ${communityFilter === 'owner'
-                    ? 'bg-[#B76E79] text-white shadow-md shadow-[#B76E79]/20'
-                    : 'bg-[#FFFFFF] text-[#57534E] hover:text-[#FFFFFF] border border-[#E7DADD]'
+                    ? 'bg-[#C2410C] text-white shadow-md shadow-orange-500/15'
+                    : 'bg-[#FFFFFF] text-[#64748B] hover:text-[#C2410C] border border-[#E2E8F0]'
                   }`}
               >
                 Gym Owners ({communityCounts.owners || 0})
@@ -863,7 +820,7 @@ const LandingPage = () => {
             {/* Testimonial Cards */}
             {communityLoading ? (
               <div className="flex justify-center py-12">
-                <Loader2 className="animate-spin text-[#B76E79]" size={36} />
+                <Loader2 className="animate-spin text-[#EA580C]" size={36} />
               </div>
             ) : (() => {
               const currentReviews = (
@@ -882,8 +839,8 @@ const LandingPage = () => {
 
               if (currentReviews.length === 0) {
                 return (
-                  <div className="text-center py-12 bg-[#FFFFFF] rounded-2xl border border-dashed border-[#E7DADD] max-w-md mx-auto">
-                    <p className="text-[#57534E] text-sm">No reviews found in this category yet.</p>
+                  <div className="text-center py-12 bg-[#FFFFFF] rounded-2xl border border-dashed border-[#E2E8F0] max-w-md mx-auto">
+                    <p className="text-[#64748B] text-sm">No reviews found in this category yet.</p>
                   </div>
                 );
               }
@@ -897,9 +854,9 @@ const LandingPage = () => {
                       : 'grid-cols-1 md:grid-cols-3'
                 }`}>
                   {currentReviews.map((review: any, idx: number) => (
-                    <div key={review.id || idx} className="bg-[#FFFFFF] border border-[#E7DADD] p-8 rounded-2xl relative flex flex-col justify-between hover:border-[#B76E79]/50 hover:shadow-xl transition-all">
+                    <div key={review.id || idx} className="bg-[#FFFFFF] border border-[#E2E8F0] p-8 rounded-2xl relative flex flex-col justify-between hover:border-[#FFEDD5] hover:shadow-xl transition-all">
                       <div>
-                        <Quote className="absolute top-8 right-8 text-[#E7DADD]" size={48} />
+                        <Quote className="absolute top-8 right-8 text-[#E2E8F0]" size={48} />
                         <div className="flex items-center space-x-2 mb-4">
                           <div className="flex items-center space-x-0.5">
                             {[1, 2, 3, 4, 5].map((s) => (
@@ -908,45 +865,45 @@ const LandingPage = () => {
                                 size={17}
                                 className={
                                   s <= Math.round(review.rating || 5)
-                                    ? 'text-[#B76E79] fill-[#B76E79]'
-                                    : 'text-[#E7DADD] fill-transparent'
+                                    ? 'text-[#EA580C] fill-[#F97316]'
+                                    : 'text-[#E2E8F0] fill-transparent'
                                 }
                               />
                             ))}
                           </div>
-                          <span className="text-xs font-bold text-[#B76E79] bg-[#B76E79]/15 px-2 py-0.5 rounded-md border border-[#B76E79]/30">
+                          <span className="text-xs font-bold text-[#EA580C] bg-[#FFF7ED] px-2 py-0.5 rounded-md border border-[#FFEDD5]">
                             {(Number(review.rating) || 5).toFixed(1)}
                           </span>
                         </div>
-                        <p className="text-[#57534E] italic mb-6 relative z-10 leading-relaxed">"{review.text}"</p>
+                        <p className="text-[#64748B] italic mb-6 relative z-10 leading-relaxed">"{review.text}"</p>
                       </div>
-                      <div className="pt-4 border-t border-[#E7DADD]">
+                      <div className="pt-4 border-t border-[#E2E8F0]">
                         <div className="flex items-center justify-between">
                           <div>
                             <h4 className="font-bold text-[#FFFFFF] text-base">{review.name}</h4>
-                            <span className="text-xs text-[#B76E79] uppercase tracking-wider font-semibold block mt-0.5">
+                            <span className="text-xs text-[#EA580C] uppercase tracking-wider font-semibold block mt-0.5">
                               {review.role}
                             </span>
                           </div>
                           {review.type === 'member' && (
-                            <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-[#B76E79]/15 text-[#B76E79] border border-[#B76E79]/30">
+                            <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5]">
                               Verified Member
                             </span>
                           )}
                         </div>
 
                         {review.reviewedGym ? (
-                          <span className="text-xs text-[#57534E] font-medium block mt-2.5 flex items-center gap-1.5 bg-[#F3E8E8] p-2 rounded-lg border border-[#E7DADD]">
-                            <CheckCircle size={14} className="text-[#B76E79] shrink-0" />
+                          <span className="text-xs text-[#64748B] font-medium block mt-2.5 flex items-center gap-1.5 bg-[#F8FAFC] p-2 rounded-lg border border-[#E2E8F0]">
+                            <CheckCircle size={14} className="text-[#EA580C] shrink-0" />
                             <span>Gym Review: <strong className="text-[#FFFFFF]">{review.reviewedGym}</strong>{review.gymLocation ? ` • ${review.gymLocation}` : ''}</span>
                           </span>
                         ) : review.reviewedBy ? (
-                          <span className="text-xs text-[#57534E] font-medium block mt-2.5 flex items-center gap-1.5 bg-[#F3E8E8] p-2 rounded-lg border border-[#E7DADD]">
-                            <CheckCircle size={14} className="text-[#B76E79] shrink-0" />
+                          <span className="text-xs text-[#64748B] font-medium block mt-2.5 flex items-center gap-1.5 bg-[#F8FAFC] p-2 rounded-lg border border-[#E2E8F0]">
+                            <CheckCircle size={14} className="text-[#EA580C] shrink-0" />
                             <span>Client Review • <strong className="text-[#FFFFFF]">{review.reviewedBy}</strong></span>
                           </span>
                         ) : review.subtitle ? (
-                          <span className="text-xs text-[#57534E] block mt-2">
+                          <span className="text-xs text-[#64748B] block mt-2">
                             {review.subtitle}
                           </span>
                         ) : null}
@@ -961,59 +918,59 @@ const LandingPage = () => {
       </main>
 
       {/* Detailed Footer */}
-      <footer className="border-t border-[#E7DADD] bg-[#F3E8E8] pt-16 pb-8 text-[#57534E]">
+      <footer className="border-t border-[#E2E8F0] bg-[#F8FAFC] pt-16 pb-8 text-[#64748B]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
             <div className="col-span-1 md:col-span-1">
               {/* Footer logo — scrolls to top */}
               <button onClick={scrollToTop} className="flex items-center space-x-2 mb-4 group cursor-pointer">
-                <div className="w-8 h-8 bg-[#B76E79] rounded-lg flex items-center justify-center shadow-md shadow-[#B76E79]/20">
+                <div className="w-8 h-8 bg-[#C2410C] rounded-lg flex items-center justify-center shadow-md shadow-orange-500/15">
                   <Activity className="text-white" size={18} />
                 </div>
-                <span className="text-xl font-bold tracking-tight text-[#FFFFFF]">Gymora</span>
+                <span className="text-xl font-bold tracking-tight text-[#111827]">Gymora</span>
               </button>
-              <p className="text-[#57534E] text-sm leading-relaxed mb-6">
+              <p className="text-[#64748B] text-sm leading-relaxed mb-6">
                 The ultimate fitness ecosystem combining AI intelligence with human expertise for unmatched results.
               </p>
               <div className="flex space-x-4">
-                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-[#57534E] hover:text-[#B76E79] transition-colors"><FaInstagram size={20} /></a>
-                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-[#57534E] hover:text-[#B76E79] transition-colors"><FaTwitter size={20} /></a>
-                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-[#57534E] hover:text-[#B76E79] transition-colors"><FaFacebook size={20} /></a>
-                <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="text-[#57534E] hover:text-[#B76E79] transition-colors"><FaYoutube size={20} /></a>
+                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-[#64748B] hover:text-[#EA580C] transition-colors"><FaInstagram size={20} /></a>
+                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-[#64748B] hover:text-[#EA580C] transition-colors"><FaTwitter size={20} /></a>
+                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-[#64748B] hover:text-[#EA580C] transition-colors"><FaFacebook size={20} /></a>
+                <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="text-[#64748B] hover:text-[#EA580C] transition-colors"><FaYoutube size={20} /></a>
               </div>
             </div>
 
             <div>
               <h4 className="text-[#FFFFFF] font-semibold mb-4">Navigate</h4>
-              <ul className="space-y-2 text-sm text-[#57534E]">
-                <li><button onClick={() => { window.scrollTo({ top: 0, behavior: 'smooth' }); setIsFeaturesOpen(true); }} className="hover:text-[#B76E79] transition-colors cursor-pointer">Features</button></li>
-                <li><button onClick={() => { window.scrollTo({ top: 0, behavior: 'smooth' }); setTourJourney('select'); setTourStep(1); setIsTourOpen(true); }} className="hover:text-[#B76E79] transition-colors cursor-pointer">Video Tour</button></li>
-                <li><a href="#gyms" className="hover:text-[#B76E79] transition-colors">Gyms</a></li>
-                <li><a href="#pricing" className="hover:text-[#B76E79] transition-colors">Pricing</a></li>
+              <ul className="space-y-2 text-sm text-[#64748B]">
+                <li><button onClick={() => { window.scrollTo({ top: 0, behavior: 'smooth' }); setIsFeaturesOpen(true); }} className="hover:text-[#EA580C] transition-colors cursor-pointer">Features</button></li>
+                <li><button onClick={() => { window.scrollTo({ top: 0, behavior: 'smooth' }); setTourJourney('select'); setTourStep(1); setIsTourOpen(true); }} className="hover:text-[#EA580C] transition-colors cursor-pointer">Video Tour</button></li>
+                <li><a href="#gyms" className="hover:text-[#EA580C] transition-colors">Gyms</a></li>
+                <li><a href="#pricing" className="hover:text-[#EA580C] transition-colors">Pricing</a></li>
               </ul>
             </div>
 
             <div>
               <h4 className="text-[#FFFFFF] font-semibold mb-4">Company</h4>
-              <ul className="space-y-2 text-sm text-[#57534E]">
-                <li><Link to="/about" className="hover:text-[#B76E79] transition-colors">About Us</Link></li>
-                <li><Link to="/blog" className="hover:text-[#B76E79] transition-colors">Blog</Link></li>
-                <li><Link to="/contact" className="hover:text-[#B76E79] transition-colors">Contact</Link></li>
+              <ul className="space-y-2 text-sm text-[#64748B]">
+                <li><Link to="/about" className="hover:text-[#EA580C] transition-colors">About Us</Link></li>
+                <li><Link to="/blog" className="hover:text-[#EA580C] transition-colors">Blog</Link></li>
+                <li><Link to="/contact" className="hover:text-[#EA580C] transition-colors">Contact</Link></li>
               </ul>
             </div>
 
             <div>
               <h4 className="text-[#FFFFFF] font-semibold mb-4">Account</h4>
-              <ul className="space-y-2 text-sm text-[#57534E]">
-                <li><Link to="/login" className="hover:text-[#B76E79] transition-colors">Log In</Link></li>
-                <li><Link to="/register/customer" className="hover:text-[#B76E79] transition-colors">Sign In (Register)</Link></li>
-                <li><Link to="/privacy-policy" className="hover:text-[#B76E79] transition-colors">Privacy Policy</Link></li>
-                <li><Link to="/terms-of-service" className="hover:text-[#B76E79] transition-colors">Terms of Service</Link></li>
+              <ul className="space-y-2 text-sm text-[#64748B]">
+                <li><Link to="/login" className="hover:text-[#EA580C] transition-colors">Log In</Link></li>
+                <li><Link to="/register/customer" className="hover:text-[#EA580C] transition-colors">Sign In (Register)</Link></li>
+                <li><Link to="/privacy-policy" className="hover:text-[#EA580C] transition-colors">Privacy Policy</Link></li>
+                <li><Link to="/terms-of-service" className="hover:text-[#EA580C] transition-colors">Terms of Service</Link></li>
               </ul>
             </div>
           </div>
 
-          <div className="border-t border-[#E7DADD] pt-8 text-center text-sm text-[#57534E]">
+          <div className="border-t border-[#E2E8F0] pt-8 text-center text-sm text-[#64748B]">
             <p>&copy; {new Date().getFullYear()} Gymora Technologies Inc. All rights reserved.</p>
           </div>
         </div>
@@ -1024,27 +981,27 @@ const LandingPage = () => {
           {/* Fixed Back to Home Button on overlay */}
           <button
             onClick={handleBackToHome}
-            className="fixed top-5 left-5 z-[110] flex items-center gap-2 px-4 py-2.5 bg-[#FFFFFF]/95 hover:bg-[#B76E79] text-[#292524] hover:text-[#FFFFFF] font-bold text-sm rounded-full border border-[#E7DADD] hover:border-[#B76E79] transition-all shadow-2xl backdrop-blur-md cursor-pointer group"
+            className="fixed top-5 left-5 z-[110] flex items-center gap-2 px-4 py-2.5 bg-[#FFFFFF]/95 hover:bg-[#C2410C] text-[#111827] hover:text-[#FFFFFF] font-bold text-sm rounded-full border border-[#E2E8F0] hover:border-[#FDBA74] transition-all shadow-2xl backdrop-blur-md cursor-pointer group"
             title="Back to Home"
           >
-            <ArrowLeft size={18} className="text-[#B76E79] group-hover:text-[#FFFFFF] group-hover:-translate-x-0.5 transition-all" />
+            <ArrowLeft size={18} className="text-[#EA580C] group-hover:text-[#FFFFFF] group-hover:-translate-x-0.5 transition-all" />
             <span>Back to Home</span>
           </button>
 
           <div
-            className="relative w-full max-w-4xl max-h-[85vh] my-auto bg-[#FFFFFF] rounded-3xl overflow-hidden border border-[#E7DADD] shadow-[0_25px_60px_rgba(0,0,0,0.9)] flex flex-col"
+            className="relative w-full max-w-4xl max-h-[85vh] my-auto bg-[#FFFFFF] rounded-3xl overflow-hidden border border-[#E2E8F0] shadow-[0_25px_60px_rgba(0,0,0,0.9)] flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header Bar */}
-            <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-white/10 bg-[#F3E8E8]/90 backdrop-blur-md gap-3">
+            <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-white/10 bg-[#FFFFFF]/95 backdrop-blur-md gap-3">
               <div className="flex items-center gap-2.5 min-w-0">
-                <PlayCircle size={22} className="text-[#B76E79] shrink-0" />
-                <h3 className="text-[#292524] font-bold text-sm sm:text-base truncate">{activeVideo.title}</h3>
+                <PlayCircle size={22} className="text-[#EA580C] shrink-0" />
+                <h3 className="text-[#111827] font-bold text-sm sm:text-base truncate">{activeVideo.title}</h3>
               </div>
               <div className="flex items-center gap-2 sm:gap-3 shrink-0">
                 <button
                   onClick={handleBackToHome}
-                  className="flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-4 py-1.5 sm:py-2 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold text-xs sm:text-sm rounded-full transition-all shadow-md hover:shadow-teal-500/25 cursor-pointer"
+                  className="flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-4 py-1.5 sm:py-2 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold text-xs sm:text-sm rounded-full transition-all shadow-md hover:shadow-teal-500/25 cursor-pointer"
                   title="Back to Home"
                 >
                   <ArrowLeft size={16} />
@@ -1054,14 +1011,14 @@ const LandingPage = () => {
                   href={activeVideo.url.startsWith('http') ? activeVideo.url : `https://www.youtube.com/watch?v=${activeVideo.url}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hidden md:inline-flex items-center gap-1.5 text-xs text-[#292524] hover:text-white bg-[#FFFFFF] hover:bg-[#F3E8E8] border border-[#E7DADD] px-3.5 py-1.5 rounded-full transition-colors font-medium"
+                  className="hidden md:inline-flex items-center gap-1.5 text-xs text-[#111827] hover:text-[#C2410C] bg-[#FFFFFF] hover:bg-[#FFF7ED] border border-[#E2E8F0] px-3.5 py-1.5 rounded-full transition-colors font-medium"
                 >
                   <span>Watch on YouTube</span>
                   <ArrowRight size={13} />
                 </a>
                 <button
                   onClick={handleBackToHome}
-                  className="w-8 h-8 sm:w-9 sm:h-9 bg-[#FFFFFF] hover:bg-red-500/20 text-[#57534E] hover:text-red-400 border border-[#E7DADD] hover:border-red-500/30 rounded-full flex items-center justify-center transition-all cursor-pointer"
+                  className="w-8 h-8 sm:w-9 sm:h-9 bg-[#FFFFFF] hover:bg-red-500/20 text-[#64748B] hover:text-[#B91C1C] border border-[#E2E8F0] hover:border-red-500/30 rounded-full flex items-center justify-center transition-all cursor-pointer"
                   title="Close Video"
                 >
                   <X size={18} />
@@ -1094,20 +1051,20 @@ const LandingPage = () => {
       {/* Features Modal */}
       {isFeaturesOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-[#FFFFFF]/80 backdrop-blur-sm animate-in fade-in duration-300" onClick={handleBackToHome}>
-          <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-3xl w-full max-w-6xl max-h-[90vh] overflow-y-auto overflow-x-hidden shadow-2xl flex flex-col" onClick={e => e.stopPropagation()}>
+          <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-3xl w-full max-w-6xl max-h-[90vh] overflow-y-auto overflow-x-hidden shadow-2xl flex flex-col" onClick={e => e.stopPropagation()}>
             {/* Header */}
-            <div className="flex justify-between items-center p-6 border-b border-[#E7DADD] gap-4">
-              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#292524]">Everything You Need for a Smarter Fitness Journey</h2>
+            <div className="flex justify-between items-center p-6 border-b border-[#E2E8F0] gap-4">
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#111827]">Everything You Need for a Smarter Fitness Journey</h2>
               <div className="flex items-center gap-2.5 shrink-0">
                 <button
                   onClick={handleBackToHome}
-                  className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold text-xs sm:text-sm rounded-full transition-all shadow-md cursor-pointer"
+                  className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold text-xs sm:text-sm rounded-full transition-all shadow-md cursor-pointer"
                   title="Back to Home"
                 >
                   <ArrowLeft size={16} />
                   <span>Back to Home</span>
                 </button>
-                <button onClick={() => setIsFeaturesOpen(false)} className="p-2 text-[#57534E] hover:text-white hover:bg-[#F3E8E8] rounded-full transition-colors cursor-pointer">
+                <button onClick={() => setIsFeaturesOpen(false)} className="p-2 text-[#64748B] hover:text-[#C2410C] hover:bg-[#FFF7ED] rounded-full transition-colors cursor-pointer">
                   <X size={22} />
                 </button>
               </div>
@@ -1122,18 +1079,18 @@ const LandingPage = () => {
                   { id: 'gym', title: 'Gym Discovery', icon: MapPin, items: ['Discover available gyms', 'View gym facilities', 'Equipment information', 'AC / Non-AC information', 'Offers', 'Ratings & Reviews', 'Compare and choose suitable gyms'] },
                   { id: 'trainer', title: 'Human Trainers', icon: User, items: ['Online Trainers', 'Offline Trainers', 'Trainer Expertise', 'Trainer Availability', 'Personalized Workout Guidance', 'Diet Guidance', 'Trainer-based Progress Tracking'] }
                 ].map((tab) => (
-                  <div key={tab.id} onClick={() => setActiveFeatureTab(tab.id as any)} className={`p-5 rounded-2xl cursor-pointer transition-all border-2 ${activeFeatureTab === tab.id ? 'border-[#B76E79] bg-[#F3E8E8] shadow-lg shadow-[#B76E79]/10' : 'border-transparent bg-[#F3E8E8] hover:border-[#E7DADD]'}`}>
+                  <div key={tab.id} onClick={() => setActiveFeatureTab(tab.id as any)} className={`p-5 rounded-2xl cursor-pointer transition-all border-2 ${activeFeatureTab === tab.id ? 'border-[#FDBA74] bg-[#F8FAFC] shadow-lg shadow-orange-500/15' : 'border-transparent bg-[#F8FAFC] hover:border-[#E2E8F0]'}`}>
                     <div className="flex items-center space-x-3 mb-3">
-                      <div className={`p-2 rounded-xl ${activeFeatureTab === tab.id ? 'bg-[#B76E79] text-white' : 'bg-[#F3E8E8] text-[#57534E]'}`}>
+                      <div className={`p-2 rounded-xl ${activeFeatureTab === tab.id ? 'bg-[#C2410C] text-white' : 'bg-[#F8FAFC] text-[#64748B]'}`}>
                         <tab.icon size={24} />
                       </div>
-                      <h3 className={`text-lg font-bold ${activeFeatureTab === tab.id ? 'text-[#B76E79]' : 'text-[#292524]'}`}>{tab.title}</h3>
+                      <h3 className={`text-lg font-bold ${activeFeatureTab === tab.id ? 'text-[#EA580C]' : 'text-[#111827]'}`}>{tab.title}</h3>
                     </div>
                     {activeFeatureTab === tab.id && (
                       <ul className="space-y-2 mt-4 animate-in slide-in-from-top-2 duration-300">
                         {tab.items.map((item, idx) => (
-                          <li key={idx} className={`flex items-start space-x-2 text-sm transition-colors duration-300 ${featureSlideIndex === idx ? 'text-[#B76E79] font-bold' : 'text-[#57534E]'}`}>
-                            <CheckCircle size={16} className={`${featureSlideIndex === idx ? 'text-[#B76E79]' : 'text-[#57534E]'} shrink-0 mt-0.5 transition-colors`} />
+                          <li key={idx} className={`flex items-start space-x-2 text-sm transition-colors duration-300 ${featureSlideIndex === idx ? 'text-[#EA580C] font-bold' : 'text-[#64748B]'}`}>
+                            <CheckCircle size={16} className={`${featureSlideIndex === idx ? 'text-[#EA580C]' : 'text-[#64748B]'} shrink-0 mt-0.5 transition-colors`} />
                             <span>{item}</span>
                           </li>
                         ))}
@@ -1144,7 +1101,7 @@ const LandingPage = () => {
               </div>
 
               {/* Preview Area */}
-              <div className="w-full lg:w-2/3 bg-[#F3E8E8] rounded-2xl border border-[#E7DADD] flex items-center justify-center p-8 relative overflow-hidden">
+              <div className="w-full lg:w-2/3 bg-[#F8FAFC] rounded-2xl border border-[#E2E8F0] flex items-center justify-center p-8 relative overflow-hidden">
                 <FeaturePreview
                   tabId={activeFeatureTab}
                   slideIndex={featureSlideIndex}
@@ -1163,11 +1120,11 @@ const LandingPage = () => {
       {/* Video Tour Modal */}
       {isTourOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-[#FFFFFF]/90 backdrop-blur-md animate-in fade-in duration-300" onClick={handleBackToHome}>
-          <div className="relative w-full max-w-6xl bg-[#FFFFFF] rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(183,110,121,0.15)] flex flex-col h-[85vh] border border-[#E7DADD]" onClick={e => e.stopPropagation()}>
+          <div className="relative w-full max-w-6xl bg-[#FFFFFF] rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(183,110,121,0.15)] flex flex-col h-[85vh] border border-[#E2E8F0]" onClick={e => e.stopPropagation()}>
             {/* Header */}
-            <div className="flex justify-between items-center p-4 border-b border-[#E7DADD] bg-[#FFFFFF] shrink-0">
+            <div className="flex justify-between items-center p-4 border-b border-[#E2E8F0] bg-[#FFFFFF] shrink-0">
               <div className="flex items-center space-x-3">
-                <PlayCircle className="text-[#B76E79]" size={20} />
+                <PlayCircle className="text-[#EA580C]" size={20} />
                 <span className="font-bold text-white text-sm tracking-wide uppercase">
                   {tourJourney === 'select' ? 'Choose Your Journey' : tourJourney === 'customer' ? 'Customer Journey' : 'Gym Owner Journey'}
                 </span>
@@ -1175,13 +1132,13 @@ const LandingPage = () => {
               <div className="flex items-center gap-2.5">
                 <button
                   onClick={handleBackToHome}
-                  className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold text-xs sm:text-sm rounded-full transition-all shadow-md cursor-pointer"
+                  className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold text-xs sm:text-sm rounded-full transition-all shadow-md cursor-pointer"
                   title="Back to Home"
                 >
                   <ArrowLeft size={16} />
                   <span>Back to Home</span>
                 </button>
-                <button onClick={() => setIsTourOpen(false)} className="text-[#57534E] hover:text-white transition-colors cursor-pointer p-1">
+                <button onClick={() => setIsTourOpen(false)} className="text-[#64748B] hover:text-[#C2410C] transition-colors cursor-pointer p-1">
                   <X size={22} />
                 </button>
               </div>

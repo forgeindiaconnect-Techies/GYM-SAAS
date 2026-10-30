@@ -129,9 +129,9 @@ const SuperAdminCustomers = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'APPROVED': return 'bg-[#B76E79]/10 text-[#B76E79] border-[#B76E79]/20';
-      case 'REJECTED': return 'bg-[#F3E8E8]/10 text-[#9F5965] border-[#F3E8E8]/20';
-      case 'SUSPENDED': return 'bg-[#B76E79]/10 text-[#B76E79] border-[#E7DADD]/20';
+      case 'APPROVED': return 'bg-[#FFF7ED] text-[#EA580C] border-[#FFEDD5]';
+      case 'REJECTED': return 'bg-[#FFF7ED] text-[#9A3412] border-[#F8FAFC]/20';
+      case 'SUSPENDED': return 'bg-[#FFF7ED] text-[#EA580C] border-[#E2E8F0]/20';
       default: return 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20';
     }
   };
@@ -140,25 +140,25 @@ const SuperAdminCustomers = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-[#292524]">Customer Details</h1>
-          <p className="text-[#57534E] text-sm mt-1">Manage all registered members and their approval statuses.</p>
+          <h1 className="text-2xl font-bold text-[#111827]">Customer Details</h1>
+          <p className="text-[#64748B] text-sm mt-1">Manage all registered members and their approval statuses.</p>
         </div>
       </div>
 
-      <div className="flex space-x-2 border-b border-[#E7DADD] pb-2 overflow-x-auto custom-scrollbar">
+      <div className="flex space-x-2 border-b border-[#E2E8F0] pb-2 overflow-x-auto custom-scrollbar">
         {TABS.map(tab => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`flex items-center space-x-2 px-4 py-2 rounded-t-lg transition-colors text-sm font-medium border-b-2 whitespace-nowrap ${
               activeTab === tab.id
-                ? 'border-[#B76E79] text-[#B76E79] bg-[#B76E79]/10'
-                : 'border-transparent text-[#57534E] hover:text-[#FFFFFF] hover:bg-[#FFFFFF]'
+                ? 'border-[#FDBA74] text-[#EA580C] bg-[#FFF7ED]'
+                : 'border-transparent text-[#64748B] hover:text-[#C2410C] hover:bg-[#FFFFFF]'
             }`}
           >
             <tab.icon size={16} />
             <span>{tab.label}</span>
-            <span className="bg-[#F3E8E8] text-xs px-2 py-0.5 rounded-full ml-2 text-[#292524]">
+            <span className="bg-[#F8FAFC] text-xs px-2 py-0.5 rounded-full ml-2 text-[#111827]">
               {tab.id === 'ALL' ? customers.length : 
                tab.id === 'NEW' ? customers.filter(c => (new Date().getTime() - new Date(c.createdAt).getTime()) < 7 * 24 * 60 * 60 * 1000).length :
                customers.filter(c => c.approvalStatus === tab.id).length}
@@ -167,62 +167,62 @@ const SuperAdminCustomers = () => {
         ))}
       </div>
 
-      <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-xl p-4 flex flex-wrap gap-4 items-center justify-between">
+      <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl p-4 flex flex-wrap gap-4 items-center justify-between">
         <div className="flex-1 min-w-[250px] relative">
-          <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#57534E]" />
+          <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#64748B]" />
           <input 
             type="text" 
             placeholder="Search by name or email..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-[#FFFFFF] border border-[#E7DADD] text-[#292524] rounded-lg pl-10 pr-4 py-2 text-sm outline-none focus:border-[#B76E79] transition-colors"
+            className="w-full bg-[#FFFFFF] border border-[#E2E8F0] text-[#111827] rounded-lg pl-10 pr-4 py-2 text-sm outline-none focus:border-[#FDBA74] transition-colors"
           />
         </div>
         <div className="relative">
           <button 
             onClick={() => setShowExportMenu(!showExportMenu)}
-            className="flex items-center space-x-2 px-4 py-2 bg-[#FFFFFF] border border-[#E7DADD] text-[#292524] rounded-lg hover:bg-[#F3E8E8] transition-colors text-sm font-medium"
+            className="flex items-center space-x-2 px-4 py-2 bg-[#FFFFFF] border border-[#E2E8F0] text-[#111827] rounded-lg hover:bg-[#FFF7ED] transition-colors text-sm font-medium"
           >
-            <Download size={16} className="text-[#B76E79]" />
+            <Download size={16} className="text-[#EA580C]" />
             <span>Download Report</span>
           </button>
           {showExportMenu && (
-            <div className="absolute right-0 mt-2 w-48 bg-[#FFFFFF] border border-[#E7DADD] rounded-lg shadow-xl z-10 py-1 overflow-hidden">
-              <button onClick={() => handleExport('pdf')} className="w-full text-left px-4 py-2 text-sm text-[#292524] hover:bg-[#F3E8E8] flex items-center space-x-2">
-                <FileText size={14} className="text-red-400" /><span>PDF Document</span>
+            <div className="absolute right-0 mt-2 w-48 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg shadow-xl z-10 py-1 overflow-hidden">
+              <button onClick={() => handleExport('pdf')} className="w-full text-left px-4 py-2 text-sm text-[#111827] hover:bg-[#FFF7ED] flex items-center space-x-2">
+                <FileText size={14} className="text-[#B91C1C]" /><span>PDF Document</span>
               </button>
-              <button onClick={() => handleExport('excel')} className="w-full text-left px-4 py-2 text-sm text-[#292524] hover:bg-[#F3E8E8] flex items-center space-x-2">
+              <button onClick={() => handleExport('excel')} className="w-full text-left px-4 py-2 text-sm text-[#111827] hover:bg-[#FFF7ED] flex items-center space-x-2">
                 <TableIcon size={14} className="text-green-400" /><span>Excel Spreadsheet</span>
               </button>
-              <button onClick={() => handleExport('word')} className="w-full text-left px-4 py-2 text-sm text-[#292524] hover:bg-[#F3E8E8] flex items-center space-x-2">
-                <FileText size={14} className="text-[#B76E79]" /><span>Word Document</span>
+              <button onClick={() => handleExport('word')} className="w-full text-left px-4 py-2 text-sm text-[#111827] hover:bg-[#FFF7ED] flex items-center space-x-2">
+                <FileText size={14} className="text-[#EA580C]" /><span>Word Document</span>
               </button>
             </div>
           )}
         </div>
       </div>
 
-      <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-xl overflow-hidden relative min-h-[400px]">
+      <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl overflow-hidden relative min-h-[400px]">
         {loading ? (
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-[#57534E]">
-            <Loader2 size={32} className="animate-spin mb-4 text-[#B76E79]" />
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-[#64748B]">
+            <Loader2 size={32} className="animate-spin mb-4 text-[#EA580C]" />
             <p>Loading customers...</p>
           </div>
         ) : error ? (
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-[#9F5965]">
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-[#9A3412]">
             <AlertCircle size={32} className="mb-2" />
             <p>{error}</p>
           </div>
         ) : filteredCustomers.length === 0 ? (
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-[#57534E]">
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-[#64748B]">
             <User size={48} className="mb-4 opacity-50" />
-            <p className="text-lg font-medium text-[#292524] mb-1">No customers found</p>
+            <p className="text-lg font-medium text-[#111827] mb-1">No customers found</p>
             <p className="text-sm text-center max-w-md">There are no customers matching your search criteria.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm text-left">
-              <thead className="text-xs text-[#57534E] uppercase bg-[#FFFFFF] border-b border-[#E7DADD]">
+              <thead className="text-xs text-[#64748B] uppercase bg-[#FFFFFF] border-b border-[#E2E8F0]">
                 <tr>
                   <th className="px-6 py-4 font-medium">Customer</th>
                   <th className="px-6 py-4 font-medium">Contact</th>
@@ -232,39 +232,39 @@ const SuperAdminCustomers = () => {
                   <th className="px-6 py-4 font-medium text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#E7DADD]">
+              <tbody className="divide-y divide-[#E2E8F0]">
                 {filteredCustomers.map((customer) => (
-                  <tr key={customer._id} className="hover:bg-[#F3E8E8] transition-colors">
+                  <tr key={customer._id} className="hover:bg-[#FFF7ED] transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-center space-x-3">
-                        <div className="w-8 h-8 rounded-full bg-[#F3E8E8] flex items-center justify-center text-[#B91C1C] font-bold">
+                        <div className="w-8 h-8 rounded-full bg-[#F8FAFC] flex items-center justify-center text-[#B91C1C] font-bold">
                           {customer.firstName[0]}
                         </div>
                         <div>
-                          <div className="font-medium text-[#292524]">{customer.firstName} {customer.lastName}</div>
-                          <div className="text-xs text-[#57534E]">Member</div>
+                          <div className="font-medium text-[#111827]">{customer.firstName} {customer.lastName}</div>
+                          <div className="text-xs text-[#64748B]">Member</div>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
                       <div className="space-y-1">
-                        <div className="flex items-center space-x-2 text-[#57534E]">
+                        <div className="flex items-center space-x-2 text-[#64748B]">
                           <Mail size={14} />
                           <span className="truncate max-w-[150px]">{customer.email}</span>
                         </div>
-                        <div className="flex items-center space-x-2 text-[#57534E]">
+                        <div className="flex items-center space-x-2 text-[#64748B]">
                           <Phone size={14} />
                           <span>{customer.mobile}</span>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="font-medium text-[#292524]">{customer.gymId?.name || 'No Gym'}</div>
-                      <div className="text-xs text-[#57534E]">{customer.branchId?.name || 'Local'}</div>
+                      <div className="font-medium text-[#111827]">{customer.gymId?.name || 'No Gym'}</div>
+                      <div className="text-xs text-[#64748B]">{customer.branchId?.name || 'Local'}</div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="font-medium text-[#292524]">{customer.subscriptionPlan || 'No Plan'}</div>
-                      <div className={`text-xs font-bold ${customer.paymentStatus === 'PAID' ? 'text-green-500' : 'text-[#B76E79]'}`}>
+                      <div className="font-medium text-[#111827]">{customer.subscriptionPlan || 'No Plan'}</div>
+                      <div className={`text-xs font-bold ${customer.paymentStatus === 'PAID' ? 'text-green-500' : 'text-[#EA580C]'}`}>
                         {customer.paymentStatus || 'PENDING'}
                       </div>
                     </td>
@@ -279,14 +279,14 @@ const SuperAdminCustomers = () => {
                         <div className="flex items-center justify-end space-x-1">
                           <button 
                             onClick={() => setViewCustomer(customer)}
-                            className="p-1.5 text-[#57534E] hover:text-[#FFFFFF] hover:bg-[#F3E8E8] rounded-md transition-colors"
+                            className="p-1.5 text-[#64748B] hover:text-[#C2410C] hover:bg-[#FFF7ED] rounded-md transition-colors"
                             title="View Details"
                           >
                             <Eye size={16} />
                           </button>
                           <button 
                             onClick={() => handleDelete(customer._id)}
-                            className="p-1.5 text-[#57534E] hover:text-rose-600 hover:bg-red-50 rounded-md transition-colors"
+                            className="p-1.5 text-[#64748B] hover:text-rose-600 hover:bg-red-50 rounded-md transition-colors"
                             title="Delete Customer"
                           >
                             <Trash2 size={16} />
@@ -305,15 +305,15 @@ const SuperAdminCustomers = () => {
       {/* View Details Modal */}
       {viewCustomer && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 overflow-y-auto bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl max-w-2xl w-full shadow-2xl flex flex-col max-h-[85vh] overflow-hidden my-auto">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-[#E7DADD] bg-[#FFFFFF] shrink-0">
+          <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl max-w-2xl w-full shadow-2xl flex flex-col max-h-[85vh] overflow-hidden my-auto">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-[#E2E8F0] bg-[#FFFFFF] shrink-0">
               <div>
-                <h2 className="text-xl font-bold text-[#292524]">Customer Details</h2>
-                <p className="text-xs text-[#57534E] mt-0.5">Comprehensive profile and subscription information</p>
+                <h2 className="text-xl font-bold text-[#111827]">Customer Details</h2>
+                <p className="text-xs text-[#64748B] mt-0.5">Comprehensive profile and subscription information</p>
               </div>
               <button 
                 onClick={() => setViewCustomer(null)}
-                className="p-1.5 text-[#57534E] hover:text-[#B76E79] hover:bg-[#F3E8E8] rounded-lg transition-colors"
+                className="p-1.5 text-[#64748B] hover:text-[#EA580C] hover:bg-[#FFF7ED] rounded-lg transition-colors"
                 title="Close"
               >
                 <X size={20} />
@@ -323,29 +323,29 @@ const SuperAdminCustomers = () => {
             <div className="p-6 overflow-y-auto flex-1 space-y-6 text-sm">
               {/* Account Details */}
               <div>
-                <h3 className="text-[#B76E79] font-bold text-xs uppercase tracking-wider mb-3">Account Details</h3>
-                <div className="border border-[#E7DADD] rounded-xl overflow-hidden divide-y divide-[#E7DADD] bg-[#FFFFFF] shadow-sm">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#E7DADD]">
+                <h3 className="text-[#EA580C] font-bold text-xs uppercase tracking-wider mb-3">Account Details</h3>
+                <div className="border border-[#E2E8F0] rounded-xl overflow-hidden divide-y divide-[#E2E8F0] bg-[#FFFFFF] shadow-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#E2E8F0]">
                     <div className="p-3.5 bg-[#FFFFFF] flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider mb-1">First Name</span>
-                      <span className="font-semibold text-sm text-[#292524]">{viewCustomer.firstName || '—'}</span>
+                      <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1">First Name</span>
+                      <span className="font-semibold text-sm text-[#111827]">{viewCustomer.firstName || '—'}</span>
                     </div>
                     <div className="p-3.5 bg-[#FFFFFF] flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider mb-1">Last Name</span>
-                      <span className="font-semibold text-sm text-[#292524]">{viewCustomer.lastName || '—'}</span>
+                      <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1">Last Name</span>
+                      <span className="font-semibold text-sm text-[#111827]">{viewCustomer.lastName || '—'}</span>
                     </div>
                     <div className="p-3.5 bg-[#FFFFFF] flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider mb-1">Email</span>
-                      <span className="font-semibold text-sm text-[#292524] break-all">{viewCustomer.email || '—'}</span>
+                      <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1">Email</span>
+                      <span className="font-semibold text-sm text-[#111827] break-all">{viewCustomer.email || '—'}</span>
                     </div>
                     <div className="p-3.5 bg-[#FFFFFF] flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider mb-1">Mobile</span>
-                      <span className="font-semibold text-sm text-[#292524]">{viewCustomer.mobile || '—'}</span>
+                      <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1">Mobile</span>
+                      <span className="font-semibold text-sm text-[#111827]">{viewCustomer.mobile || '—'}</span>
                     </div>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-[#E7DADD]">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-[#E2E8F0]">
                     <div className="p-3.5 bg-[#FFFFFF] flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider mb-1">Account Status</span>
+                      <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1">Account Status</span>
                       <span className="inline-flex items-center">
                         <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${getStatusColor(viewCustomer.approvalStatus)}`}>
                           {viewCustomer.approvalStatus}
@@ -353,14 +353,14 @@ const SuperAdminCustomers = () => {
                       </span>
                     </div>
                     <div className="p-3.5 bg-[#FFFFFF] flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider mb-1">Joined Date & Time</span>
-                      <span className="font-semibold text-sm text-[#292524]">
+                      <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1">Joined Date & Time</span>
+                      <span className="font-semibold text-sm text-[#111827]">
                         {new Date(viewCustomer.createdAt).toLocaleDateString()} at {new Date(viewCustomer.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                       </span>
                     </div>
                     <div className="p-3.5 bg-[#FFFFFF] flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider mb-1">Last Login</span>
-                      <span className="font-semibold text-sm text-[#292524]">
+                      <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1">Last Login</span>
+                      <span className="font-semibold text-sm text-[#111827]">
                         {viewCustomer.lastLogin ? (
                           <>{new Date(viewCustomer.lastLogin).toLocaleDateString()} at {new Date(viewCustomer.lastLogin).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</>
                         ) : (
@@ -374,31 +374,31 @@ const SuperAdminCustomers = () => {
 
               {/* Subscription / Access Details */}
               <div>
-                <h3 className="text-[#B76E79] font-bold text-xs uppercase tracking-wider mb-3">Platform Access Details</h3>
-                <div className="border border-[#E7DADD] rounded-xl overflow-hidden divide-y divide-[#E7DADD] bg-[#FFFFFF] shadow-sm">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#E7DADD]">
+                <h3 className="text-[#EA580C] font-bold text-xs uppercase tracking-wider mb-3">Platform Access Details</h3>
+                <div className="border border-[#E2E8F0] rounded-xl overflow-hidden divide-y divide-[#E2E8F0] bg-[#FFFFFF] shadow-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#E2E8F0]">
                     <div className="p-3.5 bg-[#FFFFFF] flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider mb-1">Current Plan</span>
-                      <span className="font-bold text-sm text-[#B76E79] flex items-center gap-1.5">
-                        Pro Plan <span className="bg-[#B76E79]/10 text-[#B76E79] text-[10px] px-1.5 py-0.5 rounded font-bold">Monthly</span>
+                      <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1">Current Plan</span>
+                      <span className="font-bold text-sm text-[#EA580C] flex items-center gap-1.5">
+                        Pro Plan <span className="bg-[#FFF7ED] text-[#EA580C] text-[10px] px-1.5 py-0.5 rounded font-bold">Monthly</span>
                       </span>
                     </div>
                     <div className="p-3.5 bg-[#FFFFFF] flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider mb-1">Access Status</span>
+                      <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1">Access Status</span>
                       <span className="inline-flex items-center">
-                        <span className="px-2.5 py-0.5 rounded-full text-xs font-bold border bg-[#F3E8E8] text-[#B76E79] border-[#E7DADD]">
+                        <span className="px-2.5 py-0.5 rounded-full text-xs font-bold border bg-[#F8FAFC] text-[#EA580C] border-[#E2E8F0]">
                           ACTIVE
                         </span>
                       </span>
                     </div>
                     <div className="p-3.5 bg-[#FFFFFF] flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider mb-1">Subscription Start</span>
-                      <span className="font-semibold text-sm text-[#292524]">
+                      <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1">Subscription Start</span>
+                      <span className="font-semibold text-sm text-[#111827]">
                         {new Date(viewCustomer.createdAt).toLocaleDateString()}
                       </span>
                     </div>
                     <div className="p-3.5 bg-[#FFFFFF] flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider mb-1">Subscription Expiry</span>
+                      <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1">Subscription Expiry</span>
                       <span className="font-semibold text-sm text-red-600">
                         {viewCustomer.subscriptionExpiry ? (
                           new Date(viewCustomer.subscriptionExpiry).toLocaleDateString()
@@ -408,22 +408,22 @@ const SuperAdminCustomers = () => {
                       </span>
                     </div>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#E7DADD]">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#E2E8F0]">
                     <div className="p-3.5 bg-[#FFFFFF] flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider mb-1">Amount Paid</span>
-                      <span className="font-bold text-sm text-[#B76E79]">₹999</span>
+                      <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1">Amount Paid</span>
+                      <span className="font-bold text-sm text-[#EA580C]">₹999</span>
                     </div>
                     <div className="p-3.5 bg-[#FFFFFF] flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider mb-1">Payment Method</span>
-                      <span className="font-semibold text-sm text-[#292524]">PhonePe / UPI</span>
+                      <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1">Payment Method</span>
+                      <span className="font-semibold text-sm text-[#111827]">PhonePe / UPI</span>
                     </div>
                     <div className="p-3.5 bg-[#FFFFFF] flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider mb-1">Billing Cycle</span>
-                      <span className="font-semibold text-sm text-[#292524]">1 Month</span>
+                      <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1">Billing Cycle</span>
+                      <span className="font-semibold text-sm text-[#111827]">1 Month</span>
                     </div>
                     <div className="p-3.5 bg-[#FFFFFF] flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider mb-1">Invoice Status</span>
-                      <span className="font-bold text-xs text-[#B76E79] bg-[#F3E8E8] px-2 py-0.5 rounded-full inline-block w-fit">Paid</span>
+                      <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1">Invoice Status</span>
+                      <span className="font-bold text-xs text-[#EA580C] bg-[#F8FAFC] px-2 py-0.5 rounded-full inline-block w-fit">Paid</span>
                     </div>
                   </div>
                 </div>
@@ -431,38 +431,38 @@ const SuperAdminCustomers = () => {
 
               {/* Personal Details */}
               <div>
-                <h3 className="text-[#B76E79] font-bold text-xs uppercase tracking-wider mb-3">Personal Details</h3>
-                <div className="border border-[#E7DADD] rounded-xl overflow-hidden divide-y divide-[#E7DADD] bg-[#FFFFFF] shadow-sm">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#E7DADD]">
+                <h3 className="text-[#EA580C] font-bold text-xs uppercase tracking-wider mb-3">Personal Details</h3>
+                <div className="border border-[#E2E8F0] rounded-xl overflow-hidden divide-y divide-[#E2E8F0] bg-[#FFFFFF] shadow-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#E2E8F0]">
                     <div className="p-3.5 bg-[#FFFFFF] flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider mb-1">Date of Birth</span>
-                      <span className="font-semibold text-sm text-[#292524]">{viewCustomer.dateOfBirth ? new Date(viewCustomer.dateOfBirth).toLocaleDateString() : 'Not provided'}</span>
+                      <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1">Date of Birth</span>
+                      <span className="font-semibold text-sm text-[#111827]">{viewCustomer.dateOfBirth ? new Date(viewCustomer.dateOfBirth).toLocaleDateString() : 'Not provided'}</span>
                     </div>
                     <div className="p-3.5 bg-[#FFFFFF] flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider mb-1">Gender</span>
-                      <span className="font-semibold text-sm text-[#292524]">{viewCustomer.gender || 'Not provided'}</span>
+                      <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1">Gender</span>
+                      <span className="font-semibold text-sm text-[#111827]">{viewCustomer.gender || 'Not provided'}</span>
                     </div>
                     <div className="p-3.5 bg-[#FFFFFF] flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider mb-1">Height (cm)</span>
-                      <span className="font-semibold text-sm text-[#292524]">{viewCustomer.height ? `${viewCustomer.height} cm` : 'Not provided'}</span>
+                      <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1">Height (cm)</span>
+                      <span className="font-semibold text-sm text-[#111827]">{viewCustomer.height ? `${viewCustomer.height} cm` : 'Not provided'}</span>
                     </div>
                     <div className="p-3.5 bg-[#FFFFFF] flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider mb-1">Weight (kg)</span>
-                      <span className="font-semibold text-sm text-[#292524]">{viewCustomer.weight ? `${viewCustomer.weight} kg` : 'Not provided'}</span>
+                      <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1">Weight (kg)</span>
+                      <span className="font-semibold text-sm text-[#111827]">{viewCustomer.weight ? `${viewCustomer.weight} kg` : 'Not provided'}</span>
                     </div>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#E7DADD]">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#E2E8F0]">
                     <div className="p-3.5 bg-[#FFFFFF] flex flex-col justify-center sm:col-span-2">
-                      <span className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider mb-1">City</span>
-                      <span className="font-semibold text-sm text-[#292524]">{viewCustomer.city || 'Not provided'}</span>
+                      <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1">City</span>
+                      <span className="font-semibold text-sm text-[#111827]">{viewCustomer.city || 'Not provided'}</span>
                     </div>
                     <div className="p-3.5 bg-[#FFFFFF] flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider mb-1">PIN Code</span>
-                      <span className="font-semibold text-sm text-[#292524]">{viewCustomer.pinCode || 'Not provided'}</span>
+                      <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1">PIN Code</span>
+                      <span className="font-semibold text-sm text-[#111827]">{viewCustomer.pinCode || 'Not provided'}</span>
                     </div>
                     <div className="p-3.5 bg-[#FFFFFF] flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider mb-1">Profile Completeness</span>
-                      <span className="font-bold text-xs text-[#B76E79] bg-[#B76E79]/10 px-2 py-0.5 rounded-full inline-block w-fit">95% Complete</span>
+                      <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1">Profile Completeness</span>
+                      <span className="font-bold text-xs text-[#EA580C] bg-[#FFF7ED] px-2 py-0.5 rounded-full inline-block w-fit">95% Complete</span>
                     </div>
                   </div>
                 </div>
@@ -470,34 +470,34 @@ const SuperAdminCustomers = () => {
 
               {/* Fitness Details */}
               <div>
-                <h3 className="text-[#B76E79] font-bold text-xs uppercase tracking-wider mb-3">Fitness Preferences</h3>
-                <div className="border border-[#E7DADD] rounded-xl overflow-hidden divide-y divide-[#E7DADD] bg-[#FFFFFF] shadow-sm">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#E7DADD]">
+                <h3 className="text-[#EA580C] font-bold text-xs uppercase tracking-wider mb-3">Fitness Preferences</h3>
+                <div className="border border-[#E2E8F0] rounded-xl overflow-hidden divide-y divide-[#E2E8F0] bg-[#FFFFFF] shadow-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#E2E8F0]">
                     <div className="p-3.5 bg-[#FFFFFF] flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider mb-1">Fitness Goal</span>
-                      <span className="font-semibold text-sm text-[#292524]">{viewCustomer.fitnessGoal || 'Not provided'}</span>
+                      <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1">Fitness Goal</span>
+                      <span className="font-semibold text-sm text-[#111827]">{viewCustomer.fitnessGoal || 'Not provided'}</span>
                     </div>
                     <div className="p-3.5 bg-[#FFFFFF] flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider mb-1">Experience Level</span>
-                      <span className="font-semibold text-sm text-[#292524]">{viewCustomer.experienceLevel || 'Intermediate'}</span>
+                      <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1">Experience Level</span>
+                      <span className="font-semibold text-sm text-[#111827]">{viewCustomer.experienceLevel || 'Intermediate'}</span>
                     </div>
                     <div className="p-3.5 bg-[#FFFFFF] flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider mb-1">Preferred Training</span>
-                      <span className="font-semibold text-sm text-[#292524]">{viewCustomer.preferredTraining || 'General Fitness'}</span>
+                      <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1">Preferred Training</span>
+                      <span className="font-semibold text-sm text-[#111827]">{viewCustomer.preferredTraining || 'General Fitness'}</span>
                     </div>
                     <div className="p-3.5 bg-[#FFFFFF] flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider mb-1">Preferred Time</span>
-                      <span className="font-semibold text-sm text-[#292524]">{viewCustomer.preferredWorkoutTime || 'Morning'}</span>
+                      <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1">Preferred Time</span>
+                      <span className="font-semibold text-sm text-[#111827]">{viewCustomer.preferredWorkoutTime || 'Morning'}</span>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
             
-            <div className="px-6 py-3.5 bg-[#F3E8E8] border-t border-[#E7DADD] flex items-center justify-end shrink-0">
+            <div className="px-6 py-3.5 bg-[#F8FAFC] border-t border-[#E2E8F0] flex items-center justify-end shrink-0">
               <button 
                 onClick={() => setViewCustomer(null)}
-                className="px-5 py-2 bg-[#B76E79] text-white font-bold rounded-lg hover:bg-[#9F5965] transition-colors text-sm font-semibold shadow-sm"
+                className="px-5 py-2 bg-[#C2410C] text-white font-bold rounded-lg hover:bg-[#9A3412] transition-colors text-sm font-semibold shadow-sm"
               >
                 Close
               </button>

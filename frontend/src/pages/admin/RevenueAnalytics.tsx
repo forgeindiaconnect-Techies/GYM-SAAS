@@ -549,17 +549,17 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
   return (
     <div className="space-y-6 pb-12">
       {/* ── Header ── */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-[#FFFFFF] p-5 rounded-2xl border border-[#E7DADD] shadow-xs">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-[#FFFFFF] p-5 rounded-2xl border border-[#E2E8F0] shadow-xs">
         <div>
           <div className="flex items-center gap-2.5">
-            <div className="w-10 h-10 rounded-xl bg-[#B76E79]/10 text-[#B76E79] flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-[#FFF7ED] text-[#EA580C] flex items-center justify-center shrink-0">
               {isSuperAdmin ? <ShieldCheck size={22} /> : <TrendingUp size={22} />}
             </div>
             <div>
-              <h1 className="text-2xl font-extrabold text-[#292524] tracking-tight">
+              <h1 className="text-2xl font-extrabold text-[#111827] tracking-tight">
                 Revenue & Analytics
               </h1>
-              <p className="text-xs text-[#57534E] mt-0.5">
+              <p className="text-xs text-[#64748B] mt-0.5">
                 {isSuperAdmin
                   ? 'Super Admin financial intelligence: Track Gym Owner SaaS subscription payments, active licenses, and tier renewals.'
                   : 'Gym financial intelligence: Track Member Subscriptions, Trainer Commissions, and Online vs Offline Store Orders.'}
@@ -572,11 +572,11 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
         <div className="flex flex-wrap items-center gap-2">
           {/* Dropdown Options Filter */}
           <div className="relative inline-flex items-center">
-            <Calendar size={13} className="absolute left-3 text-[#57534E] pointer-events-none" />
+            <Calendar size={13} className="absolute left-3 text-[#64748B] pointer-events-none" />
             <select
               value={timeframe}
               onChange={(e) => setTimeframe(e.target.value as any)}
-              className="appearance-none bg-[#FFFFFF] border border-[#E7DADD] hover:border-[#B76E79] text-[#292524] font-extrabold text-xs rounded-xl pl-8 pr-8 py-2 outline-none cursor-pointer shadow-xs transition-colors"
+              className="appearance-none bg-[#FFFFFF] border border-[#E2E8F0] hover:border-[#FDBA74] text-[#111827] font-extrabold text-xs rounded-xl pl-8 pr-8 py-2 outline-none cursor-pointer shadow-xs transition-colors"
               title="Timeframe Filter"
             >
               <option value="all">ALL</option>
@@ -585,11 +585,11 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
               <option value="monthly">Monthly</option>
               <option value="annual">Annual</option>
             </select>
-            <ChevronDown size={13} className="absolute right-2.5 text-[#57534E] pointer-events-none" />
+            <ChevronDown size={13} className="absolute right-2.5 text-[#64748B] pointer-events-none" />
           </div>
 
           {/* Quick Segmented Pill Controls */}
-          <div className="flex items-center bg-[#F3E8E8] p-1 rounded-xl border border-[#E7DADD] overflow-x-auto">
+          <div className="flex items-center bg-[#F8FAFC] p-1 rounded-xl border border-[#E2E8F0] overflow-x-auto">
             {([
               { id: 'all', label: 'ALL' },
               { id: 'today', label: 'Today' },
@@ -602,8 +602,8 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
                 onClick={() => setTimeframe(t.id)}
                 className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
                   timeframe === t.id
-                    ? 'bg-[#B76E79] text-white shadow-xs'
-                    : 'text-[#57534E] hover:text-[#FFFFFF]'
+                    ? 'bg-[#C2410C] text-white shadow-xs'
+                    : 'text-[#64748B] hover:text-[#C2410C]'
                 }`}
               >
                 {t.label}
@@ -614,7 +614,7 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
           {/* Export PDF Button */}
           <button
             onClick={handleExportPDF}
-            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#B76E79] to-[#9F5965] hover:from-[#9F5965] hover:to-[#B76E79] text-[#FFFFFF] font-bold font-bold rounded-xl text-xs shadow-sm transition-all cursor-pointer"
+            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#EA580C] to-[#C2410C] hover:from-[#9A3412] hover:to-[#EA580C] text-[#FFFFFF] font-bold font-bold rounded-xl text-xs shadow-sm transition-all cursor-pointer"
             title={`Download ${timeframe.toUpperCase()} revenue statement`}
           >
             <Download size={14} />
@@ -635,9 +635,9 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
           {/* ── Top Level SaaS Financial Overview: Revenue, Gyms, ARPG ── */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {/* Card 1: Total SaaS Platform Revenue */}
-            <div className="bg-gradient-to-br from-[#FFFFFF] to-[#FFFFFF] text-white p-5 rounded-2xl shadow-sm border border-[#E7DADD] relative overflow-hidden group">
+            <div className="bg-gradient-to-br from-[#FFFFFF] to-[#FFFFFF] text-white p-5 rounded-2xl shadow-sm border border-[#E2E8F0] relative overflow-hidden group">
               <div className="flex items-center justify-between">
-                <span className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider">
+                <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider">
                   {timeframe === 'annual'
                     ? 'Annual SaaS Revenue'
                     : timeframe === 'weekly'
@@ -648,7 +648,7 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
                     ? 'All-Time SaaS Revenue'
                     : 'Total Monthly SaaS Revenue'}
                 </span>
-                <div className="w-8 h-8 rounded-lg bg-[#B76E79]/20 text-[#B76E79] flex items-center justify-center">
+                <div className="w-8 h-8 rounded-lg bg-[#FFF7ED] text-[#EA580C] flex items-center justify-center">
                   <IndianRupee size={16} />
                 </div>
               </div>
@@ -656,13 +656,13 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
                 <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
                   ₹{displayTotalRevenue.toLocaleString('en-IN')}
                 </h2>
-                <span className="text-[10px] font-bold text-emerald-400 flex items-center">
+                <span className="text-[10px] font-bold text-[#15803D] flex items-center">
                   <ArrowUpRight size={12} /> Active Plans
                 </span>
               </div>
-              <p className="text-[11px] text-[#57534E] mt-2 flex items-center justify-between border-t border-[#E7DADD]/80 pt-2">
+              <p className="text-[11px] text-[#64748B] mt-2 flex items-center justify-between border-t border-[#E2E8F0]/80 pt-2">
                 <span>Filter: {timeframe.toUpperCase()}</span>
-                <span className="font-semibold text-[#57534E]">
+                <span className="font-semibold text-[#64748B]">
                   {timeframe === 'annual'
                     ? 'Annualized SaaS Run-rate'
                     : timeframe === 'weekly'
@@ -677,44 +677,44 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
             </div>
 
             {/* Card 2: Active Gym Subscribers */}
-            <div className="bg-[#FFFFFF] p-5 rounded-2xl border border-[#E7DADD] hover:border-[#B76E79]/50 transition-all shadow-xs group">
+            <div className="bg-[#FFFFFF] p-5 rounded-2xl border border-[#E2E8F0] hover:border-[#FFEDD5] transition-all shadow-xs group">
               <div className="flex items-center justify-between">
-                <span className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider">
+                <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider">
                   Active Gym Subscribers
                 </span>
-                <div className="w-8 h-8 rounded-lg bg-[#F3E8E8] text-[#B76E79] flex items-center justify-center group-hover:scale-105 transition-transform">
+                <div className="w-8 h-8 rounded-lg bg-[#F8FAFC] text-[#EA580C] flex items-center justify-center group-hover:scale-105 transition-transform">
                   <Building2 size={16} />
                 </div>
               </div>
               <div className="mt-3 flex items-baseline gap-2">
-                <h2 className="text-2xl sm:text-3xl font-extrabold text-[#292524] tracking-tight">
+                <h2 className="text-2xl sm:text-3xl font-extrabold text-[#111827] tracking-tight">
                   {summary.activeSubscriptionsCount || 3} Gyms
                 </h2>
-                <span className="text-[10px] font-bold text-[#B76E79] bg-[#F3E8E8] px-1.5 py-0.5 rounded-full">
+                <span className="text-[10px] font-bold text-[#EA580C] bg-[#F8FAFC] px-1.5 py-0.5 rounded-full">
                   100% Active
                 </span>
               </div>
-              <p className="text-[11px] text-[#57534E] mt-2 flex items-center justify-between border-t border-[#E7DADD] pt-2">
+              <p className="text-[11px] text-[#64748B] mt-2 flex items-center justify-between border-t border-[#E2E8F0] pt-2">
                 <span>Platform Licenses</span>
-                <span className="font-bold text-[#292524]">{summary.totalGymOwnersCount || 3} Registered</span>
+                <span className="font-bold text-[#111827]">{summary.totalGymOwnersCount || 3} Registered</span>
               </p>
             </div>
 
             {/* Card 3: Average Revenue Per Gym (ARPG) */}
-            <div className="bg-[#FFFFFF] p-5 rounded-2xl border border-[#E7DADD] hover:border-[#E7DADD] transition-all shadow-xs group">
+            <div className="bg-[#FFFFFF] p-5 rounded-2xl border border-[#E2E8F0] hover:border-[#E2E8F0] transition-all shadow-xs group">
               <div className="flex items-center justify-between">
-                <span className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider">
+                <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider">
                   Avg. Revenue Per Gym
                 </span>
-                <div className="w-8 h-8 rounded-lg bg-[#F3E8E8] text-[#B76E79] flex items-center justify-center group-hover:scale-105 transition-transform">
+                <div className="w-8 h-8 rounded-lg bg-[#F8FAFC] text-[#EA580C] flex items-center justify-center group-hover:scale-105 transition-transform">
                   <CreditCard size={16} />
                 </div>
               </div>
               <div className="mt-3 flex items-baseline gap-2">
-                <h2 className="text-2xl sm:text-3xl font-extrabold text-[#292524] tracking-tight">
+                <h2 className="text-2xl sm:text-3xl font-extrabold text-[#111827] tracking-tight">
                   ₹{displayAvgRevenue.toLocaleString('en-IN')}
                 </h2>
-                <span className="text-[10px] font-bold text-[#B76E79] bg-[#F3E8E8] px-1.5 py-0.5 rounded-full">
+                <span className="text-[10px] font-bold text-[#EA580C] bg-[#F8FAFC] px-1.5 py-0.5 rounded-full">
                   {timeframe === 'annual'
                     ? 'Per Year'
                     : timeframe === 'weekly'
@@ -726,9 +726,9 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
                     : 'Per Month'}
                 </span>
               </div>
-              <p className="text-[11px] text-[#57534E] mt-2 flex items-center justify-between border-t border-[#E7DADD] pt-2">
+              <p className="text-[11px] text-[#64748B] mt-2 flex items-center justify-between border-t border-[#E2E8F0] pt-2">
                 <span>Billing Frequency</span>
-                <span className="font-bold text-[#292524] capitalize">{timeframe} SaaS</span>
+                <span className="font-bold text-[#111827] capitalize">{timeframe} SaaS</span>
               </p>
             </div>
           </div>
@@ -744,26 +744,26 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
               const borderClass = isGold
                 ? 'border-amber-400/60 hover:border-amber-400 bg-gradient-to-b from-amber-500/[0.08] to-[#FFFFFF]'
                 : isSilver
-                ? 'border-[#E7DADD] hover:border-slate-400 bg-gradient-to-b from-slate-400/[0.08] to-[#FFFFFF]'
+                ? 'border-[#E2E8F0] hover:border-slate-400 bg-gradient-to-b from-slate-400/[0.08] to-[#FFFFFF]'
                 : isFreeTrial
-                ? 'border-[#E7DADD] hover:border-[#B76E79]/40 bg-gradient-to-b from-[#B76E79]/[0.08] to-[#FFFFFF]'
-                : 'border-[#E7DADD] hover:border-[#B76E79] bg-gradient-to-b from-[#B76E79]/[0.08] to-[#FFFFFF]';
+                ? 'border-[#E2E8F0] hover:border-[#FFEDD5] bg-gradient-to-b from-[#EA580C]/[0.08] to-[#FFFFFF]'
+                : 'border-[#E2E8F0] hover:border-[#FDBA74] bg-gradient-to-b from-[#EA580C]/[0.08] to-[#FFFFFF]';
 
               const iconBg = isGold
                 ? 'bg-amber-100 text-amber-700'
                 : isSilver
-                ? 'bg-[#F3E8E8] text-[#292524]'
+                ? 'bg-[#F8FAFC] text-[#111827]'
                 : isFreeTrial
-                ? 'bg-[#F3E8E8] text-[#B76E79]'
-                : 'bg-[#F3E8E8] text-[#B76E79]';
+                ? 'bg-[#F8FAFC] text-[#EA580C]'
+                : 'bg-[#F8FAFC] text-[#EA580C]';
 
               const badgeColor = isGold
                 ? 'bg-amber-100 text-amber-800 border-amber-300'
                 : isSilver
-                ? 'bg-[#F3E8E8] text-[#292524] border-[#E7DADD]'
+                ? 'bg-[#F8FAFC] text-[#111827] border-[#E2E8F0]'
                 : isFreeTrial
-                ? 'bg-[#F3E8E8] text-[#B76E79] border-[#E7DADD]'
-                : 'bg-[#F3E8E8] text-[#9F5965] border-[#E7DADD]';
+                ? 'bg-[#F8FAFC] text-[#EA580C] border-[#E2E8F0]'
+                : 'bg-[#F8FAFC] text-[#9A3412] border-[#E2E8F0]';
 
               return (
                 <div
@@ -778,10 +778,10 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
                           {isGold ? <Crown size={16} /> : isSilver ? <Star size={16} /> : isFreeTrial ? <Zap size={16} /> : <Sparkles size={16} />}
                         </div>
                         <div>
-                          <h4 className="font-extrabold text-[#292524] text-sm leading-tight">
+                          <h4 className="font-extrabold text-[#111827] text-sm leading-tight">
                             {tier.name}
                           </h4>
-                          <span className="text-[10px] text-[#57534E] font-semibold">
+                          <span className="text-[10px] text-[#64748B] font-semibold">
                             {isFreeTrial ? '₹0 / 1 Day' : `₹${tier.monthlyRate.toLocaleString('en-IN')}/mo`}
                           </span>
                         </div>
@@ -792,37 +792,37 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
                     </div>
 
                     {/* Main Metric */}
-                    <div className="mt-3.5 pt-2.5 border-t border-[#E7DADD]/80 flex items-baseline justify-between">
+                    <div className="mt-3.5 pt-2.5 border-t border-[#E2E8F0]/80 flex items-baseline justify-between">
                       <div>
-                        <span className="text-xl sm:text-2xl font-black text-[#292524] tracking-tight">
+                        <span className="text-xl sm:text-2xl font-black text-[#111827] tracking-tight">
                           {tier.count} Gym{tier.count === 1 ? '' : 's'}
                         </span>
-                        <span className="text-[10px] text-[#57534E] block mt-0.5">
+                        <span className="text-[10px] text-[#64748B] block mt-0.5">
                           {isFreeTrial
                             ? '1-Day Active Trials'
                             : `₹${tier.amount.toLocaleString('en-IN')} ${timeframe === 'annual' ? '/ yr' : '/ mo'}`}
                         </span>
                       </div>
-                      <span className="text-[10px] font-bold text-[#57534E] bg-[#F3E8E8] px-2 py-0.5 rounded-md">
+                      <span className="text-[10px] font-bold text-[#64748B] bg-[#F8FAFC] px-2 py-0.5 rounded-md">
                         {isFreeTrial ? 'Trial' : `${tier.share}% Share`}
                       </span>
                     </div>
 
                     {/* Limits */}
-                    <p className="text-[10px] text-[#57534E] font-medium mt-2.5 pt-2 border-t border-[#E7DADD]/70 line-clamp-1">
+                    <p className="text-[10px] text-[#64748B] font-medium mt-2.5 pt-2 border-t border-[#E2E8F0]/70 line-clamp-1">
                       {tier.limits}
                     </p>
                   </div>
 
                   {/* Status Footer */}
-                  <div className="mt-3.5 pt-2.5 border-t border-[#E7DADD]/70 flex items-center justify-between text-[10px]">
+                  <div className="mt-3.5 pt-2.5 border-t border-[#E2E8F0]/70 flex items-center justify-between text-[10px]">
                     <span className={`font-bold inline-flex items-center gap-1 ${
-                      tier.count > 0 ? 'text-[#B76E79]' : 'text-[#57534E]'
+                      tier.count > 0 ? 'text-[#EA580C]' : 'text-[#64748B]'
                     }`}>
-                      <span className={`w-1.5 h-1.5 rounded-full ${tier.count > 0 ? 'bg-[#B76E79]' : 'bg-[#F3E8E8]'}`} />
+                      <span className={`w-1.5 h-1.5 rounded-full ${tier.count > 0 ? 'bg-[#C2410C]' : 'bg-[#F8FAFC]'}`} />
                       {tier.count > 0 ? `${tier.count} Active` : isFreeTrial ? 'No Active Trials' : 'Available Tier'}
                     </span>
-                    <span className="text-[#57534E] font-medium">
+                    <span className="text-[#64748B] font-medium">
                       {isGold ? 'Top Contributor' : isSilver ? 'Growth License' : isFreeTrial ? 'Trial Plan' : 'Enterprise Scale'}
                     </span>
                   </div>
@@ -832,21 +832,21 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
           </div>
 
           {/* ── Revenue Flowchart Trajectory (12-Month Plan with Current Month) ── */}
-          <div className="bg-[#FFFFFF] p-6 rounded-2xl border border-[#E7DADD] shadow-xs overflow-hidden">
+          <div className="bg-[#FFFFFF] p-6 rounded-2xl border border-[#E2E8F0] shadow-xs overflow-hidden">
             {/* Flowchart Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
               <div>
                 <div className="flex items-center gap-2">
-                  <h3 className="text-base font-extrabold text-[#292524] tracking-tight">
+                  <h3 className="text-base font-extrabold text-[#111827] tracking-tight">
                     {flowchartMode === 'annual'
                       ? 'Annual Platform Subscription Trajectory (Annualized Multi-Year Horizon)'
                       : '12-Month Platform Subscription Trajectory (Full Year with Current Month)'}
                   </h3>
-                  <span className="bg-[#F3E8E8] text-[#B76E79] text-[10px] font-extrabold px-2.5 py-0.5 rounded-full border border-[#E7DADD] uppercase">
+                  <span className="bg-[#F8FAFC] text-[#EA580C] text-[10px] font-extrabold px-2.5 py-0.5 rounded-full border border-[#E2E8F0] uppercase">
                     {flowchartMode === 'annual' ? 'ANNUAL FLOWCHART' : '12-MONTH PLAN'}
                   </span>
                 </div>
-                <p className="text-xs text-[#57534E] mt-1">
+                <p className="text-xs text-[#64748B] mt-1">
                   {flowchartMode === 'annual'
                     ? 'Sequential multi-year SaaS recurring revenue trajectory: Track contracted annualized run-rate.'
                     : 'Complete 12-month SaaS recurring revenue roadmap: Track sequential expansion from Jan to Dec with live current month marker.'}
@@ -856,13 +856,13 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
               {/* Trajectory Milestone Stats & View Switcher */}
               <div className="flex flex-wrap items-center gap-2.5 shrink-0">
                 {/* Monthly / Annual Toggle Switcher */}
-                <div className="flex items-center bg-[#F3E8E8] p-1 rounded-xl border border-[#E7DADD] text-xs font-bold">
+                <div className="flex items-center bg-[#F8FAFC] p-1 rounded-xl border border-[#E2E8F0] text-xs font-bold">
                   <button
                     onClick={() => setFlowchartMode('monthly')}
                     className={`px-3 py-1 rounded-lg transition-all cursor-pointer ${
                       flowchartMode === 'monthly'
-                        ? 'bg-[#B76E79] text-white shadow-xs'
-                        : 'text-[#57534E] hover:text-[#FFFFFF]'
+                        ? 'bg-[#C2410C] text-white shadow-xs'
+                        : 'text-[#64748B] hover:text-[#C2410C]'
                     }`}
                   >
                     12-Month Plan
@@ -871,23 +871,23 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
                     onClick={() => setFlowchartMode('annual')}
                     className={`px-3 py-1 rounded-lg transition-all cursor-pointer ${
                       flowchartMode === 'annual'
-                        ? 'bg-[#B76E79] text-white shadow-xs'
-                        : 'text-[#57534E] hover:text-[#FFFFFF]'
+                        ? 'bg-[#C2410C] text-white shadow-xs'
+                        : 'text-[#64748B] hover:text-[#C2410C]'
                     }`}
                   >
                     Annual
                   </button>
                 </div>
 
-                <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-xl px-3.5 py-1.5 text-right">
-                  <span className="text-[10px] font-bold text-[#57534E] block uppercase tracking-wider">Projected Run-rate</span>
-                  <strong className="text-sm font-extrabold text-[#292524]">
+                <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-3.5 py-1.5 text-right">
+                  <span className="text-[10px] font-bold text-[#64748B] block uppercase tracking-wider">Projected Run-rate</span>
+                  <strong className="text-sm font-extrabold text-[#111827]">
                     {flowchartMode === 'annual' ? '₹59,233 / yr' : '₹4,936 / mo'}
                   </strong>
                 </div>
-                <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-xl px-3.5 py-1.5 text-right">
-                  <span className="text-[10px] font-bold text-[#B76E79] block uppercase tracking-wider">Net Growth</span>
-                  <strong className="text-sm font-extrabold text-[#B76E79]">
+                <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-3.5 py-1.5 text-right">
+                  <span className="text-[10px] font-bold text-[#EA580C] block uppercase tracking-wider">Net Growth</span>
+                  <strong className="text-sm font-extrabold text-[#EA580C]">
                     {flowchartMode === 'annual' ? '+186% Multi-Year' : '+271% Year Pace'}
                   </strong>
                 </div>
@@ -898,10 +898,10 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
             <div className="overflow-x-auto custom-scrollbar pb-3 pt-1">
               <div className="min-w-[1100px] lg:min-w-0 relative pt-2">
                 {/* Stepper Track Line Connecting Step Badges */}
-                <div className="absolute top-[18px] left-6 right-6 h-0.5 bg-[#F3E8E8] z-0" />
+                <div className="absolute top-[18px] left-6 right-6 h-0.5 bg-[#F8FAFC] z-0" />
 
                 {/* Bottom Connecting Track Line for Circular Nodes */}
-                <div className="absolute bottom-[48px] left-6 right-6 h-0.5 bg-[#F3E8E8] z-0" />
+                <div className="absolute bottom-[48px] left-6 right-6 h-0.5 bg-[#F8FAFC] z-0" />
 
                 {/* 12-Month Nodes Flowchart Grid */}
                 <div className={`grid ${flowchartMode === 'annual' ? 'grid-cols-6' : 'grid-cols-12'} gap-2 sm:gap-2.5 relative z-10`}>
@@ -952,12 +952,12 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
                     return (
                       <div key={idx} className="flex flex-col items-center group">
                         {/* 1. Step Header Pill with Growth Indicator */}
-                        <div className="flex items-center gap-1 mb-2.5 bg-[#FFFFFF] px-1.5 py-0.5 rounded-full relative z-10 shadow-xs border border-[#E7DADD]">
-                          <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-wider text-[#57534E] whitespace-nowrap">
+                        <div className="flex items-center gap-1 mb-2.5 bg-[#FFFFFF] px-1.5 py-0.5 rounded-full relative z-10 shadow-xs border border-[#E2E8F0]">
+                          <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-wider text-[#64748B] whitespace-nowrap">
                             S{stepNum}
                           </span>
                           {m.growth && (
-                            <span className="text-[8px] sm:text-[9px] font-black text-[#B76E79] bg-[#F3E8E8] px-1 py-0.2 rounded-full whitespace-nowrap">
+                            <span className="text-[8px] sm:text-[9px] font-black text-[#EA580C] bg-[#F8FAFC] px-1 py-0.2 rounded-full whitespace-nowrap">
                               {m.growth}
                             </span>
                           )}
@@ -967,8 +967,8 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
                         <div
                           className={`mb-2.5 text-[11px] sm:text-xs font-black px-2 sm:px-2.5 py-1 rounded-xl shadow-xs transition-all whitespace-nowrap ${
                             isOrangePill
-                              ? 'bg-gradient-to-r from-[#B76E79] to-[#9F5965] text-white shadow-[#B76E79]/15'
-                              : 'bg-[#F3E8E8] text-[#292524] border border-[#E7DADD] group-hover:bg-[#B76E79] group-hover:border-[#B76E79]'
+                              ? 'bg-gradient-to-r from-[#EA580C] to-[#C2410C] text-white shadow-orange-500/15'
+                              : 'bg-[#F8FAFC] text-[#111827] border border-[#E2E8F0] group-hover:bg-[#C2410C] group-hover:border-[#FDBA74]'
                           } ${isCurrent ? 'ring-2 ring-orange-400/50 scale-105' : ''}`}
                         >
                           ₹{stepTotal.toLocaleString('en-IN')}
@@ -978,16 +978,16 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
                         <div
                           className={`w-full h-44 flex items-end justify-center rounded-2xl p-1.5 sm:p-2 transition-all shadow-xs ${
                             isCurrent
-                              ? 'bg-[#F3E8E8]/40 border-2 border-[#B76E79] shadow-[#B76E79]/15 ring-2 ring-[#B76E79]/30'
-                              : 'bg-[#FFFFFF] border border-[#E7DADD] group-hover:border-[#B76E79]/60 group-hover:bg-[#F3E8E8]/20'
+                              ? 'bg-[#FFF7ED] border-2 border-[#FDBA74] shadow-orange-500/15 ring-2 ring-[#F97316]/30'
+                              : 'bg-[#FFFFFF] border border-[#E2E8F0] group-hover:border-[#FFEDD5] group-hover:bg-[#FFF7ED]/20'
                           }`}
                         >
                           <div
                             style={{ height: `${calculatedHeight}px` }}
                             className={`w-9 sm:w-11 rounded-xl shadow-md flex flex-col justify-between items-center py-2 transition-all duration-300 ${
                               isCurrent
-                                ? 'bg-gradient-to-t from-[#FFFFFF] via-[#B76E79] to-[#F3E8E8] ring-2 ring-[#B76E79]/60'
-                                : 'bg-gradient-to-t from-[#FFFFFF] via-[#57534E] to-[#B76E79] group-hover:from-[#3D264C] group-hover:to-[#9F5965]'
+                                ? 'bg-gradient-to-t from-[#FFFFFF] via-[#F97316] to-[#F8FAFC] ring-2 ring-[#F97316]/60'
+                                : 'bg-gradient-to-t from-[#FFFFFF] via-[#64748B] to-[#EA580C] group-hover:from-[#3D264C] group-hover:to-[#C2410C]'
                             }`}
                           >
                             <div className="w-4 h-1 bg-[#FFFFFF]/60 rounded-full" />
@@ -1002,28 +1002,28 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
                           <div
                             className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#FFFFFF] border-2 shadow-xs flex items-center justify-center transition-transform group-hover:scale-110 ${
                               isCurrent
-                                ? 'border-[#FFFFFF] ring-2 ring-[#B76E79]/50'
+                                ? 'border-[#FFFFFF] ring-2 ring-[#F97316]/50'
                                 : m.isOrangePill
                                 ? 'border-[#FFFFFF]'
-                                : 'border-[#B76E79]'
+                                : 'border-[#FDBA74]'
                             }`}
                           >
-                            <div className={`w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full ${isOrangePill ? 'bg-[#FFFFFF]' : 'bg-[#B76E79]'}`} />
+                            <div className={`w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full ${isOrangePill ? 'bg-[#FFFFFF]' : 'bg-[#C2410C]'}`} />
                           </div>
                           <span
                             className={`text-xs font-black mt-1.5 transition-colors whitespace-nowrap ${
-                              isCurrent ? 'text-[#292524] font-black' : isOrangePill ? 'text-[#292524]' : 'text-[#292524] group-hover:text-[#B76E79]'
+                              isCurrent ? 'text-[#111827] font-black' : isOrangePill ? 'text-[#111827]' : 'text-[#111827] group-hover:text-[#EA580C]'
                             }`}
                           >
                             {flowchartMode === 'annual' ? m.yearLabel : m.month}
                           </span>
-                          <span className="text-[9px] text-[#57534E] font-semibold mt-0.5 whitespace-nowrap">
+                          <span className="text-[9px] text-[#64748B] font-semibold mt-0.5 whitespace-nowrap">
                             {stepGyms} Gyms
                           </span>
 
                           {/* Currently Active Indicator */}
                           {isCurrent && (
-                            <span className="text-[8px] font-black uppercase tracking-wider text-[#292524] bg-[#B76E79] px-1.5 py-0.5 rounded-full mt-1 shadow-xs whitespace-nowrap">
+                            <span className="text-[8px] font-black uppercase tracking-wider text-[#111827] bg-[#C2410C] px-1.5 py-0.5 rounded-full mt-1 shadow-xs whitespace-nowrap">
                               CURRENT
                             </span>
                           )}
@@ -1044,12 +1044,12 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
           {/* ── 4 KPI Summary Cards for Gym Owner ── */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* KPI 1: Total Gross Revenue */}
-            <div className="bg-gradient-to-br from-[#FFFFFF] to-[#FFFFFF] text-white p-5 rounded-2xl shadow-sm border border-[#E7DADD] relative overflow-hidden group">
+            <div className="bg-gradient-to-br from-[#FFFFFF] to-[#FFFFFF] text-white p-5 rounded-2xl shadow-sm border border-[#E2E8F0] relative overflow-hidden group">
               <div className="flex items-center justify-between">
-                <span className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider">
+                <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider">
                   Total Gross Revenue
                 </span>
-                <div className="w-8 h-8 rounded-lg bg-[#B76E79]/20 text-[#B76E79] flex items-center justify-center">
+                <div className="w-8 h-8 rounded-lg bg-[#FFF7ED] text-[#EA580C] flex items-center justify-center">
                   <IndianRupee size={16} />
                 </div>
               </div>
@@ -1057,84 +1057,84 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
                 <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
                   ₹{summary.totalGrossRevenue.toLocaleString('en-IN')}
                 </h2>
-                <span className="text-[10px] font-bold text-emerald-400 flex items-center">
+                <span className="text-[10px] font-bold text-[#15803D] flex items-center">
                   <ArrowUpRight size={12} /> +18.4%
                 </span>
               </div>
-              <p className="text-[11px] text-[#57534E] mt-2 flex items-center justify-between border-t border-[#E7DADD]/80 pt-2">
+              <p className="text-[11px] text-[#64748B] mt-2 flex items-center justify-between border-t border-[#E2E8F0]/80 pt-2">
                 <span>Filter: {timeframe.toUpperCase()}</span>
-                <span className="font-semibold text-[#57534E]">All 4 Channels</span>
+                <span className="font-semibold text-[#64748B]">All 4 Channels</span>
               </p>
             </div>
 
             {/* KPI 2: Members Revenue */}
-            <div className="bg-[#FFFFFF] p-5 rounded-2xl border border-[#E7DADD] hover:border-[#B76E79]/50 transition-all shadow-xs group">
+            <div className="bg-[#FFFFFF] p-5 rounded-2xl border border-[#E2E8F0] hover:border-[#FFEDD5] transition-all shadow-xs group">
               <div className="flex items-center justify-between">
-                <span className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider">
+                <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider">
                   Members Revenue
                 </span>
-                <div className="w-8 h-8 rounded-lg bg-[#F3E8E8] text-[#B76E79] flex items-center justify-center group-hover:scale-105 transition-transform">
+                <div className="w-8 h-8 rounded-lg bg-[#F8FAFC] text-[#EA580C] flex items-center justify-center group-hover:scale-105 transition-transform">
                   <Users size={16} />
                 </div>
               </div>
               <div className="mt-3 flex items-baseline gap-2">
-                <h2 className="text-2xl sm:text-3xl font-extrabold text-[#292524] tracking-tight">
+                <h2 className="text-2xl sm:text-3xl font-extrabold text-[#111827] tracking-tight">
                   ₹{summary.membersRevenue.toLocaleString('en-IN')}
                 </h2>
-                <span className="text-[10px] font-bold text-[#B76E79] bg-[#B76E79]/10 px-1.5 py-0.5 rounded-full">
+                <span className="text-[10px] font-bold text-[#EA580C] bg-[#FFF7ED] px-1.5 py-0.5 rounded-full">
                   {membersPct}% share
                 </span>
               </div>
-              <p className="text-[11px] text-[#57534E] mt-2 flex items-center justify-between border-t border-[#E7DADD] pt-2">
+              <p className="text-[11px] text-[#64748B] mt-2 flex items-center justify-between border-t border-[#E2E8F0] pt-2">
                 <span>Subscriptions & Plans</span>
-                <span className="font-bold text-[#292524]">{membersBreakdown.count || 0} Members</span>
+                <span className="font-bold text-[#111827]">{membersBreakdown.count || 0} Members</span>
               </p>
             </div>
 
             {/* KPI 3: Trainers Revenue */}
-            <div className="bg-[#FFFFFF] p-5 rounded-2xl border border-[#E7DADD] hover:border-[#E7DADD] transition-all shadow-xs group">
+            <div className="bg-[#FFFFFF] p-5 rounded-2xl border border-[#E2E8F0] hover:border-[#E2E8F0] transition-all shadow-xs group">
               <div className="flex items-center justify-between">
-                <span className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider">
+                <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider">
                   Trainers Revenue
                 </span>
-                <div className="w-8 h-8 rounded-lg bg-[#F3E8E8] text-[#B76E79] flex items-center justify-center group-hover:scale-105 transition-transform">
+                <div className="w-8 h-8 rounded-lg bg-[#F8FAFC] text-[#EA580C] flex items-center justify-center group-hover:scale-105 transition-transform">
                   <Dumbbell size={16} />
                 </div>
               </div>
               <div className="mt-3 flex items-baseline gap-2">
-                <h2 className="text-2xl sm:text-3xl font-extrabold text-[#292524] tracking-tight">
+                <h2 className="text-2xl sm:text-3xl font-extrabold text-[#111827] tracking-tight">
                   ₹{summary.trainersRevenue.toLocaleString('en-IN')}
                 </h2>
-                <span className="text-[10px] font-bold text-[#B76E79] bg-[#F3E8E8] px-1.5 py-0.5 rounded-full">
+                <span className="text-[10px] font-bold text-[#EA580C] bg-[#F8FAFC] px-1.5 py-0.5 rounded-full">
                   {trainersPct}% share
                 </span>
               </div>
-              <p className="text-[11px] text-[#57534E] mt-2 flex items-center justify-between border-t border-[#E7DADD] pt-2">
+              <p className="text-[11px] text-[#64748B] mt-2 flex items-center justify-between border-t border-[#E2E8F0] pt-2">
                 <span>Gym Cut: ₹{summary.trainerGymNetShare.toLocaleString('en-IN')}</span>
-                <span className="font-semibold text-[#B76E79]">{trainersBreakdown.count || 0} Sessions</span>
+                <span className="font-semibold text-[#EA580C]">{trainersBreakdown.count || 0} Sessions</span>
               </p>
             </div>
 
             {/* KPI 4: Orders Revenue (Online vs Offline) */}
-            <div className="bg-[#FFFFFF] p-5 rounded-2xl border border-[#E7DADD] hover:border-[#E7DADD] transition-all shadow-xs group">
+            <div className="bg-[#FFFFFF] p-5 rounded-2xl border border-[#E2E8F0] hover:border-[#E2E8F0] transition-all shadow-xs group">
               <div className="flex items-center justify-between">
-                <span className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider">
+                <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider">
                   Orders Revenue (Online & Offline)
                 </span>
-                <div className="w-8 h-8 rounded-lg bg-[#F3E8E8] text-[#B76E79] flex items-center justify-center group-hover:scale-105 transition-transform">
+                <div className="w-8 h-8 rounded-lg bg-[#F8FAFC] text-[#EA580C] flex items-center justify-center group-hover:scale-105 transition-transform">
                   <ShoppingBag size={16} />
                 </div>
               </div>
               <div className="mt-3 flex items-baseline gap-2">
-                <h2 className="text-2xl sm:text-3xl font-extrabold text-[#292524] tracking-tight">
+                <h2 className="text-2xl sm:text-3xl font-extrabold text-[#111827] tracking-tight">
                   ₹{summary.ordersRevenue.toLocaleString('en-IN')}
                 </h2>
-                <span className="text-[10px] font-bold text-[#B76E79] bg-[#F3E8E8] px-1.5 py-0.5 rounded-full">
+                <span className="text-[10px] font-bold text-[#EA580C] bg-[#F8FAFC] px-1.5 py-0.5 rounded-full">
                   {onlineOrdersPct + offlineOrdersPct}% share
                 </span>
               </div>
-              <div className="text-[11px] text-[#57534E] mt-2 flex items-center justify-between border-t border-[#E7DADD] pt-2">
-                <span className="flex items-center gap-1 font-medium text-[#B76E79]">
+              <div className="text-[11px] text-[#64748B] mt-2 flex items-center justify-between border-t border-[#E2E8F0] pt-2">
+                <span className="flex items-center gap-1 font-medium text-[#EA580C]">
                   <Smartphone size={11} /> App: ₹{summary.ordersOnlineRevenue.toLocaleString('en-IN')}
                 </span>
                 <span className="flex items-center gap-1 font-medium text-amber-700">
@@ -1145,69 +1145,69 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
           </div>
 
           {/* ── Revenue Stream Breakdown Visualization ── */}
-          <div className="bg-[#FFFFFF] p-5 rounded-2xl border border-[#E7DADD] shadow-xs">
+          <div className="bg-[#FFFFFF] p-5 rounded-2xl border border-[#E2E8F0] shadow-xs">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3">
-              <h3 className="text-sm font-bold text-[#292524] flex items-center gap-1.5">
-                <Layers size={16} className="text-[#B76E79]" />
+              <h3 className="text-sm font-bold text-[#111827] flex items-center gap-1.5">
+                <Layers size={16} className="text-[#EA580C]" />
                 Revenue Streams Proportion
               </h3>
-              <span className="text-xs text-[#57534E]">
-                Total Inflow: <strong className="text-[#292524]">₹{summary.totalGrossRevenue.toLocaleString('en-IN')}</strong>
+              <span className="text-xs text-[#64748B]">
+                Total Inflow: <strong className="text-[#111827]">₹{summary.totalGrossRevenue.toLocaleString('en-IN')}</strong>
               </span>
             </div>
 
             {/* Stacked Percentage Bar */}
-            <div className="w-full h-4 bg-[#F3E8E8] rounded-full overflow-hidden flex shadow-inner">
-              <div style={{ width: `${membersPct}%` }} className="bg-[#B76E79] transition-all" title={`Memberships: ${membersPct}%`} />
-              <div style={{ width: `${trainersPct}%` }} className="bg-[#B76E79] transition-all" title={`Trainers: ${trainersPct}%`} />
-              <div style={{ width: `${onlineOrdersPct}%` }} className="bg-[#B76E79] transition-all" title={`Online Store: ${onlineOrdersPct}%`} />
+            <div className="w-full h-4 bg-[#F8FAFC] rounded-full overflow-hidden flex shadow-inner">
+              <div style={{ width: `${membersPct}%` }} className="bg-[#C2410C] transition-all" title={`Memberships: ${membersPct}%`} />
+              <div style={{ width: `${trainersPct}%` }} className="bg-[#C2410C] transition-all" title={`Trainers: ${trainersPct}%`} />
+              <div style={{ width: `${onlineOrdersPct}%` }} className="bg-[#C2410C] transition-all" title={`Online Store: ${onlineOrdersPct}%`} />
               <div style={{ width: `${offlineOrdersPct}%` }} className="bg-amber-500 transition-all" title={`Offline POS: ${offlineOrdersPct}%`} />
             </div>
 
             {/* Legend */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4 text-xs font-medium">
               <div className="flex items-center gap-2">
-                <span className="w-3 h-3 rounded-full bg-[#B76E79] shrink-0" />
+                <span className="w-3 h-3 rounded-full bg-[#C2410C] shrink-0" />
                 <div className="truncate">
-                  <span className="text-[#57534E] block text-[10px]">Memberships</span>
-                  <strong className="text-[#292524]">₹{summary.membersRevenue.toLocaleString('en-IN')} ({membersPct}%)</strong>
+                  <span className="text-[#64748B] block text-[10px]">Memberships</span>
+                  <strong className="text-[#111827]">₹{summary.membersRevenue.toLocaleString('en-IN')} ({membersPct}%)</strong>
                 </div>
               </div>
 
               <div className="flex items-center gap-2">
-                <span className="w-3 h-3 rounded-full bg-[#B76E79] shrink-0" />
+                <span className="w-3 h-3 rounded-full bg-[#C2410C] shrink-0" />
                 <div className="truncate">
-                  <span className="text-[#57534E] block text-[10px]">Trainer Bookings</span>
-                  <strong className="text-[#292524]">₹{summary.trainersRevenue.toLocaleString('en-IN')} ({trainersPct}%)</strong>
+                  <span className="text-[#64748B] block text-[10px]">Trainer Bookings</span>
+                  <strong className="text-[#111827]">₹{summary.trainersRevenue.toLocaleString('en-IN')} ({trainersPct}%)</strong>
                 </div>
               </div>
 
               <div className="flex items-center gap-2">
-                <span className="w-3 h-3 rounded-full bg-[#B76E79] shrink-0" />
+                <span className="w-3 h-3 rounded-full bg-[#C2410C] shrink-0" />
                 <div className="truncate">
-                  <span className="text-[#57534E] block text-[10px]">Store Online (App)</span>
-                  <strong className="text-[#292524]">₹{summary.ordersOnlineRevenue.toLocaleString('en-IN')} ({onlineOrdersPct}%)</strong>
+                  <span className="text-[#64748B] block text-[10px]">Store Online (App)</span>
+                  <strong className="text-[#111827]">₹{summary.ordersOnlineRevenue.toLocaleString('en-IN')} ({onlineOrdersPct}%)</strong>
                 </div>
               </div>
 
               <div className="flex items-center gap-2">
                 <span className="w-3 h-3 rounded-full bg-amber-500 shrink-0" />
                 <div className="truncate">
-                  <span className="text-[#57534E] block text-[10px]">Store Offline (POS)</span>
-                  <strong className="text-[#292524]">₹{summary.ordersOfflineRevenue.toLocaleString('en-IN')} ({offlineOrdersPct}%)</strong>
+                  <span className="text-[#64748B] block text-[10px]">Store Offline (POS)</span>
+                  <strong className="text-[#111827]">₹{summary.ordersOfflineRevenue.toLocaleString('en-IN')} ({offlineOrdersPct}%)</strong>
                 </div>
               </div>
             </div>
           </div>
 
           {/* ── Tabs Navigation for Gym Owner ── */}
-          <div className="flex items-center space-x-1 border-b border-[#E7DADD] overflow-x-auto">
+          <div className="flex items-center space-x-1 border-b border-[#E2E8F0] overflow-x-auto">
             <button
               onClick={() => setActiveTab('overview')}
               className={`px-4 py-2.5 text-xs font-bold border-b-2 transition-all cursor-pointer whitespace-nowrap ${
                 activeTab === 'overview'
-                  ? 'border-[#B76E79] text-[#B76E79]'
-                  : 'border-transparent text-[#57534E] hover:text-[#FFFFFF]'
+                  ? 'border-[#FDBA74] text-[#EA580C]'
+                  : 'border-transparent text-[#64748B] hover:text-[#C2410C]'
               }`}
             >
               Overview & Trends
@@ -1216,8 +1216,8 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
               onClick={() => setActiveTab('members')}
               className={`px-4 py-2.5 text-xs font-bold border-b-2 transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
                 activeTab === 'members'
-                  ? 'border-[#B76E79] text-[#B76E79]'
-                  : 'border-transparent text-[#57534E] hover:text-[#FFFFFF]'
+                  ? 'border-[#FDBA74] text-[#EA580C]'
+                  : 'border-transparent text-[#64748B] hover:text-[#C2410C]'
               }`}
             >
               <Users size={14} />
@@ -1227,8 +1227,8 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
               onClick={() => setActiveTab('trainers')}
               className={`px-4 py-2.5 text-xs font-bold border-b-2 transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
                 activeTab === 'trainers'
-                  ? 'border-[#B76E79] text-[#B76E79]'
-                  : 'border-transparent text-[#57534E] hover:text-[#FFFFFF]'
+                  ? 'border-[#FDBA74] text-[#EA580C]'
+                  : 'border-transparent text-[#64748B] hover:text-[#C2410C]'
               }`}
             >
               <Dumbbell size={14} />
@@ -1238,8 +1238,8 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
               onClick={() => setActiveTab('orders')}
               className={`px-4 py-2.5 text-xs font-bold border-b-2 transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
                 activeTab === 'orders'
-                  ? 'border-[#B76E79] text-[#B76E79]'
-                  : 'border-transparent text-[#57534E] hover:text-[#FFFFFF]'
+                  ? 'border-[#FDBA74] text-[#EA580C]'
+                  : 'border-transparent text-[#64748B] hover:text-[#C2410C]'
               }`}
             >
               <ShoppingBag size={14} />
@@ -1251,45 +1251,45 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
           {activeTab === 'overview' && (
             <div className="space-y-6">
               {/* ── Gym Revenue Inflow Flowchart Trajectory (12-Month Plan) ── */}
-              <div className="bg-[#FFFFFF] p-5 sm:p-6 rounded-2xl border border-[#E7DADD] shadow-xs">
+              <div className="bg-[#FFFFFF] p-5 sm:p-6 rounded-2xl border border-[#E2E8F0] shadow-xs">
                 {/* Header with Title and Run-rate Badges */}
-                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-4 pb-4 border-b border-[#E7DADD]">
+                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-4 pb-4 border-b border-[#E2E8F0]">
                   <div>
                     <div className="flex items-center gap-2">
-                      <h3 className="text-base font-extrabold text-[#292524] tracking-tight">
+                      <h3 className="text-base font-extrabold text-[#111827] tracking-tight">
                         Gym Inflow Flowchart Trajectory (12-Month Plan)
                       </h3>
-                      <span className="bg-[#F3E8E8] text-[#B76E79] text-[10px] font-black px-2.5 py-0.5 rounded-full border border-[#E7DADD] uppercase tracking-wider">
+                      <span className="bg-[#F8FAFC] text-[#EA580C] text-[10px] font-black px-2.5 py-0.5 rounded-full border border-[#E2E8F0] uppercase tracking-wider">
                         12-MONTH PLAN
                       </span>
                     </div>
-                    <p className="text-xs text-[#57534E] mt-1">
+                    <p className="text-xs text-[#64748B] mt-1">
                       Sequential 12-month inflow progression across Memberships, Trainer Bookings, and Online & Offline Store Sales.
                     </p>
                   </div>
 
                   <div className="flex items-center gap-3 self-start lg:self-auto">
-                    <div className="bg-[#F3E8E8]/70 border border-[#E7DADD] rounded-xl px-3.5 py-1.5 text-right">
-                      <span className="text-[10px] font-bold text-[#9F5965] block uppercase tracking-wider">
+                    <div className="bg-[#F8FAFC]/70 border border-[#E2E8F0] rounded-xl px-3.5 py-1.5 text-right">
+                      <span className="text-[10px] font-bold text-[#9A3412] block uppercase tracking-wider">
                         Current Month Inflow
                       </span>
-                      <strong className="text-sm font-black text-[#9F5965]">
+                      <strong className="text-sm font-black text-[#9A3412]">
                         ₹{summary.totalGrossRevenue.toLocaleString('en-IN')}
                       </strong>
                     </div>
-                    <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-xl px-3.5 py-1.5 text-right">
-                      <span className="text-[10px] font-bold text-[#57534E] block uppercase tracking-wider">
+                    <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-3.5 py-1.5 text-right">
+                      <span className="text-[10px] font-bold text-[#64748B] block uppercase tracking-wider">
                         Projected Annualized
                       </span>
-                      <strong className="text-sm font-extrabold text-[#292524]">
+                      <strong className="text-sm font-extrabold text-[#111827]">
                         ₹{Math.round(summary.totalGrossRevenue * 12 * 1.16).toLocaleString('en-IN')} / yr
                       </strong>
                     </div>
-                    <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-xl px-3.5 py-1.5 text-right">
-                      <span className="text-[10px] font-bold text-[#B76E79] block uppercase tracking-wider">
+                    <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-3.5 py-1.5 text-right">
+                      <span className="text-[10px] font-bold text-[#EA580C] block uppercase tracking-wider">
                         Growth Pace
                       </span>
-                      <strong className="text-sm font-extrabold text-[#B76E79]">
+                      <strong className="text-sm font-extrabold text-[#EA580C]">
                         +82% Trajectory
                       </strong>
                     </div>
@@ -1297,35 +1297,35 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
                 </div>
 
                 {/* Stream Breakdown Legend Chips */}
-                <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-5 p-3 bg-[#F3E8E8]/80 rounded-xl border border-[#E7DADD]/80 text-xs">
-                  <span className="text-[10px] font-black uppercase tracking-wider text-[#57534E] mr-1">
+                <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-5 p-3 bg-[#F8FAFC]/80 rounded-xl border border-[#E2E8F0]/80 text-xs">
+                  <span className="text-[10px] font-black uppercase tracking-wider text-[#64748B] mr-1">
                     Revenue Streams:
                   </span>
-                  <div className="flex items-center gap-1.5 bg-[#FFFFFF] px-2.5 py-1 rounded-lg border border-[#E7DADD] shadow-xs">
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#B76E79]" />
-                    <span className="text-[#57534E] font-semibold text-[11px]">Members Revenue:</span>
-                    <strong className="text-[#292524] font-bold text-[11px]">
+                  <div className="flex items-center gap-1.5 bg-[#FFFFFF] px-2.5 py-1 rounded-lg border border-[#E2E8F0] shadow-xs">
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#C2410C]" />
+                    <span className="text-[#64748B] font-semibold text-[11px]">Members Revenue:</span>
+                    <strong className="text-[#111827] font-bold text-[11px]">
                       ₹{summary.membersRevenue.toLocaleString('en-IN')} ({membersPct}%)
                     </strong>
                   </div>
-                  <div className="flex items-center gap-1.5 bg-[#FFFFFF] px-2.5 py-1 rounded-lg border border-[#E7DADD] shadow-xs">
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#B76E79]" />
-                    <span className="text-[#57534E] font-semibold text-[11px]">Trainers Revenue:</span>
-                    <strong className="text-[#292524] font-bold text-[11px]">
+                  <div className="flex items-center gap-1.5 bg-[#FFFFFF] px-2.5 py-1 rounded-lg border border-[#E2E8F0] shadow-xs">
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#C2410C]" />
+                    <span className="text-[#64748B] font-semibold text-[11px]">Trainers Revenue:</span>
+                    <strong className="text-[#111827] font-bold text-[11px]">
                       ₹{summary.trainersRevenue.toLocaleString('en-IN')} ({trainersPct}%)
                     </strong>
                   </div>
-                  <div className="flex items-center gap-1.5 bg-[#FFFFFF] px-2.5 py-1 rounded-lg border border-[#E7DADD] shadow-xs">
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#B76E79]" />
-                    <span className="text-[#57534E] font-semibold text-[11px]">Online Store (App):</span>
-                    <strong className="text-[#292524] font-bold text-[11px]">
+                  <div className="flex items-center gap-1.5 bg-[#FFFFFF] px-2.5 py-1 rounded-lg border border-[#E2E8F0] shadow-xs">
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#C2410C]" />
+                    <span className="text-[#64748B] font-semibold text-[11px]">Online Store (App):</span>
+                    <strong className="text-[#111827] font-bold text-[11px]">
                       ₹{summary.ordersOnlineRevenue.toLocaleString('en-IN')} ({onlineOrdersPct}%)
                     </strong>
                   </div>
                   <div className="flex items-center gap-1.5 bg-[#FFFFFF] px-2.5 py-1 rounded-lg border border-amber-200 shadow-xs">
                     <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
-                    <span className="text-[#57534E] font-semibold text-[11px]">Offline Store (POS):</span>
-                    <strong className="text-[#292524] font-bold text-[11px]">
+                    <span className="text-[#64748B] font-semibold text-[11px]">Offline Store (POS):</span>
+                    <strong className="text-[#111827] font-bold text-[11px]">
                       ₹{summary.ordersOfflineRevenue.toLocaleString('en-IN')} ({offlineOrdersPct}%)
                     </strong>
                   </div>
@@ -1335,10 +1335,10 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
                 <div className="overflow-x-auto custom-scrollbar pb-3 pt-1">
                   <div className="min-w-[1100px] lg:min-w-0 relative pt-2">
                     {/* Stepper Track Line Connecting Step Badges */}
-                    <div className="absolute top-[18px] left-6 right-6 h-0.5 bg-[#F3E8E8] z-0" />
+                    <div className="absolute top-[18px] left-6 right-6 h-0.5 bg-[#F8FAFC] z-0" />
 
                     {/* Bottom Connecting Track Line for Circular Nodes */}
-                    <div className="absolute bottom-[52px] left-6 right-6 h-0.5 bg-[#F3E8E8] z-0" />
+                    <div className="absolute bottom-[52px] left-6 right-6 h-0.5 bg-[#F8FAFC] z-0" />
 
                     {/* 12 Month Columns Grid */}
                     <div className="grid grid-cols-12 gap-2 sm:gap-2.5 relative z-10">
@@ -1381,12 +1381,12 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
                         return (
                           <div key={idx} className="flex flex-col items-center group">
                             {/* 1. Step Header Pill */}
-                            <div className="flex items-center gap-1 mb-2.5 bg-[#FFFFFF] px-1.5 py-0.5 rounded-full relative z-10 shadow-xs border border-[#E7DADD]">
-                              <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-wider text-[#57534E] whitespace-nowrap">
+                            <div className="flex items-center gap-1 mb-2.5 bg-[#FFFFFF] px-1.5 py-0.5 rounded-full relative z-10 shadow-xs border border-[#E2E8F0]">
+                              <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-wider text-[#64748B] whitespace-nowrap">
                                 S{stepNum}
                               </span>
                               {item.growth && (
-                                <span className="text-[8px] sm:text-[9px] font-black text-[#B76E79] bg-[#F3E8E8] px-1 py-0.2 rounded-full whitespace-nowrap">
+                                <span className="text-[8px] sm:text-[9px] font-black text-[#EA580C] bg-[#F8FAFC] px-1 py-0.2 rounded-full whitespace-nowrap">
                                   {item.growth}
                                 </span>
                               )}
@@ -1396,8 +1396,8 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
                             <div
                               className={`mb-2.5 text-[10px] sm:text-[11px] font-black px-1.5 sm:px-2 py-1 rounded-xl shadow-xs transition-all whitespace-nowrap ${
                                 isCurrent
-                                  ? 'bg-gradient-to-r from-[#B76E79] to-[#9F5965] text-white shadow-[#B76E79]/15 ring-2 ring-orange-400/50 scale-105'
-                                  : 'bg-[#F3E8E8] text-[#292524] border border-[#E7DADD] group-hover:bg-[#B76E79] group-hover:border-[#B76E79]'
+                                  ? 'bg-gradient-to-r from-[#EA580C] to-[#C2410C] text-white shadow-orange-500/15 ring-2 ring-orange-400/50 scale-105'
+                                  : 'bg-[#F8FAFC] text-[#111827] border border-[#E2E8F0] group-hover:bg-[#C2410C] group-hover:border-[#FDBA74]'
                               }`}
                             >
                               ₹{isCurrent ? mTotal.toLocaleString('en-IN') : `${(mTotal / 1000).toFixed(1)}k`}
@@ -1407,8 +1407,8 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
                             <div
                               className={`w-full h-48 flex items-end justify-center rounded-2xl p-1.5 sm:p-2 transition-all shadow-xs relative ${
                                 isCurrent
-                                  ? 'bg-[#F3E8E8]/30 border-2 border-[#E7DADD] shadow-[#B76E79]/15 ring-2 ring-orange-400/30'
-                                  : 'bg-[#F3E8E8]/80 border border-[#E7DADD]/90 group-hover:border-[#B76E79] group-hover:bg-[#F3E8E8]/15'
+                                  ? 'bg-[#FFF7ED] border-2 border-[#E2E8F0] shadow-orange-500/15 ring-2 ring-orange-400/30'
+                                  : 'bg-[#F8FAFC]/80 border border-[#E2E8F0]/90 group-hover:border-[#FDBA74] group-hover:bg-[#FFF7ED]/15'
                               }`}
                               title={`${item.month} Total: ₹${mTotal.toLocaleString('en-IN')}\n• Trainers: ₹${mTrainers.toLocaleString('en-IN')}\n• Memberships: ₹${mMembers.toLocaleString('en-IN')}\n• Online Store: ₹${mOnline.toLocaleString('en-IN')}\n• Offline POS: ₹${mOffline.toLocaleString('en-IN')}`}
                             >
@@ -1422,19 +1422,19 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
                                 {/* Bottom: Trainers (Blue) */}
                                 <div
                                   style={{ height: `${tShare}%` }}
-                                  className="w-full bg-[#B76E79] hover:bg-[#9F5965] transition-colors"
+                                  className="w-full bg-[#C2410C] hover:bg-[#9A3412] transition-colors"
                                   title={`Trainers: ₹${mTrainers.toLocaleString('en-IN')} (${tShare}%)`}
                                 />
                                 {/* Middle: Memberships (Orange) */}
                                 <div
                                   style={{ height: `${mShare}%` }}
-                                  className="w-full bg-[#B76E79] hover:bg-[#9F5965] transition-colors"
+                                  className="w-full bg-[#C2410C] hover:bg-[#9A3412] transition-colors"
                                   title={`Memberships: ₹${mMembers.toLocaleString('en-IN')} (${mShare}%)`}
                                 />
                                 {/* Top-mid: Store Online (Emerald) */}
                                 <div
                                   style={{ height: `${Math.max(3, onShare)}%` }}
-                                  className="w-full bg-[#B76E79] hover:bg-[#9F5965] transition-colors"
+                                  className="w-full bg-[#C2410C] hover:bg-[#9A3412] transition-colors"
                                   title={`Online Store: ₹${mOnline.toLocaleString('en-IN')} (${onShare}%)`}
                                 />
                                 {/* Very top: Store Offline (Amber) */}
@@ -1451,28 +1451,28 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
                               <div
                                 className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#FFFFFF] border-2 shadow-xs flex items-center justify-center transition-transform group-hover:scale-110 ${
                                   isCurrent
-                                    ? 'border-[#E7DADD] ring-2 ring-orange-400/50'
-                                    : 'border-[#B76E79]'
+                                    ? 'border-[#E2E8F0] ring-2 ring-orange-400/50'
+                                    : 'border-[#FDBA74]'
                                 }`}
                               >
-                                <div className={`w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full ${isCurrent ? 'bg-[#B76E79]' : 'bg-[#B76E79]'}`} />
+                                <div className={`w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full ${isCurrent ? 'bg-[#C2410C]' : 'bg-[#C2410C]'}`} />
                               </div>
                               <span
                                 className={`text-xs font-black mt-1.5 transition-colors whitespace-nowrap ${
-                                  isCurrent ? 'text-[#B76E79] font-black' : 'text-[#292524] group-hover:text-[#B76E79]'
+                                  isCurrent ? 'text-[#EA580C] font-black' : 'text-[#111827] group-hover:text-[#EA580C]'
                                 }`}
                               >
                                 {item.month}
                               </span>
                               
                               {/* Sub-label showing stream snapshot */}
-                              <span className="text-[8px] text-[#57534E] font-bold mt-0.5 whitespace-nowrap">
+                              <span className="text-[8px] text-[#64748B] font-bold mt-0.5 whitespace-nowrap">
                                 T: ₹{(mTrainers / 1000).toFixed(0)}k | M: ₹{(mMembers / 1000).toFixed(1)}k
                               </span>
 
                               {/* Current Active Indicator */}
                               {isCurrent && (
-                                <span className="text-[7px] font-black uppercase tracking-wider text-[#292524] bg-[#B76E79] px-1.5 py-0.5 rounded-full mt-1 shadow-xs whitespace-nowrap">
+                                <span className="text-[7px] font-black uppercase tracking-wider text-[#111827] bg-[#C2410C] px-1.5 py-0.5 rounded-full mt-1 shadow-xs whitespace-nowrap">
                                   NOW
                                 </span>
                               )}
@@ -1488,43 +1488,43 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
               {/* ── 3 Detailed Revenue Stream Action Cards (Members, Trainers, Online & Offline Orders) ── */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {/* 1. Members Revenue Card */}
-                <div className="bg-[#FFFFFF] p-5 rounded-2xl border border-[#E7DADD] hover:border-[#B76E79] transition-all shadow-xs flex flex-col justify-between">
+                <div className="bg-[#FFFFFF] p-5 rounded-2xl border border-[#E2E8F0] hover:border-[#FDBA74] transition-all shadow-xs flex flex-col justify-between">
                   <div>
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-lg bg-[#F3E8E8] text-[#B76E79] flex items-center justify-center">
+                        <div className="w-8 h-8 rounded-lg bg-[#F8FAFC] text-[#EA580C] flex items-center justify-center">
                           <Users size={16} />
                         </div>
                         <div>
-                          <h4 className="font-extrabold text-[#292524] text-sm">Members Revenue</h4>
-                          <span className="text-[10px] text-[#57534E] font-semibold">{membersPct}% of Total Gym Inflow</span>
+                          <h4 className="font-extrabold text-[#111827] text-sm">Members Revenue</h4>
+                          <span className="text-[10px] text-[#64748B] font-semibold">{membersPct}% of Total Gym Inflow</span>
                         </div>
                       </div>
-                      <span className="text-[10px] font-bold text-[#B76E79] bg-[#F3E8E8] px-2 py-0.5 rounded-full">
+                      <span className="text-[10px] font-bold text-[#EA580C] bg-[#F8FAFC] px-2 py-0.5 rounded-full">
                         {membersBreakdown.count || 0} Members
                       </span>
                     </div>
 
                     <div className="my-2">
-                      <strong className="text-2xl font-black text-[#292524]">
+                      <strong className="text-2xl font-black text-[#111827]">
                         ₹{summary.membersRevenue.toLocaleString('en-IN')}
                       </strong>
-                      <p className="text-xs text-[#57534E] mt-1">
+                      <p className="text-xs text-[#64748B] mt-1">
                         Active member subscriptions, package renewals, and membership fees.
                       </p>
                     </div>
                   </div>
 
-                  <div className="mt-4 pt-3 border-t border-[#E7DADD] flex items-center justify-between gap-2">
+                  <div className="mt-4 pt-3 border-t border-[#E2E8F0] flex items-center justify-between gap-2">
                     <button
                       onClick={() => setActiveTab('members')}
-                      className="text-xs font-bold text-[#B76E79] hover:underline cursor-pointer"
+                      className="text-xs font-bold text-[#EA580C] hover:underline cursor-pointer"
                     >
                       View Breakdown &rarr;
                     </button>
                     <button
                       onClick={handleExportMembersPDF}
-                      className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-[#B76E79] to-[#9F5965] hover:from-[#9F5965] hover:to-[#B76E79] text-[#FFFFFF] font-bold font-bold rounded-xl text-xs shadow-xs transition-all cursor-pointer"
+                      className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-[#EA580C] to-[#C2410C] hover:from-[#9A3412] hover:to-[#EA580C] text-[#FFFFFF] font-bold font-bold rounded-xl text-xs shadow-xs transition-all cursor-pointer"
                       title="Download Members Revenue PDF"
                     >
                       <Download size={12} />
@@ -1534,44 +1534,44 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
                 </div>
 
                 {/* 2. Trainers Revenue Card */}
-                <div className="bg-[#FFFFFF] p-5 rounded-2xl border border-[#E7DADD] hover:border-[#E7DADD] transition-all shadow-xs flex flex-col justify-between">
+                <div className="bg-[#FFFFFF] p-5 rounded-2xl border border-[#E2E8F0] hover:border-[#E2E8F0] transition-all shadow-xs flex flex-col justify-between">
                   <div>
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-lg bg-[#F3E8E8] text-[#B76E79] flex items-center justify-center">
+                        <div className="w-8 h-8 rounded-lg bg-[#F8FAFC] text-[#EA580C] flex items-center justify-center">
                           <Dumbbell size={16} />
                         </div>
                         <div>
-                          <h4 className="font-extrabold text-[#292524] text-sm">Trainers Revenue</h4>
-                          <span className="text-[10px] text-[#57534E] font-semibold">{trainersPct}% of Total Gym Inflow</span>
+                          <h4 className="font-extrabold text-[#111827] text-sm">Trainers Revenue</h4>
+                          <span className="text-[10px] text-[#64748B] font-semibold">{trainersPct}% of Total Gym Inflow</span>
                         </div>
                       </div>
-                      <span className="text-[10px] font-bold text-[#B76E79] bg-[#F3E8E8] px-2 py-0.5 rounded-full">
+                      <span className="text-[10px] font-bold text-[#EA580C] bg-[#F8FAFC] px-2 py-0.5 rounded-full">
                         PT Sessions
                       </span>
                     </div>
 
                     <div className="my-2">
-                      <strong className="text-2xl font-black text-[#292524]">
+                      <strong className="text-2xl font-black text-[#111827]">
                         ₹{summary.trainersRevenue.toLocaleString('en-IN')}
                       </strong>
-                      <div className="text-xs text-[#57534E] mt-1 space-y-0.5">
-                        <div>Trainer Commission (70%): <strong className="text-[#292524]">₹{summary.trainerCommissionPaid.toLocaleString('en-IN')}</strong></div>
-                        <div>Gym Net Share (30%): <strong className="text-[#B76E79]">₹{summary.trainerGymNetShare.toLocaleString('en-IN')}</strong></div>
+                      <div className="text-xs text-[#64748B] mt-1 space-y-0.5">
+                        <div>Trainer Commission (70%): <strong className="text-[#111827]">₹{summary.trainerCommissionPaid.toLocaleString('en-IN')}</strong></div>
+                        <div>Gym Net Share (30%): <strong className="text-[#EA580C]">₹{summary.trainerGymNetShare.toLocaleString('en-IN')}</strong></div>
                       </div>
                     </div>
                   </div>
 
-                  <div className="mt-4 pt-3 border-t border-[#E7DADD] flex items-center justify-between gap-2">
+                  <div className="mt-4 pt-3 border-t border-[#E2E8F0] flex items-center justify-between gap-2">
                     <button
                       onClick={() => setActiveTab('trainers')}
-                      className="text-xs font-bold text-[#B76E79] hover:underline cursor-pointer"
+                      className="text-xs font-bold text-[#EA580C] hover:underline cursor-pointer"
                     >
                       View Sessions &rarr;
                     </button>
                     <button
                       onClick={handleExportTrainersPDF}
-                      className="flex items-center gap-1.5 px-3 py-1.5 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold font-bold rounded-xl text-xs shadow-xs transition-all cursor-pointer"
+                      className="flex items-center gap-1.5 px-3 py-1.5 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold font-bold rounded-xl text-xs shadow-xs transition-all cursor-pointer"
                       title="Download Trainers Revenue PDF"
                     >
                       <Download size={12} />
@@ -1581,34 +1581,34 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
                 </div>
 
                 {/* 3. Online & Offline Orders Revenue Card */}
-                <div className="bg-[#FFFFFF] p-5 rounded-2xl border border-[#E7DADD] hover:border-[#E7DADD] transition-all shadow-xs flex flex-col justify-between">
+                <div className="bg-[#FFFFFF] p-5 rounded-2xl border border-[#E2E8F0] hover:border-[#E2E8F0] transition-all shadow-xs flex flex-col justify-between">
                   <div>
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-lg bg-[#F3E8E8] text-[#B76E79] flex items-center justify-center">
+                        <div className="w-8 h-8 rounded-lg bg-[#F8FAFC] text-[#EA580C] flex items-center justify-center">
                           <ShoppingBag size={16} />
                         </div>
                         <div>
-                          <h4 className="font-extrabold text-[#292524] text-sm">Orders Revenue (Online & Offline)</h4>
-                          <span className="text-[10px] text-[#57534E] font-semibold">{ordersPct}% of Total Inflow</span>
+                          <h4 className="font-extrabold text-[#111827] text-sm">Orders Revenue (Online & Offline)</h4>
+                          <span className="text-[10px] text-[#64748B] font-semibold">{ordersPct}% of Total Inflow</span>
                         </div>
                       </div>
-                      <span className="text-[10px] font-bold text-[#B76E79] bg-[#F3E8E8] px-2 py-0.5 rounded-full">
+                      <span className="text-[10px] font-bold text-[#EA580C] bg-[#F8FAFC] px-2 py-0.5 rounded-full">
                         {summary.totalOrdersCount || 0} Orders
                       </span>
                     </div>
 
                     <div className="my-2">
-                      <strong className="text-2xl font-black text-[#292524]">
+                      <strong className="text-2xl font-black text-[#111827]">
                         ₹{summary.ordersRevenue.toLocaleString('en-IN')}
                       </strong>
                       <div className="mt-2 grid grid-cols-2 gap-2 text-xs">
-                        <div className="p-2 rounded-lg bg-[#F3E8E8] border border-[#E7DADD]">
-                          <span className="text-[10px] text-[#B76E79] font-bold block">Online App Store</span>
-                          <strong className="text-[#B76E79] font-black text-xs">
+                        <div className="p-2 rounded-lg bg-[#F8FAFC] border border-[#E2E8F0]">
+                          <span className="text-[10px] text-[#EA580C] font-bold block">Online App Store</span>
+                          <strong className="text-[#EA580C] font-black text-xs">
                             ₹{summary.ordersOnlineRevenue.toLocaleString('en-IN')}
                           </strong>
-                          <span className="text-[10px] text-[#B76E79] block mt-0.5">({summary.onlineOrdersCount || 0} orders)</span>
+                          <span className="text-[10px] text-[#EA580C] block mt-0.5">({summary.onlineOrdersCount || 0} orders)</span>
                         </div>
                         <div className="p-2 rounded-lg bg-amber-50/70 border border-amber-200">
                           <span className="text-[10px] text-amber-800 font-bold block">Offline POS Counter</span>
@@ -1621,17 +1621,17 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
                     </div>
                   </div>
 
-                  <div className="mt-4 pt-3 border-t border-[#E7DADD] flex flex-wrap items-center justify-between gap-2">
+                  <div className="mt-4 pt-3 border-t border-[#E2E8F0] flex flex-wrap items-center justify-between gap-2">
                     <button
                       onClick={() => setActiveTab('orders')}
-                      className="text-xs font-bold text-[#B76E79] hover:underline cursor-pointer"
+                      className="text-xs font-bold text-[#EA580C] hover:underline cursor-pointer"
                     >
                       View Store &rarr;
                     </button>
                     <div className="flex items-center gap-1.5">
                       <button
                         onClick={handleExportOnlineOrdersPDF}
-                        className="flex items-center gap-1 px-2.5 py-1.5 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold font-bold rounded-lg text-[11px] shadow-xs transition-all cursor-pointer"
+                        className="flex items-center gap-1 px-2.5 py-1.5 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold font-bold rounded-lg text-[11px] shadow-xs transition-all cursor-pointer"
                         title="Download Online Orders PDF"
                       >
                         <Download size={11} />
@@ -1653,18 +1653,18 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
           )}
 
           {activeTab === 'members' && (
-            <div className="bg-[#FFFFFF] rounded-2xl border border-[#E7DADD] shadow-xs overflow-hidden">
-              <div className="p-5 border-b border-[#E7DADD] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-[#FFFFFF]">
+            <div className="bg-[#FFFFFF] rounded-2xl border border-[#E2E8F0] shadow-xs overflow-hidden">
+              <div className="p-5 border-b border-[#E2E8F0] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-[#FFFFFF]">
                 <div>
-                  <h3 className="font-bold text-[#292524] text-base">Membership Payment Transactions</h3>
-                  <p className="text-xs text-[#57534E] mt-0.5">
-                    Total Memberships Revenue: <strong className="text-[#292524]">₹{summary.membersRevenue.toLocaleString('en-IN')}</strong> ({membersBreakdown.count || 0} active members)
+                  <h3 className="font-bold text-[#111827] text-base">Membership Payment Transactions</h3>
+                  <p className="text-xs text-[#64748B] mt-0.5">
+                    Total Memberships Revenue: <strong className="text-[#111827]">₹{summary.membersRevenue.toLocaleString('en-IN')}</strong> ({membersBreakdown.count || 0} active members)
                   </p>
                 </div>
                 {/* Download PDF for Members Revenue */}
                 <button
                   onClick={handleExportMembersPDF}
-                  className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#B76E79] to-[#9F5965] hover:from-[#9F5965] hover:to-[#B76E79] text-[#FFFFFF] font-bold font-bold rounded-xl text-xs shadow-xs transition-all cursor-pointer w-fit"
+                  className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#EA580C] to-[#C2410C] hover:from-[#9A3412] hover:to-[#EA580C] text-[#FFFFFF] font-bold font-bold rounded-xl text-xs shadow-xs transition-all cursor-pointer w-fit"
                   title="Download Members Revenue PDF Statement"
                 >
                   <Download size={14} />
@@ -1674,7 +1674,7 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
 
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-[#F3E8E8] border-b border-[#E7DADD] text-[#57534E] font-bold uppercase text-[10px]">
+                  <thead className="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[#64748B] font-bold uppercase text-[10px]">
                     <tr>
                       <th className="py-3 px-4">Customer</th>
                       <th className="py-3 px-4">Plan Name</th>
@@ -1684,21 +1684,21 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
                       <th className="py-3 px-4">Status</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#E7DADD]">
+                  <tbody className="divide-y divide-[#E2E8F0]">
                     {(membersBreakdown.recentPayments?.length > 0
                       ? membersBreakdown.recentPayments
                       : [
                           { customerName: 'Active Member', planName: 'Monthly Membership', amount: summary.membersRevenue || 1998, paymentMethod: 'UPI', date: new Date().toISOString(), status: 'Paid' }
                         ]
                     ).map((p: any, idx: number) => (
-                      <tr key={p.id || idx} className="hover:bg-[#F3E8E8]">
-                        <td className="py-3 px-4 font-bold text-[#292524]">{p.customerName}</td>
+                      <tr key={p.id || idx} className="hover:bg-[#FFF7ED]">
+                        <td className="py-3 px-4 font-bold text-[#111827]">{p.customerName}</td>
                         <td className="py-3 px-4">{p.planName}</td>
-                        <td className="py-3 px-4 font-extrabold text-[#292524]">₹{Number(p.amount).toLocaleString('en-IN')}</td>
+                        <td className="py-3 px-4 font-extrabold text-[#111827]">₹{Number(p.amount).toLocaleString('en-IN')}</td>
                         <td className="py-3 px-4">{p.paymentMethod}</td>
-                        <td className="py-3 px-4 text-[#57534E]">{new Date(p.date || Date.now()).toLocaleDateString('en-IN')}</td>
+                        <td className="py-3 px-4 text-[#64748B]">{new Date(p.date || Date.now()).toLocaleDateString('en-IN')}</td>
                         <td className="py-3 px-4">
-                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#F3E8E8] text-[#B76E79] border border-[#E7DADD]">
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#F8FAFC] text-[#EA580C] border border-[#E2E8F0]">
                             {p.status || 'Paid'}
                           </span>
                         </td>
@@ -1711,18 +1711,18 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
           )}
 
           {activeTab === 'trainers' && (
-            <div className="bg-[#FFFFFF] rounded-2xl border border-[#E7DADD] shadow-xs overflow-hidden">
-              <div className="p-5 border-b border-[#E7DADD] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-[#FFFFFF]">
+            <div className="bg-[#FFFFFF] rounded-2xl border border-[#E2E8F0] shadow-xs overflow-hidden">
+              <div className="p-5 border-b border-[#E2E8F0] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-[#FFFFFF]">
                 <div>
-                  <h3 className="font-bold text-[#292524] text-base">Trainer Session Revenue Records</h3>
-                  <p className="text-xs text-[#57534E] mt-0.5">
-                    Gross: <strong className="text-[#292524]">₹{summary.trainersRevenue.toLocaleString('en-IN')}</strong> | Gym Net Share (30%): <strong className="text-[#B76E79]">₹{summary.trainerGymNetShare.toLocaleString('en-IN')}</strong> | Trainer Share: ₹{summary.trainerCommissionPaid.toLocaleString('en-IN')}
+                  <h3 className="font-bold text-[#111827] text-base">Trainer Session Revenue Records</h3>
+                  <p className="text-xs text-[#64748B] mt-0.5">
+                    Gross: <strong className="text-[#111827]">₹{summary.trainersRevenue.toLocaleString('en-IN')}</strong> | Gym Net Share (30%): <strong className="text-[#EA580C]">₹{summary.trainerGymNetShare.toLocaleString('en-IN')}</strong> | Trainer Share: ₹{summary.trainerCommissionPaid.toLocaleString('en-IN')}
                   </p>
                 </div>
                 {/* Download PDF for Trainers Revenue */}
                 <button
                   onClick={handleExportTrainersPDF}
-                  className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#B76E79] to-blue-700 hover:from-blue-700 hover:to-blue-800 text-[#FFFFFF] font-bold font-bold rounded-xl text-xs shadow-xs transition-all cursor-pointer w-fit"
+                  className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#EA580C] to-blue-700 hover:from-blue-700 hover:to-blue-800 text-[#FFFFFF] font-bold font-bold rounded-xl text-xs shadow-xs transition-all cursor-pointer w-fit"
                   title="Download Trainers Revenue PDF Statement"
                 >
                   <Download size={14} />
@@ -1732,7 +1732,7 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
 
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-[#F3E8E8] border-b border-[#E7DADD] text-[#57534E] font-bold uppercase text-[10px]">
+                  <thead className="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[#64748B] font-bold uppercase text-[10px]">
                     <tr>
                       <th className="py-3 px-4">Trainer Name</th>
                       <th className="py-3 px-4">Client</th>
@@ -1743,22 +1743,22 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
                       <th className="py-3 px-4">Status</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#E7DADD]">
+                  <tbody className="divide-y divide-[#E2E8F0]">
                     {(trainersBreakdown.recentSessions?.length > 0
                       ? trainersBreakdown.recentSessions
                       : [
                           { trainerName: 'Head Trainer', customerName: 'Client Member', amount: summary.trainersRevenue || 25000, date: new Date().toLocaleDateString('en-IN'), status: 'Completed' }
                         ]
                     ).map((s: any, idx: number) => (
-                      <tr key={s.id || idx} className="hover:bg-[#F3E8E8]">
-                        <td className="py-3 px-4 font-bold text-[#292524]">{s.trainerName}</td>
+                      <tr key={s.id || idx} className="hover:bg-[#FFF7ED]">
+                        <td className="py-3 px-4 font-bold text-[#111827]">{s.trainerName}</td>
                         <td className="py-3 px-4">{s.customerName}</td>
-                        <td className="py-3 px-4 font-extrabold text-[#292524]">₹{Number(s.amount).toLocaleString('en-IN')}</td>
-                        <td className="py-3 px-4 font-semibold text-[#B76E79]">₹{Math.round(Number(s.amount) * 0.3).toLocaleString('en-IN')}</td>
-                        <td className="py-3 px-4 font-semibold text-[#B76E79]">₹{Math.round(Number(s.amount) * 0.7).toLocaleString('en-IN')}</td>
-                        <td className="py-3 px-4 text-[#57534E]">{s.date}</td>
+                        <td className="py-3 px-4 font-extrabold text-[#111827]">₹{Number(s.amount).toLocaleString('en-IN')}</td>
+                        <td className="py-3 px-4 font-semibold text-[#EA580C]">₹{Math.round(Number(s.amount) * 0.3).toLocaleString('en-IN')}</td>
+                        <td className="py-3 px-4 font-semibold text-[#EA580C]">₹{Math.round(Number(s.amount) * 0.7).toLocaleString('en-IN')}</td>
+                        <td className="py-3 px-4 text-[#64748B]">{s.date}</td>
                         <td className="py-3 px-4">
-                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#F3E8E8] text-[#B76E79] border border-[#E7DADD]">
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#F8FAFC] text-[#EA580C] border border-[#E2E8F0]">
                             {s.status}
                           </span>
                         </td>
@@ -1773,19 +1773,19 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
           {activeTab === 'orders' && (
             <div className="space-y-6">
               {/* Separate Download Buttons Header Card */}
-              <div className="bg-[#FFFFFF] rounded-2xl border border-[#E7DADD] shadow-xs overflow-hidden">
-                <div className="p-5 border-b border-[#E7DADD] flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 bg-[#FFFFFF]">
+              <div className="bg-[#FFFFFF] rounded-2xl border border-[#E2E8F0] shadow-xs overflow-hidden">
+                <div className="p-5 border-b border-[#E2E8F0] flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 bg-[#FFFFFF]">
                   <div>
-                    <h3 className="font-bold text-[#292524] text-base">Store Orders Revenue (Online & Offline)</h3>
-                    <p className="text-xs text-[#57534E] mt-0.5">
-                      Online App Store: <strong className="text-[#B76E79]">₹{summary.ordersOnlineRevenue.toLocaleString('en-IN')}</strong> | Offline Counter POS: <strong className="text-amber-600">₹{summary.ordersOfflineRevenue.toLocaleString('en-IN')}</strong>
+                    <h3 className="font-bold text-[#111827] text-base">Store Orders Revenue (Online & Offline)</h3>
+                    <p className="text-xs text-[#64748B] mt-0.5">
+                      Online App Store: <strong className="text-[#EA580C]">₹{summary.ordersOnlineRevenue.toLocaleString('en-IN')}</strong> | Offline Counter POS: <strong className="text-amber-600">₹{summary.ordersOfflineRevenue.toLocaleString('en-IN')}</strong>
                     </p>
                   </div>
                   {/* SEPARATE BUTTONS FOR ONLINE AND OFFLINE ORDERS */}
                   <div className="flex flex-wrap items-center gap-2.5">
                     <button
                       onClick={handleExportOnlineOrdersPDF}
-                      className="flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-[#B76E79] to-[#9F5965] hover:from-emerald-700 hover:to-[#9F5965] text-[#FFFFFF] font-bold font-bold rounded-xl text-xs shadow-xs transition-all cursor-pointer"
+                      className="flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-[#EA580C] to-[#C2410C] hover:from-emerald-700 hover:to-[#C2410C] text-[#FFFFFF] font-bold font-bold rounded-xl text-xs shadow-xs transition-all cursor-pointer"
                       title="Download Online App Store Orders PDF Statement"
                     >
                       <Download size={14} />
@@ -1803,12 +1803,12 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
                 </div>
 
                 {/* Top Sold Products & Merchandise */}
-                <div className="p-4 bg-[#F3E8E8]/50 border-b border-[#E7DADD]">
-                  <span className="text-xs font-bold text-[#292524] uppercase tracking-wider">Top Sold Products</span>
+                <div className="p-4 bg-[#FFF7ED] border-b border-[#E2E8F0]">
+                  <span className="text-xs font-bold text-[#111827] uppercase tracking-wider">Top Sold Products</span>
                 </div>
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs">
-                    <thead className="bg-[#F3E8E8] border-b border-[#E7DADD] text-[#57534E] font-bold uppercase text-[10px]">
+                    <thead className="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[#64748B] font-bold uppercase text-[10px]">
                       <tr>
                         <th className="py-3 px-4">Product Name</th>
                         <th className="py-3 px-4">Quantity Sold</th>
@@ -1816,7 +1816,7 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
                         <th className="py-3 px-4">Total Revenue</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-[#E7DADD]">
+                    <tbody className="divide-y divide-[#E2E8F0]">
                       {(ordersBreakdown.topProducts?.length > 0
                         ? ordersBreakdown.topProducts
                         : [
@@ -1824,19 +1824,19 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
                             { name: 'classy (Energy Drink)', quantity: 1, revenue: 140, channel: 'Online Store' }
                           ]
                       ).map((prod: any, idx: number) => (
-                        <tr key={idx} className="hover:bg-[#F3E8E8]">
-                          <td className="py-3 px-4 font-bold text-[#292524]">{prod.name}</td>
+                        <tr key={idx} className="hover:bg-[#FFF7ED]">
+                          <td className="py-3 px-4 font-bold text-[#111827]">{prod.name}</td>
                           <td className="py-3 px-4">{prod.quantity} unit(s)</td>
                           <td className="py-3 px-4">
                             <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${
                               prod.channel?.toLowerCase().includes('online')
-                                ? 'bg-[#F3E8E8] text-[#B76E79] border border-[#E7DADD]'
+                                ? 'bg-[#F8FAFC] text-[#EA580C] border border-[#E2E8F0]'
                                 : 'bg-amber-50 text-amber-700 border border-amber-200'
                             }`}>
                               {prod.channel}
                             </span>
                           </td>
-                          <td className="py-3 px-4 font-extrabold text-[#292524]">₹{Number(prod.revenue).toLocaleString('en-IN')}</td>
+                          <td className="py-3 px-4 font-extrabold text-[#111827]">₹{Number(prod.revenue).toLocaleString('en-IN')}</td>
                         </tr>
                       ))}
                     </tbody>

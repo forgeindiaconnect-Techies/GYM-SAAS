@@ -104,12 +104,12 @@ const GymAdminDeletedDetails = () => {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#292524] tracking-tight">Deleted Details</h1>
-          <p className="text-[#57534E] mt-1">View history of deleted trainers, members, and profiles.</p>
+          <h1 className="text-3xl font-bold text-[#111827] tracking-tight">Deleted Details</h1>
+          <p className="text-[#64748B] mt-1">View history of deleted trainers, members, and profiles.</p>
         </div>
       </div>
 
-      <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-6 relative overflow-hidden">
+      <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-6 relative overflow-hidden">
         <div className="absolute top-0 right-0 p-4 opacity-5"><Trash2 size={120} /></div>
         
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 relative z-10">
@@ -119,15 +119,15 @@ const GymAdminDeletedDetails = () => {
               placeholder="Search deleted records..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl pl-10 pr-4 py-2.5 text-[#292524] focus:border-[#B76E79] transition-all outline-none"
+              className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl pl-10 pr-4 py-2.5 text-[#111827] focus:border-[#FDBA74] transition-all outline-none"
             />
-            <Search className="absolute left-3 top-3 text-[#57534E]" size={18} />
+            <Search className="absolute left-3 top-3 text-[#64748B]" size={18} />
           </div>
         </div>
 
         <div className="overflow-x-auto custom-scrollbar relative z-10">
-          <table className="w-full text-left text-sm text-[#57534E] whitespace-nowrap">
-            <thead className="bg-[#F3E8E8] border-b border-[#E7DADD] text-[#292524]">
+          <table className="w-full text-left text-sm text-[#64748B] whitespace-nowrap">
+            <thead className="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[#111827]">
               <tr>
                 <th className="px-6 py-4 font-semibold rounded-tl-xl">ID</th>
                 <th className="px-6 py-4 font-semibold">Name</th>
@@ -137,22 +137,22 @@ const GymAdminDeletedDetails = () => {
                 <th className="px-6 py-4 font-semibold text-center rounded-tr-xl">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#E7DADD]">
+            <tbody className="divide-y divide-[#E2E8F0]">
               {loading ? (
                 <tr>
                   <td colSpan={6} className="px-6 py-12 text-center">
-                    <Loader2 size={32} className="mx-auto text-[#B76E79] animate-spin mb-3" />
-                    <p className="text-[#57534E] font-medium">Loading deleted records...</p>
+                    <Loader2 size={32} className="mx-auto text-[#EA580C] animate-spin mb-3" />
+                    <p className="text-[#64748B] font-medium">Loading deleted records...</p>
                   </td>
                 </tr>
               ) : filteredItems.length > 0 ? (
                 filteredItems.map((item) => (
-                  <tr key={item.id} className="hover:bg-[#F3E8E8] transition-colors">
+                  <tr key={item.id} className="hover:bg-[#FFF7ED] transition-colors">
                     <td className="px-6 py-4 font-mono text-xs">{item.id}</td>
-                    <td className="px-6 py-4 font-bold text-[#292524]">{item.name}</td>
+                    <td className="px-6 py-4 font-bold text-[#111827]">{item.name}</td>
                     <td className="px-6 py-4">
                       <span className={`px-2.5 py-1 rounded-md text-xs font-bold ${
-                        item.type === 'Trainer' ? 'bg-[#F3E8E8] text-[#B76E79]' : 'bg-[#B76E79]/10 text-[#B76E79]'
+                        item.type === 'Trainer' ? 'bg-[#F8FAFC] text-[#EA580C]' : 'bg-[#FFF7ED] text-[#EA580C]'
                       }`}>
                         {item.type}
                       </span>
@@ -161,10 +161,10 @@ const GymAdminDeletedDetails = () => {
                     <td className="px-6 py-4 truncate max-w-xs">{item.reason}</td>
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-center space-x-3">
-                        <button onClick={() => handleOpenDetails(item)} className="text-[#57534E] hover:text-[#B76E79] transition-colors" title="View Details">
+                        <button onClick={() => handleOpenDetails(item)} className="text-[#64748B] hover:text-[#EA580C] transition-colors" title="View Details">
                           <Eye size={18} />
                         </button>
-                        <button onClick={() => handleRestore(item.id)} className="text-[#57534E] hover:text-[#B76E79] transition-colors" title="Restore Data">
+                        <button onClick={() => handleRestore(item.id)} className="text-[#64748B] hover:text-[#EA580C] transition-colors" title="Restore Data">
                           <RotateCcw size={18} />
                         </button>
                       </div>
@@ -174,8 +174,8 @@ const GymAdminDeletedDetails = () => {
               ) : (
                 <tr>
                   <td colSpan={6} className="px-6 py-12 text-center">
-                    <Trash2 size={40} className="mx-auto text-[#E7DADD] mb-3" />
-                    <p className="text-[#57534E] font-medium">No deleted records found</p>
+                    <Trash2 size={40} className="mx-auto text-[#E2E8F0] mb-3" />
+                    <p className="text-[#64748B] font-medium">No deleted records found</p>
                   </td>
                 </tr>
               )}
@@ -186,58 +186,58 @@ const GymAdminDeletedDetails = () => {
 
       {selectedItem && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-[#FFFFFF] rounded-2xl max-w-md w-full shadow-2xl border border-[#E7DADD] overflow-hidden">
-            <div className="p-6 border-b border-[#E7DADD] flex justify-between items-center bg-[#F3E8E8]">
-              <h2 className="text-xl font-bold text-[#292524]">Deleted Record Details</h2>
-              <button onClick={() => setSelectedItem(null)} className="text-[#57534E] hover:text-[#FFFFFF]"><X size={24} /></button>
+          <div className="bg-[#FFFFFF] rounded-2xl max-w-md w-full shadow-2xl border border-[#E2E8F0] overflow-hidden">
+            <div className="p-6 border-b border-[#E2E8F0] flex justify-between items-center bg-[#F8FAFC]">
+              <h2 className="text-xl font-bold text-[#111827]">Deleted Record Details</h2>
+              <button onClick={() => setSelectedItem(null)} className="text-[#64748B] hover:text-[#C2410C]"><X size={24} /></button>
             </div>
             <div className="p-6 space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="col-span-2">
-                  <span className="text-sm font-bold text-[#57534E]">ID</span>
-                  <p className="text-[#292524] font-semibold break-all">{selectedItem.id}</p>
+                  <span className="text-sm font-bold text-[#64748B]">ID</span>
+                  <p className="text-[#111827] font-semibold break-all">{selectedItem.id}</p>
                 </div>
                 <div>
-                  <span className="text-sm font-bold text-[#57534E]">Name</span>
-                  <p className="text-[#292524] font-semibold">{selectedItem.name}</p>
+                  <span className="text-sm font-bold text-[#64748B]">Name</span>
+                  <p className="text-[#111827] font-semibold">{selectedItem.name}</p>
                 </div>
                 <div>
-                  <span className="text-sm font-bold text-[#57534E]">Type</span>
-                  <p className="text-[#292524] font-semibold">
+                  <span className="text-sm font-bold text-[#64748B]">Type</span>
+                  <p className="text-[#111827] font-semibold">
                     <span className={`px-2 py-0.5 rounded text-xs font-bold ${
-                      selectedItem.type === 'Trainer' ? 'bg-[#B76E79]/10 text-[#B76E79]' : 'bg-[#B76E79]/10 text-[#B76E79]'
+                      selectedItem.type === 'Trainer' ? 'bg-[#FFF7ED] text-[#EA580C]' : 'bg-[#FFF7ED] text-[#EA580C]'
                     }`}>
                       {selectedItem.type}
                     </span>
                   </p>
                 </div>
                 <div>
-                  <span className="text-sm font-bold text-[#57534E] flex items-center gap-1.5 mb-0.5">
-                    <Phone size={13} className="text-[#B76E79]" /> Phone Number
+                  <span className="text-sm font-bold text-[#64748B] flex items-center gap-1.5 mb-0.5">
+                    <Phone size={13} className="text-[#EA580C]" /> Phone Number
                   </span>
-                  <p className="text-[#292524] font-semibold">{getPhoneNumber(selectedItem)}</p>
+                  <p className="text-[#111827] font-semibold">{getPhoneNumber(selectedItem)}</p>
                 </div>
                 <div>
-                  <span className="text-sm font-bold text-[#57534E] flex items-center gap-1.5 mb-0.5">
-                    <Mail size={13} className="text-[#B76E79]" /> Mail ID
+                  <span className="text-sm font-bold text-[#64748B] flex items-center gap-1.5 mb-0.5">
+                    <Mail size={13} className="text-[#EA580C]" /> Mail ID
                   </span>
-                  <p className="text-[#292524] font-semibold break-all">{getMailId(selectedItem)}</p>
+                  <p className="text-[#111827] font-semibold break-all">{getMailId(selectedItem)}</p>
                 </div>
                 <div>
-                  <span className="text-sm font-bold text-[#57534E]">Deleted At</span>
-                  <p className="text-[#292524] font-semibold">{selectedItem.deletedAt}</p>
+                  <span className="text-sm font-bold text-[#64748B]">Deleted At</span>
+                  <p className="text-[#111827] font-semibold">{selectedItem.deletedAt}</p>
                 </div>
                 <div>
-                  <span className="text-sm font-bold text-[#57534E]">Deleted By</span>
-                  <p className="text-[#292524] font-semibold">{selectedItem.deletedBy}</p>
+                  <span className="text-sm font-bold text-[#64748B]">Deleted By</span>
+                  <p className="text-[#111827] font-semibold">{selectedItem.deletedBy}</p>
                 </div>
                 <div className="col-span-2">
-                  <span className="text-sm font-bold text-[#57534E]">Reason</span>
-                  <p className="text-[#292524] font-semibold">{selectedItem.reason}</p>
+                  <span className="text-sm font-bold text-[#64748B]">Reason</span>
+                  <p className="text-[#111827] font-semibold">{selectedItem.reason}</p>
                 </div>
               </div>
-              <div className="flex justify-end pt-4 border-t border-[#E7DADD]">
-                <button type="button" onClick={() => setSelectedItem(null)} className="px-6 py-2 bg-[#F3E8E8] text-[#292524] font-bold hover:bg-[#F3E8E8] rounded-xl transition-colors">Close</button>
+              <div className="flex justify-end pt-4 border-t border-[#E2E8F0]">
+                <button type="button" onClick={() => setSelectedItem(null)} className="px-6 py-2 bg-[#F8FAFC] text-[#111827] font-bold hover:bg-[#FFF7ED] rounded-xl transition-colors">Close</button>
               </div>
             </div>
           </div>

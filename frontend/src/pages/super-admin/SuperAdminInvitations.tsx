@@ -243,7 +243,7 @@ const SuperAdminInvitations = () => {
     const s = (status || '').toLowerCase();
     switch (s) {
       case 'accepted':
-        return 'bg-[#F3E8E8] text-[#B76E79] border-[#E7DADD] hover:bg-[#F3E8E8]';
+        return 'bg-[#F8FAFC] text-[#EA580C] border-[#E2E8F0] hover:bg-[#FFF7ED]';
       case 'sent':
         return 'bg-sky-50 text-sky-700 border-sky-200 hover:bg-sky-100';
       case 'expired':
@@ -355,12 +355,12 @@ const SuperAdminInvitations = () => {
       {/* Header and Add Button */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#292524] tracking-tight">Gym Invitations</h1>
-          <p className="text-[#57534E] mt-1">Track and manage invitations sent to potential gym partners.</p>
+          <h1 className="text-3xl font-bold text-[#111827] tracking-tight">Gym Invitations</h1>
+          <p className="text-[#64748B] mt-1">Track and manage invitations sent to potential gym partners.</p>
         </div>
         <button
           onClick={() => navigate('/super-admin/gyms/add')}
-          className="flex items-center space-x-2 px-4 py-2.5 bg-[#B76E79] text-white font-bold rounded-xl font-bold text-sm hover:bg-[#B76E79]/90 transition-colors shadow-sm self-start sm:self-auto"
+          className="flex items-center space-x-2 px-4 py-2.5 bg-[#C2410C] text-white font-bold rounded-xl font-bold text-sm hover:bg-[#FFF7ED] transition-colors shadow-sm self-start sm:self-auto"
         >
           <PlusCircle size={16} />
           <span>Send New Invitation</span>
@@ -375,8 +375,8 @@ const SuperAdminInvitations = () => {
             onClick={() => setStatusFilter('ALL')}
             className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${
               statusFilter === 'ALL'
-                ? 'bg-[#B76E79] text-white border-[#B76E79] shadow-sm'
-                : 'bg-[#FFFFFF] text-[#57534E] border-[#E7DADD] hover:bg-[#F3E8E8]'
+                ? 'bg-[#C2410C] text-white border-[#FDBA74] shadow-sm'
+                : 'bg-[#FFFFFF] text-[#64748B] border-[#E2E8F0] hover:bg-[#FFF7ED]'
             }`}
           >
             All Statuses ({invites.length})
@@ -407,8 +407,8 @@ const SuperAdminInvitations = () => {
             onClick={() => setStatusFilter('Accepted')}
             className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border flex items-center gap-1.5 ${
               statusFilter === 'Accepted'
-                ? 'bg-[#B76E79] text-white border-[#E7DADD] shadow-sm'
-                : 'bg-[#F3E8E8]/60 text-[#B76E79] border-[#E7DADD]/80 hover:bg-[#F3E8E8]/60'
+                ? 'bg-[#C2410C] text-white border-[#E2E8F0] shadow-sm'
+                : 'bg-[#FFF7ED] text-[#EA580C] border-[#E2E8F0]/80 hover:bg-[#FFF7ED]/60'
             }`}
           >
             <CheckCircle2 size={12} />
@@ -428,15 +428,15 @@ const SuperAdminInvitations = () => {
         </div>
 
         {/* Search and Dropdown Bar */}
-        <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-4 flex flex-col sm:flex-row gap-3 items-center justify-between">
+        <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-4 flex flex-col sm:flex-row gap-3 items-center justify-between">
           <div className="relative flex-1 w-full">
-            <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#57534E]" />
+            <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#64748B]" />
             <input
               type="text"
               placeholder="Search by gym name, owner, or email..."
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              className="w-full bg-[#F3E8E8] border border-[#E7DADD] text-[#292524] rounded-xl pl-10 pr-4 py-2 text-sm outline-none focus:border-[#F3E8E8] focus:bg-[#FFFFFF] transition-all"
+              className="w-full bg-[#F8FAFC] border border-[#E2E8F0] text-[#111827] rounded-xl pl-10 pr-4 py-2 text-sm outline-none focus:border-[#F8FAFC] focus:bg-[#FFFFFF] transition-all"
             />
           </div>
           <div className="flex items-center space-x-2 w-full sm:w-auto">
@@ -444,7 +444,7 @@ const SuperAdminInvitations = () => {
               <select
                 value={statusFilter}
                 onChange={e => setStatusFilter(e.target.value)}
-                className="w-full sm:w-auto appearance-none bg-[#F3E8E8] border border-[#E7DADD] text-[#292524] font-semibold rounded-xl pl-3.5 pr-8 py-2 text-sm outline-none focus:border-[#F3E8E8] cursor-pointer"
+                className="w-full sm:w-auto appearance-none bg-[#F8FAFC] border border-[#E2E8F0] text-[#111827] font-semibold rounded-xl pl-3.5 pr-8 py-2 text-sm outline-none focus:border-[#F8FAFC] cursor-pointer"
               >
                 <option value="ALL">All Statuses ({invites.length})</option>
                 <option value="Pending">Pending ({pendingCount})</option>
@@ -452,17 +452,17 @@ const SuperAdminInvitations = () => {
                 <option value="Accepted">Accepted ({acceptedCount})</option>
                 <option value="Expired">Expired ({expiredCount})</option>
               </select>
-              <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#57534E] pointer-events-none" />
+              <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#64748B] pointer-events-none" />
             </div>
           </div>
         </div>
       </div>
 
       {/* Table Container */}
-      <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl overflow-hidden shadow-sm">
+      <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm text-[#57534E]">
-            <thead className="bg-[#F3E8E8] border-b border-[#E7DADD] text-[#292524]">
+          <table className="w-full text-left text-sm text-[#64748B]">
+            <thead className="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[#111827]">
               <tr>
                 <th className="px-6 py-4 font-bold text-xs uppercase tracking-wider">Gym Name</th>
                 <th className="px-6 py-4 font-bold text-xs uppercase tracking-wider">Recipient</th>
@@ -472,26 +472,26 @@ const SuperAdminInvitations = () => {
                 <th className="px-6 py-4 font-bold text-xs uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#E7DADD]">
+            <tbody className="divide-y divide-[#E2E8F0]">
               {filteredInvites.map(invite => (
-                <tr key={invite.id} className="hover:bg-[#F3E8E8] transition-colors">
+                <tr key={invite.id} className="hover:bg-[#FFF7ED] transition-colors">
                   <td className="px-6 py-4">
-                    <div className="font-bold text-[#292524] flex items-center space-x-2">
-                      <div className="w-7 h-7 rounded-lg bg-[#F3E8E8]/15 flex items-center justify-center text-[#B76E79] shrink-0">
+                    <div className="font-bold text-[#111827] flex items-center space-x-2">
+                      <div className="w-7 h-7 rounded-lg bg-[#FFF7ED] flex items-center justify-center text-[#EA580C] shrink-0">
                         <Building2 size={14} />
                       </div>
                       <span>{invite.gymName}</span>
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="text-[#292524] font-semibold">{invite.owner || 'N/A'}</div>
-                    <div className="text-xs text-[#292524] font-semibold">{invite.email}</div>
+                    <div className="text-[#111827] font-semibold">{invite.owner || 'N/A'}</div>
+                    <div className="text-xs text-[#111827] font-semibold">{invite.email}</div>
                   </td>
-                  <td className="px-6 py-4 text-[#292524] font-medium">{formatDate(invite.date)}</td>
-                  <td className="px-6 py-4 text-[#57534E]">
+                  <td className="px-6 py-4 text-[#111827] font-medium">{formatDate(invite.date)}</td>
+                  <td className="px-6 py-4 text-[#64748B]">
                     <div className="flex flex-col gap-1">
-                      <span className="inline-flex items-center gap-1 font-semibold text-[#292524]">
-                        <Clock size={13} className="text-[#57534E]" />
+                      <span className="inline-flex items-center gap-1 font-semibold text-[#111827]">
+                        <Clock size={13} className="text-[#64748B]" />
                         <span>{invite.expiry || '7 Days'}</span>
                       </span>
                       {invite.isExpiringSoon && (
@@ -507,12 +507,12 @@ const SuperAdminInvitations = () => {
                       <select
                         value={invite.status || 'Pending'}
                         onChange={(e) => handleStatusChange(invite.id, e.target.value)}
-                        className={`appearance-none cursor-pointer pl-3 pr-7 py-1 rounded-full text-xs font-bold border transition-colors outline-none focus:ring-2 focus:ring-offset-1 focus:ring-[#B76E79] ${getStatusBadgeClass(invite.status)}`}
+                        className={`appearance-none cursor-pointer pl-3 pr-7 py-1 rounded-full text-xs font-bold border transition-colors outline-none focus:ring-2 focus:ring-offset-1 focus:ring-[#F97316] ${getStatusBadgeClass(invite.status)}`}
                       >
-                        <option value="Pending" className="text-[#292524] bg-[#FFFFFF]">Pending</option>
-                        <option value="Sent" className="text-[#292524] bg-[#FFFFFF]">Sent</option>
-                        <option value="Accepted" className="text-[#292524] bg-[#FFFFFF]">Accepted</option>
-                        <option value="Expired" className="text-[#292524] bg-[#FFFFFF]">Expired</option>
+                        <option value="Pending" className="text-[#111827] bg-[#FFFFFF]">Pending</option>
+                        <option value="Sent" className="text-[#111827] bg-[#FFFFFF]">Sent</option>
+                        <option value="Accepted" className="text-[#111827] bg-[#FFFFFF]">Accepted</option>
+                        <option value="Expired" className="text-[#111827] bg-[#FFFFFF]">Expired</option>
                       </select>
                       <ChevronDown size={11} className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none opacity-60" />
                     </div>
@@ -522,10 +522,10 @@ const SuperAdminInvitations = () => {
                       {/* View Details Button */}
                       <button
                         onClick={() => setViewInvite(invite)}
-                        className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-[#F3E8E8] text-[#9F5965] hover:bg-[#F3E8E8] border border-[#E7DADD] font-bold text-xs transition-colors shadow-xs"
+                        className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-[#F8FAFC] text-[#9A3412] hover:bg-[#FFF7ED] border border-[#E2E8F0] font-bold text-xs transition-colors shadow-xs"
                         title="View Details"
                       >
-                        <Eye size={14} className="text-[#B76E79]" />
+                        <Eye size={14} className="text-[#EA580C]" />
                         <span>View Details</span>
                       </button>
 
@@ -535,7 +535,7 @@ const SuperAdminInvitations = () => {
                           const link = invite.link || `${window.location.origin}/register/gym-owner?invite=${invite.id}&email=${encodeURIComponent(invite.email)}&name=${encodeURIComponent(invite.owner || '')}&phone=${encodeURIComponent(invite.phone || '')}`;
                           handleCopyLink(link);
                         }}
-                        className="p-1.5 text-[#57534E] hover:text-[#B76E79] hover:bg-[#F3E8E8] rounded-lg transition-colors"
+                        className="p-1.5 text-[#64748B] hover:text-[#EA580C] hover:bg-[#FFF7ED] rounded-lg transition-colors"
                         title="Copy Registration Link"
                       >
                         <Copy size={15} />
@@ -555,7 +555,7 @@ const SuperAdminInvitations = () => {
                       {/* Resend Invitation Button */}
                       <button
                         onClick={() => handleResend(invite)}
-                        className="p-1.5 text-[#B76E79] hover:text-[#B76E79] hover:bg-[#F3E8E8] rounded-lg transition-colors"
+                        className="p-1.5 text-[#EA580C] hover:text-[#EA580C] hover:bg-[#FFF7ED] rounded-lg transition-colors"
                         title="Resend Invitation via Email"
                       >
                         <Send size={15} />
@@ -575,11 +575,11 @@ const SuperAdminInvitations = () => {
               ))}
               {filteredInvites.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="text-center py-12 text-[#57534E]">
+                  <td colSpan={6} className="text-center py-12 text-[#64748B]">
                     <div className="flex flex-col items-center justify-center space-y-2">
-                      <Send size={32} className="text-[#57534E]" />
-                      <p className="font-semibold text-[#292524]">No invitations found</p>
-                      <p className="text-xs text-[#57534E]">
+                      <Send size={32} className="text-[#64748B]" />
+                      <p className="font-semibold text-[#111827]">No invitations found</p>
+                      <p className="text-xs text-[#64748B]">
                         {statusFilter !== 'ALL'
                           ? `No invitations found with "${statusFilter}" status.`
                           : 'Try changing your search query or send a new invitation.'}
@@ -596,16 +596,16 @@ const SuperAdminInvitations = () => {
       {/* ─── View Details Modal ─── */}
       {viewInvite && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4 sm:p-6 overflow-y-auto">
-          <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl max-w-lg w-full shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150 my-auto max-h-[85vh] flex flex-col">
+          <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl max-w-lg w-full shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150 my-auto max-h-[85vh] flex flex-col">
             {/* Modal Header */}
-            <div className="flex items-center justify-between p-6 border-b border-[#E7DADD] bg-[#F3E8E8] shrink-0">
+            <div className="flex items-center justify-between p-6 border-b border-[#E2E8F0] bg-[#F8FAFC] shrink-0">
               <div className="flex items-center space-x-3">
-                <div className="w-11 h-11 bg-[#B76E79]/10 text-[#B76E79] rounded-xl flex items-center justify-center">
+                <div className="w-11 h-11 bg-[#FFF7ED] text-[#EA580C] rounded-xl flex items-center justify-center">
                   <Building2 size={22} />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-[#292524]">{viewInvite.gymName}</h2>
-                  <p className="text-xs text-[#57534E]">Invitation Details</p>
+                  <h2 className="text-xl font-bold text-[#111827]">{viewInvite.gymName}</h2>
+                  <p className="text-xs text-[#64748B]">Invitation Details</p>
                 </div>
               </div>
               <div className="flex items-center space-x-2">
@@ -613,18 +613,18 @@ const SuperAdminInvitations = () => {
                   <select
                     value={viewInvite.status || 'Pending'}
                     onChange={(e) => handleStatusChange(viewInvite.id, e.target.value)}
-                    className={`appearance-none cursor-pointer pl-3 pr-7 py-1 rounded-full text-xs font-bold border transition-colors outline-none focus:ring-2 focus:ring-offset-1 focus:ring-[#B76E79] ${getStatusBadgeClass(viewInvite.status)}`}
+                    className={`appearance-none cursor-pointer pl-3 pr-7 py-1 rounded-full text-xs font-bold border transition-colors outline-none focus:ring-2 focus:ring-offset-1 focus:ring-[#F97316] ${getStatusBadgeClass(viewInvite.status)}`}
                   >
-                    <option value="Pending" className="text-[#292524] bg-[#FFFFFF]">Pending</option>
-                    <option value="Sent" className="text-[#292524] bg-[#FFFFFF]">Sent</option>
-                    <option value="Accepted" className="text-[#292524] bg-[#FFFFFF]">Accepted</option>
-                    <option value="Expired" className="text-[#292524] bg-[#FFFFFF]">Expired</option>
+                    <option value="Pending" className="text-[#111827] bg-[#FFFFFF]">Pending</option>
+                    <option value="Sent" className="text-[#111827] bg-[#FFFFFF]">Sent</option>
+                    <option value="Accepted" className="text-[#111827] bg-[#FFFFFF]">Accepted</option>
+                    <option value="Expired" className="text-[#111827] bg-[#FFFFFF]">Expired</option>
                   </select>
                   <ChevronDown size={11} className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none opacity-60" />
                 </div>
                 <button
                   onClick={() => setViewInvite(null)}
-                  className="p-1 rounded-lg text-[#57534E] hover:text-[#292524] hover:bg-slate-200 transition-colors"
+                  className="p-1 rounded-lg text-[#64748B] hover:text-[#111827] hover:bg-slate-200 transition-colors"
                 >
                   <X size={18} />
                 </button>
@@ -634,64 +634,64 @@ const SuperAdminInvitations = () => {
             {/* Modal Content */}
             <div className="p-6 space-y-5 overflow-y-auto flex-1">
               {/* Gym & Recipient Info */}
-              <div className="border border-[#E7DADD] rounded-xl overflow-hidden divide-y divide-[#E7DADD] bg-[#FFFFFF] shadow-sm">
-                <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E7DADD]">
+              <div className="border border-[#E2E8F0] rounded-xl overflow-hidden divide-y divide-[#E2E8F0] bg-[#FFFFFF] shadow-sm">
+                <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E2E8F0]">
                   <div className="p-3.5 bg-[#FFFFFF] flex flex-col justify-center">
-                    <span className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider mb-1 flex items-center gap-1">
+                    <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1 flex items-center gap-1">
                       <User size={12} /> Recipient Name
                     </span>
-                    <span className="font-bold text-[#292524] text-sm">{viewInvite.owner || 'N/A'}</span>
+                    <span className="font-bold text-[#111827] text-sm">{viewInvite.owner || 'N/A'}</span>
                   </div>
 
                   <div className="p-3.5 bg-[#FFFFFF] flex flex-col justify-center">
-                    <span className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider mb-1 flex items-center gap-1">
+                    <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1 flex items-center gap-1">
                       <Building2 size={12} /> Gym Type
                     </span>
-                    <span className="font-bold text-[#292524] text-sm">{viewInvite.type || 'Standard Gym'}</span>
+                    <span className="font-bold text-[#111827] text-sm">{viewInvite.type || 'Standard Gym'}</span>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E7DADD]">
+                <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E2E8F0]">
                   <div className="p-3.5 bg-[#FFFFFF] flex flex-col justify-center">
-                    <span className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider mb-1 flex items-center gap-1">
+                    <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1 flex items-center gap-1">
                       <Mail size={12} /> Email Address
                     </span>
-                    <span className="font-semibold text-[#292524] text-sm break-all" title={viewInvite.email}>
+                    <span className="font-semibold text-[#111827] text-sm break-all" title={viewInvite.email}>
                       {viewInvite.email}
                     </span>
                   </div>
 
                   <div className="p-3.5 bg-[#FFFFFF] flex flex-col justify-center">
-                    <span className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider mb-1 flex items-center gap-1">
+                    <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1 flex items-center gap-1">
                       <Phone size={12} /> Phone Number
                     </span>
-                    <span className="font-semibold text-[#292524] text-sm">{viewInvite.phone || 'N/A'}</span>
+                    <span className="font-semibold text-[#111827] text-sm">{viewInvite.phone || 'N/A'}</span>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E7DADD]">
+                <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E2E8F0]">
                   <div className="p-3.5 bg-[#FFFFFF] flex flex-col justify-center">
-                    <span className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider mb-1 flex items-center gap-1">
+                    <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1 flex items-center gap-1">
                       <Calendar size={12} /> Sent Date
                     </span>
-                    <span className="font-semibold text-[#292524] text-sm">{formatDate(viewInvite.date)}</span>
+                    <span className="font-semibold text-[#111827] text-sm">{formatDate(viewInvite.date)}</span>
                   </div>
 
                   <div className="p-3.5 bg-[#FFFFFF] flex flex-col justify-center">
-                    <span className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider mb-1 flex items-center gap-1">
+                    <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1 flex items-center gap-1">
                       <Clock size={12} /> Link Expiry
                     </span>
-                    <span className="font-semibold text-[#292524] text-sm">{viewInvite.expiry || '7 Days'}</span>
+                    <span className="font-semibold text-[#111827] text-sm">{viewInvite.expiry || '7 Days'}</span>
                   </div>
                 </div>
               </div>
 
               {/* Registration Link */}
-              <div className="p-4 bg-[#F3E8E8] border border-[#F3E8E8] rounded-xl space-y-2">
+              <div className="p-4 bg-[#F8FAFC] border border-[#F8FAFC] rounded-xl space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-[#292524]">Invitation Registration Link</span>
+                  <span className="text-xs font-bold text-[#111827]">Invitation Registration Link</span>
                   {copiedLink && (
-                    <span className="text-xs font-bold text-[#B76E79] flex items-center gap-1">
+                    <span className="text-xs font-bold text-[#EA580C] flex items-center gap-1">
                       <Check size={13} /> Copied to clipboard!
                     </span>
                   )}
@@ -701,11 +701,11 @@ const SuperAdminInvitations = () => {
                     type="text"
                     readOnly
                     value={viewInvite.link || `${window.location.origin}/register/gym-owner?invite=${viewInvite.id}&email=${encodeURIComponent(viewInvite.email)}`}
-                    className="flex-1 bg-[#FFFFFF] border border-[#E7DADD] text-[#292524] rounded-lg px-3 py-1.5 text-xs outline-none select-all"
+                    className="flex-1 bg-[#FFFFFF] border border-[#E2E8F0] text-[#111827] rounded-lg px-3 py-1.5 text-xs outline-none select-all"
                   />
                   <button
                     onClick={() => handleCopyLink(viewInvite.link || `${window.location.origin}/register/gym-owner?invite=${viewInvite.id}&email=${encodeURIComponent(viewInvite.email)}`)}
-                    className="px-3 py-1.5 bg-[#B76E79] text-white font-bold hover:bg-[#B76E79]/90 rounded-lg text-xs font-bold flex items-center gap-1 transition-colors"
+                    className="px-3 py-1.5 bg-[#C2410C] text-white font-bold hover:bg-[#FFF7ED] rounded-lg text-xs font-bold flex items-center gap-1 transition-colors"
                   >
                     <Copy size={13} />
                     <span>Copy</span>
@@ -715,13 +715,13 @@ const SuperAdminInvitations = () => {
             </div>
 
             {/* Modal Actions */}
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-5 border-t border-[#E7DADD] bg-[#FFFFFF]">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-5 border-t border-[#E2E8F0] bg-[#FFFFFF]">
               <button
                 onClick={() => {
                   setViewInvite(null);
                   navigate('/super-admin/gym-owners');
                 }}
-                className="w-full sm:w-auto flex items-center justify-center space-x-1.5 px-4 py-2 border border-[#B76E79]/30 text-[#B76E79] hover:bg-[#B76E79]/10 rounded-xl text-xs font-bold transition-colors"
+                className="w-full sm:w-auto flex items-center justify-center space-x-1.5 px-4 py-2 border border-[#FFEDD5] text-[#EA580C] hover:bg-[#FFF7ED] rounded-xl text-xs font-bold transition-colors"
               >
                 <ExternalLink size={13} />
                 <span>Go to Gym Owner Details</span>
@@ -730,14 +730,14 @@ const SuperAdminInvitations = () => {
               <div className="flex items-center space-x-2 w-full sm:w-auto">
                 <button
                   onClick={() => handleResend(viewInvite)}
-                  className="flex-1 sm:flex-initial flex items-center justify-center space-x-1 px-4 py-2 bg-[#F3E8E8] hover:bg-[#F3E8E8] text-[#B76E79] rounded-xl text-xs font-bold transition-colors"
+                  className="flex-1 sm:flex-initial flex items-center justify-center space-x-1 px-4 py-2 bg-[#F8FAFC] hover:bg-[#FFF7ED] text-[#EA580C] rounded-xl text-xs font-bold transition-colors"
                 >
                   <Send size={13} />
                   <span>Resend</span>
                 </button>
                 <button
                   onClick={() => setViewInvite(null)}
-                  className="flex-1 sm:flex-initial px-4 py-2 bg-[#F3E8E8] hover:bg-slate-200 text-[#292524] rounded-xl text-xs font-bold transition-colors"
+                  className="flex-1 sm:flex-initial px-4 py-2 bg-[#F8FAFC] hover:bg-slate-200 text-[#111827] rounded-xl text-xs font-bold transition-colors"
                 >
                   Close
                 </button>

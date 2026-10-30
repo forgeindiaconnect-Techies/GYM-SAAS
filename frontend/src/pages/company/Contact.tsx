@@ -84,18 +84,18 @@ const Contact = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F3E8E8] text-[#292524] selection:bg-[#B76E79] selection:text-[#292524]">
-      <nav className="border-b border-[#E7DADD] bg-[#FFFFFF]/80 backdrop-blur-md sticky top-0 z-50">
+    <div className="min-h-screen bg-[#F8FAFC] text-[#111827] selection:bg-[#C2410C] selection:text-[#111827]">
+      <nav className="border-b border-[#E2E8F0] bg-[#FFFFFF]/80 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           <Link to="/" className="flex items-center space-x-2 group">
-            <div className="w-8 h-8 bg-[#B76E79] rounded-sm flex items-center justify-center group-hover:scale-105 transition-transform">
+            <div className="w-8 h-8 bg-[#C2410C] rounded-sm flex items-center justify-center group-hover:scale-105 transition-transform">
               <Activity className="text-black" size={20} />
             </div>
-            <span className="text-xl font-bold tracking-tight text-[#B76E79]">Gymora</span>
+            <span className="text-xl font-bold tracking-tight text-[#EA580C]">Gymora</span>
           </Link>
           <button
             onClick={handleBack}
-            className="text-sm font-medium text-[#57534E] hover:text-[#B76E79] flex items-center space-x-2 transition-colors cursor-pointer"
+            className="text-sm font-medium text-[#64748B] hover:text-[#EA580C] flex items-center space-x-2 transition-colors cursor-pointer"
           >
             <ArrowLeft size={16} /> <span>{returnLabel}</span>
           </button>
@@ -105,57 +105,57 @@ const Contact = () => {
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="grid md:grid-cols-2 gap-16">
           <div>
-            <span className="text-[#B76E79] text-sm font-bold uppercase tracking-wider mb-4 block">Get In Touch</span>
+            <span className="text-[#EA580C] text-sm font-bold uppercase tracking-wider mb-4 block">Get In Touch</span>
             <h1 className="text-4xl md:text-5xl font-bold mb-6">Contact Us</h1>
-            <p className="text-[#57534E] text-lg mb-10 leading-relaxed">
+            <p className="text-[#64748B] text-lg mb-10 leading-relaxed">
               Have questions about our AI fitness platform, your subscription, or looking to partner your gym with us? Send us a message and we'll respond within 24 hours.
             </p>
 
             <div className="space-y-6">
               <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 bg-[#F3E8E8] rounded-full flex items-center justify-center">
-                  <Mail size={20} className="text-[#B76E79]" />
+                <div className="w-12 h-12 bg-[#F8FAFC] rounded-full flex items-center justify-center">
+                  <Mail size={20} className="text-[#EA580C]" />
                 </div>
                 <div>
-                  <p className="text-[#57534E] text-sm">Email</p>
+                  <p className="text-[#64748B] text-sm">Email</p>
                   <p className="font-semibold text-lg">support@aigym.com</p>
                 </div>
               </div>
               <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 bg-[#F3E8E8] rounded-full flex items-center justify-center">
-                  <Phone size={20} className="text-[#B76E79]" />
+                <div className="w-12 h-12 bg-[#F8FAFC] rounded-full flex items-center justify-center">
+                  <Phone size={20} className="text-[#EA580C]" />
                 </div>
                 <div>
-                  <p className="text-[#57534E] text-sm">Phone</p>
+                  <p className="text-[#64748B] text-sm">Phone</p>
                   <p className="font-semibold text-lg">+1 (555) 123-4567</p>
                 </div>
               </div>
               <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 bg-[#F3E8E8] rounded-full flex items-center justify-center">
-                  <MapPin size={20} className="text-[#B76E79]" />
+                <div className="w-12 h-12 bg-[#F8FAFC] rounded-full flex items-center justify-center">
+                  <MapPin size={20} className="text-[#EA580C]" />
                 </div>
                 <div>
-                  <p className="text-[#57534E] text-sm">Office</p>
+                  <p className="text-[#64748B] text-sm">Office</p>
                   <p className="font-semibold text-lg">123 Fitness Blvd, NY 10001</p>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-8 shadow-sm">
+          <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-8 shadow-sm">
             {isSuccess ? (
               <div className="py-12 text-center flex flex-col items-center">
-                <div className="w-16 h-16 bg-[#F3E8E8] rounded-2xl flex items-center justify-center mb-6 text-[#B76E79]">
+                <div className="w-16 h-16 bg-[#F8FAFC] rounded-2xl flex items-center justify-center mb-6 text-[#EA580C]">
                   <CheckCircle2 size={36} />
                 </div>
-                <h3 className="text-2xl font-bold text-[#292524] mb-3">Message Sent Successfully!</h3>
-                <p className="text-[#57534E] text-base max-w-sm mb-8 leading-relaxed">
+                <h3 className="text-2xl font-bold text-[#111827] mb-3">Message Sent Successfully!</h3>
+                <p className="text-[#64748B] text-base max-w-sm mb-8 leading-relaxed">
                   Thank you for reaching out. Your enquiry has been received and instant notifications have been sent to our gym owners and superadmin team.
                 </p>
                 <button
                   type="button"
                   onClick={() => setIsSuccess(false)}
-                  className="px-6 py-3 bg-[#B76E79] text-white font-bold font-bold rounded-xl hover:bg-[#9F5965] transition-colors"
+                  className="px-6 py-3 bg-[#C2410C] text-white font-bold font-bold rounded-xl hover:bg-[#9A3412] transition-colors"
                 >
                   Send Another Message
                 </button>
@@ -171,32 +171,32 @@ const Contact = () => {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm text-[#57534E] mb-2 font-medium">First Name</label>
+                    <label className="block text-sm text-[#64748B] mb-2 font-medium">First Name</label>
                     <input
                       type="text"
                       name="firstName"
                       value={formData.firstName}
                       onChange={handleChange}
-                      className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl px-4 py-3 text-[#292524] focus:outline-none focus:border-[#B76E79] transition-colors"
+                      className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-4 py-3 text-[#111827] focus:outline-none focus:border-[#FDBA74] transition-colors"
                       placeholder="John"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm text-[#57534E] mb-2 font-medium">Last Name</label>
+                    <label className="block text-sm text-[#64748B] mb-2 font-medium">Last Name</label>
                     <input
                       type="text"
                       name="lastName"
                       value={formData.lastName}
                       onChange={handleChange}
-                      className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl px-4 py-3 text-[#292524] focus:outline-none focus:border-[#B76E79] transition-colors"
+                      className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-4 py-3 text-[#111827] focus:outline-none focus:border-[#FDBA74] transition-colors"
                       placeholder="Doe"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm text-[#57534E] mb-2 font-medium">
-                    Email Address <span className="text-[#B76E79]">*</span>
+                  <label className="block text-sm text-[#64748B] mb-2 font-medium">
+                    Email Address <span className="text-[#EA580C]">*</span>
                   </label>
                   <input
                     type="email"
@@ -204,14 +204,14 @@ const Contact = () => {
                     required
                     value={formData.email}
                     onChange={handleChange}
-                    className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl px-4 py-3 text-[#292524] focus:outline-none focus:border-[#B76E79] transition-colors"
+                    className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-4 py-3 text-[#111827] focus:outline-none focus:border-[#FDBA74] transition-colors"
                     placeholder="john@example.com"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm text-[#57534E] mb-2 font-medium">
-                    Message <span className="text-[#B76E79]">*</span>
+                  <label className="block text-sm text-[#64748B] mb-2 font-medium">
+                    Message <span className="text-[#EA580C]">*</span>
                   </label>
                   <textarea
                     rows={4}
@@ -219,7 +219,7 @@ const Contact = () => {
                     required
                     value={formData.message}
                     onChange={handleChange}
-                    className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl px-4 py-3 text-[#292524] focus:outline-none focus:border-[#B76E79] transition-colors resize-none"
+                    className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-4 py-3 text-[#111827] focus:outline-none focus:border-[#FDBA74] transition-colors resize-none"
                     placeholder="How can we help you?"
                   />
                 </div>
@@ -227,7 +227,7 @@ const Contact = () => {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full py-4 bg-[#B76E79] text-white font-bold font-bold rounded-xl hover:bg-[#9F5965] transition-colors flex items-center justify-center space-x-2 disabled:opacity-60 cursor-pointer"
+                  className="w-full py-4 bg-[#C2410C] text-white font-bold font-bold rounded-xl hover:bg-[#9A3412] transition-colors flex items-center justify-center space-x-2 disabled:opacity-60 cursor-pointer"
                 >
                   {isSubmitting ? (
                     <>

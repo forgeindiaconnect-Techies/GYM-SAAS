@@ -173,7 +173,7 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({ onSend, onCancel, 
           <button
             type="button"
             onClick={handleCancel}
-            className="px-2.5 py-1 bg-[#FFFFFF] text-[#292524] border border-[#E7DADD] rounded-lg font-bold hover:bg-[#F3E8E8]"
+            className="px-2.5 py-1 bg-[#FFFFFF] text-[#111827] border border-[#E2E8F0] rounded-lg font-bold hover:bg-[#FFF7ED]"
           >
             Cancel
           </button>
@@ -183,7 +183,7 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({ onSend, onCancel, 
   }
 
   return (
-    <div className="flex items-center justify-between gap-2.5 w-full bg-[#F3E8E8] border-2 border-[#B76E79] rounded-xl px-4 py-2.5 shadow-sm animate-in fade-in">
+    <div className="flex items-center justify-between gap-2.5 w-full bg-[#F8FAFC] border-2 border-[#FDBA74] rounded-xl px-4 py-2.5 shadow-sm animate-in fade-in">
       {recordingState === 'recording' ? (
         <>
           {/* Active Recording State */}
@@ -198,7 +198,7 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({ onSend, onCancel, 
             </div>
 
             {/* Live timer */}
-            <span className="text-sm font-extrabold text-[#292524] tabular-nums">
+            <span className="text-sm font-extrabold text-[#111827] tabular-nums">
               {formatTime(recordDuration)}
             </span>
 
@@ -207,7 +207,7 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({ onSend, onCancel, 
               {[4, 8, 14, 20, 16, 24, 18, 12, 6, 16, 22, 10, 4].map((h, i) => (
                 <div
                   key={i}
-                  className="w-1 bg-[#B76E79] rounded-full animate-pulse"
+                  className="w-1 bg-[#C2410C] rounded-full animate-pulse"
                   style={{ 
                     height: `${h}px`, 
                     animationDelay: `${i * 80}ms`,
@@ -224,7 +224,7 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({ onSend, onCancel, 
             <button
               type="button"
               onClick={handleCancel}
-              className="p-2 text-[#57534E] hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
+              className="p-2 text-[#64748B] hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
               title="Cancel recording"
             >
               <Trash2 size={18} />
@@ -234,7 +234,7 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({ onSend, onCancel, 
             <button
               type="button"
               onClick={stopRecording}
-              className="px-3 py-1.5 bg-[#B76E79] text-white font-bold rounded-lg text-xs font-bold hover:bg-[#9F5965] transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs"
+              className="px-3 py-1.5 bg-[#C2410C] text-white font-bold rounded-lg text-xs font-bold hover:bg-[#9A3412] transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs"
               title="Stop and preview voice message"
             >
               <Square size={13} className="fill-current" /> Stop
@@ -256,17 +256,17 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({ onSend, onCancel, 
             <button
               type="button"
               onClick={togglePreviewPlay}
-              className="w-8 h-8 rounded-full bg-[#B76E79] text-white font-bold flex items-center justify-center shrink-0 hover:bg-[#9F5965] transition-transform active:scale-95 cursor-pointer shadow-xs"
+              className="w-8 h-8 rounded-full bg-[#C2410C] text-white font-bold flex items-center justify-center shrink-0 hover:bg-[#9A3412] transition-transform active:scale-95 cursor-pointer shadow-xs"
               title={previewPlaying ? 'Pause' : 'Play preview'}
             >
               {previewPlaying ? <Pause size={14} className="fill-current" /> : <Play size={14} className="fill-current ml-0.5" />}
             </button>
 
             <div className="flex flex-col">
-              <span className="text-xs font-bold text-[#292524] flex items-center gap-1.5">
-                <Mic size={13} className="text-[#B76E79]" /> Voice Message Preview
+              <span className="text-xs font-bold text-[#111827] flex items-center gap-1.5">
+                <Mic size={13} className="text-[#EA580C]" /> Voice Message Preview
               </span>
-              <span className="text-[11px] text-[#57534E] font-semibold tabular-nums">
+              <span className="text-[11px] text-[#64748B] font-semibold tabular-nums">
                 Duration: {formatTime(recordDuration)}
               </span>
             </div>
@@ -278,7 +278,7 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({ onSend, onCancel, 
               type="button"
               onClick={handleCancel}
               disabled={isUploading}
-              className="p-2 text-[#57534E] hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
+              className="p-2 text-[#64748B] hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
               title="Discard recording"
             >
               <Trash2 size={18} />
@@ -289,7 +289,7 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({ onSend, onCancel, 
               type="button"
               onClick={handleSendRecording}
               disabled={isUploading}
-              className="px-4 py-2 bg-gradient-to-r from-[#B76E79] to-[#9F5965] text-[#FFFFFF] font-bold rounded-xl text-xs font-black hover:opacity-95 transition-all flex items-center gap-1.5 cursor-pointer shadow-sm disabled:opacity-50"
+              className="px-4 py-2 bg-gradient-to-r from-[#EA580C] to-[#C2410C] text-[#FFFFFF] font-bold rounded-xl text-xs font-black hover:opacity-95 transition-all flex items-center gap-1.5 cursor-pointer shadow-sm disabled:opacity-50"
             >
               {isUploading ? (
                 <>

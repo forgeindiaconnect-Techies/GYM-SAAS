@@ -823,17 +823,17 @@ const MemberDietPlan = () => {
   const targetFats = approvedDietPlan?.dietDetails?.fats || currentDayPlan.targetFats;
 
   const macros = [
-    { label: 'Calories', current: currentCalories, target: targetCals, unit: 'kcal', color: 'bg-[#B76E79]' },
-    { label: 'Protein', current: currentProtein, target: targetProtein, unit: 'g', color: 'bg-[#B76E79]' },
+    { label: 'Calories', current: currentCalories, target: targetCals, unit: 'kcal', color: 'bg-[#C2410C]' },
+    { label: 'Protein', current: currentProtein, target: targetProtein, unit: 'g', color: 'bg-[#C2410C]' },
     { label: 'Carbs', current: currentCarbs, target: targetCarbs, unit: 'g', color: 'bg-green-500' },
-    { label: 'Fats', current: currentFats, target: targetFats, unit: 'g', color: 'bg-[#F3E8E8]0' },
+    { label: 'Fats', current: currentFats, target: targetFats, unit: 'g', color: 'bg-[#FFF7ED]' },
   ];
 
   const renderIcon = (type: string) => {
     switch (type) {
-      case 'coffee': return <Coffee className="text-[#B76E79]" size={24} />;
+      case 'coffee': return <Coffee className="text-[#EA580C]" size={24} />;
       case 'utensils': return <Utensils className="text-green-500" size={24} />;
-      case 'apple': return <Apple className="text-[#B76E79]" size={24} />;
+      case 'apple': return <Apple className="text-[#EA580C]" size={24} />;
       case 'moon': return <Moon className="text-indigo-500" size={24} />;
       case 'sun': return <Sun className="text-amber-500" size={24} />;
       default: return <Utensils size={24} />;
@@ -847,12 +847,12 @@ const MemberDietPlan = () => {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <h1 className="text-3xl font-extrabold text-[#292524] tracking-tight">Your Diet Plan</h1>
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#F3E8E8] text-[#B76E79] border border-[#E7DADD]">
+            <h1 className="text-3xl font-extrabold text-[#111827] tracking-tight">Your Diet Plan</h1>
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#F8FAFC] text-[#EA580C] border border-[#E2E8F0]">
               Monday – Sunday
             </span>
           </div>
-          <p className="text-[#57534E] text-sm">
+          <p className="text-[#64748B] text-sm">
             Fuel your body with tailored, non-repeating daily meals from Monday to Sunday. Click any meal to mark it completed.
           </p>
         </div>
@@ -861,14 +861,14 @@ const MemberDietPlan = () => {
         <div className="flex items-center gap-2 self-start md:self-auto">
           <button
             onClick={markAllCompleted}
-            className="px-3.5 py-2 rounded-xl text-xs font-bold bg-[#F3E8E8] text-[#B76E79] border border-[#E7DADD] hover:bg-[#F3E8E8] transition-colors flex items-center gap-1.5 cursor-pointer shadow-2xs"
+            className="px-3.5 py-2 rounded-xl text-xs font-bold bg-[#F8FAFC] text-[#EA580C] border border-[#E2E8F0] hover:bg-[#FFF7ED] transition-colors flex items-center gap-1.5 cursor-pointer shadow-2xs"
             title="Mark all meals eaten for this day"
           >
             <Check size={14} /> Mark All Eaten
           </button>
           <button
             onClick={resetDay}
-            className="px-3.5 py-2 rounded-xl text-xs font-bold bg-[#F3E8E8] text-[#57534E] border border-[#E7DADD] hover:text-[#FFFFFF] transition-colors flex items-center gap-1.5 cursor-pointer"
+            className="px-3.5 py-2 rounded-xl text-xs font-bold bg-[#F8FAFC] text-[#64748B] border border-[#E2E8F0] hover:text-[#FFFFFF] transition-colors flex items-center gap-1.5 cursor-pointer"
             title="Reset meals for this day"
           >
             <RotateCcw size={14} /> Reset Day
@@ -878,69 +878,69 @@ const MemberDietPlan = () => {
 
       {/* Trainer Approved Diet Banner */}
       {approvedDietPlan && (
-        <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-3xl p-6 shadow-xs space-y-4">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-[#E7DADD]/70 pb-4">
+        <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-3xl p-6 shadow-xs space-y-4">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-[#E2E8F0]/70 pb-4">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-[#B76E79] text-white font-bold flex items-center justify-center font-extrabold text-xl shadow-md">
+              <div className="w-12 h-12 rounded-2xl bg-[#C2410C] text-white font-bold flex items-center justify-center font-extrabold text-xl shadow-md">
                 <ShieldCheck size={26} />
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold uppercase bg-[#F3E8E8] text-[#B76E79] border border-[#E7DADD] flex items-center gap-1">
-                    <CheckCircle2 size={12} className="text-[#B76E79]" /> Approved by Trainer
+                  <span className="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold uppercase bg-[#F8FAFC] text-[#EA580C] border border-[#E2E8F0] flex items-center gap-1">
+                    <CheckCircle2 size={12} className="text-[#EA580C]" /> Approved by Trainer
                   </span>
-                  <span className="text-xs text-[#57534E]">
+                  <span className="text-xs text-[#64748B]">
                     Coach {approvedDietPlan.trainerId?.name || approvedDietPlan.trainerId?.firstName || 'Assigned Trainer'}
                   </span>
                 </div>
-                <h2 className="text-xl font-extrabold text-[#292524] mt-1">
+                <h2 className="text-xl font-extrabold text-[#111827] mt-1">
                   {approvedDietPlan.title}
                 </h2>
               </div>
             </div>
 
             <div className="flex items-center gap-2">
-              <span className="text-xs font-bold text-[#B76E79] bg-[#F3E8E8]/80 px-3 py-1.5 rounded-xl border border-[#E7DADD]">
+              <span className="text-xs font-bold text-[#EA580C] bg-[#F8FAFC]/80 px-3 py-1.5 rounded-xl border border-[#E2E8F0]">
                 Target: {approvedDietPlan.goal || 'Fitness & Nutrition'}
               </span>
             </div>
           </div>
 
           {approvedDietPlan.trainerFeedback && (
-            <div className="bg-[#FFFFFF]/80 backdrop-blur-xs p-3.5 rounded-2xl border border-[#E7DADD] text-xs text-[#292524] italic">
+            <div className="bg-[#FFFFFF]/80 backdrop-blur-xs p-3.5 rounded-2xl border border-[#E2E8F0] text-xs text-[#111827] italic">
               <strong>Coach Notes:</strong> &ldquo;{approvedDietPlan.trainerFeedback}&rdquo;
             </div>
           )}
 
           {approvedDietPlan.dietDetails && (
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-1">
-              <div className="bg-[#FFFFFF] p-3 rounded-2xl border border-[#E7DADD] text-center">
-                <Flame size={16} className="mx-auto text-[#B76E79] mb-1" />
-                <div className="text-base font-extrabold text-[#292524]">
+              <div className="bg-[#FFFFFF] p-3 rounded-2xl border border-[#E2E8F0] text-center">
+                <Flame size={16} className="mx-auto text-[#EA580C] mb-1" />
+                <div className="text-base font-extrabold text-[#111827]">
                   {approvedDietPlan.dietDetails.dailyCalories || targetCals} kcal
                 </div>
-                <div className="text-[10px] font-bold text-[#57534E] uppercase">Daily Target</div>
+                <div className="text-[10px] font-bold text-[#64748B] uppercase">Daily Target</div>
               </div>
-              <div className="bg-[#FFFFFF] p-3 rounded-2xl border border-[#E7DADD] text-center">
-                <Leaf size={16} className="mx-auto text-[#B76E79] mb-1" />
-                <div className="text-base font-extrabold text-[#292524]">
+              <div className="bg-[#FFFFFF] p-3 rounded-2xl border border-[#E2E8F0] text-center">
+                <Leaf size={16} className="mx-auto text-[#EA580C] mb-1" />
+                <div className="text-base font-extrabold text-[#111827]">
                   {approvedDietPlan.dietDetails.protein || targetProtein}g
                 </div>
-                <div className="text-[10px] font-bold text-[#57534E] uppercase">Protein</div>
+                <div className="text-[10px] font-bold text-[#64748B] uppercase">Protein</div>
               </div>
-              <div className="bg-[#FFFFFF] p-3 rounded-2xl border border-[#E7DADD] text-center">
+              <div className="bg-[#FFFFFF] p-3 rounded-2xl border border-[#E2E8F0] text-center">
                 <Utensils size={16} className="mx-auto text-amber-500 mb-1" />
-                <div className="text-base font-extrabold text-[#292524]">
+                <div className="text-base font-extrabold text-[#111827]">
                   {approvedDietPlan.dietDetails.carbs || targetCarbs}g
                 </div>
-                <div className="text-[10px] font-bold text-[#57534E] uppercase">Carbohydrates</div>
+                <div className="text-[10px] font-bold text-[#64748B] uppercase">Carbohydrates</div>
               </div>
-              <div className="bg-[#FFFFFF] p-3 rounded-2xl border border-[#E7DADD] text-center">
-                <Droplets size={16} className="mx-auto text-[#B76E79] mb-1" />
-                <div className="text-base font-extrabold text-[#292524]">
+              <div className="bg-[#FFFFFF] p-3 rounded-2xl border border-[#E2E8F0] text-center">
+                <Droplets size={16} className="mx-auto text-[#EA580C] mb-1" />
+                <div className="text-base font-extrabold text-[#111827]">
                   {approvedDietPlan.dietDetails.hydration || '3 - 4 Liters'}
                 </div>
-                <div className="text-[10px] font-bold text-[#57534E] uppercase">Hydration</div>
+                <div className="text-[10px] font-bold text-[#64748B] uppercase">Hydration</div>
               </div>
             </div>
           )}
@@ -948,19 +948,19 @@ const MemberDietPlan = () => {
       )}
 
       {/* ===================== MONDAY TO SUNDAY SELECTOR TABS ===================== */}
-      <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-3xl p-4 md:p-6 shadow-xs space-y-3">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#E7DADD] pb-3">
+      <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-3xl p-4 md:p-6 shadow-xs space-y-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#E2E8F0] pb-3">
           <div className="flex items-center gap-2">
-            <Calendar size={18} className="text-[#B76E79]" />
-            <h3 className="text-sm font-extrabold text-[#292524] uppercase tracking-wider">
+            <Calendar size={18} className="text-[#EA580C]" />
+            <h3 className="text-sm font-extrabold text-[#111827] uppercase tracking-wider">
               Select Day of the Week
             </h3>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-[#57534E]">
-              Currently Viewing: <strong className="text-[#B76E79]">{selectedDay}</strong>
+            <span className="text-xs font-bold text-[#64748B]">
+              Currently Viewing: <strong className="text-[#EA580C]">{selectedDay}</strong>
             </span>
-            <span className="text-xs px-2.5 py-0.5 rounded-full bg-[#F3E8E8] text-[#B76E79] font-extrabold border border-[#E7DADD]">
+            <span className="text-xs px-2.5 py-0.5 rounded-full bg-[#F8FAFC] text-[#EA580C] font-extrabold border border-[#E2E8F0]">
               {currentDayPlan.focus}
             </span>
           </div>
@@ -982,8 +982,8 @@ const MemberDietPlan = () => {
                 onClick={() => setSelectedDay(day)}
                 className={`relative flex flex-col items-center justify-center py-3 px-2 rounded-2xl text-xs font-bold transition-all cursor-pointer border ${
                   isSelected
-                    ? 'bg-gradient-to-b from-[#B76E79] to-[#9F5965] text-white border-[#B76E79] shadow-md shadow-[#B76E79]/15 scale-[1.02]'
-                    : 'bg-[#F3E8E8] text-[#57534E] border-[#E7DADD] hover:border-[#B76E79]/50 hover:text-[#FFFFFF]'
+                    ? 'bg-gradient-to-b from-[#EA580C] to-[#C2410C] text-white border-[#FDBA74] shadow-md shadow-orange-500/15 scale-[1.02]'
+                    : 'bg-[#F8FAFC] text-[#64748B] border-[#E2E8F0] hover:border-[#FDBA74] hover:text-[#C2410C]'
                 }`}
               >
                 {/* Today Pill */}
@@ -991,8 +991,8 @@ const MemberDietPlan = () => {
                   <span
                     className={`absolute -top-2 px-1.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider border shadow-2xs ${
                       isSelected
-                        ? 'bg-[#FFFFFF] text-[#9F5965] border-white'
-                        : 'bg-[#B76E79] text-white border-[#B76E79]'
+                        ? 'bg-[#FFFFFF] text-[#9A3412] border-white'
+                        : 'bg-[#C2410C] text-white border-[#FDBA74]'
                     }`}
                   >
                     Today
@@ -1000,22 +1000,22 @@ const MemberDietPlan = () => {
                 )}
 
                 <span className="text-sm font-extrabold">{day}</span>
-                <span className={`text-[10px] mt-0.5 font-medium ${isSelected ? 'text-white/80' : 'text-[#57534E]'}`}>
+                <span className={`text-[10px] mt-0.5 font-medium ${isSelected ? 'text-white/80' : 'text-[#64748B]'}`}>
                   {DEFAULT_WEEKLY_DIET[day]?.targetCalories || 2150} kcal
                 </span>
 
                 {/* Completion Status Indicator */}
                 <div className="mt-1 flex items-center gap-1">
                   {isFullyCompleted ? (
-                    <span className={`flex items-center text-[10px] font-bold ${isSelected ? 'text-white' : 'text-[#B76E79]'}`}>
+                    <span className={`flex items-center text-[10px] font-bold ${isSelected ? 'text-white' : 'text-[#EA580C]'}`}>
                       <CheckCircle2 size={12} className="mr-0.5" /> All Done
                     </span>
                   ) : completedCount > 0 ? (
-                    <span className={`text-[10px] font-semibold ${isSelected ? 'text-white/90' : 'text-[#B76E79]'}`}>
+                    <span className={`text-[10px] font-semibold ${isSelected ? 'text-white/90' : 'text-[#EA580C]'}`}>
                       {completedCount}/{totalForDay} eaten
                     </span>
                   ) : (
-                    <span className={`text-[10px] ${isSelected ? 'text-white/60' : 'text-[#57534E]'}`}>
+                    <span className={`text-[10px] ${isSelected ? 'text-white/60' : 'text-[#64748B]'}`}>
                       {totalForDay} meals
                     </span>
                   )}
@@ -1031,19 +1031,19 @@ const MemberDietPlan = () => {
         {macros.map((macro, idx) => {
           const percentage = Math.min(100, Math.round((macro.current / macro.target) * 100));
           return (
-            <div key={idx} className="bg-[#FFFFFF] rounded-2xl p-6 border border-[#F3E8E8] shadow-xs flex flex-col items-center justify-center relative overflow-hidden group hover:border-[#B76E79] transition-all">
+            <div key={idx} className="bg-[#FFFFFF] rounded-2xl p-6 border border-[#F8FAFC] shadow-xs flex flex-col items-center justify-center relative overflow-hidden group hover:border-[#FDBA74] transition-all">
               <div className="text-center relative z-10">
-                <p className="text-[#57534E] text-sm font-semibold mb-2">{macro.label}</p>
+                <p className="text-[#64748B] text-sm font-semibold mb-2">{macro.label}</p>
                 <div className="flex items-baseline justify-center gap-1">
-                  <span className="text-3xl font-extrabold text-[#292524]">{macro.current}</span>
-                  <span className="text-[#57534E] font-medium text-sm">/ {macro.target} {macro.unit}</span>
+                  <span className="text-3xl font-extrabold text-[#111827]">{macro.current}</span>
+                  <span className="text-[#64748B] font-medium text-sm">/ {macro.target} {macro.unit}</span>
                 </div>
-                <span className="text-[11px] font-bold text-[#B76E79] mt-1 block">
+                <span className="text-[11px] font-bold text-[#EA580C] mt-1 block">
                   {percentage}% consumed
                 </span>
               </div>
               {/* Progress Bar Background */}
-              <div className="absolute bottom-0 left-0 h-1.5 w-full bg-[#F3E8E8]">
+              <div className="absolute bottom-0 left-0 h-1.5 w-full bg-[#F8FAFC]">
                 <div 
                   className={`h-full ${macro.color} transition-all duration-700 ease-out rounded-r-full`}
                   style={{ width: `${percentage}%` }}
@@ -1055,23 +1055,23 @@ const MemberDietPlan = () => {
       </div>
 
       {/* Selected Day's Meals Timeline */}
-      <div className="bg-[#FFFFFF] rounded-3xl p-6 md:p-8 border border-[#F3E8E8] shadow-xs">
+      <div className="bg-[#FFFFFF] rounded-3xl p-6 md:p-8 border border-[#F8FAFC] shadow-xs">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-3">
           <div>
             <div className="flex items-center gap-2">
-              <h2 className="text-xl font-bold text-[#292524]">{selectedDay}&apos;s Meal Schedule</h2>
+              <h2 className="text-xl font-bold text-[#111827]">{selectedDay}&apos;s Meal Schedule</h2>
               {selectedDay === todayDayName && (
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-[#F3E8E8] text-[#B76E79] border border-[#E7DADD]">
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-[#F8FAFC] text-[#EA580C] border border-[#E2E8F0]">
                   Today
                 </span>
               )}
             </div>
-            <p className="text-xs text-[#57534E] mt-0.5">
+            <p className="text-xs text-[#64748B] mt-0.5">
               {currentDayPlan.focus} • Click any meal to mark it eaten
             </p>
           </div>
 
-          <span className="text-xs font-semibold text-[#B76E79] bg-[#B76E79]/10 px-3 py-1.5 rounded-full self-start sm:self-auto">
+          <span className="text-xs font-semibold text-[#EA580C] bg-[#FFF7ED] px-3 py-1.5 rounded-full self-start sm:self-auto">
             {completedMeals.length} of {currentDayPlan.meals.length} Completed ({Math.round((completedMeals.length / (currentDayPlan.meals.length || 1)) * 100)}%)
           </span>
         </div>
@@ -1084,7 +1084,7 @@ const MemberDietPlan = () => {
                 type="button"
                 onClick={() => toggleMeal(meal.id)}
                 className={`flex items-center justify-center w-14 h-14 rounded-full border-4 border-white shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-md z-10 transition-transform active:scale-95 cursor-pointer ${
-                  meal.completed ? 'bg-green-100 text-green-600' : 'bg-[#F3E8E8]'
+                  meal.completed ? 'bg-green-100 text-green-600' : 'bg-[#F8FAFC]'
                 }`}
                 title={meal.completed ? 'Mark incomplete' : 'Mark completed'}
               >
@@ -1095,12 +1095,12 @@ const MemberDietPlan = () => {
               <div 
                 onClick={() => toggleMeal(meal.id)}
                 className={`w-[calc(100%-4rem)] md:w-[calc(50%-3rem)] p-5 rounded-2xl border transition-all cursor-pointer select-none ${
-                  meal.completed ? 'bg-green-50/40 border-green-200 shadow-xs' : 'bg-[#FFFFFF] border-[#F3E8E8] hover:border-[#B76E79] hover:shadow-md'
+                  meal.completed ? 'bg-green-50/40 border-green-200 shadow-xs' : 'bg-[#FFFFFF] border-[#F8FAFC] hover:border-[#FDBA74] hover:shadow-md'
                 }`}
               >
                 <div className="flex justify-between items-center mb-3">
                   <div className="flex items-center gap-2">
-                    <h3 className={`font-bold text-lg ${meal.completed ? 'text-green-800 line-through opacity-80' : 'text-[#292524]'}`}>
+                    <h3 className={`font-bold text-lg ${meal.completed ? 'text-green-800 line-through opacity-80' : 'text-[#111827]'}`}>
                       {meal.type}
                     </h3>
                     {meal.completed && (
@@ -1109,21 +1109,21 @@ const MemberDietPlan = () => {
                       </span>
                     )}
                   </div>
-                  <span className="text-xs font-semibold text-[#57534E] bg-[#F3E8E8] px-2.5 py-1 rounded-full">{meal.time}</span>
+                  <span className="text-xs font-semibold text-[#64748B] bg-[#F8FAFC] px-2.5 py-1 rounded-full">{meal.time}</span>
                 </div>
                 <ul className="space-y-1.5 mb-3">
                   {meal.items.map((item: string, i: number) => (
-                    <li key={i} className="text-[#57534E] text-sm flex items-start gap-2">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#B76E79] mt-2 shrink-0"></span>
+                    <li key={i} className="text-[#64748B] text-sm flex items-start gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#C2410C] mt-2 shrink-0"></span>
                       <span>{item}</span>
                     </li>
                   ))}
                 </ul>
-                <div className="flex items-center gap-3 pt-2.5 border-t border-[#E7DADD] text-xs text-[#57534E] font-semibold flex-wrap">
-                  <span className="text-[#B76E79] bg-[#F3E8E8] px-2 py-0.5 rounded-md">🔥 {meal.calories} kcal</span>
-                  <span className="text-[#B76E79] bg-[#F3E8E8] px-2 py-0.5 rounded-md">🥩 {meal.protein}g protein</span>
+                <div className="flex items-center gap-3 pt-2.5 border-t border-[#E2E8F0] text-xs text-[#64748B] font-semibold flex-wrap">
+                  <span className="text-[#EA580C] bg-[#F8FAFC] px-2 py-0.5 rounded-md">🔥 {meal.calories} kcal</span>
+                  <span className="text-[#EA580C] bg-[#F8FAFC] px-2 py-0.5 rounded-md">🥩 {meal.protein}g protein</span>
                   <span className="text-green-600 bg-green-50 px-2 py-0.5 rounded-md">🍞 {meal.carbs}g carbs</span>
-                  <span className="text-[#B76E79] bg-[#F3E8E8] px-2 py-0.5 rounded-md">🥑 {meal.fats}g fats</span>
+                  <span className="text-[#EA580C] bg-[#F8FAFC] px-2 py-0.5 rounded-md">🥑 {meal.fats}g fats</span>
                 </div>
               </div>
             </div>

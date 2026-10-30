@@ -5,32 +5,32 @@ export const TourSlide = ({ journey, step, setJourney, onNavigate }: { journey: 
   if (journey === 'select') {
     return (
       <div className="flex flex-col md:flex-row items-stretch justify-center gap-8 w-full max-w-4xl mx-auto h-full animate-in fade-in zoom-in duration-500">
-        <div onClick={() => onNavigate ? onNavigate('/portal/customer') : setJourney('customer')} className="flex-1 w-full bg-[#FFFFFF] border-2 border-[#FFFFFF] rounded-3xl p-8 hover:border-[#B76E79] hover:bg-[#FFFFFF]/80 transition-all cursor-pointer group shadow-xl flex flex-col">
-          <div className="w-16 h-16 bg-[#B76E79]/20 rounded-2xl flex items-center justify-center text-[#B76E79] mb-6 group-hover:scale-110 transition-transform">
+        <div onClick={() => onNavigate ? onNavigate('/portal/customer') : setJourney('customer')} className="flex-1 w-full bg-[#FFFFFF] border-2 border-[#FFFFFF] rounded-3xl p-8 hover:border-[#FDBA74] hover:bg-[#FFFFFF]/80 transition-all cursor-pointer group shadow-xl flex flex-col">
+          <div className="w-16 h-16 bg-[#FFF7ED] rounded-2xl flex items-center justify-center text-[#EA580C] mb-6 group-hover:scale-110 transition-transform">
             <User size={32} />
           </div>
-          <h3 className="text-2xl font-bold text-[#292524] mb-3 group-hover:text-[#B76E79] transition-colors">Customer Journey</h3>
-          <p className="text-[#57534E] mb-6">See how a fitness enthusiast joins a gym, gets AI guidance, and tracks progress.</p>
+          <h3 className="text-2xl font-bold text-[#111827] mb-3 group-hover:text-[#EA580C] transition-colors">Customer Journey</h3>
+          <p className="text-[#64748B] mb-6">See how a fitness enthusiast joins a gym, gets AI guidance, and tracks progress.</p>
           <ul className="space-y-3 mb-8 flex-1">
             {['Join a gym', 'Create fitness profile', 'Get AI recommendations', 'Connect with trainers', 'Track progress'].map((item, idx) => (
-              <li key={idx} className="flex items-center text-sm text-[#292524]"><CheckCircle size={16} className="text-[#B76E79] mr-2" /> {item}</li>
+              <li key={idx} className="flex items-center text-sm text-[#111827]"><CheckCircle size={16} className="text-[#EA580C] mr-2" /> {item}</li>
             ))}
           </ul>
-          <div className="inline-flex items-center gap-2 text-[#B76E79] font-bold">Start Journey <ArrowRight size={16} /></div>
+          <div className="inline-flex items-center gap-2 text-[#EA580C] font-bold">Start Journey <ArrowRight size={16} /></div>
         </div>
 
-        <div onClick={() => onNavigate ? onNavigate('/portal/gym-owner') : setJourney('owner')} className="flex-1 w-full bg-[#FFFFFF] border-2 border-[#FFFFFF] rounded-3xl p-8 hover:border-[#B76E79] hover:bg-[#FFFFFF]/80 transition-all cursor-pointer group shadow-xl flex flex-col">
-          <div className="w-16 h-16 bg-[#B76E79]/20 rounded-2xl flex items-center justify-center text-[#B76E79] mb-6 group-hover:scale-110 transition-transform">
+        <div onClick={() => onNavigate ? onNavigate('/portal/gym-owner') : setJourney('owner')} className="flex-1 w-full bg-[#FFFFFF] border-2 border-[#FFFFFF] rounded-3xl p-8 hover:border-[#FDBA74] hover:bg-[#FFFFFF]/80 transition-all cursor-pointer group shadow-xl flex flex-col">
+          <div className="w-16 h-16 bg-[#FFF7ED] rounded-2xl flex items-center justify-center text-[#EA580C] mb-6 group-hover:scale-110 transition-transform">
             <Activity size={32} />
           </div>
-          <h3 className="text-2xl font-bold text-[#292524] mb-3 group-hover:text-[#B76E79] transition-colors">Gym Owner Journey</h3>
-          <p className="text-[#57534E] mb-6">See how a gym owner registers, gets approved, and manages their facility.</p>
+          <h3 className="text-2xl font-bold text-[#111827] mb-3 group-hover:text-[#EA580C] transition-colors">Gym Owner Journey</h3>
+          <p className="text-[#64748B] mb-6">See how a gym owner registers, gets approved, and manages their facility.</p>
           <ul className="space-y-3 mb-8 flex-1">
             {['Register gym', 'Get Superadmin approval', 'Choose SaaS subscription', 'Complete payment', 'Access Dashboard'].map((item, idx) => (
-              <li key={idx} className="flex items-center text-sm text-[#292524]"><CheckCircle size={16} className="text-[#B76E79] mr-2" /> {item}</li>
+              <li key={idx} className="flex items-center text-sm text-[#111827]"><CheckCircle size={16} className="text-[#EA580C] mr-2" /> {item}</li>
             ))}
           </ul>
-          <div className="inline-flex items-center gap-2 text-[#B76E79] font-bold">Start Journey <ArrowRight size={16} /></div>
+          <div className="inline-flex items-center gap-2 text-[#EA580C] font-bold">Start Journey <ArrowRight size={16} /></div>
         </div>
       </div>
     );
@@ -42,14 +42,14 @@ export const TourSlide = ({ journey, step, setJourney, onNavigate }: { journey: 
         id: 1, title: 'Customer Registration', desc: 'Create Your Fitness Profile',
         render: () => (
           <div className="w-full max-w-lg bg-[#FFFFFF] rounded-2xl p-6 shadow-2xl animate-in fade-in slide-in-from-bottom-10">
-            <h4 className="text-xl font-bold text-[#292524] mb-4">Create Profile</h4>
+            <h4 className="text-xl font-bold text-[#111827] mb-4">Create Profile</h4>
             <div className="grid grid-cols-2 gap-4 mb-4">
-              <div className="bg-[#F3E8E8] border border-[#F3E8E8] p-3 rounded-xl"><div className="text-xs text-[#57534E] mb-1">Full Name</div><div className="font-semibold text-sm">Alex Johnson</div></div>
-              <div className="bg-[#F3E8E8] border border-[#F3E8E8] p-3 rounded-xl"><div className="text-xs text-[#57534E] mb-1">Fitness Goal</div><div className="font-semibold text-sm">Muscle Gain</div></div>
-              <div className="bg-[#F3E8E8] border border-[#F3E8E8] p-3 rounded-xl"><div className="text-xs text-[#57534E] mb-1">Height / Weight</div><div className="font-semibold text-sm">180 cm / 75 kg</div></div>
-              <div className="bg-[#F3E8E8] border border-[#F3E8E8] p-3 rounded-xl"><div className="text-xs text-[#57534E] mb-1">Activity Level</div><div className="font-semibold text-sm">Moderate</div></div>
+              <div className="bg-[#F8FAFC] border border-[#F8FAFC] p-3 rounded-xl"><div className="text-xs text-[#64748B] mb-1">Full Name</div><div className="font-semibold text-sm">Alex Johnson</div></div>
+              <div className="bg-[#F8FAFC] border border-[#F8FAFC] p-3 rounded-xl"><div className="text-xs text-[#64748B] mb-1">Fitness Goal</div><div className="font-semibold text-sm">Muscle Gain</div></div>
+              <div className="bg-[#F8FAFC] border border-[#F8FAFC] p-3 rounded-xl"><div className="text-xs text-[#64748B] mb-1">Height / Weight</div><div className="font-semibold text-sm">180 cm / 75 kg</div></div>
+              <div className="bg-[#F8FAFC] border border-[#F8FAFC] p-3 rounded-xl"><div className="text-xs text-[#64748B] mb-1">Activity Level</div><div className="font-semibold text-sm">Moderate</div></div>
             </div>
-            <button className="w-full bg-[#B76E79] text-white font-bold py-3 rounded-xl font-bold">Complete Registration</button>
+            <button className="w-full bg-[#C2410C] text-white font-bold py-3 rounded-xl font-bold">Complete Registration</button>
           </div>
         )
       },
@@ -58,8 +58,8 @@ export const TourSlide = ({ journey, step, setJourney, onNavigate }: { journey: 
         render: () => (
           <div className="w-full max-w-2xl bg-[#FFFFFF] rounded-2xl p-8 shadow-2xl animate-in fade-in zoom-in">
             <div className="flex items-center justify-between mb-8 relative">
-               <div className="absolute top-1/2 left-0 w-full h-1 bg-[#F3E8E8] -z-10 -translate-y-1/2"></div>
-               <div className="absolute top-1/2 left-0 w-[80%] h-1 bg-[#B76E79] -z-10 -translate-y-1/2 transition-all duration-1000"></div>
+               <div className="absolute top-1/2 left-0 w-full h-1 bg-[#F8FAFC] -z-10 -translate-y-1/2"></div>
+               <div className="absolute top-1/2 left-0 w-[80%] h-1 bg-[#C2410C] -z-10 -translate-y-1/2 transition-all duration-1000"></div>
                {[
                  { label: 'Submitted', active: true, icon: CheckCircle },
                  { label: 'Review', active: true, icon: CheckCircle },
@@ -67,17 +67,17 @@ export const TourSlide = ({ journey, step, setJourney, onNavigate }: { journey: 
                  { label: 'Login', active: false, icon: User }
                ].map((s, i) => (
                  <div key={i} className="flex flex-col items-center bg-[#FFFFFF] px-2">
-                   <div className={`w-12 h-12 rounded-full flex items-center justify-center border-4 border-[#E7DADD] ${s.active ? 'bg-[#B76E79] text-white' : 'bg-[#F3E8E8] text-[#57534E]'}`}><s.icon size={20}/></div>
-                   <span className="text-xs font-bold mt-2 text-[#57534E]">{s.label}</span>
+                   <div className={`w-12 h-12 rounded-full flex items-center justify-center border-4 border-[#E2E8F0] ${s.active ? 'bg-[#C2410C] text-white' : 'bg-[#F8FAFC] text-[#64748B]'}`}><s.icon size={20}/></div>
+                   <span className="text-xs font-bold mt-2 text-[#64748B]">{s.label}</span>
                  </div>
                ))}
             </div>
-            <div className="bg-[#F3E8E8] border border-[#F3E8E8] rounded-xl p-6 text-center max-w-sm mx-auto">
-               <h4 className="font-bold text-[#292524] mb-2">Welcome Back</h4>
-               <p className="text-xs text-[#57534E] mb-4">Once your registration is approved, sign in to access your personalized dashboard.</p>
-               <input type="email" placeholder="Email" className="w-full mb-3 p-2 border border-[#F3E8E8] rounded bg-[#FFFFFF] text-sm" value="alex@example.com" readOnly/>
-               <input type="password" placeholder="Password" className="w-full mb-4 p-2 border border-[#F3E8E8] rounded bg-[#FFFFFF] text-sm" value="********" readOnly/>
-               <button className="w-full bg-[#B76E79] text-white font-bold py-2 rounded font-bold">Sign In</button>
+            <div className="bg-[#F8FAFC] border border-[#F8FAFC] rounded-xl p-6 text-center max-w-sm mx-auto">
+               <h4 className="font-bold text-[#111827] mb-2">Welcome Back</h4>
+               <p className="text-xs text-[#64748B] mb-4">Once your registration is approved, sign in to access your personalized dashboard.</p>
+               <input type="email" placeholder="Email" className="w-full mb-3 p-2 border border-[#F8FAFC] rounded bg-[#FFFFFF] text-sm" value="alex@example.com" readOnly/>
+               <input type="password" placeholder="Password" className="w-full mb-4 p-2 border border-[#F8FAFC] rounded bg-[#FFFFFF] text-sm" value="********" readOnly/>
+               <button className="w-full bg-[#C2410C] text-white font-bold py-2 rounded font-bold">Sign In</button>
             </div>
           </div>
         )
@@ -85,45 +85,45 @@ export const TourSlide = ({ journey, step, setJourney, onNavigate }: { journey: 
       {
         id: 3, title: 'Customer Dashboard', desc: 'Your Central Fitness Hub',
         render: () => (
-          <div className="w-full max-w-3xl bg-[#F3E8E8] rounded-2xl shadow-2xl overflow-hidden animate-in fade-in slide-in-from-right-10 flex flex-col h-[500px]">
-            <div className="bg-[#FFFFFF] p-4 border-b border-[#F3E8E8] flex justify-between items-center shrink-0">
+          <div className="w-full max-w-3xl bg-[#F8FAFC] rounded-2xl shadow-2xl overflow-hidden animate-in fade-in slide-in-from-right-10 flex flex-col h-[500px]">
+            <div className="bg-[#FFFFFF] p-4 border-b border-[#F8FAFC] flex justify-between items-center shrink-0">
                <div>
-                 <h4 className="font-bold text-[#292524] text-lg">Welcome back, Alex!</h4>
-                 <p className="text-xs text-[#57534E]">Premium Member at Iron Forge Barbell</p>
+                 <h4 className="font-bold text-[#111827] text-lg">Welcome back, Alex!</h4>
+                 <p className="text-xs text-[#64748B]">Premium Member at Iron Forge Barbell</p>
                </div>
-               <div className="w-10 h-10 bg-[#B76E79]/10 text-[#B76E79] rounded-full flex items-center justify-center"><User size={20}/></div>
+               <div className="w-10 h-10 bg-[#FFF7ED] text-[#EA580C] rounded-full flex items-center justify-center"><User size={20}/></div>
             </div>
             <div className="p-6 grid grid-cols-3 gap-4 overflow-y-auto">
                <div className="col-span-2 space-y-4">
-                 <div className="bg-[#FFFFFF] p-4 rounded-xl border border-[#F3E8E8] flex justify-between items-center shadow-sm">
+                 <div className="bg-[#FFFFFF] p-4 rounded-xl border border-[#F8FAFC] flex justify-between items-center shadow-sm">
                    <div>
-                     <h5 className="font-bold text-sm text-[#292524]">Today's Workout</h5>
-                     <p className="text-xs text-[#B76E79] font-semibold">Upper Body Hypertrophy • 45 mins</p>
+                     <h5 className="font-bold text-sm text-[#111827]">Today's Workout</h5>
+                     <p className="text-xs text-[#EA580C] font-semibold">Upper Body Hypertrophy • 45 mins</p>
                    </div>
                    <button className="bg-[#FFFFFF] text-white px-4 py-2 rounded-lg text-sm font-bold">Start</button>
                  </div>
                  <div className="grid grid-cols-2 gap-4">
-                   <div className="bg-[#FFFFFF] p-4 rounded-xl border border-[#F3E8E8] shadow-sm">
-                     <div className="flex items-center gap-2 mb-2"><Activity size={16} className="text-[#B76E79]"/><span className="font-bold text-sm">Attendance</span></div>
-                     <div className="text-2xl font-bold text-[#292524]">12/15 <span className="text-sm text-[#57534E] font-normal">days</span></div>
+                   <div className="bg-[#FFFFFF] p-4 rounded-xl border border-[#F8FAFC] shadow-sm">
+                     <div className="flex items-center gap-2 mb-2"><Activity size={16} className="text-[#EA580C]"/><span className="font-bold text-sm">Attendance</span></div>
+                     <div className="text-2xl font-bold text-[#111827]">12/15 <span className="text-sm text-[#64748B] font-normal">days</span></div>
                    </div>
-                   <div className="bg-[#FFFFFF] p-4 rounded-xl border border-[#F3E8E8] shadow-sm">
-                     <div className="flex items-center gap-2 mb-2"><TrendingUp size={16} className="text-[#B76E79]"/><span className="font-bold text-sm">Progress</span></div>
-                     <div className="text-2xl font-bold text-[#292524]">-2.5 <span className="text-sm text-[#57534E] font-normal">kg</span></div>
+                   <div className="bg-[#FFFFFF] p-4 rounded-xl border border-[#F8FAFC] shadow-sm">
+                     <div className="flex items-center gap-2 mb-2"><TrendingUp size={16} className="text-[#EA580C]"/><span className="font-bold text-sm">Progress</span></div>
+                     <div className="text-2xl font-bold text-[#111827]">-2.5 <span className="text-sm text-[#64748B] font-normal">kg</span></div>
                    </div>
                  </div>
                </div>
                <div className="col-span-1 space-y-4">
-                 <div className="bg-[#FFFFFF] p-4 rounded-xl border border-[#F3E8E8] shadow-sm">
-                   <h5 className="font-bold text-sm text-[#292524] mb-3">AI Diet Goal</h5>
+                 <div className="bg-[#FFFFFF] p-4 rounded-xl border border-[#F8FAFC] shadow-sm">
+                   <h5 className="font-bold text-sm text-[#111827] mb-3">AI Diet Goal</h5>
                    <div className="relative w-24 h-24 mx-auto mb-2">
                      <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
-                       <path className="text-[#F3E8E8]" strokeWidth="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-                       <path className="text-[#B76E79]" strokeDasharray="65, 100" strokeWidth="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                       <path className="text-[#F8FAFC]" strokeWidth="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                       <path className="text-[#EA580C]" strokeDasharray="65, 100" strokeWidth="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
                      </svg>
                      <div className="absolute inset-0 flex flex-col items-center justify-center">
                        <span className="font-bold text-sm">1850</span>
-                       <span className="text-[10px] text-[#57534E]">kcal</span>
+                       <span className="text-[10px] text-[#64748B]">kcal</span>
                      </div>
                    </div>
                  </div>
@@ -136,28 +136,28 @@ export const TourSlide = ({ journey, step, setJourney, onNavigate }: { journey: 
         id: 4, title: 'AI Fitness Analysis', desc: 'Analyzing your profile to create the perfect plan',
         render: () => (
           <div className="w-full max-w-2xl bg-[#FFFFFF] rounded-2xl shadow-2xl p-8 relative overflow-hidden animate-in zoom-in duration-700">
-             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#B76E79]/5 to-transparent"></div>
+             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#EA580C]/5 to-transparent"></div>
              <div className="relative z-10 flex flex-col items-center">
-               <div className="w-20 h-20 bg-[#FFFFFF] border border-[#B76E79]/30 rounded-2xl flex items-center justify-center shadow-[0_0_20px_rgba(183,110,121,0.25)] mb-6 animate-pulse">
-                 <Bot size={40} className="text-[#B76E79]" />
+               <div className="w-20 h-20 bg-[#FFFFFF] border border-[#FFEDD5] rounded-2xl flex items-center justify-center shadow-[0_0_20px_rgba(183,110,121,0.25)] mb-6 animate-pulse">
+                 <Bot size={40} className="text-[#EA580C]" />
                </div>
                <div className="grid grid-cols-4 gap-4 w-full mb-8 text-center">
                  {['Height: 180cm', 'Weight: 75kg', 'Goal: Muscle', 'Level: Mid'].map((t, i) => (
-                   <div key={i} className="bg-[#F3E8E8] py-2 px-3 rounded-lg border border-[#F3E8E8] text-xs font-bold text-[#57534E]">{t}</div>
+                   <div key={i} className="bg-[#F8FAFC] py-2 px-3 rounded-lg border border-[#F8FAFC] text-xs font-bold text-[#64748B]">{t}</div>
                  ))}
                </div>
                <div className="w-full space-y-3">
-                 <div className="h-2 w-full bg-[#F3E8E8] rounded-full overflow-hidden"><div className="h-full bg-[#B76E79] w-[100%] transition-all duration-1000 ease-out"></div></div>
-                 <div className="flex justify-between text-xs font-bold text-[#292524]"><span>Analyzing Profile...</span><span>100%</span></div>
+                 <div className="h-2 w-full bg-[#F8FAFC] rounded-full overflow-hidden"><div className="h-full bg-[#C2410C] w-[100%] transition-all duration-1000 ease-out"></div></div>
+                 <div className="flex justify-between text-xs font-bold text-[#111827]"><span>Analyzing Profile...</span><span>100%</span></div>
                </div>
                <div className="mt-8 grid grid-cols-2 gap-4 w-full">
-                 <div className="bg-[#F3E8E8] border border-[#E7DADD] p-4 rounded-xl">
-                   <h5 className="font-bold text-sm text-[#F3E8E8] mb-1">Recommended Approach</h5>
-                   <p className="text-xs text-[#57534E]">4-day upper/lower split focusing on progressive overload.</p>
+                 <div className="bg-[#F8FAFC] border border-[#E2E8F0] p-4 rounded-xl">
+                   <h5 className="font-bold text-sm text-[#F8FAFC] mb-1">Recommended Approach</h5>
+                   <p className="text-xs text-[#64748B]">4-day upper/lower split focusing on progressive overload.</p>
                  </div>
-                 <div className="bg-[#F3E8E8] border border-[#E7DADD] p-4 rounded-xl">
-                   <h5 className="font-bold text-sm text-[#F3E8E8] mb-1">Diet Guidance</h5>
-                   <p className="text-xs text-[#57534E]">Caloric surplus of 300kcal with 160g daily protein target.</p>
+                 <div className="bg-[#F8FAFC] border border-[#E2E8F0] p-4 rounded-xl">
+                   <h5 className="font-bold text-sm text-[#F8FAFC] mb-1">Diet Guidance</h5>
+                   <p className="text-xs text-[#64748B]">Caloric surplus of 300kcal with 160g daily protein target.</p>
                  </div>
                </div>
              </div>
@@ -168,11 +168,11 @@ export const TourSlide = ({ journey, step, setJourney, onNavigate }: { journey: 
         id: 5, title: 'Personalized Workout Plan', desc: 'Your Weekly Schedule & Exercise Details',
         render: () => (
           <div className="w-full max-w-3xl bg-[#FFFFFF] rounded-2xl shadow-2xl p-6 flex flex-col h-[500px] animate-in fade-in">
-             <div className="flex justify-between items-center mb-6 border-b border-[#F3E8E8] pb-4">
-               <h4 className="font-bold text-lg text-[#292524]">Weekly Plan</h4>
+             <div className="flex justify-between items-center mb-6 border-b border-[#F8FAFC] pb-4">
+               <h4 className="font-bold text-lg text-[#111827]">Weekly Plan</h4>
                <div className="flex space-x-2">
                  {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((d, i) => (
-                   <div key={i} className={`w-8 h-8 flex items-center justify-center rounded-full text-xs font-bold ${i === 0 ? 'bg-[#FFFFFF] text-white' : i === 3 || i === 6 ? 'bg-[#F3E8E8] text-[#57534E] border border-[#F3E8E8]' : 'bg-[#F3E8E8] text-[#F3E8E8]'}`}>
+                   <div key={i} className={`w-8 h-8 flex items-center justify-center rounded-full text-xs font-bold ${i === 0 ? 'bg-[#FFFFFF] text-white' : i === 3 || i === 6 ? 'bg-[#F8FAFC] text-[#64748B] border border-[#F8FAFC]' : 'bg-[#F8FAFC] text-[#F8FAFC]'}`}>
                      {d}
                    </div>
                  ))}
@@ -184,17 +184,17 @@ export const TourSlide = ({ journey, step, setJourney, onNavigate }: { journey: 
                  { name: 'Incline Dumbbell Press', sets: '3 sets x 10-12 reps', target: 'Upper Chest', desc: 'Set bench to 30 degrees. Squeeze at the top.' },
                  { name: 'Lat Pulldown', sets: '4 sets x 10-12 reps', target: 'Back', desc: 'Pull bar to upper chest, retracting scapula.' }
                ].map((ex, i) => (
-                 <div key={i} className="bg-[#F3E8E8] border border-[#F3E8E8] p-4 rounded-xl flex gap-4 hover:border-[#B76E79] transition-colors">
-                   <div className="w-16 h-16 bg-[#F3E8E8] rounded-lg flex items-center justify-center shrink-0">
-                     <Dumbbell size={24} className="text-[#57534E]"/>
+                 <div key={i} className="bg-[#F8FAFC] border border-[#F8FAFC] p-4 rounded-xl flex gap-4 hover:border-[#FDBA74] transition-colors">
+                   <div className="w-16 h-16 bg-[#F8FAFC] rounded-lg flex items-center justify-center shrink-0">
+                     <Dumbbell size={24} className="text-[#64748B]"/>
                    </div>
                    <div className="flex-1">
                      <div className="flex justify-between mb-1">
-                       <h5 className="font-bold text-[#292524] text-sm">{ex.name}</h5>
-                       <span className="text-xs px-2 py-0.5 bg-[#F3E8E8] text-[#F3E8E8] rounded-md font-semibold">{ex.target}</span>
+                       <h5 className="font-bold text-[#111827] text-sm">{ex.name}</h5>
+                       <span className="text-xs px-2 py-0.5 bg-[#F8FAFC] text-[#F8FAFC] rounded-md font-semibold">{ex.target}</span>
                      </div>
-                     <p className="text-xs text-[#B76E79] font-bold mb-1">{ex.sets}</p>
-                     <p className="text-xs text-[#57534E]">{ex.desc}</p>
+                     <p className="text-xs text-[#EA580C] font-bold mb-1">{ex.sets}</p>
+                     <p className="text-xs text-[#64748B]">{ex.desc}</p>
                    </div>
                  </div>
                ))}
@@ -206,16 +206,16 @@ export const TourSlide = ({ journey, step, setJourney, onNavigate }: { journey: 
         id: 6, title: 'Your Personalized Diet Guidance', desc: 'AI-Generated Nutritional Suggestions',
         render: () => (
           <div className="w-full max-w-3xl bg-[#FFFFFF] rounded-2xl shadow-2xl p-6 flex flex-col h-[500px] animate-in fade-in">
-             <div className="mb-4 bg-[#F3E8E8] border border-[#E7DADD] text-[#B76E79] text-xs p-3 rounded-lg flex items-start gap-2">
+             <div className="mb-4 bg-[#F8FAFC] border border-[#E2E8F0] text-[#EA580C] text-xs p-3 rounded-lg flex items-start gap-2">
                <Activity size={16} className="shrink-0 mt-0.5" />
                <p><strong>Disclaimer:</strong> This AI-generated guidance is based on your fitness profile and goals. It does not constitute medical advice or guarantee specific weight-loss results.</p>
              </div>
              <div className="flex justify-between items-center mb-4">
-               <div className="text-2xl font-black text-[#292524]">2,450 <span className="text-sm text-[#57534E] font-medium">kcal/day</span></div>
+               <div className="text-2xl font-black text-[#111827]">2,450 <span className="text-sm text-[#64748B] font-medium">kcal/day</span></div>
                <div className="flex gap-4">
-                 <div className="text-center"><div className="text-xs text-[#57534E]">Protein</div><div className="font-bold text-[#F3E8E8]">160g</div></div>
-                 <div className="text-center"><div className="text-xs text-[#57534E]">Carbs</div><div className="font-bold text-[#B76E79]">240g</div></div>
-                 <div className="text-center"><div className="text-xs text-[#57534E]">Fats</div><div className="font-bold text-yellow-600">70g</div></div>
+                 <div className="text-center"><div className="text-xs text-[#64748B]">Protein</div><div className="font-bold text-[#F8FAFC]">160g</div></div>
+                 <div className="text-center"><div className="text-xs text-[#64748B]">Carbs</div><div className="font-bold text-[#EA580C]">240g</div></div>
+                 <div className="text-center"><div className="text-xs text-[#64748B]">Fats</div><div className="font-bold text-yellow-600">70g</div></div>
                </div>
              </div>
              <div className="flex-1 overflow-y-auto space-y-3">
@@ -225,12 +225,12 @@ export const TourSlide = ({ journey, step, setJourney, onNavigate }: { journey: 
                  { meal: 'Pre-Workout', time: '4:30 PM', items: '2 slices whole wheat bread with peanut butter.', kcal: '350 kcal' },
                  { meal: 'Dinner', time: '8:00 PM', items: 'Baked salmon, sweet potato, side salad with olive oil.', kcal: '600 kcal' }
                ].map((m, i) => (
-                 <div key={i} className="flex justify-between items-center p-4 bg-[#F3E8E8] border border-[#F3E8E8] rounded-xl">
+                 <div key={i} className="flex justify-between items-center p-4 bg-[#F8FAFC] border border-[#F8FAFC] rounded-xl">
                    <div>
-                     <h5 className="font-bold text-sm text-[#292524]">{m.meal} <span className="text-xs text-[#57534E] font-normal ml-2">{m.time}</span></h5>
-                     <p className="text-xs text-[#57534E] mt-1">{m.items}</p>
+                     <h5 className="font-bold text-sm text-[#111827]">{m.meal} <span className="text-xs text-[#64748B] font-normal ml-2">{m.time}</span></h5>
+                     <p className="text-xs text-[#64748B] mt-1">{m.items}</p>
                    </div>
-                   <div className="font-bold text-sm text-[#B76E79]">{m.kcal}</div>
+                   <div className="font-bold text-sm text-[#EA580C]">{m.kcal}</div>
                  </div>
                ))}
              </div>
@@ -242,27 +242,27 @@ export const TourSlide = ({ journey, step, setJourney, onNavigate }: { journey: 
         render: () => (
           <div className="w-full max-w-4xl bg-transparent animate-in zoom-in flex flex-col md:flex-row gap-6 justify-center">
             <div className="bg-[#FFFFFF] rounded-2xl shadow-xl p-6 flex-1 flex flex-col items-center text-center">
-              <div className="w-16 h-16 bg-[#F3E8E8] rounded-full flex items-center justify-center text-[#F3E8E8] mb-4"><Monitor size={24}/></div>
+              <div className="w-16 h-16 bg-[#F8FAFC] rounded-full flex items-center justify-center text-[#F8FAFC] mb-4"><Monitor size={24}/></div>
               <h4 className="font-bold text-lg mb-2">Online Trainer</h4>
-              <p className="text-xs text-[#57534E] mb-6">Get remote video guidance, diet tracking, and workout adjustments anywhere.</p>
-              <div className="bg-[#F3E8E8] border border-[#F3E8E8] p-4 rounded-xl w-full text-left">
+              <p className="text-xs text-[#64748B] mb-6">Get remote video guidance, diet tracking, and workout adjustments anywhere.</p>
+              <div className="bg-[#F8FAFC] border border-[#F8FAFC] p-4 rounded-xl w-full text-left">
                 <div className="flex items-center gap-3 mb-2">
                   <div className="w-10 h-10 bg-gray-200 rounded-full overflow-hidden"><img src="https://images.unsplash.com/photo-1594381898411-846e7d193883?w=100&q=80" className="object-cover w-full h-full"/></div>
-                  <div><h5 className="font-bold text-sm">Mike Tyson</h5><span className="text-[10px] bg-[#F3E8E8] text-[#B76E79] px-1.5 py-0.5 rounded">Online Expert</span></div>
+                  <div><h5 className="font-bold text-sm">Mike Tyson</h5><span className="text-[10px] bg-[#F8FAFC] text-[#EA580C] px-1.5 py-0.5 rounded">Online Expert</span></div>
                 </div>
                 <button className="w-full py-2 bg-[#FFFFFF] text-white text-xs font-bold rounded-lg mt-2">Connect via Chat</button>
               </div>
             </div>
             <div className="bg-[#FFFFFF] rounded-2xl shadow-xl p-6 flex-1 flex flex-col items-center text-center">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center text-[#B76E79] mb-4"><MapPin size={24}/></div>
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center text-[#EA580C] mb-4"><MapPin size={24}/></div>
               <h4 className="font-bold text-lg mb-2">Offline Trainer</h4>
-              <p className="text-xs text-[#57534E] mb-6">In-person form correction, spotting, and personalized motivation at your gym.</p>
-              <div className="bg-[#F3E8E8] border border-[#F3E8E8] p-4 rounded-xl w-full text-left">
+              <p className="text-xs text-[#64748B] mb-6">In-person form correction, spotting, and personalized motivation at your gym.</p>
+              <div className="bg-[#F8FAFC] border border-[#F8FAFC] p-4 rounded-xl w-full text-left">
                 <div className="flex items-center gap-3 mb-2">
                   <div className="w-10 h-10 bg-gray-200 rounded-full overflow-hidden"><img src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=100&q=80" className="object-cover w-full h-full"/></div>
-                  <div><h5 className="font-bold text-sm">Sarah Miller</h5><span className="text-[10px] bg-[#F3E8E8]/10 text-[#B76E79] px-1.5 py-0.5 rounded">At Iron Forge</span></div>
+                  <div><h5 className="font-bold text-sm">Sarah Miller</h5><span className="text-[10px] bg-[#FFF7ED] text-[#EA580C] px-1.5 py-0.5 rounded">At Iron Forge</span></div>
                 </div>
-                <button className="w-full py-2 bg-[#B76E79] text-white font-bold text-xs font-bold rounded-lg mt-2">Book Session</button>
+                <button className="w-full py-2 bg-[#C2410C] text-white font-bold text-xs font-bold rounded-lg mt-2">Book Session</button>
               </div>
             </div>
           </div>
@@ -272,8 +272,8 @@ export const TourSlide = ({ journey, step, setJourney, onNavigate }: { journey: 
         id: 8, title: 'Trainer Guidance', desc: 'Real-time feedback and weekly reviews',
         render: () => (
           <div className="w-full max-w-3xl bg-[#FFFFFF] rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row h-[450px] animate-in fade-in">
-             <div className="w-full md:w-1/2 bg-[#F3E8E8] p-6 border-r border-[#F3E8E8] flex flex-col justify-center">
-               <h4 className="font-bold text-lg text-[#292524] mb-4">Interactive Support</h4>
+             <div className="w-full md:w-1/2 bg-[#F8FAFC] p-6 border-r border-[#F8FAFC] flex flex-col justify-center">
+               <h4 className="font-bold text-lg text-[#111827] mb-4">Interactive Support</h4>
                <ul className="space-y-4">
                  {[
                    { icon: Activity, title: 'Exercise Modifications', desc: 'Swap exercises based on equipment or injury.' },
@@ -281,8 +281,8 @@ export const TourSlide = ({ journey, step, setJourney, onNavigate }: { journey: 
                    { icon: Calendar, title: 'Weekly Reviews', desc: 'Adjust macros and volume based on progress.' }
                  ].map((item, i) => (
                    <li key={i} className="flex gap-3">
-                     <div className="w-8 h-8 rounded-full bg-[#B76E79]/10 text-[#B76E79] flex items-center justify-center shrink-0"><item.icon size={16}/></div>
-                     <div><h5 className="font-bold text-sm text-[#292524]">{item.title}</h5><p className="text-xs text-[#57534E]">{item.desc}</p></div>
+                     <div className="w-8 h-8 rounded-full bg-[#FFF7ED] text-[#EA580C] flex items-center justify-center shrink-0"><item.icon size={16}/></div>
+                     <div><h5 className="font-bold text-sm text-[#111827]">{item.title}</h5><p className="text-xs text-[#64748B]">{item.desc}</p></div>
                    </li>
                  ))}
                </ul>
@@ -290,18 +290,18 @@ export const TourSlide = ({ journey, step, setJourney, onNavigate }: { journey: 
              <div className="w-full md:w-1/2 bg-[#FFFFFF] p-6 flex flex-col">
                <div className="flex-1 overflow-y-auto space-y-4">
                  <div className="flex gap-3">
-                   <div className="w-8 h-8 rounded-full bg-[#F3E8E8] shrink-0 overflow-hidden"><img src="https://images.unsplash.com/photo-1594381898411-846e7d193883?w=100&q=80"/></div>
-                   <div className="bg-[#F3E8E8] p-3 rounded-xl rounded-tl-none border border-[#F3E8E8] text-sm text-[#292524]"><p>Great job on the deadlifts! Next week, let's increase the weight by 5kg.</p></div>
+                   <div className="w-8 h-8 rounded-full bg-[#F8FAFC] shrink-0 overflow-hidden"><img src="https://images.unsplash.com/photo-1594381898411-846e7d193883?w=100&q=80"/></div>
+                   <div className="bg-[#F8FAFC] p-3 rounded-xl rounded-tl-none border border-[#F8FAFC] text-sm text-[#111827]"><p>Great job on the deadlifts! Next week, let's increase the weight by 5kg.</p></div>
                  </div>
                  <div className="flex gap-3 flex-row-reverse">
                    <div className="w-8 h-8 rounded-full bg-gray-200 shrink-0 overflow-hidden flex items-center justify-center font-bold text-xs">AJ</div>
-                   <div className="bg-[#B76E79] p-3 rounded-xl rounded-tr-none text-[#292524] text-sm"><p>Sounds good! Though my left shoulder feels slightly tight during bench press.</p></div>
+                   <div className="bg-[#C2410C] p-3 rounded-xl rounded-tr-none text-[#111827] text-sm"><p>Sounds good! Though my left shoulder feels slightly tight during bench press.</p></div>
                  </div>
                  <div className="flex gap-3">
-                   <div className="w-8 h-8 rounded-full bg-[#F3E8E8] shrink-0 overflow-hidden"><img src="https://images.unsplash.com/photo-1594381898411-846e7d193883?w=100&q=80"/></div>
-                   <div className="bg-[#F3E8E8] p-3 rounded-xl rounded-tl-none border border-[#F3E8E8] text-sm text-[#292524]">
+                   <div className="w-8 h-8 rounded-full bg-[#F8FAFC] shrink-0 overflow-hidden"><img src="https://images.unsplash.com/photo-1594381898411-846e7d193883?w=100&q=80"/></div>
+                   <div className="bg-[#F8FAFC] p-3 rounded-xl rounded-tl-none border border-[#F8FAFC] text-sm text-[#111827]">
                      <p className="mb-2">Let's modify that. I've updated your plan to use Dumbbell Presses instead to allow free rotation.</p>
-                     <div className="bg-[#FFFFFF] border border-[#F3E8E8] rounded p-2 text-xs flex items-center gap-2"><Dumbbell size={14} className="text-[#B76E79]"/><span className="font-bold">Plan Updated</span></div>
+                     <div className="bg-[#FFFFFF] border border-[#F8FAFC] rounded p-2 text-xs flex items-center gap-2"><Dumbbell size={14} className="text-[#EA580C]"/><span className="font-bold">Plan Updated</span></div>
                    </div>
                  </div>
                </div>
@@ -313,23 +313,23 @@ export const TourSlide = ({ journey, step, setJourney, onNavigate }: { journey: 
         id: 9, title: 'Stay Consistent', desc: 'Mark workouts complete and track attendance',
         render: () => (
           <div className="w-full max-w-3xl flex flex-col md:flex-row gap-6 animate-in slide-in-from-bottom-10">
-            <div className="flex-1 bg-[#FFFFFF] rounded-2xl shadow-xl p-6 flex flex-col items-center justify-center border-t-4 border-[#B76E79]">
+            <div className="flex-1 bg-[#FFFFFF] rounded-2xl shadow-xl p-6 flex flex-col items-center justify-center border-t-4 border-[#FDBA74]">
               <div className="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center text-green-500 mb-4 shadow-inner"><CheckCircle size={40}/></div>
-              <h4 className="font-bold text-2xl text-[#292524] mb-1">Workout Complete!</h4>
-              <p className="text-sm text-[#57534E] mb-6">Upper Body Hypertrophy</p>
-              <div className="flex gap-4 w-full justify-center text-center border-t border-[#F3E8E8] pt-4">
-                <div><div className="font-black text-xl text-[#292524]">45m</div><div className="text-xs text-[#57534E]">Duration</div></div>
-                <div><div className="font-black text-xl text-[#292524]">12k</div><div className="text-xs text-[#57534E]">Volume</div></div>
+              <h4 className="font-bold text-2xl text-[#111827] mb-1">Workout Complete!</h4>
+              <p className="text-sm text-[#64748B] mb-6">Upper Body Hypertrophy</p>
+              <div className="flex gap-4 w-full justify-center text-center border-t border-[#F8FAFC] pt-4">
+                <div><div className="font-black text-xl text-[#111827]">45m</div><div className="text-xs text-[#64748B]">Duration</div></div>
+                <div><div className="font-black text-xl text-[#111827]">12k</div><div className="text-xs text-[#64748B]">Volume</div></div>
               </div>
             </div>
             <div className="flex-1 flex flex-col gap-4">
-              <div className="bg-[#FFFFFF] rounded-2xl shadow-xl p-5 border border-[#F3E8E8] flex items-center gap-4">
-                <div className="w-12 h-12 bg-[#F3E8E8] text-[#B76E79] rounded-xl flex items-center justify-center"><Activity size={24}/></div>
-                <div><h5 className="font-bold text-[#292524]">4 Day Streak!</h5><p className="text-xs text-[#57534E]">You're on fire this week.</p></div>
+              <div className="bg-[#FFFFFF] rounded-2xl shadow-xl p-5 border border-[#F8FAFC] flex items-center gap-4">
+                <div className="w-12 h-12 bg-[#F8FAFC] text-[#EA580C] rounded-xl flex items-center justify-center"><Activity size={24}/></div>
+                <div><h5 className="font-bold text-[#111827]">4 Day Streak!</h5><p className="text-xs text-[#64748B]">You're on fire this week.</p></div>
               </div>
-              <div className="bg-[#FFFFFF] rounded-2xl shadow-xl p-5 border border-[#F3E8E8] flex items-center gap-4">
-                <div className="w-12 h-12 bg-[#F3E8E8] text-[#B76E79] rounded-xl flex items-center justify-center"><Calendar size={24}/></div>
-                <div><h5 className="font-bold text-[#292524]">Attendance Logged</h5><p className="text-xs text-[#57534E]">Iron Forge Barbell at 5:30 PM</p></div>
+              <div className="bg-[#FFFFFF] rounded-2xl shadow-xl p-5 border border-[#F8FAFC] flex items-center gap-4">
+                <div className="w-12 h-12 bg-[#F8FAFC] text-[#EA580C] rounded-xl flex items-center justify-center"><Calendar size={24}/></div>
+                <div><h5 className="font-bold text-[#111827]">Attendance Logged</h5><p className="text-xs text-[#64748B]">Iron Forge Barbell at 5:30 PM</p></div>
               </div>
             </div>
           </div>
@@ -340,32 +340,32 @@ export const TourSlide = ({ journey, step, setJourney, onNavigate }: { journey: 
         render: () => (
           <div className="w-full max-w-3xl bg-[#FFFFFF] rounded-2xl shadow-2xl p-6 h-[450px] flex flex-col animate-in zoom-in">
              <div className="flex justify-between items-center mb-6">
-               <h4 className="font-bold text-lg text-[#292524]">Weight Trend</h4>
-               <div className="bg-[#F3E8E8] p-1 rounded-lg text-xs font-semibold text-[#57534E] flex gap-1">
+               <h4 className="font-bold text-lg text-[#111827]">Weight Trend</h4>
+               <div className="bg-[#F8FAFC] p-1 rounded-lg text-xs font-semibold text-[#64748B] flex gap-1">
                  <span className="bg-[#FFFFFF] px-2 py-1 rounded shadow-sm">1M</span>
                  <span className="px-2 py-1">3M</span>
                  <span className="px-2 py-1">6M</span>
                </div>
              </div>
-             <div className="flex-1 relative border-l border-b border-[#F3E8E8] ml-6 mb-6">
+             <div className="flex-1 relative border-l border-b border-[#F8FAFC] ml-6 mb-6">
                {/* Mock Graph */}
                <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-                 <polyline points="0,20 20,25 40,35 60,45 80,50 100,65" fill="none" stroke="#B76E79" strokeWidth="2" vectorEffect="non-scaling-stroke" />
+                 <polyline points="0,20 20,25 40,35 60,45 80,50 100,65" fill="none" stroke="#F97316" strokeWidth="2" vectorEffect="non-scaling-stroke" />
                  <polyline points="0,100 0,20 20,25 40,35 60,45 80,50 100,65 100,100" fill="rgba(183,110,121,0.1)" stroke="none" />
                  
-                 <circle cx="0" cy="20" r="2" fill="#B76E79" />
-                 <circle cx="20" cy="25" r="2" fill="#B76E79" />
-                 <circle cx="40" cy="35" r="2" fill="#B76E79" />
-                 <circle cx="60" cy="45" r="2" fill="#B76E79" />
-                 <circle cx="80" cy="50" r="2" fill="#B76E79" />
-                 <circle cx="100" cy="65" r="2" fill="#B76E79" />
+                 <circle cx="0" cy="20" r="2" fill="#F97316" />
+                 <circle cx="20" cy="25" r="2" fill="#F97316" />
+                 <circle cx="40" cy="35" r="2" fill="#F97316" />
+                 <circle cx="60" cy="45" r="2" fill="#F97316" />
+                 <circle cx="80" cy="50" r="2" fill="#F97316" />
+                 <circle cx="100" cy="65" r="2" fill="#F97316" />
                </svg>
-               <div className="absolute top-[20%] -left-12 text-[10px] text-[#57534E]">80 kg</div>
-               <div className="absolute top-[65%] -left-12 text-[10px] text-[#B76E79] font-bold">75 kg</div>
-               <div className="absolute bottom-[-20px] left-0 text-[10px] text-[#57534E]">Week 1</div>
-               <div className="absolute bottom-[-20px] right-0 text-[10px] text-[#57534E]">Week 8</div>
+               <div className="absolute top-[20%] -left-12 text-[10px] text-[#64748B]">80 kg</div>
+               <div className="absolute top-[65%] -left-12 text-[10px] text-[#EA580C] font-bold">75 kg</div>
+               <div className="absolute bottom-[-20px] left-0 text-[10px] text-[#64748B]">Week 1</div>
+               <div className="absolute bottom-[-20px] right-0 text-[10px] text-[#64748B]">Week 8</div>
              </div>
-             <div className="bg-[#F3E8E8] border border-[#E7DADD] text-[#57534E] text-[10px] p-2 rounded text-center">
+             <div className="bg-[#F8FAFC] border border-[#E2E8F0] text-[#64748B] text-[10px] p-2 rounded text-center">
                * Estimated progress is based on user goals and activity. Actual results vary from person to person.
              </div>
           </div>
@@ -376,24 +376,24 @@ export const TourSlide = ({ journey, step, setJourney, onNavigate }: { journey: 
         render: () => (
           <div className="w-full max-w-4xl flex flex-col md:flex-row gap-6 animate-in slide-in-from-bottom-10">
              <div className="flex-1 bg-gradient-to-br from-[#FFFFFF] to-[#FFFFFF] border border-[#FFFFFF] rounded-2xl p-6 text-white shadow-xl">
-               <div className="w-12 h-12 bg-[#B76E79]/20 rounded-xl flex items-center justify-center text-[#B76E79] mb-4"><Bot size={24}/></div>
+               <div className="w-12 h-12 bg-[#FFF7ED] rounded-xl flex items-center justify-center text-[#EA580C] mb-4"><Bot size={24}/></div>
                <h4 className="font-bold text-xl mb-4">AI Coach</h4>
-               <ul className="space-y-3 text-sm text-[#292524]">
-                 <li className="flex gap-2 items-center"><Activity size={16} className="text-[#B76E79]"/> Analyzes millions of data points</li>
-                 <li className="flex gap-2 items-center"><TrendingUp size={16} className="text-[#B76E79]"/> Creates optimized recommendations</li>
-                 <li className="flex gap-2 items-center"><MapPin size={16} className="text-[#B76E79]"/> Tracks patterns automatically</li>
-                 <li className="flex gap-2 items-center"><CheckCircle size={16} className="text-[#B76E79]"/> Updates suggestions instantly</li>
+               <ul className="space-y-3 text-sm text-[#111827]">
+                 <li className="flex gap-2 items-center"><Activity size={16} className="text-[#EA580C]"/> Analyzes millions of data points</li>
+                 <li className="flex gap-2 items-center"><TrendingUp size={16} className="text-[#EA580C]"/> Creates optimized recommendations</li>
+                 <li className="flex gap-2 items-center"><MapPin size={16} className="text-[#EA580C]"/> Tracks patterns automatically</li>
+                 <li className="flex gap-2 items-center"><CheckCircle size={16} className="text-[#EA580C]"/> Updates suggestions instantly</li>
                </ul>
              </div>
              <div className="flex items-center justify-center shrink-0 w-12 text-white font-black text-3xl hidden md:flex">+</div>
-             <div className="flex-1 bg-[#FFFFFF] border border-[#F3E8E8] rounded-2xl p-6 shadow-xl">
-               <div className="w-12 h-12 bg-[#F3E8E8] rounded-xl flex items-center justify-center text-[#F3E8E8] mb-4"><User size={24}/></div>
-               <h4 className="font-bold text-xl text-[#292524] mb-4">Human Trainer</h4>
-               <ul className="space-y-3 text-sm text-[#57534E]">
-                 <li className="flex gap-2 items-center"><CheckCircle size={16} className="text-[#B76E79]"/> Guides complex exercises</li>
-                 <li className="flex gap-2 items-center"><CheckCircle size={16} className="text-[#B76E79]"/> Corrects physical form</li>
-                 <li className="flex gap-2 items-center"><CheckCircle size={16} className="text-[#B76E79]"/> Provides psychological motivation</li>
-                 <li className="flex gap-2 items-center"><CheckCircle size={16} className="text-[#B76E79]"/> Gives personalized emotional support</li>
+             <div className="flex-1 bg-[#FFFFFF] border border-[#F8FAFC] rounded-2xl p-6 shadow-xl">
+               <div className="w-12 h-12 bg-[#F8FAFC] rounded-xl flex items-center justify-center text-[#F8FAFC] mb-4"><User size={24}/></div>
+               <h4 className="font-bold text-xl text-[#111827] mb-4">Human Trainer</h4>
+               <ul className="space-y-3 text-sm text-[#64748B]">
+                 <li className="flex gap-2 items-center"><CheckCircle size={16} className="text-[#EA580C]"/> Guides complex exercises</li>
+                 <li className="flex gap-2 items-center"><CheckCircle size={16} className="text-[#EA580C]"/> Corrects physical form</li>
+                 <li className="flex gap-2 items-center"><CheckCircle size={16} className="text-[#EA580C]"/> Provides psychological motivation</li>
+                 <li className="flex gap-2 items-center"><CheckCircle size={16} className="text-[#EA580C]"/> Gives personalized emotional support</li>
                </ul>
              </div>
           </div>
@@ -403,7 +403,7 @@ export const TourSlide = ({ journey, step, setJourney, onNavigate }: { journey: 
         id: 12, title: 'Your Membership', desc: 'Transparent Subscription Management',
         render: () => (
           <div className="w-full max-w-2xl bg-[#FFFFFF] rounded-2xl shadow-2xl p-6 animate-in zoom-in">
-             <div className="bg-gradient-to-r from-[#B76E79] to-[#9F5965] rounded-xl p-6 text-[#FFFFFF] font-bold mb-6 shadow-lg relative overflow-hidden">
+             <div className="bg-gradient-to-r from-[#EA580C] to-[#C2410C] rounded-xl p-6 text-[#FFFFFF] font-bold mb-6 shadow-lg relative overflow-hidden">
                 <div className="absolute -right-10 -top-10 opacity-20"><Activity size={150}/></div>
                 <div className="relative z-10">
                   <h4 className="text-lg font-bold mb-1">PRO All-Access Pass</h4>
@@ -420,11 +420,11 @@ export const TourSlide = ({ journey, step, setJourney, onNavigate }: { journey: 
                   </div>
                 </div>
              </div>
-             <h5 className="font-bold text-[#292524] mb-3">Subscription Details</h5>
-             <div className="bg-[#F3E8E8] border border-[#F3E8E8] rounded-xl overflow-hidden text-sm">
-               <div className="flex justify-between p-3 border-b border-[#F3E8E8]"><span className="text-[#57534E]">Plan</span><span className="font-bold">Monthly Billed</span></div>
-               <div className="flex justify-between p-3 border-b border-[#F3E8E8]"><span className="text-[#57534E]">Amount</span><span className="font-bold">₹1,499 / mo</span></div>
-               <div className="flex justify-between p-3"><span className="text-[#57534E]">Payment Method</span><span className="font-bold flex items-center gap-2"><CreditCard size={14}/> •••• 4242</span></div>
+             <h5 className="font-bold text-[#111827] mb-3">Subscription Details</h5>
+             <div className="bg-[#F8FAFC] border border-[#F8FAFC] rounded-xl overflow-hidden text-sm">
+               <div className="flex justify-between p-3 border-b border-[#F8FAFC]"><span className="text-[#64748B]">Plan</span><span className="font-bold">Monthly Billed</span></div>
+               <div className="flex justify-between p-3 border-b border-[#F8FAFC]"><span className="text-[#64748B]">Amount</span><span className="font-bold">₹1,499 / mo</span></div>
+               <div className="flex justify-between p-3"><span className="text-[#64748B]">Payment Method</span><span className="font-bold flex items-center gap-2"><CreditCard size={14}/> •••• 4242</span></div>
              </div>
           </div>
         )
@@ -433,17 +433,17 @@ export const TourSlide = ({ journey, step, setJourney, onNavigate }: { journey: 
         id: 13, title: 'Your Fitness Journey Starts Here', desc: 'Everything you need to succeed in one platform.',
         render: () => (
           <div className="w-full max-w-2xl flex flex-col items-center animate-in fade-in slide-in-from-bottom-10">
-            <div className="w-24 h-24 bg-gradient-to-br from-[#B76E79] to-[#9F5965] rounded-full flex items-center justify-center text-[#FFFFFF] font-bold mb-6 shadow-xl shadow-[#B76E79]/15">
+            <div className="w-24 h-24 bg-gradient-to-br from-[#EA580C] to-[#C2410C] rounded-full flex items-center justify-center text-[#FFFFFF] font-bold mb-6 shadow-xl shadow-orange-500/15">
               <Activity size={48} />
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 w-full mb-8">
               {['AI Fitness Analysis', 'Personalized Workout', 'Diet Guidance', 'Human Trainer Support', 'Attendance Tracking', 'Progress Tracking'].map((item, i) => (
                 <div key={i} className="bg-[#FFFFFF] border border-[#FFFFFF] p-3 rounded-lg flex items-center gap-2 text-white text-xs font-bold shadow-sm">
-                  <CheckCircle size={14} className="text-[#B76E79] shrink-0" /> {item}
+                  <CheckCircle size={14} className="text-[#EA580C] shrink-0" /> {item}
                 </div>
               ))}
             </div>
-            <button onClick={() => setJourney('select')} className="px-8 py-4 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold rounded-xl font-black text-lg transition-transform hover:scale-105 shadow-[0_0_20px_rgba(183,110,121,0.25)]">
+            <button onClick={() => setJourney('select')} className="px-8 py-4 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold rounded-xl font-black text-lg transition-transform hover:scale-105 shadow-[0_0_20px_rgba(183,110,121,0.25)]">
               Back to Start
             </button>
           </div>
@@ -457,8 +457,8 @@ export const TourSlide = ({ journey, step, setJourney, onNavigate }: { journey: 
     return (
       <div className="flex flex-col items-center justify-center w-full h-full">
         <div className="text-center mb-8 animate-in slide-in-from-top-4">
-          <h3 className="text-2xl md:text-3xl font-bold text-[#292524] mb-2">{slide.title}</h3>
-          <p className="text-[#57534E]">{slide.desc}</p>
+          <h3 className="text-2xl md:text-3xl font-bold text-[#111827] mb-2">{slide.title}</h3>
+          <p className="text-[#64748B]">{slide.desc}</p>
         </div>
         <div className="flex-1 w-full flex items-center justify-center">
           {slide.render()}
@@ -473,11 +473,11 @@ export const TourSlide = ({ journey, step, setJourney, onNavigate }: { journey: 
         id: 1, title: 'Gym Owner Registration', desc: 'Claim your facility on the Gymora platform',
         render: () => (
           <div className="w-full max-w-lg bg-[#FFFFFF] rounded-2xl p-6 shadow-2xl animate-in fade-in slide-in-from-bottom-10">
-            <h4 className="text-xl font-bold text-[#292524] mb-4">Register as Partner</h4>
+            <h4 className="text-xl font-bold text-[#111827] mb-4">Register as Partner</h4>
             <div className="space-y-3 mb-6">
-              <input type="text" placeholder="Owner Full Name" className="w-full p-3 border border-[#F3E8E8] rounded-xl bg-[#F3E8E8] text-sm" readOnly value="David Chen"/>
-              <input type="email" placeholder="Business Email" className="w-full p-3 border border-[#F3E8E8] rounded-xl bg-[#F3E8E8] text-sm" readOnly value="david@ironforge.com"/>
-              <input type="text" placeholder="Phone Number" className="w-full p-3 border border-[#F3E8E8] rounded-xl bg-[#F3E8E8] text-sm" readOnly value="+91 9876543210"/>
+              <input type="text" placeholder="Owner Full Name" className="w-full p-3 border border-[#F8FAFC] rounded-xl bg-[#F8FAFC] text-sm" readOnly value="David Chen"/>
+              <input type="email" placeholder="Business Email" className="w-full p-3 border border-[#F8FAFC] rounded-xl bg-[#F8FAFC] text-sm" readOnly value="david@ironforge.com"/>
+              <input type="text" placeholder="Phone Number" className="w-full p-3 border border-[#F8FAFC] rounded-xl bg-[#F8FAFC] text-sm" readOnly value="+91 9876543210"/>
             </div>
             <button className="w-full bg-[#FFFFFF] text-white py-3 rounded-xl font-bold">Continue to Gym Details</button>
           </div>
@@ -487,27 +487,27 @@ export const TourSlide = ({ journey, step, setJourney, onNavigate }: { journey: 
         id: 2, title: 'Submit Gym Details', desc: 'Build your public profile to attract customers',
         render: () => (
           <div className="w-full max-w-2xl bg-[#FFFFFF] rounded-2xl shadow-2xl p-6 animate-in zoom-in h-[450px] flex flex-col">
-            <div className="flex items-center gap-4 mb-6 border-b border-[#F3E8E8] pb-4">
-               <div className="w-16 h-16 bg-[#F3E8E8] rounded-xl border-2 border-dashed border-[#E7DADD] flex items-center justify-center text-[#57534E]">
+            <div className="flex items-center gap-4 mb-6 border-b border-[#F8FAFC] pb-4">
+               <div className="w-16 h-16 bg-[#F8FAFC] rounded-xl border-2 border-dashed border-[#E2E8F0] flex items-center justify-center text-[#64748B]">
                  <span className="text-xs font-bold text-center">Upload<br/>Logo</span>
                </div>
                <div className="flex-1">
-                 <input type="text" placeholder="Gym Name" className="w-full p-2 mb-2 border border-[#F3E8E8] rounded bg-[#F3E8E8] text-sm font-bold" readOnly value="Iron Forge Barbell"/>
-                 <input type="text" placeholder="Full Address" className="w-full p-2 border border-[#F3E8E8] rounded bg-[#F3E8E8] text-sm" readOnly value="123 Fitness Avenue, Downtown"/>
+                 <input type="text" placeholder="Gym Name" className="w-full p-2 mb-2 border border-[#F8FAFC] rounded bg-[#F8FAFC] text-sm font-bold" readOnly value="Iron Forge Barbell"/>
+                 <input type="text" placeholder="Full Address" className="w-full p-2 border border-[#F8FAFC] rounded bg-[#F8FAFC] text-sm" readOnly value="123 Fitness Avenue, Downtown"/>
                </div>
             </div>
             <div className="flex-1 overflow-y-auto space-y-4 pr-2">
               <div>
-                <h5 className="text-sm font-bold text-[#292524] mb-2">Facilities & Tags</h5>
+                <h5 className="text-sm font-bold text-[#111827] mb-2">Facilities & Tags</h5>
                 <div className="flex flex-wrap gap-2">
                   {['Cardio Section', 'Free Weights', 'CrossFit', 'AC', '24/7 Access', 'Sauna'].map((tag, i) => (
-                    <span key={i} className="bg-[#B76E79]/10 text-[#B76E79] border border-[#B76E79]/30 px-3 py-1 rounded-full text-xs font-bold">{tag}</span>
+                    <span key={i} className="bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5] px-3 py-1 rounded-full text-xs font-bold">{tag}</span>
                   ))}
                 </div>
               </div>
               <div>
-                <h5 className="text-sm font-bold text-[#292524] mb-2">Current Offers</h5>
-                <input type="text" placeholder="e.g. 20% off annual plan" className="w-full p-3 border border-[#F3E8E8] rounded-xl bg-[#F3E8E8] text-sm" readOnly value="First month free for new members!"/>
+                <h5 className="text-sm font-bold text-[#111827] mb-2">Current Offers</h5>
+                <input type="text" placeholder="e.g. 20% off annual plan" className="w-full p-3 border border-[#F8FAFC] rounded-xl bg-[#F8FAFC] text-sm" readOnly value="First month free for new members!"/>
               </div>
             </div>
           </div>
@@ -524,15 +524,15 @@ export const TourSlide = ({ journey, step, setJourney, onNavigate }: { journey: 
                   <Settings className="text-yellow-500 animate-pulse" size={32}/>
                 </div>
               </div>
-              <h4 className="text-xl font-bold text-[#292524] mb-2">Under Review</h4>
-              <p className="text-sm text-[#57534E] text-center mb-8">Your application for <span className="font-bold text-[#292524]">Iron Forge Barbell</span> is being reviewed by our team. This usually takes 1-2 hours.</p>
+              <h4 className="text-xl font-bold text-[#111827] mb-2">Under Review</h4>
+              <p className="text-sm text-[#64748B] text-center mb-8">Your application for <span className="font-bold text-[#111827]">Iron Forge Barbell</span> is being reviewed by our team. This usually takes 1-2 hours.</p>
               
-              <div className="w-full bg-[#F3E8E8] border border-[#F3E8E8] rounded-xl p-4">
-                <div className="text-xs text-[#57534E] font-bold uppercase tracking-wider mb-2">Possible Statuses</div>
+              <div className="w-full bg-[#F8FAFC] border border-[#F8FAFC] rounded-xl p-4">
+                <div className="text-xs text-[#64748B] font-bold uppercase tracking-wider mb-2">Possible Statuses</div>
                 <div className="space-y-2">
-                  <div className="flex justify-between items-center bg-[#FFFFFF] p-2 border border-[#F3E8E8] rounded shadow-sm"><span className="text-xs font-semibold">Approved</span> <CheckCircle size={14} className="text-green-500"/></div>
-                  <div className="flex justify-between items-center bg-[#FFFFFF] p-2 border border-[#F3E8E8] rounded shadow-sm"><span className="text-xs font-semibold">Pending</span> <Activity size={14} className="text-yellow-500"/></div>
-                  <div className="flex justify-between items-center bg-[#FFFFFF] p-2 border border-[#F3E8E8] rounded shadow-sm"><span className="text-xs font-semibold">Rejected / Suspended</span> <XCircle size={14} className="text-[#F3E8E8]"/></div>
+                  <div className="flex justify-between items-center bg-[#FFFFFF] p-2 border border-[#F8FAFC] rounded shadow-sm"><span className="text-xs font-semibold">Approved</span> <CheckCircle size={14} className="text-green-500"/></div>
+                  <div className="flex justify-between items-center bg-[#FFFFFF] p-2 border border-[#F8FAFC] rounded shadow-sm"><span className="text-xs font-semibold">Pending</span> <Activity size={14} className="text-yellow-500"/></div>
+                  <div className="flex justify-between items-center bg-[#FFFFFF] p-2 border border-[#F8FAFC] rounded shadow-sm"><span className="text-xs font-semibold">Rejected / Suspended</span> <XCircle size={14} className="text-[#F8FAFC]"/></div>
                 </div>
               </div>
             </div>
@@ -543,29 +543,29 @@ export const TourSlide = ({ journey, step, setJourney, onNavigate }: { journey: 
         id: 4, title: 'Login & Choose SaaS Plan', desc: 'Select the management platform plan that fits your gym size',
         render: () => (
           <div className="w-full max-w-4xl bg-transparent flex flex-col md:flex-row gap-6 animate-in zoom-in">
-            <div className="bg-[#FFFFFF] rounded-2xl p-6 shadow-xl flex-1 border border-[#F3E8E8]">
-              <div className="inline-block bg-[#B76E79] text-white font-bold text-[10px] font-bold px-2 py-1 rounded mb-4">GOLD PLAN</div>
-              <div className="text-3xl font-black text-[#292524] mb-1">₹1,499<span className="text-sm text-[#57534E] font-normal">/mo</span></div>
-              <p className="text-xs text-[#57534E] mb-4">For growing gyms</p>
+            <div className="bg-[#FFFFFF] rounded-2xl p-6 shadow-xl flex-1 border border-[#F8FAFC]">
+              <div className="inline-block bg-[#C2410C] text-white font-bold text-[10px] font-bold px-2 py-1 rounded mb-4">GOLD PLAN</div>
+              <div className="text-3xl font-black text-[#111827] mb-1">₹1,499<span className="text-sm text-[#64748B] font-normal">/mo</span></div>
+              <p className="text-xs text-[#64748B] mb-4">For growing gyms</p>
               <ul className="space-y-2 text-xs mb-6">
-                <li className="flex gap-2 items-center"><CheckCircle size={14} className="text-[#B76E79]"/> 500 members</li>
-                <li className="flex gap-2 items-center"><CheckCircle size={14} className="text-[#B76E79]"/> 15 trainers</li>
-                <li className="flex gap-2 items-center"><CheckCircle size={14} className="text-[#B76E79]"/> Detailed Analytics</li>
-                <li className="flex gap-2 items-center"><CheckCircle size={14} className="text-[#B76E79]"/> Trainer Booking System</li>
+                <li className="flex gap-2 items-center"><CheckCircle size={14} className="text-[#EA580C]"/> 500 members</li>
+                <li className="flex gap-2 items-center"><CheckCircle size={14} className="text-[#EA580C]"/> 15 trainers</li>
+                <li className="flex gap-2 items-center"><CheckCircle size={14} className="text-[#EA580C]"/> Detailed Analytics</li>
+                <li className="flex gap-2 items-center"><CheckCircle size={14} className="text-[#EA580C]"/> Trainer Booking System</li>
               </ul>
               <button className="w-full py-2 bg-[#FFFFFF] text-white rounded-lg text-sm font-bold">Select Gold</button>
             </div>
             <div className="bg-gradient-to-b from-[#FFFFFF] to-[#FFFFFF] rounded-2xl p-6 shadow-2xl flex-1 border border-[#FFFFFF] transform md:-translate-y-4 md:scale-105">
-              <div className="inline-block bg-[#F3E8E8]0 text-white text-[10px] font-bold px-2 py-1 rounded mb-4">PREMIUM PLAN</div>
-              <div className="text-3xl font-black text-white mb-1">₹2,499<span className="text-sm text-[#57534E] font-normal">/mo</span></div>
-              <p className="text-xs text-[#57534E] mb-4">Enterprise-grade power</p>
-              <ul className="space-y-2 text-xs mb-6 text-[#292524]">
-                <li className="flex gap-2 items-center"><CheckCircle size={14} className="text-[#F3E8E8]"/> Unlimited members</li>
-                <li className="flex gap-2 items-center"><CheckCircle size={14} className="text-[#F3E8E8]"/> Unlimited trainers</li>
-                <li className="flex gap-2 items-center"><CheckCircle size={14} className="text-[#F3E8E8]"/> Advanced Revenue Analytics</li>
-                <li className="flex gap-2 items-center"><CheckCircle size={14} className="text-[#F3E8E8]"/> Priority Support</li>
+              <div className="inline-block bg-[#FFF7ED] text-white text-[10px] font-bold px-2 py-1 rounded mb-4">PREMIUM PLAN</div>
+              <div className="text-3xl font-black text-[#111827] mb-1">₹2,499<span className="text-sm text-[#64748B] font-normal">/mo</span></div>
+              <p className="text-xs text-[#64748B] mb-4">Enterprise-grade power</p>
+              <ul className="space-y-2 text-xs mb-6 text-[#111827]">
+                <li className="flex gap-2 items-center"><CheckCircle size={14} className="text-[#F8FAFC]"/> Unlimited members</li>
+                <li className="flex gap-2 items-center"><CheckCircle size={14} className="text-[#F8FAFC]"/> Unlimited trainers</li>
+                <li className="flex gap-2 items-center"><CheckCircle size={14} className="text-[#F8FAFC]"/> Advanced Revenue Analytics</li>
+                <li className="flex gap-2 items-center"><CheckCircle size={14} className="text-[#F8FAFC]"/> Priority Support</li>
               </ul>
-              <button className="w-full py-2 bg-[#B76E79] text-white font-bold rounded-lg text-sm font-bold shadow-[0_0_20px_rgba(147,51,234,0.4)]">Select Premium</button>
+              <button className="w-full py-2 bg-[#C2410C] text-white font-bold rounded-lg text-sm font-bold shadow-[0_0_20px_rgba(147,51,234,0.4)]">Select Premium</button>
             </div>
           </div>
         )
@@ -574,55 +574,55 @@ export const TourSlide = ({ journey, step, setJourney, onNavigate }: { journey: 
         id: 5, title: 'Payment', desc: 'Secure checkout to activate your dashboard',
         render: () => (
           <div className="w-full max-w-lg bg-[#FFFFFF] rounded-2xl shadow-2xl p-8 animate-in slide-in-from-bottom-10 flex flex-col items-center">
-            <div className="w-full bg-[#F3E8E8] border border-[#F3E8E8] p-4 rounded-xl mb-6 flex justify-between items-center">
+            <div className="w-full bg-[#F8FAFC] border border-[#F8FAFC] p-4 rounded-xl mb-6 flex justify-between items-center">
               <div>
-                <h5 className="font-bold text-[#292524]">Premium Plan (Annual)</h5>
-                <p className="text-xs text-[#B76E79]">Includes 2 months free</p>
+                <h5 className="font-bold text-[#111827]">Premium Plan (Annual)</h5>
+                <p className="text-xs text-[#EA580C]">Includes 2 months free</p>
               </div>
-              <div className="text-lg font-black text-[#292524]">₹22,490</div>
+              <div className="text-lg font-black text-[#111827]">₹22,490</div>
             </div>
             
             <div className="relative w-full mb-8">
               <div className="absolute inset-0 bg-green-50 rounded-xl border-2 border-green-500 scale-105 opacity-50 animate-pulse"></div>
               <div className="relative w-full bg-[#FFFFFF] border border-green-500 rounded-xl p-6 text-center shadow-lg">
-                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center text-[#B76E79] mx-auto mb-4">
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center text-[#EA580C] mx-auto mb-4">
                   <ShieldCheck size={32}/>
                 </div>
-                <h4 className="text-xl font-bold text-[#292524] mb-2">Payment Successful!</h4>
-                <p className="text-sm text-[#57534E]">Your gym is now live on the Gymora platform.</p>
+                <h4 className="text-xl font-bold text-[#111827] mb-2">Payment Successful!</h4>
+                <p className="text-sm text-[#64748B]">Your gym is now live on the Gymora platform.</p>
               </div>
             </div>
             
-            <button className="w-full py-3 bg-[#B76E79] text-white font-bold font-bold rounded-xl shadow-lg">Go to Dashboard</button>
+            <button className="w-full py-3 bg-[#C2410C] text-white font-bold font-bold rounded-xl shadow-lg">Go to Dashboard</button>
           </div>
         )
       },
       {
         id: 6, title: 'Gym Management Dashboard', desc: 'Your gym\'s performance at a glance',
         render: () => (
-          <div className="w-full max-w-4xl bg-[#F3E8E8] rounded-2xl shadow-2xl p-4 md:p-6 flex flex-col h-[500px] animate-in zoom-in border border-[#F3E8E8]">
-            <div className="flex justify-between items-center mb-6 bg-[#FFFFFF] p-4 rounded-xl shadow-sm border border-[#F3E8E8]">
-              <div><h4 className="font-bold text-[#292524]">Iron Forge Barbell</h4><span className="text-xs bg-[#F3E8E8] text-[#B76E79] px-2 py-0.5 rounded font-bold">Premium Plan</span></div>
-              <div className="text-right"><div className="text-xs text-[#57534E]">Monthly Revenue</div><div className="font-black text-xl text-[#B76E79]">₹4,25,000</div></div>
+          <div className="w-full max-w-4xl bg-[#F8FAFC] rounded-2xl shadow-2xl p-4 md:p-6 flex flex-col h-[500px] animate-in zoom-in border border-[#F8FAFC]">
+            <div className="flex justify-between items-center mb-6 bg-[#FFFFFF] p-4 rounded-xl shadow-sm border border-[#F8FAFC]">
+              <div><h4 className="font-bold text-[#111827]">Iron Forge Barbell</h4><span className="text-xs bg-[#F8FAFC] text-[#EA580C] px-2 py-0.5 rounded font-bold">Premium Plan</span></div>
+              <div className="text-right"><div className="text-xs text-[#64748B]">Monthly Revenue</div><div className="font-black text-xl text-[#EA580C]">₹4,25,000</div></div>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
               {[
-                { title: 'Total Members', val: '450', icon: User, color: 'text-[#B76E79]', bg: 'bg-[#F3E8E8]' },
-                { title: 'Active Trainers', val: '12', icon: Activity, color: 'text-[#B76E79]', bg: 'bg-[#F3E8E8]' },
+                { title: 'Total Members', val: '450', icon: User, color: 'text-[#EA580C]', bg: 'bg-[#F8FAFC]' },
+                { title: 'Active Trainers', val: '12', icon: Activity, color: 'text-[#EA580C]', bg: 'bg-[#F8FAFC]' },
                 { title: 'Today\'s Check-ins', val: '128', icon: CheckCircle, color: 'text-green-500', bg: 'bg-green-50' },
-                { title: 'New Leads', val: '24', icon: TrendingUp, color: 'text-[#B76E79]', bg: 'bg-[#F3E8E8]' }
+                { title: 'New Leads', val: '24', icon: TrendingUp, color: 'text-[#EA580C]', bg: 'bg-[#F8FAFC]' }
               ].map((c, i) => (
-                <div key={i} className="bg-[#FFFFFF] p-4 rounded-xl shadow-sm border border-[#F3E8E8]">
+                <div key={i} className="bg-[#FFFFFF] p-4 rounded-xl shadow-sm border border-[#F8FAFC]">
                   <div className={`w-8 h-8 ${c.bg} ${c.color} rounded-lg flex items-center justify-center mb-2`}><c.icon size={16}/></div>
-                  <div className="text-2xl font-black text-[#292524]">{c.val}</div>
-                  <div className="text-xs text-[#57534E]">{c.title}</div>
+                  <div className="text-2xl font-black text-[#111827]">{c.val}</div>
+                  <div className="text-xs text-[#64748B]">{c.title}</div>
                 </div>
               ))}
             </div>
-            <div className="flex-1 bg-[#FFFFFF] rounded-xl shadow-sm border border-[#F3E8E8] p-4 flex items-center justify-center text-center">
+            <div className="flex-1 bg-[#FFFFFF] rounded-xl shadow-sm border border-[#F8FAFC] p-4 flex items-center justify-center text-center">
                <div>
-                 <Activity size={48} className="mx-auto text-[#F3E8E8] mb-2"/>
-                 <p className="text-sm font-bold text-[#57534E]">Detailed Analytics & Charts Area</p>
+                 <Activity size={48} className="mx-auto text-[#F8FAFC] mb-2"/>
+                 <p className="text-sm font-bold text-[#64748B]">Detailed Analytics & Charts Area</p>
                </div>
             </div>
           </div>
@@ -641,15 +641,15 @@ export const TourSlide = ({ journey, step, setJourney, onNavigate }: { journey: 
                 { icon: HeartPulse, label: 'Gym Facilities & Equipment' },
                 { icon: FileText, label: 'Detailed Reports' }
               ].map((item, i) => (
-                <div key={i} className="bg-[#FFFFFF] border border-[#FFFFFF] p-4 rounded-xl flex flex-col items-center justify-center text-center gap-2 hover:border-[#B76E79] transition-colors shadow-lg group">
-                  <div className="w-10 h-10 bg-[#FFFFFF] rounded-full flex items-center justify-center group-hover:bg-[#B76E79]/20 transition-colors">
-                    <item.icon size={20} className="text-white group-hover:text-[#B76E79]" />
+                <div key={i} className="bg-[#FFFFFF] border border-[#FFFFFF] p-4 rounded-xl flex flex-col items-center justify-center text-center gap-2 hover:border-[#FDBA74] transition-colors shadow-lg group">
+                  <div className="w-10 h-10 bg-[#FFFFFF] rounded-full flex items-center justify-center group-hover:bg-[#FFF7ED] transition-colors">
+                    <item.icon size={20} className="text-white group-hover:text-[#EA580C]" />
                   </div>
                   <span className="text-white text-xs font-bold">{item.label}</span>
                 </div>
               ))}
             </div>
-            <button onClick={() => setJourney('select')} className="px-8 py-4 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold rounded-xl font-black text-lg transition-transform hover:scale-105 shadow-[0_0_20px_rgba(183,110,121,0.25)]">
+            <button onClick={() => setJourney('select')} className="px-8 py-4 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold rounded-xl font-black text-lg transition-transform hover:scale-105 shadow-[0_0_20px_rgba(183,110,121,0.25)]">
               Back to Start
             </button>
           </div>
@@ -663,8 +663,8 @@ export const TourSlide = ({ journey, step, setJourney, onNavigate }: { journey: 
     return (
       <div className="flex flex-col items-center justify-center w-full h-full">
         <div className="text-center mb-8 animate-in slide-in-from-top-4">
-          <h3 className="text-2xl md:text-3xl font-bold text-[#292524] mb-2">{slide.title}</h3>
-          <p className="text-[#57534E]">{slide.desc}</p>
+          <h3 className="text-2xl md:text-3xl font-bold text-[#111827] mb-2">{slide.title}</h3>
+          <p className="text-[#64748B]">{slide.desc}</p>
         </div>
         <div className="flex-1 w-full flex items-center justify-center">
           {slide.render()}

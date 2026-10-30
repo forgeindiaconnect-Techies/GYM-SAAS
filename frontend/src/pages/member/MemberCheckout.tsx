@@ -102,16 +102,16 @@ const MemberCheckout = () => {
 
   if (placedOrder) {
     return (
-      <div className="max-w-lg mx-auto mt-16 text-center bg-[#FFFFFF] border border-[#E7DADD] rounded-3xl p-10">
-        <CheckCircle2 className="mx-auto text-[#B76E79] mb-4" size={64} />
-        <h1 className="text-3xl font-bold text-[#292524] mb-2">Order Placed!</h1>
-        <p className="text-[#57534E] mb-2">
-          Order <span className="font-bold text-[#292524]">{placedOrder.orderNumber}</span> is confirmed.
+      <div className="max-w-lg mx-auto mt-16 text-center bg-[#FFFFFF] border border-[#E2E8F0] rounded-3xl p-10">
+        <CheckCircle2 className="mx-auto text-[#EA580C] mb-4" size={64} />
+        <h1 className="text-3xl font-bold text-[#111827] mb-2">Order Placed!</h1>
+        <p className="text-[#64748B] mb-2">
+          Order <span className="font-bold text-[#111827]">{placedOrder.orderNumber}</span> is confirmed.
         </p>
-        <p className="text-[#57534E] mb-6">
-          Paid <span className="font-black text-[#B76E79]">₹{placedOrder.total}</span> via {placedOrder.paymentMethod}. Track it under My Orders.
+        <p className="text-[#64748B] mb-6">
+          Paid <span className="font-black text-[#EA580C]">₹{placedOrder.total}</span> via {placedOrder.paymentMethod}. Track it under My Orders.
         </p>
-        <button onClick={() => navigate('/member/store/orders')} className="w-full py-3 bg-gradient-to-r from-[#B76E79] to-[#9F5965] text-[#FFFFFF] font-bold font-bold rounded-xl shadow-lg shadow-[#B76E79]/15 hover:opacity-90 transition-opacity">
+        <button onClick={() => navigate('/member/store/orders')} className="w-full py-3 bg-gradient-to-r from-[#EA580C] to-[#C2410C] text-[#FFFFFF] font-bold font-bold rounded-xl shadow-lg shadow-orange-500/15 hover:opacity-90 transition-opacity">
           Go to My Orders
         </button>
       </div>
@@ -119,81 +119,81 @@ const MemberCheckout = () => {
   }
 
   if (loading) {
-    return <div className="flex justify-center py-24"><Loader2 className="animate-spin text-[#B76E79]" size={40} /></div>;
+    return <div className="flex justify-center py-24"><Loader2 className="animate-spin text-[#EA580C]" size={40} /></div>;
   }
 
   if (items.length === 0) {
     return (
-      <div className="max-w-lg mx-auto mt-20 text-center bg-[#FFFFFF] border border-[#E7DADD] rounded-3xl p-10">
-        <h1 className="text-2xl font-bold text-[#292524] mb-2">Nothing to checkout</h1>
-        <p className="text-[#57534E] mb-6">Your cart is empty.</p>
-        <Link to="/member/store" className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#B76E79] to-[#9F5965] text-[#FFFFFF] font-bold font-bold rounded-xl shadow-lg shadow-[#B76E79]/15">
+      <div className="max-w-lg mx-auto mt-20 text-center bg-[#FFFFFF] border border-[#E2E8F0] rounded-3xl p-10">
+        <h1 className="text-2xl font-bold text-[#111827] mb-2">Nothing to checkout</h1>
+        <p className="text-[#64748B] mb-6">Your cart is empty.</p>
+        <Link to="/member/store" className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#EA580C] to-[#C2410C] text-[#FFFFFF] font-bold font-bold rounded-xl shadow-lg shadow-orange-500/15">
           <ArrowLeft size={17} /> Browse Store
         </Link>
       </div>
     );
   }
 
-  const inputCls = 'w-full bg-[#F3E8E8] border border-[#E7DADD] rounded-xl px-3 py-2 text-sm text-[#292524] focus:border-[#B76E79] outline-none';
+  const inputCls = 'w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-3 py-2 text-sm text-[#111827] focus:border-[#FDBA74] outline-none';
 
   return (
     <div className="space-y-6">
       <div>
-        <button onClick={() => navigate('/member/store/cart')} className="flex items-center gap-1 text-sm font-bold text-[#9F5965] hover:underline mb-2">
+        <button onClick={() => navigate('/member/store/cart')} className="flex items-center gap-1 text-sm font-bold text-[#9A3412] hover:underline mb-2">
           <ArrowLeft size={15} /> Back to cart
         </button>
-        <h1 className="text-3xl font-bold text-[#292524] tracking-tight">Checkout</h1>
-        <p className="text-[#57534E] mt-1">Confirm your order and payment.</p>
+        <h1 className="text-3xl font-bold text-[#111827] tracking-tight">Checkout</h1>
+        <p className="text-[#64748B] mt-1">Confirm your order and payment.</p>
       </div>
 
       <div className="grid lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
           {/* Fulfilment */}
-          <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-6">
-            <h3 className="text-lg font-bold text-[#292524] mb-4">How would you like to receive it?</h3>
+          <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-6">
+            <h3 className="text-lg font-bold text-[#111827] mb-4">How would you like to receive it?</h3>
             <div className="grid grid-cols-2 gap-3">
               <button
                 onClick={() => setFulfilmentType('Gym Pickup')}
-                className={`border-2 rounded-2xl p-4 text-left transition-colors ${fulfilmentType === 'Gym Pickup' ? 'border-[#B76E79] bg-[#F3E8E8]' : 'border-[#E7DADD] hover:border-[#B76E79]/40'}`}
+                className={`border-2 rounded-2xl p-4 text-left transition-colors ${fulfilmentType === 'Gym Pickup' ? 'border-[#FDBA74] bg-[#F8FAFC]' : 'border-[#E2E8F0] hover:border-[#FFEDD5]'}`}
               >
-                <MapPin className="text-[#B76E79]" size={22} />
-                <p className="font-bold text-[#292524] mt-2">Gym Pickup</p>
-                <p className="text-xs text-[#57534E]">Collect from the gym at your convenience.</p>
+                <MapPin className="text-[#EA580C]" size={22} />
+                <p className="font-bold text-[#111827] mt-2">Gym Pickup</p>
+                <p className="text-xs text-[#64748B]">Collect from the gym at your convenience.</p>
               </button>
               <button
                 onClick={() => setFulfilmentType('Delivery')}
-                className={`border-2 rounded-2xl p-4 text-left transition-colors ${fulfilmentType === 'Delivery' ? 'border-[#B76E79] bg-[#F3E8E8]' : 'border-[#E7DADD] hover:border-[#B76E79]/40'}`}
+                className={`border-2 rounded-2xl p-4 text-left transition-colors ${fulfilmentType === 'Delivery' ? 'border-[#FDBA74] bg-[#F8FAFC]' : 'border-[#E2E8F0] hover:border-[#FFEDD5]'}`}
               >
-                <Truck className="text-[#B76E79]" size={22} />
-                <p className="font-bold text-[#292524] mt-2">Delivery</p>
-                <p className="text-xs text-[#57534E]">Get it delivered to your address.</p>
+                <Truck className="text-[#EA580C]" size={22} />
+                <p className="font-bold text-[#111827] mt-2">Delivery</p>
+                <p className="text-xs text-[#64748B]">Get it delivered to your address.</p>
               </button>
             </div>
 
             {fulfilmentType === 'Delivery' && (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
                 <div>
-                  <label className="text-xs font-bold text-[#57534E] uppercase mb-1 block">Full Name *</label>
+                  <label className="text-xs font-bold text-[#64748B] uppercase mb-1 block">Full Name *</label>
                   <input value={delivery.name} onChange={(e) => setDelivery({ ...delivery, name: e.target.value })} className={inputCls} placeholder="Receiver name" />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-[#57534E] uppercase mb-1 block">Phone *</label>
+                  <label className="text-xs font-bold text-[#64748B] uppercase mb-1 block">Phone *</label>
                   <input value={delivery.phone} onChange={(e) => setDelivery({ ...delivery, phone: e.target.value.replace(/\D/g, '').slice(0, 10) })} maxLength={10} className={inputCls} placeholder="10-digit mobile" />
                 </div>
                 <div className="sm:col-span-2">
-                  <label className="text-xs font-bold text-[#57534E] uppercase mb-1 block">Address *</label>
+                  <label className="text-xs font-bold text-[#64748B] uppercase mb-1 block">Address *</label>
                   <input value={delivery.address} onChange={(e) => setDelivery({ ...delivery, address: e.target.value })} className={inputCls} placeholder="House no, street, area" />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-[#57534E] uppercase mb-1 block">City *</label>
+                  <label className="text-xs font-bold text-[#64748B] uppercase mb-1 block">City *</label>
                   <input value={delivery.city} onChange={(e) => setDelivery({ ...delivery, city: e.target.value })} className={inputCls} />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-[#57534E] uppercase mb-1 block">State *</label>
+                  <label className="text-xs font-bold text-[#64748B] uppercase mb-1 block">State *</label>
                   <input value={delivery.state} onChange={(e) => setDelivery({ ...delivery, state: e.target.value })} className={inputCls} />
                 </div>
                 <div className="sm:col-span-2">
-                  <label className="text-xs font-bold text-[#57534E] uppercase mb-1 block">Pincode *</label>
+                  <label className="text-xs font-bold text-[#64748B] uppercase mb-1 block">Pincode *</label>
                   <input value={delivery.pinCode} onChange={(e) => setDelivery({ ...delivery, pinCode: e.target.value.replace(/\D/g, '').slice(0, 6) })} maxLength={6} className={`${inputCls} sm:max-w-48`} placeholder="6-digit pincode" />
                 </div>
               </div>
@@ -201,8 +201,8 @@ const MemberCheckout = () => {
           </div>
 
           {/* Payment */}
-          <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-6">
-            <h3 className="text-lg font-bold text-[#292524] mb-4 flex items-center gap-2"><CreditCard size={19} className="text-[#B76E79]" /> Payment Method</h3>
+          <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-6">
+            <h3 className="text-lg font-bold text-[#111827] mb-4 flex items-center gap-2"><CreditCard size={19} className="text-[#EA580C]" /> Payment Method</h3>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
               {PAYMENT_METHODS.filter(m => fulfilmentType === 'Delivery' ? m !== 'Cash at Gym' : true).map((method) => (
@@ -210,12 +210,12 @@ const MemberCheckout = () => {
                   key={method} 
                   className={`flex flex-col p-4 border rounded-xl cursor-pointer transition-colors ${
                     paymentMethod === method 
-                      ? 'border-[#B76E79] bg-[#B76E79]/5' 
-                      : 'border-[#E7DADD] hover:border-[#B76E79]/30'
+                      ? 'border-[#FDBA74] bg-[#FFF7ED]' 
+                      : 'border-[#E2E8F0] hover:border-[#FFEDD5]'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-1">
-                    <span className={`font-bold ${paymentMethod === method ? 'text-[#B76E79]' : 'text-[#57534E]'}`}>{method}</span>
+                    <span className={`font-bold ${paymentMethod === method ? 'text-[#EA580C]' : 'text-[#64748B]'}`}>{method}</span>
                     <input 
                       type="radio" 
                       name="payment_method" 
@@ -224,46 +224,46 @@ const MemberCheckout = () => {
                       onChange={(e) => setPaymentMethod(e.target.value)} 
                       className="hidden" 
                     />
-                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${paymentMethod === method ? 'border-[#B76E79]' : 'border-[#E7DADD]'}`}>
-                      {paymentMethod === method && <div className="w-2.5 h-2.5 bg-[#B76E79] rounded-full"></div>}
+                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${paymentMethod === method ? 'border-[#FDBA74]' : 'border-[#E2E8F0]'}`}>
+                      {paymentMethod === method && <div className="w-2.5 h-2.5 bg-[#C2410C] rounded-full"></div>}
                     </div>
                   </div>
                 </label>
               ))}
             </div>
 
-            <div className="bg-[#F3E8E8] border border-[#E7DADD] p-5 rounded-xl">
+            <div className="bg-[#F8FAFC] border border-[#E2E8F0] p-5 rounded-xl">
               {paymentMethod === 'UPI' && (
                 <div className="space-y-4">
                   <div className="flex flex-col md:flex-row gap-6">
                     <div className="flex-1 space-y-4">
-                      <p className="text-sm font-bold text-[#292524]">Pay using UPI App</p>
+                      <p className="text-sm font-bold text-[#111827]">Pay using UPI App</p>
                       <div className="flex flex-wrap gap-2">
                         {['Google Pay', 'PhonePe', 'Paytm', 'BHIM'].map(app => (
-                           <button key={app} className="px-3 py-1.5 bg-[#FFFFFF] border border-[#E7DADD] rounded-lg text-xs font-bold text-[#57534E] hover:border-[#B76E79] hover:text-[#B76E79] transition-colors shadow-sm">{app}</button>
+                           <button key={app} className="px-3 py-1.5 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-xs font-bold text-[#64748B] hover:border-[#FDBA74] hover:text-[#EA580C] transition-colors shadow-sm">{app}</button>
                         ))}
                       </div>
                       <div className="flex items-center gap-3">
-                        <div className="h-px bg-[#E7DADD] flex-1"></div>
-                        <span className="text-[10px] font-black text-[#9F5965] uppercase tracking-wider">OR</span>
-                        <div className="h-px bg-[#E7DADD] flex-1"></div>
+                        <div className="h-px bg-[#E2E8F0] flex-1"></div>
+                        <span className="text-[10px] font-black text-[#9A3412] uppercase tracking-wider">OR</span>
+                        <div className="h-px bg-[#E2E8F0] flex-1"></div>
                       </div>
                       <div>
-                        <label className="text-xs font-bold text-[#57534E] uppercase mb-1 block">Enter UPI ID</label>
+                        <label className="text-xs font-bold text-[#64748B] uppercase mb-1 block">Enter UPI ID</label>
                         <input placeholder="e.g. yourname@bank" className={inputCls} />
                       </div>
                     </div>
                     
-                    <div className="flex flex-col items-center justify-center md:border-l md:border-[#E7DADD] md:pl-8 pt-4 md:pt-0 border-t md:border-t-0 border-[#E7DADD] min-w-[180px]">
-                      <div className="relative p-4 bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl mb-3 shadow-sm flex items-center justify-center">
-                        <div className="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-[#F3E8E8] rounded-tl-sm"></div>
-                        <div className="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-[#F3E8E8] rounded-tr-sm"></div>
-                        <div className="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 border-[#F3E8E8] rounded-bl-sm"></div>
-                        <div className="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-[#F3E8E8] rounded-br-sm"></div>
+                    <div className="flex flex-col items-center justify-center md:border-l md:border-[#E2E8F0] md:pl-8 pt-4 md:pt-0 border-t md:border-t-0 border-[#E2E8F0] min-w-[180px]">
+                      <div className="relative p-4 bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl mb-3 shadow-sm flex items-center justify-center">
+                        <div className="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-[#F8FAFC] rounded-tl-sm"></div>
+                        <div className="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-[#F8FAFC] rounded-tr-sm"></div>
+                        <div className="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 border-[#F8FAFC] rounded-bl-sm"></div>
+                        <div className="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-[#F8FAFC] rounded-br-sm"></div>
                         <QRCode value={`upi://pay?pa=aigymstore@ybl&pn=AI%20Gym%20Store&am=${finalTotal}&cu=INR`} size={80} bgColor="transparent" fgColor="#FFFFFF" level="L" />
                       </div>
-                      <p className="text-sm font-bold text-[#292524]">Scan QR to Pay</p>
-                      <p className="text-[10px] font-semibold text-[#9F5965] uppercase tracking-wider mt-0.5">Any UPI App</p>
+                      <p className="text-sm font-bold text-[#111827]">Scan QR to Pay</p>
+                      <p className="text-[10px] font-semibold text-[#9A3412] uppercase tracking-wider mt-0.5">Any UPI App</p>
                     </div>
                   </div>
                 </div>
@@ -271,22 +271,22 @@ const MemberCheckout = () => {
               
               {paymentMethod === 'Credit / Debit Card' && (
                 <div className="space-y-4">
-                  <p className="text-sm font-bold text-[#292524]">Enter Card Details</p>
+                  <p className="text-sm font-bold text-[#111827]">Enter Card Details</p>
                   <div>
-                    <label className="text-xs font-bold text-[#57534E] uppercase mb-1 block">Card Number</label>
+                    <label className="text-xs font-bold text-[#64748B] uppercase mb-1 block">Card Number</label>
                     <input placeholder="XXXX XXXX XXXX XXXX" maxLength={19} className={inputCls} />
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-[#57534E] uppercase mb-1 block">Name on Card</label>
+                    <label className="text-xs font-bold text-[#64748B] uppercase mb-1 block">Name on Card</label>
                     <input placeholder="John Doe" className={inputCls} />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="text-xs font-bold text-[#57534E] uppercase mb-1 block">Expiry (MM/YY)</label>
+                      <label className="text-xs font-bold text-[#64748B] uppercase mb-1 block">Expiry (MM/YY)</label>
                       <input placeholder="MM/YY" maxLength={5} className={inputCls} />
                     </div>
                     <div>
-                      <label className="text-xs font-bold text-[#57534E] uppercase mb-1 block">CVV</label>
+                      <label className="text-xs font-bold text-[#64748B] uppercase mb-1 block">CVV</label>
                       <input type="password" placeholder="***" maxLength={4} className={inputCls} />
                     </div>
                   </div>
@@ -295,7 +295,7 @@ const MemberCheckout = () => {
               
               {paymentMethod === 'Net Banking' && (
                 <div className="space-y-4">
-                  <p className="text-sm font-bold text-[#292524]">Select your Bank</p>
+                  <p className="text-sm font-bold text-[#111827]">Select your Bank</p>
                   <select
                     className={inputCls}
                     value={bankName}
@@ -320,12 +320,12 @@ const MemberCheckout = () => {
               
               {paymentMethod === 'Cash at Gym' && (
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-[#B76E79]/10 rounded-full flex items-center justify-center shrink-0">
-                    <CheckCircle2 size={20} className="text-[#B76E79]" />
+                  <div className="w-10 h-10 bg-[#FFF7ED] rounded-full flex items-center justify-center shrink-0">
+                    <CheckCircle2 size={20} className="text-[#EA580C]" />
                   </div>
                   <div>
-                    <p className="text-sm font-bold text-[#292524]">Pay at Front Desk</p>
-                    <p className="text-xs text-[#57534E] mt-0.5">Your order will be reserved. Please pay by cash or card when you pick up your items.</p>
+                    <p className="text-sm font-bold text-[#111827]">Pay at Front Desk</p>
+                    <p className="text-xs text-[#64748B] mt-0.5">Your order will be reserved. Please pay by cash or card when you pick up your items.</p>
                   </div>
                 </div>
               )}
@@ -334,8 +334,8 @@ const MemberCheckout = () => {
         </div>
 
         {/* Summary */}
-        <div className="lg:sticky lg:top-24 self-start bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-6">
-          <h3 className="text-lg font-bold text-[#292524] mb-4">Order Summary</h3>
+        <div className="lg:sticky lg:top-24 self-start bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-6">
+          <h3 className="text-lg font-bold text-[#111827] mb-4">Order Summary</h3>
           <div className="space-y-3 max-h-64 overflow-y-auto">
             {items.map((row, idx) => {
               const p = row.product;
@@ -345,8 +345,8 @@ const MemberCheckout = () => {
               const baseAttrs = !v && p.attributes ? Object.values(p.attributes).slice(0, 2).join(' / ') : '';
               return (
                 <div key={`${p._id}-${idx}`} className="flex justify-between items-center text-sm">
-                  <span className="text-[#57534E]">{p.name} {attrs ? `(${attrs})` : baseAttrs ? `(${baseAttrs})` : ''} <span className="text-[#57534E]">× {row.quantity}</span></span>
-                  <span className="font-bold text-[#292524]">₹{price * row.quantity}</span>
+                  <span className="text-[#64748B]">{p.name} {attrs ? `(${attrs})` : baseAttrs ? `(${baseAttrs})` : ''} <span className="text-[#64748B]">× {row.quantity}</span></span>
+                  <span className="font-bold text-[#111827]">₹{price * row.quantity}</span>
                 </div>
               );
             })}
@@ -354,28 +354,28 @@ const MemberCheckout = () => {
 
           {/* Referral Points Redemption Box */}
           {rewardSettings?.enableStorePurchase && pointsBalance > 0 && (
-            <div className="mt-4 p-3.5 bg-[#F3E8E8] border border-[#E7DADD] rounded-xl space-y-2.5">
+            <div className="mt-4 p-3.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl space-y-2.5">
               <div className="flex items-center justify-between">
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={usePoints}
                     onChange={(e) => setUsePoints(e.target.checked)}
-                    className="w-4 h-4 rounded text-[#B76E79] bg-[#FFFFFF] border-[#E7DADD] focus:ring-0 cursor-pointer"
+                    className="w-4 h-4 rounded text-[#EA580C] bg-[#FFFFFF] border-[#E2E8F0] focus:ring-0 cursor-pointer"
                   />
                   <span className="text-xs font-bold text-white flex items-center gap-1.5">
-                    <Coins size={14} className="text-[#B76E79]" />
+                    <Coins size={14} className="text-[#EA580C]" />
                     Use Referral Points
                   </span>
                 </label>
-                <span className="text-[11px] font-bold text-[#B76E79]">
+                <span className="text-[11px] font-bold text-[#EA580C]">
                   {pointsBalance} pts available
                 </span>
               </div>
 
               {usePoints && (
-                <div className="space-y-2 pt-2 border-t border-[#E7DADD]/60">
-                  <div className="flex items-center justify-between text-[11px] text-[#57534E]">
+                <div className="space-y-2 pt-2 border-t border-[#E2E8F0]/60">
+                  <div className="flex items-center justify-between text-[11px] text-[#64748B]">
                     <span>Points to Redeem:</span>
                     <span className="font-bold text-white">{pointsToRedeem} pts</span>
                   </div>
@@ -386,13 +386,13 @@ const MemberCheckout = () => {
                     step={10}
                     value={pointsToRedeem}
                     onChange={(e) => setPointsToRedeem(Number(e.target.value))}
-                    className="w-full h-1.5 bg-[#E7DADD] rounded-lg appearance-none cursor-pointer accent-[#B76E79]"
+                    className="w-full h-1.5 bg-[#E2E8F0] rounded-lg appearance-none cursor-pointer accent-[#F97316]"
                   />
                   <div className="flex items-center justify-between text-[11px]">
-                    <span className="text-[#57534E]">
+                    <span className="text-[#64748B]">
                       Rate: {convUnit} pts = ₹{rupeeUnit}
                     </span>
-                    <span className="text-emerald-400 font-bold flex items-center gap-1">
+                    <span className="text-[#15803D] font-bold flex items-center gap-1">
                       <Sparkles size={11} /> Discount: ₹{pointsDiscount}
                     </span>
                   </div>
@@ -401,10 +401,10 @@ const MemberCheckout = () => {
             </div>
           )}
 
-          <div className="border-t border-[#E7DADD] pt-3 mt-4 space-y-2 text-sm">
-            <div className="flex justify-between text-[#57534E]">
+          <div className="border-t border-[#E2E8F0] pt-3 mt-4 space-y-2 text-sm">
+            <div className="flex justify-between text-[#64748B]">
               <span>Subtotal</span>
-              <span className="font-bold text-[#292524]">₹{subtotal}</span>
+              <span className="font-bold text-[#111827]">₹{subtotal}</span>
             </div>
             {discountAmount > 0 && (
               <div className="flex justify-between text-green-600">
@@ -413,20 +413,20 @@ const MemberCheckout = () => {
               </div>
             )}
             {pointsDiscount > 0 && (
-              <div className="flex justify-between text-emerald-400">
+              <div className="flex justify-between text-[#15803D]">
                 <span className="flex items-center gap-1"><Coins size={13} /> Referral Points Discount</span>
                 <span className="font-bold">-₹{pointsDiscount}</span>
               </div>
             )}
             <div className="flex justify-between">
-              <span className="font-bold text-[#292524]">Total</span>
-              <span className="font-black text-[#B76E79] text-lg">₹{finalTotal}</span>
+              <span className="font-bold text-[#111827]">Total</span>
+              <span className="font-black text-[#EA580C] text-lg">₹{finalTotal}</span>
             </div>
           </div>
           <button
             onClick={placeOrder}
             disabled={placing}
-            className="mt-6 w-full py-3 bg-gradient-to-r from-[#B76E79] to-[#9F5965] text-[#FFFFFF] font-bold font-bold rounded-xl shadow-lg shadow-[#B76E79]/15 hover:opacity-90 transition-opacity flex items-center justify-center gap-2 disabled:opacity-40"
+            className="mt-6 w-full py-3 bg-gradient-to-r from-[#EA580C] to-[#C2410C] text-[#FFFFFF] font-bold font-bold rounded-xl shadow-lg shadow-orange-500/15 hover:opacity-90 transition-opacity flex items-center justify-center gap-2 disabled:opacity-40"
           >
             {placing ? <Loader2 className="animate-spin" size={18} /> : <CheckCircle2 size={18} />}
             {placing ? 'Placing Order...' : `Pay ₹${finalTotal} & Place Order`}

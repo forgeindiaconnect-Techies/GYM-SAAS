@@ -81,8 +81,8 @@ const StarRating = ({ rating, size = 16 }: { rating: number; size?: number }) =>
           size={size}
           className={
             star <= Math.round(rating)
-              ? 'fill-amber-400 text-amber-400'
-              : 'fill-stone-200 text-[#292524]'
+              ? 'fill-amber-400 text-[#B45309]'
+              : 'fill-stone-200 text-[#111827]'
           }
         />
       ))}
@@ -185,18 +185,18 @@ export default function GymAdminReviews() {
   return (
     <div className="space-y-6">
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-[#E7DADD]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-[#E2E8F0]">
         <div>
           <div className="flex items-center gap-2">
-            <span className="p-2 rounded-xl bg-gradient-to-tr from-[#B76E79] to-[#FB923C] text-[#FFFFFF] font-bold shadow-md shadow-[#B76E79]/20">
+            <span className="p-2 rounded-xl bg-gradient-to-tr from-[#EA580C] to-[#FB923C] text-[#FFFFFF] font-bold shadow-md shadow-orange-500/15">
               <Star className="w-5 h-5 fill-white" />
             </span>
-            <h1 className="text-2xl md:text-3xl font-extrabold text-[#292524] tracking-tight">
+            <h1 className="text-2xl md:text-3xl font-extrabold text-[#111827] tracking-tight">
               Review & Rating
             </h1>
           </div>
-          <p className="text-sm text-[#57534E] mt-1">
-            Real customer reviews & feedback for <span className="font-semibold text-[#292524]">{data?.gym?.name || 'your gym'}</span> and personal trainers.
+          <p className="text-sm text-[#64748B] mt-1">
+            Real customer reviews & feedback for <span className="font-semibold text-[#111827]">{data?.gym?.name || 'your gym'}</span> and personal trainers.
           </p>
         </div>
       </div>
@@ -204,52 +204,52 @@ export default function GymAdminReviews() {
       {/* Summary KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Gym Rating Card */}
-        <div className="bg-[#FFFFFF] rounded-2xl p-5 border border-[#E7DADD] shadow-sm relative overflow-hidden">
+        <div className="bg-[#FFFFFF] rounded-2xl p-5 border border-[#E2E8F0] shadow-sm relative overflow-hidden">
           <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-orange-100/50 to-transparent rounded-bl-full pointer-events-none" />
           <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-semibold uppercase tracking-wider text-[#57534E]">
+            <span className="text-xs font-semibold uppercase tracking-wider text-[#64748B]">
               Gym Average Rating
             </span>
-            <span className="p-2 bg-[#F3E8E8] text-[#B76E79] rounded-xl">
+            <span className="p-2 bg-[#F8FAFC] text-[#EA580C] rounded-xl">
               <Building2 className="w-4 h-4" />
             </span>
           </div>
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-black text-[#292524]">{gymStats.averageRating || '0.0'}</span>
-            <span className="text-sm font-semibold text-[#57534E]">/ 5.0</span>
+            <span className="text-3xl font-black text-[#111827]">{gymStats.averageRating || '0.0'}</span>
+            <span className="text-sm font-semibold text-[#64748B]">/ 5.0</span>
           </div>
           <div className="mt-2 flex items-center gap-2">
             <StarRating rating={gymStats.averageRating || 0} size={14} />
-            <span className="text-xs text-[#57534E] font-medium">({gymStats.totalReviews} reviews)</span>
+            <span className="text-xs text-[#64748B] font-medium">({gymStats.totalReviews} reviews)</span>
           </div>
         </div>
 
         {/* Trainer Rating Card */}
-        <div className="bg-[#FFFFFF] rounded-2xl p-5 border border-[#E7DADD] shadow-sm relative overflow-hidden">
+        <div className="bg-[#FFFFFF] rounded-2xl p-5 border border-[#E2E8F0] shadow-sm relative overflow-hidden">
           <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-emerald-100/50 to-transparent rounded-bl-full pointer-events-none" />
           <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-semibold uppercase tracking-wider text-[#57534E]">
+            <span className="text-xs font-semibold uppercase tracking-wider text-[#64748B]">
               Trainer Average Rating
             </span>
-            <span className="p-2 bg-[#F3E8E8] text-[#B76E79] rounded-xl">
+            <span className="p-2 bg-[#F8FAFC] text-[#EA580C] rounded-xl">
               <Dumbbell className="w-4 h-4" />
             </span>
           </div>
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-black text-[#292524]">{trainerStats.averageRating || '0.0'}</span>
-            <span className="text-sm font-semibold text-[#57534E]">/ 5.0</span>
+            <span className="text-3xl font-black text-[#111827]">{trainerStats.averageRating || '0.0'}</span>
+            <span className="text-sm font-semibold text-[#64748B]">/ 5.0</span>
           </div>
           <div className="mt-2 flex items-center gap-2">
             <StarRating rating={trainerStats.averageRating || 0} size={14} />
-            <span className="text-xs text-[#57534E] font-medium">({trainerStats.totalReviews} reviews)</span>
+            <span className="text-xs text-[#64748B] font-medium">({trainerStats.totalReviews} reviews)</span>
           </div>
         </div>
 
         {/* Total Feedback Card */}
-        <div className="bg-[#FFFFFF] rounded-2xl p-5 border border-[#E7DADD] shadow-sm relative overflow-hidden">
+        <div className="bg-[#FFFFFF] rounded-2xl p-5 border border-[#E2E8F0] shadow-sm relative overflow-hidden">
           <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-amber-100/50 to-transparent rounded-bl-full pointer-events-none" />
           <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-semibold uppercase tracking-wider text-[#57534E]">
+            <span className="text-xs font-semibold uppercase tracking-wider text-[#64748B]">
               Total Customer Reviews
             </span>
             <span className="p-2 bg-amber-50 text-amber-600 rounded-xl">
@@ -257,28 +257,28 @@ export default function GymAdminReviews() {
             </span>
           </div>
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-black text-[#292524]">{totalReviewsCount}</span>
-            <span className="text-xs font-medium text-[#57534E]">Total Entries</span>
+            <span className="text-3xl font-black text-[#111827]">{totalReviewsCount}</span>
+            <span className="text-xs font-medium text-[#64748B]">Total Entries</span>
           </div>
-          <div className="mt-2 flex items-center gap-1.5 text-xs text-[#B76E79] font-medium">
+          <div className="mt-2 flex items-center gap-1.5 text-xs text-[#EA580C] font-medium">
             <CheckCircle2 className="w-3.5 h-3.5" />
             <span>Verified Member Feedback</span>
           </div>
         </div>
 
         {/* Satisfaction Rate Card */}
-        <div className="bg-[#FFFFFF] rounded-2xl p-5 border border-[#E7DADD] shadow-sm relative overflow-hidden">
+        <div className="bg-[#FFFFFF] rounded-2xl p-5 border border-[#E2E8F0] shadow-sm relative overflow-hidden">
           <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-purple-100/50 to-transparent rounded-bl-full pointer-events-none" />
           <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-semibold uppercase tracking-wider text-[#57534E]">
+            <span className="text-xs font-semibold uppercase tracking-wider text-[#64748B]">
               Positive Feedback
             </span>
-            <span className="p-2 bg-[#F3E8E8] text-[#B76E79] rounded-xl">
+            <span className="p-2 bg-[#F8FAFC] text-[#EA580C] rounded-xl">
               <TrendingUp className="w-4 h-4" />
             </span>
           </div>
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-black text-[#292524]">
+            <span className="text-3xl font-black text-[#111827]">
               {totalReviewsCount > 0
                 ? `${Math.round(
                     (((gymStats.breakdown[5] || 0) +
@@ -290,9 +290,9 @@ export default function GymAdminReviews() {
                   )}%`
                 : '100%'}
             </span>
-            <span className="text-xs font-medium text-[#57534E]">4★ & 5★ ratings</span>
+            <span className="text-xs font-medium text-[#64748B]">4★ & 5★ ratings</span>
           </div>
-          <div className="mt-2 flex items-center gap-1.5 text-xs text-[#B76E79] font-medium">
+          <div className="mt-2 flex items-center gap-1.5 text-xs text-[#EA580C] font-medium">
             <Sparkles className="w-3.5 h-3.5" />
             <span>High Satisfaction</span>
           </div>
@@ -300,8 +300,8 @@ export default function GymAdminReviews() {
       </div>
 
       {/* Main Tab Buttons (Customer review about gym, Customer review about trainers) */}
-      <div className="bg-[#FFFFFF] rounded-2xl p-2 border border-[#E7DADD]/80 shadow-sm flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-        <div className="grid grid-cols-2 gap-2 p-1 bg-[#F3E8E8]/80 rounded-xl">
+      <div className="bg-[#FFFFFF] rounded-2xl p-2 border border-[#E2E8F0]/80 shadow-sm flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+        <div className="grid grid-cols-2 gap-2 p-1 bg-[#F8FAFC]/80 rounded-xl">
           <button
             onClick={() => {
               setActiveTab('gym');
@@ -309,15 +309,15 @@ export default function GymAdminReviews() {
             }}
             className={`flex items-center justify-center gap-2.5 px-4 py-2.5 rounded-lg text-sm font-bold transition-all ${
               activeTab === 'gym'
-                ? 'bg-gradient-to-r from-[#B76E79] to-[#9F5965] text-white shadow-md shadow-[#B76E79]/20'
-                : 'text-[#57534E] hover:text-[#292524] hover:bg-[#F3E8E8]/50'
+                ? 'bg-gradient-to-r from-[#EA580C] to-[#C2410C] text-white shadow-md shadow-orange-500/15'
+                : 'text-[#64748B] hover:text-[#111827] hover:bg-[#FFF7ED]/50'
             }`}
           >
             <Building2 className="w-4 h-4" />
             <span>Customer Review About Gym</span>
             <span
               className={`text-xs px-2 py-0.5 rounded-full font-semibold ${
-                activeTab === 'gym' ? 'bg-[#FFFFFF]/20 text-white' : 'bg-[#F3E8E8] text-[#57534E]'
+                activeTab === 'gym' ? 'bg-[#FFFFFF]/20 text-white' : 'bg-[#F8FAFC] text-[#64748B]'
               }`}
             >
               {gymStats.totalReviews}
@@ -331,15 +331,15 @@ export default function GymAdminReviews() {
             }}
             className={`flex items-center justify-center gap-2.5 px-4 py-2.5 rounded-lg text-sm font-bold transition-all ${
               activeTab === 'trainer'
-                ? 'bg-gradient-to-r from-[#B76E79] to-[#9F5965] text-white shadow-md shadow-[#B76E79]/20'
-                : 'text-[#57534E] hover:text-[#292524] hover:bg-[#F3E8E8]/50'
+                ? 'bg-gradient-to-r from-[#EA580C] to-[#C2410C] text-white shadow-md shadow-orange-500/15'
+                : 'text-[#64748B] hover:text-[#111827] hover:bg-[#FFF7ED]/50'
             }`}
           >
             <Dumbbell className="w-4 h-4" />
             <span>Customer Review About Trainers</span>
             <span
               className={`text-xs px-2 py-0.5 rounded-full font-semibold ${
-                activeTab === 'trainer' ? 'bg-[#FFFFFF]/20 text-white' : 'bg-[#F3E8E8] text-[#57534E]'
+                activeTab === 'trainer' ? 'bg-[#FFFFFF]/20 text-white' : 'bg-[#F8FAFC] text-[#64748B]'
               }`}
             >
               {trainerStats.totalReviews}
@@ -349,11 +349,11 @@ export default function GymAdminReviews() {
 
         {/* Sort selector */}
         <div className="flex items-center gap-2 px-2">
-          <span className="text-xs font-semibold text-[#57534E] hidden md:inline">Sort:</span>
+          <span className="text-xs font-semibold text-[#64748B] hidden md:inline">Sort:</span>
           <select
             value={sortOrder}
             onChange={(e) => setSortOrder(e.target.value as any)}
-            className="text-xs font-semibold text-[#292524] bg-[#F3E8E8] border border-[#E7DADD] rounded-lg px-2.5 py-2 outline-none focus:border-[#B76E79]"
+            className="text-xs font-semibold text-[#111827] bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg px-2.5 py-2 outline-none focus:border-[#FDBA74]"
           >
             <option value="newest">Newest First</option>
             <option value="highest">Highest Rating (5★ → 1★)</option>
@@ -363,12 +363,12 @@ export default function GymAdminReviews() {
       </div>
 
       {/* Filter and Breakdown Section */}
-      <div className="bg-[#FFFFFF] rounded-2xl p-4 md:p-5 border border-[#E7DADD] shadow-sm space-y-4">
+      <div className="bg-[#FFFFFF] rounded-2xl p-4 md:p-5 border border-[#E2E8F0] shadow-sm space-y-4">
         {/* Search and Star Pills */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           {/* Search Box */}
           <div className="relative flex-1 max-w-md">
-            <Search className="w-4 h-4 text-[#57534E] absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-[#64748B] absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               placeholder={
@@ -378,21 +378,21 @@ export default function GymAdminReviews() {
               }
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 bg-[#F3E8E8] border border-[#E7DADD] rounded-xl text-sm text-[#292524] placeholder-stone-400 focus:outline-none focus:border-[#B76E79] transition-all"
+              className="w-full pl-9 pr-4 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-sm text-[#111827] placeholder-stone-400 focus:outline-none focus:border-[#FDBA74] transition-all"
             />
           </div>
 
           {/* Star Filter Pills */}
           <div className="flex items-center gap-1.5 flex-wrap">
-            <span className="text-xs font-semibold text-[#57534E] mr-1 flex items-center gap-1">
+            <span className="text-xs font-semibold text-[#64748B] mr-1 flex items-center gap-1">
               <Filter className="w-3.5 h-3.5" /> Filter:
             </span>
             <button
               onClick={() => setStarFilter('all')}
               className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
                 starFilter === 'all'
-                  ? 'bg-[#F3E8E8] text-white shadow-sm'
-                  : 'bg-[#F3E8E8] text-[#57534E] hover:bg-[#F3E8E8]'
+                  ? 'bg-[#F8FAFC] text-white shadow-sm'
+                  : 'bg-[#F8FAFC] text-[#64748B] hover:bg-[#FFF7ED]'
               }`}
             >
               All Stars
@@ -403,19 +403,19 @@ export default function GymAdminReviews() {
                 onClick={() => setStarFilter(s)}
                 className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
                   starFilter === s
-                    ? 'bg-[#B76E79] text-white shadow-sm shadow-[#B76E79]/20'
-                    : 'bg-[#F3E8E8] text-[#57534E] hover:bg-[#F3E8E8]'
+                    ? 'bg-[#C2410C] text-white shadow-sm shadow-orange-500/15'
+                    : 'bg-[#F8FAFC] text-[#64748B] hover:bg-[#FFF7ED]'
                 }`}
               >
                 <span>{s}</span>
-                <Star className={`w-3 h-3 ${starFilter === s ? 'fill-white' : 'fill-amber-400 text-amber-400'}`} />
+                <Star className={`w-3 h-3 ${starFilter === s ? 'fill-white' : 'fill-amber-400 text-[#B45309]'}`} />
               </button>
             ))}
           </div>
         </div>
 
         {/* Rating Breakdown Bar */}
-        <div className="pt-3 border-t border-[#E7DADD] grid grid-cols-2 sm:grid-cols-5 gap-3">
+        <div className="pt-3 border-t border-[#E2E8F0] grid grid-cols-2 sm:grid-cols-5 gap-3">
           {[5, 4, 3, 2, 1].map((star) => {
             const count = (currentBreakdown as any)?.[star] || 0;
             const pct = currentTotal > 0 ? Math.round((count / currentTotal) * 100) : 0;
@@ -425,20 +425,20 @@ export default function GymAdminReviews() {
                 onClick={() => setStarFilter(starFilter === star ? 'all' : star)}
                 className={`p-2.5 rounded-xl border transition-all cursor-pointer ${
                   starFilter === star
-                    ? 'border-[#B76E79] bg-[#F3E8E8]/50 ring-1 ring-[#B76E79]'
-                    : 'border-[#E7DADD] bg-[#F3E8E8]/60 hover:border-[#E7DADD]'
+                    ? 'border-[#FDBA74] bg-[#FFF7ED] ring-1 ring-[#F97316]'
+                    : 'border-[#E2E8F0] bg-[#FFF7ED] hover:border-[#E2E8F0]'
                 }`}
               >
-                <div className="flex items-center justify-between text-xs font-bold text-[#292524] mb-1">
+                <div className="flex items-center justify-between text-xs font-bold text-[#111827] mb-1">
                   <div className="flex items-center gap-1">
                     <span>{star}</span>
-                    <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+                    <Star className="w-3 h-3 fill-amber-400 text-[#B45309]" />
                   </div>
-                  <span className="text-[#57534E] font-semibold">{count}</span>
+                  <span className="text-[#64748B] font-semibold">{count}</span>
                 </div>
-                <div className="w-full h-1.5 bg-[#F3E8E8] rounded-full overflow-hidden">
+                <div className="w-full h-1.5 bg-[#F8FAFC] rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-gradient-to-r from-amber-400 to-[#B76E79] rounded-full transition-all duration-500"
+                    className="h-full bg-gradient-to-r from-amber-400 to-[#EA580C] rounded-full transition-all duration-500"
                     style={{ width: `${pct}%` }}
                   />
                 </div>
@@ -450,21 +450,21 @@ export default function GymAdminReviews() {
 
       {/* Loading State */}
       {loading ? (
-        <div className="bg-[#FFFFFF] rounded-2xl p-16 border border-[#E7DADD] shadow-sm flex flex-col items-center justify-center gap-3">
-          <div className="w-10 h-10 rounded-full border-4 border-[#B76E79] border-t-transparent animate-spin" />
-          <p className="text-sm font-semibold text-[#57534E]">Loading reviews and ratings...</p>
+        <div className="bg-[#FFFFFF] rounded-2xl p-16 border border-[#E2E8F0] shadow-sm flex flex-col items-center justify-center gap-3">
+          <div className="w-10 h-10 rounded-full border-4 border-[#FDBA74] border-t-transparent animate-spin" />
+          <p className="text-sm font-semibold text-[#64748B]">Loading reviews and ratings...</p>
         </div>
       ) : activeTab === 'gym' ? (
         /* ============================================================ */
         /* TAB 1: CUSTOMER REVIEW ABOUT GYM                              */
         /* ============================================================ */
         filteredGymReviews.length === 0 ? (
-          <div className="bg-[#FFFFFF] rounded-2xl p-14 border border-[#E7DADD] shadow-sm text-center space-y-3">
-            <div className="w-14 h-14 bg-[#F3E8E8] text-[#B76E79] rounded-2xl flex items-center justify-center mx-auto">
+          <div className="bg-[#FFFFFF] rounded-2xl p-14 border border-[#E2E8F0] shadow-sm text-center space-y-3">
+            <div className="w-14 h-14 bg-[#F8FAFC] text-[#EA580C] rounded-2xl flex items-center justify-center mx-auto">
               <Building2 className="w-7 h-7" />
             </div>
-            <h3 className="text-lg font-bold text-[#292524]">No Gym Reviews Found</h3>
-            <p className="text-sm text-[#57534E] max-w-md mx-auto">
+            <h3 className="text-lg font-bold text-[#111827]">No Gym Reviews Found</h3>
+            <p className="text-sm text-[#64748B] max-w-md mx-auto">
               {searchTerm || starFilter !== 'all'
                 ? 'No customer reviews matched your search or rating filters. Try resetting the filters.'
                 : 'No customer reviews have been submitted for this gym yet. When members submit feedback, it will appear here.'}
@@ -475,7 +475,7 @@ export default function GymAdminReviews() {
                   setSearchTerm('');
                   setStarFilter('all');
                 }}
-                className="mt-2 px-4 py-2 bg-[#F3E8E8] text-white rounded-xl text-xs font-bold hover:bg-[#F3E8E8] transition-all"
+                className="mt-2 px-4 py-2 bg-[#F8FAFC] text-white rounded-xl text-xs font-bold hover:bg-[#FFF7ED] transition-all"
               >
                 Clear Filters
               </button>
@@ -494,7 +494,7 @@ export default function GymAdminReviews() {
               return (
                 <div
                   key={rev._id}
-                  className="bg-[#FFFFFF] rounded-2xl p-6 border border-[#E7DADD] shadow-sm hover:shadow-md transition-all flex flex-col justify-between space-y-4 relative"
+                  className="bg-[#FFFFFF] rounded-2xl p-6 border border-[#E2E8F0] shadow-sm hover:shadow-md transition-all flex flex-col justify-between space-y-4 relative"
                 >
                   {/* Top Bar: Member & Rating */}
                   <div className="flex items-start justify-between gap-3">
@@ -503,21 +503,21 @@ export default function GymAdminReviews() {
                         <img
                           src={rev.userPhoto}
                           alt={rev.userName}
-                          className="w-11 h-11 rounded-full object-cover border-2 border-[#E7DADD]"
+                          className="w-11 h-11 rounded-full object-cover border-2 border-[#E2E8F0]"
                         />
                       ) : (
-                        <div className="w-11 h-11 rounded-full bg-gradient-to-tr from-[#B76E79] to-[#FB923C] text-[#FFFFFF] font-bold font-bold flex items-center justify-center text-sm shadow-sm">
+                        <div className="w-11 h-11 rounded-full bg-gradient-to-tr from-[#EA580C] to-[#FB923C] text-[#FFFFFF] font-bold font-bold flex items-center justify-center text-sm shadow-sm">
                           {initials}
                         </div>
                       )}
                       <div>
                         <div className="flex items-center gap-1.5">
-                          <h4 className="text-sm font-bold text-[#292524]">{rev.userName}</h4>
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-[#F3E8E8] text-[#B76E79] text-[10px] font-bold rounded-full border border-[#E7DADD]">
+                          <h4 className="text-sm font-bold text-[#111827]">{rev.userName}</h4>
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-[#F8FAFC] text-[#EA580C] text-[10px] font-bold rounded-full border border-[#E2E8F0]">
                             <CheckCircle2 className="w-2.5 h-2.5" /> Verified
                           </span>
                         </div>
-                        <div className="flex items-center gap-2 text-xs text-[#57534E] mt-0.5">
+                        <div className="flex items-center gap-2 text-xs text-[#64748B] mt-0.5">
                           <Calendar className="w-3 h-3" />
                           <span>{formatDate(rev.createdAt)}</span>
                         </div>
@@ -527,7 +527,7 @@ export default function GymAdminReviews() {
                     {/* Rating Badge */}
                     <div className="flex flex-col items-end">
                       <div className="flex items-center gap-1 bg-amber-50 px-2.5 py-1 rounded-xl border border-amber-200/60">
-                        <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                        <Star className="w-3.5 h-3.5 fill-amber-400 text-[#B45309]" />
                         <span className="text-xs font-black text-amber-800">{Number(rev.rating).toFixed(1)}</span>
                       </div>
                       <div className="mt-1">
@@ -537,18 +537,18 @@ export default function GymAdminReviews() {
                   </div>
 
                   {/* Review Text */}
-                  <div className="bg-[#F3E8E8]/70 rounded-xl p-4 border border-[#E7DADD] text-[#292524] text-sm leading-relaxed italic relative">
-                    <span className="text-[#57534E] font-serif text-2xl absolute -top-1 left-2 select-none">“</span>
+                  <div className="bg-[#F8FAFC]/70 rounded-xl p-4 border border-[#E2E8F0] text-[#111827] text-sm leading-relaxed italic relative">
+                    <span className="text-[#64748B] font-serif text-2xl absolute -top-1 left-2 select-none">“</span>
                     <p className="pl-4 pr-1">{rev.review}</p>
                   </div>
 
                   {/* Bottom Footer Badge */}
-                  <div className="flex items-center justify-between text-xs pt-1 border-t border-[#E7DADD] text-[#57534E]">
-                    <span className="flex items-center gap-1 text-[#B76E79] font-semibold">
+                  <div className="flex items-center justify-between text-xs pt-1 border-t border-[#E2E8F0] text-[#64748B]">
+                    <span className="flex items-center gap-1 text-[#EA580C] font-semibold">
                       <Building2 className="w-3.5 h-3.5" />
                       <span>{rev.gymName || data?.gym?.name || 'Perfect Fitness Studio'}</span>
                     </span>
-                    <span className="text-[#57534E]">Gym Experience Review</span>
+                    <span className="text-[#64748B]">Gym Experience Review</span>
                   </div>
                 </div>
               );
@@ -560,12 +560,12 @@ export default function GymAdminReviews() {
         /* TAB 2: CUSTOMER REVIEW ABOUT TRAINERS                         */
         /* ============================================================ */
         filteredTrainerReviews.length === 0 ? (
-          <div className="bg-[#FFFFFF] rounded-2xl p-14 border border-[#E7DADD] shadow-sm text-center space-y-3">
-            <div className="w-14 h-14 bg-[#F3E8E8] text-[#B76E79] rounded-2xl flex items-center justify-center mx-auto">
+          <div className="bg-[#FFFFFF] rounded-2xl p-14 border border-[#E2E8F0] shadow-sm text-center space-y-3">
+            <div className="w-14 h-14 bg-[#F8FAFC] text-[#EA580C] rounded-2xl flex items-center justify-center mx-auto">
               <Dumbbell className="w-7 h-7" />
             </div>
-            <h3 className="text-lg font-bold text-[#292524]">No Trainer Reviews Found</h3>
-            <p className="text-sm text-[#57534E] max-w-md mx-auto">
+            <h3 className="text-lg font-bold text-[#111827]">No Trainer Reviews Found</h3>
+            <p className="text-sm text-[#64748B] max-w-md mx-auto">
               {searchTerm || starFilter !== 'all'
                 ? 'No customer reviews for trainers matched your filters. Try clearing the search or star rating.'
                 : 'No trainer reviews have been recorded yet. When members rate their personal training sessions, they will be shown here.'}
@@ -576,7 +576,7 @@ export default function GymAdminReviews() {
                   setSearchTerm('');
                   setStarFilter('all');
                 }}
-                className="mt-2 px-4 py-2 bg-[#F3E8E8] text-white rounded-xl text-xs font-bold hover:bg-[#F3E8E8] transition-all"
+                className="mt-2 px-4 py-2 bg-[#F8FAFC] text-white rounded-xl text-xs font-bold hover:bg-[#FFF7ED] transition-all"
               >
                 Clear Filters
               </button>
@@ -602,7 +602,7 @@ export default function GymAdminReviews() {
               return (
                 <div
                   key={rev._id}
-                  className="bg-[#FFFFFF] rounded-2xl p-6 border border-[#E7DADD] shadow-sm hover:shadow-md transition-all flex flex-col justify-between space-y-4"
+                  className="bg-[#FFFFFF] rounded-2xl p-6 border border-[#E2E8F0] shadow-sm hover:shadow-md transition-all flex flex-col justify-between space-y-4"
                 >
                   {/* Top Bar: Customer & Trainer Info */}
                   <div className="flex items-start justify-between gap-3">
@@ -612,21 +612,21 @@ export default function GymAdminReviews() {
                         <img
                           src={rev.customerPhoto}
                           alt={rev.customerName}
-                          className="w-11 h-11 rounded-full object-cover border-2 border-[#E7DADD]"
+                          className="w-11 h-11 rounded-full object-cover border-2 border-[#E2E8F0]"
                         />
                       ) : (
-                        <div className="w-11 h-11 rounded-full bg-gradient-to-tr from-[#B76E79] to-[#9F5965] text-[#FFFFFF] font-bold font-bold flex items-center justify-center text-sm shadow-sm">
+                        <div className="w-11 h-11 rounded-full bg-gradient-to-tr from-[#EA580C] to-[#C2410C] text-[#FFFFFF] font-bold font-bold flex items-center justify-center text-sm shadow-sm">
                           {custInitials}
                         </div>
                       )}
                       <div>
                         <div className="flex items-center gap-1.5">
-                          <h4 className="text-sm font-bold text-[#292524]">{rev.customerName}</h4>
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-[#F3E8E8] text-[#B76E79] text-[10px] font-bold rounded-full border border-[#E7DADD]">
+                          <h4 className="text-sm font-bold text-[#111827]">{rev.customerName}</h4>
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-[#F8FAFC] text-[#EA580C] text-[10px] font-bold rounded-full border border-[#E2E8F0]">
                             Member
                           </span>
                         </div>
-                        <div className="flex items-center gap-2 text-xs text-[#57534E] mt-0.5">
+                        <div className="flex items-center gap-2 text-xs text-[#64748B] mt-0.5">
                           <Calendar className="w-3 h-3" />
                           <span>{formatDate(rev.createdAt || rev.sessionDate)}</span>
                         </div>
@@ -636,7 +636,7 @@ export default function GymAdminReviews() {
                     {/* Rating Badge */}
                     <div className="flex flex-col items-end">
                       <div className="flex items-center gap-1 bg-amber-50 px-2.5 py-1 rounded-xl border border-amber-200/60">
-                        <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                        <Star className="w-3.5 h-3.5 fill-amber-400 text-[#B45309]" />
                         <span className="text-xs font-black text-amber-800">{Number(rev.rating).toFixed(1)}</span>
                       </div>
                       <div className="mt-1">
@@ -646,52 +646,52 @@ export default function GymAdminReviews() {
                   </div>
 
                   {/* Trainer Highlight Box */}
-                  <div className="bg-[#F3E8E8]/60 border border-[#E7DADD] rounded-xl p-3 flex items-center justify-between gap-3">
+                  <div className="bg-[#FFF7ED] border border-[#E2E8F0] rounded-xl p-3 flex items-center justify-between gap-3">
                     <div className="flex items-center gap-2.5">
                       {rev.trainerPhoto ? (
                         <img
                           src={rev.trainerPhoto}
                           alt={rev.trainerName}
-                          className="w-9 h-9 rounded-full object-cover border border-[#E7DADD]"
+                          className="w-9 h-9 rounded-full object-cover border border-[#E2E8F0]"
                         />
                       ) : (
-                        <div className="w-9 h-9 rounded-full bg-[#B76E79] text-white font-bold text-xs font-bold flex items-center justify-center">
+                        <div className="w-9 h-9 rounded-full bg-[#C2410C] text-white font-bold text-xs font-bold flex items-center justify-center">
                           {trainerInitials}
                         </div>
                       )}
                       <div>
-                        <div className="text-xs font-bold text-[#292524] flex items-center gap-1.5">
+                        <div className="text-xs font-bold text-[#111827] flex items-center gap-1.5">
                           <span>Trainer: {rev.trainerName}</span>
                         </div>
-                        <span className="text-[11px] text-[#57534E] font-medium">
+                        <span className="text-[11px] text-[#64748B] font-medium">
                           {rev.trainerSpecialization || 'Personal Fitness Coach'}
                         </span>
                       </div>
                     </div>
 
                     {rev.sessionMode && (
-                      <span className="text-[10px] uppercase tracking-wider font-extrabold px-2 py-1 bg-[#FFFFFF] text-[#B76E79] rounded-lg border border-[#E7DADD] shadow-2xs">
+                      <span className="text-[10px] uppercase tracking-wider font-extrabold px-2 py-1 bg-[#FFFFFF] text-[#EA580C] rounded-lg border border-[#E2E8F0] shadow-2xs">
                         {rev.sessionMode}
                       </span>
                     )}
                   </div>
 
                   {/* Customer Review Text */}
-                  <div className="bg-[#F3E8E8]/70 rounded-xl p-4 border border-[#E7DADD] text-[#292524] text-sm leading-relaxed italic relative">
-                    <span className="text-[#57534E] font-serif text-2xl absolute -top-1 left-2 select-none">“</span>
+                  <div className="bg-[#F8FAFC]/70 rounded-xl p-4 border border-[#E2E8F0] text-[#111827] text-sm leading-relaxed italic relative">
+                    <span className="text-[#64748B] font-serif text-2xl absolute -top-1 left-2 select-none">“</span>
                     <p className="pl-4 pr-1">{rev.review}</p>
                   </div>
 
                   {/* Card Footer */}
-                  <div className="flex items-center justify-between text-xs pt-1 border-t border-[#E7DADD] text-[#57534E]">
-                    <span className="flex items-center gap-1 text-[#B76E79] font-semibold">
+                  <div className="flex items-center justify-between text-xs pt-1 border-t border-[#E2E8F0] text-[#64748B]">
+                    <span className="flex items-center gap-1 text-[#EA580C] font-semibold">
                       <Award className="w-3.5 h-3.5" />
                       <span>Trainer Feedback</span>
                     </span>
                     {rev.bookingId ? (
-                      <span className="text-[#57534E] font-mono text-[11px]">ID: {rev.bookingId}</span>
+                      <span className="text-[#64748B] font-mono text-[11px]">ID: {rev.bookingId}</span>
                     ) : (
-                      <span className="text-[#57534E]">Verified Session</span>
+                      <span className="text-[#64748B]">Verified Session</span>
                     )}
                   </div>
                 </div>

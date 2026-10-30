@@ -9,10 +9,10 @@ import { exportToPDF } from '../../utils/export';
 import TrainerNavigationTabs from '../../components/GymAdmin/TrainerNavigationTabs';
 
 const STATUS_COLORS: Record<string, string> = {
-  Paid: 'bg-[#F3E8E8]/10 text-[#B76E79]',
+  Paid: 'bg-[#FFF7ED] text-[#EA580C]',
   Pending: 'bg-amber-100 text-amber-700',
   Failed: 'bg-red-100 text-red-700',
-  Cancelled: 'bg-[#F3E8E8] text-[#57534E]',
+  Cancelled: 'bg-[#F8FAFC] text-[#64748B]',
 };
 
 const STATUS_ICONS: Record<string, any> = {
@@ -139,12 +139,12 @@ const GymAdminTrainerPaymentHistory = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-[#292524]">Trainer Payment History</h1>
-          <p className="text-[#57534E] text-sm mt-1">Complete record of all trainer payments</p>
+          <h1 className="text-2xl font-bold text-[#111827]">Trainer Payment History</h1>
+          <p className="text-[#64748B] text-sm mt-1">Complete record of all trainer payments</p>
         </div>
-        <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-xl px-5 py-3 text-right">
-          <p className="text-xs text-[#57534E]">Total Paid Out</p>
-          <p className="text-xl font-bold text-[#B76E79]">₹{totalPaid.toLocaleString('en-IN')}</p>
+        <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-5 py-3 text-right">
+          <p className="text-xs text-[#64748B]">Total Paid Out</p>
+          <p className="text-xl font-bold text-[#EA580C]">₹{totalPaid.toLocaleString('en-IN')}</p>
         </div>
       </div>
 
@@ -152,18 +152,18 @@ const GymAdminTrainerPaymentHistory = () => {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-3">
           <div className="relative">
-            <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#57534E]" />
+            <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#64748B]" />
             <input
               type="text"
               placeholder="Search trainer..."
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className="pl-9 pr-4 py-2.5 border border-[#F3E8E8] rounded-xl text-sm outline-none focus:border-[#B76E79] focus:ring-1 focus:ring-[#B76E79]/30 w-48"
+              className="pl-9 pr-4 py-2.5 border border-[#F8FAFC] rounded-xl text-sm outline-none focus:border-[#FDBA74] focus:ring-1 focus:ring-[#F97316]/30 w-48"
             />
           </div>
-          <div className="flex items-center gap-2 bg-[#FFFFFF] border border-[#F3E8E8] rounded-xl px-3 py-2">
-            <Filter size={14} className="text-[#57534E]" />
-            <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)} className="text-sm outline-none bg-transparent text-[#57534E]">
+          <div className="flex items-center gap-2 bg-[#FFFFFF] border border-[#F8FAFC] rounded-xl px-3 py-2">
+            <Filter size={14} className="text-[#64748B]" />
+            <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)} className="text-sm outline-none bg-transparent text-[#64748B]">
               <option value="All">All Status</option>
               <option value="Paid">Paid</option>
               <option value="Pending">Pending</option>
@@ -171,9 +171,9 @@ const GymAdminTrainerPaymentHistory = () => {
               <option value="Cancelled">Cancelled</option>
             </select>
           </div>
-          <div className="flex items-center gap-2 bg-[#FFFFFF] border border-[#F3E8E8] rounded-xl px-3 py-2">
-            <Filter size={14} className="text-[#57534E]" />
-            <select value={methodFilter} onChange={e => setMethodFilter(e.target.value)} className="text-sm outline-none bg-transparent text-[#57534E]">
+          <div className="flex items-center gap-2 bg-[#FFFFFF] border border-[#F8FAFC] rounded-xl px-3 py-2">
+            <Filter size={14} className="text-[#64748B]" />
+            <select value={methodFilter} onChange={e => setMethodFilter(e.target.value)} className="text-sm outline-none bg-transparent text-[#64748B]">
               <option value="All">All Methods</option>
               <option value="Bank Transfer">Bank Transfer</option>
               <option value="UPI">UPI</option>
@@ -185,7 +185,7 @@ const GymAdminTrainerPaymentHistory = () => {
         <button
           onClick={handleDownloadAllPDF}
           disabled={filtered.length === 0}
-          className="inline-flex items-center gap-2 bg-[#B76E79] text-white font-bold px-4 py-2.5 rounded-xl text-sm font-semibold hover:bg-[#9F5965] transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+          className="inline-flex items-center gap-2 bg-[#C2410C] text-white font-bold px-4 py-2.5 rounded-xl text-sm font-semibold hover:bg-[#9A3412] transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
         >
           <Download size={15} />
           Download PDF
@@ -193,23 +193,23 @@ const GymAdminTrainerPaymentHistory = () => {
       </div>
 
       {/* Table */}
-      <div className="bg-[#FFFFFF] border border-[#F3E8E8] rounded-2xl overflow-hidden shadow-sm">
+      <div className="bg-[#FFFFFF] border border-[#F8FAFC] rounded-2xl overflow-hidden shadow-sm">
         {loading ? (
           <div className="flex items-center justify-center py-20">
-            <div className="w-8 h-8 border-4 border-[#B76E79] border-t-transparent rounded-full animate-spin" />
+            <div className="w-8 h-8 border-4 border-[#FDBA74] border-t-transparent rounded-full animate-spin" />
           </div>
         ) : filtered.length === 0 ? (
           <div className="text-center py-16 px-6">
-            <div className="w-16 h-16 rounded-full bg-[#F3E8E8] flex items-center justify-center mx-auto mb-4">
-              <History size={28} className="text-[#57534E]" />
+            <div className="w-16 h-16 rounded-full bg-[#F8FAFC] flex items-center justify-center mx-auto mb-4">
+              <History size={28} className="text-[#64748B]" />
             </div>
-            <p className="text-[#292524] font-bold text-lg">No payment records yet</p>
-            <p className="text-[#57534E] text-sm mt-2 max-w-sm mx-auto">
+            <p className="text-[#111827] font-bold text-lg">No payment records yet</p>
+            <p className="text-[#64748B] text-sm mt-2 max-w-sm mx-auto">
               Payment records appear here after you process trainer payments. Start by configuring trainer fees.
             </p>
             <Link
               to="/admin/trainer-fees/settings"
-              className="inline-flex items-center gap-2 mt-5 px-5 py-2.5 bg-[#B76E79] text-white font-bold rounded-xl text-sm font-bold hover:bg-[#9F5965] transition-colors shadow-lg shadow-[#B76E79]/15"
+              className="inline-flex items-center gap-2 mt-5 px-5 py-2.5 bg-[#C2410C] text-white font-bold rounded-xl text-sm font-bold hover:bg-[#9A3412] transition-colors shadow-lg shadow-orange-500/15"
             >
               Configure Trainer Fees
               <ArrowRight size={15} />
@@ -219,40 +219,40 @@ const GymAdminTrainerPaymentHistory = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead>
-                <tr className="bg-[#F3E8E8] border-b border-[#F3E8E8]">
-                  <th className="px-5 py-3.5 font-semibold text-[#57534E]">Date</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#57534E]">Trainer</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#57534E]">Training Type</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#57534E] text-right">Amount</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#57534E]">Payment Method</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#57534E]">Status</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#57534E] text-right">Actions</th>
+                <tr className="bg-[#F8FAFC] border-b border-[#F8FAFC]">
+                  <th className="px-5 py-3.5 font-semibold text-[#64748B]">Date</th>
+                  <th className="px-5 py-3.5 font-semibold text-[#64748B]">Trainer</th>
+                  <th className="px-5 py-3.5 font-semibold text-[#64748B]">Training Type</th>
+                  <th className="px-5 py-3.5 font-semibold text-[#64748B] text-right">Amount</th>
+                  <th className="px-5 py-3.5 font-semibold text-[#64748B]">Payment Method</th>
+                  <th className="px-5 py-3.5 font-semibold text-[#64748B]">Status</th>
+                  <th className="px-5 py-3.5 font-semibold text-[#64748B] text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#F3E8E8]">
+              <tbody className="divide-y divide-[#F8FAFC]">
                 {filtered.map(p => {
                   const Icon = STATUS_ICONS[p.paymentStatus] || Clock;
                   return (
-                    <tr key={p._id} className="hover:bg-[#F3E8E8] transition-colors">
-                      <td className="px-5 py-4 text-[#57534E] whitespace-nowrap">
+                    <tr key={p._id} className="hover:bg-[#FFF7ED] transition-colors">
+                      <td className="px-5 py-4 text-[#64748B] whitespace-nowrap">
                         {p.createdAt ? new Date(p.createdAt).toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }) : '-'}
                       </td>
                       <td className="px-5 py-4">
                         <div className="flex items-center gap-2.5">
-                          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#B76E79] to-[#9F5965] flex items-center justify-center text-[#FFFFFF] font-bold font-bold text-xs shrink-0">
+                          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#EA580C] to-[#C2410C] flex items-center justify-center text-[#FFFFFF] font-bold font-bold text-xs shrink-0">
                             {p.trainerId?.name?.[0] || 'T'}
                           </div>
-                          <span className="font-semibold text-[#292524]">{p.trainerId?.name || 'Unknown'}</span>
+                          <span className="font-semibold text-[#111827]">{p.trainerId?.name || 'Unknown'}</span>
                         </div>
                       </td>
-                      <td className="px-5 py-4 text-[#57534E]">{p.trainerFeeId?.trainingType || '-'}</td>
+                      <td className="px-5 py-4 text-[#64748B]">{p.trainerFeeId?.trainingType || '-'}</td>
                       <td className="px-5 py-4 text-right">
-                        <span className="font-bold text-[#292524] block">₹{p.amount?.toLocaleString('en-IN')}</span>
+                        <span className="font-bold text-[#111827] block">₹{p.amount?.toLocaleString('en-IN')}</span>
                       </td>
-                      <td className="px-5 py-4 text-[#57534E]">{p.paymentMethod}</td>
+                      <td className="px-5 py-4 text-[#64748B]">{p.paymentMethod}</td>
 
                       <td className="px-5 py-4">
-                        <span className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold w-fit ${STATUS_COLORS[p.paymentStatus] || 'bg-[#F3E8E8] text-[#57534E]'}`}>
+                        <span className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold w-fit ${STATUS_COLORS[p.paymentStatus] || 'bg-[#F8FAFC] text-[#64748B]'}`}>
                           <Icon size={12} />
                           {p.paymentStatus}
                         </span>
@@ -260,7 +260,7 @@ const GymAdminTrainerPaymentHistory = () => {
                       <td className="px-5 py-4 text-right">
                         <button
                           onClick={() => setSelectedPayment(p)}
-                          className="px-3 py-1.5 text-xs font-semibold text-[#9F5965] hover:bg-[#F3E8E8] rounded-lg transition-colors whitespace-nowrap cursor-pointer"
+                          className="px-3 py-1.5 text-xs font-semibold text-[#9A3412] hover:bg-[#FFF7ED] rounded-lg transition-colors whitespace-nowrap cursor-pointer"
                         >
                           View Details
                         </button>
@@ -277,67 +277,67 @@ const GymAdminTrainerPaymentHistory = () => {
       {/* Payment Details Modal */}
       {selectedPayment && (
         <div className="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-6 overflow-y-auto bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-[#FFFFFF] rounded-2xl shadow-xl w-full max-w-lg overflow-hidden border border-[#E7DADD] flex flex-col max-h-[calc(100vh-6rem)] mt-16 sm:mt-20 mb-12 shrink-0">
-            <div className="flex items-center justify-between p-4 border-b border-[#F3E8E8] bg-[#F3E8E8] shrink-0">
-              <h3 className="font-bold text-[#292524]">Payment Details</h3>
+          <div className="bg-[#FFFFFF] rounded-2xl shadow-xl w-full max-w-lg overflow-hidden border border-[#E2E8F0] flex flex-col max-h-[calc(100vh-6rem)] mt-16 sm:mt-20 mb-12 shrink-0">
+            <div className="flex items-center justify-between p-4 border-b border-[#F8FAFC] bg-[#F8FAFC] shrink-0">
+              <h3 className="font-bold text-[#111827]">Payment Details</h3>
               <button
                 onClick={() => setSelectedPayment(null)}
-                className="text-[#57534E] hover:text-[#FFFFFF] p-1.5 hover:bg-[#F3E8E8] rounded-lg transition-colors cursor-pointer"
+                className="text-[#64748B] hover:text-[#C2410C] p-1.5 hover:bg-[#FFF7ED] rounded-lg transition-colors cursor-pointer"
               >
                 <XCircle size={20} />
               </button>
             </div>
 
             <div className="p-5 space-y-4 overflow-y-auto flex-1">
-              <div className="bg-[#F3E8E8] p-4 rounded-xl border border-[#E7DADD]">
+              <div className="bg-[#F8FAFC] p-4 rounded-xl border border-[#E2E8F0]">
                 <div className="flex justify-between items-center">
-                  <span className="text-[#B76E79] text-sm font-semibold">Amount Paid</span>
-                  <span className="text-2xl font-black text-[#B76E79]">₹{selectedPayment.amount?.toLocaleString('en-IN')}</span>
+                  <span className="text-[#EA580C] text-sm font-semibold">Amount Paid</span>
+                  <span className="text-2xl font-black text-[#EA580C]">₹{selectedPayment.amount?.toLocaleString('en-IN')}</span>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
-                  <p className="text-[#57534E] mb-1">Trainer</p>
-                  <p className="font-semibold text-[#292524]">
+                  <p className="text-[#64748B] mb-1">Trainer</p>
+                  <p className="font-semibold text-[#111827]">
                     {selectedPayment.trainerId?.name || 'Unknown'}
                   </p>
                 </div>
                 <div>
-                  <p className="text-[#57534E] mb-1">Training Type</p>
-                  <p className="font-semibold text-[#292524]">{selectedPayment.trainerFeeId?.trainingType || '-'}</p>
+                  <p className="text-[#64748B] mb-1">Training Type</p>
+                  <p className="font-semibold text-[#111827]">{selectedPayment.trainerFeeId?.trainingType || '-'}</p>
                 </div>
                 <div>
-                  <p className="text-[#57534E] mb-1">Status</p>
-                  <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold w-fit ${STATUS_COLORS[selectedPayment.paymentStatus] || 'bg-[#F3E8E8] text-[#57534E]'}`}>
+                  <p className="text-[#64748B] mb-1">Status</p>
+                  <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold w-fit ${STATUS_COLORS[selectedPayment.paymentStatus] || 'bg-[#F8FAFC] text-[#64748B]'}`}>
                     {selectedPayment.paymentStatus}
                   </span>
                 </div>
                 <div>
-                  <p className="text-[#57534E] mb-1">Date</p>
-                  <p className="font-semibold text-[#292524]">
+                  <p className="text-[#64748B] mb-1">Date</p>
+                  <p className="font-semibold text-[#111827]">
                     {selectedPayment.paymentDate || selectedPayment.createdAt
                       ? new Date(selectedPayment.paymentDate || selectedPayment.createdAt).toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true })
                       : '-'}
                   </p>
                 </div>
                 <div>
-                  <p className="text-[#57534E] mb-1">Payment Method</p>
-                  <p className="font-semibold text-[#292524]">{selectedPayment.paymentMethod || '-'}</p>
+                  <p className="text-[#64748B] mb-1">Payment Method</p>
+                  <p className="font-semibold text-[#111827]">{selectedPayment.paymentMethod || '-'}</p>
                 </div>
                 <div>
-                  <p className="text-[#57534E] mb-1">Transaction ID</p>
-                  <p className="font-mono font-semibold text-[#292524]">{selectedPayment.transactionId || 'N/A'}</p>
+                  <p className="text-[#64748B] mb-1">Transaction ID</p>
+                  <p className="font-mono font-semibold text-[#111827]">{selectedPayment.transactionId || 'N/A'}</p>
                 </div>
               </div>
 
               {selectedPayment.paymentProof ? (
-                <div className="pt-3 border-t border-[#E7DADD]">
+                <div className="pt-3 border-t border-[#E2E8F0]">
                   <a
                     href={selectedPayment.paymentProof}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-[#F3E8E8] text-[#B76E79] text-sm font-bold rounded-lg hover:bg-[#F3E8E8] transition-colors"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-[#F8FAFC] text-[#EA580C] text-sm font-bold rounded-lg hover:bg-[#FFF7ED] transition-colors"
                   >
                     <FileText size={16} />
                     View Payment Proof
@@ -346,24 +346,24 @@ const GymAdminTrainerPaymentHistory = () => {
               ) : null}
 
               {selectedPayment.notes && (
-                <div className="pt-3 border-t border-[#E7DADD]">
-                  <p className="text-[#57534E] mb-1 text-sm">Notes</p>
-                  <p className="text-sm text-[#292524] bg-[#F3E8E8] p-3 rounded-lg border border-[#E7DADD]">{selectedPayment.notes}</p>
+                <div className="pt-3 border-t border-[#E2E8F0]">
+                  <p className="text-[#64748B] mb-1 text-sm">Notes</p>
+                  <p className="text-sm text-[#111827] bg-[#F8FAFC] p-3 rounded-lg border border-[#E2E8F0]">{selectedPayment.notes}</p>
                 </div>
               )}
             </div>
 
-            <div className="p-4 bg-[#F3E8E8] border-t border-[#F3E8E8] flex justify-end gap-3 shrink-0">
+            <div className="p-4 bg-[#F8FAFC] border-t border-[#F8FAFC] flex justify-end gap-3 shrink-0">
               <button
                 onClick={() => handleDownloadSinglePDF(selectedPayment)}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-[#B76E79] text-white font-bold rounded-xl text-sm font-bold hover:bg-[#9F5965] transition-colors shadow-sm cursor-pointer"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-[#C2410C] text-white font-bold rounded-xl text-sm font-bold hover:bg-[#9A3412] transition-colors shadow-sm cursor-pointer"
               >
                 <Download size={15} />
                 Download PDF
               </button>
               <button
                 onClick={() => setSelectedPayment(null)}
-                className="px-4 py-2 bg-[#FFFFFF] border border-[#F3E8E8] text-[#57534E] rounded-xl text-sm font-bold hover:bg-[#F3E8E8] transition-colors cursor-pointer"
+                className="px-4 py-2 bg-[#FFFFFF] border border-[#F8FAFC] text-[#64748B] rounded-xl text-sm font-bold hover:bg-[#FFF7ED] transition-colors cursor-pointer"
               >
                 Close
               </button>

@@ -161,7 +161,7 @@ export default function TrainerHiringRequests() {
         );
       case 'Confirmed':
         return (
-          <span className="px-2.5 py-1 bg-[#B76E79]/20 text-[#B76E79] border border-[#B76E79]/40 text-xs font-bold rounded-full flex items-center gap-1">
+          <span className="px-2.5 py-1 bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5] text-xs font-bold rounded-full flex items-center gap-1">
             <UserCheck className="w-3 h-3" />
             Employment Confirmed & Active
           </span>
@@ -188,8 +188,8 @@ export default function TrainerHiringRequests() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-[#292524] flex items-center gap-2.5">
-            <Briefcase className="w-7 h-7 text-[#B76E79]" />
+          <h1 className="text-2xl font-bold text-[#111827] flex items-center gap-2.5">
+            <Briefcase className="w-7 h-7 text-[#EA580C]" />
             Direct Hiring Proposals
           </h1>
           <p className="text-sm text-slate-400 mt-1">
@@ -206,8 +206,8 @@ export default function TrainerHiringRequests() {
             onClick={() => setStatusFilter(status)}
             className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
               statusFilter === status
-                ? 'bg-[#B76E79] text-white shadow-md shadow-[#B76E79]/20'
-                : 'bg-[#F3E8E8] text-slate-400 hover:text-white border border-[#E7DADD]'
+                ? 'bg-[#C2410C] text-white shadow-md shadow-orange-500/15'
+                : 'bg-[#F8FAFC] text-[#64748B] hover:text-[#C2410C] border border-[#E2E8F0]'
             }`}
           >
             {status === 'ALL' ? `All Requests (${requests.length})` : status}
@@ -217,14 +217,14 @@ export default function TrainerHiringRequests() {
 
       {/* Content */}
       {loading ? (
-        <div className="p-16 text-center text-slate-400 bg-[#F3E8E8] rounded-2xl border border-[#E7DADD]">
-          <div className="inline-block animate-spin w-8 h-8 border-4 border-[#B76E79] border-t-transparent rounded-full mb-3" />
+        <div className="p-16 text-center text-slate-400 bg-[#F8FAFC] rounded-2xl border border-[#E2E8F0]">
+          <div className="inline-block animate-spin w-8 h-8 border-4 border-[#FDBA74] border-t-transparent rounded-full mb-3" />
           <p className="text-sm">Loading your direct hiring proposals...</p>
         </div>
       ) : filteredRequests.length === 0 ? (
-        <div className="p-16 text-center bg-[#F3E8E8] rounded-2xl border border-[#E7DADD]">
-          <Building2 className="w-12 h-12 text-[#B76E79]/40 mx-auto mb-3" />
-          <h3 className="text-lg font-bold text-[#292524] mb-1">No hiring requests found</h3>
+        <div className="p-16 text-center bg-[#F8FAFC] rounded-2xl border border-[#E2E8F0]">
+          <Building2 className="w-12 h-12 text-[#EA580C]/40 mx-auto mb-3" />
+          <h3 className="text-lg font-bold text-[#111827] mb-1">No hiring requests found</h3>
           <p className="text-sm text-slate-400 max-w-md mx-auto">
             When gym owners discover your profile and wish to hire you directly, their formal compensation offers and job terms will appear here.
           </p>
@@ -236,33 +236,33 @@ export default function TrainerHiringRequests() {
             return (
               <div
                 key={req._id}
-                className={`bg-[#F3E8E8] border rounded-2xl p-5 transition-all ${
+                className={`bg-[#F8FAFC] border rounded-2xl p-5 transition-all ${
                   req.status === 'Pending'
                     ? 'border-amber-500/30'
                     : req.status === 'Confirmed'
-                    ? 'border-[#B76E79]/40'
-                    : 'border-[#E7DADD]'
+                    ? 'border-[#FFEDD5]'
+                    : 'border-[#E2E8F0]'
                 }`}
               >
                 <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                   {/* Gym & Role Info */}
                   <div className="flex items-start gap-4">
-                    <div className="w-13 h-13 rounded-2xl bg-[#FFFFFF] border border-[#E7DADD] flex items-center justify-center text-xl font-bold text-[#B76E79] shrink-0">
+                    <div className="w-13 h-13 rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0] flex items-center justify-center text-xl font-bold text-[#EA580C] shrink-0">
                       <Building2 className="w-6 h-6" />
                     </div>
 
                     <div>
                       <div className="flex items-center gap-2.5 flex-wrap">
-                        <h3 className="text-base font-bold text-[#292524]">
+                        <h3 className="text-base font-bold text-[#111827]">
                           {req.gymName || (req.gymId as any)?.name || 'Gym'}
                         </h3>
                         {getStatusBadge(req.status)}
                       </div>
 
                       <div className="flex items-center gap-2 mt-1 text-xs text-slate-400 flex-wrap">
-                        <span className="font-semibold text-[#B76E79] text-sm">{req.role}</span>
+                        <span className="font-semibold text-[#EA580C] text-sm">{req.role}</span>
                         <span>•</span>
-                        <span className="px-2 py-0.5 rounded-md bg-[#FFFFFF] border border-[#E7DADD] text-slate-300">
+                        <span className="px-2 py-0.5 rounded-md bg-[#FFFFFF] border border-[#E2E8F0] text-slate-300">
                           {req.employmentType}
                         </span>
                         <span>•</span>
@@ -288,24 +288,24 @@ export default function TrainerHiringRequests() {
                   </div>
 
                   {/* Compensation Breakdown */}
-                  <div className="bg-[#FFFFFF] p-3.5 rounded-xl border border-[#E7DADD] flex flex-wrap sm:flex-nowrap items-center gap-4 lg:min-w-[320px]">
+                  <div className="bg-[#FFFFFF] p-3.5 rounded-xl border border-[#E2E8F0] flex flex-wrap sm:flex-nowrap items-center gap-4 lg:min-w-[320px]">
                     <div className="flex-1">
                       <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider block">
                         Monthly Salary
                       </span>
-                      <span className="text-base font-bold text-white font-mono flex items-center gap-0.5">
+                      <span className="text-base font-bold text-[#111827] font-mono flex items-center gap-0.5">
                         ₹{req.offeredCompensation?.toLocaleString()}
                         <span className="text-[10px] text-slate-400 font-normal">/mo</span>
                       </span>
                     </div>
 
-                    <div className="w-px h-8 bg-[#E7DADD] hidden sm:block" />
+                    <div className="w-px h-8 bg-[#E2E8F0] hidden sm:block" />
 
                     <div className="flex-1">
                       <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider block">
                         PT Session Fee
                       </span>
-                      <span className="text-base font-bold text-[#B76E79] font-mono flex items-center gap-0.5">
+                      <span className="text-base font-bold text-[#EA580C] font-mono flex items-center gap-0.5">
                         ₹{(req.personalTrainingFee || 0).toLocaleString()}
                         <span className="text-[10px] text-slate-400 font-normal">/session</span>
                       </span>
@@ -319,9 +319,9 @@ export default function TrainerHiringRequests() {
                         setSelectedReq(req);
                         setDetailsModalOpen(true);
                       }}
-                      className="px-3.5 py-2 bg-[#FFFFFF] hover:bg-[#F3E8E8] text-slate-200 border border-[#E7DADD] rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all"
+                      className="px-3.5 py-2 bg-[#FFFFFF] hover:bg-[#FFF7ED] text-slate-200 border border-[#E2E8F0] rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all"
                     >
-                      <MessageSquare className="w-3.5 h-3.5 text-[#B76E79]" />
+                      <MessageSquare className="w-3.5 h-3.5 text-[#EA580C]" />
                       View Details
                     </button>
 
@@ -371,7 +371,7 @@ export default function TrainerHiringRequests() {
 
                     {req.status === 'Confirmed' && (
                       <span className="px-3 py-1.5 bg-teal-500/10 text-teal-300 border border-teal-500/30 text-xs font-semibold rounded-xl flex items-center gap-1.5">
-                        <ShieldCheck className="w-4 h-4 text-[#B76E79]" />
+                        <ShieldCheck className="w-4 h-4 text-[#EA580C]" />
                         Active Coaching Post
                       </span>
                     )}
@@ -379,7 +379,7 @@ export default function TrainerHiringRequests() {
                 </div>
 
                 {req.message && (
-                  <div className="mt-3 text-xs text-slate-300 bg-[#FFFFFF] p-3 rounded-xl border border-[#E7DADD] italic">
+                  <div className="mt-3 text-xs text-slate-300 bg-[#FFFFFF] p-3 rounded-xl border border-[#E2E8F0] italic">
                     <span className="font-semibold text-slate-400 not-italic block mb-0.5">Message from Gym Owner:</span>
                     "{req.message}"
                   </div>
@@ -393,21 +393,21 @@ export default function TrainerHiringRequests() {
       {/* Details & Negotiation History Modal */}
       {detailsModalOpen && selectedReq && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-2xl max-w-2xl w-full p-6 text-white shadow-2xl relative max-h-[85vh] overflow-y-auto">
-            <div className="flex items-center justify-between pb-4 border-b border-[#E7DADD]">
+          <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl max-w-2xl w-full p-6 text-[#1F2937] shadow-2xl relative max-h-[85vh] overflow-y-auto">
+            <div className="flex items-center justify-between pb-4 border-b border-[#E2E8F0]">
               <div>
-                <h3 className="text-lg font-bold text-[#292524] flex items-center gap-2">
+                <h3 className="text-lg font-bold text-[#111827] flex items-center gap-2">
                   <span>Hiring Offer from {selectedReq.gymName}</span>
                 </h3>
-                <span className="text-xs text-[#B76E79] font-semibold">{selectedReq.role}</span>
+                <span className="text-xs text-[#EA580C] font-semibold">{selectedReq.role}</span>
               </div>
-              <button onClick={() => setDetailsModalOpen(false)} className="text-slate-400 hover:text-white">
+              <button onClick={() => setDetailsModalOpen(false)} className="text-[#64748B] hover:text-[#C2410C]">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             <div className="space-y-4 py-4 text-xs">
-              <div className="grid grid-cols-2 gap-3 bg-[#FFFFFF] p-4 rounded-xl border border-[#E7DADD]">
+              <div className="grid grid-cols-2 gap-3 bg-[#FFFFFF] p-4 rounded-xl border border-[#E2E8F0]">
                 <div>
                   <span className="text-slate-500 block">Status:</span>
                   <div className="mt-1">{getStatusBadge(selectedReq.status)}</div>
@@ -424,7 +424,7 @@ export default function TrainerHiringRequests() {
                 </div>
                 <div>
                   <span className="text-slate-500 block">PT Session Fee:</span>
-                  <span className="font-bold text-[#B76E79] font-mono mt-1 block">
+                  <span className="font-bold text-[#EA580C] font-mono mt-1 block">
                     ₹{(selectedReq.personalTrainingFee || 0).toLocaleString()} / session
                   </span>
                 </div>
@@ -440,7 +440,7 @@ export default function TrainerHiringRequests() {
 
               <div>
                 <h4 className="font-bold text-slate-300 mb-1">Responsibilities</h4>
-                <p className="bg-[#FFFFFF] p-3 rounded-xl border border-[#E7DADD] text-slate-300 whitespace-pre-line">
+                <p className="bg-[#FFFFFF] p-3 rounded-xl border border-[#E2E8F0] text-slate-300 whitespace-pre-line">
                   {selectedReq.jobResponsibilities}
                 </p>
               </div>
@@ -448,7 +448,7 @@ export default function TrainerHiringRequests() {
               {selectedReq.additionalTerms && (
                 <div>
                   <h4 className="font-bold text-slate-300 mb-1">Terms & Conditions</h4>
-                  <p className="bg-[#FFFFFF] p-3 rounded-xl border border-[#E7DADD] text-slate-300">
+                  <p className="bg-[#FFFFFF] p-3 rounded-xl border border-[#E2E8F0] text-slate-300">
                     {selectedReq.additionalTerms}
                   </p>
                 </div>
@@ -456,13 +456,13 @@ export default function TrainerHiringRequests() {
 
               {/* Negotiation History */}
               <div className="pt-2">
-                <h4 className="font-bold text-[#292524] mb-2 flex items-center gap-1.5">
-                  <MessageSquare className="w-4 h-4 text-[#B76E79]" />
+                <h4 className="font-bold text-[#111827] mb-2 flex items-center gap-1.5">
+                  <MessageSquare className="w-4 h-4 text-[#EA580C]" />
                   Negotiation History
                 </h4>
 
                 {(!selectedReq.negotiationHistory || selectedReq.negotiationHistory.length === 0) ? (
-                  <p className="text-slate-500 italic bg-[#FFFFFF] p-3 rounded-xl border border-[#E7DADD]">
+                  <p className="text-slate-500 italic bg-[#FFFFFF] p-3 rounded-xl border border-[#E2E8F0]">
                     No counter negotiations yet.
                   </p>
                 ) : (
@@ -509,10 +509,10 @@ export default function TrainerHiringRequests() {
               </div>
             </div>
 
-            <div className="flex justify-end pt-3 border-t border-[#E7DADD]">
+            <div className="flex justify-end pt-3 border-t border-[#E2E8F0]">
               <button
                 onClick={() => setDetailsModalOpen(false)}
-                className="px-4 py-2 bg-[#FFFFFF] text-slate-300 rounded-xl text-xs font-semibold hover:bg-[#F3E8E8]"
+                className="px-4 py-2 bg-[#FFFFFF] text-slate-300 rounded-xl text-xs font-semibold hover:bg-[#FFF7ED]"
               >
                 Close
               </button>
@@ -524,13 +524,13 @@ export default function TrainerHiringRequests() {
       {/* Trainer Negotiation Modal */}
       {negotiateModalOpen && selectedReq && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#F3E8E8] border border-purple-500/40 rounded-2xl max-w-xl w-full p-6 text-white shadow-2xl relative">
-            <div className="flex items-center justify-between pb-4 border-b border-[#E7DADD]">
+          <div className="bg-[#F8FAFC] border border-purple-500/40 rounded-2xl max-w-xl w-full p-6 text-[#1F2937] shadow-2xl relative">
+            <div className="flex items-center justify-between pb-4 border-b border-[#E2E8F0]">
               <div className="flex items-center gap-2">
                 <Sparkles className="w-6 h-6 text-purple-400" />
                 <h3 className="text-lg font-bold">Propose Counter-Terms to {selectedReq.gymName}</h3>
               </div>
-              <button onClick={() => setNegotiateModalOpen(false)} className="text-slate-400 hover:text-white">
+              <button onClick={() => setNegotiateModalOpen(false)} className="text-[#64748B] hover:text-[#C2410C]">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -538,7 +538,7 @@ export default function TrainerHiringRequests() {
             {actionSuccessMsg ? (
               <div className="py-8 text-center space-y-3">
                 <CheckCircle2 className="w-12 h-12 text-purple-400 mx-auto" />
-                <h4 className="text-lg font-bold text-[#292524]">{actionSuccessMsg}</h4>
+                <h4 className="text-lg font-bold text-[#111827]">{actionSuccessMsg}</h4>
               </div>
             ) : (
               <form
@@ -563,7 +563,7 @@ export default function TrainerHiringRequests() {
                       value={counterSalary}
                       onChange={(e) => setCounterSalary(e.target.value)}
                       required
-                      className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-white text-sm focus:border-purple-400"
+                      className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-white text-sm focus:border-purple-400"
                     />
                   </div>
                   <div>
@@ -575,7 +575,7 @@ export default function TrainerHiringRequests() {
                       value={counterPtFee}
                       onChange={(e) => setCounterPtFee(e.target.value)}
                       placeholder="e.g. 750"
-                      className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-white text-sm focus:border-purple-400"
+                      className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-white text-sm focus:border-purple-400"
                     />
                   </div>
                 </div>
@@ -589,7 +589,7 @@ export default function TrainerHiringRequests() {
                     value={counterTerms}
                     onChange={(e) => setCounterTerms(e.target.value)}
                     placeholder="e.g. Can commit to 6 hours daily, prefer afternoon batch..."
-                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-white text-sm focus:border-purple-400"
+                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-white text-sm focus:border-purple-400"
                   />
                 </div>
 
@@ -602,7 +602,7 @@ export default function TrainerHiringRequests() {
                     value={counterMessage}
                     onChange={(e) => setCounterMessage(e.target.value)}
                     placeholder="Share your reasoning or request clarifications..."
-                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-white text-sm focus:border-purple-400"
+                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-white text-sm focus:border-purple-400"
                   />
                 </div>
 
@@ -610,7 +610,7 @@ export default function TrainerHiringRequests() {
                   <button
                     type="button"
                     onClick={() => setNegotiateModalOpen(false)}
-                    className="px-4 py-2 bg-[#FFFFFF] text-slate-300 rounded-xl text-xs font-semibold hover:bg-[#F3E8E8]"
+                    className="px-4 py-2 bg-[#FFFFFF] text-slate-300 rounded-xl text-xs font-semibold hover:bg-[#FFF7ED]"
                   >
                     Cancel
                   </button>
@@ -632,13 +632,13 @@ export default function TrainerHiringRequests() {
       {/* Decline Modal */}
       {declineModalOpen && selectedReq && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#F3E8E8] border border-rose-500/40 rounded-2xl max-w-md w-full p-6 text-white shadow-2xl relative">
-            <div className="flex items-center justify-between pb-3 border-b border-[#E7DADD]">
-              <h3 className="text-base font-bold text-[#292524] flex items-center gap-2">
-                <XCircle className="w-5 h-5 text-rose-400" />
+          <div className="bg-[#F8FAFC] border border-rose-500/40 rounded-2xl max-w-md w-full p-6 text-[#1F2937] shadow-2xl relative">
+            <div className="flex items-center justify-between pb-3 border-b border-[#E2E8F0]">
+              <h3 className="text-base font-bold text-[#111827] flex items-center gap-2">
+                <XCircle className="w-5 h-5 text-[#B91C1C]" />
                 Decline Hiring Request
               </h3>
-              <button onClick={() => setDeclineModalOpen(false)} className="text-slate-400 hover:text-white">
+              <button onClick={() => setDeclineModalOpen(false)} className="text-[#64748B] hover:text-[#C2410C]">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -657,16 +657,16 @@ export default function TrainerHiringRequests() {
                   value={declineReason}
                   onChange={(e) => setDeclineReason(e.target.value)}
                   placeholder="e.g. Already committed to another gym, schedule clash..."
-                  className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-white text-xs focus:border-rose-400"
+                  className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-white text-xs focus:border-rose-400"
                 />
               </div>
             </div>
 
-            <div className="flex justify-end gap-3 pt-3 border-t border-[#E7DADD]">
+            <div className="flex justify-end gap-3 pt-3 border-t border-[#E2E8F0]">
               <button
                 type="button"
                 onClick={() => setDeclineModalOpen(false)}
-                className="px-4 py-2 bg-[#FFFFFF] text-slate-300 rounded-xl text-xs font-semibold hover:bg-[#F3E8E8]"
+                className="px-4 py-2 bg-[#FFFFFF] text-slate-300 rounded-xl text-xs font-semibold hover:bg-[#FFF7ED]"
               >
                 Cancel
               </button>

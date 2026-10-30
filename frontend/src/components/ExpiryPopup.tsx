@@ -42,18 +42,18 @@ export const ExpiryPopup: React.FC = () => {
         <div className="absolute top-0 left-0 w-full h-1 bg-red-500"></div>
         <button 
           onClick={() => setShowPopup(false)}
-          className="absolute top-3 right-3 text-[#57534E] hover:text-[#292524] transition-colors"
+          className="absolute top-3 right-3 text-[#64748B] hover:text-[#111827] transition-colors"
         >
           <X size={16} />
         </button>
         
         <div className="flex items-start gap-3 mt-1">
           <div className="p-2 bg-red-50 rounded-lg shrink-0">
-            <Clock className="text-[#F3E8E8]" size={24} />
+            <Clock className="text-[#F8FAFC]" size={24} />
           </div>
           <div>
-            <h3 className="font-bold text-[#292524] text-sm">Plan Expiring Soon</h3>
-            <p className="text-sm text-[#292524] mt-1 leading-snug">
+            <h3 className="font-bold text-[#111827] text-sm">Plan Expiring Soon</h3>
+            <p className="text-sm text-[#111827] mt-1 leading-snug">
               Your <span className="font-semibold">{user?.subscriptionPlan}</span> plan expires in {timeLeftStr}. Please renew to avoid interruption.
             </p>
           </div>

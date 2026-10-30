@@ -34,21 +34,21 @@ const SuperAdminPortalLanding = () => {
   const WorkflowModal = () => (
     <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/75 backdrop-blur-sm px-2 py-6" onClick={() => setShowWorkflow(false)}>
       <div
-        className="relative w-full max-w-3xl max-h-[92vh] overflow-y-auto bg-[#F3E8E8] border border-[#E7DADD] rounded-2xl shadow-2xl shadow-black/60"
+        className="relative w-full max-w-3xl max-h-[92vh] overflow-y-auto bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl shadow-2xl shadow-black/60"
         onClick={e => e.stopPropagation()}
       >
         {/* Modal Header */}
-        <div className="sticky top-0 z-10 flex items-center justify-between px-5 py-4 bg-[#F3E8E8] border-b border-[#E7DADD]">
+        <div className="sticky top-0 z-10 flex items-center justify-between px-5 py-4 bg-[#F8FAFC] border-b border-[#E2E8F0]">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-[#B76E79]/10 border border-[#B76E79]/30 rounded-lg flex items-center justify-center">
-              <GitBranch size={16} className="text-[#B76E79]" />
+            <div className="w-8 h-8 bg-[#FFF7ED] border border-[#FFEDD5] rounded-lg flex items-center justify-center">
+              <GitBranch size={16} className="text-[#EA580C]" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-[#292524]">Super Admin Platform Workflow</h2>
-              <p className="text-xs text-[#57534E]">End-to-end administrative governance flowchart</p>
+              <h2 className="text-base font-bold text-[#111827]">Super Admin Platform Workflow</h2>
+              <p className="text-xs text-[#64748B]">End-to-end administrative governance flowchart</p>
             </div>
           </div>
-          <button onClick={() => setShowWorkflow(false)} className="w-8 h-8 flex items-center justify-center rounded-lg bg-[#F3E8E8] hover:bg-[#E7DADD] text-[#57534E] hover:text-[#292524] transition-all">
+          <button onClick={() => setShowWorkflow(false)} className="w-8 h-8 flex items-center justify-center rounded-lg bg-[#F8FAFC] hover:bg-[#E2E8F0] text-[#64748B] hover:text-[#111827] transition-all">
             <X size={16} />
           </button>
         </div>
@@ -58,7 +58,7 @@ const SuperAdminPortalLanding = () => {
           <svg viewBox="0 0 680 830" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', maxWidth: '680px', minWidth: '580px', display: 'block' }}>
             <defs>
               <marker id="wf-arr" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
-                <polygon points="0 0, 9 3.5, 0 7" fill="#B76E79" />
+                <polygon points="0 0, 9 3.5, 0 7" fill="#F97316" />
               </marker>
               <marker id="wf-arrG" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
                 <polygon points="0 0, 9 3.5, 0 7" fill="#15803D" />
@@ -69,40 +69,40 @@ const SuperAdminPortalLanding = () => {
             </defs>
 
             {/* ── START ── */}
-            <ellipse cx="340" cy="30" rx="72" ry="20" fill="#F3E8E8" stroke="#B76E79" strokeWidth="2" />
-            <text x="340" y="35" textAnchor="middle" fill="#B76E79" fontSize="13" fontWeight="800" fontFamily="ui-sans-serif,sans-serif">START</text>
+            <ellipse cx="340" cy="30" rx="72" ry="20" fill="#F8FAFC" stroke="#F97316" strokeWidth="2" />
+            <text x="340" y="35" textAnchor="middle" fill="#F97316" fontSize="13" fontWeight="800" fontFamily="ui-sans-serif,sans-serif">START</text>
 
             {/* arrow */}
-            <line x1="340" y1="50" x2="340" y2="68" stroke="#B76E79" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
+            <line x1="340" y1="50" x2="340" y2="68" stroke="#F97316" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
 
             {/* ── Box 1: Visit Portal ── */}
-            <rect x="180" y="68" width="320" height="46" rx="8" fill="#FFFFFF" stroke="#E7DADD" strokeWidth="1.5" />
-            <text x="340" y="87" textAnchor="middle" fill="#292524" fontSize="12" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Visit Super Admin</text>
-            <text x="340" y="103" textAnchor="middle" fill="#57534E" fontSize="10" fontFamily="ui-sans-serif,sans-serif">/portal/super-admin</text>
+            <rect x="180" y="68" width="320" height="46" rx="8" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1.5" />
+            <text x="340" y="87" textAnchor="middle" fill="#111827" fontSize="12" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Visit Super Admin</text>
+            <text x="340" y="103" textAnchor="middle" fill="#64748B" fontSize="10" fontFamily="ui-sans-serif,sans-serif">/portal/super-admin</text>
 
             {/* arrow */}
-            <line x1="340" y1="114" x2="340" y2="132" stroke="#B76E79" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
+            <line x1="340" y1="114" x2="340" y2="132" stroke="#F97316" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
 
             {/* ── Box 2: Click Login ── */}
-            <rect x="180" y="132" width="320" height="46" rx="8" fill="#FFFFFF" stroke="#E7DADD" strokeWidth="1.5" />
-            <text x="340" y="151" textAnchor="middle" fill="#292524" fontSize="12" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Click "Super Admin Login"</text>
-            <text x="340" y="167" textAnchor="middle" fill="#57534E" fontSize="10" fontFamily="ui-sans-serif,sans-serif">Redirects to /login?portal=super-admin</text>
+            <rect x="180" y="132" width="320" height="46" rx="8" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1.5" />
+            <text x="340" y="151" textAnchor="middle" fill="#111827" fontSize="12" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Click "Super Admin Login"</text>
+            <text x="340" y="167" textAnchor="middle" fill="#64748B" fontSize="10" fontFamily="ui-sans-serif,sans-serif">Redirects to /login?portal=super-admin</text>
 
             {/* arrow */}
-            <line x1="340" y1="178" x2="340" y2="196" stroke="#B76E79" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
+            <line x1="340" y1="178" x2="340" y2="196" stroke="#F97316" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
 
             {/* ── Box 3: Enter Credentials ── */}
-            <rect x="180" y="196" width="320" height="46" rx="8" fill="#FFFFFF" stroke="#E7DADD" strokeWidth="1.5" />
-            <text x="340" y="215" textAnchor="middle" fill="#292524" fontSize="12" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Enter Credentials + MFA</text>
-            <text x="340" y="231" textAnchor="middle" fill="#57534E" fontSize="10" fontFamily="ui-sans-serif,sans-serif">JWT token verification &amp; session claim</text>
+            <rect x="180" y="196" width="320" height="46" rx="8" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1.5" />
+            <text x="340" y="215" textAnchor="middle" fill="#111827" fontSize="12" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Enter Credentials + MFA</text>
+            <text x="340" y="231" textAnchor="middle" fill="#64748B" fontSize="10" fontFamily="ui-sans-serif,sans-serif">JWT token verification &amp; session claim</text>
 
             {/* arrow */}
-            <line x1="340" y1="242" x2="340" y2="260" stroke="#B76E79" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
+            <line x1="340" y1="242" x2="340" y2="260" stroke="#F97316" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
 
             {/* ── Decision Diamond: SUPER_ADMIN Role? ── */}
-            <polygon points="340,260 460,305 340,350 220,305" fill="#F3E8E8" stroke="#B76E79" strokeWidth="2" />
-            <text x="340" y="300" textAnchor="middle" fill="#B76E79" fontSize="11" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">SUPER_ADMIN</text>
-            <text x="340" y="316" textAnchor="middle" fill="#B76E79" fontSize="11" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Role Valid?</text>
+            <polygon points="340,260 460,305 340,350 220,305" fill="#F8FAFC" stroke="#F97316" strokeWidth="2" />
+            <text x="340" y="300" textAnchor="middle" fill="#F97316" fontSize="11" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">SUPER_ADMIN</text>
+            <text x="340" y="316" textAnchor="middle" fill="#F97316" fontSize="11" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Role Valid?</text>
 
             {/* YES — down */}
             <line x1="340" y1="350" x2="340" y2="380" stroke="#15803D" strokeWidth="1.5" markerEnd="url(#wf-arrG)" />
@@ -116,94 +116,94 @@ const SuperAdminPortalLanding = () => {
             <text x="589" y="316" textAnchor="middle" fill="#B91C1C" fontSize="9" fontFamily="ui-sans-serif,sans-serif">403 Forbidden</text>
 
             {/* ── Dashboard (highlighted) ── */}
-            <rect x="140" y="380" width="400" height="52" rx="10" fill="#F3E8E8" stroke="#B76E79" strokeWidth="2.5" />
-            <text x="340" y="403" textAnchor="middle" fill="#B76E79" fontSize="13" fontWeight="800" fontFamily="ui-sans-serif,sans-serif">Super Admin Dashboard</text>
-            <text x="340" y="421" textAnchor="middle" fill="#57534E" fontSize="10" fontFamily="ui-sans-serif,sans-serif">Tenant Cockpit · Global Metrics · System Governance</text>
+            <rect x="140" y="380" width="400" height="52" rx="10" fill="#F8FAFC" stroke="#F97316" strokeWidth="2.5" />
+            <text x="340" y="403" textAnchor="middle" fill="#F97316" fontSize="13" fontWeight="800" fontFamily="ui-sans-serif,sans-serif">Super Admin Dashboard</text>
+            <text x="340" y="421" textAnchor="middle" fill="#64748B" fontSize="10" fontFamily="ui-sans-serif,sans-serif">Tenant Cockpit · Global Metrics · System Governance</text>
 
             {/* ── Branch lines from Dashboard to 4 Modules ── */}
-            <line x1="340" y1="432" x2="340" y2="452" stroke="#B76E79" strokeWidth="1.5" />
+            <line x1="340" y1="432" x2="340" y2="452" stroke="#F97316" strokeWidth="1.5" />
             {/* Horizontal bus line across columns */}
-            <line x1="85" y1="452" x2="595" y2="452" stroke="#B76E79" strokeWidth="1.5" />
+            <line x1="85" y1="452" x2="595" y2="452" stroke="#F97316" strokeWidth="1.5" />
             {/* 4 verticals to Level 1 module boxes */}
-            <line x1="85"  y1="452" x2="85"  y2="476" stroke="#B76E79" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
-            <line x1="255" y1="452" x2="255" y2="476" stroke="#B76E79" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
-            <line x1="425" y1="452" x2="425" y2="476" stroke="#B76E79" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
-            <line x1="595" y1="452" x2="595" y2="476" stroke="#B76E79" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
+            <line x1="85"  y1="452" x2="85"  y2="476" stroke="#F97316" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
+            <line x1="255" y1="452" x2="255" y2="476" stroke="#F97316" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
+            <line x1="425" y1="452" x2="425" y2="476" stroke="#F97316" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
+            <line x1="595" y1="452" x2="595" y2="476" stroke="#F97316" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
 
             {/* ════ LEVEL 1: MODULE HEADERS ════ */}
             {/* Col 1 */}
-            <rect x="17"  y="476" width="136" height="44" rx="8" fill="#FFFFFF" stroke="#E7DADD" strokeWidth="1.5" />
-            <text x="85"  y="495" textAnchor="middle" fill="#292524" fontSize="10" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Gym Tenant</text>
-            <text x="85"  y="509" textAnchor="middle" fill="#57534E" fontSize="9"  fontFamily="ui-sans-serif,sans-serif">Management</text>
+            <rect x="17"  y="476" width="136" height="44" rx="8" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1.5" />
+            <text x="85"  y="495" textAnchor="middle" fill="#111827" fontSize="10" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Gym Tenant</text>
+            <text x="85"  y="509" textAnchor="middle" fill="#64748B" fontSize="9"  fontFamily="ui-sans-serif,sans-serif">Management</text>
 
             {/* Col 2 */}
-            <rect x="187" y="476" width="136" height="44" rx="8" fill="#FFFFFF" stroke="#E7DADD" strokeWidth="1.5" />
-            <text x="255" y="495" textAnchor="middle" fill="#292524" fontSize="10" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Subscription</text>
-            <text x="255" y="509" textAnchor="middle" fill="#57534E" fontSize="9"  fontFamily="ui-sans-serif,sans-serif">&amp; Billing</text>
+            <rect x="187" y="476" width="136" height="44" rx="8" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1.5" />
+            <text x="255" y="495" textAnchor="middle" fill="#111827" fontSize="10" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Subscription</text>
+            <text x="255" y="509" textAnchor="middle" fill="#64748B" fontSize="9"  fontFamily="ui-sans-serif,sans-serif">&amp; Billing</text>
 
             {/* Col 3 */}
-            <rect x="357" y="476" width="136" height="44" rx="8" fill="#FFFFFF" stroke="#E7DADD" strokeWidth="1.5" />
-            <text x="425" y="495" textAnchor="middle" fill="#292524" fontSize="10" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">User &amp; Trainer</text>
-            <text x="425" y="509" textAnchor="middle" fill="#57534E" fontSize="9"  fontFamily="ui-sans-serif,sans-serif">Oversight</text>
+            <rect x="357" y="476" width="136" height="44" rx="8" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1.5" />
+            <text x="425" y="495" textAnchor="middle" fill="#111827" fontSize="10" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">User &amp; Trainer</text>
+            <text x="425" y="509" textAnchor="middle" fill="#64748B" fontSize="9"  fontFamily="ui-sans-serif,sans-serif">Oversight</text>
 
             {/* Col 4 */}
-            <rect x="527" y="476" width="136" height="44" rx="8" fill="#FFFFFF" stroke="#E7DADD" strokeWidth="1.5" />
-            <text x="595" y="495" textAnchor="middle" fill="#292524" fontSize="10" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Security &amp;</text>
-            <text x="595" y="509" textAnchor="middle" fill="#57534E" fontSize="9"  fontFamily="ui-sans-serif,sans-serif">Governance</text>
+            <rect x="527" y="476" width="136" height="44" rx="8" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1.5" />
+            <text x="595" y="495" textAnchor="middle" fill="#111827" fontSize="10" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Security &amp;</text>
+            <text x="595" y="509" textAnchor="middle" fill="#64748B" fontSize="9"  fontFamily="ui-sans-serif,sans-serif">Governance</text>
 
             {/* Down arrows from Level 1 to Level 2 */}
-            <line x1="85"  y1="520" x2="85"  y2="542" stroke="#B76E79" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
-            <line x1="255" y1="520" x2="255" y2="542" stroke="#B76E79" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
-            <line x1="425" y1="520" x2="425" y2="542" stroke="#B76E79" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
-            <line x1="595" y1="520" x2="595" y2="542" stroke="#B76E79" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
+            <line x1="85"  y1="520" x2="85"  y2="542" stroke="#F97316" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
+            <line x1="255" y1="520" x2="255" y2="542" stroke="#F97316" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
+            <line x1="425" y1="520" x2="425" y2="542" stroke="#F97316" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
+            <line x1="595" y1="520" x2="595" y2="542" stroke="#F97316" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
 
             {/* ════ LEVEL 2: OPERATIONS ════ */}
             {/* Col 1 */}
-            <rect x="17"  y="542" width="136" height="44" rx="8" fill="#FFFFFF" stroke="#E7DADD" strokeWidth="1.5" />
-            <text x="85"  y="561" textAnchor="middle" fill="#292524" fontSize="10" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Review Gym</text>
-            <text x="85"  y="574" textAnchor="middle" fill="#57534E" fontSize="9"  fontFamily="ui-sans-serif,sans-serif">Applications</text>
+            <rect x="17"  y="542" width="136" height="44" rx="8" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1.5" />
+            <text x="85"  y="561" textAnchor="middle" fill="#111827" fontSize="10" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Review Gym</text>
+            <text x="85"  y="574" textAnchor="middle" fill="#64748B" fontSize="9"  fontFamily="ui-sans-serif,sans-serif">Applications</text>
 
             {/* Col 2 */}
-            <rect x="187" y="542" width="136" height="44" rx="8" fill="#FFFFFF" stroke="#E7DADD" strokeWidth="1.5" />
-            <text x="255" y="561" textAnchor="middle" fill="#292524" fontSize="10" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Manage Plans</text>
-            <text x="255" y="574" textAnchor="middle" fill="#57534E" fontSize="9"  fontFamily="ui-sans-serif,sans-serif">&amp; Pricing Tiers</text>
+            <rect x="187" y="542" width="136" height="44" rx="8" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1.5" />
+            <text x="255" y="561" textAnchor="middle" fill="#111827" fontSize="10" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Manage Plans</text>
+            <text x="255" y="574" textAnchor="middle" fill="#64748B" fontSize="9"  fontFamily="ui-sans-serif,sans-serif">&amp; Pricing Tiers</text>
 
             {/* Col 3 */}
-            <rect x="357" y="542" width="136" height="44" rx="8" fill="#FFFFFF" stroke="#E7DADD" strokeWidth="1.5" />
-            <text x="425" y="561" textAnchor="middle" fill="#292524" fontSize="10" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Verify Trainers</text>
-            <text x="425" y="574" textAnchor="middle" fill="#57534E" fontSize="9"  fontFamily="ui-sans-serif,sans-serif">&amp; Credentials</text>
+            <rect x="357" y="542" width="136" height="44" rx="8" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1.5" />
+            <text x="425" y="561" textAnchor="middle" fill="#111827" fontSize="10" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Verify Trainers</text>
+            <text x="425" y="574" textAnchor="middle" fill="#64748B" fontSize="9"  fontFamily="ui-sans-serif,sans-serif">&amp; Credentials</text>
 
             {/* Col 4 */}
-            <rect x="527" y="542" width="136" height="44" rx="8" fill="#FFFFFF" stroke="#E7DADD" strokeWidth="1.5" />
-            <text x="595" y="561" textAnchor="middle" fill="#292524" fontSize="10" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Monitor Threats</text>
-            <text x="595" y="574" textAnchor="middle" fill="#57534E" fontSize="9"  fontFamily="ui-sans-serif,sans-serif">&amp; Active Sessions</text>
+            <rect x="527" y="542" width="136" height="44" rx="8" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1.5" />
+            <text x="595" y="561" textAnchor="middle" fill="#111827" fontSize="10" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Monitor Threats</text>
+            <text x="595" y="574" textAnchor="middle" fill="#64748B" fontSize="9"  fontFamily="ui-sans-serif,sans-serif">&amp; Active Sessions</text>
 
             {/* Down arrows from Level 2 to Level 3 */}
-            <line x1="85"  y1="586" x2="85"  y2="608" stroke="#B76E79" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
-            <line x1="255" y1="586" x2="255" y2="608" stroke="#B76E79" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
-            <line x1="425" y1="586" x2="425" y2="608" stroke="#B76E79" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
-            <line x1="595" y1="586" x2="595" y2="608" stroke="#B76E79" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
+            <line x1="85"  y1="586" x2="85"  y2="608" stroke="#F97316" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
+            <line x1="255" y1="586" x2="255" y2="608" stroke="#F97316" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
+            <line x1="425" y1="586" x2="425" y2="608" stroke="#F97316" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
+            <line x1="595" y1="586" x2="595" y2="608" stroke="#F97316" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
 
             {/* ════ LEVEL 3: DECISION & INTERMEDIATE ════ */}
             {/* Col 1: Decision Diamond inside column (x: 17..153) */}
-            <polygon points="85,608 135,631 85,654 35,631" fill="#F3E8E8" stroke="#B76E79" strokeWidth="1.5" />
-            <text x="85" y="628" textAnchor="middle" fill="#B76E79" fontSize="9" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Approve</text>
-            <text x="85" y="640" textAnchor="middle" fill="#B76E79" fontSize="9" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Gym?</text>
+            <polygon points="85,608 135,631 85,654 35,631" fill="#F8FAFC" stroke="#F97316" strokeWidth="1.5" />
+            <text x="85" y="628" textAnchor="middle" fill="#F97316" fontSize="9" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Approve</text>
+            <text x="85" y="640" textAnchor="middle" fill="#F97316" fontSize="9" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Gym?</text>
 
             {/* Col 2 */}
-            <rect x="187" y="608" width="136" height="46" rx="8" fill="#FFFFFF" stroke="#E7DADD" strokeWidth="1.5" />
-            <text x="255" y="627" textAnchor="middle" fill="#292524" fontSize="10" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Invoicing &amp;</text>
-            <text x="255" y="641" textAnchor="middle" fill="#57534E" fontSize="9"  fontFamily="ui-sans-serif,sans-serif">Payment Gateways</text>
+            <rect x="187" y="608" width="136" height="46" rx="8" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1.5" />
+            <text x="255" y="627" textAnchor="middle" fill="#111827" fontSize="10" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Invoicing &amp;</text>
+            <text x="255" y="641" textAnchor="middle" fill="#64748B" fontSize="9"  fontFamily="ui-sans-serif,sans-serif">Payment Gateways</text>
 
             {/* Col 3 */}
-            <rect x="357" y="608" width="136" height="46" rx="8" fill="#FFFFFF" stroke="#E7DADD" strokeWidth="1.5" />
-            <text x="425" y="627" textAnchor="middle" fill="#292524" fontSize="10" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Member Quotas</text>
-            <text x="425" y="641" textAnchor="middle" fill="#57534E" fontSize="9"  fontFamily="ui-sans-serif,sans-serif">&amp; Permissions</text>
+            <rect x="357" y="608" width="136" height="46" rx="8" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1.5" />
+            <text x="425" y="627" textAnchor="middle" fill="#111827" fontSize="10" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Member Quotas</text>
+            <text x="425" y="641" textAnchor="middle" fill="#64748B" fontSize="9"  fontFamily="ui-sans-serif,sans-serif">&amp; Permissions</text>
 
             {/* Col 4 */}
-            <rect x="527" y="608" width="136" height="46" rx="8" fill="#FFFFFF" stroke="#E7DADD" strokeWidth="1.5" />
-            <text x="595" y="627" textAnchor="middle" fill="#292524" fontSize="10" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Immutable</text>
-            <text x="595" y="641" textAnchor="middle" fill="#57534E" fontSize="9"  fontFamily="ui-sans-serif,sans-serif">Audit Logs</text>
+            <rect x="527" y="608" width="136" height="46" rx="8" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1.5" />
+            <text x="595" y="627" textAnchor="middle" fill="#111827" fontSize="10" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Immutable</text>
+            <text x="595" y="641" textAnchor="middle" fill="#64748B" fontSize="9"  fontFamily="ui-sans-serif,sans-serif">Audit Logs</text>
 
             {/* Arrows from Level 3 to Level 4 */}
             {/* Col 1 Branching from Diamond: NO goes left to Rejected, YES goes right to Approved */}
@@ -214,61 +214,61 @@ const SuperAdminPortalLanding = () => {
             <text x="135" y="624" fill="#15803D" fontSize="9" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">YES</text>
 
             {/* Cols 2, 3, 4 Down Arrows */}
-            <line x1="255" y1="654" x2="255" y2="678" stroke="#B76E79" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
-            <line x1="425" y1="654" x2="425" y2="678" stroke="#B76E79" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
-            <line x1="595" y1="654" x2="595" y2="678" stroke="#B76E79" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
+            <line x1="255" y1="654" x2="255" y2="678" stroke="#F97316" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
+            <line x1="425" y1="654" x2="425" y2="678" stroke="#F97316" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
+            <line x1="595" y1="654" x2="595" y2="678" stroke="#F97316" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
 
             {/* ════ LEVEL 4: EXECUTION / METRICS ════ */}
             {/* Col 1: Left = Rejected, Right = Activated (both inside x: 17..153) */}
             <rect x="17" y="678" width="64" height="44" rx="7" fill="#FDF2F2" stroke="#B91C1C" strokeWidth="1.5" />
             <text x="49" y="697" textAnchor="middle" fill="#B91C1C" fontSize="9" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Rejected</text>
-            <text x="49" y="709" textAnchor="middle" fill="#57534E" fontSize="8" fontFamily="ui-sans-serif,sans-serif">Suspended</text>
+            <text x="49" y="709" textAnchor="middle" fill="#64748B" fontSize="8" fontFamily="ui-sans-serif,sans-serif">Suspended</text>
 
             <rect x="89" y="678" width="64" height="44" rx="7" fill="#F0FDF4" stroke="#15803D" strokeWidth="1.5" />
             <text x="121" y="697" textAnchor="middle" fill="#15803D" fontSize="9" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Approved</text>
-            <text x="121" y="709" textAnchor="middle" fill="#57534E" fontSize="8" fontFamily="ui-sans-serif,sans-serif">Activated</text>
+            <text x="121" y="709" textAnchor="middle" fill="#64748B" fontSize="8" fontFamily="ui-sans-serif,sans-serif">Activated</text>
 
             {/* Col 2 */}
-            <rect x="187" y="678" width="136" height="44" rx="8" fill="#FFFFFF" stroke="#E7DADD" strokeWidth="1.5" />
-            <text x="255" y="697" textAnchor="middle" fill="#292524" fontSize="10" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Revenue &amp; MRR</text>
-            <text x="255" y="710" textAnchor="middle" fill="#57534E" fontSize="9"  fontFamily="ui-sans-serif,sans-serif">Growth Analytics</text>
+            <rect x="187" y="678" width="136" height="44" rx="8" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1.5" />
+            <text x="255" y="697" textAnchor="middle" fill="#111827" fontSize="10" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Revenue &amp; MRR</text>
+            <text x="255" y="710" textAnchor="middle" fill="#64748B" fontSize="9"  fontFamily="ui-sans-serif,sans-serif">Growth Analytics</text>
 
             {/* Col 3 */}
-            <rect x="357" y="678" width="136" height="44" rx="8" fill="#FFFFFF" stroke="#E7DADD" strokeWidth="1.5" />
-            <text x="425" y="697" textAnchor="middle" fill="#292524" fontSize="10" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Member Activity</text>
-            <text x="425" y="710" textAnchor="middle" fill="#57534E" fontSize="9"  fontFamily="ui-sans-serif,sans-serif">&amp; Retention</text>
+            <rect x="357" y="678" width="136" height="44" rx="8" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1.5" />
+            <text x="425" y="697" textAnchor="middle" fill="#111827" fontSize="10" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Member Activity</text>
+            <text x="425" y="710" textAnchor="middle" fill="#64748B" fontSize="9"  fontFamily="ui-sans-serif,sans-serif">&amp; Retention</text>
 
             {/* Col 4 */}
-            <rect x="527" y="678" width="136" height="44" rx="8" fill="#FFFFFF" stroke="#E7DADD" strokeWidth="1.5" />
-            <text x="595" y="697" textAnchor="middle" fill="#292524" fontSize="10" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Platform Uptime</text>
-            <text x="595" y="710" textAnchor="middle" fill="#57534E" fontSize="9"  fontFamily="ui-sans-serif,sans-serif">&amp; Health Monitor</text>
+            <rect x="527" y="678" width="136" height="44" rx="8" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1.5" />
+            <text x="595" y="697" textAnchor="middle" fill="#111827" fontSize="10" fontWeight="700" fontFamily="ui-sans-serif,sans-serif">Platform Uptime</text>
+            <text x="595" y="710" textAnchor="middle" fill="#64748B" fontSize="9"  fontFamily="ui-sans-serif,sans-serif">&amp; Health Monitor</text>
 
             {/* ════ BOTTOM MERGE & END ════ */}
             {/* Verticals dropping from each column outcome */}
             <line x1="49"  y1="722" x2="49"  y2="750" stroke="#B91C1C" strokeWidth="1" />
             <line x1="121" y1="722" x2="121" y2="750" stroke="#15803D" strokeWidth="1" />
-            <line x1="255" y1="722" x2="255" y2="750" stroke="#B76E79" strokeWidth="1" />
-            <line x1="425" y1="722" x2="425" y2="750" stroke="#B76E79" strokeWidth="1" />
-            <line x1="595" y1="722" x2="595" y2="750" stroke="#B76E79" strokeWidth="1" />
+            <line x1="255" y1="722" x2="255" y2="750" stroke="#F97316" strokeWidth="1" />
+            <line x1="425" y1="722" x2="425" y2="750" stroke="#F97316" strokeWidth="1" />
+            <line x1="595" y1="722" x2="595" y2="750" stroke="#F97316" strokeWidth="1" />
 
             {/* Horizontal bus line at y=750 */}
-            <line x1="49" y1="750" x2="595" y2="750" stroke="#B76E79" strokeWidth="1.5" />
+            <line x1="49" y1="750" x2="595" y2="750" stroke="#F97316" strokeWidth="1.5" />
 
             {/* Central pointer down to END */}
-            <line x1="340" y1="750" x2="340" y2="770" stroke="#B76E79" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
+            <line x1="340" y1="750" x2="340" y2="770" stroke="#F97316" strokeWidth="1.5" markerEnd="url(#wf-arr)" />
 
             {/* END Oval */}
-            <ellipse cx="340" cy="792" rx="96" ry="22" fill="#F3E8E8" stroke="#B76E79" strokeWidth="2" />
-            <text x="340" y="797" textAnchor="middle" fill="#B76E79" fontSize="12" fontWeight="800" fontFamily="ui-sans-serif,sans-serif">PLATFORM MANAGED</text>
+            <ellipse cx="340" cy="792" rx="96" ry="22" fill="#F8FAFC" stroke="#F97316" strokeWidth="2" />
+            <text x="340" y="797" textAnchor="middle" fill="#F97316" fontSize="12" fontWeight="800" fontFamily="ui-sans-serif,sans-serif">PLATFORM MANAGED</text>
           </svg>
         </div>
 
         {/* Modal Footer */}
-        <div className="sticky bottom-0 flex items-center justify-between px-5 py-4 bg-[#F3E8E8] border-t border-[#E7DADD]">
-          <p className="text-xs text-[#57534E]">Restricted to authorized Gymora Super Administrators only.</p>
+        <div className="sticky bottom-0 flex items-center justify-between px-5 py-4 bg-[#F8FAFC] border-t border-[#E2E8F0]">
+          <p className="text-xs text-[#64748B]">Restricted to authorized Gymora Super Administrators only.</p>
           <Link
             to="/login?portal=super-admin"
-            className="flex items-center gap-2 px-4 py-2 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold text-sm rounded-xl transition-all"
+            className="flex items-center gap-2 px-4 py-2 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold text-sm rounded-xl transition-all"
             onClick={() => setShowWorkflow(false)}
           >
             <Lock size={14} /> Super Admin Login
@@ -279,22 +279,22 @@ const SuperAdminPortalLanding = () => {
   );
 
   return (
-    <div className="min-h-screen bg-[#FFFFFF] text-[#292524] selection:bg-[#B76E79] selection:text-[#FFFFFF] font-sans">
+    <div className="min-h-screen bg-[#FFFFFF] text-[#111827] selection:bg-[#C2410C] selection:text-[#FFFFFF] font-sans">
       {showWorkflow && <WorkflowModal />}
       {/* Top Navigation */}
-      <nav className="border-b border-[#E7DADD] bg-[#F3E8E8]/90 backdrop-blur-md sticky top-0 z-50">
+      <nav className="border-b border-[#E2E8F0] bg-[#FFFFFF]/95 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           {/* Logo & Portal Badge */}
           <div className="flex items-center space-x-3">
             <Link to="/" className="flex items-center space-x-2.5 group">
-              <div className="w-10 h-10 bg-gradient-to-br from-[#B76E79] to-[#9F5965] rounded-xl flex items-center justify-center shadow-lg shadow-[#B76E79]/20">
+              <div className="w-10 h-10 bg-gradient-to-br from-[#EA580C] to-[#C2410C] rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/15">
                 <Activity className="text-[#FFFFFF]" size={22} strokeWidth={2.5} />
               </div>
-              <span className="text-2xl font-black tracking-tight text-[#292524] group-hover:text-[#B76E79] transition-colors">
+              <span className="text-2xl font-black tracking-tight text-[#111827] group-hover:text-[#EA580C] transition-colors">
                 Gymora
               </span>
             </Link>
-            <span className="hidden sm:inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#B76E79]/10 text-[#B76E79] border border-[#B76E79]/20">
+            <span className="hidden sm:inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5]">
               Super Admin
             </span>
           </div>
@@ -303,14 +303,14 @@ const SuperAdminPortalLanding = () => {
           <div className="flex items-center gap-3">
             <Link
               to="/"
-              className="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#FFFFFF] bg-[#B76E79] hover:bg-[#9F5965] transition-all shadow-md shadow-[#B76E79]/20 flex items-center gap-1.5"
+              className="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#FFFFFF] bg-[#C2410C] hover:bg-[#9A3412] transition-all shadow-md shadow-orange-500/15 flex items-center gap-1.5"
             >
               <ArrowLeft size={16} />
               <span>Back</span>
             </Link>
             <Link
               to="/login?portal=super-admin"
-              className="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#FFFFFF] bg-[#B76E79] hover:bg-[#9F5965] transition-all shadow-md shadow-[#B76E79]/20 flex items-center gap-1.5"
+              className="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#FFFFFF] bg-[#C2410C] hover:bg-[#9A3412] transition-all shadow-md shadow-orange-500/15 flex items-center gap-1.5"
             >
               <Lock size={14} />
               <span>Super Admin Login</span>
@@ -321,36 +321,36 @@ const SuperAdminPortalLanding = () => {
 
       {/* Hero Section */}
       <header className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20">
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#B76E79]/12 via-[#FFFFFF]/0 to-[#FFFFFF]/0 pointer-events-none" />
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#EA580C]/12 via-[#FFFFFF]/0 to-[#FFFFFF]/0 pointer-events-none" />
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
           {/* Left Content */}
           <div className="lg:col-span-7 text-center lg:text-left">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#FFFFFF] border border-[#E7DADD] text-xs font-medium text-[#B76E79] mb-6">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#FFFFFF] border border-[#E2E8F0] text-xs font-medium text-[#EA580C] mb-6">
               <ShieldCheck size={14} />
               <span>Platform Infrastructure & Global Governance Cockpit</span>
             </div>
 
-            <h1 className="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight mb-6 leading-tight text-[#292524]">
+            <h1 className="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight mb-6 leading-tight text-[#111827]">
               Centralized Platform Control & <br className="hidden sm:block" />
-              <span className="text-[#B76E79]">Multi-Tenant SaaS Administration</span>
+              <span className="text-[#EA580C]">Multi-Tenant SaaS Administration</span>
             </h1>
 
-            <p className="text-base sm:text-lg text-[#57534E] max-w-2xl mx-auto lg:mx-0 mb-8 leading-relaxed">
+            <p className="text-base sm:text-lg text-[#64748B] max-w-2xl mx-auto lg:mx-0 mb-8 leading-relaxed">
               The authorized administrative cockpit for managing gym ecosystems, global subscriptions, tenant security, facility verification, and platform financials across all regions.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 mb-8">
               <Link
                 to="/login?portal=super-admin"
-                className="w-full sm:w-auto px-7 py-3.5 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold rounded-xl transition-all flex items-center justify-center space-x-2 shadow-lg shadow-[#B76E79]/20 hover:shadow-teal-500/30"
+                className="w-full sm:w-auto px-7 py-3.5 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold rounded-xl transition-all flex items-center justify-center space-x-2 shadow-lg shadow-orange-500/15 hover:shadow-teal-500/30"
               >
                 <span>Super Admin Secure Login</span>
                 <ChevronRight size={18} />
               </Link>
               <Link
                 to="/"
-                className="w-full sm:w-auto px-7 py-3.5 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold rounded-xl transition-all flex items-center justify-center space-x-2 shadow-lg shadow-[#B76E79]/20 hover:shadow-teal-500/30"
+                className="w-full sm:w-auto px-7 py-3.5 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold rounded-xl transition-all flex items-center justify-center space-x-2 shadow-lg shadow-orange-500/15 hover:shadow-teal-500/30"
               >
                 <ArrowLeft size={16} />
                 <span>Return to Public Home</span>
@@ -358,32 +358,32 @@ const SuperAdminPortalLanding = () => {
             </div>
 
             {/* Live Platform Health Bar */}
-            <div className="w-full bg-[#FFFFFF]/90 border border-[#E7DADD] rounded-2xl p-4 grid grid-cols-2 sm:grid-cols-4 gap-4 text-left shadow-xl">
+            <div className="w-full bg-[#FFFFFF]/90 border border-[#E2E8F0] rounded-2xl p-4 grid grid-cols-2 sm:grid-cols-4 gap-4 text-left shadow-xl">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+                <div className="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-[#15803D] flex items-center justify-center shrink-0">
                   <Activity size={18} />
                 </div>
                 <div>
-                  <div className="text-[10px] uppercase font-bold text-[#57534E]">Platform Uptime</div>
-                  <div className="text-xs sm:text-sm font-bold text-[#292524]">99.98% Healthy</div>
+                  <div className="text-[10px] uppercase font-bold text-[#64748B]">Platform Uptime</div>
+                  <div className="text-xs sm:text-sm font-bold text-[#111827]">99.98% Healthy</div>
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-[#B76E79]/10 border border-[#B76E79]/20 text-[#B76E79] flex items-center justify-center shrink-0">
+                <div className="w-9 h-9 rounded-xl bg-[#FFF7ED] border border-[#FFEDD5] text-[#EA580C] flex items-center justify-center shrink-0">
                   <Database size={18} />
                 </div>
                 <div>
-                  <div className="text-[10px] uppercase font-bold text-[#57534E]">Data Isolation</div>
-                  <div className="text-xs sm:text-sm font-bold text-[#292524]">100% Multi-Tenant</div>
+                  <div className="text-[10px] uppercase font-bold text-[#64748B]">Data Isolation</div>
+                  <div className="text-xs sm:text-sm font-bold text-[#111827]">100% Multi-Tenant</div>
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-[#B76E79]/10 border border-[#B76E79]/20 text-[#B76E79] flex items-center justify-center shrink-0">
+                <div className="w-9 h-9 rounded-xl bg-[#FFF7ED] border border-[#FFEDD5] text-[#EA580C] flex items-center justify-center shrink-0">
                   <Globe2 size={18} />
                 </div>
                 <div>
-                  <div className="text-[10px] uppercase font-bold text-[#57534E]">Gateway Latency</div>
-                  <div className="text-xs sm:text-sm font-bold text-[#292524]">14ms Global Edge</div>
+                  <div className="text-[10px] uppercase font-bold text-[#64748B]">Gateway Latency</div>
+                  <div className="text-xs sm:text-sm font-bold text-[#111827]">14ms Global Edge</div>
                 </div>
               </div>
               <div className="flex items-center gap-3">
@@ -391,8 +391,8 @@ const SuperAdminPortalLanding = () => {
                   <ShieldCheck size={18} />
                 </div>
                 <div>
-                  <div className="text-[10px] uppercase font-bold text-[#57534E]">Security Posture</div>
-                  <div className="text-xs sm:text-sm font-bold text-[#292524]">SOC2 &amp; ISO Ready</div>
+                  <div className="text-[10px] uppercase font-bold text-[#64748B]">Security Posture</div>
+                  <div className="text-xs sm:text-sm font-bold text-[#111827]">SOC2 &amp; ISO Ready</div>
                 </div>
               </div>
             </div>
@@ -400,7 +400,7 @@ const SuperAdminPortalLanding = () => {
 
           {/* Right Video Container: Super Admin Video */}
           <div className="lg:col-span-5 relative">
-            <div className="relative rounded-3xl overflow-hidden border border-[#E7DADD] shadow-2xl shadow-black bg-[#FFFFFF] group">
+            <div className="relative rounded-3xl overflow-hidden border border-[#E2E8F0] shadow-2xl shadow-black bg-[#FFFFFF] group">
               <video
                 src="/videos/superadmin.mp4"
                 autoPlay
@@ -416,55 +416,55 @@ const SuperAdminPortalLanding = () => {
       </header>
 
       {/* Visual Showcase Section 1: Multi-Tenant Network & Global Gym Fleet */}
-      <section className="py-20 border-t border-[#E7DADD] bg-[#F3E8E8]">
+      <section className="py-20 border-t border-[#E2E8F0] bg-[#F8FAFC]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Copy Left */}
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FFFFFF] border border-[#E7DADD] text-xs font-semibold text-[#B76E79] mb-4">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FFFFFF] border border-[#E2E8F0] text-xs font-semibold text-[#EA580C] mb-4">
                 <Globe2 size={14} />
                 <span>Global Multi-Tenant Architecture</span>
               </div>
-              <h2 className="text-3xl sm:text-4xl font-black text-[#292524] tracking-tight mb-4 leading-snug">
+              <h2 className="text-3xl sm:text-4xl font-black text-[#111827] tracking-tight mb-4 leading-snug">
                 Oversee Hundreds of Gyms With Complete Data Isolation
               </h2>
-              <p className="text-[#57534E] text-base leading-relaxed mb-6">
+              <p className="text-[#64748B] text-base leading-relaxed mb-6">
                 Gymora’s enterprise partition engine guarantees that every gym franchise, branch, and owner operates inside an isolated logical workspace while allowing platform admins total aggregate oversight.
               </p>
 
               <div className="space-y-4 mb-8">
                 <div className="flex items-start gap-3.5">
-                  <div className="w-6 h-6 rounded-lg bg-[#B76E79]/10 text-[#B76E79] flex items-center justify-center shrink-0 mt-1">
+                  <div className="w-6 h-6 rounded-lg bg-[#FFF7ED] text-[#EA580C] flex items-center justify-center shrink-0 mt-1">
                     <CheckCircle2 size={16} />
                   </div>
                   <div>
-                    <h4 className="font-bold text-[#292524] text-sm">Instant Gym Onboarding & Facility Verification</h4>
-                    <p className="text-xs text-[#57534E] mt-0.5">Review facility licenses, branch registration certificates, and equipment inspections before issuing operational access.</p>
+                    <h4 className="font-bold text-[#111827] text-sm">Instant Gym Onboarding & Facility Verification</h4>
+                    <p className="text-xs text-[#64748B] mt-0.5">Review facility licenses, branch registration certificates, and equipment inspections before issuing operational access.</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3.5">
-                  <div className="w-6 h-6 rounded-lg bg-[#B76E79]/10 text-[#B76E79] flex items-center justify-center shrink-0 mt-1">
+                  <div className="w-6 h-6 rounded-lg bg-[#FFF7ED] text-[#EA580C] flex items-center justify-center shrink-0 mt-1">
                     <CheckCircle2 size={16} />
                   </div>
                   <div>
-                    <h4 className="font-bold text-[#292524] text-sm">Cross-Branch License & Quota Controls</h4>
-                    <p className="text-xs text-[#57534E] mt-0.5">Dynamically throttle active member seats, staff accounts, and biometric turnstiles according to the gym’s subscribed SaaS tier.</p>
+                    <h4 className="font-bold text-[#111827] text-sm">Cross-Branch License & Quota Controls</h4>
+                    <p className="text-xs text-[#64748B] mt-0.5">Dynamically throttle active member seats, staff accounts, and biometric turnstiles according to the gym’s subscribed SaaS tier.</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3.5">
-                  <div className="w-6 h-6 rounded-lg bg-[#B76E79]/10 text-[#B76E79] flex items-center justify-center shrink-0 mt-1">
+                  <div className="w-6 h-6 rounded-lg bg-[#FFF7ED] text-[#EA580C] flex items-center justify-center shrink-0 mt-1">
                     <CheckCircle2 size={16} />
                   </div>
                   <div>
-                    <h4 className="font-bold text-[#292524] text-sm">Zero-Downtime Multi-Location Deployments</h4>
-                    <p className="text-xs text-[#57534E] mt-0.5">Deploy new features, compliance rules, and AI workout models platform-wide without disrupting daily member check-ins.</p>
+                    <h4 className="font-bold text-[#111827] text-sm">Zero-Downtime Multi-Location Deployments</h4>
+                    <p className="text-xs text-[#64748B] mt-0.5">Deploy new features, compliance rules, and AI workout models platform-wide without disrupting daily member check-ins.</p>
                   </div>
                 </div>
               </div>
 
               <button
                 onClick={() => setShowWorkflow(true)}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#B76E79] text-white font-bold text-sm hover:bg-[#9F5965] transition-all shadow-md shadow-[#B76E79]/20"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#C2410C] text-white font-bold text-sm hover:bg-[#9A3412] transition-all shadow-md shadow-orange-500/15"
               >
                 <GitBranch size={16} />
                 <span>View Admin Workflow</span>
@@ -474,7 +474,7 @@ const SuperAdminPortalLanding = () => {
 
             {/* Visual Card Right */}
             <div className="relative">
-              <div className="relative rounded-3xl overflow-hidden border border-[#E7DADD] bg-[#FFFFFF] shadow-2xl group">
+              <div className="relative rounded-3xl overflow-hidden border border-[#E2E8F0] bg-[#FFFFFF] shadow-2xl group">
                 <img 
                   src="https://images.unsplash.com/photo-1593079831268-3381b0db4a77?w=1200&q=80" 
                   alt="Multi-Location Gym Franchises" 
@@ -483,32 +483,32 @@ const SuperAdminPortalLanding = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-[#FFFFFF] via-[#FFFFFF]/40 to-transparent" />
                 
                 {/* Floating Badges */}
-                <div className="absolute top-4 left-4 bg-[#FFFFFF]/95 backdrop-blur-md border border-[#E7DADD] rounded-xl px-3.5 py-2 flex items-center gap-2.5 shadow-lg">
+                <div className="absolute top-4 left-4 bg-[#FFFFFF]/95 backdrop-blur-md border border-[#E2E8F0] rounded-xl px-3.5 py-2 flex items-center gap-2.5 shadow-lg">
                   <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-                  <span className="text-xs font-bold text-[#292524]">480+ Active Gym Franchises</span>
+                  <span className="text-xs font-bold text-[#111827]">480+ Active Gym Franchises</span>
                 </div>
 
-                <div className="absolute bottom-4 left-4 right-4 bg-[#FFFFFF]/95 backdrop-blur-md border border-[#E7DADD] rounded-2xl p-4 shadow-xl">
+                <div className="absolute bottom-4 left-4 right-4 bg-[#FFFFFF]/95 backdrop-blur-md border border-[#E2E8F0] rounded-2xl p-4 shadow-xl">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-bold text-[#B76E79] flex items-center gap-1.5">
+                    <span className="text-xs font-bold text-[#EA580C] flex items-center gap-1.5">
                       <Cpu size={14} /> Fleet Cluster Telemetry
                     </span>
-                    <span className="text-[10px] text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full font-bold">
+                    <span className="text-[10px] text-[#15803D] bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full font-bold">
                       Zero Anomalies
                     </span>
                   </div>
-                  <div className="grid grid-cols-3 gap-2 text-center pt-2 border-t border-[#E7DADD]">
+                  <div className="grid grid-cols-3 gap-2 text-center pt-2 border-t border-[#E2E8F0]">
                     <div>
-                      <div className="text-xs font-black text-[#292524]">1.2M+</div>
-                      <div className="text-[10px] text-[#57534E]">Daily Check-ins</div>
+                      <div className="text-xs font-black text-[#111827]">1.2M+</div>
+                      <div className="text-[10px] text-[#64748B]">Daily Check-ins</div>
                     </div>
                     <div>
-                      <div className="text-xs font-black text-[#B76E79]">99.99%</div>
-                      <div className="text-[10px] text-[#57534E]">API Success</div>
+                      <div className="text-xs font-black text-[#EA580C]">99.99%</div>
+                      <div className="text-[10px] text-[#64748B]">API Success</div>
                     </div>
                     <div>
-                      <div className="text-xs font-black text-[#292524]">12 Reg.</div>
-                      <div className="text-[10px] text-[#57534E]">Edge Clusters</div>
+                      <div className="text-xs font-black text-[#111827]">12 Reg.</div>
+                      <div className="text-[10px] text-[#64748B]">Edge Clusters</div>
                     </div>
                   </div>
                 </div>
@@ -519,12 +519,12 @@ const SuperAdminPortalLanding = () => {
       </section>
 
       {/* Visual Showcase Section 2: Platform Financial Engine & Automated Billing */}
-      <section className="py-20 border-t border-[#E7DADD] bg-[#FFFFFF]">
+      <section className="py-20 border-t border-[#E2E8F0] bg-[#FFFFFF]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Visual Card Left */}
             <div className="relative order-2 lg:order-1">
-              <div className="relative rounded-3xl overflow-hidden border border-[#E7DADD] bg-[#FFFFFF] shadow-2xl group">
+              <div className="relative rounded-3xl overflow-hidden border border-[#E2E8F0] bg-[#FFFFFF] shadow-2xl group">
                 <img 
                   src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=900&q=80" 
                   alt="SaaS Analytics and Financial Engine" 
@@ -532,20 +532,20 @@ const SuperAdminPortalLanding = () => {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#FFFFFF] via-[#FFFFFF]/40 to-transparent" />
 
-                <div className="absolute top-4 left-4 bg-[#FFFFFF]/95 backdrop-blur-md border border-[#E7DADD] rounded-xl px-3.5 py-2 flex items-center gap-2 shadow-lg">
-                  <BarChart3 size={15} className="text-[#B76E79]" />
-                  <span className="text-xs font-bold text-[#292524]">Platform GMV: ₹3.42 Cr / Mo</span>
+                <div className="absolute top-4 left-4 bg-[#FFFFFF]/95 backdrop-blur-md border border-[#E2E8F0] rounded-xl px-3.5 py-2 flex items-center gap-2 shadow-lg">
+                  <BarChart3 size={15} className="text-[#EA580C]" />
+                  <span className="text-xs font-bold text-[#111827]">Platform GMV: ₹3.42 Cr / Mo</span>
                 </div>
 
-                <div className="absolute bottom-4 left-4 right-4 bg-[#FFFFFF]/95 backdrop-blur-md border border-[#E7DADD] rounded-2xl p-4 shadow-xl">
+                <div className="absolute bottom-4 left-4 right-4 bg-[#FFFFFF]/95 backdrop-blur-md border border-[#E2E8F0] rounded-2xl p-4 shadow-xl">
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-xs font-bold text-[#292524]">Automated Tier Recurring Cycles</span>
-                    <span className="text-xs font-bold text-[#B76E79]">+28.4% MRR Growth</span>
+                    <span className="text-xs font-bold text-[#111827]">Automated Tier Recurring Cycles</span>
+                    <span className="text-xs font-bold text-[#EA580C]">+28.4% MRR Growth</span>
                   </div>
-                  <div className="w-full bg-[#FFFFFF] h-2 rounded-full overflow-hidden border border-[#E7DADD] mb-2">
-                    <div className="bg-gradient-to-r from-[#B76E79] to-[#9F5965] h-full w-[88%]" />
+                  <div className="w-full bg-[#FFFFFF] h-2 rounded-full overflow-hidden border border-[#E2E8F0] mb-2">
+                    <div className="bg-gradient-to-r from-[#EA580C] to-[#C2410C] h-full w-[88%]" />
                   </div>
-                  <div className="flex justify-between text-[11px] text-[#57534E]">
+                  <div className="flex justify-between text-[11px] text-[#64748B]">
                     <span>Target: ₹4.0 Cr</span>
                     <span>88% Achieved</span>
                   </div>
@@ -555,43 +555,43 @@ const SuperAdminPortalLanding = () => {
 
             {/* Copy Right */}
             <div className="order-1 lg:order-2">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FFFFFF] border border-[#E7DADD] text-xs font-semibold text-[#B76E79] mb-4">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FFFFFF] border border-[#E2E8F0] text-xs font-semibold text-[#EA580C] mb-4">
                 <CreditCard size={14} />
                 <span>Monetization & Financial Architecture</span>
               </div>
-              <h2 className="text-3xl sm:text-4xl font-black text-[#292524] tracking-tight mb-4 leading-snug">
+              <h2 className="text-3xl sm:text-4xl font-black text-[#111827] tracking-tight mb-4 leading-snug">
                 Automated Platform Tier Billing & Multi-Branch Payouts
               </h2>
-              <p className="text-[#57534E] text-base leading-relaxed mb-6">
+              <p className="text-[#64748B] text-base leading-relaxed mb-6">
                 Manage global subscription plans for gym owners, configure per-branch add-on fees, automate tax invoices, and monitor merchant payout flows seamlessly.
               </p>
 
               <div className="space-y-4 mb-8">
                 <div className="flex items-start gap-3.5">
-                  <div className="w-6 h-6 rounded-lg bg-[#B76E79]/10 text-[#B76E79] flex items-center justify-center shrink-0 mt-1">
+                  <div className="w-6 h-6 rounded-lg bg-[#FFF7ED] text-[#EA580C] flex items-center justify-center shrink-0 mt-1">
                     <CheckCircle2 size={16} />
                   </div>
                   <div>
-                    <h4 className="font-bold text-[#292524] text-sm">Configurable SaaS Tiers & Add-on Marketplace</h4>
-                    <p className="text-xs text-[#57534E] mt-0.5">Customize Basic, Pro, and Enterprise subscription tiers with custom limits for members, trainers, and AI workout tokens.</p>
+                    <h4 className="font-bold text-[#111827] text-sm">Configurable SaaS Tiers & Add-on Marketplace</h4>
+                    <p className="text-xs text-[#64748B] mt-0.5">Customize Basic, Pro, and Enterprise subscription tiers with custom limits for members, trainers, and AI workout tokens.</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3.5">
-                  <div className="w-6 h-6 rounded-lg bg-[#B76E79]/10 text-[#B76E79] flex items-center justify-center shrink-0 mt-1">
+                  <div className="w-6 h-6 rounded-lg bg-[#FFF7ED] text-[#EA580C] flex items-center justify-center shrink-0 mt-1">
                     <CheckCircle2 size={16} />
                   </div>
                   <div>
-                    <h4 className="font-bold text-[#292524] text-sm">Automated Recurring Razorpay/Stripe Processing</h4>
-                    <p className="text-xs text-[#57534E] mt-0.5">Automatic recurring debits with dunning management, intelligent payment retry sequences, and instant PDF invoice dispatch.</p>
+                    <h4 className="font-bold text-[#111827] text-sm">Automated Recurring Razorpay/Stripe Processing</h4>
+                    <p className="text-xs text-[#64748B] mt-0.5">Automatic recurring debits with dunning management, intelligent payment retry sequences, and instant PDF invoice dispatch.</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3.5">
-                  <div className="w-6 h-6 rounded-lg bg-[#B76E79]/10 text-[#B76E79] flex items-center justify-center shrink-0 mt-1">
+                  <div className="w-6 h-6 rounded-lg bg-[#FFF7ED] text-[#EA580C] flex items-center justify-center shrink-0 mt-1">
                     <CheckCircle2 size={16} />
                   </div>
                   <div>
-                    <h4 className="font-bold text-[#292524] text-sm">Split Payout Settlements & Platform Commission</h4>
-                    <p className="text-xs text-[#57534E] mt-0.5">Automate member subscription payouts to gym owners while deducting platform commissions and gateway charges.</p>
+                    <h4 className="font-bold text-[#111827] text-sm">Split Payout Settlements & Platform Commission</h4>
+                    <p className="text-xs text-[#64748B] mt-0.5">Automate member subscription payouts to gym owners while deducting platform commissions and gateway charges.</p>
                   </div>
                 </div>
               </div>
@@ -601,24 +601,24 @@ const SuperAdminPortalLanding = () => {
       </section>
 
       {/* Visual Showcase Section 3: Enterprise Security & Audit Log Triad */}
-      <section className="py-20 border-t border-[#E7DADD] bg-[#F3E8E8]">
+      <section className="py-20 border-t border-[#E2E8F0] bg-[#F8FAFC]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-14">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FFFFFF] border border-[#E7DADD] text-xs font-semibold text-[#B76E79] mb-3">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FFFFFF] border border-[#E2E8F0] text-xs font-semibold text-[#EA580C] mb-3">
               <ShieldAlert size={14} />
               <span>Zero-Trust Enterprise Compliance</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl font-black text-[#292524] tracking-tight">
+            <h2 className="text-3xl sm:text-4xl font-black text-[#111827] tracking-tight">
               Platform Auditing & Cryptographic Protection
             </h2>
-            <p className="text-sm text-[#57534E] mt-2">
+            <p className="text-sm text-[#64748B] mt-2">
               Every action taken within the platform is signed, recorded, and verified against immutable audit ledgers.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Gallery Card 1 */}
-            <div className="bg-[#FFFFFF] border border-[#E7DADD] hover:border-[#B76E79]/40 rounded-3xl overflow-hidden transition-all shadow-lg group">
+            <div className="bg-[#FFFFFF] border border-[#E2E8F0] hover:border-[#FFEDD5] rounded-3xl overflow-hidden transition-all shadow-lg group">
               <div className="h-48 overflow-hidden relative">
                 <img 
                   src="https://images.unsplash.com/photo-1574680096145-d05b474e2155?w=700&q=80" 
@@ -626,21 +626,21 @@ const SuperAdminPortalLanding = () => {
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-85"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#FFFFFF] via-transparent to-transparent" />
-                <div className="absolute top-3 left-3 bg-[#FFFFFF]/80 backdrop-blur-md px-2.5 py-1 rounded-lg border border-[#E7DADD] text-[11px] font-bold text-[#B76E79] flex items-center gap-1.5">
+                <div className="absolute top-3 left-3 bg-[#FFFFFF]/80 backdrop-blur-md px-2.5 py-1 rounded-lg border border-[#E2E8F0] text-[11px] font-bold text-[#EA580C] flex items-center gap-1.5">
                   <TerminalSquare size={13} />
                   <span>Immutable Logs</span>
                 </div>
               </div>
               <div className="p-6">
-                <h3 className="text-lg font-bold text-[#292524] mb-2">Cryptographic Audit Logs</h3>
-                <p className="text-xs text-[#57534E] leading-relaxed">
+                <h3 className="text-lg font-bold text-[#111827] mb-2">Cryptographic Audit Logs</h3>
+                <p className="text-xs text-[#64748B] leading-relaxed">
                   Every user permission change, gym approval, bank update, and subscription change generates a tamper-evident audit record.
                 </p>
               </div>
             </div>
 
             {/* Gallery Card 2 */}
-            <div className="bg-[#FFFFFF] border border-[#E7DADD] hover:border-[#B76E79]/40 rounded-3xl overflow-hidden transition-all shadow-lg group">
+            <div className="bg-[#FFFFFF] border border-[#E2E8F0] hover:border-[#FFEDD5] rounded-3xl overflow-hidden transition-all shadow-lg group">
               <div className="h-48 overflow-hidden relative">
                 <img 
                   src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=700&q=80" 
@@ -648,21 +648,21 @@ const SuperAdminPortalLanding = () => {
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#FFFFFF] via-transparent to-transparent" />
-                <div className="absolute top-3 left-3 bg-[#FFFFFF]/80 backdrop-blur-md px-2.5 py-1 rounded-lg border border-[#E7DADD] text-[11px] font-bold text-[#B76E79] flex items-center gap-1.5">
+                <div className="absolute top-3 left-3 bg-[#FFFFFF]/80 backdrop-blur-md px-2.5 py-1 rounded-lg border border-[#E2E8F0] text-[11px] font-bold text-[#EA580C] flex items-center gap-1.5">
                   <Layers size={13} />
                   <span>Command Center</span>
                 </div>
               </div>
               <div className="p-6">
-                <h3 className="text-lg font-bold text-[#292524] mb-2">Centralized Incident Response</h3>
-                <p className="text-xs text-[#57534E] leading-relaxed">
+                <h3 className="text-lg font-bold text-[#111827] mb-2">Centralized Incident Response</h3>
+                <p className="text-xs text-[#64748B] leading-relaxed">
                   Real-time webhook monitors, background job dispatch queues, and automated incident escalation for mission-critical operations.
                 </p>
               </div>
             </div>
 
             {/* Gallery Card 3 */}
-            <div className="bg-[#FFFFFF] border border-[#E7DADD] hover:border-[#B76E79]/40 rounded-3xl overflow-hidden transition-all shadow-lg group">
+            <div className="bg-[#FFFFFF] border border-[#E2E8F0] hover:border-[#FFEDD5] rounded-3xl overflow-hidden transition-all shadow-lg group">
               <div className="h-48 overflow-hidden relative">
                 <img 
                   src="https://images.unsplash.com/photo-1563986768609-322da13575f3?w=700&q=80" 
@@ -670,14 +670,14 @@ const SuperAdminPortalLanding = () => {
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#FFFFFF] via-transparent to-transparent" />
-                <div className="absolute top-3 left-3 bg-[#FFFFFF]/80 backdrop-blur-md px-2.5 py-1 rounded-lg border border-[#E7DADD] text-[11px] font-bold text-[#B76E79] flex items-center gap-1.5">
+                <div className="absolute top-3 left-3 bg-[#FFFFFF]/80 backdrop-blur-md px-2.5 py-1 rounded-lg border border-[#E2E8F0] text-[11px] font-bold text-[#EA580C] flex items-center gap-1.5">
                   <Lock size={13} />
                   <span>Tenant Isolation</span>
                 </div>
               </div>
               <div className="p-6">
-                <h3 className="text-lg font-bold text-[#292524] mb-2">Data Isolation & Sovereignty</h3>
-                <p className="text-xs text-[#57534E] leading-relaxed">
+                <h3 className="text-lg font-bold text-[#111827] mb-2">Data Isolation & Sovereignty</h3>
+                <p className="text-xs text-[#64748B] leading-relaxed">
                   Role-based JWT claims, field-level customer data encryption, and GDPR/DPDP-compliant privacy architecture across all gyms.
                 </p>
               </div>
@@ -687,189 +687,189 @@ const SuperAdminPortalLanding = () => {
       </section>
 
       {/* Core Platform Management Highlights Grid */}
-      <section className="py-16 border-t border-[#E7DADD] bg-[#FFFFFF]">
+      <section className="py-16 border-t border-[#E2E8F0] bg-[#FFFFFF]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-14">
-            <h2 className="text-2xl sm:text-3xl font-bold text-[#292524] tracking-tight">
+            <h2 className="text-2xl sm:text-3xl font-bold text-[#111827] tracking-tight">
               Administrative Capabilities & Oversight
             </h2>
-            <p className="text-sm text-[#57534E] mt-2">
+            <p className="text-sm text-[#64748B] mt-2">
               Enterprise-grade tools built for total operational transparency, audit logging, and automated compliance.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {/* Card 1 */}
-            <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-3xl p-6 shadow-lg flex flex-col justify-between">
+            <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-3xl p-6 shadow-lg flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between mb-5">
-                  <div className="w-12 h-12 rounded-xl bg-[#B76E79]/10 text-[#B76E79] flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-xl bg-[#FFF7ED] text-[#EA580C] flex items-center justify-center">
                     <Building2 size={24} />
                   </div>
-                  <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                  <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-emerald-500/10 text-[#15803D] border border-emerald-500/20">
                     12 Pending Review
                   </span>
                 </div>
-                <h3 className="text-xl font-bold text-[#292524] mb-2">
+                <h3 className="text-xl font-bold text-[#111827] mb-2">
                   Gym Onboarding &amp; Verification
                 </h3>
-                <p className="text-xs text-[#57534E] leading-relaxed mb-4">
+                <p className="text-xs text-[#64748B] leading-relaxed mb-4">
                   Review and approve new gym applications, verify facilities, equipment safety declarations, and issue operational franchise licenses.
                 </p>
                 <div className="flex flex-wrap gap-1.5 mb-5">
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#FFFFFF] text-[#57534E] border border-[#E7DADD]">KYC Verification</span>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#FFFFFF] text-[#57534E] border border-[#E7DADD]">Equipment Audits</span>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#FFFFFF] text-[#57534E] border border-[#E7DADD]">Branch Approvals</span>
+                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#FFFFFF] text-[#64748B] border border-[#E2E8F0]">KYC Verification</span>
+                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#FFFFFF] text-[#64748B] border border-[#E2E8F0]">Equipment Audits</span>
+                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#FFFFFF] text-[#64748B] border border-[#E2E8F0]">Branch Approvals</span>
                 </div>
               </div>
-              <div className="pt-3 border-t border-[#E7DADD] flex items-center justify-between text-xs font-semibold text-[#B76E79]">
+              <div className="pt-3 border-t border-[#E2E8F0] flex items-center justify-between text-xs font-semibold text-[#EA580C]">
                 <span>Gym Onboarding &amp; Verification</span>
-                <CheckCircle2 size={15} className="text-emerald-400" />
+                <CheckCircle2 size={15} className="text-[#15803D]" />
               </div>
             </div>
 
             {/* Card 2 */}
-            <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-3xl p-6 shadow-lg flex flex-col justify-between">
+            <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-3xl p-6 shadow-lg flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between mb-5">
-                  <div className="w-12 h-12 rounded-xl bg-[#B76E79]/10 text-[#B76E79] flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-xl bg-[#FFF7ED] text-[#EA580C] flex items-center justify-center">
                     <CreditCard size={24} />
                   </div>
-                  <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-[#B76E79]/10 text-[#B76E79] border border-[#B76E79]/20">
+                  <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5]">
                     3 SaaS Tiers Active
                   </span>
                 </div>
-                <h3 className="text-xl font-bold text-[#292524] mb-2">
+                <h3 className="text-xl font-bold text-[#111827] mb-2">
                   Subscription &amp; Tier Management
                 </h3>
-                <p className="text-xs text-[#57534E] leading-relaxed mb-4">
+                <p className="text-xs text-[#64748B] leading-relaxed mb-4">
                   Oversee platform pricing plans, manage gym owner billing cycles, process automated recurring invoices, and manage tier upgrades.
                 </p>
                 <div className="flex flex-wrap gap-1.5 mb-5">
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#FFFFFF] text-[#57534E] border border-[#E7DADD]">Recurring Billing</span>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#FFFFFF] text-[#57534E] border border-[#E7DADD]">Invoicing Engine</span>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#FFFFFF] text-[#57534E] border border-[#E7DADD]">Custom Pricing</span>
+                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#FFFFFF] text-[#64748B] border border-[#E2E8F0]">Recurring Billing</span>
+                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#FFFFFF] text-[#64748B] border border-[#E2E8F0]">Invoicing Engine</span>
+                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#FFFFFF] text-[#64748B] border border-[#E2E8F0]">Custom Pricing</span>
                 </div>
               </div>
-              <div className="pt-3 border-t border-[#E7DADD] flex items-center justify-between text-xs font-semibold text-[#B76E79]">
+              <div className="pt-3 border-t border-[#E2E8F0] flex items-center justify-between text-xs font-semibold text-[#EA580C]">
                 <span>Manage Subscriptions</span>
-                <CheckCircle2 size={15} className="text-emerald-400" />
+                <CheckCircle2 size={15} className="text-[#15803D]" />
               </div>
             </div>
 
             {/* Card 3 */}
-            <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-3xl p-6 shadow-lg flex flex-col justify-between">
+            <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-3xl p-6 shadow-lg flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between mb-5">
-                  <div className="w-12 h-12 rounded-xl bg-[#B76E79]/10 text-[#B76E79] flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-xl bg-[#FFF7ED] text-[#EA580C] flex items-center justify-center">
                     <TrendingUp size={24} />
                   </div>
-                  <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                  <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-emerald-500/10 text-[#15803D] border border-emerald-500/20">
                     +28.4% MoM
                   </span>
                 </div>
-                <h3 className="text-xl font-bold text-[#292524] mb-2">
+                <h3 className="text-xl font-bold text-[#111827] mb-2">
                   Global Analytics &amp; Reporting
                 </h3>
-                <p className="text-xs text-[#57534E] leading-relaxed mb-4">
+                <p className="text-xs text-[#64748B] leading-relaxed mb-4">
                   Gain macro insights into tenant retention, platform gross merchandise volume (GMV), system health, and cross-gym member engagement.
                 </p>
                 <div className="flex flex-wrap gap-1.5 mb-5">
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#FFFFFF] text-[#57534E] border border-[#E7DADD]">GMV Trends</span>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#FFFFFF] text-[#57534E] border border-[#E7DADD]">Churn Heatmaps</span>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#FFFFFF] text-[#57534E] border border-[#E7DADD]">Revenue Splits</span>
+                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#FFFFFF] text-[#64748B] border border-[#E2E8F0]">GMV Trends</span>
+                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#FFFFFF] text-[#64748B] border border-[#E2E8F0]">Churn Heatmaps</span>
+                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#FFFFFF] text-[#64748B] border border-[#E2E8F0]">Revenue Splits</span>
                 </div>
               </div>
-              <div className="pt-3 border-t border-[#E7DADD] flex items-center justify-between text-xs font-semibold text-[#B76E79]">
+              <div className="pt-3 border-t border-[#E2E8F0] flex items-center justify-between text-xs font-semibold text-[#EA580C]">
                 <span>Open Analytics Cockpit</span>
-                <CheckCircle2 size={15} className="text-emerald-400" />
+                <CheckCircle2 size={15} className="text-[#15803D]" />
               </div>
             </div>
 
             {/* Card 4 */}
-            <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-3xl p-6 shadow-lg flex flex-col justify-between">
+            <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-3xl p-6 shadow-lg flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between mb-5">
-                  <div className="w-12 h-12 rounded-xl bg-[#B76E79]/10 text-[#B76E79] flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-xl bg-[#FFF7ED] text-[#EA580C] flex items-center justify-center">
                     <Users size={24} />
                   </div>
-                  <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-[#B76E79]/10 text-[#B76E79] border border-[#B76E79]/20">
+                  <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5]">
                     4,850+ Accounts
                   </span>
                 </div>
-                <h3 className="text-xl font-bold text-[#292524] mb-2">
+                <h3 className="text-xl font-bold text-[#111827] mb-2">
                   Multi-Role Governance
                 </h3>
-                <p className="text-xs text-[#57534E] leading-relaxed mb-4">
+                <p className="text-xs text-[#64748B] leading-relaxed mb-4">
                   Comprehensive directory for gym owners, managers, trainers, and customers with role auditing, state management, and suspended account controls.
                 </p>
                 <div className="flex flex-wrap gap-1.5 mb-5">
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#FFFFFF] text-[#57534E] border border-[#E7DADD]">Gym Owners</span>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#FFFFFF] text-[#57534E] border border-[#E7DADD]">Trainer Licensing</span>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#FFFFFF] text-[#57534E] border border-[#E7DADD]">Access Audit</span>
+                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#FFFFFF] text-[#64748B] border border-[#E2E8F0]">Gym Owners</span>
+                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#FFFFFF] text-[#64748B] border border-[#E2E8F0]">Trainer Licensing</span>
+                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#FFFFFF] text-[#64748B] border border-[#E2E8F0]">Access Audit</span>
                 </div>
               </div>
-              <div className="pt-3 border-t border-[#E7DADD] flex items-center justify-between text-xs font-semibold text-[#B76E79]">
+              <div className="pt-3 border-t border-[#E2E8F0] flex items-center justify-between text-xs font-semibold text-[#EA580C]">
                 <span>Manage User Directory</span>
-                <CheckCircle2 size={15} className="text-emerald-400" />
+                <CheckCircle2 size={15} className="text-[#15803D]" />
               </div>
             </div>
 
             {/* Card 5 */}
-            <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-3xl p-6 shadow-lg flex flex-col justify-between">
+            <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-3xl p-6 shadow-lg flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between mb-5">
-                  <div className="w-12 h-12 rounded-xl bg-[#B76E79]/10 text-[#B76E79] flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-xl bg-[#FFF7ED] text-[#EA580C] flex items-center justify-center">
                     <Lock size={24} />
                   </div>
-                  <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                  <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-emerald-500/10 text-[#15803D] border border-emerald-500/20">
                     AES-256 Active
                   </span>
                 </div>
-                <h3 className="text-xl font-bold text-[#292524] mb-2">
+                <h3 className="text-xl font-bold text-[#111827] mb-2">
                   Security &amp; Isolation
                 </h3>
-                <p className="text-xs text-[#57534E] leading-relaxed mb-4">
+                <p className="text-xs text-[#64748B] leading-relaxed mb-4">
                   Strict multi-tenant database isolation, encrypted credentials, JWT claim verification, and centralized audit trails for enterprise compliance.
                 </p>
                 <div className="flex flex-wrap gap-1.5 mb-5">
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#FFFFFF] text-[#57534E] border border-[#E7DADD]">Database Isolation</span>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#FFFFFF] text-[#57534E] border border-[#E7DADD]">Audit Trails</span>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#FFFFFF] text-[#57534E] border border-[#E7DADD]">Zero-Trust JWT</span>
+                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#FFFFFF] text-[#64748B] border border-[#E2E8F0]">Database Isolation</span>
+                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#FFFFFF] text-[#64748B] border border-[#E2E8F0]">Audit Trails</span>
+                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#FFFFFF] text-[#64748B] border border-[#E2E8F0]">Zero-Trust JWT</span>
                 </div>
               </div>
-              <div className="pt-3 border-t border-[#E7DADD] flex items-center justify-between text-xs font-semibold text-[#B76E79]">
+              <div className="pt-3 border-t border-[#E2E8F0] flex items-center justify-between text-xs font-semibold text-[#EA580C]">
                 <span>Configure Security</span>
-                <CheckCircle2 size={15} className="text-emerald-400" />
+                <CheckCircle2 size={15} className="text-[#15803D]" />
               </div>
             </div>
 
             {/* Card 6 */}
-            <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-3xl p-6 shadow-lg flex flex-col justify-between">
+            <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-3xl p-6 shadow-lg flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between mb-5">
-                  <div className="w-12 h-12 rounded-xl bg-[#B76E79]/10 text-[#B76E79] flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-xl bg-[#FFF7ED] text-[#EA580C] flex items-center justify-center">
                     <Server size={24} />
                   </div>
-                  <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-[#B76E79]/10 text-[#B76E79] border border-[#B76E79]/20">
+                  <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5]">
                     Auto-Settlement Live
                   </span>
                 </div>
-                <h3 className="text-xl font-bold text-[#292524] mb-2">
+                <h3 className="text-xl font-bold text-[#111827] mb-2">
                   Platform Infrastructure &amp; Payouts
                 </h3>
-                <p className="text-xs text-[#57534E] leading-relaxed mb-4">
+                <p className="text-xs text-[#64748B] leading-relaxed mb-4">
                   Monitor API health, system background tasks, marketplace listings, payouts dispatch, and global notifications in real time.
                 </p>
                 <div className="flex flex-wrap gap-1.5 mb-5">
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#FFFFFF] text-[#57534E] border border-[#E7DADD]">Payout Dispatches</span>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#FFFFFF] text-[#57534E] border border-[#E7DADD]">Gateway Health</span>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#FFFFFF] text-[#57534E] border border-[#E7DADD]">Webhook Feeds</span>
+                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#FFFFFF] text-[#64748B] border border-[#E2E8F0]">Payout Dispatches</span>
+                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#FFFFFF] text-[#64748B] border border-[#E2E8F0]">Gateway Health</span>
+                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#FFFFFF] text-[#64748B] border border-[#E2E8F0]">Webhook Feeds</span>
                 </div>
               </div>
-              <div className="pt-3 border-t border-[#E7DADD] flex items-center justify-between text-xs font-semibold text-[#B76E79]">
+              <div className="pt-3 border-t border-[#E2E8F0] flex items-center justify-between text-xs font-semibold text-[#EA580C]">
                 <span>Manage Payouts &amp; System</span>
-                <CheckCircle2 size={15} className="text-emerald-400" />
+                <CheckCircle2 size={15} className="text-[#15803D]" />
               </div>
             </div>
           </div>
@@ -878,35 +878,35 @@ const SuperAdminPortalLanding = () => {
 
       {/* Security & Access Protocol */}
       <section className="py-16 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-gradient-to-r from-[#FFFFFF] to-[#F3E8E8] border border-[#E7DADD] rounded-3xl p-8 sm:p-12 text-center relative overflow-hidden">
-          <div className="w-14 h-14 bg-[#B76E79]/10 text-[#B76E79] rounded-2xl flex items-center justify-center mx-auto mb-5 border border-[#B76E79]/20">
+        <div className="bg-gradient-to-r from-[#FFFFFF] to-[#F8FAFC] border border-[#E2E8F0] rounded-3xl p-8 sm:p-12 text-center relative overflow-hidden">
+          <div className="w-14 h-14 bg-[#FFF7ED] text-[#EA580C] rounded-2xl flex items-center justify-center mx-auto mb-5 border border-[#FFEDD5]">
             <FileCheck2 size={28} />
           </div>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-[#292524] mb-3">
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-[#111827] mb-3">
             Authorized Personnel Access Only
           </h2>
-          <p className="text-sm sm:text-base text-[#57534E] max-w-xl mx-auto mb-8">
+          <p className="text-sm sm:text-base text-[#64748B] max-w-xl mx-auto mb-8">
             Access to this portal requires Super Administrator privileges. All login sessions and operational actions are cryptographically signed and logged.
           </p>
 
-          <div className="flex flex-wrap items-center justify-center gap-6 text-xs text-[#57534E] mb-8">
+          <div className="flex flex-wrap items-center justify-center gap-6 text-xs text-[#64748B] mb-8">
             <div className="flex items-center gap-2">
-              <CheckCircle2 size={16} className="text-[#B76E79]" />
+              <CheckCircle2 size={16} className="text-[#EA580C]" />
               <span>Role-Based Access Verification</span>
             </div>
             <div className="flex items-center gap-2">
-              <CheckCircle2 size={16} className="text-[#B76E79]" />
+              <CheckCircle2 size={16} className="text-[#EA580C]" />
               <span>End-to-End Encryption</span>
             </div>
             <div className="flex items-center gap-2">
-              <CheckCircle2 size={16} className="text-[#B76E79]" />
+              <CheckCircle2 size={16} className="text-[#EA580C]" />
               <span>Instant Revocation</span>
             </div>
           </div>
 
           <Link
             to="/login?portal=super-admin"
-            className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold rounded-xl transition-all shadow-lg shadow-[#B76E79]/20"
+            className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold rounded-xl transition-all shadow-lg shadow-orange-500/15"
           >
             <Lock size={16} />
             <span>Enter Super Admin</span>
@@ -915,7 +915,7 @@ const SuperAdminPortalLanding = () => {
       </section>
 
       {/* Footer */}
-      <footer id="footer" className="border-t border-[#E7DADD] bg-[#F3E8E8] py-10 text-xs text-[#57534E]">
+      <footer id="footer" className="border-t border-[#E2E8F0] bg-[#F8FAFC] py-10 text-xs text-[#64748B]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col gap-6">
           {/* Top row: copyright + portal nav */}
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -924,25 +924,25 @@ const SuperAdminPortalLanding = () => {
             </p>
             {/* Portal Navigation Links */}
             <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
-              <span className="text-[#B76E79] font-semibold uppercase tracking-wider hidden sm:block">Portals:</span>
-              <Link to="/" className="hover:text-[#B76E79] transition-colors">Main Website</Link>
-              <span className="text-[#E7DADD]">|</span>
-              <Link to="/portal/gym-owner" className="hover:text-[#B76E79] transition-colors">Gym Owner</Link>
+              <span className="text-[#EA580C] font-semibold uppercase tracking-wider hidden sm:block">Portals:</span>
+              <Link to="/" className="hover:text-[#EA580C] transition-colors">Main Website</Link>
+              <span className="text-[#E2E8F0]">|</span>
+              <Link to="/portal/gym-owner" className="hover:text-[#EA580C] transition-colors">Gym Owner</Link>
             </div>
           </div>
 
           {/* Bottom row: support & legal links */}
-          <div className="border-t border-[#E7DADD] pt-5 flex flex-col sm:flex-row items-center justify-between gap-3">
-            <p className="text-[#57534E] text-[11px] text-center sm:text-left">
+          <div className="border-t border-[#E2E8F0] pt-5 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <p className="text-[#64748B] text-[11px] text-center sm:text-left">
               This portal is restricted to authorized Gymora Super Administrators only.
             </p>
             <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
-              <span className="text-[#B76E79] font-semibold uppercase tracking-wider hidden sm:block">Support & Legal:</span>
-              <Link to="/contact" state={{ from: '/portal/super-admin#footer', fromLabel: 'Back to Super Admin' }} className="hover:text-[#B76E79] transition-colors">Help & Support</Link>
-              <span className="text-[#E7DADD]">|</span>
-              <Link to="/privacy-policy" state={{ from: '/portal/super-admin#footer', fromLabel: 'Back to Super Admin' }} className="hover:text-[#B76E79] transition-colors">Privacy Policy</Link>
-              <span className="text-[#E7DADD]">|</span>
-              <Link to="/terms-of-service" state={{ from: '/portal/super-admin#footer', fromLabel: 'Back to Super Admin' }} className="hover:text-[#B76E79] transition-colors">Terms & Conditions</Link>
+              <span className="text-[#EA580C] font-semibold uppercase tracking-wider hidden sm:block">Support & Legal:</span>
+              <Link to="/contact" state={{ from: '/portal/super-admin#footer', fromLabel: 'Back to Super Admin' }} className="hover:text-[#EA580C] transition-colors">Help & Support</Link>
+              <span className="text-[#E2E8F0]">|</span>
+              <Link to="/privacy-policy" state={{ from: '/portal/super-admin#footer', fromLabel: 'Back to Super Admin' }} className="hover:text-[#EA580C] transition-colors">Privacy Policy</Link>
+              <span className="text-[#E2E8F0]">|</span>
+              <Link to="/terms-of-service" state={{ from: '/portal/super-admin#footer', fromLabel: 'Back to Super Admin' }} className="hover:text-[#EA580C] transition-colors">Terms & Conditions</Link>
             </div>
           </div>
         </div>

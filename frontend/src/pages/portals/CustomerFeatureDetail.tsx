@@ -207,30 +207,30 @@ export default function CustomerFeatureDetail() {
   const activeModuleMeta = allModules.find((m) => m.id === activeKey)!;
 
   return (
-    <div className="min-h-screen bg-[#FFFFFF] text-[#292524] selection:bg-[#B76E79] selection:text-black">
+    <div className="min-h-screen bg-[#FFFFFF] text-[#111827] selection:bg-[#C2410C] selection:text-black">
       {/* Top Navigation */}
-      <nav className="border-b border-[#E7DADD] bg-[#F3E8E8]/90 backdrop-blur-md sticky top-0 z-40">
+      <nav className="border-b border-[#E2E8F0] bg-[#FFFFFF]/95 backdrop-blur-md sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <Link
               to="/portal/customer"
-              className="flex items-center space-x-2 text-slate-400 hover:text-white transition-colors group mr-4"
+              className="flex items-center space-x-2 text-[#64748B] hover:text-[#C2410C] transition-colors group mr-4"
             >
-              <div className="w-8 h-8 rounded-lg bg-[#FFFFFF] border border-[#E7DADD] flex items-center justify-center group-hover:border-[#B76E79]/50">
-                <ArrowLeft size={16} className="text-[#B76E79]" />
+              <div className="w-8 h-8 rounded-lg bg-[#FFFFFF] border border-[#E2E8F0] flex items-center justify-center group-hover:border-[#FFEDD5]">
+                <ArrowLeft size={16} className="text-[#EA580C]" />
               </div>
               <span className="text-xs font-semibold hidden sm:inline">Back to Customer</span>
             </Link>
 
-            <div className="h-5 w-px bg-[#E7DADD] hidden sm:block" />
+            <div className="h-5 w-px bg-[#E2E8F0] hidden sm:block" />
 
             <div className="flex items-center space-x-2">
-              <div className="w-9 h-9 bg-[#B76E79] rounded-xl flex items-center justify-center shadow-lg shadow-[#B76E79]/20">
+              <div className="w-9 h-9 bg-[#C2410C] rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/15">
                 <activeModuleMeta.icon className="text-black" size={20} />
               </div>
               <div>
-                <span className="text-base font-bold text-white block leading-tight">Gymora</span>
-                <span className="text-[10px] text-[#B76E79] font-semibold uppercase tracking-wider block">
+                <span className="text-base font-bold text-[#111827] block leading-tight">Gymora</span>
+                <span className="text-[10px] text-[#EA580C] font-semibold uppercase tracking-wider block">
                   Customer & Athlete Suite
                 </span>
               </div>
@@ -240,7 +240,7 @@ export default function CustomerFeatureDetail() {
           <div className="flex items-center space-x-3">
             <Link
               to="/portal/customer"
-              className="px-4 py-2 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold rounded-xl text-xs sm:text-sm transition-all shadow-md shadow-[#B76E79]/20 flex items-center gap-2"
+              className="px-4 py-2 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold rounded-xl text-xs sm:text-sm transition-all shadow-md shadow-orange-500/15 flex items-center gap-2"
             >
               <span>Portal Overview</span>
               <ChevronRight size={14} />
@@ -250,7 +250,7 @@ export default function CustomerFeatureDetail() {
       </nav>
 
       {/* Module Switcher Tabs */}
-      <div className="border-b border-[#E7DADD] bg-[#F3E8E8] overflow-x-auto">
+      <div className="border-b border-[#E2E8F0] bg-[#F8FAFC] overflow-x-auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center space-x-1 py-2">
           {allModules.map((mod) => {
             const Icon = mod.icon;
@@ -261,11 +261,11 @@ export default function CustomerFeatureDetail() {
                 onClick={() => navigate(`/portal/customer/${mod.id}`)}
                 className={`px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 whitespace-nowrap transition-all ${
                   isActive
-                    ? 'bg-[#B76E79] text-white shadow-md shadow-[#B76E79]/20 font-bold'
-                    : 'text-slate-400 hover:text-white hover:bg-[#FFFFFF]'
+                    ? 'bg-[#C2410C] text-white shadow-md shadow-orange-500/15 font-bold'
+                    : 'text-[#64748B] hover:text-[#C2410C] hover:bg-[#FFFFFF]'
                 }`}
               >
-                <Icon size={14} className={isActive ? 'text-black' : 'text-[#B76E79]'} />
+                <Icon size={14} className={isActive ? 'text-black' : 'text-[#EA580C]'} />
                 <span>{mod.label}</span>
               </button>
             );
@@ -274,14 +274,14 @@ export default function CustomerFeatureDetail() {
       </div>
 
       {/* Hero Header */}
-      <header className="relative py-14 px-4 sm:px-6 lg:px-8 border-b border-[#E7DADD] bg-gradient-to-b from-[#F3E8E8] via-[#FFFFFF] to-[#FFFFFF]">
+      <header className="relative py-14 px-4 sm:px-6 lg:px-8 border-b border-[#E2E8F0] bg-gradient-to-b from-[#F8FAFC] via-[#FFFFFF] to-[#FFFFFF]">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-3 max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FFFFFF] border border-[#E7DADD] text-xs font-bold text-[#B76E79]">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FFFFFF] border border-[#E2E8F0] text-xs font-bold text-[#EA580C]">
               <Sparkles size={13} />
               <span>LIVE INTERACTIVE ATHLETE CAPABILITY</span>
             </div>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#292524] tracking-tight">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#111827] tracking-tight">
               {activeModuleMeta.label}
             </h1>
             <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
@@ -290,8 +290,8 @@ export default function CustomerFeatureDetail() {
           </div>
 
           <div className="flex flex-wrap md:flex-col gap-3 shrink-0">
-            <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl px-4 py-3 flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-[#B76E79]/10 text-[#B76E79] flex items-center justify-center">
+            <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl px-4 py-3 flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-[#FFF7ED] text-[#EA580C] flex items-center justify-center">
                 <Zap size={16} />
               </div>
               <div>
@@ -302,8 +302,8 @@ export default function CustomerFeatureDetail() {
                 </span>
               </div>
             </div>
-            <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl px-4 py-3 flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-[#B76E79]/10 text-[#B76E79] flex items-center justify-center">
+            <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl px-4 py-3 flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-[#FFF7ED] text-[#EA580C] flex items-center justify-center">
                 <ShieldCheck size={16} />
               </div>
               <div>
@@ -322,10 +322,10 @@ export default function CustomerFeatureDetail() {
         <section className="space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <span className="text-xs font-bold uppercase tracking-widest text-[#B76E79] block mb-1">
+              <span className="text-xs font-bold uppercase tracking-widest text-[#EA580C] block mb-1">
                 EXECUTION ARCHITECTURE & PROCESS FLOW
               </span>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-[#292524]">
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-[#111827]">
                 {currentFlow.title}
               </h2>
               <p className="text-xs sm:text-sm text-slate-400 mt-1">
@@ -335,28 +335,28 @@ export default function CustomerFeatureDetail() {
           </div>
 
           {/* Flowchart Diagram Card Grid */}
-          <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
+          <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative">
               {currentFlow.steps.map((step, idx) => (
                 <div
                   key={idx}
-                  className="bg-[#FFFFFF] border border-[#E7DADD] hover:border-[#B76E79]/50 rounded-2xl p-5 transition-all flex flex-col justify-between space-y-4 relative group"
+                  className="bg-[#FFFFFF] border border-[#E2E8F0] hover:border-[#FFEDD5] rounded-2xl p-5 transition-all flex flex-col justify-between space-y-4 relative group"
                 >
                   <div>
                     <div className="flex items-center justify-between mb-3">
-                      <span className="text-2xl font-black font-mono text-[#B76E79]/40 group-hover:text-[#B76E79] transition-colors">
+                      <span className="text-2xl font-black font-mono text-[#EA580C]/40 group-hover:text-[#EA580C] transition-colors">
                         {step.step}
                       </span>
                       <div className="flex items-center gap-2">
                         {step.badge && (
-                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#F3E8E8] text-slate-300 border border-[#E7DADD]">
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#F8FAFC] text-slate-300 border border-[#E2E8F0]">
                             {step.badge}
                           </span>
                         )}
                         <span
                           className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
                             step.actor === 'Member'
-                              ? 'bg-[#B76E79]/10 text-[#B76E79] border border-[#B76E79]/30'
+                              ? 'bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5]'
                               : step.actor === 'AI Engine'
                               ? 'bg-purple-500/10 text-purple-300 border border-purple-500/30'
                               : step.actor === 'Coach'
@@ -369,7 +369,7 @@ export default function CustomerFeatureDetail() {
                       </div>
                     </div>
 
-                    <h3 className="text-base font-bold text-[#292524] mb-2 group-hover:text-[#B76E79] transition-colors">
+                    <h3 className="text-base font-bold text-[#111827] mb-2 group-hover:text-[#EA580C] transition-colors">
                       {step.title}
                     </h3>
 
@@ -378,7 +378,7 @@ export default function CustomerFeatureDetail() {
                     </p>
                   </div>
 
-                  <div className="pt-3 border-t border-[#E7DADD] flex items-center justify-between text-[11px]">
+                  <div className="pt-3 border-t border-[#E2E8F0] flex items-center justify-between text-[11px]">
                     <span className="text-slate-500">Output:</span>
                     <span className="font-semibold text-slate-200 truncate max-w-[180px]">
                       {step.output}
@@ -389,11 +389,11 @@ export default function CustomerFeatureDetail() {
             </div>
 
             {/* Connecting Legend */}
-            <div className="mt-8 pt-6 border-t border-[#E7DADD] flex flex-wrap items-center justify-between gap-4 text-xs text-slate-400">
+            <div className="mt-8 pt-6 border-t border-[#E2E8F0] flex flex-wrap items-center justify-between gap-4 text-xs text-slate-400">
               <div className="flex flex-wrap items-center gap-4">
                 <span className="font-semibold text-white">Flow Actors:</span>
                 <span className="flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#B76E79]" /> Member Floor Action
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#C2410C]" /> Member Floor Action
                 </span>
                 <span className="flex items-center gap-1.5">
                   <span className="w-2.5 h-2.5 rounded-full bg-purple-400" /> AI Neural Processing
@@ -405,7 +405,7 @@ export default function CustomerFeatureDetail() {
                   <span className="w-2.5 h-2.5 rounded-full bg-emerald-400" /> Banking Gateway
                 </span>
               </div>
-              <div className="flex items-center gap-2 text-[#B76E79]">
+              <div className="flex items-center gap-2 text-[#EA580C]">
                 <Zap size={14} />
                 <span className="font-semibold">Real-time state synchronization</span>
               </div>
@@ -420,17 +420,17 @@ export default function CustomerFeatureDetail() {
           <section className="space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
-                <span className="text-xs font-bold text-[#B76E79] uppercase tracking-wider block mb-1">
+                <span className="text-xs font-bold text-[#EA580C] uppercase tracking-wider block mb-1">
                   INTERACTIVE WORKOUT GENERATOR
                 </span>
-                <h3 className="text-2xl font-bold text-[#292524]">Custom Program Builder & Rep Player</h3>
+                <h3 className="text-2xl font-bold text-[#111827]">Custom Program Builder & Rep Player</h3>
                 <p className="text-xs text-slate-400 mt-0.5">
                   Configure your split, select target muscles, and preview dynamic exercise prescriptions
                 </p>
               </div>
               <button
                 onClick={() => setHasGeneratedWorkout(true)}
-                className="px-5 py-2.5 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold text-xs rounded-xl transition-all shadow-md shadow-[#B76E79]/20 flex items-center gap-2"
+                className="px-5 py-2.5 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold text-xs rounded-xl transition-all shadow-md shadow-orange-500/15 flex items-center gap-2"
               >
                 <RotateCcw size={14} />
                 <span>Regenerate AI Routine</span>
@@ -439,24 +439,24 @@ export default function CustomerFeatureDetail() {
 
             {/* Config Selectors */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-2xl p-4 space-y-2">
+              <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl p-4 space-y-2">
                 <span className="text-xs font-bold text-slate-400">Workout Split Scheme</span>
                 <select
                   value={selectedSplit}
                   onChange={(e) => setSelectedSplit(e.target.value)}
-                  className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#B76E79]"
+                  className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#FDBA74]"
                 >
                   {workoutSplits.map((s) => (
                     <option key={s} value={s}>{s}</option>
                   ))}
                 </select>
               </div>
-              <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-2xl p-4 space-y-2">
+              <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl p-4 space-y-2">
                 <span className="text-xs font-bold text-slate-400">Target Muscle Group</span>
                 <select
                   value={selectedMuscle}
                   onChange={(e) => setSelectedMuscle(e.target.value)}
-                  className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#B76E79]"
+                  className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#FDBA74]"
                 >
                   <option value="Chest & Triceps">Chest & Triceps (Push Day)</option>
                   <option value="Back & Biceps">Back & Biceps (Pull Day)</option>
@@ -465,12 +465,12 @@ export default function CustomerFeatureDetail() {
                   <option value="Shoulders & Core">Shoulders & Core</option>
                 </select>
               </div>
-              <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-2xl p-4 space-y-2">
+              <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl p-4 space-y-2">
                 <span className="text-xs font-bold text-slate-400">Primary Objective</span>
                 <select
                   value={fitnessGoal}
                   onChange={(e) => setFitnessGoal(e.target.value)}
-                  className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#B76E79]"
+                  className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#FDBA74]"
                 >
                   <option value="Hypertrophy (Muscle Gain)">Hypertrophy (Muscle Gain)</option>
                   <option value="Strength & Power">Strength & Power (Low Reps)</option>
@@ -480,20 +480,20 @@ export default function CustomerFeatureDetail() {
             </div>
 
             {/* Generated Exercise Cards Table */}
-            <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-3xl p-6 shadow-xl space-y-4">
+            <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-3xl p-6 shadow-xl space-y-4">
               <div className="flex items-center justify-between">
-                <h4 className="text-base font-bold text-[#292524] flex items-center gap-2">
-                  <Bot size={16} className="text-[#B76E79]" />
+                <h4 className="text-base font-bold text-[#111827] flex items-center gap-2">
+                  <Bot size={16} className="text-[#EA580C]" />
                   <span>Synthesized Program: {selectedSplit} — {selectedMuscle}</span>
                 </h4>
-                <span className="text-xs font-bold text-[#B76E79] px-3 py-1 bg-[#B76E79]/10 rounded-full border border-[#B76E79]/20">
+                <span className="text-xs font-bold text-[#EA580C] px-3 py-1 bg-[#FFF7ED] rounded-full border border-[#FFEDD5]">
                   Est. 52 Mins • 420 kcal
                 </span>
               </div>
 
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-[#FFFFFF] text-slate-400 uppercase text-[10px] font-bold border-b border-[#E7DADD]">
+                  <thead className="bg-[#FFFFFF] text-slate-400 uppercase text-[10px] font-bold border-b border-[#E2E8F0]">
                     <tr>
                       <th className="px-5 py-3.5">Exercise Movement</th>
                       <th className="px-5 py-3.5">Sets & Reps</th>
@@ -504,22 +504,22 @@ export default function CustomerFeatureDetail() {
                       <th className="px-5 py-3.5 text-right">Demo</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#E7DADD]">
+                  <tbody className="divide-y divide-[#E2E8F0]">
                     {exercisesList.map((ex, idx) => (
                       <tr key={idx} className="hover:bg-[#FFFFFF]/40 transition-colors">
                         <td className="px-5 py-3.5 font-bold text-white flex items-center gap-2">
-                          <span className="w-5 h-5 rounded bg-[#F3E8E8] border border-[#E7DADD] text-[10px] flex items-center justify-center text-[#B76E79]">
+                          <span className="w-5 h-5 rounded bg-[#F8FAFC] border border-[#E2E8F0] text-[10px] flex items-center justify-center text-[#EA580C]">
                             {idx + 1}
                           </span>
                           {ex.name}
                         </td>
                         <td className="px-5 py-3.5 font-mono text-slate-300">{ex.sets} × {ex.reps}</td>
                         <td className="px-5 py-3.5">
-                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/30">
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/10 text-[#B45309] border border-amber-500/30">
                             {ex.rpe}
                           </span>
                         </td>
-                        <td className="px-5 py-3.5 font-mono text-[#B76E79] flex items-center gap-1">
+                        <td className="px-5 py-3.5 font-mono text-[#EA580C] flex items-center gap-1">
                           <Clock size={12} /> {ex.rest}
                         </td>
                         <td className="px-5 py-3.5 text-slate-300">{ex.target}</td>
@@ -527,7 +527,7 @@ export default function CustomerFeatureDetail() {
                         <td className="px-5 py-3.5 text-right">
                           <button
                             onClick={() => setActiveExerciseModal(ex)}
-                            className="px-3 py-1 bg-[#FFFFFF] hover:bg-[#B76E79] hover:text-black text-[#B76E79] border border-[#E7DADD] font-bold rounded-lg transition-colors flex items-center gap-1 text-[11px] ml-auto"
+                            className="px-3 py-1 bg-[#FFFFFF] hover:bg-[#C2410C] hover:text-black text-[#EA580C] border border-[#E2E8F0] font-bold rounded-lg transition-colors flex items-center gap-1 text-[11px] ml-auto"
                           >
                             <Play size={10} /> Preview
                           </button>
@@ -542,23 +542,23 @@ export default function CustomerFeatureDetail() {
             {/* Exercise Modal */}
             {activeExerciseModal && (
               <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-                <div className="bg-[#F3E8E8] border border-[#B76E79]/40 rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl">
-                  <div className="flex items-center justify-between border-b border-[#E7DADD] pb-3">
-                    <h3 className="text-lg font-bold text-[#292524]">{activeExerciseModal.name}</h3>
+                <div className="bg-[#F8FAFC] border border-[#FFEDD5] rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+                  <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-3">
+                    <h3 className="text-lg font-bold text-[#111827]">{activeExerciseModal.name}</h3>
                     <button
                       onClick={() => setActiveExerciseModal(null)}
-                      className="text-slate-400 hover:text-white text-sm"
+                      className="text-[#64748B] hover:text-[#C2410C] text-sm"
                     >
                       ✕
                     </button>
                   </div>
-                  <div className="rounded-2xl overflow-hidden bg-black/60 h-48 flex items-center justify-center border border-[#E7DADD] relative">
+                  <div className="rounded-2xl overflow-hidden bg-black/60 h-48 flex items-center justify-center border border-[#E2E8F0] relative">
                     <img 
                       src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=700&q=80" 
                       alt="Exercise Demo" 
                       className="w-full h-full object-cover opacity-60"
                     />
-                    <div className="absolute w-12 h-12 rounded-full bg-[#B76E79] flex items-center justify-center text-black shadow-lg shadow-[#B76E79]/40">
+                    <div className="absolute w-12 h-12 rounded-full bg-[#C2410C] flex items-center justify-center text-black shadow-lg shadow-orange-500/15">
                       <Play size={20} className="ml-1" />
                     </div>
                   </div>
@@ -566,16 +566,16 @@ export default function CustomerFeatureDetail() {
                     <div className="flex justify-between text-slate-400">
                       <span>Prescribed Sets: <strong className="text-white">{activeExerciseModal.sets}</strong></span>
                       <span>Target Reps: <strong className="text-white">{activeExerciseModal.reps}</strong></span>
-                      <span>Rest: <strong className="text-[#B76E79]">{activeExerciseModal.rest}</strong></span>
+                      <span>Rest: <strong className="text-[#EA580C]">{activeExerciseModal.rest}</strong></span>
                     </div>
-                    <div className="p-3 rounded-xl bg-[#FFFFFF] border border-[#E7DADD] text-slate-300">
-                      <strong className="text-[#B76E79] block mb-1">Execution Coaching Note:</strong>
+                    <div className="p-3 rounded-xl bg-[#FFFFFF] border border-[#E2E8F0] text-slate-300">
+                      <strong className="text-[#EA580C] block mb-1">Execution Coaching Note:</strong>
                       {activeExerciseModal.tip}
                     </div>
                   </div>
                   <button
                     onClick={() => setActiveExerciseModal(null)}
-                    className="w-full py-2.5 bg-[#B76E79] text-white font-bold text-xs rounded-xl"
+                    className="w-full py-2.5 bg-[#C2410C] text-white font-bold text-xs rounded-xl"
                   >
                     Close Demo
                   </button>
@@ -590,25 +590,25 @@ export default function CustomerFeatureDetail() {
           <section className="space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
-                <span className="text-xs font-bold text-[#B76E79] uppercase tracking-wider block mb-1">
+                <span className="text-xs font-bold text-[#EA580C] uppercase tracking-wider block mb-1">
                   METABOLIC NUTRITION SYNTHESIS
                 </span>
-                <h3 className="text-2xl font-bold text-[#292524]">Daily Calorie Budget & Meal Schedules</h3>
+                <h3 className="text-2xl font-bold text-[#111827]">Daily Calorie Budget & Meal Schedules</h3>
                 <p className="text-xs text-slate-400 mt-0.5">
                   Macro-balanced nutrition tailored to muscle recovery and fat loss
                 </p>
               </div>
 
               {/* Preference Filter */}
-              <div className="flex items-center gap-2 bg-[#F3E8E8] p-1.5 rounded-2xl border border-[#E7DADD]">
+              <div className="flex items-center gap-2 bg-[#F8FAFC] p-1.5 rounded-2xl border border-[#E2E8F0]">
                 {['High-Protein Veg', 'Balanced Non-Veg', 'Clean Keto'].map((diet) => (
                   <button
                     key={diet}
                     onClick={() => setDietPreference(diet)}
                     className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
                       dietPreference === diet
-                        ? 'bg-[#B76E79] text-white shadow-md shadow-[#B76E79]/20'
-                        : 'text-slate-400 hover:text-white'
+                        ? 'bg-[#C2410C] text-white shadow-md shadow-orange-500/15'
+                        : 'text-[#64748B] hover:text-[#C2410C]'
                     }`}
                   >
                     {diet}
@@ -619,22 +619,22 @@ export default function CustomerFeatureDetail() {
 
             {/* Macro Cards & Water Intake */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-2xl p-4">
+              <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl p-4">
                 <span className="text-xs text-slate-400 block font-bold">Daily Calories</span>
                 <span className="text-2xl font-black text-white font-mono">{calorieBudget.target}</span>
-                <span className="text-[10px] text-[#B76E79] block mt-1">Deficit Target for Fat Loss</span>
+                <span className="text-[10px] text-[#EA580C] block mt-1">Deficit Target for Fat Loss</span>
               </div>
-              <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-2xl p-4">
+              <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl p-4">
                 <span className="text-xs text-slate-400 block font-bold">Protein Target</span>
-                <span className="text-2xl font-black text-[#B76E79] font-mono">{calorieBudget.protein}g</span>
+                <span className="text-2xl font-black text-[#EA580C] font-mono">{calorieBudget.protein}g</span>
                 <span className="text-[10px] text-slate-400 block mt-1">2.1g per kg bodyweight</span>
               </div>
-              <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-2xl p-4">
+              <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl p-4">
                 <span className="text-xs text-slate-400 block font-bold">Carbohydrates</span>
                 <span className="text-2xl font-black text-white font-mono">{calorieBudget.carbs}g</span>
                 <span className="text-[10px] text-slate-400 block mt-1">Clean energy for workouts</span>
               </div>
-              <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-2xl p-4 flex flex-col justify-between">
+              <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl p-4 flex flex-col justify-between">
                 <div>
                   <span className="text-xs text-slate-400 block font-bold">Hydration Tracker</span>
                   <span className="text-2xl font-black text-cyan-400 font-mono">{(waterGlasses * 0.35).toFixed(1)}L / 3.5L</span>
@@ -651,16 +651,16 @@ export default function CustomerFeatureDetail() {
             {/* Meal Plan List */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {mealsList.map((meal, idx) => (
-                <div key={idx} className="bg-[#F3E8E8] border border-[#E7DADD] hover:border-[#B76E79]/40 rounded-3xl p-5 space-y-3 transition-all">
+                <div key={idx} className="bg-[#F8FAFC] border border-[#E2E8F0] hover:border-[#FFEDD5] rounded-3xl p-5 space-y-3 transition-all">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-[#B76E79] uppercase tracking-wider">{meal.title}</span>
-                    <span className="text-xs font-mono font-bold text-white bg-[#FFFFFF] px-2.5 py-1 rounded-full border border-[#E7DADD]">
+                    <span className="text-xs font-bold text-[#EA580C] uppercase tracking-wider">{meal.title}</span>
+                    <span className="text-xs font-mono font-bold text-white bg-[#FFFFFF] px-2.5 py-1 rounded-full border border-[#E2E8F0]">
                       {meal.calories}
                     </span>
                   </div>
-                  <h4 className="text-sm font-bold text-[#292524]">{meal.items}</h4>
-                  <div className="flex items-center gap-4 text-[11px] text-slate-400 pt-2 border-t border-[#E7DADD]">
-                    <span>Protein: <strong className="text-[#B76E79]">{meal.protein}</strong></span>
+                  <h4 className="text-sm font-bold text-[#111827]">{meal.items}</h4>
+                  <div className="flex items-center gap-4 text-[11px] text-slate-400 pt-2 border-t border-[#E2E8F0]">
+                    <span>Protein: <strong className="text-[#EA580C]">{meal.protein}</strong></span>
                     <span>Carbs: <strong className="text-slate-200">{meal.carbs}</strong></span>
                     <span>Fats: <strong className="text-slate-200">{meal.fats}</strong></span>
                   </div>
@@ -675,17 +675,17 @@ export default function CustomerFeatureDetail() {
           <section className="space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
-                <span className="text-xs font-bold text-[#B76E79] uppercase tracking-wider block mb-1">
+                <span className="text-xs font-bold text-[#EA580C] uppercase tracking-wider block mb-1">
                   1-ON-1 PERSONAL TRAINING
                 </span>
-                <h3 className="text-2xl font-bold text-[#292524]">Certified Coach Directory & Booking</h3>
+                <h3 className="text-2xl font-bold text-[#111827]">Certified Coach Directory & Booking</h3>
                 <p className="text-xs text-slate-400 mt-0.5">
                   Book personal mentors for in-gym training, online consultations, and technique corrections
                 </p>
               </div>
 
               {bookedCoach && (
-                <div className="px-4 py-2 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 rounded-xl text-xs font-bold flex items-center gap-2">
+                <div className="px-4 py-2 bg-emerald-500/10 border border-emerald-500/30 text-[#15803D] rounded-xl text-xs font-bold flex items-center gap-2">
                   <Check size={14} />
                   <span>Trial Session Booked with {bookedCoach}!</span>
                 </div>
@@ -697,7 +697,7 @@ export default function CustomerFeatureDetail() {
               {coachesList.map((coach) => (
                 <div
                   key={coach.id}
-                  className="bg-[#F3E8E8] border border-[#E7DADD] hover:border-[#B76E79]/50 rounded-3xl overflow-hidden shadow-xl flex flex-col justify-between transition-all group"
+                  className="bg-[#F8FAFC] border border-[#E2E8F0] hover:border-[#FFEDD5] rounded-3xl overflow-hidden shadow-xl flex flex-col justify-between transition-all group"
                 >
                   <div>
                     <div className="h-44 overflow-hidden relative">
@@ -706,22 +706,22 @@ export default function CustomerFeatureDetail() {
                         alt={coach.name} 
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#F3E8E8] via-transparent to-transparent" />
-                      <div className="absolute top-3 right-3 bg-[#FFFFFF]/80 backdrop-blur-md px-2 py-0.5 rounded-lg border border-[#E7DADD] text-[11px] font-bold text-amber-400 flex items-center gap-1">
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#F8FAFC] via-transparent to-transparent" />
+                      <div className="absolute top-3 right-3 bg-[#FFFFFF]/80 backdrop-blur-md px-2 py-0.5 rounded-lg border border-[#E2E8F0] text-[11px] font-bold text-[#B45309] flex items-center gap-1">
                         <Star size={11} fill="currentColor" /> {coach.rating}
                       </div>
                     </div>
 
                     <div className="p-5 space-y-2">
-                      <h4 className="text-base font-bold text-[#292524] group-hover:text-[#B76E79] transition-colors">
+                      <h4 className="text-base font-bold text-[#111827] group-hover:text-[#EA580C] transition-colors">
                         {coach.name}
                       </h4>
                       <p className="text-xs text-slate-400">{coach.spec}</p>
                       <div className="pt-2 flex flex-wrap gap-1.5">
-                        <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#FFFFFF] text-slate-300 border border-[#E7DADD]">
+                        <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#FFFFFF] text-slate-300 border border-[#E2E8F0]">
                           {coach.cert}
                         </span>
-                        <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#FFFFFF] text-slate-300 border border-[#E7DADD]">
+                        <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#FFFFFF] text-slate-300 border border-[#E2E8F0]">
                           {coach.exp} Exp
                         </span>
                       </div>
@@ -731,11 +731,11 @@ export default function CustomerFeatureDetail() {
                   <div className="p-5 pt-0">
                     <div className="flex items-center justify-between text-xs mb-3">
                       <span className="text-slate-400">Rate:</span>
-                      <span className="font-bold font-mono text-[#B76E79]">{coach.rate}</span>
+                      <span className="font-bold font-mono text-[#EA580C]">{coach.rate}</span>
                     </div>
                     <button
                       onClick={() => setBookedCoach(coach.name)}
-                      className="w-full py-2.5 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold text-xs rounded-xl transition-all shadow-md shadow-[#B76E79]/20"
+                      className="w-full py-2.5 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold text-xs rounded-xl transition-all shadow-md shadow-orange-500/15"
                     >
                       Book Free Trial Slot
                     </button>
@@ -751,17 +751,17 @@ export default function CustomerFeatureDetail() {
           <section className="space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
-                <span className="text-xs font-bold text-[#B76E79] uppercase tracking-wider block mb-1">
+                <span className="text-xs font-bold text-[#EA580C] uppercase tracking-wider block mb-1">
                   BIOMETRIC & STREAK ANALYTICS
                 </span>
-                <h3 className="text-2xl font-bold text-[#292524]">Transformation Milestones & Attendance Streak</h3>
+                <h3 className="text-2xl font-bold text-[#111827]">Transformation Milestones & Attendance Streak</h3>
                 <p className="text-xs text-slate-400 mt-0.5">
                   Track weight changes, consistency streaks, and strength progression metrics
                 </p>
               </div>
 
-              <div className="flex items-center gap-2 bg-[#F3E8E8] border border-[#E7DADD] px-4 py-2 rounded-2xl">
-                <Flame size={18} className="text-amber-400 animate-pulse" />
+              <div className="flex items-center gap-2 bg-[#F8FAFC] border border-[#E2E8F0] px-4 py-2 rounded-2xl">
+                <Flame size={18} className="text-[#B45309] animate-pulse" />
                 <div>
                   <span className="text-[10px] text-slate-400 block font-bold uppercase">Consistency Streak</span>
                   <span className="text-sm font-black text-white">{streakDays} Consecutive Days</span>
@@ -771,22 +771,22 @@ export default function CustomerFeatureDetail() {
 
             {/* Metric KPI Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-2xl p-5 space-y-2">
+              <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl p-5 space-y-2">
                 <span className="text-xs text-slate-400 font-bold block">Current Bodyweight</span>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-3xl font-black text-white font-mono">{currentWeight} kg</span>
-                  <span className="text-xs font-bold text-emerald-400">-4.2 kg this month</span>
+                  <span className="text-3xl font-black text-[#111827] font-mono">{currentWeight} kg</span>
+                  <span className="text-xs font-bold text-[#15803D]">-4.2 kg this month</span>
                 </div>
                 <div className="flex items-center gap-2 pt-2">
                   <button
                     onClick={() => setCurrentWeight((prev) => parseFloat((prev - 0.2).toFixed(1)))}
-                    className="px-2 py-1 bg-[#FFFFFF] hover:bg-[#B76E79] hover:text-black text-xs rounded border border-[#E7DADD]"
+                    className="px-2 py-1 bg-[#FFFFFF] hover:bg-[#C2410C] hover:text-black text-xs rounded border border-[#E2E8F0]"
                   >
                     -0.2 kg
                   </button>
                   <button
                     onClick={() => setCurrentWeight((prev) => parseFloat((prev + 0.2).toFixed(1)))}
-                    className="px-2 py-1 bg-[#FFFFFF] hover:bg-[#B76E79] hover:text-black text-xs rounded border border-[#E7DADD]"
+                    className="px-2 py-1 bg-[#FFFFFF] hover:bg-[#C2410C] hover:text-black text-xs rounded border border-[#E2E8F0]"
                   >
                     +0.2 kg
                   </button>
@@ -794,7 +794,7 @@ export default function CustomerFeatureDetail() {
                 </div>
               </div>
 
-              <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-2xl p-5 space-y-2">
+              <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl p-5 space-y-2">
                 <span className="text-xs text-slate-400 font-bold block">Weekly Workout Compliance</span>
                 <div className="flex items-center justify-between pt-1">
                   {weeklyDays.map((w, idx) => (
@@ -803,10 +803,10 @@ export default function CustomerFeatureDetail() {
                       <div
                         className={`w-7 h-7 rounded-lg flex items-center justify-center text-[10px] font-bold ${
                           w.completed
-                            ? 'bg-[#B76E79] text-white shadow-md shadow-[#B76E79]/20'
+                            ? 'bg-[#C2410C] text-white shadow-md shadow-orange-500/15'
                             : w.rest
-                            ? 'bg-[#FFFFFF] text-slate-500 border border-[#E7DADD]'
-                            : 'bg-[#F3E8E8] text-slate-600'
+                            ? 'bg-[#FFFFFF] text-slate-500 border border-[#E2E8F0]'
+                            : 'bg-[#F8FAFC] text-slate-600'
                         }`}
                       >
                         {w.completed ? <Check size={12} /> : w.rest ? 'Zz' : '-'}
@@ -816,7 +816,7 @@ export default function CustomerFeatureDetail() {
                 </div>
               </div>
 
-              <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-2xl p-5 space-y-2">
+              <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl p-5 space-y-2">
                 <span className="text-xs text-slate-400 font-bold block">Personal Record (PR) Velocity</span>
                 <div className="space-y-1.5 pt-1 text-xs">
                   <div className="flex justify-between">
@@ -842,20 +842,20 @@ export default function CustomerFeatureDetail() {
           <section className="space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
-                <span className="text-xs font-bold text-[#B76E79] uppercase tracking-wider block mb-1">
+                <span className="text-xs font-bold text-[#EA580C] uppercase tracking-wider block mb-1">
                   GAMIFICATION & REWARD TIERS
                 </span>
-                <h3 className="text-2xl font-bold text-[#292524]">Active Challenges & Member Badges</h3>
+                <h3 className="text-2xl font-bold text-[#111827]">Active Challenges & Member Badges</h3>
                 <p className="text-xs text-slate-400 mt-0.5">
                   Complete endurance quests, climb the community leaderboard, and unlock store vouchers
                 </p>
               </div>
 
-              <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-2xl px-4 py-2 flex items-center gap-3">
-                <Award size={18} className="text-[#B76E79]" />
+              <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl px-4 py-2 flex items-center gap-3">
+                <Award size={18} className="text-[#EA580C]" />
                 <div>
                   <span className="text-[10px] text-slate-400 block font-bold uppercase">Gymora Coins</span>
-                  <span className="text-sm font-black text-[#B76E79] font-mono">1,850 Coins</span>
+                  <span className="text-sm font-black text-[#EA580C] font-mono">1,850 Coins</span>
                 </div>
               </div>
             </div>
@@ -865,32 +865,32 @@ export default function CustomerFeatureDetail() {
               {challengesList.map((ch) => (
                 <div
                   key={ch.id}
-                  className="bg-[#F3E8E8] border border-[#E7DADD] hover:border-[#B76E79]/50 rounded-3xl p-6 shadow-xl flex flex-col justify-between space-y-4 transition-all"
+                  className="bg-[#F8FAFC] border border-[#E2E8F0] hover:border-[#FFEDD5] rounded-3xl p-6 shadow-xl flex flex-col justify-between space-y-4 transition-all"
                 >
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#FFFFFF] text-slate-300 border border-[#E7DADD]">
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#FFFFFF] text-slate-300 border border-[#E2E8F0]">
                         {ch.participants}
                       </span>
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#B76E79]/10 text-[#B76E79] border border-[#B76E79]/20">
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5]">
                         {ch.status}
                       </span>
                     </div>
 
-                    <h4 className="text-base font-bold text-[#292524]">{ch.title}</h4>
+                    <h4 className="text-base font-bold text-[#111827]">{ch.title}</h4>
 
                     <div className="space-y-1.5 text-xs">
                       <div className="flex justify-between text-slate-400">
                         <span>Progress:</span>
                         <span className="font-bold text-white">{ch.progress}</span>
                       </div>
-                      <div className="w-full bg-[#FFFFFF] h-2 rounded-full overflow-hidden border border-[#E7DADD]">
-                        <div className="bg-[#B76E79] h-full w-[60%]" />
+                      <div className="w-full bg-[#FFFFFF] h-2 rounded-full overflow-hidden border border-[#E2E8F0]">
+                        <div className="bg-[#C2410C] h-full w-[60%]" />
                       </div>
                     </div>
 
-                    <div className="p-3 rounded-xl bg-[#FFFFFF] border border-[#E7DADD] text-[11px] text-slate-300">
-                      <strong className="text-[#B76E79] block mb-0.5">Reward Bounty:</strong>
+                    <div className="p-3 rounded-xl bg-[#FFFFFF] border border-[#E2E8F0] text-[11px] text-slate-300">
+                      <strong className="text-[#EA580C] block mb-0.5">Reward Bounty:</strong>
                       {ch.reward}
                     </div>
                   </div>
@@ -899,8 +899,8 @@ export default function CustomerFeatureDetail() {
                     onClick={() => setJoinedChallenge(ch.id)}
                     className={`w-full py-2.5 rounded-xl text-xs font-bold transition-all ${
                       joinedChallenge === ch.id
-                        ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'
-                        : 'bg-[#B76E79] hover:bg-[#9F5965] text-white shadow-md shadow-[#B76E79]/20'
+                        ? 'bg-emerald-500/10 text-[#15803D] border border-emerald-500/30'
+                        : 'bg-[#C2410C] hover:bg-[#9A3412] text-white shadow-md shadow-orange-500/15'
                     }`}
                   >
                     {joinedChallenge === ch.id ? '✓ Participating (Day 18)' : 'Join Challenge'}
@@ -916,10 +916,10 @@ export default function CustomerFeatureDetail() {
           <section className="space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
-                <span className="text-xs font-bold text-[#B76E79] uppercase tracking-wider block mb-1">
+                <span className="text-xs font-bold text-[#EA580C] uppercase tracking-wider block mb-1">
                   MULTI-CLUB ACCESS PASSES
                 </span>
-                <h3 className="text-2xl font-bold text-[#292524]">Verified Gym Explorer & Instant Turnstile QR</h3>
+                <h3 className="text-2xl font-bold text-[#111827]">Verified Gym Explorer & Instant Turnstile QR</h3>
                 <p className="text-xs text-slate-400 mt-0.5">
                   Browse top-tier gym facilities, compare passes, and generate dynamic digital QR entry passes
                 </p>
@@ -932,7 +932,7 @@ export default function CustomerFeatureDetail() {
                   placeholder="Filter by area / gym..."
                   value={searchCity}
                   onChange={(e) => setSearchCity(e.target.value)}
-                  className="w-full bg-[#F3E8E8] border border-[#E7DADD] rounded-xl pl-9 pr-4 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#B76E79]"
+                  className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl pl-9 pr-4 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#FDBA74]"
                 />
               </div>
             </div>
@@ -942,35 +942,35 @@ export default function CustomerFeatureDetail() {
               {gymsList.map((gym) => (
                 <div
                   key={gym.id}
-                  className="bg-[#F3E8E8] border border-[#E7DADD] hover:border-[#B76E79]/50 rounded-3xl p-6 shadow-xl flex flex-col justify-between space-y-4 transition-all"
+                  className="bg-[#F8FAFC] border border-[#E2E8F0] hover:border-[#FFEDD5] rounded-3xl p-6 shadow-xl flex flex-col justify-between space-y-4 transition-all"
                 >
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-[#15803D] border border-emerald-500/20">
                         Verified Facility
                       </span>
-                      <span className="text-xs font-bold text-amber-400 flex items-center gap-1">
+                      <span className="text-xs font-bold text-[#B45309] flex items-center gap-1">
                         <Star size={12} fill="currentColor" /> {gym.rating}
                       </span>
                     </div>
 
-                    <h4 className="text-base font-bold text-[#292524]">{gym.name}</h4>
+                    <h4 className="text-base font-bold text-[#111827]">{gym.name}</h4>
                     <p className="text-xs text-slate-400 flex items-center gap-1">
-                      <MapPin size={12} className="text-[#B76E79]" /> {gym.city} • {gym.distance}
+                      <MapPin size={12} className="text-[#EA580C]" /> {gym.city} • {gym.distance}
                     </p>
 
                     <div className="flex flex-wrap gap-1.5 pt-1">
                       {gym.amenities.map((amenity, i) => (
-                        <span key={i} className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#FFFFFF] text-slate-300 border border-[#E7DADD]">
+                        <span key={i} className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#FFFFFF] text-slate-300 border border-[#E2E8F0]">
                           {amenity}
                         </span>
                       ))}
                     </div>
 
-                    <div className="pt-3 border-t border-[#E7DADD] flex items-center justify-between text-xs">
+                    <div className="pt-3 border-t border-[#E2E8F0] flex items-center justify-between text-xs">
                       <div>
                         <span className="text-[10px] text-slate-500 block">Single Day Pass</span>
-                        <strong className="text-base font-black text-[#B76E79] font-mono">{gym.dayPass}</strong>
+                        <strong className="text-base font-black text-[#EA580C] font-mono">{gym.dayPass}</strong>
                       </div>
                       <div className="text-right">
                         <span className="text-[10px] text-slate-500 block">Monthly Unlimited</span>
@@ -981,7 +981,7 @@ export default function CustomerFeatureDetail() {
 
                   <button
                     onClick={() => setActiveGymPass(gym)}
-                    className="w-full py-2.5 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold text-xs rounded-xl transition-all shadow-md shadow-[#B76E79]/20 flex items-center justify-center gap-1.5"
+                    className="w-full py-2.5 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold text-xs rounded-xl transition-all shadow-md shadow-orange-500/15 flex items-center justify-center gap-1.5"
                   >
                     <QrCode size={14} />
                     <span>Generate Instant Turnstile Pass</span>
@@ -993,13 +993,13 @@ export default function CustomerFeatureDetail() {
             {/* Instant QR Pass Modal */}
             {activeGymPass && (
               <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-                <div className="bg-[#F3E8E8] border border-[#B76E79]/40 rounded-3xl max-w-sm w-full p-6 text-center space-y-4 shadow-2xl">
-                  <div className="flex justify-between items-center border-b border-[#E7DADD] pb-3 text-left">
+                <div className="bg-[#F8FAFC] border border-[#FFEDD5] rounded-3xl max-w-sm w-full p-6 text-center space-y-4 shadow-2xl">
+                  <div className="flex justify-between items-center border-b border-[#E2E8F0] pb-3 text-left">
                     <div>
-                      <h4 className="text-sm font-bold text-[#292524]">{activeGymPass.name}</h4>
-                      <span className="text-[10px] text-emerald-400 font-semibold">Day Pass • Active Gate Entry</span>
+                      <h4 className="text-sm font-bold text-[#111827]">{activeGymPass.name}</h4>
+                      <span className="text-[10px] text-[#15803D] font-semibold">Day Pass • Active Gate Entry</span>
                     </div>
-                    <button onClick={() => setActiveGymPass(null)} className="text-slate-400 hover:text-white text-sm">
+                    <button onClick={() => setActiveGymPass(null)} className="text-[#64748B] hover:text-[#C2410C] text-sm">
                       ✕
                     </button>
                   </div>
@@ -1007,7 +1007,7 @@ export default function CustomerFeatureDetail() {
                   <div className="bg-white p-4 rounded-2xl inline-block shadow-lg">
                     {/* Simulated QR Code Canvas */}
                     <div className="w-48 h-48 bg-slate-900 rounded-xl flex flex-col items-center justify-center text-white p-3 space-y-2">
-                      <QrCode size={96} className="text-[#B76E79]" />
+                      <QrCode size={96} className="text-[#EA580C]" />
                       <span className="text-[10px] font-mono text-slate-400 tracking-wider">GYMORA-PASS-88421</span>
                     </div>
                   </div>
@@ -1019,7 +1019,7 @@ export default function CustomerFeatureDetail() {
 
                   <button
                     onClick={() => setActiveGymPass(null)}
-                    className="w-full py-2.5 bg-[#B76E79] text-white font-bold text-xs rounded-xl"
+                    className="w-full py-2.5 bg-[#C2410C] text-white font-bold text-xs rounded-xl"
                   >
                     Done / Close Pass
                   </button>
@@ -1030,12 +1030,12 @@ export default function CustomerFeatureDetail() {
         )}
 
         {/* SECTION 3: MODULE DIRECTORY & SWITCHER */}
-        <section className="bg-gradient-to-r from-[#F3E8E8] via-[#FFFFFF] to-[#F3E8E8] border border-[#B76E79]/30 rounded-3xl p-8 sm:p-10 text-center relative overflow-hidden shadow-2xl">
+        <section className="bg-gradient-to-r from-[#F8FAFC] via-[#FFFFFF] to-[#F8FAFC] border border-[#FFEDD5] rounded-3xl p-8 sm:p-10 text-center relative overflow-hidden shadow-2xl">
           <div className="max-w-3xl mx-auto space-y-6 relative z-10">
-            <span className="px-3 py-1 rounded-full bg-[#B76E79]/15 text-[#B76E79] border border-[#B76E79]/30 text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1.5">
+            <span className="px-3 py-1 rounded-full bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5] text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1.5">
               <Sparkles size={13} /> Complete Athlete Ecosystem
             </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#292524] tracking-tight">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#111827] tracking-tight">
               Explore All 6 Customer Features & Live Flowcharts
             </h2>
             <p className="text-xs sm:text-sm text-slate-300 max-w-xl mx-auto leading-relaxed">
@@ -1052,8 +1052,8 @@ export default function CustomerFeatureDetail() {
                     to={`/portal/customer/${mod.id}`}
                     className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
                       isActive
-                        ? 'bg-[#B76E79] text-white shadow-lg shadow-[#B76E79]/20'
-                        : 'bg-[#FFFFFF] text-slate-300 hover:text-white border border-[#E7DADD] hover:border-[#B76E79]/40'
+                        ? 'bg-[#C2410C] text-white shadow-lg shadow-orange-500/15'
+                        : 'bg-[#FFFFFF] text-[#64748B] hover:text-[#C2410C] border border-[#E2E8F0] hover:border-[#FFEDD5]'
                     }`}
                   >
                     <Icon size={14} />
@@ -1063,10 +1063,10 @@ export default function CustomerFeatureDetail() {
               })}
             </div>
 
-            <div className="pt-4 border-t border-[#E7DADD] flex justify-center">
+            <div className="pt-4 border-t border-[#E2E8F0] flex justify-center">
               <Link
                 to="/portal/customer"
-                className="px-6 py-2.5 bg-[#FFFFFF] hover:bg-[#F3E8E8] text-[#B76E79] font-semibold rounded-xl text-xs border border-[#E7DADD] hover:border-[#B76E79]/40 transition-all flex items-center gap-2"
+                className="px-6 py-2.5 bg-[#FFFFFF] hover:bg-[#FFF7ED] text-[#EA580C] font-semibold rounded-xl text-xs border border-[#E2E8F0] hover:border-[#FFEDD5] transition-all flex items-center gap-2"
               >
                 <ArrowLeft size={14} />
                 <span>Return to Customer Overview</span>

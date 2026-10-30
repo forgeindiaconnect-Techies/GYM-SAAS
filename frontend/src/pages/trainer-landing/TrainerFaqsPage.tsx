@@ -71,34 +71,34 @@ export const TrainerFaqsPage: React.FC = () => {
       <div className="py-16 md:py-24 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <Link
           to="/trainers"
-          className="inline-flex items-center gap-2 text-xs font-bold text-[#57534E] hover:text-[#B76E79] transition-colors mb-8"
+          className="inline-flex items-center gap-2 text-xs font-bold text-[#64748B] hover:text-[#EA580C] transition-colors mb-8"
         >
           <ArrowLeft size={16} />
           <span>Back to Trainer Landing Page</span>
         </Link>
 
         <div className="mb-12">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#B76E79]/10 border border-[#B76E79]/30 text-[#B76E79] text-xs font-semibold mb-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FFF7ED] border border-[#FFEDD5] text-[#EA580C] text-xs font-semibold mb-4">
             <HelpCircle size={13} />
             <span>Trainer Knowledge Base</span>
           </div>
-          <h1 className="text-3xl sm:text-5xl font-extrabold text-[#292524] tracking-tight mb-4">
+          <h1 className="text-3xl sm:text-5xl font-extrabold text-[#111827] tracking-tight mb-4">
             Frequently Asked Questions
           </h1>
-          <p className="text-base sm:text-lg text-[#57534E] leading-relaxed">
+          <p className="text-base sm:text-lg text-[#64748B] leading-relaxed">
             Find answers to common questions regarding trainer verification, gym opportunities, profile showcases, and platform assistance.
           </p>
         </div>
 
         {/* Search Bar */}
         <div className="relative mb-10">
-          <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#57534E]" />
+          <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#64748B]" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search questions by topic, qualification, or opportunity..."
-            className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl py-3.5 pl-12 pr-4 text-sm text-[#292524] placeholder-[#57534E] focus:outline-none focus:border-[#B76E79] transition-colors"
+            className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl py-3.5 pl-12 pr-4 text-sm text-[#111827] placeholder-[#94A3B8] focus:outline-none focus:border-[#FDBA74] transition-colors"
           />
         </div>
 
@@ -112,8 +112,8 @@ export const TrainerFaqsPage: React.FC = () => {
                   key={index}
                   className={`border rounded-2xl transition-all duration-200 overflow-hidden ${
                     isOpen
-                      ? 'bg-[#FFFFFF] border-[#B76E79]/50 shadow-lg shadow-teal-500/5'
-                      : 'bg-[#FFFFFF]/70 border-[#E7DADD] hover:border-[#E7DADD]/90'
+                      ? 'bg-[#FFFFFF] border-[#FFEDD5] shadow-lg shadow-teal-500/5'
+                      : 'bg-[#FFFFFF]/70 border-[#E2E8F0] hover:border-[#E2E8F0]/90'
                   }`}
                 >
                   <button
@@ -122,23 +122,23 @@ export const TrainerFaqsPage: React.FC = () => {
                     aria-expanded={isOpen}
                   >
                     <div className="flex items-center gap-3">
-                      <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-[#F3E8E8] text-[#B76E79] border border-[#E7DADD]">
+                      <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-[#F8FAFC] text-[#EA580C] border border-[#E2E8F0]">
                         {faq.category}
                       </span>
-                      <span className="text-sm sm:text-base font-bold text-[#292524]">
+                      <span className="text-sm sm:text-base font-bold text-[#111827]">
                         {faq.q}
                       </span>
                     </div>
                     <ChevronDown
                       size={18}
-                      className={`text-[#B76E79] shrink-0 transition-transform duration-200 ${
+                      className={`text-[#EA580C] shrink-0 transition-transform duration-200 ${
                         isOpen ? 'rotate-180' : ''
                       }`}
                     />
                   </button>
 
                   {isOpen && (
-                    <div className="px-6 pb-6 text-xs sm:text-sm text-[#292524] leading-relaxed border-t border-[#E7DADD]/60 pt-4 animate-fadeIn">
+                    <div className="px-6 pb-6 text-xs sm:text-sm text-[#111827] leading-relaxed border-t border-[#E2E8F0]/60 pt-4 animate-fadeIn">
                       {faq.a}
                     </div>
                   )}
@@ -146,11 +146,11 @@ export const TrainerFaqsPage: React.FC = () => {
               );
             })
           ) : (
-            <div className="text-center py-12 bg-[#FFFFFF] rounded-2xl border border-[#E7DADD]">
-              <p className="text-sm text-[#57534E] mb-3">No matching questions found.</p>
+            <div className="text-center py-12 bg-[#FFFFFF] rounded-2xl border border-[#E2E8F0]">
+              <p className="text-sm text-[#64748B] mb-3">No matching questions found.</p>
               <button
                 onClick={() => setSearchQuery('')}
-                className="text-xs font-bold text-[#B76E79] hover:underline"
+                className="text-xs font-bold text-[#EA580C] hover:underline"
               >
                 Clear Search Filter
               </button>
@@ -159,16 +159,16 @@ export const TrainerFaqsPage: React.FC = () => {
         </div>
 
         {/* Still Have Questions Box */}
-        <div className="p-8 bg-[#F3E8E8] border border-[#E7DADD] rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-6">
+        <div className="p-8 bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-6">
           <div>
-            <h3 className="text-base font-bold text-[#292524] mb-1">Still have a question?</h3>
-            <p className="text-xs text-[#57534E]">Our team is ready to provide personalized guidance for coaches.</p>
+            <h3 className="text-base font-bold text-[#111827] mb-1">Still have a question?</h3>
+            <p className="text-xs text-[#64748B]">Our team is ready to provide personalized guidance for coaches.</p>
           </div>
           <Link
             to="/trainers/contact"
-            className="px-6 py-3 bg-[#FFFFFF] hover:bg-[#F3E8E8] text-xs sm:text-sm font-bold text-[#292524] border border-[#E7DADD] hover:border-[#B76E79]/40 rounded-xl flex items-center gap-2"
+            className="px-6 py-3 bg-[#FFFFFF] hover:bg-[#FFF7ED] text-xs sm:text-sm font-bold text-[#111827] border border-[#E2E8F0] hover:border-[#FFEDD5] rounded-xl flex items-center gap-2"
           >
-            <MessageSquare size={16} className="text-[#B76E79]" />
+            <MessageSquare size={16} className="text-[#EA580C]" />
             <span>Contact Support</span>
           </Link>
         </div>

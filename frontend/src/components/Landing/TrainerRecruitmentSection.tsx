@@ -236,21 +236,21 @@ export function TrainerRecruitmentSection() {
   };
 
   return (
-    <section className="border-t border-[#E7DADD] bg-[#FFFFFF] py-24 relative overflow-hidden" id="recruitment-hub">
+    <section className="border-t border-[#E2E8F0] bg-[#FFFFFF] py-24 relative overflow-hidden" id="recruitment-hub">
       {/* Background Glow */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-[#B76E79]/5 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-[#FFF7ED] rounded-full blur-[140px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Heading */}
         <div className="text-center max-w-4xl mx-auto mb-12">
-          <span className="px-3.5 py-1.5 rounded-full bg-[#B76E79]/10 border border-[#B76E79]/25 text-[#B76E79] text-xs font-semibold inline-flex items-center gap-1.5 mb-4">
+          <span className="px-3.5 py-1.5 rounded-full bg-[#FFF7ED] border border-[#FFEDD5] text-[#EA580C] text-xs font-semibold inline-flex items-center gap-1.5 mb-4">
             <Sparkles size={13} />
             <span>Recruitment & Hiring Engine</span>
           </span>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#292524] tracking-tight mb-4">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#111827] tracking-tight mb-4">
             Trainer Recruitment & Gym Careers
           </h2>
-          <p className="text-sm sm:text-base text-[#57534E] leading-relaxed max-w-3xl mx-auto">
+          <p className="text-sm sm:text-base text-[#64748B] leading-relaxed max-w-3xl mx-auto">
             Discover verified personal trainers, functional coaches, and group instructors—or browse active coaching vacancies published by top fitness centers nationwide.
           </p>
 
@@ -260,7 +260,7 @@ export function TrainerRecruitmentSection() {
             <Link
               to="/gyms"
               onClick={() => window.scrollTo(0, 0)}
-              className="px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center gap-2 bg-[#B76E79] hover:bg-[#9F5965] text-white shadow-lg shadow-[#B76E79]/20 hover:scale-[1.02]"
+              className="px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center gap-2 bg-[#C2410C] hover:bg-[#9A3412] text-white shadow-lg shadow-orange-500/15 hover:scale-[1.02]"
             >
               <UserCheck size={16} />
               <span>I'm Looking to Join a Gym</span>
@@ -280,7 +280,7 @@ export function TrainerRecruitmentSection() {
                   return next;
                 });
               }}
-              className="px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center gap-2 bg-[#B76E79] hover:bg-[#9F5965] text-white shadow-lg shadow-[#B76E79]/20 hover:scale-[1.02]"
+              className="px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center gap-2 bg-[#C2410C] hover:bg-[#9A3412] text-white shadow-lg shadow-orange-500/15 hover:scale-[1.02]"
             >
               <Briefcase size={16} />
               <span>I'm a Fitness Trainer Looking for a Job</span>
@@ -291,7 +291,7 @@ export function TrainerRecruitmentSection() {
             <Link
               to="/portal/gym-owner"
               onClick={() => window.scrollTo(0, 0)}
-              className="px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center gap-2 bg-[#B76E79] hover:bg-[#9F5965] text-white shadow-lg shadow-[#B76E79]/20 hover:scale-[1.02]"
+              className="px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center gap-2 bg-[#C2410C] hover:bg-[#9A3412] text-white shadow-lg shadow-orange-500/15 hover:scale-[1.02]"
             >
               <Building2 size={16} />
               <span>Own a Gym</span>
@@ -308,7 +308,7 @@ export function TrainerRecruitmentSection() {
 
 
             {/* Filter Bar */}
-            <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-2xl p-4 sm:p-5 shadow-xl space-y-4">
+            <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl p-4 sm:p-5 shadow-xl space-y-4">
               <div className="flex flex-col md:flex-row gap-3 items-center justify-between">
                 <div className="relative w-full md:w-96">
                   <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -317,7 +317,7 @@ export function TrainerRecruitmentSection() {
                     placeholder="Search by job title, gym name, or keywords..."
                     value={jobSearch}
                     onChange={(e) => setJobSearch(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-white placeholder-slate-500 text-xs sm:text-sm focus:outline-none focus:border-[#B76E79]"
+                    className="w-full pl-10 pr-4 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-white placeholder-slate-500 text-xs sm:text-sm focus:outline-none focus:border-[#FDBA74]"
                   />
                 </div>
 
@@ -326,7 +326,7 @@ export function TrainerRecruitmentSection() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-[#E7DADD]/60">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-[#E2E8F0]/60">
                 <div>
                   <div className="flex items-center justify-between mb-1">
                     <label className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
@@ -336,7 +336,7 @@ export function TrainerRecruitmentSection() {
                       <button
                         type="button"
                         onClick={() => setJobLocation('')}
-                        className="text-[10px] text-[#B76E79] hover:underline"
+                        className="text-[10px] text-[#EA580C] hover:underline"
                       >
                         Reset to All
                       </button>
@@ -350,13 +350,13 @@ export function TrainerRecruitmentSection() {
                       placeholder="Type district or city (e.g. Chennai, Bangalore)..."
                       value={jobLocation}
                       onChange={(e) => setJobLocation(e.target.value)}
-                      className="w-full pl-8 pr-7 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-white text-xs sm:text-sm focus:border-[#B76E79] focus:outline-none placeholder-slate-500"
+                      className="w-full pl-8 pr-7 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-white text-xs sm:text-sm focus:border-[#FDBA74] focus:outline-none placeholder-slate-500"
                     />
                     {jobLocation && (
                       <button
                         type="button"
                         onClick={() => setJobLocation('')}
-                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white p-0.5"
+                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#64748B] hover:text-[#C2410C] p-0.5"
                         title="Clear Location"
                       >
                         <X size={13} />
@@ -377,7 +377,7 @@ export function TrainerRecruitmentSection() {
                   <select
                     value={jobEmployment}
                     onChange={(e) => setJobEmployment(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-white text-xs sm:text-sm focus:border-[#B76E79] focus:outline-none"
+                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-white text-xs sm:text-sm focus:border-[#FDBA74] focus:outline-none"
                   >
                     <option value="all">All Types</option>
                     <option value="full-time">Full-time</option>
@@ -390,9 +390,9 @@ export function TrainerRecruitmentSection() {
 
             {/* Jobs List */}
             {filteredJobs.length === 0 ? (
-              <div className="p-16 text-center bg-[#F3E8E8] rounded-2xl border border-[#E7DADD]">
-                <Briefcase className="w-12 h-12 text-[#B76E79]/40 mx-auto mb-3" />
-                <h3 className="text-base font-bold text-[#292524] mb-1">
+              <div className="p-16 text-center bg-[#F8FAFC] rounded-2xl border border-[#E2E8F0]">
+                <Briefcase className="w-12 h-12 text-[#EA580C]/40 mx-auto mb-3" />
+                <h3 className="text-base font-bold text-[#111827] mb-1">
                   {jobLocation
                     ? `No vacancies found in "${jobLocation}"`
                     : 'No vacancies found matching your search'}
@@ -406,7 +406,7 @@ export function TrainerRecruitmentSection() {
                     setJobLocation('');
                     setJobEmployment('all');
                   }}
-                  className="px-4 py-2 bg-[#FFFFFF] text-slate-300 text-xs font-semibold rounded-xl border border-[#E7DADD] hover:text-white hover:border-[#B76E79] transition-colors"
+                  className="px-4 py-2 bg-[#FFFFFF] text-slate-300 text-xs font-semibold rounded-xl border border-[#E2E8F0] hover:text-[#C2410C] hover:border-[#FDBA74] transition-colors"
                 >
                   Clear Filters
                 </button>
@@ -416,11 +416,11 @@ export function TrainerRecruitmentSection() {
                 {filteredJobs.map((job) => (
                   <div
                     key={job._id}
-                    className="bg-[#F3E8E8] border border-[#E7DADD] hover:border-[#B76E79]/50 rounded-2xl p-5 sm:p-6 transition-all flex flex-col md:flex-row md:items-center justify-between gap-5 group"
+                    className="bg-[#F8FAFC] border border-[#E2E8F0] hover:border-[#FFEDD5] rounded-2xl p-5 sm:p-6 transition-all flex flex-col md:flex-row md:items-center justify-between gap-5 group"
                   >
                     <div className="space-y-2 flex-1">
                       <div className="flex items-center gap-2.5 flex-wrap">
-                        <h3 className="text-base sm:text-lg font-bold text-[#292524] group-hover:text-[#B76E79] transition-colors">
+                        <h3 className="text-base sm:text-lg font-bold text-[#111827] group-hover:text-[#EA580C] transition-colors">
                           {job.title}
                         </h3>
                         <span className="px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-300 border border-teal-500/30 text-[10px] font-bold uppercase tracking-wider">
@@ -430,7 +430,7 @@ export function TrainerRecruitmentSection() {
 
                       <div className="flex items-center gap-3 text-xs text-slate-400 flex-wrap">
                         <span className="font-semibold text-white flex items-center gap-1">
-                          <Building2 className="w-3.5 h-3.5 text-[#B76E79]" />
+                          <Building2 className="w-3.5 h-3.5 text-[#EA580C]" />
                           {job.gymName || 'Premier Fitness Club'}
                         </span>
                         <span>•</span>
@@ -446,10 +446,10 @@ export function TrainerRecruitmentSection() {
                       </div>
 
                       <div className="flex items-center gap-2 text-xs text-slate-300 pt-1">
-                        <span className="px-2 py-0.5 bg-[#FFFFFF] border border-[#E7DADD] rounded-md text-[#B76E79] font-mono font-bold">
+                        <span className="px-2 py-0.5 bg-[#FFFFFF] border border-[#E2E8F0] rounded-md text-[#EA580C] font-mono font-bold">
                           {formatSalary(job)}
                         </span>
-                        <span className="px-2 py-0.5 bg-[#FFFFFF] border border-[#E7DADD] rounded-md text-slate-300">
+                        <span className="px-2 py-0.5 bg-[#FFFFFF] border border-[#E2E8F0] rounded-md text-slate-300">
                           Exp: {formatExperience(job)}
                         </span>
                       </div>
@@ -458,14 +458,14 @@ export function TrainerRecruitmentSection() {
                     <div className="flex items-center gap-2.5 shrink-0">
                       <button
                         onClick={() => setSelectedJob(job)}
-                        className="px-4 py-2 bg-[#FFFFFF] hover:bg-[#F3E8E8] text-slate-300 hover:text-white rounded-xl text-xs font-semibold border border-[#E7DADD] transition-all"
+                        className="px-4 py-2 bg-[#FFFFFF] hover:bg-[#FFF7ED] text-slate-300 hover:text-[#C2410C] rounded-xl text-xs font-semibold border border-[#E2E8F0] transition-all"
                       >
                         View Vacancy Details
                       </button>
 
                       <button
                         onClick={() => handleApplyClick(job)}
-                        className="px-5 py-2 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold rounded-xl text-xs transition-all flex items-center gap-1.5 shadow-md shadow-[#B76E79]/20"
+                        className="px-5 py-2 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold rounded-xl text-xs transition-all flex items-center gap-1.5 shadow-md shadow-orange-500/15"
                       >
                         <Briefcase className="w-3.5 h-3.5" />
                         Apply Now
@@ -484,19 +484,19 @@ export function TrainerRecruitmentSection() {
       {/* ========================================================================= */}
       {selectedJob && (
         <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-2xl max-w-2xl w-full p-6 text-white shadow-2xl relative max-h-[90vh] overflow-y-auto space-y-5">
+          <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl max-w-2xl w-full p-6 text-[#1F2937] shadow-2xl relative max-h-[90vh] overflow-y-auto space-y-5">
             {/* Modal Header */}
-            <div className="flex items-start justify-between pb-4 border-b border-[#E7DADD] gap-4">
+            <div className="flex items-start justify-between pb-4 border-b border-[#E2E8F0] gap-4">
               <div className="space-y-1.5">
                 <div className="flex items-center gap-2.5 flex-wrap">
-                  <h3 className="text-xl font-bold text-[#292524]">{selectedJob.title}</h3>
+                  <h3 className="text-xl font-bold text-[#111827]">{selectedJob.title}</h3>
                   <span className="px-2.5 py-0.5 rounded-full bg-teal-500/10 text-teal-300 border border-teal-500/30 text-[10px] font-bold uppercase tracking-wider">
                     {selectedJob.employmentType}
                   </span>
                 </div>
                 <div className="flex items-center gap-3 text-xs text-slate-400 flex-wrap">
                   <span className="font-semibold text-white flex items-center gap-1">
-                    <Building2 className="w-3.5 h-3.5 text-[#B76E79]" />
+                    <Building2 className="w-3.5 h-3.5 text-[#EA580C]" />
                     {selectedJob.gymName || 'Premier Fitness Club'}
                   </span>
                   <span>•</span>
@@ -513,19 +513,19 @@ export function TrainerRecruitmentSection() {
               </div>
               <button
                 onClick={() => setSelectedJob(null)}
-                className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-[#FFFFFF] transition-colors shrink-0"
+                className="text-[#64748B] hover:text-[#C2410C] p-1 rounded-lg hover:bg-[#FFFFFF] transition-colors shrink-0"
               >
                 <X className="w-6 h-6" />
               </button>
             </div>
 
             {/* Quick Metrics Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 bg-[#FFFFFF] p-4 rounded-xl border border-[#E7DADD] text-xs">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 bg-[#FFFFFF] p-4 rounded-xl border border-[#E2E8F0] text-xs">
               <div>
                 <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider block">
                   Offered Compensation
                 </span>
-                <span className="font-bold text-[#B76E79] text-sm mt-0.5 block font-mono">
+                <span className="font-bold text-[#EA580C] text-sm mt-0.5 block font-mono">
                   {formatSalary(selectedJob)}
                 </span>
               </div>
@@ -557,7 +557,7 @@ export function TrainerRecruitmentSection() {
                   {selectedJob.expertise.map((exp, idx) => (
                     <span
                       key={idx}
-                      className="px-2.5 py-1 rounded-lg bg-[#FFFFFF] border border-[#E7DADD] text-[11px] text-[#B76E79] font-medium"
+                      className="px-2.5 py-1 rounded-lg bg-[#FFFFFF] border border-[#E2E8F0] text-[11px] text-[#EA580C] font-medium"
                     >
                       {exp}
                     </span>
@@ -572,7 +572,7 @@ export function TrainerRecruitmentSection() {
                 <h4 className="font-bold text-slate-300 uppercase text-[10px] tracking-wider mb-1.5">
                   Job Description
                 </h4>
-                <div className="bg-[#FFFFFF] p-3.5 rounded-xl border border-[#E7DADD] text-slate-300 text-xs leading-relaxed whitespace-pre-line">
+                <div className="bg-[#FFFFFF] p-3.5 rounded-xl border border-[#E2E8F0] text-slate-300 text-xs leading-relaxed whitespace-pre-line">
                   {selectedJob.description}
                 </div>
               </div>
@@ -584,7 +584,7 @@ export function TrainerRecruitmentSection() {
                 <h4 className="font-bold text-slate-300 uppercase text-[10px] tracking-wider mb-1.5">
                   Key Responsibilities
                 </h4>
-                <div className="bg-[#FFFFFF] p-3.5 rounded-xl border border-[#E7DADD]">
+                <div className="bg-[#FFFFFF] p-3.5 rounded-xl border border-[#E2E8F0]">
                   {renderContentList(selectedJob.responsibilities)}
                 </div>
               </div>
@@ -596,7 +596,7 @@ export function TrainerRecruitmentSection() {
                 <h4 className="font-bold text-slate-300 uppercase text-[10px] tracking-wider mb-1.5">
                   Qualifications & Requirements
                 </h4>
-                <div className="bg-[#FFFFFF] p-3.5 rounded-xl border border-[#E7DADD]">
+                <div className="bg-[#FFFFFF] p-3.5 rounded-xl border border-[#E2E8F0]">
                   {renderContentList(selectedJob.qualifications)}
                 </div>
               </div>
@@ -608,17 +608,17 @@ export function TrainerRecruitmentSection() {
                 <h4 className="font-bold text-slate-300 uppercase text-[10px] tracking-wider mb-1.5">
                   Certifications
                 </h4>
-                <div className="bg-[#FFFFFF] p-3.5 rounded-xl border border-[#E7DADD]">
+                <div className="bg-[#FFFFFF] p-3.5 rounded-xl border border-[#E2E8F0]">
                   {renderContentList(selectedJob.certifications)}
                 </div>
               </div>
             )}
 
             {/* Modal Actions */}
-            <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#E7DADD]">
+            <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#E2E8F0]">
               <button
                 onClick={() => setSelectedJob(null)}
-                className="px-4 py-2 bg-[#FFFFFF] text-slate-300 rounded-xl text-xs font-semibold hover:bg-[#F3E8E8] transition-colors"
+                className="px-4 py-2 bg-[#FFFFFF] text-slate-300 rounded-xl text-xs font-semibold hover:bg-[#FFF7ED] transition-colors"
               >
                 Close
               </button>
@@ -628,7 +628,7 @@ export function TrainerRecruitmentSection() {
                   setSelectedJob(null);
                   handleApplyClick(j);
                 }}
-                className="px-5 py-2.5 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-md shadow-[#B76E79]/20 transition-all hover:scale-[1.02]"
+                className="px-5 py-2.5 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-md shadow-orange-500/15 transition-all hover:scale-[1.02]"
               >
                 <Briefcase className="w-4 h-4" />
                 Apply for this Vacancy

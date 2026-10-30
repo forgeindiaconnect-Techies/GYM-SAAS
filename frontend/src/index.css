@@ -3,91 +3,73 @@
 
 /* 
   ==============================================================
-  GLOBAL DESIGN SYSTEM: BLACK + TURQUOISE LUXURY THEME
+  GLOBAL DESIGN SYSTEM: PROFESSIONAL WHITE + ORANGE THEME
   ==============================================================
-  - Primary background:                  #080B0C
-  - Secondary background:                #0E1415
-  - Sidebar background:                  #0B1112
-  - Card background:                     #141D1E
-  - Elevated card and modal background:  #1B2728
-  - Primary accent — Turquoise:          #2DD4BF
-  - Accent hover:                        #5EEAD4
-  - Accent active:                       #14B8A6
-  - Primary text:                        #F5FAFA
-  - Secondary text:                      #C1D0D0
-  - Muted text:                          #9AAEAE
-  - Border colour:                       #2A3A3A
-  - Divider colour:                      #243232
-  - Input background:                    #101819
-  - Input focus border:                  #2DD4BF
-  - Primary button text:                 #06201D
-  - Success status:                      #34D399
-  - Warning status:                      #FBBF24
-  - Error status:                        #F87171
-  - Informational status:                #7DD3FC
+  - Primary Orange:         #F97316
+  - Dark Orange:            #EA580C
+  - Button Orange:          #C2410C
+  - Orange Hover:           #9A3412
+  - Light Orange:           #FFF7ED
+  - Soft Orange:            #FFEDD5
+  - Pure White:             #FFFFFF
+  - Main Background:        #FFFFFF
+  - Secondary Background:   #F8FAFC
+  - Card Background:        #FFFFFF
+  - Primary Text:           #1F2937
+  - Heading Text:           #111827
+  - Secondary Text:         #64748B
+  - Muted Text:             #94A3B8
+  - Border Colour:          #E2E8F0
+  - Input Background:       #FFFFFF
+  - Success:                #15803D
+  - Warning:                #B45309
+  - Error:                  #B91C1C
+  - Information:            #2563EB
   ==============================================================
 */
 
 @theme {
-  --color-primary: #2DD4BF;
-  --color-primary-hover: #5EEAD4;
-  --color-primary-active: #14B8A6;
-  --color-secondary: #0E1415;
-  --color-accent: #2DD4BF;
-  --color-accent-hover: #5EEAD4;
-  --color-background: #080B0C;
-  --color-sidebar: #0B1112;
-  --color-card: #141D1E;
-  --color-card-elevated: #1B2728;
-  --color-text: #F5FAFA;
-  --color-heading: #F5FAFA;
-  --color-body: #C1D0D0;
-  --color-text-secondary: #9AAEAE;
-  --color-border: #2A3A3A;
-  --color-divider: #243232;
-  --color-input: #101819;
-  --color-input-focus: #2DD4BF;
-  --color-btn-text: #06201D;
-  --color-success: #34D399;
-  --color-warning: #FBBF24;
-  --color-error: #F87171;
-  --color-info: #7DD3FC;
-
-  --color-turquoise: #2DD4BF;
-  --color-turquoise-hover: #5EEAD4;
-  --color-turquoise-dark: #14B8A6;
-  --color-dark-surface: #141D1E;
-  --color-dark-elevated: #1B2728;
+  --color-primary: #F97316;
+  --color-primary-dark: #EA580C;
+  --color-primary-btn: #C2410C;
+  --color-primary-hover: #9A3412;
+  --color-orange-light: #FFF7ED;
+  --color-orange-soft: #FFEDD5;
+  --color-background: #FFFFFF;
+  --color-secondary: #F8FAFC;
+  --color-card: #FFFFFF;
+  --color-text: #1F2937;
+  --color-heading: #111827;
+  --color-text-secondary: #64748B;
+  --color-muted: #94A3B8;
+  --color-border: #E2E8F0;
+  --color-input: #FFFFFF;
+  --color-success: #15803D;
+  --color-warning: #B45309;
+  --color-error: #B91C1C;
+  --color-info: #2563EB;
 }
 
 :root {
-  --color-primary: #2DD4BF;
-  --color-primary-hover: #5EEAD4;
-  --color-primary-active: #14B8A6;
-  --color-secondary: #0E1415;
-  --color-accent: #2DD4BF;
-  --color-accent-hover: #5EEAD4;
-  --color-background: #080B0C;
-  --color-sidebar: #0B1112;
-  --color-card: #141D1E;
-  --color-card-elevated: #1B2728;
-  --color-text: #F5FAFA;
-  --color-heading: #F5FAFA;
-  --color-body: #C1D0D0;
-  --color-text-secondary: #9AAEAE;
-  --color-border: #2A3A3A;
-  --color-divider: #243232;
-  --color-input: #101819;
-  --color-input-focus: #2DD4BF;
-  --color-btn-text: #06201D;
-  --color-success: #34D399;
-  --color-warning: #FBBF24;
-  --color-error: #F87171;
-  --color-info: #7DD3FC;
-
-  --color-turquoise: #2DD4BF;
-  --color-turquoise-hover: #5EEAD4;
-  --color-turquoise-dark: #14B8A6;
+  --color-primary: #F97316;
+  --color-primary-dark: #EA580C;
+  --color-primary-btn: #C2410C;
+  --color-primary-hover: #9A3412;
+  --color-orange-light: #FFF7ED;
+  --color-orange-soft: #FFEDD5;
+  --color-background: #FFFFFF;
+  --color-secondary: #F8FAFC;
+  --color-card: #FFFFFF;
+  --color-text: #1F2937;
+  --color-heading: #111827;
+  --color-text-secondary: #64748B;
+  --color-muted: #94A3B8;
+  --color-border: #E2E8F0;
+  --color-input: #FFFFFF;
+  --color-success: #15803D;
+  --color-warning: #B45309;
+  --color-error: #B91C1C;
+  --color-info: #2563EB;
 }
 
 *, *::before, *::after {
@@ -96,14 +78,14 @@
 
 html {
   scroll-behavior: smooth;
-  color-scheme: dark;
-  background-color: #080B0C !important;
+  color-scheme: light;
+  background-color: #FFFFFF !important;
 }
 
 body {
-  background-color: #080B0C !important;
-  color: #C1D0D0 !important;
-  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: #FFFFFF !important;
+  color: #1F2937 !important;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   margin: 0;
@@ -111,343 +93,233 @@ body {
 }
 
 #root {
-  background-color: #080B0C !important;
-  color: #C1D0D0;
+  background-color: #FFFFFF !important;
+  color: #1F2937;
   min-height: 100vh;
 }
 
+/* Headings */
 h1, h2, h3, h4, h5, h6 {
-  color: #F5FAFA;
+  color: #111827;
   font-family: 'Inter', sans-serif;
   letter-spacing: -0.01em;
 }
 
 /* ==============================================================
-   UNIVERSAL THEME RESETS: ENSURE 100% BLACK + TURQUOISE LUXURY
+   BUTTON DESIGN SYSTEM: PURE WHITE + ORANGE
    ============================================================== */
 
-/* Card and Container Backgrounds */
-.bg-white,
-[class*="bg-[#FFFFFF]"],
-[class*="bg-[#ffffff]"] {
-  background-color: #141D1E !important;
-  border-color: #2A3A3A !important;
-  color: #C1D0D0 !important;
+/* Primary Button: #C2410C bg, #FFFFFF text, #9A3412 hover, 8px radius */
+.btn-primary,
+.btn-orange,
+.btn-turquoise,
+.btn-indigo {
+  background-color: #C2410C !important;
+  color: #FFFFFF !important;
+  font-weight: 600 !important;
+  border-radius: 8px !important;
+  transition: all 0.2s ease-in-out;
+  border: 1px solid transparent !important;
+  box-shadow: 0 1px 3px rgba(194, 65, 12, 0.2);
 }
 
-/* Secondary & Nested Backgrounds */
-.bg-gray-50,
-.bg-slate-50,
-.bg-zinc-50,
-.bg-neutral-50,
-.bg-stone-50,
-.bg-stone-100,
-.bg-gray-50\/50,
-.bg-gray-50\/70,
-.bg-gray-50\/80 {
-  background-color: #0E1415 !important;
-  border-color: #2A3A3A !important;
+.btn-primary:hover,
+.btn-orange:hover,
+.btn-turquoise:hover,
+.btn-indigo:hover {
+  background-color: #9A3412 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 12px rgba(194, 65, 12, 0.3);
 }
 
-/* Neutralize light gradients to ensure dark luxury consistency */
-[class*="from-white"],
-[class*="to-white"],
-[class*="from-orange-50"],
-[class*="via-orange-50"],
-[class*="to-orange-50"],
-[class*="from-emerald-50"],
-[class*="via-teal-50"],
-[class*="to-teal-50"],
-[class*="to-amber-50"],
-[class*="from-red-50"] {
-  background-image: none !important;
-  background-color: #141D1E !important;
-  border-color: #2A3A3A !important;
+.btn-primary:active,
+.btn-orange:active,
+.btn-turquoise:active,
+.btn-indigo:active {
+  background-color: #7C2D12 !important;
+  color: #FFFFFF !important;
 }
 
-/* Elevated Surfaces & Modals */
-.bg-gray-100,
-.bg-slate-100,
-.bg-zinc-100,
-.bg-neutral-100,
-.bg-gray-100\/80,
-.bg-gray-100\/90 {
-  background-color: #1B2728 !important;
-  border-color: #2A3A3A !important;
+/* Secondary Button: #FFFFFF bg, #C2410C text, 1px solid #FDBA74, hover #FFF7ED */
+.btn-secondary {
+  background-color: #FFFFFF !important;
+  color: #C2410C !important;
+  border: 1px solid #FDBA74 !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  transition: all 0.2s ease-in-out;
 }
 
-/* Dark Backgrounds */
-.bg-stone-800,
-.bg-stone-900,
-.bg-stone-950,
-.bg-emerald-950,
-.bg-blue-950,
-.bg-orange-950 {
-  background-color: #0E1415 !important;
-  border-color: #2A3A3A !important;
+.btn-secondary:hover {
+  background-color: #FFF7ED !important;
+  border-color: #F97316 !important;
+  color: #9A3412 !important;
 }
 
-/* Text Readability Overrides: Headings & High Contrast Text */
-.text-gray-900,
-.text-gray-800,
-.text-slate-900,
-.text-slate-800,
-.text-neutral-900,
-.text-neutral-800,
-.text-stone-900,
-.text-stone-800,
-.text-black,
-[class*="text-[#0F172A]"],
-[class*="text-[#0f172a]"],
-[class*="text-[#11111F]"],
-[class*="text-[#1E293B]"],
-[class*="text-[#292431]"],
-[class*="text-[#292524]"],
-[class*="text-[#344B4A]"] {
-  color: #F5FAFA !important;
+/* Outline Button: White bg, Orange border, Dark Orange text */
+.btn-outline {
+  background-color: #FFFFFF !important;
+  color: #EA580C !important;
+  border: 1px solid #F97316 !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  transition: all 0.2s ease-in-out;
 }
 
-/* Text Readability Overrides: Body & Label Text */
-.text-gray-700,
-.text-gray-600,
-.text-slate-700,
-.text-slate-600,
-.text-neutral-700,
-.text-neutral-600,
-.text-stone-700,
-[class*="text-[#334155]"],
-[class*="text-[#475569]"] {
-  color: #C1D0D0 !important;
+.btn-outline:hover {
+  background-color: #FFF7ED !important;
+  border-color: #EA580C !important;
+  color: #C2410C !important;
 }
 
-/* Text Readability Overrides: Secondary & Muted Text */
-.text-gray-500,
-.text-gray-400,
-.text-gray-300,
-.text-slate-500,
-.text-slate-400,
-.text-slate-300,
-.text-neutral-500,
-.text-neutral-400,
-.text-stone-600,
-.text-stone-500,
-.text-stone-400,
-.text-stone-300,
-[class*="text-[#64748B]"],
-[class*="text-[#697778]"],
-[class*="text-[#6B5E78]"],
-[class*="text-[#78716C]"] {
-  color: #9AAEAE !important;
+/* Ghost Button: Transparent bg, Dark gray text, Light orange on hover */
+.btn-ghost {
+  background-color: transparent !important;
+  color: #1F2937 !important;
+  border: 1px solid transparent !important;
+  border-radius: 8px !important;
+  font-weight: 500 !important;
+  transition: all 0.2s ease-in-out;
 }
 
-/* Borders */
-.border-gray-100,
-.border-gray-200,
-.border-gray-300,
-.border-slate-100,
-.border-slate-200,
-.border-slate-300,
-.border-stone-100,
-.border-stone-200,
-.border-stone-300,
-.border-stone-400,
-.border-stone-700,
-.border-stone-800,
-.border-emerald-100,
-.border-emerald-200,
-.border-emerald-300,
-.border-blue-100,
-.border-blue-200,
-.border-orange-100,
-.border-orange-200 {
-  border-color: #2A3A3A !important;
+.btn-ghost:hover {
+  background-color: #FFF7ED !important;
+  color: #C2410C !important;
 }
 
-.divide-gray-100 > :not([hidden]) ~ :not([hidden]),
-.divide-gray-200 > :not([hidden]) ~ :not([hidden]),
-.divide-gray-300 > :not([hidden]) ~ :not([hidden]),
-.divide-slate-200 > :not([hidden]) ~ :not([hidden]),
-.divide-stone-200 > :not([hidden]) ~ :not([hidden]) {
-  border-color: #243232 !important;
+/* ==============================================================
+   FORMS, INPUTS & CONTROLS
+   ============================================================== */
+input, select, textarea {
+  color: #1F2937;
+  background-color: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
 }
 
-/* Tables */
+input::placeholder, textarea::placeholder {
+  color: #94A3B8;
+}
+
+input:focus, select:focus, textarea:focus, button:focus-visible {
+  outline: 2px solid #F97316 !important;
+  outline-offset: 1px;
+  border-color: #F97316 !important;
+}
+
+option {
+  background-color: #FFFFFF;
+  color: #1F2937;
+}
+
+/* ==============================================================
+   TABLES
+   ============================================================== */
 table {
-  background-color: #141D1E !important;
-  color: #C1D0D0 !important;
-  border-color: #2A3A3A !important;
+  background-color: #FFFFFF;
+  color: #1F2937;
+  border-color: #E2E8F0;
 }
 
 thead, thead tr {
-  background-color: #0E1415 !important;
-  color: #9AAEAE !important;
-  border-color: #2A3A3A !important;
+  background-color: #F8FAFC !important;
+  color: #64748B !important;
+  border-color: #E2E8F0 !important;
 }
 
 th {
-  color: #F5FAFA !important;
-  background-color: #0E1415 !important;
-  border-color: #2A3A3A !important;
+  color: #111827 !important;
+  background-color: #F8FAFC !important;
+  border-color: #E2E8F0 !important;
   font-weight: 600;
 }
 
 td {
-  border-color: #2A3A3A !important;
-  color: #C1D0D0;
+  border-color: #E2E8F0 !important;
+  color: #1F2937;
 }
 
 tr:hover, tbody tr:hover {
-  background-color: #1B2728 !important;
+  background-color: #FFF7ED !important;
 }
 
-/* Status Badges */
+/* ==============================================================
+   STATUS BADGES
+   ============================================================== */
+.badge-success,
 .bg-emerald-50,
 .bg-emerald-100,
 .bg-green-50,
 .bg-green-100 {
-  background-color: rgba(52, 211, 153, 0.15) !important;
-  color: #34D399 !important;
-  border: 1px solid rgba(52, 211, 153, 0.3) !important;
+  background-color: #DCFCE7 !important;
+  color: #15803D !important;
+  border: 1px solid #BBF7D0 !important;
 }
 
+.badge-warning,
 .bg-amber-50,
 .bg-amber-100,
 .bg-yellow-50,
 .bg-yellow-100 {
-  background-color: rgba(251, 191, 36, 0.15) !important;
-  color: #FBBF24 !important;
-  border: 1px solid rgba(251, 191, 36, 0.3) !important;
+  background-color: #FEF3C7 !important;
+  color: #B45309 !important;
+  border: 1px solid #FDE68A !important;
 }
 
+.badge-info,
 .bg-indigo-50,
 .bg-indigo-100,
 .bg-blue-50,
 .bg-blue-100,
 .bg-teal-50,
 .bg-teal-100 {
-  background-color: rgba(45, 212, 191, 0.15) !important;
-  color: #2DD4BF !important;
-  border: 1px solid rgba(45, 212, 191, 0.3) !important;
+  background-color: #EFF6FF !important;
+  color: #2563EB !important;
+  border: 1px solid #BFDBFE !important;
 }
 
+.badge-error,
 .bg-red-50,
 .bg-red-100,
 .bg-rose-50 {
-  background-color: rgba(248, 113, 113, 0.15) !important;
-  color: #F87171 !important;
-  border: 1px solid rgba(248, 113, 113, 0.3) !important;
+  background-color: #FEE2E2 !important;
+  color: #B91C1C !important;
+  border: 1px solid #FECACA !important;
 }
 
-/* Inputs, Selects, Textareas (Default Dark Luxury) */
-input, select, textarea {
-  color: #F5FAFA;
-  background-color: #101819;
-  border: 1px solid #2A3A3A;
+/* Orange badges / tags */
+.badge-orange,
+.bg-orange-50,
+.bg-orange-100 {
+  background-color: #FFF7ED !important;
+  color: #C2410C !important;
+  border: 1px solid #FFEDD5 !important;
 }
 
-input::placeholder, textarea::placeholder {
-  color: #9AAEAE;
-}
-
-/* Registration & Auth Form Fields (Luxury Dark Theme) */
-.light-input,
-.light-card input,
-.light-card select,
-.light-card textarea,
-input[type="text"],
-input[type="email"],
-input[type="password"],
-input[type="number"],
-input[type="tel"] {
-  background-color: #101819 !important;
-  color: #F5FAFA !important;
-  border: 1px solid #2A3A3A !important;
-}
-
-.light-input::placeholder,
-.light-card input::placeholder,
-.light-card textarea::placeholder,
-input::placeholder,
-textarea::placeholder {
-  color: #6A7F7F !important;
-}
-
-.light-input:focus,
-.light-card input:focus,
-.light-card select:focus,
-.light-card textarea:focus,
-input:focus,
-select:focus,
-textarea:focus {
-  outline: 2px solid #2DD4BF !important;
-  outline-offset: 1px;
-  border-color: #2DD4BF !important;
-}
-
-option {
-  background-color: #101819;
-  color: #F5FAFA;
-}
-
-/* Focus Ring — Turquoise */
-input:focus, select:focus, textarea:focus, button:focus-visible {
-  outline: 2px solid #2DD4BF !important;
-  outline-offset: 1px;
-  border-color: #2DD4BF !important;
-}
-
-/* Primary Action Buttons */
-.btn-primary, .btn-turquoise, .btn-indigo {
-  background-color: #2DD4BF !important;
-  color: #06201D !important;
-  font-weight: 700;
-  transition: all 0.2s ease-in-out;
-  box-shadow: 0 4px 14px rgba(45, 212, 191, 0.25);
-}
-.btn-primary:hover, .btn-turquoise:hover, .btn-indigo:hover {
-  background-color: #5EEAD4 !important;
-  color: #06201D !important;
-  box-shadow: 0 6px 20px rgba(45, 212, 191, 0.35);
-}
-.btn-primary:active, .btn-turquoise:active, .btn-indigo:active {
-  background-color: #14B8A6 !important;
-  color: #06201D !important;
-}
-
-.btn-secondary {
-  background-color: #141D1E !important;
-  color: #F5FAFA !important;
-  border: 1px solid #2A3A3A !important;
-  font-weight: 500;
-  transition: all 0.2s ease-in-out;
-}
-.btn-secondary:hover {
-  background-color: #1B2728 !important;
-  border-color: #2DD4BF !important;
-  color: #5EEAD4 !important;
-}
-
-/* Scrollbar — Luxury Black & Turquoise */
+/* ==============================================================
+   SCROLLBAR — PROFESSIONAL WHITE + ORANGE
+   ============================================================== */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #080B0C;
+  background: #F8FAFC;
 }
 ::-webkit-scrollbar-thumb {
-  background-color: #2A3A3A;
+  background-color: #CBD5E1;
   border-radius: 20px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #2DD4BF;
+  background-color: #F97316;
 }
 
 /* Sidebar overlay */
 .sidebar-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(8, 11, 12, 0.85);
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(2px);
   z-index: 30;
   display: none;
 }

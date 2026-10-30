@@ -52,22 +52,22 @@ const GymOwnerIntroduction = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-[#F3E8E8] font-sans selection:bg-[#B76E79] selection:text-[#292524]">
+    <div className="min-h-screen bg-[#F8FAFC] font-sans selection:bg-[#C2410C] selection:text-[#111827]">
       {/* Navbar */}
-      <nav className="bg-[#FFFFFF] border-b border-[#E7DADD] sticky top-0 z-50 shadow-sm">
+      <nav className="bg-[#FFFFFF] border-b border-[#E2E8F0] sticky top-0 z-50 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <Link to="/portal/gym-owner" className="flex items-center space-x-2.5 group">
-              <div className="w-9 h-9 bg-gradient-to-br from-[#B76E79] to-[#9F5965] rounded-xl flex items-center justify-center shadow-lg shadow-[#B76E79]/20">
+              <div className="w-9 h-9 bg-gradient-to-br from-[#EA580C] to-[#C2410C] rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/15">
                 <Activity className="text-[#FFFFFF]" size={20} strokeWidth={2.5} />
               </div>
-              <span className="text-xl font-bold tracking-tight text-[#292524] group-hover:text-[#B76E79] transition-colors">Gymora</span>
+              <span className="text-xl font-bold tracking-tight text-[#111827] group-hover:text-[#EA580C] transition-colors">Gymora</span>
             </Link>
 
             <div className="flex items-center gap-3">
               <Link 
                 to="/portal/gym-owner"
-                className="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#FFFFFF] bg-[#B76E79] hover:bg-[#9F5965] transition-all flex items-center gap-1.5 cursor-pointer shadow-md shadow-[#B76E79]/20"
+                className="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#FFFFFF] bg-[#C2410C] hover:bg-[#9A3412] transition-all flex items-center gap-1.5 cursor-pointer shadow-md shadow-orange-500/15"
               >
                 <ArrowLeft size={16} />
                 <span>Back to Gym Owner</span>
@@ -75,7 +75,7 @@ const GymOwnerIntroduction = () => {
 
               <Link 
                 to="/register/gym-owner"
-                className="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#FFFFFF] bg-[#B76E79] hover:bg-[#9F5965] transition-all flex items-center gap-1.5 cursor-pointer shadow-md shadow-[#B76E79]/20"
+                className="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#FFFFFF] bg-[#C2410C] hover:bg-[#9A3412] transition-all flex items-center gap-1.5 cursor-pointer shadow-md shadow-orange-500/15"
               >
                 <span>Skip Introduction</span>
                 <SkipForward size={14} />
@@ -88,14 +88,14 @@ const GymOwnerIntroduction = () => {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
         {/* Header Section */}
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 bg-[#B76E79]/10 border border-[#B76E79]/20 rounded-full px-4 py-1.5 text-[#B76E79] text-xs font-bold uppercase tracking-widest mb-6">
+          <div className="inline-flex items-center gap-2 bg-[#FFF7ED] border border-[#FFEDD5] rounded-full px-4 py-1.5 text-[#EA580C] text-xs font-bold uppercase tracking-widest mb-6">
             <Building2 size={14} /> For Gym Owners
           </div>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#292524] tracking-tight mb-6 leading-tight">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#111827] tracking-tight mb-6 leading-tight">
             Manage Your Gym <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#B76E79] to-[#9F5965]">Smarter with AI</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#EA580C] to-[#C2410C]">Smarter with AI</span>
           </h1>
-          <p className="text-lg md:text-xl text-[#57534E] leading-relaxed">
+          <p className="text-lg md:text-xl text-[#64748B] leading-relaxed">
             Learn how our AI-powered gym management platform helps you manage your gym, trainers, members, memberships, and fitness programs.
           </p>
         </div>
@@ -105,28 +105,28 @@ const GymOwnerIntroduction = () => {
         {/* Steps Section */}
         <div className="mb-24">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-[#292524]">How It Works</h2>
-            <div className="w-20 h-1 bg-[#B76E79] mx-auto mt-4 rounded-full"></div>
+            <h2 className="text-3xl font-bold text-[#111827]">How It Works</h2>
+            <div className="w-20 h-1 bg-[#C2410C] mx-auto mt-4 rounded-full"></div>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {steps.map((step, idx) => {
               const Icon = step.icon;
               return (
-                <div key={idx} className="bg-[#FFFFFF] rounded-2xl p-8 shadow-sm hover:shadow-xl border border-[#E7DADD] transition-all duration-300 group hover:-translate-y-1 relative overflow-hidden">
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-[#E7DADD]/50 to-transparent rounded-bl-full -z-10 group-hover:scale-110 transition-transform"></div>
+                <div key={idx} className="bg-[#FFFFFF] rounded-2xl p-8 shadow-sm hover:shadow-xl border border-[#E2E8F0] transition-all duration-300 group hover:-translate-y-1 relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-[#E2E8F0]/50 to-transparent rounded-bl-full -z-10 group-hover:scale-110 transition-transform"></div>
                   
                   <div className="flex items-center gap-4 mb-6">
-                    <div className="w-14 h-14 bg-[#F3E8E8] text-[#F3E8E8] rounded-xl flex items-center justify-center shrink-0 group-hover:bg-[#B76E79] group-hover:text-[#FFFFFF] font-bold transition-colors shadow-sm">
+                    <div className="w-14 h-14 bg-[#F8FAFC] text-[#F8FAFC] rounded-xl flex items-center justify-center shrink-0 group-hover:bg-[#C2410C] group-hover:text-[#FFFFFF] font-bold transition-colors shadow-sm">
                       <Icon size={24} />
                     </div>
-                    <div className="text-[#57534E] font-black text-4xl opacity-20 group-hover:text-[#B76E79] transition-colors">
+                    <div className="text-[#64748B] font-black text-4xl opacity-20 group-hover:text-[#EA580C] transition-colors">
                       0{idx + 1}
                     </div>
                   </div>
                   
-                  <h3 className="text-xl font-bold text-[#292524] mb-3">{step.title}</h3>
-                  <p className="text-[#57534E] leading-relaxed">{step.desc}</p>
+                  <h3 className="text-xl font-bold text-[#111827] mb-3">{step.title}</h3>
+                  <p className="text-[#64748B] leading-relaxed">{step.desc}</p>
                 </div>
               );
             })}
@@ -134,16 +134,16 @@ const GymOwnerIntroduction = () => {
         </div>
 
         {/* Action Bottom Section */}
-        <div className="max-w-4xl mx-auto bg-[#FFFFFF] rounded-3xl p-10 md:p-14 shadow-xl border border-[#E7DADD] text-center relative overflow-hidden">
+        <div className="max-w-4xl mx-auto bg-[#FFFFFF] rounded-3xl p-10 md:p-14 shadow-xl border border-[#E2E8F0] text-center relative overflow-hidden">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(183,110,121,0.05)_0%,_transparent_70%)] pointer-events-none"></div>
           
-          <h2 className="text-3xl font-bold text-[#292524] mb-4 relative z-10">Ready to Transform Your Gym?</h2>
-          <p className="text-[#57534E] mb-10 text-lg relative z-10 max-w-xl mx-auto">Join thousands of modern gym owners who are leveraging AI to automate their business and provide better results for members.</p>
+          <h2 className="text-3xl font-bold text-[#111827] mb-4 relative z-10">Ready to Transform Your Gym?</h2>
+          <p className="text-[#64748B] mb-10 text-lg relative z-10 max-w-xl mx-auto">Join thousands of modern gym owners who are leveraging AI to automate their business and provide better results for members.</p>
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 relative z-10">
             <button 
               onClick={() => navigate('/register/gym-owner')}
-              className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-[#B76E79] to-[#9F5965] text-[#FFFFFF] font-bold rounded-xl font-bold text-lg hover:from-[#9F5965] hover:to-[#9F5965] shadow-lg shadow-[#B76E79]/15 transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2 group"
+              className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-[#EA580C] to-[#C2410C] text-[#FFFFFF] font-bold rounded-xl font-bold text-lg hover:from-[#9A3412] hover:to-[#C2410C] shadow-lg shadow-orange-500/15 transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2 group"
             >
               Start Registration
               <ArrowRight className="group-hover:translate-x-1 transition-transform" size={20} />
@@ -151,7 +151,7 @@ const GymOwnerIntroduction = () => {
             
             <button 
               onClick={() => navigate('/register/gym-owner')}
-              className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-[#B76E79] to-[#9F5965] text-[#FFFFFF] font-bold rounded-xl font-bold text-lg hover:from-[#9F5965] hover:to-[#9F5965] shadow-lg shadow-[#B76E79]/15 transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-[#EA580C] to-[#C2410C] text-[#FFFFFF] font-bold rounded-xl font-bold text-lg hover:from-[#9A3412] hover:to-[#C2410C] shadow-lg shadow-orange-500/15 transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2 cursor-pointer"
             >
               Skip Introduction
             </button>
@@ -160,7 +160,7 @@ const GymOwnerIntroduction = () => {
           <div className="mt-8 flex flex-wrap items-center justify-center gap-6 relative z-10">
             <Link 
               to="/register/gym-owner" 
-              className="text-sm font-medium text-[#57534E] hover:text-[#B76E79] underline underline-offset-4 decoration-[#E7DADD] hover:decoration-[#B76E79] transition-all"
+              className="text-sm font-medium text-[#64748B] hover:text-[#EA580C] underline underline-offset-4 decoration-[#E2E8F0] hover:decoration-[#F97316] transition-all"
             >
               Already know how it works? Skip and register
             </Link>

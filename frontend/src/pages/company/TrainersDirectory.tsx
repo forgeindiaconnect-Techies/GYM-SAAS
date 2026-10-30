@@ -195,19 +195,19 @@ export default function TrainersDirectory() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFFFFF] text-[#292524] selection:bg-[#B76E79] selection:text-black">
+    <div className="min-h-screen bg-[#FFFFFF] text-[#111827] selection:bg-[#C2410C] selection:text-black">
       {/* Top Navbar */}
-      <nav className="border-b border-[#E7DADD] bg-[#F3E8E8]/95 backdrop-blur-md sticky top-0 z-40">
+      <nav className="border-b border-[#E2E8F0] bg-[#FFFFFF]/95 backdrop-blur-md sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <Link to="/" className="flex items-center space-x-2 mr-4">
-              <div className="w-9 h-9 bg-[#B76E79] rounded-xl flex items-center justify-center shadow-md shadow-[#B76E79]/20">
+              <div className="w-9 h-9 bg-[#C2410C] rounded-xl flex items-center justify-center shadow-md shadow-orange-500/15">
                 <Activity className="text-black" size={20} />
               </div>
               <span className="text-xl font-bold tracking-tight text-white">Gymora</span>
             </Link>
-            <div className="h-5 w-px bg-[#E7DADD] hidden sm:block" />
-            <span className="text-xs font-bold text-[#B76E79] uppercase tracking-wider hidden sm:inline">
+            <div className="h-5 w-px bg-[#E2E8F0] hidden sm:block" />
+            <span className="text-xs font-bold text-[#EA580C] uppercase tracking-wider hidden sm:inline">
               Public Trainer Directory
             </span>
           </div>
@@ -215,14 +215,14 @@ export default function TrainersDirectory() {
           <div className="flex items-center space-x-3">
             <Link
               to="/careers"
-              className="px-3.5 py-2 bg-[#FFFFFF] hover:bg-[#F3E8E8] text-slate-300 hover:text-white border border-[#E7DADD] font-semibold text-xs sm:text-sm rounded-xl transition-all flex items-center gap-1.5"
+              className="px-3.5 py-2 bg-[#FFFFFF] hover:bg-[#FFF7ED] text-slate-300 hover:text-[#C2410C] border border-[#E2E8F0] font-semibold text-xs sm:text-sm rounded-xl transition-all flex items-center gap-1.5"
             >
-              <Briefcase size={14} className="text-[#B76E79]" />
+              <Briefcase size={14} className="text-[#EA580C]" />
               <span>Find Gym Jobs</span>
             </Link>
             <Link
               to="/login?portal=gym-owner"
-              className="px-4 py-2 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold text-xs sm:text-sm rounded-xl transition-all shadow-md shadow-[#B76E79]/20 flex items-center gap-1.5"
+              className="px-4 py-2 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold text-xs sm:text-sm rounded-xl transition-all shadow-md shadow-orange-500/15 flex items-center gap-1.5"
             >
               <Building2 size={14} />
               <span>Gym Owner Login</span>
@@ -232,13 +232,13 @@ export default function TrainersDirectory() {
       </nav>
 
       {/* Hero Header */}
-      <header className="relative py-14 px-4 sm:px-6 lg:px-8 border-b border-[#E7DADD] bg-gradient-to-b from-[#F3E8E8] via-[#FFFFFF] to-[#FFFFFF]">
+      <header className="relative py-14 px-4 sm:px-6 lg:px-8 border-b border-[#E2E8F0] bg-gradient-to-b from-[#F8FAFC] via-[#FFFFFF] to-[#FFFFFF]">
         <div className="max-w-7xl mx-auto text-center space-y-4">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#FFFFFF] border border-[#E7DADD] text-xs font-bold text-[#B76E79]">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#FFFFFF] border border-[#E2E8F0] text-xs font-bold text-[#EA580C]">
             <Sparkles size={13} />
             <span>DISCOVER & RECRUIT CERTIFIED FITNESS TRAINERS</span>
           </div>
-          <h1 className="text-3xl sm:text-5xl font-black text-[#292524] tracking-tight">
+          <h1 className="text-3xl sm:text-5xl font-black text-[#111827] tracking-tight">
             Explore Verified Gym Trainers & Coaches
           </h1>
           <p className="text-sm sm:text-base text-slate-300 max-w-2xl mx-auto leading-relaxed">
@@ -248,9 +248,9 @@ export default function TrainersDirectory() {
           <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
             <Link
               to="/careers"
-              className="px-5 py-2.5 rounded-xl bg-[#FFFFFF] hover:bg-[#F3E8E8] border border-[#E7DADD] text-xs font-semibold text-slate-300 hover:text-white flex items-center gap-1.5 transition-colors"
+              className="px-5 py-2.5 rounded-xl bg-[#FFFFFF] hover:bg-[#FFF7ED] border border-[#E2E8F0] text-xs font-semibold text-slate-300 hover:text-[#C2410C] flex items-center gap-1.5 transition-colors"
             >
-              <Briefcase size={14} className="text-[#B76E79]" />
+              <Briefcase size={14} className="text-[#EA580C]" />
               <span>Are You a Trainer? View Active Gym Vacancies</span>
             </Link>
           </div>
@@ -261,7 +261,7 @@ export default function TrainersDirectory() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
         
         {/* Search & Filter Toolbar */}
-        <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-3xl p-5 shadow-xl space-y-4">
+        <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-3xl p-5 shadow-xl space-y-4">
           <div className="flex flex-col md:flex-row gap-3">
             {/* Search Input */}
             <div className="relative flex-1">
@@ -271,7 +271,7 @@ export default function TrainersDirectory() {
                 placeholder="Search trainers by name, headline, specialization or skills..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl pl-10 pr-4 py-2.5 text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#B76E79]"
+                className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl pl-10 pr-4 py-2.5 text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#FDBA74]"
               />
               {search && (
                 <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white">
@@ -286,7 +286,7 @@ export default function TrainersDirectory() {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="bg-[#FFFFFF] border border-[#E7DADD] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#B76E79]"
+                className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#FDBA74]"
               >
                 <option value="relevance">Most Relevant</option>
                 <option value="experience">Experience (High to Low)</option>
@@ -298,14 +298,14 @@ export default function TrainersDirectory() {
           </div>
 
           {/* Filter Pills Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 pt-2 border-t border-[#E7DADD]/60">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 pt-2 border-t border-[#E2E8F0]/60">
             {/* Location */}
             <div>
               <label className="text-[10px] text-slate-400 font-bold uppercase block mb-1">Location</label>
               <select
                 value={locationFilter}
                 onChange={(e) => setLocationFilter(e.target.value)}
-                className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-[#B76E79]"
+                className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-[#FDBA74]"
               >
                 <option value="all">All Locations</option>
                 <option value="Bangalore">Bangalore</option>
@@ -323,7 +323,7 @@ export default function TrainersDirectory() {
               <select
                 value={expertiseFilter}
                 onChange={(e) => setExpertiseFilter(e.target.value)}
-                className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-[#B76E79]"
+                className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-[#FDBA74]"
               >
                 <option value="all">All Specialties</option>
                 <option value="Strength">Strength & Powerlifting</option>
@@ -340,7 +340,7 @@ export default function TrainersDirectory() {
               <select
                 value={experienceFilter}
                 onChange={(e) => setExperienceFilter(e.target.value)}
-                className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-[#B76E79]"
+                className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-[#FDBA74]"
               >
                 <option value="all">Any Experience</option>
                 <option value="2">2+ Years</option>
@@ -355,7 +355,7 @@ export default function TrainersDirectory() {
               <select
                 value={employmentFilter}
                 onChange={(e) => setEmploymentFilter(e.target.value)}
-                className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-[#B76E79]"
+                className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-[#FDBA74]"
               >
                 <option value="all">Any Type</option>
                 <option value="Full-time">Full-time</option>
@@ -370,7 +370,7 @@ export default function TrainersDirectory() {
               <select
                 value={salaryFilter}
                 onChange={(e) => setSalaryFilter(e.target.value)}
-                className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-[#B76E79]"
+                className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-[#FDBA74]"
               >
                 <option value="all">Any Salary</option>
                 <option value="under30k">Under ₹30,000</option>
@@ -386,7 +386,7 @@ export default function TrainersDirectory() {
               <select
                 value={availabilityFilter}
                 onChange={(e) => setAvailabilityFilter(e.target.value)}
-                className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-[#B76E79]"
+                className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-[#FDBA74]"
               >
                 <option value="all">Any Status</option>
                 <option value="Online">Available Immediately</option>
@@ -405,18 +405,18 @@ export default function TrainersDirectory() {
         {/* Loading State */}
         {loading && (
           <div className="py-20 text-center space-y-3">
-            <div className="w-10 h-10 border-2 border-[#B76E79] border-t-transparent rounded-full animate-spin mx-auto" />
+            <div className="w-10 h-10 border-2 border-[#FDBA74] border-t-transparent rounded-full animate-spin mx-auto" />
             <p className="text-xs text-slate-400">Loading verified trainer directory...</p>
           </div>
         )}
 
         {/* Empty State */}
         {!loading && trainers.length === 0 && (
-          <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-3xl p-12 text-center space-y-4">
-            <div className="w-14 h-14 bg-[#FFFFFF] text-slate-400 rounded-2xl flex items-center justify-center mx-auto border border-[#E7DADD]">
+          <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-3xl p-12 text-center space-y-4">
+            <div className="w-14 h-14 bg-[#FFFFFF] text-slate-400 rounded-2xl flex items-center justify-center mx-auto border border-[#E2E8F0]">
               <Search size={28} />
             </div>
-            <h3 className="text-lg font-bold text-[#292524]">No Trainers Found</h3>
+            <h3 className="text-lg font-bold text-[#111827]">No Trainers Found</h3>
             <p className="text-xs text-slate-400 max-w-sm mx-auto">
               No trainer profiles match your current filter parameters. Try clearing some filters or searching for broader terms.
             </p>
@@ -430,7 +430,7 @@ export default function TrainersDirectory() {
                 setSalaryFilter('all');
                 setAvailabilityFilter('all');
               }}
-              className="px-4 py-2 bg-[#B76E79] text-white font-bold text-xs rounded-xl"
+              className="px-4 py-2 bg-[#C2410C] text-white font-bold text-xs rounded-xl"
             >
               Reset Filters
             </button>
@@ -443,29 +443,29 @@ export default function TrainersDirectory() {
             {trainers.map((trainer) => (
               <div
                 key={trainer._id}
-                className="bg-[#F3E8E8] border border-[#E7DADD] hover:border-[#B76E79]/50 rounded-3xl p-6 shadow-xl transition-all flex flex-col justify-between space-y-5 group"
+                className="bg-[#F8FAFC] border border-[#E2E8F0] hover:border-[#FFEDD5] rounded-3xl p-6 shadow-xl transition-all flex flex-col justify-between space-y-5 group"
               >
                 <div>
                   {/* Card Header: Avatar & Availability */}
                   <div className="flex items-start justify-between gap-4 mb-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-14 h-14 rounded-2xl overflow-hidden bg-[#FFFFFF] border border-[#E7DADD] shrink-0">
+                      <div className="w-14 h-14 rounded-2xl overflow-hidden bg-[#FFFFFF] border border-[#E2E8F0] shrink-0">
                         {trainer.profilePhoto ? (
                           <img src={trainer.profilePhoto} alt={trainer.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center text-lg font-bold text-[#B76E79]">
+                          <div className="w-full h-full flex items-center justify-center text-lg font-bold text-[#EA580C]">
                             {trainer.name.charAt(0)}
                           </div>
                         )}
                       </div>
                       <div>
-                        <h3 className="text-base font-bold text-[#292524] group-hover:text-[#B76E79] transition-colors leading-tight">
+                        <h3 className="text-base font-bold text-[#111827] group-hover:text-[#EA580C] transition-colors leading-tight">
                           {trainer.name}
                         </h3>
-                        <p className="text-xs text-[#B76E79] font-medium truncate max-w-[180px]">
+                        <p className="text-xs text-[#EA580C] font-medium truncate max-w-[180px]">
                           {trainer.professionalHeadline || trainer.specialization || 'Fitness Coach'}
                         </p>
-                        <div className="flex items-center gap-1 text-[11px] text-amber-400 mt-0.5">
+                        <div className="flex items-center gap-1 text-[11px] text-[#B45309] mt-0.5">
                           <Star size={11} fill="currentColor" />
                           <span className="font-bold">{trainer.averageRating || 5.0}</span>
                           <span className="text-slate-500">({trainer.totalReviews || 12} reviews)</span>
@@ -473,20 +473,20 @@ export default function TrainersDirectory() {
                       </div>
                     </div>
 
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 whitespace-nowrap">
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-[#15803D] border border-emerald-500/30 whitespace-nowrap">
                       {trainer.availabilityStatus === 'Busy' ? 'Engaged' : 'Available'}
                     </span>
                   </div>
 
                   {/* Badges / Quick Meta */}
                   <div className="flex flex-wrap gap-1.5 mb-4">
-                    <span className="px-2.5 py-1 rounded-lg bg-[#FFFFFF] text-slate-300 border border-[#E7DADD] text-[10px] font-semibold flex items-center gap-1">
-                      <Briefcase size={11} className="text-[#B76E79]" /> {trainer.experience || 3}+ Yrs Exp
+                    <span className="px-2.5 py-1 rounded-lg bg-[#FFFFFF] text-slate-300 border border-[#E2E8F0] text-[10px] font-semibold flex items-center gap-1">
+                      <Briefcase size={11} className="text-[#EA580C]" /> {trainer.experience || 3}+ Yrs Exp
                     </span>
-                    <span className="px-2.5 py-1 rounded-lg bg-[#FFFFFF] text-slate-300 border border-[#E7DADD] text-[10px] font-semibold flex items-center gap-1">
-                      <MapPin size={11} className="text-[#B76E79]" /> {trainer.preferredLocation || 'Pan India'}
+                    <span className="px-2.5 py-1 rounded-lg bg-[#FFFFFF] text-slate-300 border border-[#E2E8F0] text-[10px] font-semibold flex items-center gap-1">
+                      <MapPin size={11} className="text-[#EA580C]" /> {trainer.preferredLocation || 'Pan India'}
                     </span>
-                    <span className="px-2.5 py-1 rounded-lg bg-[#FFFFFF] text-slate-300 border border-[#E7DADD] text-[10px] font-semibold">
+                    <span className="px-2.5 py-1 rounded-lg bg-[#FFFFFF] text-slate-300 border border-[#E2E8F0] text-[10px] font-semibold">
                       {trainer.employmentPreference || 'Full-time'}
                     </span>
                   </div>
@@ -498,23 +498,23 @@ export default function TrainersDirectory() {
 
                   {/* Qualifications & Certs Summary */}
                   {(trainer.certifications || trainer.qualifications) && (
-                    <div className="p-3 rounded-2xl bg-[#FFFFFF] border border-[#E7DADD] text-[11px] text-slate-300 space-y-1 mb-4">
+                    <div className="p-3 rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0] text-[11px] text-slate-300 space-y-1 mb-4">
                       <div className="flex items-center gap-1 font-bold text-white text-[10px] uppercase tracking-wider">
-                        <Award size={12} className="text-[#B76E79]" /> Certifications & Credentials
+                        <Award size={12} className="text-[#EA580C]" /> Certifications & Credentials
                       </div>
                       <p className="text-slate-400 line-clamp-1">{trainer.certifications || trainer.qualifications}</p>
                     </div>
                   )}
 
                   {/* Compensation Distinction: Monthly Salary vs PT Fee */}
-                  <div className="grid grid-cols-2 gap-2 pt-3 border-t border-[#E7DADD] text-xs">
-                    <div className="bg-[#FFFFFF]/60 p-2.5 rounded-xl border border-[#E7DADD]/60">
+                  <div className="grid grid-cols-2 gap-2 pt-3 border-t border-[#E2E8F0] text-xs">
+                    <div className="bg-[#FFFFFF]/60 p-2.5 rounded-xl border border-[#E2E8F0]/60">
                       <span className="text-[10px] text-slate-500 uppercase block font-bold">Expected Salary</span>
-                      <span className="font-mono font-bold text-[#B76E79] text-sm">
+                      <span className="font-mono font-bold text-[#EA580C] text-sm">
                         {trainer.expectedSalary ? `₹${trainer.expectedSalary.toLocaleString()}/mo` : 'Negotiable'}
                       </span>
                     </div>
-                    <div className="bg-[#FFFFFF]/60 p-2.5 rounded-xl border border-[#E7DADD]/60">
+                    <div className="bg-[#FFFFFF]/60 p-2.5 rounded-xl border border-[#E2E8F0]/60">
                       <span className="text-[10px] text-slate-500 uppercase block font-bold">PT Fee Per Session</span>
                       <span className="font-mono font-bold text-slate-200 text-sm">
                         {trainer.personalTrainingFee || trainer.fee ? `₹${(trainer.personalTrainingFee || trainer.fee)?.toLocaleString()}` : 'Custom'}
@@ -527,13 +527,13 @@ export default function TrainersDirectory() {
                 <div className="flex items-center gap-2 pt-2">
                   <button
                     onClick={() => setSelectedTrainer(trainer)}
-                    className="flex-1 py-2.5 bg-[#FFFFFF] hover:bg-[#F3E8E8] text-white border border-[#E7DADD] hover:border-[#B76E79]/50 font-bold text-xs rounded-xl transition-all text-center"
+                    className="flex-1 py-2.5 bg-[#FFFFFF] hover:bg-[#FFF7ED] text-white border border-[#E2E8F0] hover:border-[#FFEDD5] font-bold text-xs rounded-xl transition-all text-center"
                   >
                     View Profile
                   </button>
                   <button
                     onClick={() => handleHireClick(trainer)}
-                    className="flex-1 py-2.5 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold text-xs rounded-xl transition-all shadow-md shadow-[#B76E79]/20 flex items-center justify-center gap-1.5"
+                    className="flex-1 py-2.5 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold text-xs rounded-xl transition-all shadow-md shadow-orange-500/15 flex items-center justify-center gap-1.5"
                   >
                     <Send size={13} />
                     <span>Hire Trainer</span>
@@ -548,25 +548,25 @@ export default function TrainersDirectory() {
       {/* MODAL 1: DETAILED TRAINER PROFILE VIEW */}
       {selectedTrainer && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#F3E8E8] border border-[#B76E79]/40 rounded-3xl max-w-2xl w-full p-6 sm:p-8 space-y-6 shadow-2xl max-h-[90vh] overflow-y-auto">
-            <div className="flex items-start justify-between border-b border-[#E7DADD] pb-4">
+          <div className="bg-[#F8FAFC] border border-[#FFEDD5] rounded-3xl max-w-2xl w-full p-6 sm:p-8 space-y-6 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div className="flex items-start justify-between border-b border-[#E2E8F0] pb-4">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-2xl overflow-hidden bg-[#FFFFFF] border border-[#E7DADD] shrink-0">
+                <div className="w-16 h-16 rounded-2xl overflow-hidden bg-[#FFFFFF] border border-[#E2E8F0] shrink-0">
                   {selectedTrainer.profilePhoto ? (
                     <img src={selectedTrainer.profilePhoto} alt={selectedTrainer.name} className="w-full h-full object-cover" />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-xl font-bold text-[#B76E79]">
+                    <div className="w-full h-full flex items-center justify-center text-xl font-bold text-[#EA580C]">
                       {selectedTrainer.name.charAt(0)}
                     </div>
                   )}
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-[#292524]">{selectedTrainer.name}</h3>
-                  <p className="text-xs text-[#B76E79] font-semibold">
+                  <h3 className="text-xl font-bold text-[#111827]">{selectedTrainer.name}</h3>
+                  <p className="text-xs text-[#EA580C] font-semibold">
                     {selectedTrainer.professionalHeadline || selectedTrainer.specialization || 'Certified Coach'}
                   </p>
                   <div className="flex items-center gap-2 text-xs text-slate-400 mt-1">
-                    <span className="flex items-center gap-1 text-amber-400">
+                    <span className="flex items-center gap-1 text-[#B45309]">
                       <Star size={12} fill="currentColor" /> {selectedTrainer.averageRating || 5.0}
                     </span>
                     <span>• {selectedTrainer.experience || 3}+ Years Exp</span>
@@ -577,17 +577,17 @@ export default function TrainersDirectory() {
 
               <button
                 onClick={() => setSelectedTrainer(null)}
-                className="w-8 h-8 rounded-full bg-[#FFFFFF] hover:bg-[#F3E8E8] text-slate-400 hover:text-white flex items-center justify-center text-sm"
+                className="w-8 h-8 rounded-full bg-[#FFFFFF] hover:bg-[#FFF7ED] text-slate-400 hover:text-[#C2410C] flex items-center justify-center text-sm"
               >
                 ✕
               </button>
             </div>
 
             {/* Compensation & Preferences Matrix */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-[#FFFFFF] p-4 rounded-2xl border border-[#E7DADD]">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-[#FFFFFF] p-4 rounded-2xl border border-[#E2E8F0]">
               <div>
                 <span className="text-[10px] text-slate-400 font-bold uppercase block">Monthly Salary</span>
-                <span className="text-base font-bold font-mono text-[#B76E79]">
+                <span className="text-base font-bold font-mono text-[#EA580C]">
                   {selectedTrainer.expectedSalary ? `₹${selectedTrainer.expectedSalary.toLocaleString()}` : 'Negotiable'}
                 </span>
               </div>
@@ -605,7 +605,7 @@ export default function TrainersDirectory() {
               </div>
               <div>
                 <span className="text-[10px] text-slate-400 font-bold uppercase block">Earliest Joining</span>
-                <span className="text-xs font-bold text-emerald-400">
+                <span className="text-xs font-bold text-[#15803D]">
                   {selectedTrainer.earliestJoiningDate || 'Immediate'}
                 </span>
               </div>
@@ -613,22 +613,22 @@ export default function TrainersDirectory() {
 
             {/* Professional Biography */}
             <div className="space-y-2">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-[#B76E79]">Professional Introduction</h4>
-              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed bg-[#FFFFFF]/40 p-4 rounded-2xl border border-[#E7DADD]">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-[#EA580C]">Professional Introduction</h4>
+              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed bg-[#FFFFFF]/40 p-4 rounded-2xl border border-[#E2E8F0]">
                 {selectedTrainer.bio || 'Comprehensive fitness coach equipped with deep biomechanical knowledge, nutritional guidance, and motivation strategies.'}
               </p>
             </div>
 
             {/* Certifications & Qualifications */}
             <div className="space-y-2">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-[#B76E79]">Certifications & Education</h4>
-              <div className="bg-[#FFFFFF]/40 p-4 rounded-2xl border border-[#E7DADD] space-y-2 text-xs text-slate-300">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-[#EA580C]">Certifications & Education</h4>
+              <div className="bg-[#FFFFFF]/40 p-4 rounded-2xl border border-[#E2E8F0] space-y-2 text-xs text-slate-300">
                 <div>
                   <strong className="text-white block mb-0.5">Accredited Certifications:</strong>
                   <span>{selectedTrainer.certifications || 'ACE, CSCS, CPR/AED Certified'}</span>
                 </div>
                 {selectedTrainer.qualifications && (
-                  <div className="pt-2 border-t border-[#E7DADD]">
+                  <div className="pt-2 border-t border-[#E2E8F0]">
                     <strong className="text-white block mb-0.5">Educational Background:</strong>
                     <span>{selectedTrainer.qualifications}</span>
                   </div>
@@ -637,21 +637,21 @@ export default function TrainersDirectory() {
             </div>
 
             {/* Bottom Actions */}
-            <div className="pt-4 border-t border-[#E7DADD] flex flex-col sm:flex-row gap-3">
+            <div className="pt-4 border-t border-[#E2E8F0] flex flex-col sm:flex-row gap-3">
               <button
                 onClick={() => {
                   const t = selectedTrainer;
                   setSelectedTrainer(null);
                   handleHireClick(t);
                 }}
-                className="flex-1 py-3 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold text-xs sm:text-sm rounded-xl transition-all shadow-md shadow-[#B76E79]/20 flex items-center justify-center gap-2"
+                className="flex-1 py-3 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold text-xs sm:text-sm rounded-xl transition-all shadow-md shadow-orange-500/15 flex items-center justify-center gap-2"
               >
                 <Send size={15} />
                 <span>Send Direct Hiring Request</span>
               </button>
               <button
                 onClick={() => setSelectedTrainer(null)}
-                className="px-6 py-3 bg-[#FFFFFF] text-slate-300 hover:text-white font-semibold text-xs rounded-xl border border-[#E7DADD]"
+                className="px-6 py-3 bg-[#FFFFFF] text-[#64748B] hover:text-[#C2410C] font-semibold text-xs rounded-xl border border-[#E2E8F0]"
               >
                 Close
               </button>
@@ -663,28 +663,28 @@ export default function TrainersDirectory() {
       {/* MODAL 2: SEND HIRING REQUEST FORM */}
       {hiringModalOpen && hiringTrainer && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#F3E8E8] border border-[#B76E79]/40 rounded-3xl max-w-xl w-full p-6 sm:p-8 space-y-5 shadow-2xl max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between border-b border-[#E7DADD] pb-3">
+          <div className="bg-[#F8FAFC] border border-[#FFEDD5] rounded-3xl max-w-xl w-full p-6 sm:p-8 space-y-5 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-3">
               <div>
-                <span className="text-[10px] font-bold text-[#B76E79] uppercase tracking-wider block">
+                <span className="text-[10px] font-bold text-[#EA580C] uppercase tracking-wider block">
                   OFFICIAL HIRING PROPOSAL
                 </span>
-                <h3 className="text-lg font-bold text-[#292524]">Send Hiring Request to {hiringTrainer.name}</h3>
+                <h3 className="text-lg font-bold text-[#111827]">Send Hiring Request to {hiringTrainer.name}</h3>
               </div>
-              <button onClick={() => setHiringModalOpen(false)} className="text-slate-400 hover:text-white text-sm">
+              <button onClick={() => setHiringModalOpen(false)} className="text-[#64748B] hover:text-[#C2410C] text-sm">
                 ✕
               </button>
             </div>
 
             {hiringSuccessMsg && (
-              <div className="p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl text-emerald-400 text-xs font-bold flex items-center gap-2">
+              <div className="p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl text-[#15803D] text-xs font-bold flex items-center gap-2">
                 <CheckCircle2 size={16} />
                 <span>{hiringSuccessMsg}</span>
               </div>
             )}
 
             {hiringErrorMsg && (
-              <div className="p-4 bg-rose-500/10 border border-rose-500/30 rounded-2xl text-rose-400 text-xs font-bold">
+              <div className="p-4 bg-rose-500/10 border border-rose-500/30 rounded-2xl text-[#B91C1C] text-xs font-bold">
                 {hiringErrorMsg}
               </div>
             )}
@@ -698,7 +698,7 @@ export default function TrainersDirectory() {
                     required
                     value={hiringForm.role}
                     onChange={(e) => setHiringForm({ ...hiringForm, role: e.target.value })}
-                    className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#B76E79]"
+                    className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#FDBA74]"
                     placeholder="e.g. Senior Strength Coach"
                   />
                 </div>
@@ -707,7 +707,7 @@ export default function TrainersDirectory() {
                   <select
                     value={hiringForm.employmentType}
                     onChange={(e) => setHiringForm({ ...hiringForm, employmentType: e.target.value as any })}
-                    className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#B76E79]"
+                    className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#FDBA74]"
                   >
                     <option value="Full-time">Full-time (Salaried)</option>
                     <option value="Part-time">Part-time (Hourly/Shift)</option>
@@ -725,7 +725,7 @@ export default function TrainersDirectory() {
                     min={1}
                     value={hiringForm.offeredCompensation}
                     onChange={(e) => setHiringForm({ ...hiringForm, offeredCompensation: e.target.value })}
-                    className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl px-3 py-2 text-white font-mono focus:outline-none focus:border-[#B76E79]"
+                    className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-3 py-2 text-white font-mono focus:outline-none focus:border-[#FDBA74]"
                     placeholder="45000"
                   />
                 </div>
@@ -736,7 +736,7 @@ export default function TrainersDirectory() {
                     min={0}
                     value={hiringForm.personalTrainingFee}
                     onChange={(e) => setHiringForm({ ...hiringForm, personalTrainingFee: e.target.value })}
-                    className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl px-3 py-2 text-white font-mono focus:outline-none focus:border-[#B76E79]"
+                    className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-3 py-2 text-white font-mono focus:outline-none focus:border-[#FDBA74]"
                     placeholder="600"
                   />
                 </div>
@@ -749,7 +749,7 @@ export default function TrainersDirectory() {
                     type="text"
                     value={hiringForm.workingHours}
                     onChange={(e) => setHiringForm({ ...hiringForm, workingHours: e.target.value })}
-                    className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#B76E79]"
+                    className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#FDBA74]"
                   />
                 </div>
                 <div>
@@ -759,7 +759,7 @@ export default function TrainersDirectory() {
                     required
                     value={hiringForm.expectedJoiningDate}
                     onChange={(e) => setHiringForm({ ...hiringForm, expectedJoiningDate: e.target.value })}
-                    className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#B76E79]"
+                    className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#FDBA74]"
                   />
                 </div>
               </div>
@@ -771,7 +771,7 @@ export default function TrainersDirectory() {
                   rows={2}
                   value={hiringForm.jobResponsibilities}
                   onChange={(e) => setHiringForm({ ...hiringForm, jobResponsibilities: e.target.value })}
-                  className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#B76E79]"
+                  className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#FDBA74]"
                 />
               </div>
 
@@ -781,22 +781,22 @@ export default function TrainersDirectory() {
                   rows={2}
                   value={hiringForm.message}
                   onChange={(e) => setHiringForm({ ...hiringForm, message: e.target.value })}
-                  className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#B76E79]"
+                  className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#FDBA74]"
                 />
               </div>
 
-              <div className="pt-3 border-t border-[#E7DADD] flex items-center justify-end gap-3">
+              <div className="pt-3 border-t border-[#E2E8F0] flex items-center justify-end gap-3">
                 <button
                   type="button"
                   onClick={() => setHiringModalOpen(false)}
-                  className="px-4 py-2.5 bg-[#FFFFFF] text-slate-400 hover:text-white rounded-xl font-semibold"
+                  className="px-4 py-2.5 bg-[#FFFFFF] text-[#64748B] hover:text-[#C2410C] rounded-xl font-semibold"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={submittingHiring}
-                  className="px-6 py-2.5 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold rounded-xl transition-all shadow-md shadow-[#B76E79]/20 flex items-center gap-1.5 disabled:opacity-50"
+                  className="px-6 py-2.5 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold rounded-xl transition-all shadow-md shadow-orange-500/15 flex items-center gap-1.5 disabled:opacity-50"
                 >
                   {submittingHiring ? (
                     <>

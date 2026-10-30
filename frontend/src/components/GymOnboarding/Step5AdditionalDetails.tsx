@@ -36,57 +36,57 @@ export const Step5AdditionalDetails = ({ data, updateData }: any) => {
 
   return (
     <div className="space-y-6 animate-fade-in">
-      <div className="flex items-center space-x-3 mb-6 pb-4 border-b border-[#E7DADD]">
-        <Building className="text-[#B76E79]" size={24} />
+      <div className="flex items-center space-x-3 mb-6 pb-4 border-b border-[#E2E8F0]">
+        <Building className="text-[#EA580C]" size={24} />
         <h2 className="text-xl font-bold">Gym Details & Facilities</h2>
       </div>
 
       <div className="grid md:grid-cols-2 gap-6">
         <div className="md:col-span-2">
-          <label className="block text-sm font-medium text-[#57534E] mb-2">Gym Description</label>
+          <label className="block text-sm font-medium text-[#64748B] mb-2">Gym Description</label>
           <textarea
             value={data.description}
             onChange={(e) => updateData({ description: e.target.value })}
             rows={3}
-            className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl px-4 py-3 text-sm text-[#292524] outline-none focus:border-[#B76E79] resize-none"
+            className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-4 py-3 text-sm text-[#111827] outline-none focus:border-[#FDBA74] resize-none"
             placeholder="Tell us about the gym..."
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-[#57534E] mb-2">Established Year</label>
+          <label className="block text-sm font-medium text-[#64748B] mb-2">Established Year</label>
           <input
             type="number"
             value={data.establishedYear}
             onChange={(e) => updateData({ establishedYear: e.target.value })}
-            className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl px-4 py-3 text-sm text-[#292524] outline-none focus:border-[#B76E79]"
+            className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-4 py-3 text-sm text-[#111827] outline-none focus:border-[#FDBA74]"
             placeholder="e.g. 2015"
           />
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-[#57534E] mb-2">Opening Time</label>
+            <label className="block text-sm font-medium text-[#64748B] mb-2">Opening Time</label>
             <input
               type="time"
               value={data.openingTime}
               onChange={(e) => updateData({ openingTime: e.target.value })}
-              className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl px-4 py-3 text-sm text-[#292524] outline-none focus:border-[#B76E79] [color-scheme:dark]"
+              className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-4 py-3 text-sm text-[#111827] outline-none focus:border-[#FDBA74] [color-scheme:dark]"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-[#57534E] mb-2">Closing Time</label>
+            <label className="block text-sm font-medium text-[#64748B] mb-2">Closing Time</label>
             <input
               type="time"
               value={data.closingTime}
               onChange={(e) => updateData({ closingTime: e.target.value })}
-              className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl px-4 py-3 text-sm text-[#292524] outline-none focus:border-[#B76E79] [color-scheme:dark]"
+              className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-4 py-3 text-sm text-[#111827] outline-none focus:border-[#FDBA74] [color-scheme:dark]"
             />
           </div>
         </div>
 
         <div className="md:col-span-2">
-          <label className="block text-sm font-medium text-[#57534E] mb-3">Working Days</label>
+          <label className="block text-sm font-medium text-[#64748B] mb-3">Working Days</label>
           <div className="flex flex-wrap gap-3">
             {DAYS.map(day => (
               <button
@@ -95,8 +95,8 @@ export const Step5AdditionalDetails = ({ data, updateData }: any) => {
                 onClick={() => toggleDay(day)}
                 className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all border ${
                   data.workingDays.includes(day)
-                    ? 'bg-[#B76E79]/10 text-[#B76E79] border-[#B76E79]'
-                    : 'bg-[#FFFFFF] text-[#57534E] border-[#E7DADD] hover:border-[#57534E]'
+                    ? 'bg-[#FFF7ED] text-[#EA580C] border-[#FDBA74]'
+                    : 'bg-[#FFFFFF] text-[#64748B] border-[#E2E8F0] hover:border-[#E2E8F0]'
                 }`}
               >
                 {day}
@@ -105,9 +105,9 @@ export const Step5AdditionalDetails = ({ data, updateData }: any) => {
           </div>
         </div>
 
-        <div className="md:col-span-2 mt-4 pt-6 border-t border-[#E7DADD]">
+        <div className="md:col-span-2 mt-4 pt-6 border-t border-[#E2E8F0]">
           <div className="flex items-center space-x-2 mb-6">
-            <Settings2 className="text-[#B76E79]" size={20} />
+            <Settings2 className="text-[#EA580C]" size={20} />
             <h3 className="text-lg font-bold">Facilities</h3>
           </div>
           
@@ -118,14 +118,14 @@ export const Step5AdditionalDetails = ({ data, updateData }: any) => {
                 onClick={() => toggleFacility(fac.id)}
                 className={`flex items-center justify-between p-4 rounded-xl border cursor-pointer transition-all ${
                   data.facilities[fac.id]
-                    ? 'bg-[#B76E79]/5 border-[#B76E79]/50'
-                    : 'bg-[#FFFFFF] border-[#E7DADD] hover:bg-[#F3E8E8]'
+                    ? 'bg-[#FFF7ED] border-[#FFEDD5]'
+                    : 'bg-[#FFFFFF] border-[#E2E8F0] hover:bg-[#FFF7ED]'
                 }`}
               >
-                <span className={`text-sm font-medium ${data.facilities[fac.id] ? 'text-[#292524]' : 'text-[#57534E]'}`}>
+                <span className={`text-sm font-medium ${data.facilities[fac.id] ? 'text-[#111827]' : 'text-[#64748B]'}`}>
                   {fac.label}
                 </span>
-                <div className={`w-10 h-6 rounded-full transition-colors relative ${data.facilities[fac.id] ? 'bg-[#B76E79]' : 'bg-[#F3E8E8]'}`}>
+                <div className={`w-10 h-6 rounded-full transition-colors relative ${data.facilities[fac.id] ? 'bg-[#C2410C]' : 'bg-[#F8FAFC]'}`}>
                   <div className={`w-4 h-4 bg-[#FFFFFF] rounded-full absolute top-1 transition-transform ${data.facilities[fac.id] ? 'left-5' : 'left-1'}`}></div>
                 </div>
               </div>

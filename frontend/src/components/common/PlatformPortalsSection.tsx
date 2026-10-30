@@ -45,17 +45,17 @@ export const PlatformPortalsSection: React.FC<PlatformPortalsSectionProps> = ({ 
   ];
 
   return (
-    <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-6 sm:p-7 shadow-sm">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 border-b border-[#E7DADD] pb-5">
+    <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-6 sm:p-7 shadow-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 border-b border-[#E2E8F0] pb-5">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#B76E79]/10 text-[#B76E79] border border-[#B76E79]/20 mb-2">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5] mb-2">
             <Sparkles size={13} />
             <span>Platform Ecosystem</span>
           </div>
-          <h2 className="text-xl sm:text-2xl font-bold text-[#292524] tracking-tight">
+          <h2 className="text-xl sm:text-2xl font-bold text-[#111827] tracking-tight">
             Role Portals & Ecosystem
           </h2>
-          <p className="text-xs sm:text-sm text-[#57534E] mt-0.5">
+          <p className="text-xs sm:text-sm text-[#64748B] mt-0.5">
             Overview of the three dedicated portals and environments powering the Gymora platform.
           </p>
         </div>
@@ -71,56 +71,56 @@ export const PlatformPortalsSection: React.FC<PlatformPortalsSectionProps> = ({ 
               key={portal.id}
               className={`rounded-2xl p-5 border flex flex-col justify-between transition-all ${
                 isCurrent 
-                  ? 'bg-[#F3E8E8]/70 border-[#B76E79]/50 shadow-md shadow-teal-500/5 ring-1 ring-[#B76E79]/20' 
-                  : 'bg-[#F3E8E8] border-[#E7DADD] hover:border-[#B76E79]/40'
+                  ? 'bg-[#F8FAFC]/70 border-[#FFEDD5] shadow-md shadow-teal-500/5 ring-1 ring-[#F97316]/20' 
+                  : 'bg-[#F8FAFC] border-[#E2E8F0] hover:border-[#FFEDD5]'
               }`}
             >
               <div>
                 <div className="flex items-center justify-between mb-4">
                   <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${
-                    isCurrent ? 'bg-[#B76E79] text-white' : 'bg-[#B76E79]/10 text-[#B76E79]'
+                    isCurrent ? 'bg-[#C2410C] text-white' : 'bg-[#FFF7ED] text-[#EA580C]'
                   }`}>
                     <Icon size={22} />
                   </div>
                   {isCurrent ? (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-[#B76E79]/20 text-[#B76E79] border border-[#B76E79]/30">
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5]">
                       <CheckCircle2 size={12} />
                       <span>Active Dashboard</span>
                     </span>
                   ) : (
-                    <span className="text-[11px] font-semibold text-[#57534E] uppercase tracking-wider">
+                    <span className="text-[11px] font-semibold text-[#64748B] uppercase tracking-wider">
                       Role Portal
                     </span>
                   )}
                 </div>
 
-                <h3 className="text-base font-bold text-[#292524] mb-1">
+                <h3 className="text-base font-bold text-[#111827] mb-1">
                   {portal.title}
                 </h3>
-                <p className="text-xs text-[#B76E79] font-medium mb-3">
+                <p className="text-xs text-[#EA580C] font-medium mb-3">
                   {portal.subtitle}
                 </p>
-                <p className="text-xs text-[#57534E] leading-relaxed mb-5 font-normal">
+                <p className="text-xs text-[#64748B] leading-relaxed mb-5 font-normal">
                   {portal.description}
                 </p>
               </div>
 
-              <div className="pt-3 border-t border-[#E7DADD]/60 flex items-center gap-2">
+              <div className="pt-3 border-t border-[#E2E8F0]/60 flex items-center gap-2">
                 <Link
                   to={portal.portalUrl}
-                  className="flex-1 py-2 px-3 bg-[#F3E8E8] hover:bg-[#B76E79] text-[#292524] hover:text-[#FFFFFF] font-bold rounded-xl text-xs transition-all flex items-center justify-center gap-1.5 border border-[#E7DADD] hover:border-[#B76E79]"
+                  className="flex-1 py-2 px-3 bg-[#F8FAFC] hover:bg-[#C2410C] text-[#111827] hover:text-[#FFFFFF] font-bold rounded-xl text-xs transition-all flex items-center justify-center gap-1.5 border border-[#E2E8F0] hover:border-[#FDBA74]"
                 >
                   <span>Public View</span>
                   <ExternalLink size={13} />
                 </Link>
                 {isCurrent ? (
-                  <span className="py-2 px-3 bg-[#B76E79]/10 text-[#B76E79] font-bold rounded-xl text-xs flex items-center justify-center gap-1 border border-[#B76E79]/20">
+                  <span className="py-2 px-3 bg-[#FFF7ED] text-[#EA580C] font-bold rounded-xl text-xs flex items-center justify-center gap-1 border border-[#FFEDD5]">
                     <span>You are here</span>
                   </span>
                 ) : (
                   <Link
                     to={portal.portalUrl}
-                    className="py-2 px-3 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold rounded-xl text-xs transition-all flex items-center justify-center gap-1 shadow-sm"
+                    className="py-2 px-3 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold rounded-xl text-xs transition-all flex items-center justify-center gap-1 shadow-sm"
                   >
                     <span>View</span>
                     <ArrowRight size={13} />

@@ -63,21 +63,21 @@ export const TrainerGuidelinesPage: React.FC = () => {
       <div className="py-16 md:py-24 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <Link
           to="/trainers"
-          className="inline-flex items-center gap-2 text-xs font-bold text-[#57534E] hover:text-[#B76E79] transition-colors mb-8"
+          className="inline-flex items-center gap-2 text-xs font-bold text-[#64748B] hover:text-[#EA580C] transition-colors mb-8"
         >
           <ArrowLeft size={16} />
           <span>Back to Trainer Landing Page</span>
         </Link>
 
         <div className="mb-14">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#B76E79]/10 border border-[#B76E79]/30 text-[#B76E79] text-xs font-semibold mb-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FFF7ED] border border-[#FFEDD5] text-[#EA580C] text-xs font-semibold mb-4">
             <BookOpen size={13} />
             <span>Code of Practice</span>
           </div>
-          <h1 className="text-3xl sm:text-5xl font-extrabold text-[#292524] tracking-tight mb-4">
+          <h1 className="text-3xl sm:text-5xl font-extrabold text-[#111827] tracking-tight mb-4">
             Trainer Professional Guidelines
           </h1>
-          <p className="text-base sm:text-lg text-[#57534E] leading-relaxed">
+          <p className="text-base sm:text-lg text-[#64748B] leading-relaxed">
             Essential ethical rules, safety mandates, and professional conduct expectations for all fitness coaches on the Gymora platform.
           </p>
         </div>
@@ -87,18 +87,18 @@ export const TrainerGuidelinesPage: React.FC = () => {
           {guidelines.map((g, i) => {
             const Icon = g.icon;
             return (
-              <div key={i} className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-8">
-                <div className="flex items-center gap-3.5 mb-6 pb-4 border-b border-[#E7DADD]/60">
-                  <div className="w-10 h-10 rounded-xl bg-[#B76E79]/10 border border-[#B76E79]/20 flex items-center justify-center text-[#B76E79]">
+              <div key={i} className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-8">
+                <div className="flex items-center gap-3.5 mb-6 pb-4 border-b border-[#E2E8F0]/60">
+                  <div className="w-10 h-10 rounded-xl bg-[#FFF7ED] border border-[#FFEDD5] flex items-center justify-center text-[#EA580C]">
                     <Icon size={20} />
                   </div>
-                  <h2 className="text-lg sm:text-xl font-bold text-[#292524]">{g.category}</h2>
+                  <h2 className="text-lg sm:text-xl font-bold text-[#111827]">{g.category}</h2>
                 </div>
 
                 <div className="space-y-3.5">
                   {g.points.map((pt, pIdx) => (
-                    <div key={pIdx} className="flex items-start gap-3 text-xs sm:text-sm text-[#292524] leading-relaxed">
-                      <CheckCircle2 size={16} className="text-[#B76E79] shrink-0 mt-0.5" />
+                    <div key={pIdx} className="flex items-start gap-3 text-xs sm:text-sm text-[#111827] leading-relaxed">
+                      <CheckCircle2 size={16} className="text-[#EA580C] shrink-0 mt-0.5" />
                       <span>{pt}</span>
                     </div>
                   ))}
@@ -109,10 +109,10 @@ export const TrainerGuidelinesPage: React.FC = () => {
         </div>
 
         {/* Advisory Callout */}
-        <div className="p-6 bg-[#F3E8E8] border border-amber-500/30 rounded-2xl text-xs text-[#57534E] flex items-start gap-3 mb-12">
-          <AlertTriangle size={20} className="text-amber-400 shrink-0 mt-0.5" />
+        <div className="p-6 bg-[#F8FAFC] border border-amber-500/30 rounded-2xl text-xs text-[#64748B] flex items-start gap-3 mb-12">
+          <AlertTriangle size={20} className="text-[#B45309] shrink-0 mt-0.5" />
           <div>
-            <span className="font-bold text-[#292524]">Compliance Notice: </span>
+            <span className="font-bold text-[#111827]">Compliance Notice: </span>
             Adherence to these guidelines is mandatory for continued listing on the Gymora platform. Repeated or severe non-compliance reported by gym facility owners or members will trigger administrative review and potential account deactivation.
           </div>
         </div>
@@ -120,7 +120,7 @@ export const TrainerGuidelinesPage: React.FC = () => {
         <div className="text-center">
           <Link
             to="/trainers/terms"
-            className="inline-flex items-center gap-2 text-xs font-bold text-[#B76E79] hover:text-[#9F5965]"
+            className="inline-flex items-center gap-2 text-xs font-bold text-[#EA580C] hover:text-[#9A3412]"
           >
             <span>Review Full Trainer Terms & Conditions</span>
             <ArrowLeft size={14} className="rotate-180" />

@@ -7,11 +7,11 @@ import {
 import api from '../../utils/api';
 
 const statusConfig: Record<string, { label: string; cls: string }> = {
-  'AI Generated':       { label: 'AI Generated',       cls: 'bg-[#F3E8E8] text-[#B76E79]' },
+  'AI Generated':       { label: 'AI Generated',       cls: 'bg-[#F8FAFC] text-[#EA580C]' },
   'Trainer Approved':   { label: 'Trainer Approved',   cls: 'bg-green-100 text-green-700' },
-  'Sent':               { label: 'Sent to Client',     cls: 'bg-[#F3E8E8] text-[#B76E79]' },
+  'Sent':               { label: 'Sent to Client',     cls: 'bg-[#F8FAFC] text-[#EA580C]' },
   'Revision Requested': { label: 'Revision Requested', cls: 'bg-yellow-100 text-yellow-700' },
-  'Pending':            { label: 'Pending',            cls: 'bg-[#F3E8E8] text-[#292524]' },
+  'Pending':            { label: 'Pending',            cls: 'bg-[#F8FAFC] text-[#111827]' },
 };
 
 // ── Date & Timing formatting helpers ─────────────────────────────────────────
@@ -101,10 +101,10 @@ const TrainerAIFeedback = () => {
     const textValue = replyTexts[recId] || '';
 
     return (
-      <div className="space-y-3 pt-3 border-t border-[#E7DADD]">
+      <div className="space-y-3 pt-3 border-t border-[#E2E8F0]">
         <div className="flex items-center gap-2">
-          <MessageSquare size={16} className="text-[#B76E79]" />
-          <h4 className="text-xs font-bold text-[#B76E79] uppercase tracking-wider">Chat &amp; Feedback Discussion</h4>
+          <MessageSquare size={16} className="text-[#EA580C]" />
+          <h4 className="text-xs font-bold text-[#EA580C] uppercase tracking-wider">Chat &amp; Feedback Discussion</h4>
         </div>
 
         {/* Messages */}
@@ -115,59 +115,59 @@ const TrainerAIFeedback = () => {
                 key={idx}
                 className={`p-3.5 rounded-xl border ${
                   msg.senderRole === 'TRAINER'
-                    ? 'bg-[#F3E8E8]/90 border-[#E7DADD] ml-4'
-                    : 'bg-[#F3E8E8] border-[#F3E8E8]/50 mr-4'
+                    ? 'bg-[#FFFFFF]/95 border-[#E2E8F0] ml-4'
+                    : 'bg-[#F8FAFC] border-[#F8FAFC]/50 mr-4'
                 }`}
               >
                 <div className="flex items-center justify-between text-xs font-bold mb-1">
-                  <span className={msg.senderRole === 'TRAINER' ? 'text-[#B76E79]' : 'text-[#B76E79]'}>
+                  <span className={msg.senderRole === 'TRAINER' ? 'text-[#EA580C]' : 'text-[#EA580C]'}>
                     {msg.senderRole === 'TRAINER' ? `💬 Trainer (${msg.senderName || 'You'})` : `👤 Member (${msg.senderName || 'Client'})`}
                   </span>
-                  <span className="text-[#57534E] font-normal">{msg.date ? new Date(msg.date).toLocaleString() : ''}</span>
+                  <span className="text-[#64748B] font-normal">{msg.date ? new Date(msg.date).toLocaleString() : ''}</span>
                 </div>
-                <p className="text-sm text-[#292524] whitespace-pre-wrap">{msg.message}</p>
+                <p className="text-sm text-[#111827] whitespace-pre-wrap">{msg.message}</p>
               </div>
             ))}
           </div>
         ) : (
           <>
             {item.memberReply?.message && (
-              <div className="bg-[#F3E8E8] border border-[#F3E8E8] rounded-xl p-4">
+              <div className="bg-[#F8FAFC] border border-[#F8FAFC] rounded-xl p-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <MessageSquare size={14} className="text-[#B76E79]" />
-                  <p className="text-xs font-bold text-[#B76E79] uppercase tracking-wider">Member's Reply</p>
-                  <span className="text-xs text-[#57534E] ml-auto">{new Date(item.memberReply.date).toLocaleString()}</span>
+                  <MessageSquare size={14} className="text-[#EA580C]" />
+                  <p className="text-xs font-bold text-[#EA580C] uppercase tracking-wider">Member's Reply</p>
+                  <span className="text-xs text-[#64748B] ml-auto">{new Date(item.memberReply.date).toLocaleString()}</span>
                 </div>
-                <p className="text-sm text-[#57534E] whitespace-pre-wrap">{item.memberReply.message}</p>
+                <p className="text-sm text-[#64748B] whitespace-pre-wrap">{item.memberReply.message}</p>
               </div>
             )}
             {item.trainerReply?.message && (
-              <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-xl p-4">
+              <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <MessageSquare size={14} className="text-[#B76E79]" />
-                  <p className="text-xs font-bold text-[#B76E79] uppercase tracking-wider">Your Reply</p>
-                  <span className="text-xs text-[#57534E] ml-auto">{new Date(item.trainerReply.date).toLocaleString()}</span>
+                  <MessageSquare size={14} className="text-[#EA580C]" />
+                  <p className="text-xs font-bold text-[#EA580C] uppercase tracking-wider">Your Reply</p>
+                  <span className="text-xs text-[#64748B] ml-auto">{new Date(item.trainerReply.date).toLocaleString()}</span>
                 </div>
-                <p className="text-sm text-[#292524] whitespace-pre-wrap">{item.trainerReply.message}</p>
+                <p className="text-sm text-[#111827] whitespace-pre-wrap">{item.trainerReply.message}</p>
               </div>
             )}
           </>
         )}
 
         {/* Reply Input Box */}
-        <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-xl p-3 space-y-2 shadow-sm">
+        <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl p-3 space-y-2 shadow-sm">
           <textarea
             rows={2}
             value={textValue}
             onChange={e => setReplyTexts(prev => ({ ...prev, [recId]: e.target.value }))}
             placeholder="Write a reply or message to the customer..."
-            className="w-full px-3 py-2 text-sm border border-[#E7DADD] rounded-lg focus:outline-none focus:border-[#B76E79] resize-none"
+            className="w-full px-3 py-2 text-sm border border-[#E2E8F0] rounded-lg focus:outline-none focus:border-[#FDBA74] resize-none"
           />
           <div className="flex justify-end">
             <button
               onClick={() => handleSendReply(recId)}
               disabled={isSending || !textValue.trim()}
-              className="flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-[#B76E79] to-[#9F5965] text-[#FFFFFF] font-bold text-xs font-bold rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50 shadow-sm"
+              className="flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-[#EA580C] to-[#C2410C] text-[#FFFFFF] font-bold text-xs font-bold rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50 shadow-sm"
             >
               {isSending ? <RefreshCw size={14} className="animate-spin" /> : <Send size={14} />}
               {isSending ? 'Sending...' : 'Send Reply'}
@@ -233,7 +233,7 @@ const TrainerAIFeedback = () => {
   const renderPlanCard = (f: any) => {
     const id = f._id;
     const isOpen = expanded === id;
-    const sc = statusConfig[f.status] || { label: f.status, cls: 'bg-[#F3E8E8] text-[#292524]' };
+    const sc = statusConfig[f.status] || { label: f.status, cls: 'bg-[#F8FAFC] text-[#111827]' };
     const goal = f.fitnessProfile?.goal || f.fitnessProfile?.primaryGoal || '—';
     const summary = f.aiAnalysis?.profileSummary || f.aiAnalysis?.assessment || '';
     const workoutDays = f.workoutRecommendation?.weeklySchedule?.length || f.routine?.length || 0;
@@ -244,24 +244,24 @@ const TrainerAIFeedback = () => {
       <div key={id} className="transition-all">
         {/* Row */}
         <div
-          className="p-5 hover:bg-[#F3E8E8] transition-colors cursor-pointer"
+          className="p-5 hover:bg-[#FFF7ED] transition-colors cursor-pointer"
           onClick={() => toggleExpand(id)}
         >
           <div className="flex items-start justify-between gap-4">
             <div className="flex items-start gap-4">
               {/* Avatar */}
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#B76E79]/10 to-[#F3E8E8]/20 flex items-center justify-center shrink-0">
-                <User size={22} className="text-[#B76E79]" />
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#EA580C]/10 to-[#F8FAFC]/20 flex items-center justify-center shrink-0">
+                <User size={22} className="text-[#EA580C]" />
               </div>
               <div>
                 <div className="flex items-center gap-2 flex-wrap mb-1">
-                  <h3 className="font-bold text-[#292524] text-base">{clientName(f)}</h3>
+                  <h3 className="font-bold text-[#111827] text-base">{clientName(f)}</h3>
                   <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold ${sc.cls}`}>{sc.label}</span>
                 </div>
-                <div className="flex flex-wrap items-center gap-2.5 text-xs text-[#57534E]">
+                <div className="flex flex-wrap items-center gap-2.5 text-xs text-[#64748B]">
                   {goal !== '—' && (
-                    <span className="inline-flex items-center gap-1 font-semibold text-[#57534E]">
-                      <Dumbbell size={12} className="text-[#B76E79]" /> Goal: {goal}
+                    <span className="inline-flex items-center gap-1 font-semibold text-[#64748B]">
+                      <Dumbbell size={12} className="text-[#EA580C]" /> Goal: {goal}
                     </span>
                   )}
                   {workoutDays > 0 && (
@@ -276,54 +276,54 @@ const TrainerAIFeedback = () => {
                   )}
 
                   {/* Date & Timing Badge */}
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#F3E8E8]/80 border border-[#E7DADD]/60 text-[#292524] font-medium">
-                    <Calendar size={12} className="text-[#B76E79]" />
-                    <span className="font-semibold text-[#9F5965]">{dt.date}</span>
-                    <span className="text-[#57534E]">·</span>
-                    <Clock size={12} className="text-[#B76E79]" />
-                    <span className="font-bold text-[#292524]">{dt.time}</span>
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#F8FAFC]/80 border border-[#E2E8F0]/60 text-[#111827] font-medium">
+                    <Calendar size={12} className="text-[#EA580C]" />
+                    <span className="font-semibold text-[#9A3412]">{dt.date}</span>
+                    <span className="text-[#64748B]">·</span>
+                    <Clock size={12} className="text-[#EA580C]" />
+                    <span className="font-bold text-[#111827]">{dt.time}</span>
                   </span>
                 </div>
                 {summary && (
-                  <p className="text-xs text-[#57534E] mt-1.5 line-clamp-2 max-w-xl">{summary}</p>
+                  <p className="text-xs text-[#64748B] mt-1.5 line-clamp-2 max-w-xl">{summary}</p>
                 )}
               </div>
             </div>
             <div className="flex items-center gap-2 shrink-0">
               <button
                 onClick={(e) => { e.stopPropagation(); setDetail(f); }}
-                className="px-3 py-1.5 bg-gradient-to-r from-[#B76E79] to-[#9F5965] text-[#FFFFFF] font-bold text-xs font-bold rounded-lg hover:opacity-90 transition-opacity shadow-sm"
+                className="px-3 py-1.5 bg-gradient-to-r from-[#EA580C] to-[#C2410C] text-[#FFFFFF] font-bold text-xs font-bold rounded-lg hover:opacity-90 transition-opacity shadow-sm"
               >
                 Full View
               </button>
-              {isOpen ? <ChevronUp size={18} className="text-[#57534E]" /> : <ChevronDown size={18} className="text-[#57534E]" />}
+              {isOpen ? <ChevronUp size={18} className="text-[#64748B]" /> : <ChevronDown size={18} className="text-[#64748B]" />}
             </div>
           </div>
         </div>
 
         {/* Expanded Preview */}
         {isOpen && (
-          <div className="bg-[#F3E8E8] border-t border-[#E7DADD] px-5 pb-5 pt-4 space-y-4">
+          <div className="bg-[#F8FAFC] border-t border-[#E2E8F0] px-5 pb-5 pt-4 space-y-4">
             {/* AI Assessment */}
             {f.aiAnalysis?.assessment && (
-              <div className="bg-[#FFFFFF] rounded-xl border border-[#E7DADD] p-4">
-                <p className="text-xs font-bold text-[#57534E] uppercase tracking-wider mb-2">AI Assessment</p>
-                <p className="text-sm text-[#57534E] leading-relaxed">{f.aiAnalysis.assessment}</p>
+              <div className="bg-[#FFFFFF] rounded-xl border border-[#E2E8F0] p-4">
+                <p className="text-xs font-bold text-[#64748B] uppercase tracking-wider mb-2">AI Assessment</p>
+                <p className="text-sm text-[#64748B] leading-relaxed">{f.aiAnalysis.assessment}</p>
               </div>
             )}
 
             <div className="grid sm:grid-cols-2 gap-4">
               {/* Workout Plan Preview */}
               {f.workoutRecommendation?.weeklySchedule?.length > 0 && (
-                <div className="bg-[#FFFFFF] rounded-xl border border-[#E7DADD] p-4">
-                  <p className="text-xs font-bold text-[#57534E] uppercase tracking-wider mb-3 flex items-center gap-1.5">
-                    <Dumbbell size={13} className="text-[#B76E79]" /> Workout Plan
+                <div className="bg-[#FFFFFF] rounded-xl border border-[#E2E8F0] p-4">
+                  <p className="text-xs font-bold text-[#64748B] uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                    <Dumbbell size={13} className="text-[#EA580C]" /> Workout Plan
                   </p>
                   <div className="space-y-2">
                     {f.workoutRecommendation.weeklySchedule.slice(0, 4).map((day: any, i: number) => (
                       <div key={i} className="flex items-center justify-between text-sm">
-                        <span className="font-semibold text-[#292524]">{day.day}</span>
-                        <span className="text-xs text-[#57534E]">{day.focus || (day.isRest ? 'Rest Day' : 'Workout')}</span>
+                        <span className="font-semibold text-[#111827]">{day.day}</span>
+                        <span className="text-xs text-[#64748B]">{day.focus || (day.isRest ? 'Rest Day' : 'Workout')}</span>
                       </div>
                     ))}
                   </div>
@@ -332,15 +332,15 @@ const TrainerAIFeedback = () => {
 
               {/* Diet Plan Preview */}
               {f.dietRecommendation?.mealPlan?.length > 0 && (
-                <div className="bg-[#FFFFFF] rounded-xl border border-[#E7DADD] p-4">
-                  <p className="text-xs font-bold text-[#57534E] uppercase tracking-wider mb-3 flex items-center gap-1.5">
-                    <Salad size={13} className="text-[#B76E79]" /> Diet Plan
+                <div className="bg-[#FFFFFF] rounded-xl border border-[#E2E8F0] p-4">
+                  <p className="text-xs font-bold text-[#64748B] uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                    <Salad size={13} className="text-[#EA580C]" /> Diet Plan
                   </p>
                   <div className="space-y-2">
                     {f.dietRecommendation.mealPlan.slice(0, 4).map((meal: any, i: number) => (
                       <div key={i} className="flex items-center justify-between text-sm">
-                        <span className="font-semibold text-[#292524]">{meal.meal || meal.mealType}</span>
-                        <span className="text-xs text-[#57534E]">{meal.time || `${meal.calories || ''} kcal`}</span>
+                        <span className="font-semibold text-[#111827]">{meal.meal || meal.mealType}</span>
+                        <span className="text-xs text-[#64748B]">{meal.time || `${meal.calories || ''} kcal`}</span>
                       </div>
                     ))}
                   </div>
@@ -376,12 +376,12 @@ const TrainerAIFeedback = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#B76E79] to-[#9F5965] flex items-center justify-center shadow-lg shadow-[#B76E79]/15">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#EA580C] to-[#C2410C] flex items-center justify-center shadow-lg shadow-orange-500/15">
             <Brain size={24} className="text-white" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-[#292524]">Feedback</h1>
-            <p className="text-[#57534E] text-sm">AI-generated plans & feedback for your clients.</p>
+            <h1 className="text-3xl font-bold text-[#111827]">Feedback</h1>
+            <p className="text-[#64748B] text-sm">AI-generated plans & feedback for your clients.</p>
           </div>
         </div>
       </div>
@@ -390,8 +390,8 @@ const TrainerAIFeedback = () => {
       {!loading && feedbacks.length > 0 && (
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           {[
-            { label: 'Total', count: feedbacks.length, color: 'bg-[#F3E8E8] text-[#B76E79]' },
-            { label: 'AI Generated', count: feedbacks.filter(f => f.status === 'AI Generated').length, color: 'bg-[#F3E8E8] text-[#B76E79]' },
+            { label: 'Total', count: feedbacks.length, color: 'bg-[#F8FAFC] text-[#EA580C]' },
+            { label: 'AI Generated', count: feedbacks.filter(f => f.status === 'AI Generated').length, color: 'bg-[#F8FAFC] text-[#EA580C]' },
             { label: 'Approved', count: feedbacks.filter(f => f.status === 'Trainer Approved' || f.status === 'Sent').length, color: 'bg-green-50 text-green-700' },
             { label: 'Revisions', count: feedbacks.filter(f => f.status === 'Revision Requested').length, color: 'bg-yellow-50 text-yellow-700' },
           ].map(s => (
@@ -404,26 +404,26 @@ const TrainerAIFeedback = () => {
       )}
 
       {/* Search + Filter */}
-      <div className="bg-[#FFFFFF] rounded-2xl border border-[#E7DADD] shadow-sm overflow-hidden">
-        <div className="p-4 border-b border-[#E7DADD] bg-[#F3E8E8] flex flex-col sm:flex-row gap-3">
+      <div className="bg-[#FFFFFF] rounded-2xl border border-[#E2E8F0] shadow-sm overflow-hidden">
+        <div className="p-4 border-b border-[#E2E8F0] bg-[#F8FAFC] flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#57534E]" size={18} />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#64748B]" size={18} />
             <input
               type="text"
               placeholder="Search by client name..."
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[#E7DADD] bg-[#FFFFFF] focus:outline-none focus:border-[#B76E79] text-sm"
+              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[#E2E8F0] bg-[#FFFFFF] focus:outline-none focus:border-[#FDBA74] text-sm"
             />
           </div>
           <div className="flex flex-wrap items-center gap-2">
             {/* Status Filter */}
-            <div className="flex items-center gap-1.5 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl px-2.5 py-1.5">
-              <Filter size={15} className="text-[#57534E]" />
+            <div className="flex items-center gap-1.5 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-2.5 py-1.5">
+              <Filter size={15} className="text-[#64748B]" />
               <select
                 value={statusFilter}
                 onChange={e => setStatusFilter(e.target.value)}
-                className="bg-transparent text-xs font-semibold text-[#57534E] focus:outline-none cursor-pointer"
+                className="bg-transparent text-xs font-semibold text-[#64748B] focus:outline-none cursor-pointer"
               >
                 {statuses.map(s => (
                   <option key={s} value={s}>{s === 'All' ? 'All Statuses' : (statusConfig[s]?.label || s)}</option>
@@ -432,19 +432,19 @@ const TrainerAIFeedback = () => {
             </div>
 
             {/* Specific Date Filter */}
-            <div className="flex items-center gap-1.5 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl px-2.5 py-1.5">
-              <Calendar size={15} className="text-[#B76E79]" />
+            <div className="flex items-center gap-1.5 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-2.5 py-1.5">
+              <Calendar size={15} className="text-[#EA580C]" />
               <input
                 type="date"
                 value={dateFilter}
                 onChange={e => setDateFilter(e.target.value)}
                 title="Filter by specific date"
-                className="bg-transparent text-xs font-semibold text-[#57534E] focus:outline-none cursor-pointer"
+                className="bg-transparent text-xs font-semibold text-[#64748B] focus:outline-none cursor-pointer"
               />
               {dateFilter && (
                 <button
                   onClick={() => setDateFilter('')}
-                  className="text-[#57534E] hover:text-[#FFFFFF] p-0.5"
+                  className="text-[#64748B] hover:text-[#C2410C] p-0.5"
                   title="Clear date filter"
                 >
                   <X size={12} />
@@ -453,12 +453,12 @@ const TrainerAIFeedback = () => {
             </div>
 
             {/* Date Sorting */}
-            <div className="flex items-center gap-1.5 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl px-2.5 py-1.5">
-              <Clock size={15} className="text-[#57534E]" />
+            <div className="flex items-center gap-1.5 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-2.5 py-1.5">
+              <Clock size={15} className="text-[#64748B]" />
               <select
                 value={sortByDate}
                 onChange={e => setSortByDate(e.target.value as 'desc' | 'asc')}
-                className="bg-transparent text-xs font-semibold text-[#57534E] focus:outline-none cursor-pointer"
+                className="bg-transparent text-xs font-semibold text-[#64748B] focus:outline-none cursor-pointer"
               >
                 <option value="desc">Newest First</option>
                 <option value="asc">Oldest First</option>
@@ -470,8 +470,8 @@ const TrainerAIFeedback = () => {
               onClick={() => setGroupByDate(g => !g)}
               className={`px-3 py-2 rounded-xl text-xs font-bold border transition-colors flex items-center gap-1.5 ${
                 groupByDate
-                  ? 'bg-[#B76E79] text-white border-[#B76E79] shadow-sm'
-                  : 'bg-[#FFFFFF] text-[#57534E] border-[#E7DADD] hover:bg-[#F3E8E8]'
+                  ? 'bg-[#C2410C] text-white border-[#FDBA74] shadow-sm'
+                  : 'bg-[#FFFFFF] text-[#64748B] border-[#E2E8F0] hover:bg-[#FFF7ED]'
               }`}
               title="Toggle Date-Wise Grouping"
             >
@@ -482,39 +482,39 @@ const TrainerAIFeedback = () => {
         </div>
 
         {/* List */}
-        <div className="divide-y divide-[#F3E8E8]">
+        <div className="divide-y divide-[#F8FAFC]">
           {loading ? (
             <div className="p-16 text-center">
-              <RefreshCw size={44} className="mx-auto mb-4 text-[#B76E79]/30 animate-spin" />
-              <p className="text-[#57534E] font-medium">Loading AI feedback...</p>
+              <RefreshCw size={44} className="mx-auto mb-4 text-[#EA580C]/30 animate-spin" />
+              <p className="text-[#64748B] font-medium">Loading AI feedback...</p>
             </div>
           ) : filtered.length === 0 ? (
             <div className="p-16 text-center">
-              <MessageSquare size={44} className="mx-auto mb-4 text-[#B76E79]/20" />
-              <p className="text-[#57534E] font-medium text-lg">No feedback records found.</p>
-              <p className="text-sm text-[#57534E] mt-1">AI-generated plans for your clients will appear here.</p>
+              <MessageSquare size={44} className="mx-auto mb-4 text-[#EA580C]/20" />
+              <p className="text-[#64748B] font-medium text-lg">No feedback records found.</p>
+              <p className="text-sm text-[#64748B] mt-1">AI-generated plans for your clients will appear here.</p>
             </div>
           ) : groupByDate ? (
             /* ── Date-Wise Grouped View ── */
             dateGroups.map(group => (
-              <div key={group.key} className="border-b border-[#E7DADD] last:border-b-0">
-                <div className="bg-[#F3E8E8] border-y border-[#F3E8E8]/60 px-5 py-2.5 flex items-center justify-between sticky top-0 z-10 backdrop-blur-sm">
+              <div key={group.key} className="border-b border-[#E2E8F0] last:border-b-0">
+                <div className="bg-[#F8FAFC] border-y border-[#F8FAFC]/60 px-5 py-2.5 flex items-center justify-between sticky top-0 z-10 backdrop-blur-sm">
                   <div className="flex items-center gap-2">
-                    <Calendar size={14} className="text-[#B76E79]" />
-                    <span className="text-xs font-black text-[#292524] uppercase tracking-wider">{group.key}</span>
+                    <Calendar size={14} className="text-[#EA580C]" />
+                    <span className="text-xs font-black text-[#111827] uppercase tracking-wider">{group.key}</span>
                   </div>
-                  <span className="text-[11px] font-bold text-[#B76E79] bg-[#F3E8E8]/70 px-2.5 py-0.5 rounded-full border border-[#E7DADD]/50">
+                  <span className="text-[11px] font-bold text-[#EA580C] bg-[#F8FAFC]/70 px-2.5 py-0.5 rounded-full border border-[#E2E8F0]/50">
                     {group.items.length} {group.items.length === 1 ? 'plan' : 'plans'}
                   </span>
                 </div>
-                <div className="divide-y divide-[#F3E8E8]">
+                <div className="divide-y divide-[#F8FAFC]">
                   {group.items.map(renderPlanCard)}
                 </div>
               </div>
             ))
           ) : (
             /* ── Flat List View ── */
-            <div className="divide-y divide-[#F3E8E8]">
+            <div className="divide-y divide-[#F8FAFC]">
               {filtered.map(renderPlanCard)}
             </div>
           )}
@@ -526,13 +526,13 @@ const TrainerAIFeedback = () => {
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm overflow-y-auto p-4">
           <div className="bg-[#FFFFFF] rounded-2xl max-w-2xl w-full mx-auto mt-12 mb-12 shadow-2xl overflow-hidden">
             {/* Modal Header */}
-            <div className="bg-gradient-to-r from-[#B76E79] to-[#9F5965] p-6 flex justify-between items-start">
+            <div className="bg-gradient-to-r from-[#EA580C] to-[#C2410C] p-6 flex justify-between items-start">
               <div>
                 <div className="flex items-center gap-2 mb-1">
                   <Brain size={20} className="text-white/80" />
                   <span className="text-white/80 text-sm font-semibold">AI Feedback Report</span>
                 </div>
-                <h2 className="text-2xl font-bold text-[#292524]">{clientName(detail)}</h2>
+                <h2 className="text-2xl font-bold text-[#111827]">{clientName(detail)}</h2>
                 <div className="text-white/80 text-sm mt-1 flex items-center gap-2 flex-wrap">
                   <span>{detail.fitnessProfile?.goal || detail.fitnessProfile?.primaryGoal || 'General Fitness'}</span>
                   <span>·</span>
@@ -556,31 +556,31 @@ const TrainerAIFeedback = () => {
               {/* Profile Summary */}
               {detail.aiAnalysis?.profileSummary && (
                 <div>
-                  <p className="text-xs font-bold text-[#57534E] uppercase tracking-wider mb-2">Profile Summary</p>
-                  <p className="text-sm text-[#57534E] bg-[#F3E8E8] rounded-xl p-4 leading-relaxed border border-[#E7DADD]">{detail.aiAnalysis.profileSummary}</p>
+                  <p className="text-xs font-bold text-[#64748B] uppercase tracking-wider mb-2">Profile Summary</p>
+                  <p className="text-sm text-[#64748B] bg-[#F8FAFC] rounded-xl p-4 leading-relaxed border border-[#E2E8F0]">{detail.aiAnalysis.profileSummary}</p>
                 </div>
               )}
               {detail.aiAnalysis?.assessment && (
                 <div>
-                  <p className="text-xs font-bold text-[#57534E] uppercase tracking-wider mb-2">AI Assessment</p>
-                  <p className="text-sm text-[#57534E] bg-[#F3E8E8] rounded-xl p-4 leading-relaxed border border-[#E7DADD]">{detail.aiAnalysis.assessment}</p>
+                  <p className="text-xs font-bold text-[#64748B] uppercase tracking-wider mb-2">AI Assessment</p>
+                  <p className="text-sm text-[#64748B] bg-[#F8FAFC] rounded-xl p-4 leading-relaxed border border-[#E2E8F0]">{detail.aiAnalysis.assessment}</p>
                 </div>
               )}
 
               {/* Workout Schedule */}
               {detail.workoutRecommendation?.weeklySchedule?.length > 0 && (
                 <div>
-                  <p className="text-xs font-bold text-[#57534E] uppercase tracking-wider mb-3 flex items-center gap-1.5"><Dumbbell size={13} className="text-[#B76E79]" /> Weekly Workout Schedule</p>
+                  <p className="text-xs font-bold text-[#64748B] uppercase tracking-wider mb-3 flex items-center gap-1.5"><Dumbbell size={13} className="text-[#EA580C]" /> Weekly Workout Schedule</p>
                   <div className="space-y-2">
                     {detail.workoutRecommendation.weeklySchedule.map((day: any, i: number) => (
-                      <div key={i} className={`flex items-start justify-between p-3 rounded-xl border ${day.isRest ? 'bg-[#F3E8E8] border-[#E7DADD]' : 'bg-[#FFFFFF] border-[#E7DADD]'}`}>
+                      <div key={i} className={`flex items-start justify-between p-3 rounded-xl border ${day.isRest ? 'bg-[#F8FAFC] border-[#E2E8F0]' : 'bg-[#FFFFFF] border-[#E2E8F0]'}`}>
                         <div>
-                          <p className="font-bold text-[#292524] text-sm">{day.day}</p>
-                          {!day.isRest && day.focus && <p className="text-xs text-[#292524] font-medium font-semibold mt-0.5">{day.focus}</p>}
-                          {day.isRest && <p className="text-xs text-[#57534E] mt-0.5">Rest &amp; Recovery</p>}
+                          <p className="font-bold text-[#111827] text-sm">{day.day}</p>
+                          {!day.isRest && day.focus && <p className="text-xs text-[#111827] font-medium font-semibold mt-0.5">{day.focus}</p>}
+                          {day.isRest && <p className="text-xs text-[#64748B] mt-0.5">Rest &amp; Recovery</p>}
                         </div>
                         {!day.isRest && day.exercises?.length > 0 && (
-                          <span className="text-xs text-[#57534E] bg-[#F3E8E8] px-2 py-0.5 rounded-full font-semibold">{day.exercises.length} exercises</span>
+                          <span className="text-xs text-[#64748B] bg-[#F8FAFC] px-2 py-0.5 rounded-full font-semibold">{day.exercises.length} exercises</span>
                         )}
                       </div>
                     ))}
@@ -591,15 +591,15 @@ const TrainerAIFeedback = () => {
               {/* Diet Plan */}
               {detail.dietRecommendation?.mealPlan?.length > 0 && (
                 <div>
-                  <p className="text-xs font-bold text-[#57534E] uppercase tracking-wider mb-3 flex items-center gap-1.5"><Salad size={13} className="text-[#B76E79]" /> Diet / Meal Plan</p>
+                  <p className="text-xs font-bold text-[#64748B] uppercase tracking-wider mb-3 flex items-center gap-1.5"><Salad size={13} className="text-[#EA580C]" /> Diet / Meal Plan</p>
                   <div className="space-y-2">
                     {detail.dietRecommendation.mealPlan.map((meal: any, i: number) => (
-                      <div key={i} className="flex items-center justify-between p-3 bg-[#FFFFFF] rounded-xl border border-[#E7DADD]">
+                      <div key={i} className="flex items-center justify-between p-3 bg-[#FFFFFF] rounded-xl border border-[#E2E8F0]">
                         <div>
-                          <p className="font-bold text-[#292524] text-sm">{meal.meal || meal.mealType}</p>
-                          {meal.foods?.length > 0 && <p className="text-xs text-[#57534E] mt-0.5">{meal.foods.slice(0, 3).join(', ')}{meal.foods.length > 3 ? '...' : ''}</p>}
+                          <p className="font-bold text-[#111827] text-sm">{meal.meal || meal.mealType}</p>
+                          {meal.foods?.length > 0 && <p className="text-xs text-[#64748B] mt-0.5">{meal.foods.slice(0, 3).join(', ')}{meal.foods.length > 3 ? '...' : ''}</p>}
                         </div>
-                        <div className="text-right text-xs text-[#57534E]">
+                        <div className="text-right text-xs text-[#64748B]">
                           {meal.time && <p className="font-semibold">{meal.time}</p>}
                           {meal.calories && <p>{meal.calories} kcal</p>}
                         </div>
@@ -625,30 +625,30 @@ const TrainerAIFeedback = () => {
 
               {/* AI Re-analysis Comparison Card if applicable */}
               {detail.isReanalysis && detail.reanalysisComparison && (
-                <div className="bg-gradient-to-br from-purple-50 to-indigo-50 border border-[#E7DADD] rounded-2xl p-4 space-y-3">
-                  <div className="flex items-center gap-2 text-[#292524] font-bold text-sm">
-                    <Brain className="text-[#B76E79]" size={18} />
+                <div className="bg-gradient-to-br from-purple-50 to-indigo-50 border border-[#E2E8F0] rounded-2xl p-4 space-y-3">
+                  <div className="flex items-center gap-2 text-[#111827] font-bold text-sm">
+                    <Brain className="text-[#EA580C]" size={18} />
                     <span>AI Re-analysis Progress Comparison</span>
                   </div>
-                  <p className="text-xs text-[#9F5965] leading-relaxed">
+                  <p className="text-xs text-[#9A3412] leading-relaxed">
                     {detail.reanalysisComparison.progressSummary}
                   </p>
                   
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1 text-xs">
-                    <div className="bg-[#FFFFFF] p-2.5 rounded-xl border border-[#E7DADD]">
-                      <span className="text-[#57534E] block">Initial Weight</span>
-                      <span className="font-bold text-[#292524]">{detail.reanalysisComparison.initialMetrics?.weight ? `${detail.reanalysisComparison.initialMetrics.weight} kg` : 'N/A'}</span>
+                    <div className="bg-[#FFFFFF] p-2.5 rounded-xl border border-[#E2E8F0]">
+                      <span className="text-[#64748B] block">Initial Weight</span>
+                      <span className="font-bold text-[#111827]">{detail.reanalysisComparison.initialMetrics?.weight ? `${detail.reanalysisComparison.initialMetrics.weight} kg` : 'N/A'}</span>
                     </div>
-                    <div className="bg-[#FFFFFF] p-2.5 rounded-xl border border-[#E7DADD]">
-                      <span className="text-[#57534E] block">Current Weight</span>
-                      <span className="font-bold text-[#B76E79]">{detail.reanalysisComparison.currentMetrics?.weight ? `${detail.reanalysisComparison.currentMetrics.weight} kg` : 'N/A'}</span>
+                    <div className="bg-[#FFFFFF] p-2.5 rounded-xl border border-[#E2E8F0]">
+                      <span className="text-[#64748B] block">Current Weight</span>
+                      <span className="font-bold text-[#EA580C]">{detail.reanalysisComparison.currentMetrics?.weight ? `${detail.reanalysisComparison.currentMetrics.weight} kg` : 'N/A'}</span>
                     </div>
-                    <div className="bg-[#FFFFFF] p-2.5 rounded-xl border border-[#E7DADD]">
-                      <span className="text-[#57534E] block">Attendance Rate</span>
-                      <span className="font-bold text-[#B76E79]">{detail.reanalysisComparison.attendanceRate}%</span>
+                    <div className="bg-[#FFFFFF] p-2.5 rounded-xl border border-[#E2E8F0]">
+                      <span className="text-[#64748B] block">Attendance Rate</span>
+                      <span className="font-bold text-[#EA580C]">{detail.reanalysisComparison.attendanceRate}%</span>
                     </div>
-                    <div className="bg-[#FFFFFF] p-2.5 rounded-xl border border-[#E7DADD]">
-                      <span className="text-[#57534E] block">Video Completion</span>
+                    <div className="bg-[#FFFFFF] p-2.5 rounded-xl border border-[#E2E8F0]">
+                      <span className="text-[#64748B] block">Video Completion</span>
                       <span className="font-bold text-indigo-600">{detail.reanalysisComparison.videoCompletionRate}%</span>
                     </div>
                   </div>
@@ -671,7 +671,7 @@ const TrainerAIFeedback = () => {
 
               {/* Action Buttons for Trainer Review */}
               {detail.status !== 'Trainer Approved' && detail.status !== 'Sent' && (
-                <div className="pt-4 border-t border-[#E7DADD] flex flex-col sm:flex-row gap-3">
+                <div className="pt-4 border-t border-[#E2E8F0] flex flex-col sm:flex-row gap-3">
                   <button
                     onClick={async () => {
                       try {

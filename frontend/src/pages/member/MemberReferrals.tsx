@@ -486,17 +486,17 @@ const MemberReferrals: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFFFFF] text-[#292524] p-4 sm:p-6 lg:p-8 space-y-6">
+    <div className="min-h-screen bg-[#FFFFFF] text-[#111827] p-4 sm:p-6 lg:p-8 space-y-6">
       {/* Top Bar with Referral Sub-Tabs and Redeem Points Action */}
-      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#E7DADD] pb-4">
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#E2E8F0] pb-4">
         <div className="flex items-center gap-3">
           <button
             type="button"
             onClick={() => setActiveSubTab('invite')}
             className={`flex items-center gap-2.5 px-5 py-2.5 rounded-2xl text-sm font-bold transition-all cursor-pointer ${
               activeSubTab === 'invite'
-                ? 'bg-[#B76E79] text-white shadow-lg shadow-[#B76E79]/20'
-                : 'bg-[#FFFFFF] text-[#57534E] hover:text-[#292524] border border-[#E7DADD]'
+                ? 'bg-[#C2410C] text-white shadow-lg shadow-orange-500/15'
+                : 'bg-[#FFFFFF] text-[#64748B] hover:text-[#111827] border border-[#E2E8F0]'
             }`}
           >
             <Gift size={18} />
@@ -507,8 +507,8 @@ const MemberReferrals: React.FC = () => {
             onClick={() => setActiveSubTab('redemption')}
             className={`flex items-center gap-2.5 px-5 py-2.5 rounded-2xl text-sm font-bold transition-all cursor-pointer ${
               activeSubTab === 'redemption'
-                ? 'bg-[#B76E79] text-white shadow-lg shadow-[#B76E79]/20'
-                : 'bg-[#FFFFFF] text-[#57534E] hover:text-[#292524] border border-[#E7DADD]'
+                ? 'bg-[#C2410C] text-white shadow-lg shadow-orange-500/15'
+                : 'bg-[#FFFFFF] text-[#64748B] hover:text-[#111827] border border-[#E2E8F0]'
             }`}
           >
             <Coins size={18} />
@@ -522,7 +522,7 @@ const MemberReferrals: React.FC = () => {
             setSelectedRedeemChannel(null);
             setShowRedeemModal(true);
           }}
-          className="flex items-center gap-2 px-5 py-2.5 bg-[#B76E79] hover:bg-[#9F5965] text-white font-extrabold text-sm rounded-2xl transition-all shadow-lg shadow-[#B76E79]/20 cursor-pointer"
+          className="flex items-center gap-2 px-5 py-2.5 bg-[#C2410C] hover:bg-[#9A3412] text-white font-extrabold text-sm rounded-2xl transition-all shadow-lg shadow-orange-500/15 cursor-pointer"
         >
           <Sparkles size={16} />
           Redeem Points
@@ -535,19 +535,19 @@ const MemberReferrals: React.FC = () => {
         /* ========================================================================= */
         <div className="space-y-6">
           {/* Top Header Banner */}
-          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#FFFFFF] via-[#FFFFFF] to-[#F3E8E8] border border-[#E7DADD] p-6 sm:p-8 shadow-2xl">
+          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#FFFFFF] via-[#FFFFFF] to-[#F8FAFC] border border-[#E2E8F0] p-6 sm:p-8 shadow-2xl">
             <div className="absolute top-0 right-0 w-96 h-96 bg-[radial-gradient(circle,_rgba(183,110,121,0.12)_0%,_transparent_70%)] pointer-events-none" />
             
             <div className="max-w-3xl space-y-3 relative z-10">
-              <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#B76E79]/15 border border-[#B76E79]/30 rounded-full text-xs font-bold uppercase tracking-wider text-[#B76E79]">
-                <Gift size={14} className="text-[#B76E79]" />
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#FFF7ED] border border-[#FFEDD5] rounded-full text-xs font-bold uppercase tracking-wider text-[#EA580C]">
+                <Gift size={14} className="text-[#EA580C]" />
                 Refer & Earn Rewards
               </div>
-              <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-[#292524]">
-                Invite Friends & Family, <span className="text-[#B76E79]">Get Rewarded Together!</span>
+              <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-[#111827]">
+                Invite Friends & Family, <span className="text-[#EA580C]">Get Rewarded Together!</span>
               </h1>
-              <p className="text-[#57534E] text-sm sm:text-base leading-relaxed">
-                Give your friends an exclusive gym membership discount at <strong className="text-[#292524]">{gymName}</strong>, 
+              <p className="text-[#64748B] text-sm sm:text-base leading-relaxed">
+                Give your friends an exclusive gym membership discount at <strong className="text-[#111827]">{gymName}</strong>, 
                 and earn referral points for every friend who joins and activates a membership!
               </p>
             </div>
@@ -558,60 +558,60 @@ const MemberReferrals: React.FC = () => {
             {/* Left Column (2 Cols): Code, Share Bar, Email Invite */}
             <div className="lg:col-span-2 space-y-6">
               {/* Unique Referral Invite */}
-              <div className="bg-[#FFFFFF] rounded-3xl border border-[#E7DADD] p-6 sm:p-8 space-y-6 shadow-xl">
-                <div className="flex items-center justify-between border-b border-[#E7DADD] pb-4">
+              <div className="bg-[#FFFFFF] rounded-3xl border border-[#E2E8F0] p-6 sm:p-8 space-y-6 shadow-xl">
+                <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-2xl bg-[#B76E79]/15 text-[#B76E79] flex items-center justify-center border border-[#B76E79]/30">
+                    <div className="w-10 h-10 rounded-2xl bg-[#FFF7ED] text-[#EA580C] flex items-center justify-center border border-[#FFEDD5]">
                       <Share2 size={20} />
                     </div>
                     <div>
-                      <h2 className="text-lg font-bold text-[#292524]">Your Unique Referral Invite</h2>
-                      <p className="text-xs text-[#57534E]">Share with friends via link, mail, QR, or chat apps.</p>
+                      <h2 className="text-lg font-bold text-[#111827]">Your Unique Referral Invite</h2>
+                      <p className="text-xs text-[#64748B]">Share with friends via link, mail, QR, or chat apps.</p>
                     </div>
                   </div>
                 </div>
 
                 {/* Referral Code Box */}
-                <div className="p-5 bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl space-y-4">
+                <div className="p-5 bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl space-y-4">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div>
-                      <span className="text-xs uppercase font-bold text-[#57534E] tracking-wider">Your Referral Code</span>
-                      <div className="text-2xl sm:text-3xl font-black text-[#B76E79] tracking-wider font-mono mt-0.5">
+                      <span className="text-xs uppercase font-bold text-[#64748B] tracking-wider">Your Referral Code</span>
+                      <div className="text-2xl sm:text-3xl font-black text-[#EA580C] tracking-wider font-mono mt-0.5">
                         {referralCode || 'GENERATING...'}
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
                       <button
                         onClick={handleCopyCode}
-                        className="flex items-center gap-2 px-4 py-2.5 bg-[#B76E79] hover:bg-[#9F5965] text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-[#B76E79]/20 cursor-pointer"
+                        className="flex items-center gap-2 px-4 py-2.5 bg-[#C2410C] hover:bg-[#9A3412] text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-orange-500/15 cursor-pointer"
                       >
                         {copiedCode ? <Check size={16} /> : <Copy size={16} />}
                         {copiedCode ? 'Copied Code!' : 'Copy Code'}
                       </button>
                       <button
                         onClick={() => setShowQrModal(true)}
-                        className="flex items-center gap-2 px-3 py-2.5 bg-[#F3E8E8] hover:bg-[#E7DADD] text-[#292524] rounded-xl text-xs font-bold transition-all border border-[#E7DADD] cursor-pointer"
+                        className="flex items-center gap-2 px-3 py-2.5 bg-[#F8FAFC] hover:bg-[#E2E8F0] text-[#111827] rounded-xl text-xs font-bold transition-all border border-[#E2E8F0] cursor-pointer"
                         title="Display QR Code"
                       >
-                        <QrCode size={16} className="text-[#B76E79]" />
+                        <QrCode size={16} className="text-[#EA580C]" />
                         QR
                       </button>
                     </div>
                   </div>
 
                   {/* Share Link Input */}
-                  <div className="space-y-1.5 pt-2 border-t border-[#E7DADD]/60">
-                    <span className="text-[11px] font-medium text-[#57534E]">Direct Referral Registration Link</span>
+                  <div className="space-y-1.5 pt-2 border-t border-[#E2E8F0]/60">
+                    <span className="text-[11px] font-medium text-[#64748B]">Direct Referral Registration Link</span>
                     <div className="flex items-center gap-2">
                       <input
                         type="text"
                         readOnly
                         value={shareLink}
-                        className="flex-1 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl px-3.5 py-2 text-xs text-[#57534E] font-mono select-all focus:outline-none"
+                        className="flex-1 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-3.5 py-2 text-xs text-[#64748B] font-mono select-all focus:outline-none"
                       />
                       <button
                         onClick={handleCopyLink}
-                        className="px-4 py-2 bg-[#F3E8E8] hover:bg-[#E7DADD] text-[#292524] rounded-xl text-xs font-bold transition-all border border-[#E7DADD] shrink-0 cursor-pointer"
+                        className="px-4 py-2 bg-[#F8FAFC] hover:bg-[#E2E8F0] text-[#111827] rounded-xl text-xs font-bold transition-all border border-[#E2E8F0] shrink-0 cursor-pointer"
                       >
                         {copiedLink ? 'Copied Link!' : 'Copy Link'}
                       </button>
@@ -621,7 +621,7 @@ const MemberReferrals: React.FC = () => {
 
                 {/* Quick Share Buttons Bar */}
                 <div className="space-y-3">
-                  <span className="text-xs font-bold text-[#57534E] uppercase tracking-wider">Instant Sharing Channels</span>
+                  <span className="text-xs font-bold text-[#64748B] uppercase tracking-wider">Instant Sharing Channels</span>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <button
                       onClick={handleWhatsAppShare}
@@ -639,7 +639,7 @@ const MemberReferrals: React.FC = () => {
                     </button>
                     <button
                       onClick={handleNativeShare}
-                      className="flex items-center justify-center gap-2 py-3 px-4 bg-[#B76E79]/15 hover:bg-[#B76E79]/25 text-[#B76E79] border border-[#B76E79]/30 rounded-2xl text-xs font-bold transition-all cursor-pointer"
+                      className="flex items-center justify-center gap-2 py-3 px-4 bg-[#FFF7ED] hover:bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5] rounded-2xl text-xs font-bold transition-all cursor-pointer"
                     >
                       <Share2 size={16} />
                       More Apps
@@ -649,14 +649,14 @@ const MemberReferrals: React.FC = () => {
               </div>
 
               {/* Email Referral Invitation Form */}
-              <div className="bg-[#FFFFFF] rounded-3xl border border-[#E7DADD] p-6 sm:p-8 space-y-6 shadow-xl">
-                <div className="flex items-center gap-3 border-b border-[#E7DADD] pb-4">
-                  <div className="w-10 h-10 rounded-2xl bg-[#B76E79] text-white flex items-center justify-center font-bold">
+              <div className="bg-[#FFFFFF] rounded-3xl border border-[#E2E8F0] p-6 sm:p-8 space-y-6 shadow-xl">
+                <div className="flex items-center gap-3 border-b border-[#E2E8F0] pb-4">
+                  <div className="w-10 h-10 rounded-2xl bg-[#C2410C] text-white flex items-center justify-center font-bold">
                     <Mail size={20} />
                   </div>
                   <div>
-                    <h3 className="text-base font-bold text-[#292524]">Send Personalized Email Invitation</h3>
-                    <p className="text-xs text-[#57534E]">
+                    <h3 className="text-base font-bold text-[#111827]">Send Personalized Email Invitation</h3>
+                    <p className="text-xs text-[#64748B]">
                       We'll dispatch an official email invitation to your friend with your promo code attached.
                     </p>
                   </div>
@@ -678,18 +678,18 @@ const MemberReferrals: React.FC = () => {
                 <form onSubmit={handleSendInvite} className="space-y-4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                      <label className="text-xs font-semibold text-[#57534E]">Friend's Name</label>
+                      <label className="text-xs font-semibold text-[#64748B]">Friend's Name</label>
                       <input
                         type="text"
                         value={inviteName}
                         onChange={(e) => setInviteName(e.target.value)}
                         placeholder="e.g. Alex Sharma"
-                        className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl px-4 py-2.5 text-xs text-[#292524] placeholder-[#57534E] focus:outline-none focus:border-[#B76E79]"
+                        className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-4 py-2.5 text-xs text-[#111827] placeholder-[#94A3B8] focus:outline-none focus:border-[#FDBA74]"
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-xs font-semibold text-[#57534E]">
-                        Friend's Email Address <span className="text-[#B76E79]">*</span>
+                      <label className="text-xs font-semibold text-[#64748B]">
+                        Friend's Email Address <span className="text-[#EA580C]">*</span>
                       </label>
                       <input
                         type="email"
@@ -697,18 +697,18 @@ const MemberReferrals: React.FC = () => {
                         value={inviteEmail}
                         onChange={(e) => setInviteEmail(e.target.value)}
                         placeholder="friend@example.com"
-                        className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl px-4 py-2.5 text-xs text-[#292524] placeholder-[#57534E] focus:outline-none focus:border-[#B76E79]"
+                        className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-4 py-2.5 text-xs text-[#111827] placeholder-[#94A3B8] focus:outline-none focus:border-[#FDBA74]"
                       />
                     </div>
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-xs font-semibold text-[#57534E]">Personal Note (Optional)</label>
+                    <label className="text-xs font-semibold text-[#64748B]">Personal Note (Optional)</label>
                     <textarea
                       rows={2}
                       value={inviteMessage}
                       onChange={(e) => setInviteMessage(e.target.value)}
-                      className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl p-3 text-xs text-[#292524] placeholder-[#57534E] focus:outline-none focus:border-[#B76E79] resize-none"
+                      className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl p-3 text-xs text-[#111827] placeholder-[#94A3B8] focus:outline-none focus:border-[#FDBA74] resize-none"
                     />
                   </div>
 
@@ -716,7 +716,7 @@ const MemberReferrals: React.FC = () => {
                     <button
                       type="submit"
                       disabled={sendingInvite}
-                      className="flex items-center gap-2 px-6 py-3 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold rounded-2xl text-xs transition-all shadow-md shadow-[#B76E79]/20 cursor-pointer disabled:opacity-50"
+                      className="flex items-center gap-2 px-6 py-3 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold rounded-2xl text-xs transition-all shadow-md shadow-orange-500/15 cursor-pointer disabled:opacity-50"
                     >
                       {sendingInvite ? <RefreshCw className="animate-spin" size={16} /> : <Send size={16} />}
                       {sendingInvite ? 'Sending...' : 'Send Referral Invitation'}
@@ -729,38 +729,38 @@ const MemberReferrals: React.FC = () => {
             {/* Right Column: Reward Rules & Summary */}
             <div className="space-y-6">
               {/* Dual Reward Benefits Card */}
-              <div className="bg-[#FFFFFF] rounded-3xl border border-[#E7DADD] p-6 space-y-5 shadow-xl">
-                <div className="flex items-center gap-3 border-b border-[#E7DADD] pb-4">
+              <div className="bg-[#FFFFFF] rounded-3xl border border-[#E2E8F0] p-6 space-y-5 shadow-xl">
+                <div className="flex items-center gap-3 border-b border-[#E2E8F0] pb-4">
                   <div className="w-10 h-10 rounded-2xl bg-purple-500/15 text-purple-400 flex items-center justify-center">
                     <Award size={20} />
                   </div>
                   <div>
-                    <h3 className="text-base font-bold text-[#292524]">Dual Reward Benefit</h3>
-                    <p className="text-xs text-[#57534E]">Both you & your friend benefit!</p>
+                    <h3 className="text-base font-bold text-[#111827]">Dual Reward Benefit</h3>
+                    <p className="text-xs text-[#64748B]">Both you & your friend benefit!</p>
                   </div>
                 </div>
 
                 <div className="space-y-4 text-xs">
-                  <div className="p-4 bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl space-y-1">
-                    <div className="flex items-center justify-between text-[#B76E79] font-bold">
+                  <div className="p-4 bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl space-y-1">
+                    <div className="flex items-center justify-between text-[#EA580C] font-bold">
                       <span>FOR YOUR FRIEND</span>
                       <Tag size={14} />
                     </div>
-                    <div className="text-base font-extrabold text-[#292524]">{friendBenefit}</div>
-                    <p className="text-[11px] text-[#57534E]">
+                    <div className="text-base font-extrabold text-[#111827]">{friendBenefit}</div>
+                    <p className="text-[11px] text-[#64748B]">
                       Instant discount applied during checkout when they register with your code.
                     </p>
                   </div>
 
-                  <div className="p-4 bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl space-y-1">
+                  <div className="p-4 bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl space-y-1">
                     <div className="flex items-center justify-between text-[#15803D] font-bold">
                       <span>FOR YOU (REFERRER)</span>
                       <Coins size={14} />
                     </div>
-                    <div className="text-base font-extrabold text-[#292524]">
+                    <div className="text-base font-extrabold text-[#111827]">
                       {activeCampaign?.referrerRewardValue ? `${activeCampaign.referrerRewardValue} Points` : 'Points Reward'}
                     </div>
-                    <p className="text-[11px] text-[#57534E]">
+                    <p className="text-[11px] text-[#64748B]">
                       Credited directly into your points balance upon confirmed payment.
                     </p>
                   </div>
@@ -768,36 +768,36 @@ const MemberReferrals: React.FC = () => {
               </div>
 
               {/* 3 Simple Steps */}
-              <div className="bg-[#FFFFFF] rounded-3xl border border-[#E7DADD] p-6 space-y-4 shadow-xl">
-                <h4 className="text-sm font-bold text-[#292524]">How It Works</h4>
+              <div className="bg-[#FFFFFF] rounded-3xl border border-[#E2E8F0] p-6 space-y-4 shadow-xl">
+                <h4 className="text-sm font-bold text-[#111827]">How It Works</h4>
                 <div className="space-y-3 text-xs">
                   <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 rounded-full bg-[#B76E79]/15 text-[#B76E79] border border-[#B76E79]/30 flex items-center justify-center font-bold shrink-0 mt-0.5">
+                    <div className="w-6 h-6 rounded-full bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5] flex items-center justify-center font-bold shrink-0 mt-0.5">
                       1
                     </div>
                     <div>
-                      <p className="font-bold text-[#292524]">Share Your Code</p>
-                      <p className="text-[11px] text-[#57534E] mt-0.5">Send your code or link to friends.</p>
+                      <p className="font-bold text-[#111827]">Share Your Code</p>
+                      <p className="text-[11px] text-[#64748B] mt-0.5">Send your code or link to friends.</p>
                     </div>
                   </div>
 
                   <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 rounded-full bg-[#B76E79]/15 text-[#B76E79] border border-[#B76E79]/30 flex items-center justify-center font-bold shrink-0 mt-0.5">
+                    <div className="w-6 h-6 rounded-full bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5] flex items-center justify-center font-bold shrink-0 mt-0.5">
                       2
                     </div>
                     <div>
-                      <p className="font-bold text-[#292524]">Friend Joins & Pays</p>
-                      <p className="text-[11px] text-[#57534E] mt-0.5">They receive an instant promo discount on signup.</p>
+                      <p className="font-bold text-[#111827]">Friend Joins & Pays</p>
+                      <p className="text-[11px] text-[#64748B] mt-0.5">They receive an instant promo discount on signup.</p>
                     </div>
                   </div>
 
                   <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 rounded-full bg-[#B76E79]/15 text-[#B76E79] border border-[#B76E79]/30 flex items-center justify-center font-bold shrink-0 mt-0.5">
+                    <div className="w-6 h-6 rounded-full bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5] flex items-center justify-center font-bold shrink-0 mt-0.5">
                       3
                     </div>
                     <div>
-                      <p className="font-bold text-[#292524]">Earn Your Points</p>
-                      <p className="text-[11px] text-[#57534E] mt-0.5">Your points balance is automatically credited.</p>
+                      <p className="font-bold text-[#111827]">Earn Your Points</p>
+                      <p className="text-[11px] text-[#64748B] mt-0.5">Your points balance is automatically credited.</p>
                     </div>
                   </div>
                 </div>
@@ -807,60 +807,60 @@ const MemberReferrals: React.FC = () => {
 
           {/* Referral Statistics Row */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <div className="bg-[#FFFFFF] p-5 rounded-2xl border border-[#E7DADD] shadow-md space-y-1">
-              <span className="text-xs font-semibold uppercase tracking-wider text-[#57534E]">Total Invited</span>
-              <div className="text-2xl font-black text-[#292524]">{stats.totalInvited}</div>
-              <span className="text-[11px] text-[#57534E]">Friends signed up or invited</span>
+            <div className="bg-[#FFFFFF] p-5 rounded-2xl border border-[#E2E8F0] shadow-md space-y-1">
+              <span className="text-xs font-semibold uppercase tracking-wider text-[#64748B]">Total Invited</span>
+              <div className="text-2xl font-black text-[#111827]">{stats.totalInvited}</div>
+              <span className="text-[11px] text-[#64748B]">Friends signed up or invited</span>
             </div>
 
-            <div className="bg-[#FFFFFF] p-5 rounded-2xl border border-[#E7DADD] shadow-md space-y-1">
-              <span className="text-xs font-semibold uppercase tracking-wider text-[#57534E]">Pending Payments</span>
+            <div className="bg-[#FFFFFF] p-5 rounded-2xl border border-[#E2E8F0] shadow-md space-y-1">
+              <span className="text-xs font-semibold uppercase tracking-wider text-[#64748B]">Pending Payments</span>
               <div className="text-2xl font-black text-[#B45309]">{stats.pendingPaymentCount}</div>
-              <span className="text-[11px] text-[#57534E]">Awaiting plan purchase</span>
+              <span className="text-[11px] text-[#64748B]">Awaiting plan purchase</span>
             </div>
 
-            <div className="bg-[#FFFFFF] p-5 rounded-2xl border border-[#E7DADD] shadow-md space-y-1">
-              <span className="text-xs font-semibold uppercase tracking-wider text-[#57534E]">Successful Referrals</span>
+            <div className="bg-[#FFFFFF] p-5 rounded-2xl border border-[#E2E8F0] shadow-md space-y-1">
+              <span className="text-xs font-semibold uppercase tracking-wider text-[#64748B]">Successful Referrals</span>
               <div className="text-2xl font-black text-[#15803D]">{stats.successfulCount}</div>
               <span className="text-[11px] text-[#15803D] font-medium">Paid members confirmed</span>
             </div>
 
-            <div className="bg-[#FFFFFF] p-5 rounded-2xl border border-[#E7DADD] shadow-md space-y-1">
-              <span className="text-xs font-semibold uppercase tracking-wider text-[#57534E]">Rewards Issued</span>
-              <div className="text-2xl font-black text-[#B76E79]">
+            <div className="bg-[#FFFFFF] p-5 rounded-2xl border border-[#E2E8F0] shadow-md space-y-1">
+              <span className="text-xs font-semibold uppercase tracking-wider text-[#64748B]">Rewards Issued</span>
+              <div className="text-2xl font-black text-[#EA580C]">
                 {wallet.totalEarned > 0 ? `${wallet.totalEarned} Pts` : '0 Pts'}
               </div>
-              <span className="text-[11px] text-[#B76E79] font-medium">Total earned</span>
+              <span className="text-[11px] text-[#EA580C] font-medium">Total earned</span>
             </div>
           </div>
 
           {/* Referral History & Step-by-Step Progress Tracker */}
-          <div className="bg-[#FFFFFF] rounded-3xl border border-[#E7DADD] p-6 sm:p-8 shadow-xl space-y-6">
-            <div className="flex items-center justify-between border-b border-[#E7DADD] pb-4">
+          <div className="bg-[#FFFFFF] rounded-3xl border border-[#E2E8F0] p-6 sm:p-8 shadow-xl space-y-6">
+            <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-4">
               <div>
-                <h2 className="text-lg font-bold text-[#292524]">My Referral History & Progress Tracker</h2>
-                <p className="text-xs text-[#57534E]">
+                <h2 className="text-lg font-bold text-[#111827]">My Referral History & Progress Tracker</h2>
+                <p className="text-xs text-[#64748B]">
                   Track your invitations step-by-step from invitation to verified member reward.
                 </p>
               </div>
-              <span className="text-xs font-bold text-[#FFFFFF] bg-[#B76E79] px-3 py-1 rounded-full">
+              <span className="text-xs font-bold text-[#FFFFFF] bg-[#C2410C] px-3 py-1 rounded-full">
                 {referrals.length} Total Invites
               </span>
             </div>
 
             {referrals.length === 0 ? (
               <div className="py-12 text-center space-y-3">
-                <div className="w-16 h-16 rounded-full bg-[#FFFFFF] border border-[#E7DADD] text-[#57534E] flex items-center justify-center mx-auto">
-                  <Users size={28} className="text-[#B76E79]" />
+                <div className="w-16 h-16 rounded-full bg-[#FFFFFF] border border-[#E2E8F0] text-[#64748B] flex items-center justify-center mx-auto">
+                  <Users size={28} className="text-[#EA580C]" />
                 </div>
-                <h3 className="text-base font-bold text-[#292524]">No Referrals Recorded Yet</h3>
-                <p className="text-xs text-[#57534E] max-w-sm mx-auto">
-                  Use the email form above or share your code <strong className="text-[#B76E79]">{referralCode}</strong> with friends to earn your first reward!
+                <h3 className="text-base font-bold text-[#111827]">No Referrals Recorded Yet</h3>
+                <p className="text-xs text-[#64748B] max-w-sm mx-auto">
+                  Use the email form above or share your code <strong className="text-[#EA580C]">{referralCode}</strong> with friends to earn your first reward!
                 </p>
                 <div className="flex justify-center gap-3 pt-2">
                   <button
                     onClick={handleWhatsAppShare}
-                    className="px-5 py-2.5 bg-[#B76E79] hover:bg-[#9F5965] text-white rounded-xl text-xs font-bold transition-all shadow-sm cursor-pointer"
+                    className="px-5 py-2.5 bg-[#C2410C] hover:bg-[#9A3412] text-white rounded-xl text-xs font-bold transition-all shadow-sm cursor-pointer"
                   >
                     Share on WhatsApp
                   </button>
@@ -873,37 +873,37 @@ const MemberReferrals: React.FC = () => {
                   const displayDate = item.registrationDate || item.createdAt;
 
                   return (
-                    <div key={item._id} className="p-5 bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl space-y-4">
+                    <div key={item._id} className="p-5 bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl space-y-4">
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-[#B76E79]/15 border border-[#B76E79]/30 text-[#B76E79] flex items-center justify-center font-bold text-sm">
+                          <div className="w-10 h-10 rounded-full bg-[#FFF7ED] border border-[#FFEDD5] text-[#EA580C] flex items-center justify-center font-bold text-sm">
                             {displayName.charAt(0).toUpperCase()}
                           </div>
                           <div>
                             <div className="flex items-center gap-2">
-                              <h4 className="text-sm font-bold text-[#292524]">{displayName}</h4>
+                              <h4 className="text-sm font-bold text-[#111827]">{displayName}</h4>
                               {item.inviteChannel && (
-                                <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#FFFFFF] border border-[#E7DADD] text-[#57534E]">
+                                <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#FFFFFF] border border-[#E2E8F0] text-[#64748B]">
                                   via {item.inviteChannel}
                                 </span>
                               )}
                             </div>
-                            <p className="text-[11px] text-[#57534E]">
+                            <p className="text-[11px] text-[#64748B]">
                               {displayDate ? `Date: ${new Date(displayDate).toLocaleDateString()}` : 'Recently Invited'}
                             </p>
                           </div>
                         </div>
 
                         <div className="text-left sm:text-right">
-                          <span className="text-xs font-bold text-[#B76E79]">
+                          <span className="text-xs font-bold text-[#EA580C]">
                             Reward: +{item.rewardAmount || 300} Points
                           </span>
-                          <div className="text-[11px] text-[#57534E] mt-0.5">
+                          <div className="text-[11px] text-[#64748B] mt-0.5">
                             Status:{' '}
                             <span
                               className={`font-semibold ${
                                 item.status === 'Reward Issued'
-                                  ? 'text-[#B76E79]'
+                                  ? 'text-[#EA580C]'
                                   : item.status === 'Payment Verified'
                                   ? 'text-[#15803D]'
                                   : item.status === 'Invited'
@@ -919,7 +919,7 @@ const MemberReferrals: React.FC = () => {
 
                       {/* Step-by-Step Progress Timeline */}
                       <div className="pt-2">
-                        <div className="flex items-center justify-between text-[11px] font-semibold text-[#57534E] mb-2 overflow-x-auto gap-2">
+                        <div className="flex items-center justify-between text-[11px] font-semibold text-[#64748B] mb-2 overflow-x-auto gap-2">
                           {['Invited', 'Registered', 'Membership Pending', 'Payment Verified', 'Reward Issued'].map(
                             (stage, idx) => {
                               const isComplete =
@@ -938,13 +938,13 @@ const MemberReferrals: React.FC = () => {
                                   <div
                                     className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${
                                       isComplete
-                                        ? 'bg-[#B76E79] text-white'
-                                        : 'bg-[#F3E8E8] text-[#57534E] border border-[#E7DADD]'
+                                        ? 'bg-[#C2410C] text-white'
+                                        : 'bg-[#F8FAFC] text-[#64748B] border border-[#E2E8F0]'
                                     }`}
                                   >
                                     {isComplete ? <Check size={11} /> : idx + 1}
                                   </div>
-                                  <span className={isComplete ? 'text-[#292524] font-bold' : 'text-[#57534E]'}>
+                                  <span className={isComplete ? 'text-[#111827] font-bold' : 'text-[#64748B]'}>
                                     {stage}
                                   </span>
                                 </div>
@@ -966,20 +966,20 @@ const MemberReferrals: React.FC = () => {
         /* ========================================================================= */
         <div className="space-y-6">
           {/* Header Banner */}
-          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#FFFFFF] via-[#FFFFFF] to-[#F3E8E8] border border-[#E7DADD] p-6 sm:p-8 shadow-2xl">
+          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#FFFFFF] via-[#FFFFFF] to-[#F8FAFC] border border-[#E2E8F0] p-6 sm:p-8 shadow-2xl">
             <div className="absolute top-0 right-0 w-96 h-96 bg-[radial-gradient(circle,_rgba(183,110,121,0.15)_0%,_transparent_70%)] pointer-events-none" />
             
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
               <div className="max-w-2xl space-y-2">
-                <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#B76E79]/15 border border-[#B76E79]/30 rounded-full text-xs font-bold uppercase tracking-wider text-[#B76E79]">
-                  <Coins size={14} className="text-[#B76E79]" />
+                <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#FFF7ED] border border-[#FFEDD5] rounded-full text-xs font-bold uppercase tracking-wider text-[#EA580C]">
+                  <Coins size={14} className="text-[#EA580C]" />
                   Referral Points Balance
                 </div>
-                <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-[#292524]">
+                <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-[#111827]">
                   My Referral Points & Redemption
                 </h1>
-                <p className="text-[#57534E] text-sm leading-relaxed">
-                  Earned from your referred friends at <strong className="text-[#292524]">{gymName}</strong>. 
+                <p className="text-[#64748B] text-sm leading-relaxed">
+                  Earned from your referred friends at <strong className="text-[#111827]">{gymName}</strong>. 
                   Redeem directly towards membership renewals, gym store gear, or special training sessions.
                 </p>
               </div>
@@ -990,7 +990,7 @@ const MemberReferrals: React.FC = () => {
                   setSelectedRedeemChannel(null);
                   setShowRedeemModal(true);
                 }}
-                className="flex items-center justify-center gap-2 px-6 py-3.5 bg-[#B76E79] hover:bg-[#9F5965] text-white font-black text-sm rounded-2xl transition-all shadow-xl shadow-[#B76E79]/30 cursor-pointer shrink-0"
+                className="flex items-center justify-center gap-2 px-6 py-3.5 bg-[#C2410C] hover:bg-[#9A3412] text-white font-black text-sm rounded-2xl transition-all shadow-xl shadow-orange-500/15 cursor-pointer shrink-0"
               >
                 <Coins size={18} />
                 Redeem Points Now
@@ -1001,24 +1001,24 @@ const MemberReferrals: React.FC = () => {
           {/* Reward Summary 4-Grid Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* 1. Available Points */}
-            <div className="bg-[#FFFFFF] p-6 rounded-3xl border border-[#E7DADD] shadow-lg space-y-2 relative overflow-hidden group hover:border-[#B76E79]/50 transition">
-              <div className="flex items-center justify-between text-[#57534E]">
+            <div className="bg-[#FFFFFF] p-6 rounded-3xl border border-[#E2E8F0] shadow-lg space-y-2 relative overflow-hidden group hover:border-[#FFEDD5] transition">
+              <div className="flex items-center justify-between text-[#64748B]">
                 <span className="text-xs font-bold uppercase tracking-wider">Available Points</span>
-                <div className="w-10 h-10 rounded-2xl bg-[#B76E79]/10 text-[#B76E79] flex items-center justify-center">
+                <div className="w-10 h-10 rounded-2xl bg-[#FFF7ED] text-[#EA580C] flex items-center justify-center">
                   <Coins size={20} />
                 </div>
               </div>
-              <div className="text-3xl sm:text-4xl font-black text-[#292524]">
+              <div className="text-3xl sm:text-4xl font-black text-[#111827]">
                 {wallet.currentBalance.toLocaleString()}
               </div>
-              <div className="text-xs text-[#B76E79] font-semibold flex items-center gap-1.5 pt-1">
+              <div className="text-xs text-[#EA580C] font-semibold flex items-center gap-1.5 pt-1">
                 <span>Supports 5,000+ balances</span>
               </div>
             </div>
 
             {/* 2. Equivalent Discount Value */}
-            <div className="bg-[#FFFFFF] p-6 rounded-3xl border border-[#E7DADD] shadow-lg space-y-2 relative overflow-hidden group hover:border-[#15803D]/50 transition">
-              <div className="flex items-center justify-between text-[#57534E]">
+            <div className="bg-[#FFFFFF] p-6 rounded-3xl border border-[#E2E8F0] shadow-lg space-y-2 relative overflow-hidden group hover:border-[#15803D]/50 transition">
+              <div className="flex items-center justify-between text-[#64748B]">
                 <span className="text-xs font-bold uppercase tracking-wider">Equivalent Value</span>
                 <div className="w-10 h-10 rounded-2xl bg-[#15803D]/10 text-[#15803D] flex items-center justify-center">
                   <DollarSign size={20} />
@@ -1027,14 +1027,14 @@ const MemberReferrals: React.FC = () => {
               <div className="text-3xl sm:text-4xl font-black text-[#15803D]">
                 ₹{equivalentRupeeValue.toLocaleString()}
               </div>
-              <div className="text-xs text-[#57534E] pt-1">
+              <div className="text-xs text-[#64748B] pt-1">
                 Rate: {rewardSettings.pointsPerConversionUnit} pts = ₹{rewardSettings.currencyValuePerUnit}
               </div>
             </div>
 
             {/* 3. Total Points Earned */}
-            <div className="bg-[#FFFFFF] p-6 rounded-3xl border border-[#E7DADD] shadow-lg space-y-2 relative overflow-hidden group hover:border-purple-500/50 transition">
-              <div className="flex items-center justify-between text-[#57534E]">
+            <div className="bg-[#FFFFFF] p-6 rounded-3xl border border-[#E2E8F0] shadow-lg space-y-2 relative overflow-hidden group hover:border-purple-500/50 transition">
+              <div className="flex items-center justify-between text-[#64748B]">
                 <span className="text-xs font-bold uppercase tracking-wider">Total Earned</span>
                 <div className="w-10 h-10 rounded-2xl bg-purple-500/10 text-purple-400 flex items-center justify-center">
                   <TrendingUp size={20} />
@@ -1043,36 +1043,36 @@ const MemberReferrals: React.FC = () => {
               <div className="text-3xl sm:text-4xl font-black text-purple-300">
                 {wallet.totalEarned.toLocaleString()}
               </div>
-              <div className="text-xs text-[#57534E] pt-1">
+              <div className="text-xs text-[#64748B] pt-1">
                 From successful referrals & bonuses
               </div>
             </div>
 
             {/* 4. Total Points Redeemed */}
-            <div className="bg-[#FFFFFF] p-6 rounded-3xl border border-[#E7DADD] shadow-lg space-y-2 relative overflow-hidden group hover:border-amber-500/50 transition">
-              <div className="flex items-center justify-between text-[#57534E]">
+            <div className="bg-[#FFFFFF] p-6 rounded-3xl border border-[#E2E8F0] shadow-lg space-y-2 relative overflow-hidden group hover:border-amber-500/50 transition">
+              <div className="flex items-center justify-between text-[#64748B]">
                 <span className="text-xs font-bold uppercase tracking-wider">Total Redeemed</span>
-                <div className="w-10 h-10 rounded-2xl bg-amber-500/10 text-amber-400 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-2xl bg-amber-500/10 text-[#B45309] flex items-center justify-center">
                   <ArrowDownRight size={20} />
                 </div>
               </div>
               <div className="text-3xl sm:text-4xl font-black text-amber-300">
                 {wallet.totalRedeemed.toLocaleString()}
               </div>
-              <div className="text-xs text-[#57534E] pt-1">
+              <div className="text-xs text-[#64748B] pt-1">
                 Redeemed on plans & gym store
               </div>
             </div>
           </div>
 
           {/* Available Redemption Channels */}
-          <div className="bg-[#FFFFFF] p-6 rounded-3xl border border-[#E7DADD] shadow-lg space-y-4">
+          <div className="bg-[#FFFFFF] p-6 rounded-3xl border border-[#E2E8F0] shadow-lg space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-base font-extrabold text-[#292524]">Available Redemption Channels</h3>
-                <p className="text-xs text-[#57534E]">Choose how to use your referral points today.</p>
+                <h3 className="text-base font-extrabold text-[#111827]">Available Redemption Channels</h3>
+                <p className="text-xs text-[#64748B]">Choose how to use your referral points today.</p>
               </div>
-              <span className="text-xs text-[#B76E79] font-bold bg-[#B76E79]/10 px-3 py-1 rounded-full border border-[#B76E79]/20">
+              <span className="text-xs text-[#EA580C] font-bold bg-[#FFF7ED] px-3 py-1 rounded-full border border-[#FFEDD5]">
                 Min. {rewardSettings.minPointsForRedemption} pts required
               </span>
             </div>
@@ -1088,12 +1088,12 @@ const MemberReferrals: React.FC = () => {
                 }}
                 className={`p-5 rounded-2xl border transition text-left cursor-pointer ${
                   rewardSettings.enableMembershipDiscount
-                    ? 'bg-[#FFFFFF] border-[#E7DADD] hover:border-[#B76E79] hover:bg-[#F3E8E8]'
+                    ? 'bg-[#FFFFFF] border-[#E2E8F0] hover:border-[#FDBA74] hover:bg-[#FFF7ED]'
                     : 'bg-[#FFFFFF]/50 border-red-500/20 opacity-60 cursor-not-allowed'
                 }`}
               >
                 <div className="flex items-center justify-between mb-3">
-                  <div className="w-10 h-10 rounded-xl bg-[#B76E79]/15 text-[#B76E79] flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-xl bg-[#FFF7ED] text-[#EA580C] flex items-center justify-center">
                     <CreditCard size={20} />
                   </div>
                   {rewardSettings.enableMembershipDiscount ? (
@@ -1101,16 +1101,16 @@ const MemberReferrals: React.FC = () => {
                       Active
                     </span>
                   ) : (
-                    <span className="text-[10px] font-bold text-red-400 bg-red-500/10 px-2 py-0.5 rounded-full">
+                    <span className="text-[10px] font-bold text-[#B91C1C] bg-red-500/10 px-2 py-0.5 rounded-full">
                       Disabled by Gym
                     </span>
                   )}
                 </div>
-                <h4 className="font-bold text-sm text-[#292524]">1. Membership Plan Discount</h4>
-                <p className="text-xs text-[#57534E] mt-1 leading-relaxed">
+                <h4 className="font-bold text-sm text-[#111827]">1. Membership Plan Discount</h4>
+                <p className="text-xs text-[#64748B] mt-1 leading-relaxed">
                   Apply your points directly during membership renewal or upgrade checkout for instant rupee discounts.
                 </p>
-                <div className="mt-3 flex items-center gap-1 text-xs font-bold text-[#B76E79]">
+                <div className="mt-3 flex items-center gap-1 text-xs font-bold text-[#EA580C]">
                   <span>Calculate discount</span>
                   <ChevronRight size={14} />
                 </div>
@@ -1126,7 +1126,7 @@ const MemberReferrals: React.FC = () => {
                 }}
                 className={`p-5 rounded-2xl border transition text-left cursor-pointer ${
                   rewardSettings.enableStorePurchase
-                    ? 'bg-[#FFFFFF] border-[#E7DADD] hover:border-[#B76E79] hover:bg-[#F3E8E8]'
+                    ? 'bg-[#FFFFFF] border-[#E2E8F0] hover:border-[#FDBA74] hover:bg-[#FFF7ED]'
                     : 'bg-[#FFFFFF]/50 border-red-500/20 opacity-60 cursor-not-allowed'
                 }`}
               >
@@ -1139,16 +1139,16 @@ const MemberReferrals: React.FC = () => {
                       Active
                     </span>
                   ) : (
-                    <span className="text-[10px] font-bold text-red-400 bg-red-500/10 px-2 py-0.5 rounded-full">
+                    <span className="text-[10px] font-bold text-[#B91C1C] bg-red-500/10 px-2 py-0.5 rounded-full">
                       Disabled by Gym
                     </span>
                   )}
                 </div>
-                <h4 className="font-bold text-sm text-[#292524]">2. Gym Store Purchases</h4>
-                <p className="text-xs text-[#57534E] mt-1 leading-relaxed">
+                <h4 className="font-bold text-sm text-[#111827]">2. Gym Store Purchases</h4>
+                <p className="text-xs text-[#64748B] mt-1 leading-relaxed">
                   Redeem points against protein supplements, gym apparel, and accessories in the official Gym Store.
                 </p>
-                <div className="mt-3 flex items-center gap-1 text-xs font-bold text-[#B76E79]">
+                <div className="mt-3 flex items-center gap-1 text-xs font-bold text-[#EA580C]">
                   <span>Explore store products</span>
                   <ChevronRight size={14} />
                 </div>
@@ -1164,12 +1164,12 @@ const MemberReferrals: React.FC = () => {
                 }}
                 className={`p-5 rounded-2xl border transition text-left cursor-pointer ${
                   rewardSettings.enableCustomRewards
-                    ? 'bg-[#FFFFFF] border-[#E7DADD] hover:border-[#B76E79] hover:bg-[#F3E8E8]'
+                    ? 'bg-[#FFFFFF] border-[#E2E8F0] hover:border-[#FDBA74] hover:bg-[#FFF7ED]'
                     : 'bg-[#FFFFFF]/50 border-red-500/20 opacity-60 cursor-not-allowed'
                 }`}
               >
                 <div className="flex items-center justify-between mb-3">
-                  <div className="w-10 h-10 rounded-xl bg-amber-500/15 text-amber-400 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-xl bg-amber-500/15 text-[#B45309] flex items-center justify-center">
                     <Award size={20} />
                   </div>
                   {rewardSettings.enableCustomRewards ? (
@@ -1177,16 +1177,16 @@ const MemberReferrals: React.FC = () => {
                       {availableCustomRewards.length} Available
                     </span>
                   ) : (
-                    <span className="text-[10px] font-bold text-red-400 bg-red-500/10 px-2 py-0.5 rounded-full">
+                    <span className="text-[10px] font-bold text-[#B91C1C] bg-red-500/10 px-2 py-0.5 rounded-full">
                       Disabled by Gym
                     </span>
                   )}
                 </div>
-                <h4 className="font-bold text-sm text-[#292524]">3. Other Custom Rewards</h4>
-                <p className="text-xs text-[#57534E] mt-1 leading-relaxed">
+                <h4 className="font-bold text-sm text-[#111827]">3. Other Custom Rewards</h4>
+                <p className="text-xs text-[#64748B] mt-1 leading-relaxed">
                   Claim Personal Training Sessions, workout vouchers, and exclusive gym perks crafted by your gym owner.
                 </p>
-                <div className="mt-3 flex items-center gap-1 text-xs font-bold text-[#B76E79]">
+                <div className="mt-3 flex items-center gap-1 text-xs font-bold text-[#EA580C]">
                   <span>Browse vouchers</span>
                   <ChevronRight size={14} />
                 </div>
@@ -1195,14 +1195,14 @@ const MemberReferrals: React.FC = () => {
           </div>
 
           {/* Customer Instructions — Must Be Clearly Visible */}
-          <div className="bg-[#FFFFFF] rounded-3xl border border-[#E7DADD] p-6 sm:p-8 shadow-xl space-y-6">
-            <div className="flex items-center gap-3 border-b border-[#E7DADD] pb-4">
-              <div className="w-10 h-10 rounded-2xl bg-[#B76E79]/15 text-[#B76E79] flex items-center justify-center">
+          <div className="bg-[#FFFFFF] rounded-3xl border border-[#E2E8F0] p-6 sm:p-8 shadow-xl space-y-6">
+            <div className="flex items-center gap-3 border-b border-[#E2E8F0] pb-4">
+              <div className="w-10 h-10 rounded-2xl bg-[#FFF7ED] text-[#EA580C] flex items-center justify-center">
                 <HelpCircle size={22} />
               </div>
               <div>
-                <h2 className="text-lg font-extrabold text-[#292524]">How to Use Your Referral Points</h2>
-                <p className="text-xs text-[#57534E]">
+                <h2 className="text-lg font-extrabold text-[#111827]">How to Use Your Referral Points</h2>
+                <p className="text-xs text-[#64748B]">
                   Simple step-by-step instructions and important policy terms for your referral points.
                 </p>
               </div>
@@ -1211,67 +1211,67 @@ const MemberReferrals: React.FC = () => {
             {/* 7 Steps List */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-3.5">
-                <div className="flex items-start gap-3 p-3.5 bg-[#FFFFFF] rounded-2xl border border-[#E7DADD]/60">
-                  <div className="w-7 h-7 rounded-full bg-[#B76E79] text-white flex items-center justify-center text-xs font-bold shrink-0">
+                <div className="flex items-start gap-3 p-3.5 bg-[#FFFFFF] rounded-2xl border border-[#E2E8F0]/60">
+                  <div className="w-7 h-7 rounded-full bg-[#C2410C] text-white flex items-center justify-center text-xs font-bold shrink-0">
                     1
                   </div>
-                  <p className="text-xs text-[#292524] leading-relaxed pt-0.5">
+                  <p className="text-xs text-[#111827] leading-relaxed pt-0.5">
                     <strong>Earn points</strong> when your referred friend completes an eligible membership payment.
                   </p>
                 </div>
 
-                <div className="flex items-start gap-3 p-3.5 bg-[#FFFFFF] rounded-2xl border border-[#E7DADD]/60">
-                  <div className="w-7 h-7 rounded-full bg-[#B76E79] text-white flex items-center justify-center text-xs font-bold shrink-0">
+                <div className="flex items-start gap-3 p-3.5 bg-[#FFFFFF] rounded-2xl border border-[#E2E8F0]/60">
+                  <div className="w-7 h-7 rounded-full bg-[#C2410C] text-white flex items-center justify-center text-xs font-bold shrink-0">
                     2
                   </div>
-                  <p className="text-xs text-[#292524] leading-relaxed pt-0.5">
+                  <p className="text-xs text-[#111827] leading-relaxed pt-0.5">
                     Open <strong>Points & Redemption</strong> to check your available points balance and equivalent rupee value.
                   </p>
                 </div>
 
-                <div className="flex items-start gap-3 p-3.5 bg-[#FFFFFF] rounded-2xl border border-[#E7DADD]/60">
-                  <div className="w-7 h-7 rounded-full bg-[#B76E79] text-white flex items-center justify-center text-xs font-bold shrink-0">
+                <div className="flex items-start gap-3 p-3.5 bg-[#FFFFFF] rounded-2xl border border-[#E2E8F0]/60">
+                  <div className="w-7 h-7 rounded-full bg-[#C2410C] text-white flex items-center justify-center text-xs font-bold shrink-0">
                     3
                   </div>
-                  <p className="text-xs text-[#292524] leading-relaxed pt-0.5">
+                  <p className="text-xs text-[#111827] leading-relaxed pt-0.5">
                     Click <strong>Redeem Points</strong> and select <em>Membership Plan Discount</em>, <em>Gym Store Purchase</em>, or another available reward.
                   </p>
                 </div>
 
-                <div className="flex items-start gap-3 p-3.5 bg-[#FFFFFF] rounded-2xl border border-[#E7DADD]/60">
-                  <div className="w-7 h-7 rounded-full bg-[#B76E79] text-white flex items-center justify-center text-xs font-bold shrink-0">
+                <div className="flex items-start gap-3 p-3.5 bg-[#FFFFFF] rounded-2xl border border-[#E2E8F0]/60">
+                  <div className="w-7 h-7 rounded-full bg-[#C2410C] text-white flex items-center justify-center text-xs font-bold shrink-0">
                     4
                   </div>
-                  <p className="text-xs text-[#292524] leading-relaxed pt-0.5">
+                  <p className="text-xs text-[#111827] leading-relaxed pt-0.5">
                     Review the required points, discount value, and eligibility rules before confirming your redemption.
                   </p>
                 </div>
               </div>
 
               <div className="space-y-3.5">
-                <div className="flex items-start gap-3 p-3.5 bg-[#FFFFFF] rounded-2xl border border-[#E7DADD]/60">
-                  <div className="w-7 h-7 rounded-full bg-[#B76E79] text-white flex items-center justify-center text-xs font-bold shrink-0">
+                <div className="flex items-start gap-3 p-3.5 bg-[#FFFFFF] rounded-2xl border border-[#E2E8F0]/60">
+                  <div className="w-7 h-7 rounded-full bg-[#C2410C] text-white flex items-center justify-center text-xs font-bold shrink-0">
                     5
                   </div>
-                  <p className="text-xs text-[#292524] leading-relaxed pt-0.5">
+                  <p className="text-xs text-[#111827] leading-relaxed pt-0.5">
                     Apply your points during eligible checkout or submit your custom reward voucher request.
                   </p>
                 </div>
 
-                <div className="flex items-start gap-3 p-3.5 bg-[#FFFFFF] rounded-2xl border border-[#E7DADD]/60">
-                  <div className="w-7 h-7 rounded-full bg-[#B76E79] text-white flex items-center justify-center text-xs font-bold shrink-0">
+                <div className="flex items-start gap-3 p-3.5 bg-[#FFFFFF] rounded-2xl border border-[#E2E8F0]/60">
+                  <div className="w-7 h-7 rounded-full bg-[#C2410C] text-white flex items-center justify-center text-xs font-bold shrink-0">
                     6
                   </div>
-                  <p className="text-xs text-[#292524] leading-relaxed pt-0.5">
+                  <p className="text-xs text-[#111827] leading-relaxed pt-0.5">
                     For purchases, points are deducted only after successful payment. For custom rewards, follow the displayed confirmation and approval status.
                   </p>
                 </div>
 
-                <div className="flex items-start gap-3 p-3.5 bg-[#FFFFFF] rounded-2xl border border-[#E7DADD]/60">
-                  <div className="w-7 h-7 rounded-full bg-[#B76E79] text-white flex items-center justify-center text-xs font-bold shrink-0">
+                <div className="flex items-start gap-3 p-3.5 bg-[#FFFFFF] rounded-2xl border border-[#E2E8F0]/60">
+                  <div className="w-7 h-7 rounded-full bg-[#C2410C] text-white flex items-center justify-center text-xs font-bold shrink-0">
                     7
                   </div>
-                  <p className="text-xs text-[#292524] leading-relaxed pt-0.5">
+                  <p className="text-xs text-[#111827] leading-relaxed pt-0.5">
                     Check your <strong>Points History</strong> and <strong>Redemption History</strong> below to track every transaction.
                   </p>
                 </div>
@@ -1279,30 +1279,30 @@ const MemberReferrals: React.FC = () => {
             </div>
 
             {/* Important Notes Box (Dynamic from Gym Owner's Settings) */}
-            <div className="p-5 bg-[#FFFFFF] rounded-2xl border border-[#E7DADD] space-y-3">
-              <div className="flex items-center gap-2 text-amber-400 font-bold text-xs uppercase tracking-wider">
+            <div className="p-5 bg-[#FFFFFF] rounded-2xl border border-[#E2E8F0] space-y-3">
+              <div className="flex items-center gap-2 text-[#B45309] font-bold text-xs uppercase tracking-wider">
                 <AlertCircle size={16} />
                 <span>Important Notes (Configured by {gymName})</span>
               </div>
-              <ul className="text-xs text-[#57534E] space-y-2 list-disc list-inside leading-relaxed">
+              <ul className="text-xs text-[#64748B] space-y-2 list-disc list-inside leading-relaxed">
                 <li>
                   The conversion rate is dynamically set by your gym owner:{' '}
-                  <strong className="text-[#292524]">
+                  <strong className="text-[#111827]">
                     {rewardSettings.pointsPerConversionUnit} points = ₹{rewardSettings.currencyValuePerUnit}
                   </strong>{' '}
                   (₹{pointRate.toFixed(2)} per point).
                 </li>
                 <li>
                   Minimum points required for redemption:{' '}
-                  <strong className="text-[#292524]">{rewardSettings.minPointsForRedemption} points</strong>.
+                  <strong className="text-[#111827]">{rewardSettings.minPointsForRedemption} points</strong>.
                 </li>
                 <li>
                   Maximum discount allowed per transaction:{' '}
-                  <strong className="text-[#292524]">₹{rewardSettings.maxDiscountPerTransaction}</strong>.
+                  <strong className="text-[#111827]">₹{rewardSettings.maxDiscountPerTransaction}</strong>.
                 </li>
                 <li>
                   Unused points remain available for future eligible redemptions:{' '}
-                  <strong className="text-[#292524]">
+                  <strong className="text-[#111827]">
                     {rewardSettings.pointsExpiryDays > 0 ? `${rewardSettings.pointsExpiryDays} days validity` : 'No expiry date'}
                   </strong>.
                 </li>
@@ -1310,7 +1310,7 @@ const MemberReferrals: React.FC = () => {
                 <li>Points cannot be transferred to another customer or withdrawn as cash.</li>
                 <li>Failed payments or cancelled orders will never permanently deduct points; your balance is safely refunded.</li>
                 {rewardSettings.rewardInstructions && (
-                  <li className="text-[#B76E79]">
+                  <li className="text-[#EA580C]">
                     <strong>Special Gym Note:</strong> {rewardSettings.rewardInstructions}
                   </li>
                 )}
@@ -1319,31 +1319,31 @@ const MemberReferrals: React.FC = () => {
           </div>
 
           {/* Points Transaction History Ledger */}
-          <div className="bg-[#FFFFFF] rounded-3xl border border-[#E7DADD] p-6 sm:p-8 shadow-xl space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#E7DADD] pb-4">
+          <div className="bg-[#FFFFFF] rounded-3xl border border-[#E2E8F0] p-6 sm:p-8 shadow-xl space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#E2E8F0] pb-4">
               <div>
-                <h3 className="text-base font-extrabold text-[#292524]">Points Transaction History</h3>
-                <p className="text-xs text-[#57534E]">
+                <h3 className="text-base font-extrabold text-[#111827]">Points Transaction History</h3>
+                <p className="text-xs text-[#64748B]">
                   Complete ledger of earned, redeemed, refunded, and adjusted points.
                 </p>
               </div>
-              <span className="text-xs font-bold text-[#57534E] bg-[#FFFFFF] px-3 py-1 rounded-full border border-[#E7DADD]">
+              <span className="text-xs font-bold text-[#64748B] bg-[#FFFFFF] px-3 py-1 rounded-full border border-[#E2E8F0]">
                 {pointsHistory.length} Recorded Transactions
               </span>
             </div>
 
             {pointsHistory.length === 0 ? (
               <div className="py-10 text-center space-y-2">
-                <Coins size={32} className="mx-auto text-[#B76E79]/50" />
-                <p className="text-sm font-semibold text-[#57534E]">No points transactions yet</p>
-                <p className="text-xs text-[#57534E]">Invite friends or make eligible purchases to earn points.</p>
+                <Coins size={32} className="mx-auto text-[#EA580C]/50" />
+                <p className="text-sm font-semibold text-[#64748B]">No points transactions yet</p>
+                <p className="text-xs text-[#64748B]">Invite friends or make eligible purchases to earn points.</p>
               </div>
             ) : (
               <>
                 {/* Desktop Table View */}
                 <div className="hidden md:block overflow-x-auto">
                   <table className="w-full text-left text-xs">
-                    <thead className="bg-[#F3E8E8] text-[#57534E] uppercase text-[10px] tracking-wider border-b border-[#E7DADD]">
+                    <thead className="bg-[#F8FAFC] text-[#64748B] uppercase text-[10px] tracking-wider border-b border-[#E2E8F0]">
                       <tr>
                         <th className="py-3 px-4">Date</th>
                         <th className="py-3 px-4">Transaction Type</th>
@@ -1355,7 +1355,7 @@ const MemberReferrals: React.FC = () => {
                         <th className="py-3 px-4 text-center">Action</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y border-[#E7DADD]">
+                    <tbody className="divide-y border-[#E2E8F0]">
                       {pointsHistory.map((tx: any) => {
                         const txType = tx.transactionType || tx.type || 'EARN_BONUS';
                         const txPoints = tx.points !== undefined ? tx.points : Math.abs(tx.amount || 0);
@@ -1364,31 +1364,31 @@ const MemberReferrals: React.FC = () => {
                         const txNote = tx.reason || tx.description || tx.orderReference || 'Reward points transaction';
 
                         return (
-                          <tr key={tx._id} className="hover:bg-[#F3E8E8]/50 transition">
-                            <td className="py-3 px-4 text-[#57534E] whitespace-nowrap">
+                          <tr key={tx._id} className="hover:bg-[#FFF7ED]/50 transition">
+                            <td className="py-3 px-4 text-[#64748B] whitespace-nowrap">
                               {tx.createdAt ? new Date(tx.createdAt).toLocaleDateString() : 'Today'} {tx.createdAt ? new Date(tx.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
                             </td>
-                            <td className="py-3 px-4 font-bold text-[#292524]">
-                              <span className="px-2 py-0.5 rounded-full text-[10px] bg-[#FFFFFF] border border-[#E7DADD]">
+                            <td className="py-3 px-4 font-bold text-[#111827]">
+                              <span className="px-2 py-0.5 rounded-full text-[10px] bg-[#FFFFFF] border border-[#E2E8F0]">
                                 {String(txType).replace(/_/g, ' ')}
                               </span>
                             </td>
-                            <td className={`py-3 px-4 font-black ${isPositive ? 'text-[#15803D]' : 'text-amber-400'}`}>
+                            <td className={`py-3 px-4 font-black ${isPositive ? 'text-[#15803D]' : 'text-[#B45309]'}`}>
                               {isPositive ? `+${txPoints}` : `-${txPoints}`}
                             </td>
-                            <td className="py-3 px-4 font-semibold text-[#B76E79]">
+                            <td className="py-3 px-4 font-semibold text-[#EA580C]">
                               {tx.discountAmount ? `₹${tx.discountAmount}` : '—'}
                             </td>
-                            <td className="py-3 px-4 text-[#292524] max-w-xs truncate">
+                            <td className="py-3 px-4 text-[#111827] max-w-xs truncate">
                               {txNote}
                             </td>
-                            <td className="py-3 px-4 font-bold text-[#292524]">
+                            <td className="py-3 px-4 font-bold text-[#111827]">
                               {tx.balanceAfter !== undefined ? `${tx.balanceAfter} pts` : '—'}
                             </td>
                             <td className="py-3 px-4">
                               <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
                                 txStatus === 'COMPLETED' ? 'bg-[#15803D]/15 text-[#15803D] border border-[#15803D]/30' :
-                                txStatus === 'PENDING' ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30' : 'bg-red-500/15 text-red-400 border border-red-500/30'
+                                txStatus === 'PENDING' ? 'bg-amber-500/15 text-[#B45309] border border-amber-500/30' : 'bg-red-500/15 text-[#B91C1C] border border-red-500/30'
                               }`}>
                                 {txStatus}
                               </span>
@@ -1397,7 +1397,7 @@ const MemberReferrals: React.FC = () => {
                               <button
                                 type="button"
                                 onClick={() => setSelectedTxForDetails(tx)}
-                                className="px-3 py-1.5 bg-[#B76E79]/15 hover:bg-[#B76E79]/25 text-[#B76E79] hover:text-white border border-[#B76E79]/30 hover:border-[#B76E79] rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 mx-auto cursor-pointer shadow-xs whitespace-nowrap"
+                                className="px-3 py-1.5 bg-[#FFF7ED] hover:bg-[#FFF7ED] text-[#EA580C] hover:text-[#C2410C] border border-[#FFEDD5] hover:border-[#FDBA74] rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 mx-auto cursor-pointer shadow-xs whitespace-nowrap"
                                 title="View complete transaction breakdown"
                               >
                                 <Eye size={13} />
@@ -1421,14 +1421,14 @@ const MemberReferrals: React.FC = () => {
                     const txNote = tx.reason || tx.description || tx.orderReference || 'Reward points transaction';
 
                     return (
-                      <div key={tx._id} className="p-4 bg-[#FFFFFF] rounded-2xl border border-[#E7DADD] space-y-3 shadow-sm">
+                      <div key={tx._id} className="p-4 bg-[#FFFFFF] rounded-2xl border border-[#E2E8F0] space-y-3 shadow-sm">
                         <div className="flex items-center justify-between">
-                          <span className="text-[11px] text-[#57534E] font-medium">
+                          <span className="text-[11px] text-[#64748B] font-medium">
                             {tx.createdAt ? new Date(tx.createdAt).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' }) : 'Today'} • {tx.createdAt ? new Date(tx.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
                           </span>
                           <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
                             txStatus === 'COMPLETED' ? 'bg-[#15803D]/15 text-[#15803D] border border-[#15803D]/30' :
-                            txStatus === 'PENDING' ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30' : 'bg-red-500/15 text-red-400 border border-red-500/30'
+                            txStatus === 'PENDING' ? 'bg-amber-500/15 text-[#B45309] border border-amber-500/30' : 'bg-red-500/15 text-[#B91C1C] border border-red-500/30'
                           }`}>
                             {txStatus}
                           </span>
@@ -1436,29 +1436,29 @@ const MemberReferrals: React.FC = () => {
 
                         <div className="flex items-center justify-between gap-2">
                           <div className="space-y-1 min-w-0">
-                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#FFFFFF] text-[#B76E79] border border-[#E7DADD] inline-block">
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#FFFFFF] text-[#EA580C] border border-[#E2E8F0] inline-block">
                               {String(txType).replace(/_/g, ' ')}
                             </span>
-                            <p className="text-xs text-[#292524] font-medium line-clamp-1">
+                            <p className="text-xs text-[#111827] font-medium line-clamp-1">
                               {txNote}
                             </p>
                           </div>
-                          <div className={`text-right text-lg font-black shrink-0 ${isPositive ? 'text-[#15803D]' : 'text-amber-400'}`}>
+                          <div className={`text-right text-lg font-black shrink-0 ${isPositive ? 'text-[#15803D]' : 'text-[#B45309]'}`}>
                             {isPositive ? `+${txPoints}` : `-${txPoints}`}
                           </div>
                         </div>
 
-                        <div className="flex items-center justify-between text-xs pt-2 border-t border-[#E7DADD]/60">
-                          <span className="text-[#57534E]">Balance after: <strong className="text-[#292524]">{tx.balanceAfter !== undefined ? `${tx.balanceAfter} pts` : '—'}</strong></span>
+                        <div className="flex items-center justify-between text-xs pt-2 border-t border-[#E2E8F0]/60">
+                          <span className="text-[#64748B]">Balance after: <strong className="text-[#111827]">{tx.balanceAfter !== undefined ? `${tx.balanceAfter} pts` : '—'}</strong></span>
                           {tx.discountAmount ? (
-                            <span className="text-[#B76E79] font-semibold">Value: ₹{tx.discountAmount}</span>
+                            <span className="text-[#EA580C] font-semibold">Value: ₹{tx.discountAmount}</span>
                           ) : null}
                         </div>
 
                         <button
                           type="button"
                           onClick={() => setSelectedTxForDetails(tx)}
-                          className="w-full py-2 bg-[#B76E79]/15 hover:bg-[#B76E79]/25 text-[#B76E79] hover:text-white border border-[#B76E79]/30 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
+                          className="w-full py-2 bg-[#FFF7ED] hover:bg-[#FFF7ED] text-[#EA580C] hover:text-[#C2410C] border border-[#FFEDD5] rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
                         >
                           <Eye size={13} />
                           <span>View Details</span>
@@ -1473,42 +1473,42 @@ const MemberReferrals: React.FC = () => {
 
           {/* Custom Reward Claims & Vouchers */}
           {customClaims.length > 0 && (
-            <div className="bg-[#FFFFFF] rounded-3xl border border-[#E7DADD] p-6 sm:p-8 shadow-xl space-y-4">
-              <div className="flex items-center justify-between border-b border-[#E7DADD] pb-3">
-                <h3 className="text-base font-extrabold text-[#292524]">My Claimed Reward Vouchers</h3>
-                <span className="text-xs font-bold text-[#FFFFFF] bg-[#B76E79] px-3 py-1 rounded-full">
+            <div className="bg-[#FFFFFF] rounded-3xl border border-[#E2E8F0] p-6 sm:p-8 shadow-xl space-y-4">
+              <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-3">
+                <h3 className="text-base font-extrabold text-[#111827]">My Claimed Reward Vouchers</h3>
+                <span className="text-xs font-bold text-[#FFFFFF] bg-[#C2410C] px-3 py-1 rounded-full">
                   {customClaims.length} Vouchers
                 </span>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {customClaims.map((claim) => (
-                  <div key={claim._id} className="p-4 bg-[#FFFFFF] rounded-2xl border border-[#E7DADD] space-y-2">
+                  <div key={claim._id} className="p-4 bg-[#FFFFFF] rounded-2xl border border-[#E2E8F0] space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="font-bold text-sm text-[#292524]">{claim.rewardTitle}</span>
+                      <span className="font-bold text-sm text-[#111827]">{claim.rewardTitle}</span>
                       <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
                         claim.status === 'APPROVED' ? 'bg-[#15803D]/10 text-[#15803D]' :
-                        claim.status === 'REDEEMED' ? 'bg-[#B76E79]/10 text-[#B76E79]' :
-                        claim.status === 'PENDING' ? 'bg-amber-500/10 text-amber-400' : 'bg-red-500/10 text-red-400'
+                        claim.status === 'REDEEMED' ? 'bg-[#FFF7ED] text-[#EA580C]' :
+                        claim.status === 'PENDING' ? 'bg-amber-500/10 text-[#B45309]' : 'bg-red-500/10 text-[#B91C1C]'
                       }`}>
                         {claim.status}
                       </span>
                     </div>
                     <div className="flex items-center justify-between text-xs pt-1">
-                      <span className="text-[#57534E]">Voucher Code:</span>
-                      <span className="font-mono font-bold text-[#B76E79] bg-[#FFFFFF] px-2 py-0.5 rounded border border-[#E7DADD]">
+                      <span className="text-[#64748B]">Voucher Code:</span>
+                      <span className="font-mono font-bold text-[#EA580C] bg-[#FFFFFF] px-2 py-0.5 rounded border border-[#E2E8F0]">
                         {claim.voucherCode}
                       </span>
                     </div>
                     <div className="flex items-center justify-between text-xs">
-                      <span className="text-[#57534E]">Points Cost:</span>
-                      <span className="font-semibold text-[#292524]">{claim.pointsCost} points</span>
+                      <span className="text-[#64748B]">Points Cost:</span>
+                      <span className="font-semibold text-[#111827]">{claim.pointsCost} points</span>
                     </div>
                     <div className="flex items-center justify-between text-xs">
-                      <span className="text-[#57534E]">Claim Date:</span>
-                      <span className="text-[#57534E]">{new Date(claim.claimedAt).toLocaleDateString()}</span>
+                      <span className="text-[#64748B]">Claim Date:</span>
+                      <span className="text-[#64748B]">{new Date(claim.claimedAt).toLocaleDateString()}</span>
                     </div>
                     {claim.reviewNotes && (
-                      <p className="text-[11px] text-[#B76E79] bg-[#F3E8E8] p-2 rounded-xl mt-1">
+                      <p className="text-[11px] text-[#EA580C] bg-[#F8FAFC] p-2 rounded-xl mt-1">
                         <strong>Gym Note:</strong> {claim.reviewNotes}
                       </p>
                     )}
@@ -1523,17 +1523,17 @@ const MemberReferrals: React.FC = () => {
       {/* Redemption Modal: "How would you like to use your points?" */}
       {showRedeemModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fadeIn">
-          <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl flex flex-col">
+          <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl flex flex-col">
             {/* Modal Header */}
-            <div className="p-6 border-b border-[#E7DADD] flex items-center justify-between bg-[#FFFFFF]">
+            <div className="p-6 border-b border-[#E2E8F0] flex items-center justify-between bg-[#FFFFFF]">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-[#B76E79]/15 text-[#B76E79] flex items-center justify-center">
+                <div className="w-10 h-10 rounded-2xl bg-[#FFF7ED] text-[#EA580C] flex items-center justify-center">
                   <Sparkles size={20} />
                 </div>
                 <div>
-                  <h3 className="text-lg font-black text-[#292524]">How would you like to use your points?</h3>
-                  <p className="text-xs text-[#57534E]">
-                    Available Balance: <strong className="text-[#B76E79]">{wallet.currentBalance} points</strong> (₹{equivalentRupeeValue})
+                  <h3 className="text-lg font-black text-[#111827]">How would you like to use your points?</h3>
+                  <p className="text-xs text-[#64748B]">
+                    Available Balance: <strong className="text-[#EA580C]">{wallet.currentBalance} points</strong> (₹{equivalentRupeeValue})
                   </p>
                 </div>
               </div>
@@ -1544,7 +1544,7 @@ const MemberReferrals: React.FC = () => {
                   setSelectedRedeemChannel(null);
                   setClaimFeedback(null);
                 }}
-                className="w-8 h-8 rounded-full bg-[#F3E8E8] text-[#57534E] hover:text-white flex items-center justify-center cursor-pointer"
+                className="w-8 h-8 rounded-full bg-[#F8FAFC] text-[#64748B] hover:text-[#C2410C] flex items-center justify-center cursor-pointer"
               >
                 <X size={18} />
               </button>
@@ -1554,8 +1554,8 @@ const MemberReferrals: React.FC = () => {
             <div className="p-6 space-y-6 flex-1">
               {!selectedRedeemChannel && (
                 <div className="space-y-4">
-                  <p className="text-xs text-[#57534E]">
-                    Select a redemption destination below. Only options enabled by <strong className="text-[#292524]">{gymName}</strong> are active:
+                  <p className="text-xs text-[#64748B]">
+                    Select a redemption destination below. Only options enabled by <strong className="text-[#111827]">{gymName}</strong> are active:
                   </p>
 
                   {/* 1. Membership Plan Discount */}
@@ -1571,26 +1571,26 @@ const MemberReferrals: React.FC = () => {
                     }}
                     className={`p-5 rounded-2xl border transition text-left cursor-pointer ${
                       rewardSettings.enableMembershipDiscount
-                        ? 'bg-[#FFFFFF] border-[#E7DADD] hover:border-[#B76E79] hover:bg-[#F3E8E8]'
+                        ? 'bg-[#FFFFFF] border-[#E2E8F0] hover:border-[#FDBA74] hover:bg-[#FFF7ED]'
                         : 'bg-[#FFFFFF]/40 border-red-500/20 opacity-50 cursor-not-allowed'
                     }`}
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-[#B76E79]/15 text-[#B76E79] flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-xl bg-[#FFF7ED] text-[#EA580C] flex items-center justify-center">
                           <CreditCard size={20} />
                         </div>
                         <div>
-                          <h4 className="font-extrabold text-sm text-[#292524]">1. Membership Plan Discount</h4>
-                          <p className="text-xs text-[#57534E]">
+                          <h4 className="font-extrabold text-sm text-[#111827]">1. Membership Plan Discount</h4>
+                          <p className="text-xs text-[#64748B]">
                             Apply points to renew or upgrade your gym membership with instant rupee discounts.
                           </p>
                         </div>
                       </div>
-                      <ChevronRight size={18} className="text-[#B76E79]" />
+                      <ChevronRight size={18} className="text-[#EA580C]" />
                     </div>
                     {!rewardSettings.enableMembershipDiscount && (
-                      <p className="text-[11px] text-red-400 mt-2 font-medium">
+                      <p className="text-[11px] text-[#B91C1C] mt-2 font-medium">
                         Currently disabled by your gym owner in reward settings.
                       </p>
                     )}
@@ -1605,7 +1605,7 @@ const MemberReferrals: React.FC = () => {
                     }}
                     className={`p-5 rounded-2xl border transition text-left cursor-pointer ${
                       rewardSettings.enableStorePurchase
-                        ? 'bg-[#FFFFFF] border-[#E7DADD] hover:border-[#B76E79] hover:bg-[#F3E8E8]'
+                        ? 'bg-[#FFFFFF] border-[#E2E8F0] hover:border-[#FDBA74] hover:bg-[#FFF7ED]'
                         : 'bg-[#FFFFFF]/40 border-red-500/20 opacity-50 cursor-not-allowed'
                     }`}
                   >
@@ -1615,16 +1615,16 @@ const MemberReferrals: React.FC = () => {
                           <ShoppingBag size={20} />
                         </div>
                         <div>
-                          <h4 className="font-extrabold text-sm text-[#292524]">2. Gym Store Purchase</h4>
-                          <p className="text-xs text-[#57534E]">
+                          <h4 className="font-extrabold text-sm text-[#111827]">2. Gym Store Purchase</h4>
+                          <p className="text-xs text-[#64748B]">
                             Use points at Gym Store checkout on protein, supplements, and gym accessories.
                           </p>
                         </div>
                       </div>
-                      <ChevronRight size={18} className="text-[#B76E79]" />
+                      <ChevronRight size={18} className="text-[#EA580C]" />
                     </div>
                     {!rewardSettings.enableStorePurchase && (
-                      <p className="text-[11px] text-red-400 mt-2 font-medium">
+                      <p className="text-[11px] text-[#B91C1C] mt-2 font-medium">
                         Currently disabled by your gym owner in reward settings.
                       </p>
                     )}
@@ -1639,26 +1639,26 @@ const MemberReferrals: React.FC = () => {
                     }}
                     className={`p-5 rounded-2xl border transition text-left cursor-pointer ${
                       rewardSettings.enableCustomRewards
-                        ? 'bg-[#FFFFFF] border-[#E7DADD] hover:border-[#B76E79] hover:bg-[#F3E8E8]'
+                        ? 'bg-[#FFFFFF] border-[#E2E8F0] hover:border-[#FDBA74] hover:bg-[#FFF7ED]'
                         : 'bg-[#FFFFFF]/40 border-red-500/20 opacity-50 cursor-not-allowed'
                     }`}
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-amber-500/15 text-amber-400 flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-xl bg-amber-500/15 text-[#B45309] flex items-center justify-center">
                           <Award size={20} />
                         </div>
                         <div>
-                          <h4 className="font-extrabold text-sm text-[#292524]">3. Other Custom Rewards</h4>
-                          <p className="text-xs text-[#57534E]">
+                          <h4 className="font-extrabold text-sm text-[#111827]">3. Other Custom Rewards</h4>
+                          <p className="text-xs text-[#64748B]">
                             Redeem points for Personal Training sessions, workout gear, or vouchers.
                           </p>
                         </div>
                       </div>
-                      <ChevronRight size={18} className="text-[#B76E79]" />
+                      <ChevronRight size={18} className="text-[#EA580C]" />
                     </div>
                     {!rewardSettings.enableCustomRewards && (
-                      <p className="text-[11px] text-red-400 mt-2 font-medium">
+                      <p className="text-[11px] text-[#B91C1C] mt-2 font-medium">
                         Currently disabled by your gym owner in reward settings.
                       </p>
                     )}
@@ -1669,11 +1669,11 @@ const MemberReferrals: React.FC = () => {
               {/* VIEW A: MEMBERSHIP PLAN DISCOUNT INTERFACE */}
               {selectedRedeemChannel === 'MEMBERSHIP' && (
                 <div className="space-y-5">
-                  <div className="flex items-center justify-between border-b border-[#E7DADD] pb-3">
+                  <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-3">
                     <button
                       type="button"
                       onClick={() => setSelectedRedeemChannel(null)}
-                      className="text-xs font-bold text-[#B76E79] hover:underline flex items-center gap-1 cursor-pointer"
+                      className="text-xs font-bold text-[#EA580C] hover:underline flex items-center gap-1 cursor-pointer"
                     >
                       ← Back to Options
                     </button>
@@ -1696,7 +1696,7 @@ const MemberReferrals: React.FC = () => {
 
                   {/* Plan Selector */}
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-[#57534E] uppercase">
+                    <label className="text-xs font-bold text-[#64748B] uppercase">
                       Select Eligible Membership Plan
                     </label>
                     <div className="space-y-2 max-h-48 overflow-y-auto">
@@ -1718,22 +1718,22 @@ const MemberReferrals: React.FC = () => {
                             }}
                             className={`p-3.5 rounded-2xl border transition flex items-center justify-between cursor-pointer ${
                               isSelected
-                                ? 'bg-[#F3E8E8] border-[#B76E79]'
+                                ? 'bg-[#F8FAFC] border-[#FDBA74]'
                                 : eligible
-                                ? 'bg-[#FFFFFF] border-[#E7DADD] hover:border-[#B76E79]/50'
+                                ? 'bg-[#FFFFFF] border-[#E2E8F0] hover:border-[#FFEDD5]'
                                 : 'bg-[#FFFFFF]/40 border-red-500/20 opacity-50 cursor-not-allowed'
                             }`}
                           >
                             <div>
-                              <div className="font-bold text-sm text-[#292524]">{plan.name}</div>
-                              <div className="text-xs text-[#57534E]">Duration: {plan.duration || 'Standard'}</div>
+                              <div className="font-bold text-sm text-[#111827]">{plan.name}</div>
+                              <div className="text-xs text-[#64748B]">Duration: {plan.duration || 'Standard'}</div>
                             </div>
                             <div className="text-right">
-                              <div className="font-extrabold text-sm text-[#292524]">₹{plan.price}</div>
+                              <div className="font-extrabold text-sm text-[#111827]">₹{plan.price}</div>
                               {eligible ? (
                                 <span className="text-[10px] text-[#15803D] font-bold">Eligible</span>
                               ) : (
-                                <span className="text-[10px] text-red-400 font-bold">Ineligible</span>
+                                <span className="text-[10px] text-[#B91C1C] font-bold">Ineligible</span>
                               )}
                             </div>
                           </div>
@@ -1744,12 +1744,12 @@ const MemberReferrals: React.FC = () => {
 
                   {/* Points Slider / Input */}
                   {selectedPlanForDiscount && (
-                    <div className="p-5 bg-[#FFFFFF] rounded-2xl border border-[#E7DADD] space-y-4">
+                    <div className="p-5 bg-[#FFFFFF] rounded-2xl border border-[#E2E8F0] space-y-4">
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-[#57534E] uppercase">
+                        <span className="text-xs font-bold text-[#64748B] uppercase">
                           Points to Redeem (Max: {maxRedeemablePointsForSelectedPlan})
                         </span>
-                        <span className="font-extrabold text-[#B76E79] text-base">
+                        <span className="font-extrabold text-[#EA580C] text-base">
                           {pointsToRedeemInput} Points
                         </span>
                       </div>
@@ -1762,16 +1762,16 @@ const MemberReferrals: React.FC = () => {
                         value={pointsToRedeemInput}
                         onChange={(e) => setPointsToRedeemInput(Number(e.target.value))}
                         disabled={maxRedeemablePointsForSelectedPlan < rewardSettings.minPointsForRedemption}
-                        className="w-full accent-[#B76E79] cursor-pointer"
+                        className="w-full accent-[#F97316] cursor-pointer"
                       />
 
                       {/* Calculation Breakdown Preview */}
-                      <div className="pt-3 border-t border-[#E7DADD] space-y-1.5 text-xs">
-                        <div className="flex justify-between text-[#57534E]">
+                      <div className="pt-3 border-t border-[#E2E8F0] space-y-1.5 text-xs">
+                        <div className="flex justify-between text-[#64748B]">
                           <span>Original Membership Price:</span>
-                          <span className="font-bold text-[#292524]">₹{selectedPlanForDiscount.price}</span>
+                          <span className="font-bold text-[#111827]">₹{selectedPlanForDiscount.price}</span>
                         </div>
-                        <div className="flex justify-between text-[#57534E]">
+                        <div className="flex justify-between text-[#64748B]">
                           <span>Conversion Rate:</span>
                           <span>{rewardSettings.pointsPerConversionUnit} pts = ₹{rewardSettings.currencyValuePerUnit}</span>
                         </div>
@@ -1779,9 +1779,9 @@ const MemberReferrals: React.FC = () => {
                           <span>Discount Applied ({pointsToRedeemInput} pts):</span>
                           <span>- ₹{previewDiscountAmount}</span>
                         </div>
-                        <div className="flex justify-between text-sm font-black text-[#292524] pt-1 border-t border-[#E7DADD]">
+                        <div className="flex justify-between text-sm font-black text-[#111827] pt-1 border-t border-[#E2E8F0]">
                           <span>Final Payable Price:</span>
-                          <span className="text-[#B76E79]">₹{previewFinalPrice}</span>
+                          <span className="text-[#EA580C]">₹{previewFinalPrice}</span>
                         </div>
                       </div>
 
@@ -1789,11 +1789,11 @@ const MemberReferrals: React.FC = () => {
                         type="button"
                         onClick={handleProceedMembershipCheckout}
                         disabled={pointsToRedeemInput < rewardSettings.minPointsForRedemption}
-                        className="w-full py-3 bg-[#B76E79] hover:bg-[#9F5965] text-white font-extrabold text-sm rounded-xl transition shadow-lg shadow-[#B76E79]/20 cursor-pointer disabled:opacity-50"
+                        className="w-full py-3 bg-[#C2410C] hover:bg-[#9A3412] text-white font-extrabold text-sm rounded-xl transition shadow-lg shadow-orange-500/15 cursor-pointer disabled:opacity-50"
                       >
                         Apply ₹{previewDiscountAmount} Discount & Proceed to Checkout →
                       </button>
-                      <p className="text-[11px] text-[#57534E] text-center">
+                      <p className="text-[11px] text-[#64748B] text-center">
                         Points are deducted only after payment confirmation.
                       </p>
                     </div>
@@ -1804,11 +1804,11 @@ const MemberReferrals: React.FC = () => {
               {/* VIEW B: GYM STORE PURCHASE INTERFACE */}
               {selectedRedeemChannel === 'STORE' && (
                 <div className="space-y-5">
-                  <div className="flex items-center justify-between border-b border-[#E7DADD] pb-3">
+                  <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-3">
                     <button
                       type="button"
                       onClick={() => setSelectedRedeemChannel(null)}
-                      className="text-xs font-bold text-[#B76E79] hover:underline flex items-center gap-1 cursor-pointer"
+                      className="text-xs font-bold text-[#EA580C] hover:underline flex items-center gap-1 cursor-pointer"
                     >
                       ← Back to Options
                     </button>
@@ -1817,23 +1817,23 @@ const MemberReferrals: React.FC = () => {
                     </span>
                   </div>
 
-                  <div className="p-5 bg-[#FFFFFF] rounded-2xl border border-[#E7DADD] space-y-4">
+                  <div className="p-5 bg-[#FFFFFF] rounded-2xl border border-[#E2E8F0] space-y-4">
                     <div className="flex items-center gap-3">
                       <div className="w-12 h-12 rounded-2xl bg-purple-500/15 text-purple-400 flex items-center justify-center">
                         <ShoppingBag size={24} />
                       </div>
                       <div>
-                        <h4 className="font-extrabold text-base text-[#292524]">Shop the Official Gym Store</h4>
-                        <p className="text-xs text-[#57534E]">
+                        <h4 className="font-extrabold text-base text-[#111827]">Shop the Official Gym Store</h4>
+                        <p className="text-xs text-[#64748B]">
                           Redeem your referral points directly at store checkout.
                         </p>
                       </div>
                     </div>
 
-                    <div className="space-y-2 text-xs text-[#292524] bg-[#F3E8E8] p-4 rounded-xl border border-[#E7DADD]">
+                    <div className="space-y-2 text-xs text-[#111827] bg-[#F8FAFC] p-4 rounded-xl border border-[#E2E8F0]">
                       <div className="flex justify-between">
                         <span>Your Available Points:</span>
-                        <strong className="text-[#B76E79]">{wallet.currentBalance} points</strong>
+                        <strong className="text-[#EA580C]">{wallet.currentBalance} points</strong>
                       </div>
                       <div className="flex justify-between">
                         <span>Equivalent Store Discount:</span>
@@ -1853,7 +1853,7 @@ const MemberReferrals: React.FC = () => {
                       </div>
                     </div>
 
-                    <p className="text-xs text-[#57534E] leading-relaxed">
+                    <p className="text-xs text-[#64748B] leading-relaxed">
                       Simply browse products in the Gym Store, add them to your cart, and check <strong>"Redeem Referral Points"</strong> during checkout. Your points will automatically reduce the order total!
                     </p>
 
@@ -1863,7 +1863,7 @@ const MemberReferrals: React.FC = () => {
                         setShowRedeemModal(false);
                         navigate('/member/store');
                       }}
-                      className="w-full py-3 bg-[#B76E79] hover:bg-[#9F5965] text-white font-extrabold text-sm rounded-xl transition shadow-lg cursor-pointer"
+                      className="w-full py-3 bg-[#C2410C] hover:bg-[#9A3412] text-white font-extrabold text-sm rounded-xl transition shadow-lg cursor-pointer"
                     >
                       Go to Gym Store & Shop Now →
                     </button>
@@ -1874,15 +1874,15 @@ const MemberReferrals: React.FC = () => {
               {/* VIEW C: OTHER CUSTOM REWARDS INTERFACE */}
               {selectedRedeemChannel === 'CUSTOM' && (
                 <div className="space-y-5">
-                  <div className="flex items-center justify-between border-b border-[#E7DADD] pb-3">
+                  <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-3">
                     <button
                       type="button"
                       onClick={() => setSelectedRedeemChannel(null)}
-                      className="text-xs font-bold text-[#B76E79] hover:underline flex items-center gap-1 cursor-pointer"
+                      className="text-xs font-bold text-[#EA580C] hover:underline flex items-center gap-1 cursor-pointer"
                     >
                       ← Back to Options
                     </button>
-                    <span className="text-xs font-bold text-amber-400 bg-amber-500/10 px-2.5 py-0.5 rounded-full border border-amber-500/20">
+                    <span className="text-xs font-bold text-[#B45309] bg-amber-500/10 px-2.5 py-0.5 rounded-full border border-amber-500/20">
                       Option C: Custom Rewards & Vouchers
                     </span>
                   </div>
@@ -1892,7 +1892,7 @@ const MemberReferrals: React.FC = () => {
                       className={`p-4 rounded-2xl text-xs font-medium space-y-1 ${
                         claimFeedback.type === 'success'
                           ? 'bg-[#15803D]/15 border border-[#15803D]/30 text-[#15803D]'
-                          : 'bg-red-500/15 border border-red-500/30 text-red-400'
+                          : 'bg-red-500/15 border border-red-500/30 text-[#B91C1C]'
                       }`}
                     >
                       <div className="flex items-center gap-2 font-bold">
@@ -1900,9 +1900,9 @@ const MemberReferrals: React.FC = () => {
                         <span>{claimFeedback.message}</span>
                       </div>
                       {claimFeedback.voucher && (
-                        <p className="text-xs text-[#292524]">
+                        <p className="text-xs text-[#111827]">
                           Voucher Code:{' '}
-                          <span className="font-mono font-bold text-[#B76E79] bg-[#FFFFFF] px-2 py-0.5 rounded">
+                          <span className="font-mono font-bold text-[#EA580C] bg-[#FFFFFF] px-2 py-0.5 rounded">
                             {claimFeedback.voucher}
                           </span>
                         </p>
@@ -1911,10 +1911,10 @@ const MemberReferrals: React.FC = () => {
                   )}
 
                   {availableCustomRewards.length === 0 ? (
-                    <div className="py-10 text-center space-y-2 bg-[#FFFFFF] rounded-2xl border border-[#E7DADD] p-6">
-                      <Award size={32} className="mx-auto text-amber-400/50" />
-                      <p className="text-sm font-semibold text-[#57534E]">No Custom Rewards Currently Listed</p>
-                      <p className="text-xs text-[#57534E]">
+                    <div className="py-10 text-center space-y-2 bg-[#FFFFFF] rounded-2xl border border-[#E2E8F0] p-6">
+                      <Award size={32} className="mx-auto text-[#B45309]/50" />
+                      <p className="text-sm font-semibold text-[#64748B]">No Custom Rewards Currently Listed</p>
+                      <p className="text-xs text-[#64748B]">
                         Your gym owner has not added any custom rewards yet. Check back soon!
                       </p>
                     </div>
@@ -1926,26 +1926,26 @@ const MemberReferrals: React.FC = () => {
                         return (
                           <div
                             key={reward._id}
-                            className="p-4 bg-[#FFFFFF] rounded-2xl border border-[#E7DADD] flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                            className="p-4 bg-[#FFFFFF] rounded-2xl border border-[#E2E8F0] flex flex-col sm:flex-row sm:items-center justify-between gap-3"
                           >
                             <div className="space-y-1">
                               <div className="flex items-center gap-2">
-                                <h5 className="font-extrabold text-sm text-[#292524]">{reward.title}</h5>
-                                <span className="text-[10px] font-bold px-2 py-0.5 bg-[#F3E8E8] text-[#B76E79] rounded-full border border-[#E7DADD]">
+                                <h5 className="font-extrabold text-sm text-[#111827]">{reward.title}</h5>
+                                <span className="text-[10px] font-bold px-2 py-0.5 bg-[#F8FAFC] text-[#EA580C] rounded-full border border-[#E2E8F0]">
                                   {reward.category}
                                 </span>
                               </div>
-                              <p className="text-xs text-[#57534E] line-clamp-2">{reward.description}</p>
-                              <div className="flex items-center gap-3 text-[11px] text-[#57534E] pt-1">
+                              <p className="text-xs text-[#64748B] line-clamp-2">{reward.description}</p>
+                              <div className="flex items-center gap-3 text-[11px] text-[#64748B] pt-1">
                                 <span>Valid for {reward.validityDays} days</span>
                                 {reward.requiresApproval && (
-                                  <span className="text-amber-400 font-medium">• Requires Gym Owner Approval</span>
+                                  <span className="text-[#B45309] font-medium">• Requires Gym Owner Approval</span>
                                 )}
                               </div>
                             </div>
 
                             <div className="text-left sm:text-right shrink-0 space-y-2">
-                              <div className="text-base font-black text-[#B76E79]">
+                              <div className="text-base font-black text-[#EA580C]">
                                 {reward.pointsRequired} Points
                               </div>
                               <button
@@ -1954,8 +1954,8 @@ const MemberReferrals: React.FC = () => {
                                 onClick={() => handleClaimCustomReward(reward)}
                                 className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer ${
                                   canAfford
-                                    ? 'bg-[#B76E79] hover:bg-[#9F5965] text-white shadow'
-                                    : 'bg-[#F3E8E8] text-[#57534E] cursor-not-allowed border border-[#E7DADD]'
+                                    ? 'bg-[#C2410C] hover:bg-[#9A3412] text-white shadow'
+                                    : 'bg-[#F8FAFC] text-[#64748B] cursor-not-allowed border border-[#E2E8F0]'
                                 }`}
                               >
                                 {isClaiming ? <RefreshCw className="animate-spin" size={14} /> : <Gift size={14} />}
@@ -1972,7 +1972,7 @@ const MemberReferrals: React.FC = () => {
             </div>
 
             {/* Modal Footer */}
-            <div className="p-4 border-t border-[#E7DADD] bg-[#FFFFFF] flex justify-end">
+            <div className="p-4 border-t border-[#E2E8F0] bg-[#FFFFFF] flex justify-end">
               <button
                 type="button"
                 onClick={() => {
@@ -1980,7 +1980,7 @@ const MemberReferrals: React.FC = () => {
                   setSelectedRedeemChannel(null);
                   setClaimFeedback(null);
                 }}
-                className="px-5 py-2.5 bg-[#F3E8E8] hover:bg-[#E7DADD] text-white text-xs font-bold rounded-xl transition cursor-pointer"
+                className="px-5 py-2.5 bg-[#FFFFFF] hover:bg-[#F8FAFC] text-[#111827] text-xs font-bold rounded-xl transition cursor-pointer"
               >
                 Close
               </button>
@@ -1992,18 +1992,18 @@ const MemberReferrals: React.FC = () => {
       {/* QR Code Modal */}
       {showQrModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fadeIn">
-          <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-3xl max-w-sm w-full p-6 text-center space-y-5 shadow-2xl relative">
+          <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-3xl max-w-sm w-full p-6 text-center space-y-5 shadow-2xl relative">
             <button
               onClick={() => setShowQrModal(false)}
-              className="absolute top-4 right-4 w-8 h-8 rounded-full bg-[#F3E8E8] text-[#57534E] hover:text-white flex items-center justify-center cursor-pointer"
+              className="absolute top-4 right-4 w-8 h-8 rounded-full bg-[#F8FAFC] text-[#64748B] hover:text-[#C2410C] flex items-center justify-center cursor-pointer"
             >
               <X size={18} />
             </button>
 
             <div className="space-y-1">
-              <h3 className="text-base font-extrabold text-[#292524]">Scan to Join with Referral</h3>
-              <p className="text-xs text-[#57534E]">
-                Scan with any phone camera to register with promo discount at <strong className="text-[#292524]">{gymName}</strong>.
+              <h3 className="text-base font-extrabold text-[#111827]">Scan to Join with Referral</h3>
+              <p className="text-xs text-[#64748B]">
+                Scan with any phone camera to register with promo discount at <strong className="text-[#111827]">{gymName}</strong>.
               </p>
             </div>
 
@@ -2012,13 +2012,13 @@ const MemberReferrals: React.FC = () => {
             </div>
 
             <div className="space-y-1">
-              <span className="text-[11px] text-[#57534E]">Promo Code</span>
-              <div className="text-lg font-mono font-black text-[#B76E79]">{referralCode}</div>
+              <span className="text-[11px] text-[#64748B]">Promo Code</span>
+              <div className="text-lg font-mono font-black text-[#EA580C]">{referralCode}</div>
             </div>
 
             <button
               onClick={() => setShowQrModal(false)}
-              className="w-full py-2.5 bg-[#B76E79] hover:bg-[#9F5965] text-white text-xs font-bold rounded-xl transition cursor-pointer"
+              className="w-full py-2.5 bg-[#C2410C] hover:bg-[#9A3412] text-white text-xs font-bold rounded-xl transition cursor-pointer"
             >
               Done
             </button>
@@ -2029,22 +2029,22 @@ const MemberReferrals: React.FC = () => {
       {/* ── Transaction Details Modal ── */}
       {selectedTxForDetails && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-          <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl relative flex flex-col max-h-[90vh]">
+          <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl relative flex flex-col max-h-[90vh]">
             {/* Header */}
-            <div className="p-5 border-b border-[#E7DADD] flex items-center justify-between bg-[#F3E8E8] shrink-0">
+            <div className="p-5 border-b border-[#E2E8F0] flex items-center justify-between bg-[#F8FAFC] shrink-0">
               <div className="flex items-center gap-2.5">
-                <div className="p-2 bg-[#B76E79]/15 rounded-xl text-[#B76E79]">
+                <div className="p-2 bg-[#FFF7ED] rounded-xl text-[#EA580C]">
                   <Coins size={18} />
                 </div>
                 <div>
-                  <h3 className="text-base font-extrabold text-[#292524]">Points Transaction Details</h3>
-                  <p className="text-xs text-[#57534E]">ID: <span className="font-mono text-[11px] text-[#B76E79]">{selectedTxForDetails._id || 'TXN-REF'}</span></p>
+                  <h3 className="text-base font-extrabold text-[#111827]">Points Transaction Details</h3>
+                  <p className="text-xs text-[#64748B]">ID: <span className="font-mono text-[11px] text-[#EA580C]">{selectedTxForDetails._id || 'TXN-REF'}</span></p>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={() => setSelectedTxForDetails(null)}
-                className="p-2 rounded-xl text-[#57534E] hover:text-[#292524] hover:bg-[#F3E8E8] transition-colors cursor-pointer"
+                className="p-2 rounded-xl text-[#64748B] hover:text-[#111827] hover:bg-[#FFF7ED] transition-colors cursor-pointer"
               >
                 <X size={18} />
               </button>
@@ -2053,21 +2053,21 @@ const MemberReferrals: React.FC = () => {
             {/* Content */}
             <div className="p-5 sm:p-6 space-y-5 overflow-y-auto flex-1">
               {/* Top Banner with Points & Type */}
-              <div className="p-4 rounded-2xl bg-[#F3E8E8] border border-[#E7DADD] flex items-center justify-between">
+              <div className="p-4 rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] flex items-center justify-between">
                 <div>
-                  <span className="text-xs text-[#57534E] block mb-1 font-medium">Transaction Type</span>
-                  <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-[#FFFFFF] text-[#B76E79] border border-[#B76E79]/30 inline-block">
+                  <span className="text-xs text-[#64748B] block mb-1 font-medium">Transaction Type</span>
+                  <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-[#FFFFFF] text-[#EA580C] border border-[#FFEDD5] inline-block">
                     {String(selectedTxForDetails.transactionType || selectedTxForDetails.type || 'EARN_BONUS').replace(/_/g, ' ')}
                   </span>
                 </div>
                 <div className="text-right">
-                  <span className="text-xs text-[#57534E] block mb-1 font-medium">Points Change</span>
+                  <span className="text-xs text-[#64748B] block mb-1 font-medium">Points Change</span>
                   {(() => {
                     const txType = selectedTxForDetails.transactionType || selectedTxForDetails.type || 'EARN_BONUS';
                     const txPoints = selectedTxForDetails.points !== undefined ? selectedTxForDetails.points : Math.abs(selectedTxForDetails.amount || 0);
                     const isPositive = ['EARN_REFERRAL', 'EARN_BONUS', 'EARN_ACTIVITY', 'REFUND_POINTS'].includes(txType) || (txType === 'ADMIN_ADJUST' && ((selectedTxForDetails.amount || selectedTxForDetails.points || 0) > 0));
                     return (
-                      <span className={`text-2xl font-black ${isPositive ? 'text-[#15803D]' : 'text-amber-400'}`}>
+                      <span className={`text-2xl font-black ${isPositive ? 'text-[#15803D]' : 'text-[#B45309]'}`}>
                         {isPositive ? `+${txPoints}` : `-${txPoints}`} pts
                       </span>
                     );
@@ -2077,61 +2077,61 @@ const MemberReferrals: React.FC = () => {
 
               {/* Grid of Key Details */}
               <div className="grid grid-cols-2 gap-3 text-xs">
-                <div className="p-3 bg-[#F3E8E8] rounded-xl border border-[#E7DADD] space-y-1">
-                  <span className="text-[#57534E] font-medium block">Status</span>
+                <div className="p-3 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0] space-y-1">
+                  <span className="text-[#64748B] font-medium block">Status</span>
                   <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold ${
                     (selectedTxForDetails.status || 'COMPLETED') === 'COMPLETED' ? 'bg-[#15803D]/15 text-[#15803D] border border-[#15803D]/30' :
-                    (selectedTxForDetails.status || 'COMPLETED') === 'PENDING' ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30' : 'bg-red-500/15 text-red-400 border border-red-500/30'
+                    (selectedTxForDetails.status || 'COMPLETED') === 'PENDING' ? 'bg-amber-500/15 text-[#B45309] border border-amber-500/30' : 'bg-red-500/15 text-[#B91C1C] border border-red-500/30'
                   }`}>
                     {selectedTxForDetails.status || 'COMPLETED'}
                   </span>
                 </div>
 
-                <div className="p-3 bg-[#F3E8E8] rounded-xl border border-[#E7DADD] space-y-1">
-                  <span className="text-[#57534E] font-medium block">Discount Value</span>
-                  <span className="text-sm font-bold text-[#B76E79]">
+                <div className="p-3 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0] space-y-1">
+                  <span className="text-[#64748B] font-medium block">Discount Value</span>
+                  <span className="text-sm font-bold text-[#EA580C]">
                     {selectedTxForDetails.discountAmount ? `₹${selectedTxForDetails.discountAmount}` : '—'}
                   </span>
                 </div>
 
-                <div className="p-3 bg-[#F3E8E8] rounded-xl border border-[#E7DADD] space-y-1">
-                  <span className="text-[#57534E] font-medium block">Balance After</span>
-                  <span className="text-sm font-bold text-[#292524]">
+                <div className="p-3 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0] space-y-1">
+                  <span className="text-[#64748B] font-medium block">Balance After</span>
+                  <span className="text-sm font-bold text-[#111827]">
                     {selectedTxForDetails.balanceAfter !== undefined ? `${selectedTxForDetails.balanceAfter} pts` : '—'}
                   </span>
                 </div>
 
-                <div className="p-3 bg-[#F3E8E8] rounded-xl border border-[#E7DADD] space-y-1">
-                  <span className="text-[#57534E] font-medium block">Date & Time</span>
-                  <span className="text-xs font-semibold text-[#292524] block">
+                <div className="p-3 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0] space-y-1">
+                  <span className="text-[#64748B] font-medium block">Date & Time</span>
+                  <span className="text-xs font-semibold text-[#111827] block">
                     {selectedTxForDetails.createdAt ? new Date(selectedTxForDetails.createdAt).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' }) : 'Today'}
                   </span>
                 </div>
               </div>
 
               {/* Reason / Notes */}
-              <div className="p-4 bg-[#F3E8E8] rounded-xl border border-[#E7DADD] space-y-1.5">
-                <span className="text-xs font-semibold text-[#57534E] block">Reason / Description</span>
-                <p className="text-xs text-[#292524] leading-relaxed font-medium">
+              <div className="p-4 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0] space-y-1.5">
+                <span className="text-xs font-semibold text-[#64748B] block">Reason / Description</span>
+                <p className="text-xs text-[#111827] leading-relaxed font-medium">
                   {selectedTxForDetails.reason || selectedTxForDetails.description || selectedTxForDetails.orderReference || 'Reward points transaction credited to your member account.'}
                 </p>
               </div>
 
               {/* Order Reference or Additional Meta */}
               {selectedTxForDetails.orderReference && (
-                <div className="p-3 bg-[#F3E8E8] rounded-xl border border-[#E7DADD] flex items-center justify-between text-xs">
-                  <span className="text-[#57534E]">Order / Claim Reference:</span>
-                  <span className="font-mono font-bold text-[#B76E79]">{selectedTxForDetails.orderReference}</span>
+                <div className="p-3 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0] flex items-center justify-between text-xs">
+                  <span className="text-[#64748B]">Order / Claim Reference:</span>
+                  <span className="font-mono font-bold text-[#EA580C]">{selectedTxForDetails.orderReference}</span>
                 </div>
               )}
             </div>
 
             {/* Footer */}
-            <div className="p-4 border-t border-[#E7DADD] bg-[#F3E8E8] flex justify-end">
+            <div className="p-4 border-t border-[#E2E8F0] bg-[#F8FAFC] flex justify-end">
               <button
                 type="button"
                 onClick={() => setSelectedTxForDetails(null)}
-                className="px-5 py-2.5 bg-[#B76E79] hover:bg-[#9F5965] text-white text-xs font-bold rounded-xl transition cursor-pointer shadow-xs"
+                className="px-5 py-2.5 bg-[#C2410C] hover:bg-[#9A3412] text-white text-xs font-bold rounded-xl transition cursor-pointer shadow-xs"
               >
                 Close Details
               </button>

@@ -238,21 +238,21 @@ const SupportForm = ({
   if (submitted) {
     return (
       <div className="text-center py-8">
-        <div className="w-16 h-16 bg-[#B76E79]/15 rounded-full flex items-center justify-center mx-auto mb-4">
-          <Check size={32} className="text-[#B76E79]" />
+        <div className="w-16 h-16 bg-[#FFF7ED] rounded-full flex items-center justify-center mx-auto mb-4">
+          <Check size={32} className="text-[#EA580C]" />
         </div>
-        <h3 className="text-lg font-bold text-[#292524] mb-2">Request Submitted!</h3>
-        <p className="text-sm text-[#57534E] mb-4">
+        <h3 className="text-lg font-bold text-[#111827] mb-2">Request Submitted!</h3>
+        <p className="text-sm text-[#64748B] mb-4">
           Your support request has been recorded. Our team will get back to you shortly.
         </p>
-        <div className="inline-block bg-[#F3E8E8] border border-[#B76E79]/30 rounded-xl px-6 py-3 mb-6">
-          <p className="text-xs text-[#57534E] mb-1">Ticket Reference</p>
-          <p className="text-lg font-mono font-bold text-[#B76E79]">{ticketRef}</p>
+        <div className="inline-block bg-[#F8FAFC] border border-[#FFEDD5] rounded-xl px-6 py-3 mb-6">
+          <p className="text-xs text-[#64748B] mb-1">Ticket Reference</p>
+          <p className="text-lg font-mono font-bold text-[#EA580C]">{ticketRef}</p>
         </div>
-        <p className="text-xs text-[#57534E] mb-6">Keep this reference for follow-up inquiries.</p>
+        <p className="text-xs text-[#64748B] mb-6">Keep this reference for follow-up inquiries.</p>
         <button
           onClick={onClose}
-          className="px-6 py-2.5 rounded-xl bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold text-sm transition-all cursor-pointer"
+          className="px-6 py-2.5 rounded-xl bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold text-sm transition-all cursor-pointer"
         >
           Close
         </button>
@@ -263,46 +263,46 @@ const SupportForm = ({
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <h3 className="text-lg font-bold text-[#292524]">{title}</h3>
-        <p className="text-sm text-[#57534E] mt-1">{subtitle}</p>
+        <h3 className="text-lg font-bold text-[#111827]">{title}</h3>
+        <p className="text-sm text-[#64748B] mt-1">{subtitle}</p>
       </div>
 
       {error && (
-        <div className="p-3 rounded-xl bg-red-900/20 border border-red-500/30 text-red-400 text-sm">
+        <div className="p-3 rounded-xl bg-red-900/20 border border-red-500/30 text-[#B91C1C] text-sm">
           {error}
         </div>
       )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
-          <label className="block text-xs font-semibold text-[#57534E] mb-1.5">Name (optional)</label>
+          <label className="block text-xs font-semibold text-[#64748B] mb-1.5">Name (optional)</label>
           <input
             type="text"
             value={form.name}
             onChange={e => setForm(p => ({ ...p, name: e.target.value }))}
             placeholder="Your name"
-            className="w-full bg-[#F3E8E8] border border-[#E7DADD] rounded-xl px-3 py-2.5 text-sm text-[#292524] placeholder-[#E7DADD] focus:outline-none focus:border-[#B76E79]/50 transition-colors"
+            className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-3 py-2.5 text-sm text-[#111827] placeholder-[#E2E8F0] focus:outline-none focus:border-[#FFEDD5] transition-colors"
           />
         </div>
         <div>
-          <label className="block text-xs font-semibold text-[#57534E] mb-1.5">Email (optional)</label>
+          <label className="block text-xs font-semibold text-[#64748B] mb-1.5">Email (optional)</label>
           <input
             type="email"
             value={form.email}
             onChange={e => setForm(p => ({ ...p, email: e.target.value }))}
             placeholder="your@email.com"
-            className="w-full bg-[#F3E8E8] border border-[#E7DADD] rounded-xl px-3 py-2.5 text-sm text-[#292524] placeholder-[#E7DADD] focus:outline-none focus:border-[#B76E79]/50 transition-colors"
+            className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-3 py-2.5 text-sm text-[#111827] placeholder-[#E2E8F0] focus:outline-none focus:border-[#FFEDD5] transition-colors"
           />
         </div>
       </div>
 
       {includeCategory && (
         <div>
-          <label className="block text-xs font-semibold text-[#57534E] mb-1.5">Category</label>
+          <label className="block text-xs font-semibold text-[#64748B] mb-1.5">Category</label>
           <select
             value={form.category}
             onChange={e => setForm(p => ({ ...p, category: e.target.value }))}
-            className="w-full bg-[#F3E8E8] border border-[#E7DADD] rounded-xl px-3 py-2.5 text-sm text-[#292524] focus:outline-none focus:border-[#B76E79]/50 transition-colors"
+            className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-3 py-2.5 text-sm text-[#111827] focus:outline-none focus:border-[#FFEDD5] transition-colors"
           >
             <option value="">Select a category</option>
             {CATEGORIES.map(c => (
@@ -313,8 +313,8 @@ const SupportForm = ({
       )}
 
       <div>
-        <label className="block text-xs font-semibold text-[#57534E] mb-1.5">
-          Subject <span className="text-red-400">*</span>
+        <label className="block text-xs font-semibold text-[#64748B] mb-1.5">
+          Subject <span className="text-[#B91C1C]">*</span>
         </label>
         <input
           type="text"
@@ -322,13 +322,13 @@ const SupportForm = ({
           onChange={e => setForm(p => ({ ...p, subject: e.target.value }))}
           placeholder="Brief description of your issue"
           required
-          className="w-full bg-[#F3E8E8] border border-[#E7DADD] rounded-xl px-3 py-2.5 text-sm text-[#292524] placeholder-[#E7DADD] focus:outline-none focus:border-[#B76E79]/50 transition-colors"
+          className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-3 py-2.5 text-sm text-[#111827] placeholder-[#E2E8F0] focus:outline-none focus:border-[#FFEDD5] transition-colors"
         />
       </div>
 
       <div>
-        <label className="block text-xs font-semibold text-[#57534E] mb-1.5">
-          Description <span className="text-red-400">*</span>
+        <label className="block text-xs font-semibold text-[#64748B] mb-1.5">
+          Description <span className="text-[#B91C1C]">*</span>
         </label>
         <textarea
           value={form.message}
@@ -336,16 +336,16 @@ const SupportForm = ({
           placeholder="Describe your issue in detail..."
           required
           rows={5}
-          className="w-full bg-[#F3E8E8] border border-[#E7DADD] rounded-xl px-3 py-2.5 text-sm text-[#292524] placeholder-[#E7DADD] focus:outline-none focus:border-[#B76E79]/50 transition-colors resize-none"
+          className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-3 py-2.5 text-sm text-[#111827] placeholder-[#E2E8F0] focus:outline-none focus:border-[#FFEDD5] transition-colors resize-none"
         />
       </div>
 
       {includeAttachment && (
         <div>
-          <label className="block text-xs font-semibold text-[#57534E] mb-1.5">
-            Screenshot / Attachment <span className="text-[#E7DADD]">(optional)</span>
+          <label className="block text-xs font-semibold text-[#64748B] mb-1.5">
+            Screenshot / Attachment <span className="text-[#E2E8F0]">(optional)</span>
           </label>
-          <div className="w-full border border-dashed border-[#E7DADD] rounded-xl px-3 py-4 text-center text-xs text-[#E7DADD]">
+          <div className="w-full border border-dashed border-[#E2E8F0] rounded-xl px-3 py-4 text-center text-xs text-[#E2E8F0]">
             Attachment upload available in member dashboard
           </div>
         </div>
@@ -355,14 +355,14 @@ const SupportForm = ({
         <button
           type="button"
           onClick={onClose}
-          className="px-4 py-2 rounded-xl bg-[#FFFFFF] text-[#57534E] hover:text-white text-sm transition-colors cursor-pointer"
+          className="px-4 py-2 rounded-xl bg-[#FFFFFF] text-[#64748B] hover:text-[#C2410C] text-sm transition-colors cursor-pointer"
         >
           Cancel
         </button>
         <button
           type="submit"
           disabled={submitting}
-          className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold text-sm transition-all cursor-pointer disabled:opacity-60"
+          className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold text-sm transition-all cursor-pointer disabled:opacity-60"
         >
           {submitting ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
           {submitting ? 'Submitting...' : 'Submit Request'}
@@ -380,48 +380,48 @@ const FAQAccordion = () => {
   return (
     <div className="space-y-3">
       {FAQ_CATEGORIES.map((cat) => (
-        <div key={cat.category} className="border border-[#E7DADD] rounded-2xl overflow-hidden">
+        <div key={cat.category} className="border border-[#E2E8F0] rounded-2xl overflow-hidden">
           <button
             onClick={() =>
               setOpenCategory(openCategory === cat.category ? null : cat.category)
             }
-            className="w-full flex items-center justify-between p-4 text-left bg-[#F3E8E8] hover:bg-[#FFFFFF] transition-colors cursor-pointer"
+            className="w-full flex items-center justify-between p-4 text-left bg-[#F8FAFC] hover:bg-[#FFFFFF] transition-colors cursor-pointer"
           >
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-[#B76E79]/10 flex items-center justify-center text-[#B76E79]">
+              <div className="w-8 h-8 rounded-lg bg-[#FFF7ED] flex items-center justify-center text-[#EA580C]">
                 <cat.icon size={16} />
               </div>
-              <span className="font-semibold text-[#292524] text-sm">{cat.category}</span>
-              <span className="text-xs text-[#E7DADD] bg-[#FFFFFF] px-2 py-0.5 rounded-full">
+              <span className="font-semibold text-[#111827] text-sm">{cat.category}</span>
+              <span className="text-xs text-[#E2E8F0] bg-[#FFFFFF] px-2 py-0.5 rounded-full">
                 {cat.faqs.length}
               </span>
             </div>
             {openCategory === cat.category ? (
-              <ChevronUp size={16} className="text-[#B76E79] shrink-0" />
+              <ChevronUp size={16} className="text-[#EA580C] shrink-0" />
             ) : (
-              <ChevronDown size={16} className="text-[#57534E] shrink-0" />
+              <ChevronDown size={16} className="text-[#64748B] shrink-0" />
             )}
           </button>
           {openCategory === cat.category && (
-            <div className="divide-y divide-[#F3E8E8]">
+            <div className="divide-y divide-[#F8FAFC]">
               {cat.faqs.map((faq) => (
                 <div key={faq.q} className="bg-[#FFFFFF]">
                   <button
                     onClick={() =>
                       setOpenQuestion(openQuestion === faq.q ? null : faq.q)
                     }
-                    className="w-full flex items-start justify-between gap-4 px-4 py-3 text-left hover:bg-[#F3E8E8] transition-colors cursor-pointer"
+                    className="w-full flex items-start justify-between gap-4 px-4 py-3 text-left hover:bg-[#FFF7ED] transition-colors cursor-pointer"
                   >
                     <span className="text-sm text-[#CBD5E1] font-medium">{faq.q}</span>
                     {openQuestion === faq.q ? (
-                      <ChevronUp size={14} className="text-[#B76E79] shrink-0 mt-0.5" />
+                      <ChevronUp size={14} className="text-[#EA580C] shrink-0 mt-0.5" />
                     ) : (
-                      <ChevronDown size={14} className="text-[#57534E] shrink-0 mt-0.5" />
+                      <ChevronDown size={14} className="text-[#64748B] shrink-0 mt-0.5" />
                     )}
                   </button>
                   {openQuestion === faq.q && (
                     <div className="px-4 pb-4 pt-1">
-                      <p className="text-sm text-[#57534E] leading-relaxed">{faq.a}</p>
+                      <p className="text-sm text-[#64748B] leading-relaxed">{faq.a}</p>
                     </div>
                   )}
                 </div>
@@ -449,30 +449,30 @@ const FooterModal = ({
   children: React.ReactNode;
 }) => (
   <div
-    className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6 bg-[#F3E8E8]/85 backdrop-blur-sm animate-in fade-in duration-200"
+    className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6 bg-[#F8FAFC]/85 backdrop-blur-sm animate-in fade-in duration-200"
     onClick={onClose}
   >
     <div
-      className="bg-[#FFFFFF] border border-[#E7DADD] rounded-3xl w-full max-w-2xl max-h-[88vh] overflow-y-auto shadow-2xl"
+      className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-3xl w-full max-w-2xl max-h-[88vh] overflow-y-auto shadow-2xl"
       onClick={e => e.stopPropagation()}
     >
-      <div className="flex items-center justify-between p-5 border-b border-[#E7DADD] sticky top-0 bg-[#FFFFFF] z-10">
+      <div className="flex items-center justify-between p-5 border-b border-[#E2E8F0] sticky top-0 bg-[#FFFFFF] z-10">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-[#B76E79]/15 border border-[#B76E79]/30 flex items-center justify-center text-[#B76E79]">
+          <div className="w-9 h-9 rounded-xl bg-[#FFF7ED] border border-[#FFEDD5] flex items-center justify-center text-[#EA580C]">
             <Icon size={18} />
           </div>
           <div>
             {badgeText && (
-              <span className="text-[10px] font-bold uppercase tracking-widest text-[#B76E79] block">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-[#EA580C] block">
                 {badgeText}
               </span>
             )}
-            <h2 className="text-base font-bold text-[#292524]">{title}</h2>
+            <h2 className="text-base font-bold text-[#111827]">{title}</h2>
           </div>
         </div>
         <button
           onClick={onClose}
-          className="p-2 text-[#57534E] hover:text-white hover:bg-[#F3E8E8] rounded-full transition-colors cursor-pointer"
+          className="p-2 text-[#64748B] hover:text-[#C2410C] hover:bg-[#FFF7ED] rounded-full transition-colors cursor-pointer"
         >
           <X size={20} />
         </button>
@@ -491,12 +491,12 @@ const CustomerPortalFooter = () => {
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
 
   const FOOTER_LINK_CLASS =
-    'text-sm text-[#57534E] hover:text-[#B76E79] transition-colors cursor-pointer text-left block w-full py-0.5';
+    'text-sm text-[#64748B] hover:text-[#EA580C] transition-colors cursor-pointer text-left block w-full py-0.5';
 
   return (
     <>
       {/* ─── Footer ─────────────────────────────────────────────────────────── */}
-      <footer className="bg-[#FFFFFF] border-t border-[#F3E8E8] pt-16 pb-12 mt-auto">
+      <footer className="bg-[#FFFFFF] border-t border-[#F8FAFC] pt-16 pb-12 mt-auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-10 mb-12">
 
@@ -506,27 +506,27 @@ const CustomerPortalFooter = () => {
                 onClick={scrollToTop}
                 className="inline-flex items-center space-x-2.5 mb-4 hover:opacity-80 transition-opacity cursor-pointer text-left"
               >
-                <div className="w-8 h-8 bg-[#B76E79] rounded-lg flex items-center justify-center shadow-md shadow-[#B76E79]/20">
+                <div className="w-8 h-8 bg-[#C2410C] rounded-lg flex items-center justify-center shadow-md shadow-orange-500/15">
                   <Activity className="text-[#FFFFFF]" size={18} strokeWidth={2.5} />
                 </div>
-                <span className="text-xl font-bold tracking-tight text-[#FFFFFF]">Gymora</span>
+                <span className="text-xl font-bold tracking-tight text-[#111827]">Gymora</span>
               </button>
-              <p className="text-sm font-semibold text-[#B76E79] mb-2">Your fitness journey, simplified.</p>
-              <p className="text-[#57534E] text-sm leading-relaxed mb-6">
+              <p className="text-sm font-semibold text-[#EA580C] mb-2">Your fitness journey, simplified.</p>
+              <p className="text-[#64748B] text-sm leading-relaxed mb-6">
                 Track your fitness progress, follow personalized workout plans, connect with trainers,
                 and stay consistent with your fitness goals.
               </p>
               <div className="flex space-x-4">
-                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-[#57534E] hover:text-[#B76E79] transition-colors" aria-label="Instagram"><FaInstagram size={20} /></a>
-                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-[#57534E] hover:text-[#B76E79] transition-colors" aria-label="Twitter"><FaTwitter size={20} /></a>
-                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-[#57534E] hover:text-[#B76E79] transition-colors" aria-label="Facebook"><FaFacebook size={20} /></a>
-                <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="text-[#57534E] hover:text-[#B76E79] transition-colors" aria-label="YouTube"><FaYoutube size={20} /></a>
+                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-[#64748B] hover:text-[#EA580C] transition-colors" aria-label="Instagram"><FaInstagram size={20} /></a>
+                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-[#64748B] hover:text-[#EA580C] transition-colors" aria-label="Twitter"><FaTwitter size={20} /></a>
+                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-[#64748B] hover:text-[#EA580C] transition-colors" aria-label="Facebook"><FaFacebook size={20} /></a>
+                <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="text-[#64748B] hover:text-[#EA580C] transition-colors" aria-label="YouTube"><FaYoutube size={20} /></a>
               </div>
             </div>
 
             {/* Section A: Fitness */}
             <div className="lg:col-span-2">
-              <h4 className="text-sm font-bold text-[#292524] mb-4">Fitness</h4>
+              <h4 className="text-sm font-bold text-[#111827] mb-4">Fitness</h4>
               <ul className="space-y-3">
                 <li>
                   <button onClick={() => openModal('my-workout-plans')} className={FOOTER_LINK_CLASS}>
@@ -553,7 +553,7 @@ const CustomerPortalFooter = () => {
 
             {/* Section B: Customer Support */}
             <div className="lg:col-span-2">
-              <h4 className="text-sm font-bold text-[#292524] mb-4">Customer Support</h4>
+              <h4 className="text-sm font-bold text-[#111827] mb-4">Customer Support</h4>
               <ul className="space-y-3">
                 <li>
                   <button onClick={() => openModal('faqs')} className={FOOTER_LINK_CLASS}>
@@ -570,7 +570,7 @@ const CustomerPortalFooter = () => {
 
             {/* Section C: Membership */}
             <div className="lg:col-span-2">
-              <h4 className="text-sm font-bold text-[#292524] mb-4">Membership</h4>
+              <h4 className="text-sm font-bold text-[#111827] mb-4">Membership</h4>
               <ul className="space-y-3">
                 <li>
                   <button onClick={() => openModal('my-membership')} className={FOOTER_LINK_CLASS}>
@@ -597,7 +597,7 @@ const CustomerPortalFooter = () => {
 
             {/* Section D: Legal */}
             <div className="lg:col-span-2">
-              <h4 className="text-sm font-bold text-[#292524] mb-4">Legal</h4>
+              <h4 className="text-sm font-bold text-[#111827] mb-4">Legal</h4>
               <ul className="space-y-3">
                 <li>
                   <Link
@@ -631,7 +631,7 @@ const CustomerPortalFooter = () => {
           </div>
 
           {/* Centered Copyright Line */}
-          <div className="border-t border-[#F3E8E8] pt-8 text-center text-sm text-[#57534E]">
+          <div className="border-t border-[#F8FAFC] pt-8 text-center text-sm text-[#64748B]">
             <p>&copy; {new Date().getFullYear()} Gymora Technologies Inc. All rights reserved.</p>
           </div>
         </div>
@@ -646,7 +646,7 @@ const CustomerPortalFooter = () => {
           onClose={closeModal}
         >
           <div className="space-y-5">
-            <p className="text-sm text-[#57534E] leading-relaxed">
+            <p className="text-sm text-[#64748B] leading-relaxed">
               Structured workout routines engineered around your specific goals — fat loss, hypertrophy, strength, or athletic conditioning — based on your equipment access and daily availability.
             </p>
             <ul className="space-y-3">
@@ -657,16 +657,16 @@ const CustomerPortalFooter = () => {
                 { label: 'Live Rest Timers', desc: 'One-tap completion toggles with auto-countdown rest clocks between demanding compound lifts.' },
               ].map(item => (
                 <li key={item.label} className="flex items-start gap-3">
-                  <CheckCircle2 size={16} className="text-[#B76E79] shrink-0 mt-0.5" />
+                  <CheckCircle2 size={16} className="text-[#EA580C] shrink-0 mt-0.5" />
                   <div>
-                    <span className="text-sm font-semibold text-[#292524]">{item.label}</span>
-                    <p className="text-xs text-[#57534E] mt-0.5 leading-relaxed">{item.desc}</p>
+                    <span className="text-sm font-semibold text-[#111827]">{item.label}</span>
+                    <p className="text-xs text-[#64748B] mt-0.5 leading-relaxed">{item.desc}</p>
                   </div>
                 </li>
               ))}
             </ul>
-            <div className="pt-4 border-t border-[#E7DADD]">
-              <button onClick={closeModal} className="px-4 py-2 rounded-xl bg-[#FFFFFF] text-[#57534E] hover:text-white text-xs transition-colors cursor-pointer">
+            <div className="pt-4 border-t border-[#E2E8F0]">
+              <button onClick={closeModal} className="px-4 py-2 rounded-xl bg-[#FFFFFF] text-[#64748B] hover:text-[#C2410C] text-xs transition-colors cursor-pointer">
                 Stay on Customer Portal
               </button>
             </div>
@@ -683,7 +683,7 @@ const CustomerPortalFooter = () => {
           onClose={closeModal}
         >
           <div className="space-y-5">
-            <p className="text-sm text-[#57534E] leading-relaxed">
+            <p className="text-sm text-[#64748B] leading-relaxed">
               Tailored nutritional schedules designed to align with your metabolic rate and fitness objectives. Organized cleanly into breakfast, lunch, snacks, and dinner.
             </p>
             <ul className="space-y-3">
@@ -694,16 +694,16 @@ const CustomerPortalFooter = () => {
                 { label: 'Weekly Recalibration', desc: 'Automated caloric deficit and step-count adjustments when weight loss slows for two consecutive weigh-ins.' },
               ].map(item => (
                 <li key={item.label} className="flex items-start gap-3">
-                  <CheckCircle2 size={16} className="text-[#B76E79] shrink-0 mt-0.5" />
+                  <CheckCircle2 size={16} className="text-[#EA580C] shrink-0 mt-0.5" />
                   <div>
-                    <span className="text-sm font-semibold text-[#292524]">{item.label}</span>
-                    <p className="text-xs text-[#57534E] mt-0.5 leading-relaxed">{item.desc}</p>
+                    <span className="text-sm font-semibold text-[#111827]">{item.label}</span>
+                    <p className="text-xs text-[#64748B] mt-0.5 leading-relaxed">{item.desc}</p>
                   </div>
                 </li>
               ))}
             </ul>
-            <div className="pt-4 border-t border-[#E7DADD]">
-              <button onClick={closeModal} className="px-4 py-2 rounded-xl bg-[#FFFFFF] text-[#57534E] hover:text-white text-xs transition-colors cursor-pointer">
+            <div className="pt-4 border-t border-[#E2E8F0]">
+              <button onClick={closeModal} className="px-4 py-2 rounded-xl bg-[#FFFFFF] text-[#64748B] hover:text-[#C2410C] text-xs transition-colors cursor-pointer">
                 Stay on Customer Portal
               </button>
             </div>
@@ -720,7 +720,7 @@ const CustomerPortalFooter = () => {
           onClose={closeModal}
         >
           <div className="space-y-5">
-            <p className="text-sm text-[#57534E] leading-relaxed">
+            <p className="text-sm text-[#64748B] leading-relaxed">
               Find, evaluate, and book certified coaches at your partner gym for dedicated one-on-one personal training, biomechanical form correction, and habit accountability.
             </p>
             <ul className="space-y-3">
@@ -731,16 +731,16 @@ const CustomerPortalFooter = () => {
                 { label: 'In-App Coach Chat', desc: 'Direct encrypted messaging with your trainer to submit meal check-ins and receive workout feedback.' },
               ].map(item => (
                 <li key={item.label} className="flex items-start gap-3">
-                  <CheckCircle2 size={16} className="text-[#B76E79] shrink-0 mt-0.5" />
+                  <CheckCircle2 size={16} className="text-[#EA580C] shrink-0 mt-0.5" />
                   <div>
-                    <span className="text-sm font-semibold text-[#292524]">{item.label}</span>
-                    <p className="text-xs text-[#57534E] mt-0.5 leading-relaxed">{item.desc}</p>
+                    <span className="text-sm font-semibold text-[#111827]">{item.label}</span>
+                    <p className="text-xs text-[#64748B] mt-0.5 leading-relaxed">{item.desc}</p>
                   </div>
                 </li>
               ))}
             </ul>
-            <div className="pt-4 border-t border-[#E7DADD]">
-              <button onClick={closeModal} className="px-4 py-2 rounded-xl bg-[#FFFFFF] text-[#57534E] hover:text-white text-xs transition-colors cursor-pointer">
+            <div className="pt-4 border-t border-[#E2E8F0]">
+              <button onClick={closeModal} className="px-4 py-2 rounded-xl bg-[#FFFFFF] text-[#64748B] hover:text-[#C2410C] text-xs transition-colors cursor-pointer">
                 Stay on Customer Portal
               </button>
             </div>
@@ -757,7 +757,7 @@ const CustomerPortalFooter = () => {
           onClose={closeModal}
         >
           <div className="space-y-5">
-            <p className="text-sm text-[#57534E] leading-relaxed">
+            <p className="text-sm text-[#64748B] leading-relaxed">
               Track your actual body transformations over time through interactive weight curves, tape measurements, workout volume milestones, and digital attendance check-ins.
             </p>
             <ul className="space-y-3">
@@ -768,16 +768,16 @@ const CustomerPortalFooter = () => {
                 { label: 'Personal Best (PR) Vault', desc: 'Automatic badges and milestones celebrating new records on Bench Press, Deadlift, Squats, and 5K runs.' },
               ].map(item => (
                 <li key={item.label} className="flex items-start gap-3">
-                  <CheckCircle2 size={16} className="text-[#B76E79] shrink-0 mt-0.5" />
+                  <CheckCircle2 size={16} className="text-[#EA580C] shrink-0 mt-0.5" />
                   <div>
-                    <span className="text-sm font-semibold text-[#292524]">{item.label}</span>
-                    <p className="text-xs text-[#57534E] mt-0.5 leading-relaxed">{item.desc}</p>
+                    <span className="text-sm font-semibold text-[#111827]">{item.label}</span>
+                    <p className="text-xs text-[#64748B] mt-0.5 leading-relaxed">{item.desc}</p>
                   </div>
                 </li>
               ))}
             </ul>
-            <div className="pt-4 border-t border-[#E7DADD]">
-              <button onClick={closeModal} className="px-4 py-2 rounded-xl bg-[#FFFFFF] text-[#57534E] hover:text-white text-xs transition-colors cursor-pointer">
+            <div className="pt-4 border-t border-[#E2E8F0]">
+              <button onClick={closeModal} className="px-4 py-2 rounded-xl bg-[#FFFFFF] text-[#64748B] hover:text-[#C2410C] text-xs transition-colors cursor-pointer">
                 Stay on Customer Portal
               </button>
             </div>
@@ -794,7 +794,7 @@ const CustomerPortalFooter = () => {
           onClose={closeModal}
         >
           <div className="space-y-5">
-            <p className="text-sm text-[#57534E] leading-relaxed">
+            <p className="text-sm text-[#64748B] leading-relaxed">
               Complete control over your fitness club membership. Review your plan details, valid dates, facility inclusions, and renew in one click without waiting at the desk.
             </p>
             <ul className="space-y-3">
@@ -805,16 +805,16 @@ const CustomerPortalFooter = () => {
                 { label: '1-Click Digital Renewal', desc: 'Renew or upgrade your gym package seamlessly via UPI, credit/debit card, or net banking.' },
               ].map(item => (
                 <li key={item.label} className="flex items-start gap-3">
-                  <CheckCircle2 size={16} className="text-[#B76E79] shrink-0 mt-0.5" />
+                  <CheckCircle2 size={16} className="text-[#EA580C] shrink-0 mt-0.5" />
                   <div>
-                    <span className="text-sm font-semibold text-[#292524]">{item.label}</span>
-                    <p className="text-xs text-[#57534E] mt-0.5 leading-relaxed">{item.desc}</p>
+                    <span className="text-sm font-semibold text-[#111827]">{item.label}</span>
+                    <p className="text-xs text-[#64748B] mt-0.5 leading-relaxed">{item.desc}</p>
                   </div>
                 </li>
               ))}
             </ul>
-            <div className="pt-4 border-t border-[#E7DADD]">
-              <button onClick={closeModal} className="px-4 py-2 rounded-xl bg-[#FFFFFF] text-[#57534E] hover:text-white text-xs transition-colors cursor-pointer">
+            <div className="pt-4 border-t border-[#E2E8F0]">
+              <button onClick={closeModal} className="px-4 py-2 rounded-xl bg-[#FFFFFF] text-[#64748B] hover:text-[#C2410C] text-xs transition-colors cursor-pointer">
                 Stay on Customer Portal
               </button>
             </div>
@@ -831,7 +831,7 @@ const CustomerPortalFooter = () => {
           onClose={closeModal}
         >
           <div className="space-y-5">
-            <p className="text-sm text-[#57534E] leading-relaxed">
+            <p className="text-sm text-[#64748B] leading-relaxed">
               Clear, transparent records of every payment made through Gymora with instant invoice downloads and transaction reference lookups.
             </p>
             <ul className="space-y-3">
@@ -842,16 +842,16 @@ const CustomerPortalFooter = () => {
                 { label: 'Bank-Grade Encryption', desc: 'Secure 256-bit SSL encrypted transactions through certified RBI/PCI-DSS payment gateways.' },
               ].map(item => (
                 <li key={item.label} className="flex items-start gap-3">
-                  <CheckCircle2 size={16} className="text-[#B76E79] shrink-0 mt-0.5" />
+                  <CheckCircle2 size={16} className="text-[#EA580C] shrink-0 mt-0.5" />
                   <div>
-                    <span className="text-sm font-semibold text-[#292524]">{item.label}</span>
-                    <p className="text-xs text-[#57534E] mt-0.5 leading-relaxed">{item.desc}</p>
+                    <span className="text-sm font-semibold text-[#111827]">{item.label}</span>
+                    <p className="text-xs text-[#64748B] mt-0.5 leading-relaxed">{item.desc}</p>
                   </div>
                 </li>
               ))}
             </ul>
-            <div className="pt-4 border-t border-[#E7DADD]">
-              <button onClick={closeModal} className="px-4 py-2 rounded-xl bg-[#FFFFFF] text-[#57534E] hover:text-white text-xs transition-colors cursor-pointer">
+            <div className="pt-4 border-t border-[#E2E8F0]">
+              <button onClick={closeModal} className="px-4 py-2 rounded-xl bg-[#FFFFFF] text-[#64748B] hover:text-[#C2410C] text-xs transition-colors cursor-pointer">
                 Stay on Customer Portal
               </button>
             </div>
@@ -868,7 +868,7 @@ const CustomerPortalFooter = () => {
           onClose={closeModal}
         >
           <div className="space-y-5">
-            <p className="text-sm text-[#57534E] leading-relaxed">
+            <p className="text-sm text-[#64748B] leading-relaxed">
               Track orders placed at your gym's official store for certified whey protein, pre-workouts, creatine, lifting accessories, and fitness apparel.
             </p>
             <ul className="space-y-3">
@@ -879,16 +879,16 @@ const CustomerPortalFooter = () => {
                 { label: 'Easy Cancellation', desc: 'Cancel eligible pending orders in one tap before order packing commences.' },
               ].map(item => (
                 <li key={item.label} className="flex items-start gap-3">
-                  <CheckCircle2 size={16} className="text-[#B76E79] shrink-0 mt-0.5" />
+                  <CheckCircle2 size={16} className="text-[#EA580C] shrink-0 mt-0.5" />
                   <div>
-                    <span className="text-sm font-semibold text-[#292524]">{item.label}</span>
-                    <p className="text-xs text-[#57534E] mt-0.5 leading-relaxed">{item.desc}</p>
+                    <span className="text-sm font-semibold text-[#111827]">{item.label}</span>
+                    <p className="text-xs text-[#64748B] mt-0.5 leading-relaxed">{item.desc}</p>
                   </div>
                 </li>
               ))}
             </ul>
-            <div className="pt-4 border-t border-[#E7DADD]">
-              <button onClick={closeModal} className="px-4 py-2 rounded-xl bg-[#FFFFFF] text-[#57534E] hover:text-white text-xs transition-colors cursor-pointer">
+            <div className="pt-4 border-t border-[#E2E8F0]">
+              <button onClick={closeModal} className="px-4 py-2 rounded-xl bg-[#FFFFFF] text-[#64748B] hover:text-[#C2410C] text-xs transition-colors cursor-pointer">
                 Stay on Customer Portal
               </button>
             </div>
@@ -905,7 +905,7 @@ const CustomerPortalFooter = () => {
           onClose={closeModal}
         >
           <div className="space-y-5">
-            <p className="text-sm text-[#57534E] leading-relaxed">
+            <p className="text-sm text-[#64748B] leading-relaxed">
               Earn Gymora fitness points for sticking to your workouts, conquer gym challenges, and share your unique referral code to earn free membership extensions and merchandise discounts.
             </p>
             <ul className="space-y-3">
@@ -916,16 +916,16 @@ const CustomerPortalFooter = () => {
                 { label: 'Live Referral Ledger', desc: 'Track invited friends from registration to membership activation to verify earned bonuses.' },
               ].map(item => (
                 <li key={item.label} className="flex items-start gap-3">
-                  <CheckCircle2 size={16} className="text-[#B76E79] shrink-0 mt-0.5" />
+                  <CheckCircle2 size={16} className="text-[#EA580C] shrink-0 mt-0.5" />
                   <div>
-                    <span className="text-sm font-semibold text-[#292524]">{item.label}</span>
-                    <p className="text-xs text-[#57534E] mt-0.5 leading-relaxed">{item.desc}</p>
+                    <span className="text-sm font-semibold text-[#111827]">{item.label}</span>
+                    <p className="text-xs text-[#64748B] mt-0.5 leading-relaxed">{item.desc}</p>
                   </div>
                 </li>
               ))}
             </ul>
-            <div className="pt-4 border-t border-[#E7DADD]">
-              <button onClick={closeModal} className="px-4 py-2 rounded-xl bg-[#FFFFFF] text-[#57534E] hover:text-white text-xs transition-colors cursor-pointer">
+            <div className="pt-4 border-t border-[#E2E8F0]">
+              <button onClick={closeModal} className="px-4 py-2 rounded-xl bg-[#FFFFFF] text-[#64748B] hover:text-[#C2410C] text-xs transition-colors cursor-pointer">
                 Stay on Customer Portal
               </button>
             </div>
@@ -950,16 +950,16 @@ const CustomerPortalFooter = () => {
       {activeModal === 'faqs' && (
         <FooterModal title="Frequently Asked Questions" icon={MessageSquare} onClose={closeModal}>
           <div className="mb-4">
-            <p className="text-sm text-[#57534E]">
+            <p className="text-sm text-[#64748B]">
               Find answers to common questions about your Gymora membership, workouts, payments, and more.
             </p>
           </div>
           <FAQAccordion />
-          <div className="mt-6 pt-4 border-t border-[#E7DADD] flex items-center justify-between">
-            <p className="text-sm text-[#57534E]">Can't find an answer?</p>
+          <div className="mt-6 pt-4 border-t border-[#E2E8F0] flex items-center justify-between">
+            <p className="text-sm text-[#64748B]">Can't find an answer?</p>
             <button
               onClick={() => setActiveModal('help-support')}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold text-xs transition-all cursor-pointer"
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold text-xs transition-all cursor-pointer"
             >
               Contact Support
               <ArrowLeft size={14} className="rotate-180" />
@@ -971,12 +971,12 @@ const CustomerPortalFooter = () => {
       {/* ─── 11. Contact Us Modal ──────────────────────────────────────────── */}
       {activeModal === 'contact-us' && (
         <FooterModal title="Contact Us" icon={Mail} onClose={closeModal}>
-          <div className="mb-4 p-4 bg-[#F3E8E8] rounded-xl border border-[#E7DADD]">
+          <div className="mb-4 p-4 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0]">
             <div className="flex items-start gap-3">
-              <MapPin size={16} className="text-[#B76E79] shrink-0 mt-0.5" />
+              <MapPin size={16} className="text-[#EA580C] shrink-0 mt-0.5" />
               <div>
-                <p className="text-xs font-semibold text-[#292524] mb-1">Gymora Support Desk</p>
-                <p className="text-xs text-[#57534E]">
+                <p className="text-xs font-semibold text-[#111827] mb-1">Gymora Support Desk</p>
+                <p className="text-xs text-[#64748B]">
                   Use the form below to reach our support team. We respond to all inquiries within 24 business hours.
                 </p>
               </div>
@@ -1014,25 +1014,25 @@ const CustomerPortalFooter = () => {
           onClose={closeModal}
         >
           <div className="space-y-4">
-            <p className="text-sm text-[#57534E] leading-relaxed">
+            <p className="text-sm text-[#64748B] leading-relaxed">
               Gymora respects your personal privacy. We collect only the information necessary to provide workout planning, membership access, and secure payment processing.
             </p>
-            <div className="p-3.5 rounded-xl bg-[#F3E8E8] border border-[#E7DADD] space-y-2">
-              <div className="flex items-center gap-2 text-xs font-bold text-[#292524]">
-                <CheckCircle2 size={15} className="text-[#B76E79]" />
+            <div className="p-3.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-2">
+              <div className="flex items-center gap-2 text-xs font-bold text-[#111827]">
+                <CheckCircle2 size={15} className="text-[#EA580C]" />
                 <span>Key Privacy Commitments</span>
               </div>
-              <ul className="text-xs text-[#57534E] space-y-1.5 pl-6 list-disc">
+              <ul className="text-xs text-[#64748B] space-y-1.5 pl-6 list-disc">
                 <li>Your health and workout logs are never sold to external third-party advertisers.</li>
                 <li>Payment details are tokenized and processed via PCI-DSS compliant banking partners.</li>
                 <li>You can export or delete your profile and biometric measurements at any time.</li>
               </ul>
             </div>
 
-            <div className="flex items-center justify-between pt-4 border-t border-[#E7DADD]">
+            <div className="flex items-center justify-between pt-4 border-t border-[#E2E8F0]">
               <button
                 onClick={closeModal}
-                className="px-4 py-2 rounded-xl bg-[#FFFFFF] text-[#57534E] hover:text-white text-xs transition-colors cursor-pointer"
+                className="px-4 py-2 rounded-xl bg-[#FFFFFF] text-[#64748B] hover:text-[#C2410C] text-xs transition-colors cursor-pointer"
               >
                 Close
               </button>
@@ -1040,7 +1040,7 @@ const CustomerPortalFooter = () => {
                 to="/privacy-policy"
                 state={{ from: '/portal/customer', fromLabel: 'Back to Customer' }}
                 onClick={closeModal}
-                className="px-5 py-2 rounded-xl bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold text-xs transition-all flex items-center gap-1.5 shadow-md"
+                className="px-5 py-2 rounded-xl bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold text-xs transition-all flex items-center gap-1.5 shadow-md"
               >
                 <span>Read Full Privacy Policy</span>
                 <ExternalLink size={13} />
@@ -1059,25 +1059,25 @@ const CustomerPortalFooter = () => {
           onClose={closeModal}
         >
           <div className="space-y-4">
-            <p className="text-sm text-[#57534E] leading-relaxed">
+            <p className="text-sm text-[#64748B] leading-relaxed">
               These terms govern your use of the Gymora Customer Portal, mobile web app, and gym-partner check-in facilities.
             </p>
-            <div className="p-3.5 rounded-xl bg-[#F3E8E8] border border-[#E7DADD] space-y-2">
-              <div className="flex items-center gap-2 text-xs font-bold text-[#292524]">
-                <CheckCircle2 size={15} className="text-[#B76E79]" />
+            <div className="p-3.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-2">
+              <div className="flex items-center gap-2 text-xs font-bold text-[#111827]">
+                <CheckCircle2 size={15} className="text-[#EA580C]" />
                 <span>Summary of Platform Rules</span>
               </div>
-              <ul className="text-xs text-[#57534E] space-y-1.5 pl-6 list-disc">
+              <ul className="text-xs text-[#64748B] space-y-1.5 pl-6 list-disc">
                 <li>Membership passes and QR entry codes are personal and strictly non-transferable.</li>
                 <li>Members must follow all on-site partner gym safety etiquette and equipment guidelines.</li>
                 <li>Trainer cancellations must be made 24 hours in advance to receive full session credit.</li>
               </ul>
             </div>
 
-            <div className="flex items-center justify-between pt-4 border-t border-[#E7DADD]">
+            <div className="flex items-center justify-between pt-4 border-t border-[#E2E8F0]">
               <button
                 onClick={closeModal}
-                className="px-4 py-2 rounded-xl bg-[#FFFFFF] text-[#57534E] hover:text-white text-xs transition-colors cursor-pointer"
+                className="px-4 py-2 rounded-xl bg-[#FFFFFF] text-[#64748B] hover:text-[#C2410C] text-xs transition-colors cursor-pointer"
               >
                 Close
               </button>
@@ -1085,7 +1085,7 @@ const CustomerPortalFooter = () => {
                 to="/terms-of-service"
                 state={{ from: '/portal/customer', fromLabel: 'Back to Customer' }}
                 onClick={closeModal}
-                className="px-5 py-2 rounded-xl bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold text-xs transition-all flex items-center gap-1.5 shadow-md"
+                className="px-5 py-2 rounded-xl bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold text-xs transition-all flex items-center gap-1.5 shadow-md"
               >
                 <span>Read Full Terms</span>
                 <ExternalLink size={13} />
@@ -1104,25 +1104,25 @@ const CustomerPortalFooter = () => {
           onClose={closeModal}
         >
           <div className="space-y-4">
-            <p className="text-sm text-[#57534E] leading-relaxed">
+            <p className="text-sm text-[#64748B] leading-relaxed">
               Clear refund standards governing membership cancellations, trainer session booking cancellations, and merchandise returns.
             </p>
-            <div className="p-3.5 rounded-xl bg-[#F3E8E8] border border-[#E7DADD] space-y-2">
-              <div className="flex items-center gap-2 text-xs font-bold text-[#292524]">
-                <CheckCircle2 size={15} className="text-[#B76E79]" />
+            <div className="p-3.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-2">
+              <div className="flex items-center gap-2 text-xs font-bold text-[#111827]">
+                <CheckCircle2 size={15} className="text-[#EA580C]" />
                 <span>Eligibility &amp; Processing</span>
               </div>
-              <ul className="text-xs text-[#57534E] space-y-1.5 pl-6 list-disc">
+              <ul className="text-xs text-[#64748B] space-y-1.5 pl-6 list-disc">
                 <li>Memberships cancelled within 24 hours prior to first gym check-in are eligible for a full refund.</li>
                 <li>Trainer sessions cancelled with &gt;24 hours notice receive 100% refund; 6-24 hrs notice receives 50%.</li>
                 <li>Approved digital refunds are credited back to the original payment source within 5 to 10 business days.</li>
               </ul>
             </div>
 
-            <div className="flex items-center justify-between pt-4 border-t border-[#E7DADD]">
+            <div className="flex items-center justify-between pt-4 border-t border-[#E2E8F0]">
               <button
                 onClick={closeModal}
-                className="px-4 py-2 rounded-xl bg-[#FFFFFF] text-[#57534E] hover:text-white text-xs transition-colors cursor-pointer"
+                className="px-4 py-2 rounded-xl bg-[#FFFFFF] text-[#64748B] hover:text-[#C2410C] text-xs transition-colors cursor-pointer"
               >
                 Close
               </button>
@@ -1130,7 +1130,7 @@ const CustomerPortalFooter = () => {
                 to="/cancellation-refund-policy"
                 state={{ from: '/portal/customer', fromLabel: 'Back to Customer' }}
                 onClick={closeModal}
-                className="px-5 py-2 rounded-xl bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold text-xs transition-all flex items-center gap-1.5 shadow-md"
+                className="px-5 py-2 rounded-xl bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold text-xs transition-all flex items-center gap-1.5 shadow-md"
               >
                 <span>Read Complete Refund Policy</span>
                 <ExternalLink size={13} />

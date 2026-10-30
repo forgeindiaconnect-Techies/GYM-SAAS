@@ -172,9 +172,9 @@ const TrainerOnlineSessions = () => {
   const displaySessions = tabSessions[activeTab];
 
   const tabs: { id: TabType; label: string; count: number; color: string }[] = [
-    { id: 'upcoming', label: 'Upcoming', count: upcoming.length, color: 'text-[#B76E79] bg-[#F3E8E8]' },
+    { id: 'upcoming', label: 'Upcoming', count: upcoming.length, color: 'text-[#EA580C] bg-[#F8FAFC]' },
     { id: 'live', label: 'Live Now', count: live.length, color: 'text-red-700 bg-red-100' },
-    { id: 'completed', label: 'Completed', count: completed.length, color: 'text-[#B76E79] bg-[#F3E8E8]' },
+    { id: 'completed', label: 'Completed', count: completed.length, color: 'text-[#EA580C] bg-[#F8FAFC]' },
   ];
 
   return (
@@ -183,19 +183,19 @@ const TrainerOnlineSessions = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#292524] tracking-tight">Online Sessions</h1>
-          <p className="text-[#57534E] mt-1 text-sm">
+          <h1 className="text-3xl font-bold text-[#111827] tracking-tight">Online Sessions</h1>
+          <p className="text-[#64748B] mt-1 text-sm">
             Conduct your approved online training sessions via Jitsi Meet.
           </p>
         </div>
       </div>
 
       {/* Workflow Banner */}
-      <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-2xl p-4 flex items-start gap-3">
-        <div className="p-2 bg-[#F3E8E8] rounded-xl shrink-0">
-          <Video size={16} className="text-[#B76E79]" />
+      <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl p-4 flex items-start gap-3">
+        <div className="p-2 bg-[#F8FAFC] rounded-xl shrink-0">
+          <Video size={16} className="text-[#EA580C]" />
         </div>
-        <div className="text-sm text-[#B76E79]">
+        <div className="text-sm text-[#EA580C]">
           <span className="font-bold">Only approved online bookings appear here.</span>{' '}
           To approve a new customer booking, go to <span className="font-bold">Session Bookings</span>.
           Once approved, the session will automatically appear in this list.
@@ -207,7 +207,7 @@ const TrainerOnlineSessions = () => {
         {tabs.map(tab => (
           <button key={tab.id} onClick={() => setActiveTab(tab.id)}
             className={`px-5 py-2.5 rounded-xl font-semibold text-sm transition-all flex items-center gap-2 border ${
-              activeTab === tab.id ? 'bg-[#B76E79] text-white border-[#B76E79] shadow-sm' : 'bg-[#FFFFFF] text-[#57534E] border-[#E7DADD] hover:bg-[#F3E8E8]'}`}>
+              activeTab === tab.id ? 'bg-[#C2410C] text-white border-[#FDBA74] shadow-sm' : 'bg-[#FFFFFF] text-[#64748B] border-[#E2E8F0] hover:bg-[#FFF7ED]'}`}>
             {tab.id === 'live' && tab.count > 0 && (
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
@@ -228,18 +228,18 @@ const TrainerOnlineSessions = () => {
       {/* Content */}
       {loading ? (
         <div className="flex flex-col items-center justify-center py-24 gap-3">
-          <Loader2 className="animate-spin text-[#B76E79]" size={40} />
-          <p className="text-[#57534E] text-sm">Loading sessions...</p>
+          <Loader2 className="animate-spin text-[#EA580C]" size={40} />
+          <p className="text-[#64748B] text-sm">Loading sessions...</p>
         </div>
       ) : displaySessions.length === 0 ? (
-        <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-16 text-center flex flex-col items-center gap-3 shadow-sm">
-          <div className="w-16 h-16 rounded-2xl bg-[#F3E8E8] flex items-center justify-center">
-            {activeTab === 'live' ? <Wifi size={32} className="text-[#57534E]" /> : <Video size={32} className="text-[#57534E]" />}
+        <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-16 text-center flex flex-col items-center gap-3 shadow-sm">
+          <div className="w-16 h-16 rounded-2xl bg-[#F8FAFC] flex items-center justify-center">
+            {activeTab === 'live' ? <Wifi size={32} className="text-[#64748B]" /> : <Video size={32} className="text-[#64748B]" />}
           </div>
-          <h3 className="text-xl font-bold text-[#292524]">
+          <h3 className="text-xl font-bold text-[#111827]">
             {activeTab === 'live' ? 'No Live Sessions Right Now' : activeTab === 'upcoming' ? 'No Upcoming Sessions' : 'No Completed Sessions'}
           </h3>
-          <p className="text-[#57534E] text-sm max-w-xs">
+          <p className="text-[#64748B] text-sm max-w-xs">
             {activeTab === 'upcoming'
               ? 'Approved online bookings will appear here. Go to Session Bookings to approve pending requests.'
               : activeTab === 'live'
@@ -260,9 +260,9 @@ const TrainerOnlineSessions = () => {
             return (
               <div key={session._id}
                 className={`bg-[#FFFFFF] border rounded-2xl overflow-hidden flex flex-col transition-all hover:shadow-md ${
-                  isLive ? 'border-red-300 shadow-red-100 shadow-md' : 'border-[#E7DADD] hover:border-[#B76E79]/30'}`}>
+                  isLive ? 'border-red-300 shadow-red-100 shadow-md' : 'border-[#E2E8F0] hover:border-[#FFEDD5]'}`}>
                 {/* Top accent */}
-                <div className={`h-1 w-full ${isLive ? 'bg-red-500' : session.status === 'Completed' ? 'bg-[#B76E79]' : 'bg-[#B76E79]'}`} />
+                <div className={`h-1 w-full ${isLive ? 'bg-red-500' : session.status === 'Completed' ? 'bg-[#C2410C]' : 'bg-[#C2410C]'}`} />
 
                 <div className="p-5 flex flex-col gap-4 flex-1">
                   {/* Live Indicator */}
@@ -278,43 +278,43 @@ const TrainerOnlineSessions = () => {
 
                   {/* Customer Info */}
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-full bg-[#B76E79]/10 border border-[#E7DADD] flex items-center justify-center shrink-0 overflow-hidden">
+                    <div className="w-12 h-12 rounded-full bg-[#FFF7ED] border border-[#E2E8F0] flex items-center justify-center shrink-0 overflow-hidden">
                       {session.customerId?.profilePhoto
                         ? <img src={session.customerId.profilePhoto} alt="" className="w-full h-full object-cover" />
-                        : <span className="font-bold text-[#B76E79] text-base">{session.customerId?.firstName?.charAt(0) || 'C'}</span>}
+                        : <span className="font-bold text-[#EA580C] text-base">{session.customerId?.firstName?.charAt(0) || 'C'}</span>}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-bold text-[#292524] truncate">{clientName}</h3>
-                      <p className="text-xs text-[#57534E] truncate">{session.customerId?.email || ''}</p>
+                      <h3 className="font-bold text-[#111827] truncate">{clientName}</h3>
+                      <p className="text-xs text-[#64748B] truncate">{session.customerId?.email || ''}</p>
                     </div>
                     <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold border ${
                       isLive ? 'bg-red-100 text-red-800 border-red-200' :
-                      session.status === 'Completed' ? 'bg-[#F3E8E8] text-[#B76E79] border-[#E7DADD]' :
-                      'bg-[#F3E8E8] text-[#B76E79] border-[#E7DADD]'}`}>
+                      session.status === 'Completed' ? 'bg-[#F8FAFC] text-[#EA580C] border-[#E2E8F0]' :
+                      'bg-[#F8FAFC] text-[#EA580C] border-[#E2E8F0]'}`}>
                       {isLive ? 'Live' : session.status === 'Completed' ? 'Completed' : 'Upcoming'}
                     </span>
                   </div>
 
                   {/* Booking ID */}
                   {session.bookingId && (
-                    <p className="text-[10px] font-mono text-[#57534E] bg-[#F3E8E8] border border-[#E8EAED] rounded-lg px-2 py-1 w-fit">
+                    <p className="text-[10px] font-mono text-[#64748B] bg-[#F8FAFC] border border-[#E8EAED] rounded-lg px-2 py-1 w-fit">
                       Booking #{session.bookingId}
                     </p>
                   )}
 
                   {/* Date & Time */}
-                  <div className="bg-[#F3E8E8] border border-[#E8EAED] rounded-xl p-3 space-y-1.5 text-sm">
+                  <div className="bg-[#F8FAFC] border border-[#E8EAED] rounded-xl p-3 space-y-1.5 text-sm">
                     <div className="flex items-center gap-2">
-                      <Calendar size={14} className="text-[#B76E79] shrink-0" />
-                      <span className="font-semibold text-[#292524]">{formatDate(session.date)}</span>
+                      <Calendar size={14} className="text-[#EA580C] shrink-0" />
+                      <span className="font-semibold text-[#111827]">{formatDate(session.date)}</span>
                     </div>
-                    <div className="flex items-center gap-2 text-[#57534E]">
-                      <Clock size={14} className="text-[#B76E79] shrink-0" />
+                    <div className="flex items-center gap-2 text-[#64748B]">
+                      <Clock size={14} className="text-[#EA580C] shrink-0" />
                       <span className="font-medium">{session.startTime}  {session.endTime}</span>
                     </div>
                     {session.duration && (
-                      <div className="flex items-center gap-2 text-[#57534E]">
-                        <Users size={14} className="text-[#B76E79] shrink-0" />
+                      <div className="flex items-center gap-2 text-[#64748B]">
+                        <Users size={14} className="text-[#EA580C] shrink-0" />
                         <span className="font-medium">{session.duration} min</span>
                       </div>
                     )}
@@ -322,7 +322,7 @@ const TrainerOnlineSessions = () => {
 
                   {/* Countdown */}
                   {countdown && countdown !== 'Starting now' && !isLive && (
-                    <div className="flex items-center gap-2 text-xs font-semibold text-[#B76E79] bg-[#F3E8E8] border border-[#E7DADD] rounded-xl px-3 py-2">
+                    <div className="flex items-center gap-2 text-xs font-semibold text-[#EA580C] bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-3 py-2">
                       <Timer size={13} />
                       {countdown}
                     </div>
@@ -330,7 +330,7 @@ const TrainerOnlineSessions = () => {
 
                   {/* Jitsi Link */}
                   {session.status !== 'Completed' && (
-                    <div className="flex items-center gap-2 bg-[#F3E8E8] border border-[#E7DADD] rounded-xl px-3 py-2 text-xs text-[#B76E79]">
+                    <div className="flex items-center gap-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-3 py-2 text-xs text-[#EA580C]">
                       <Video size={12} />
                       <span className="truncate font-mono">{jitsiLink.replace('https://', '')}</span>
                     </div>
@@ -347,33 +347,33 @@ const TrainerOnlineSessions = () => {
 
                   {/* Session notes snippet */}
                   {session.sessionNotes?.exercisesCompleted && (
-                    <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-xl px-3 py-2 text-xs text-[#57534E]">
-                      <span className="font-bold text-[#292524]">Summary: </span>
+                    <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-3 py-2 text-xs text-[#64748B]">
+                      <span className="font-bold text-[#111827]">Summary: </span>
                       <span className="line-clamp-2">{session.sessionNotes.exercisesCompleted}</span>
                     </div>
                   )}
 
                   {/* Action Buttons */}
-                  <div className="mt-auto pt-3 border-t border-[#E7DADD] space-y-2">
+                  <div className="mt-auto pt-3 border-t border-[#E2E8F0] space-y-2">
                     {session.status !== 'Completed' && (
                       <>
                         <a href={jitsiLink} target="_blank" rel="noreferrer"
-                          className="w-full py-2.5 bg-[#B76E79] hover:bg-[#9F5965] text-[#292524] font-bold text-xs rounded-xl transition flex items-center justify-center gap-2 shadow">
+                          className="w-full py-2.5 bg-[#C2410C] hover:bg-[#9A3412] text-[#111827] font-bold text-xs rounded-xl transition flex items-center justify-center gap-2 shadow">
                           <Play size={14} />
                           {isLive ? 'Join Live Session' : 'Start / Join Session'}
                         </a>
                         <div className="flex gap-2">
                           <button onClick={() => handleComplete(session._id)} disabled={completingId === session._id}
-                            className="flex-1 py-2 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold font-bold text-xs rounded-xl transition flex items-center justify-center gap-1.5 disabled:opacity-50">
+                            className="flex-1 py-2 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold font-bold text-xs rounded-xl transition flex items-center justify-center gap-1.5 disabled:opacity-50">
                             {completingId === session._id ? <Loader2 size={13} className="animate-spin" /> : <CheckCircle2 size={13} />}
                             Mark Completed
                           </button>
                           <button onClick={() => setDetailModal(session)}
-                            className="px-3 py-2 bg-[#F3E8E8] border border-[#E7DADD] rounded-xl text-xs font-semibold text-[#292524] hover:bg-[#F3E8E8] transition-colors flex items-center gap-1">
+                            className="px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs font-semibold text-[#111827] hover:bg-[#FFF7ED] transition-colors flex items-center gap-1">
                             <Eye size={13} /> Details
                           </button>
                           <button onClick={() => openNotes(session)}
-                            className="px-3 py-2 bg-[#F3E8E8] border border-[#E7DADD] rounded-xl text-xs font-semibold text-[#57534E] hover:bg-[#F3E8E8] transition-colors flex items-center gap-1">
+                            className="px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs font-semibold text-[#64748B] hover:bg-[#FFF7ED] transition-colors flex items-center gap-1">
                             <FileText size={13} /> Notes
                           </button>
                         </div>
@@ -381,15 +381,15 @@ const TrainerOnlineSessions = () => {
                     )}
                     {session.status === 'Completed' && (
                       <div className="flex gap-2">
-                        <div className="flex-1 py-2 bg-[#F3E8E8] border border-[#E7DADD] rounded-xl text-xs font-bold text-[#B76E79] flex items-center justify-center gap-1.5">
+                        <div className="flex-1 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs font-bold text-[#EA580C] flex items-center justify-center gap-1.5">
                           <CheckCircle2 size={13} /> Completed on {formatShortDate(session.date)}
                         </div>
                         <button onClick={() => setDetailModal(session)}
-                          className="px-3 py-2 bg-[#F3E8E8] border border-[#E7DADD] rounded-xl text-xs font-semibold text-[#292524] hover:bg-[#F3E8E8] transition-colors flex items-center gap-1">
+                          className="px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs font-semibold text-[#111827] hover:bg-[#FFF7ED] transition-colors flex items-center gap-1">
                           <Eye size={13} /> View Details
                         </button>
                         <button onClick={() => openNotes(session)}
-                          className="px-3 py-2 bg-[#F3E8E8] border border-[#E7DADD] rounded-xl text-xs font-semibold text-[#57534E] hover:bg-[#F3E8E8] transition-colors flex items-center gap-1">
+                          className="px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs font-semibold text-[#64748B] hover:bg-[#FFF7ED] transition-colors flex items-center gap-1">
                           <FileText size={13} /> Notes
                         </button>
                       </div>
@@ -405,34 +405,34 @@ const TrainerOnlineSessions = () => {
       {/* Session Details Modal */}
       {detailModal && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#FFFFFF] rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-[#E7DADD]">
-            <div className="sticky top-0 bg-[#FFFFFF] border-b border-[#E7DADD] px-6 py-4 flex items-center justify-between z-10">
+          <div className="bg-[#FFFFFF] rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-[#E2E8F0]">
+            <div className="sticky top-0 bg-[#FFFFFF] border-b border-[#E2E8F0] px-6 py-4 flex items-center justify-between z-10">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-[#B76E79]/10 border border-[#E7DADD] flex items-center justify-center shrink-0">
-                  <span className="font-bold text-[#B76E79] text-sm">{detailModal.customerId?.firstName?.charAt(0) || 'C'}</span>
+                <div className="w-10 h-10 rounded-full bg-[#FFF7ED] border border-[#E2E8F0] flex items-center justify-center shrink-0">
+                  <span className="font-bold text-[#EA580C] text-sm">{detailModal.customerId?.firstName?.charAt(0) || 'C'}</span>
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-[#292524]">
+                  <h3 className="text-base font-bold text-[#111827]">
                     {detailModal.customerId?.firstName} {detailModal.customerId?.lastName}
                   </h3>
-                  <p className="text-xs text-[#57534E]">{detailModal.customerId?.email || 'No email provided'}</p>
+                  <p className="text-xs text-[#64748B]">{detailModal.customerId?.email || 'No email provided'}</p>
                 </div>
               </div>
-              <button onClick={() => setDetailModal(null)} className="text-[#57534E] hover:text-[#292524] p-1">
+              <button onClick={() => setDetailModal(null)} className="text-[#64748B] hover:text-[#111827] p-1">
                 <X size={18} />
               </button>
             </div>
 
             <div className="p-6 space-y-5">
               {/* Header Badges */}
-              <div className="flex flex-wrap items-center justify-between gap-2 bg-[#F3E8E8] p-3 rounded-xl border border-[#E8EAED]">
+              <div className="flex flex-wrap items-center justify-between gap-2 bg-[#F8FAFC] p-3 rounded-xl border border-[#E8EAED]">
                 <div>
-                  <span className="text-xs text-[#57534E] block">Booking Identifier</span>
-                  <span className="font-mono font-bold text-sm text-[#292524]">#{detailModal.bookingId || detailModal._id?.slice(-8)}</span>
+                  <span className="text-xs text-[#64748B] block">Booking Identifier</span>
+                  <span className="font-mono font-bold text-sm text-[#111827]">#{detailModal.bookingId || detailModal._id?.slice(-8)}</span>
                 </div>
                 <span className={`px-3 py-1 rounded-full text-xs font-bold border ${
-                  detailModal.status === 'Completed' ? 'bg-[#F3E8E8] text-[#B76E79] border-[#E7DADD]' :
-                  detailModal.status === 'Approved' || detailModal.status === 'Confirmed' ? 'bg-[#F3E8E8] text-[#B76E79] border-[#E7DADD]' :
+                  detailModal.status === 'Completed' ? 'bg-[#F8FAFC] text-[#EA580C] border-[#E2E8F0]' :
+                  detailModal.status === 'Approved' || detailModal.status === 'Confirmed' ? 'bg-[#F8FAFC] text-[#EA580C] border-[#E2E8F0]' :
                   'bg-amber-100 text-amber-800 border-amber-200'}`}>
                   {detailModal.status}
                 </span>
@@ -440,23 +440,23 @@ const TrainerOnlineSessions = () => {
 
               {/* Schedule Info */}
               <div className="space-y-2">
-                <h4 className="text-xs font-bold text-[#57534E] uppercase tracking-wider">Session Schedule</h4>
-                <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-xl p-3 space-y-2 text-sm">
+                <h4 className="text-xs font-bold text-[#64748B] uppercase tracking-wider">Session Schedule</h4>
+                <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-3 space-y-2 text-sm">
                   <div className="flex items-center justify-between">
-                    <span className="text-[#57534E] flex items-center gap-1.5"><Calendar size={14} className="text-[#B76E79]" /> Date</span>
-                    <span className="font-semibold text-[#292524]">{formatDate(detailModal.date)}</span>
+                    <span className="text-[#64748B] flex items-center gap-1.5"><Calendar size={14} className="text-[#EA580C]" /> Date</span>
+                    <span className="font-semibold text-[#111827]">{formatDate(detailModal.date)}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-[#57534E] flex items-center gap-1.5"><Clock size={14} className="text-[#B76E79]" /> Time</span>
-                    <span className="font-semibold text-[#292524]">{detailModal.startTime} – {detailModal.endTime}</span>
+                    <span className="text-[#64748B] flex items-center gap-1.5"><Clock size={14} className="text-[#EA580C]" /> Time</span>
+                    <span className="font-semibold text-[#111827]">{detailModal.startTime} – {detailModal.endTime}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-[#57534E] flex items-center gap-1.5"><Timer size={14} className="text-[#B76E79]" /> Duration</span>
-                    <span className="font-semibold text-[#292524]">{detailModal.duration || '60'} min</span>
+                    <span className="text-[#64748B] flex items-center gap-1.5"><Timer size={14} className="text-[#EA580C]" /> Duration</span>
+                    <span className="font-semibold text-[#111827]">{detailModal.duration || '60'} min</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-[#57534E] flex items-center gap-1.5"><Video size={14} className="text-[#B76E79]" /> Training Mode</span>
-                    <span className="font-semibold text-[#B76E79]">{detailModal.mode || 'Online Virtual Session'}</span>
+                    <span className="text-[#64748B] flex items-center gap-1.5"><Video size={14} className="text-[#EA580C]" /> Training Mode</span>
+                    <span className="font-semibold text-[#EA580C]">{detailModal.mode || 'Online Virtual Session'}</span>
                   </div>
                 </div>
               </div>
@@ -464,20 +464,20 @@ const TrainerOnlineSessions = () => {
               {/* Attendance & Timestamps */}
               {(detailModal.checkInTime || detailModal.checkOutTime) && (
                 <div className="space-y-2">
-                  <h4 className="text-xs font-bold text-[#57534E] uppercase tracking-wider">Attendance Timestamps</h4>
+                  <h4 className="text-xs font-bold text-[#64748B] uppercase tracking-wider">Attendance Timestamps</h4>
                   <div className="grid grid-cols-2 gap-3">
                     {detailModal.checkInTime && (
-                      <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-xl p-2.5 text-xs">
-                        <span className="text-[#B76E79] block font-medium">Check-In</span>
-                        <span className="font-mono font-bold text-[#B76E79]">
+                      <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2.5 text-xs">
+                        <span className="text-[#EA580C] block font-medium">Check-In</span>
+                        <span className="font-mono font-bold text-[#EA580C]">
                           {new Date(detailModal.checkInTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
                         </span>
                       </div>
                     )}
                     {detailModal.checkOutTime && (
-                      <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-xl p-2.5 text-xs">
-                        <span className="text-[#B76E79] block font-medium">Check-Out</span>
-                        <span className="font-mono font-bold text-[#B76E79]">
+                      <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2.5 text-xs">
+                        <span className="text-[#EA580C] block font-medium">Check-Out</span>
+                        <span className="font-mono font-bold text-[#EA580C]">
                           {new Date(detailModal.checkOutTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
                         </span>
                       </div>
@@ -489,14 +489,14 @@ const TrainerOnlineSessions = () => {
               {/* Virtual Meeting Link */}
               {detailModal.status !== 'Completed' && (
                 <div className="space-y-2">
-                  <h4 className="text-xs font-bold text-[#57534E] uppercase tracking-wider">Virtual Session Link</h4>
-                  <div className="flex items-center justify-between gap-2 bg-[#F3E8E8] border border-[#E7DADD] rounded-xl p-3">
-                    <span className="text-xs font-mono text-[#B76E79] truncate">
+                  <h4 className="text-xs font-bold text-[#64748B] uppercase tracking-wider">Virtual Session Link</h4>
+                  <div className="flex items-center justify-between gap-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-3">
+                    <span className="text-xs font-mono text-[#EA580C] truncate">
                       {detailModal.meetingLink || `https://meet.jit.si/aigym-${detailModal.bookingId || detailModal._id?.slice(-8)}`}
                     </span>
                     <a href={detailModal.meetingLink || `https://meet.jit.si/aigym-${detailModal.bookingId || detailModal._id?.slice(-8)}`}
                       target="_blank" rel="noreferrer"
-                      className="px-3 py-1.5 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold rounded-lg text-xs font-bold shrink-0">
+                      className="px-3 py-1.5 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold rounded-lg text-xs font-bold shrink-0">
                       Join
                     </a>
                   </div>
@@ -506,10 +506,10 @@ const TrainerOnlineSessions = () => {
               {/* Customer Rating & Review */}
               {detailModal.customerRating && (
                 <div className="space-y-2">
-                  <h4 className="text-xs font-bold text-[#57534E] uppercase tracking-wider">Customer Rating & Feedback</h4>
+                  <h4 className="text-xs font-bold text-[#64748B] uppercase tracking-wider">Customer Rating & Feedback</h4>
                   <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 space-y-1 text-xs text-amber-900">
                     <div className="flex items-center gap-1 text-amber-700 font-bold text-sm">
-                      <Star size={16} className="fill-amber-400 text-amber-400" />
+                      <Star size={16} className="fill-amber-400 text-[#B45309]" />
                       <span>{detailModal.customerRating} / 5</span>
                     </div>
                     {detailModal.customerReview && (
@@ -522,43 +522,43 @@ const TrainerOnlineSessions = () => {
               {/* Session Notes */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-xs font-bold text-[#57534E] uppercase tracking-wider">Session Workout & Notes</h4>
+                  <h4 className="text-xs font-bold text-[#64748B] uppercase tracking-wider">Session Workout & Notes</h4>
                   <button onClick={() => { const d = detailModal; setDetailModal(null); openNotes(d); }}
-                    className="text-xs text-[#B76E79] font-bold hover:underline">
+                    className="text-xs text-[#EA580C] font-bold hover:underline">
                     Edit Notes
                   </button>
                 </div>
-                <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-xl p-3 space-y-2 text-xs text-[#292524]">
+                <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-3 space-y-2 text-xs text-[#111827]">
                   <div>
-                    <span className="font-bold text-[#57534E] block">Exercises Completed:</span>
-                    <p className="font-medium text-[#292524]">{detailModal.sessionNotes?.exercisesCompleted || 'None recorded'}</p>
+                    <span className="font-bold text-[#64748B] block">Exercises Completed:</span>
+                    <p className="font-medium text-[#111827]">{detailModal.sessionNotes?.exercisesCompleted || 'None recorded'}</p>
                   </div>
                   {detailModal.sessionNotes?.customerPerformance && (
                     <div>
-                      <span className="font-bold text-[#57534E] block">Customer Performance:</span>
-                      <span className="font-semibold px-2 py-0.5 bg-[#F3E8E8] text-[#B76E79] rounded text-[11px]">
+                      <span className="font-bold text-[#64748B] block">Customer Performance:</span>
+                      <span className="font-semibold px-2 py-0.5 bg-[#F8FAFC] text-[#EA580C] rounded text-[11px]">
                         {detailModal.sessionNotes.customerPerformance}
                       </span>
                     </div>
                   )}
                   {detailModal.sessionNotes?.dietRecommendations && (
                     <div>
-                      <span className="font-bold text-[#57534E] block">Diet Recommendations:</span>
-                      <p className="font-medium text-[#292524]">{detailModal.sessionNotes.dietRecommendations}</p>
+                      <span className="font-bold text-[#64748B] block">Diet Recommendations:</span>
+                      <p className="font-medium text-[#111827]">{detailModal.sessionNotes.dietRecommendations}</p>
                     </div>
                   )}
                   {detailModal.sessionNotes?.nextSessionFocus && (
                     <div>
-                      <span className="font-bold text-[#57534E] block">Next Session Focus:</span>
-                      <p className="font-medium text-[#292524]">{detailModal.sessionNotes.nextSessionFocus}</p>
+                      <span className="font-bold text-[#64748B] block">Next Session Focus:</span>
+                      <p className="font-medium text-[#111827]">{detailModal.sessionNotes.nextSessionFocus}</p>
                     </div>
                   )}
                 </div>
               </div>
             </div>
 
-            <div className="sticky bottom-0 bg-[#FFFFFF] border-t border-[#E7DADD] px-6 py-3 flex justify-end">
-              <button onClick={() => setDetailModal(null)} className="px-5 py-2 bg-[#B76E79] text-white font-bold rounded-xl text-sm font-bold hover:bg-[#9F5965] transition-colors">
+            <div className="sticky bottom-0 bg-[#FFFFFF] border-t border-[#E2E8F0] px-6 py-3 flex justify-end">
+              <button onClick={() => setDetailModal(null)} className="px-5 py-2 bg-[#C2410C] text-white font-bold rounded-xl text-sm font-bold hover:bg-[#9A3412] transition-colors">
                 Close
               </button>
             </div>
@@ -569,15 +569,15 @@ const TrainerOnlineSessions = () => {
       {/* Notes Modal */}
       {notesModal && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#FFFFFF] rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-[#E7DADD]">
-            <div className="sticky top-0 bg-[#FFFFFF] border-b border-[#E7DADD] px-6 py-4 flex items-center justify-between z-10">
+          <div className="bg-[#FFFFFF] rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-[#E2E8F0]">
+            <div className="sticky top-0 bg-[#FFFFFF] border-b border-[#E2E8F0] px-6 py-4 flex items-center justify-between z-10">
               <div>
-                <h3 className="text-base font-bold text-[#292524]">Post-Session Notes</h3>
-                <p className="text-xs text-[#57534E]">
+                <h3 className="text-base font-bold text-[#111827]">Post-Session Notes</h3>
+                <p className="text-xs text-[#64748B]">
                   {notesModal.customerId?.firstName} {notesModal.customerId?.lastName} · {formatDate(notesModal.date)}
                 </p>
               </div>
-              <button onClick={() => setNotesModal(null)} className="text-[#57534E] hover:text-[#292524] p-1">
+              <button onClick={() => setNotesModal(null)} className="text-[#64748B] hover:text-[#111827] p-1">
                 <X size={18} />
               </button>
             </div>
@@ -589,23 +589,23 @@ const TrainerOnlineSessions = () => {
                 { label: 'Next Session Focus', key: 'nextSessionFocus', placeholder: 'e.g. Core stabilization and progressive overload' },
               ].map(f => (
                 <div key={f.key}>
-                  <label className="block text-xs font-bold text-[#57534E] mb-1.5">{f.label}</label>
+                  <label className="block text-xs font-bold text-[#64748B] mb-1.5">{f.label}</label>
                   {f.type === 'textarea'
-                    ? <textarea rows={2} value={(notesForm as any)[f.key]} onChange={e => setNotesForm({ ...notesForm, [f.key]: e.target.value })} placeholder={f.placeholder} className="w-full px-3 py-2.5 text-sm border border-[#E7DADD] rounded-xl focus:border-[#B76E79] focus:outline-none resize-none" />
-                    : <input type="text" value={(notesForm as any)[f.key]} onChange={e => setNotesForm({ ...notesForm, [f.key]: e.target.value })} placeholder={f.placeholder} className="w-full px-3 py-2.5 text-sm border border-[#E7DADD] rounded-xl focus:border-[#B76E79] focus:outline-none" />}
+                    ? <textarea rows={2} value={(notesForm as any)[f.key]} onChange={e => setNotesForm({ ...notesForm, [f.key]: e.target.value })} placeholder={f.placeholder} className="w-full px-3 py-2.5 text-sm border border-[#E2E8F0] rounded-xl focus:border-[#FDBA74] focus:outline-none resize-none" />
+                    : <input type="text" value={(notesForm as any)[f.key]} onChange={e => setNotesForm({ ...notesForm, [f.key]: e.target.value })} placeholder={f.placeholder} className="w-full px-3 py-2.5 text-sm border border-[#E2E8F0] rounded-xl focus:border-[#FDBA74] focus:outline-none" />}
                 </div>
               ))}
               <div>
-                <label className="block text-xs font-bold text-[#57534E] mb-1.5">Customer Performance</label>
+                <label className="block text-xs font-bold text-[#64748B] mb-1.5">Customer Performance</label>
                 <select value={notesForm.customerPerformance} onChange={e => setNotesForm({ ...notesForm, customerPerformance: e.target.value })}
-                  className="w-full px-3 py-2.5 text-sm border border-[#E7DADD] rounded-xl focus:border-[#B76E79] focus:outline-none">
+                  className="w-full px-3 py-2.5 text-sm border border-[#E2E8F0] rounded-xl focus:border-[#FDBA74] focus:outline-none">
                   {['Excellent', 'Good', 'Average', 'Needs Improvement'].map(o => <option key={o}>{o}</option>)}
                 </select>
               </div>
-              <div className="flex justify-end gap-3 pt-3 border-t border-[#E7DADD]">
-                <button onClick={() => setNotesModal(null)} className="px-5 py-2.5 border border-[#E7DADD] text-[#292524] rounded-xl text-sm font-semibold hover:bg-[#F3E8E8]">Cancel</button>
+              <div className="flex justify-end gap-3 pt-3 border-t border-[#E2E8F0]">
+                <button onClick={() => setNotesModal(null)} className="px-5 py-2.5 border border-[#E2E8F0] text-[#111827] rounded-xl text-sm font-semibold hover:bg-[#FFF7ED]">Cancel</button>
                 <button onClick={handleSaveNotes} disabled={savingNotes}
-                  className="px-5 py-2.5 bg-[#B76E79] text-white font-bold rounded-xl text-sm font-bold hover:bg-[#9F5965] transition-colors flex items-center gap-2 disabled:opacity-50">
+                  className="px-5 py-2.5 bg-[#C2410C] text-white font-bold rounded-xl text-sm font-bold hover:bg-[#9A3412] transition-colors flex items-center gap-2 disabled:opacity-50">
                   {savingNotes && <Loader2 size={13} className="animate-spin" />}
                   Save Notes
                 </button>

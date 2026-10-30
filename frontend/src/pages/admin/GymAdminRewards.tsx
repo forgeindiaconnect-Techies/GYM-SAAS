@@ -316,18 +316,18 @@ export default function GymAdminRewards() {
   });
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto p-4 sm:p-6" style={{ backgroundColor: '#F3E8E8', minHeight: '100vh' }}>
+    <div className="space-y-6 max-w-7xl mx-auto p-4 sm:p-6" style={{ backgroundColor: '#F8FAFC', minHeight: '100vh' }}>
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-[#FFFFFF] p-6 rounded-2xl border shadow-sm" style={{ borderColor: '#E7DADD' }}>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-[#FFFFFF] p-6 rounded-2xl border shadow-sm" style={{ borderColor: '#E2E8F0' }}>
         <div className="flex items-center gap-3">
-          <div className="p-3 rounded-xl" style={{ backgroundColor: '#F3E8E8' }}>
-            <Gift className="w-7 h-7" style={{ color: '#B76E79' }} />
+          <div className="p-3 rounded-xl" style={{ backgroundColor: '#F8FAFC' }}>
+            <Gift className="w-7 h-7" style={{ color: '#F97316' }} />
           </div>
           <div>
             <h1 className="text-2xl font-bold" style={{ color: '#FFFFFF' }}>
               Rewards Management
             </h1>
-            <p className="text-sm" style={{ color: '#57534E' }}>
+            <p className="text-sm" style={{ color: '#64748B' }}>
               Configure member & trainer rewards, manage vouchers, and review reward claim requests.
             </p>
           </div>
@@ -336,7 +336,7 @@ export default function GymAdminRewards() {
         <button
           onClick={openCreateModal}
           className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-white font-medium shadow transition hover:opacity-90"
-          style={{ backgroundColor: '#B76E79' }}
+          style={{ backgroundColor: '#F97316' }}
         >
           <Plus className="w-5 h-5" />
           Create Reward
@@ -348,7 +348,7 @@ export default function GymAdminRewards() {
         <div
           className={`p-4 rounded-xl flex items-center justify-between border ${
             message.type === 'success'
-              ? 'bg-[#F3E8E8] border-[#E7DADD] text-[#B76E79]'
+              ? 'bg-[#F8FAFC] border-[#E2E8F0] text-[#EA580C]'
               : 'bg-red-50 border-red-200 text-red-800'
           }`}
         >
@@ -364,20 +364,20 @@ export default function GymAdminRewards() {
 
       {/* Metrics Row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-[#FFFFFF] p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#E7DADD' }}>
+        <div className="bg-[#FFFFFF] p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#E2E8F0' }}>
           <div className="flex justify-between items-center">
-            <span className="text-sm font-medium" style={{ color: '#57534E' }}>Active Rewards</span>
-            <span className="p-2 rounded-lg" style={{ backgroundColor: '#F3E8E8', color: '#B76E79' }}>
+            <span className="text-sm font-medium" style={{ color: '#64748B' }}>Active Rewards</span>
+            <span className="p-2 rounded-lg" style={{ backgroundColor: '#F8FAFC', color: '#F97316' }}>
               <Gift className="w-4 h-4" />
             </span>
           </div>
           <div className="mt-3 text-3xl font-bold" style={{ color: '#FFFFFF' }}>{totalRewardsCount}</div>
-          <p className="text-xs mt-1" style={{ color: '#57534E' }}>Customer & Trainer rewards</p>
+          <p className="text-xs mt-1" style={{ color: '#64748B' }}>Customer & Trainer rewards</p>
         </div>
 
-        <div className="bg-[#FFFFFF] p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#E7DADD' }}>
+        <div className="bg-[#FFFFFF] p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#E2E8F0' }}>
           <div className="flex justify-between items-center">
-            <span className="text-sm font-medium" style={{ color: '#57534E' }}>Pending Approvals</span>
+            <span className="text-sm font-medium" style={{ color: '#64748B' }}>Pending Approvals</span>
             <span className="p-2 rounded-lg" style={{ backgroundColor: '#FEF3C7', color: '#B45309' }}>
               <Clock className="w-4 h-4" />
             </span>
@@ -385,40 +385,40 @@ export default function GymAdminRewards() {
           <div className="mt-3 text-3xl font-bold" style={{ color: pendingClaimsCount > 0 ? '#B45309' : '#FFFFFF' }}>
             {pendingClaimsCount}
           </div>
-          <p className="text-xs mt-1" style={{ color: '#57534E' }}>Awaiting your review</p>
+          <p className="text-xs mt-1" style={{ color: '#64748B' }}>Awaiting your review</p>
         </div>
 
-        <div className="bg-[#FFFFFF] p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#E7DADD' }}>
+        <div className="bg-[#FFFFFF] p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#E2E8F0' }}>
           <div className="flex justify-between items-center">
-            <span className="text-sm font-medium" style={{ color: '#57534E' }}>Approved / Redeemed</span>
-            <span className="p-2 rounded-lg" style={{ backgroundColor: '#F3E8E8', color: '#15803D' }}>
+            <span className="text-sm font-medium" style={{ color: '#64748B' }}>Approved / Redeemed</span>
+            <span className="p-2 rounded-lg" style={{ backgroundColor: '#F8FAFC', color: '#15803D' }}>
               <CheckCircle2 className="w-4 h-4" />
             </span>
           </div>
           <div className="mt-3 text-3xl font-bold" style={{ color: '#15803D' }}>{totalRedeemedCount}</div>
-          <p className="text-xs mt-1" style={{ color: '#57534E' }}>Completed redemptions</p>
+          <p className="text-xs mt-1" style={{ color: '#64748B' }}>Completed redemptions</p>
         </div>
 
-        <div className="bg-[#FFFFFF] p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#E7DADD' }}>
+        <div className="bg-[#FFFFFF] p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#E2E8F0' }}>
           <div className="flex justify-between items-center">
-            <span className="text-sm font-medium" style={{ color: '#57534E' }}>Pending Trainer Bonuses</span>
-            <span className="p-2 rounded-lg" style={{ backgroundColor: '#F3E8E8', color: '#B76E79' }}>
+            <span className="text-sm font-medium" style={{ color: '#64748B' }}>Pending Trainer Bonuses</span>
+            <span className="p-2 rounded-lg" style={{ backgroundColor: '#F8FAFC', color: '#F97316' }}>
               <IndianRupee className="w-4 h-4" />
             </span>
           </div>
           <div className="mt-3 text-3xl font-bold" style={{ color: '#FFFFFF' }}>{pendingBonusesCount}</div>
-          <p className="text-xs mt-1" style={{ color: '#57534E' }}>Financial payouts awaiting transfer</p>
+          <p className="text-xs mt-1" style={{ color: '#64748B' }}>Financial payouts awaiting transfer</p>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b gap-6" style={{ borderColor: '#E7DADD' }}>
+      <div className="flex border-b gap-6" style={{ borderColor: '#E2E8F0' }}>
         <button
           onClick={() => setActiveTab('catalog')}
           className={`pb-3 text-sm font-bold flex items-center gap-2 border-b-2 transition ${
             activeTab === 'catalog'
-              ? 'border-[#B76E79] text-[#B76E79]'
-              : 'border-transparent text-[#57534E] hover:text-[#292524]'
+              ? 'border-[#FDBA74] text-[#EA580C]'
+              : 'border-transparent text-[#64748B] hover:text-[#111827]'
           }`}
         >
           <Gift className="w-4 h-4" />
@@ -429,8 +429,8 @@ export default function GymAdminRewards() {
           onClick={() => setActiveTab('claims')}
           className={`pb-3 text-sm font-bold flex items-center gap-2 border-b-2 transition ${
             activeTab === 'claims'
-              ? 'border-[#B76E79] text-[#B76E79]'
-              : 'border-transparent text-[#57534E] hover:text-[#292524]'
+              ? 'border-[#FDBA74] text-[#EA580C]'
+              : 'border-transparent text-[#64748B] hover:text-[#111827]'
           }`}
         >
           <Ticket className="w-4 h-4" />
@@ -447,27 +447,27 @@ export default function GymAdminRewards() {
       {activeTab === 'catalog' && (
         <div className="space-y-4">
           {/* Controls */}
-          <div className="bg-[#FFFFFF] p-4 rounded-2xl border shadow-sm flex flex-col md:flex-row gap-4 justify-between items-center" style={{ borderColor: '#E7DADD' }}>
+          <div className="bg-[#FFFFFF] p-4 rounded-2xl border shadow-sm flex flex-col md:flex-row gap-4 justify-between items-center" style={{ borderColor: '#E2E8F0' }}>
             <div className="relative w-full md:w-80">
-              <Search className="w-4 h-4 absolute left-3 top-3 text-[#57534E]" />
+              <Search className="w-4 h-4 absolute left-3 top-3 text-[#64748B]" />
               <input
                 type="text"
                 placeholder="Search rewards..."
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 className="w-full pl-9 pr-4 py-2 rounded-xl text-sm border focus:outline-none"
-                style={{ borderColor: '#E7DADD' }}
+                style={{ borderColor: '#E2E8F0' }}
               />
             </div>
 
             <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
               <div className="flex items-center gap-2">
-                <span className="text-xs font-semibold" style={{ color: '#57534E' }}>FOR:</span>
+                <span className="text-xs font-semibold" style={{ color: '#64748B' }}>FOR:</span>
                 <select
                   value={recipientFilter}
                   onChange={e => setRecipientFilter(e.target.value)}
                   className="px-3 py-1.5 rounded-xl text-xs font-medium border bg-[#FFFFFF] focus:outline-none"
-                  style={{ borderColor: '#E7DADD', color: '#FFFFFF' }}
+                  style={{ borderColor: '#E2E8F0', color: '#FFFFFF' }}
                 >
                   <option value="ALL">All Recipients</option>
                   <option value="Customer">Customers</option>
@@ -476,12 +476,12 @@ export default function GymAdminRewards() {
               </div>
 
               <div className="flex items-center gap-2">
-                <span className="text-xs font-semibold" style={{ color: '#57534E' }}>STATUS:</span>
+                <span className="text-xs font-semibold" style={{ color: '#64748B' }}>STATUS:</span>
                 <select
                   value={statusFilter}
                   onChange={e => setStatusFilter(e.target.value)}
                   className="px-3 py-1.5 rounded-xl text-xs font-medium border bg-[#FFFFFF] focus:outline-none"
-                  style={{ borderColor: '#E7DADD', color: '#FFFFFF' }}
+                  style={{ borderColor: '#E2E8F0', color: '#FFFFFF' }}
                 >
                   <option value="ALL">All Statuses</option>
                   <option value="Active">Active</option>
@@ -493,21 +493,21 @@ export default function GymAdminRewards() {
           </div>
 
           {loading ? (
-            <div className="text-center py-16 bg-[#FFFFFF] rounded-2xl border" style={{ borderColor: '#E7DADD' }}>
-              <div className="w-10 h-10 border-4 border-t-transparent rounded-full animate-spin mx-auto" style={{ borderColor: '#B76E79', borderTopColor: 'transparent' }} />
-              <p className="mt-3 text-sm font-medium" style={{ color: '#57534E' }}>Loading rewards...</p>
+            <div className="text-center py-16 bg-[#FFFFFF] rounded-2xl border" style={{ borderColor: '#E2E8F0' }}>
+              <div className="w-10 h-10 border-4 border-t-transparent rounded-full animate-spin mx-auto" style={{ borderColor: '#F97316', borderTopColor: 'transparent' }} />
+              <p className="mt-3 text-sm font-medium" style={{ color: '#64748B' }}>Loading rewards...</p>
             </div>
           ) : filteredRewards.length === 0 ? (
-            <div className="text-center py-16 bg-[#FFFFFF] rounded-2xl border" style={{ borderColor: '#E7DADD' }}>
+            <div className="text-center py-16 bg-[#FFFFFF] rounded-2xl border" style={{ borderColor: '#E2E8F0' }}>
               <Gift className="w-12 h-12 mx-auto text-gray-300 mb-3" />
               <h3 className="text-base font-bold" style={{ color: '#FFFFFF' }}>No Rewards Configured</h3>
-              <p className="text-sm max-w-md mx-auto mt-1" style={{ color: '#57534E' }}>
+              <p className="text-sm max-w-md mx-auto mt-1" style={{ color: '#64748B' }}>
                 Create discount coupons, free sessions, or trainer performance bonuses to reward your gym community.
               </p>
               <button
                 onClick={openCreateModal}
                 className="mt-4 px-4 py-2 rounded-xl text-white text-sm font-semibold"
-                style={{ backgroundColor: '#B76E79' }}
+                style={{ backgroundColor: '#F97316' }}
               >
                 Create Reward
               </button>
@@ -522,16 +522,16 @@ export default function GymAdminRewards() {
                   <div
                     key={reward._id}
                     className="bg-[#FFFFFF] rounded-2xl border shadow-sm p-5 flex flex-col justify-between hover:shadow-md transition"
-                    style={{ borderColor: '#E7DADD' }}
+                    style={{ borderColor: '#E2E8F0' }}
                   >
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
                         <span
                           className={`text-xs px-2.5 py-1 rounded-full font-semibold ${
                             reward.recipientType === 'Customer'
-                              ? 'bg-[#F3E8E8] text-[#B76E79]'
+                              ? 'bg-[#F8FAFC] text-[#EA580C]'
                               : reward.recipientType === 'Trainer'
-                              ? 'bg-[#F3E8E8] text-[#B76E79]'
+                              ? 'bg-[#F8FAFC] text-[#EA580C]'
                               : 'bg-purple-50 text-purple-800'
                           }`}
                         >
@@ -541,10 +541,10 @@ export default function GymAdminRewards() {
                         <span
                           className={`text-xs px-2.5 py-1 rounded-full font-semibold ${
                             reward.status === 'Active'
-                              ? 'bg-[#F3E8E8] text-[#B76E79]'
+                              ? 'bg-[#F8FAFC] text-[#EA580C]'
                               : reward.status === 'Paused'
                               ? 'bg-amber-100 text-amber-800'
-                              : 'bg-[#F3E8E8] text-[#292524]'
+                              : 'bg-[#F8FAFC] text-[#111827]'
                           }`}
                         >
                           {reward.status}
@@ -555,26 +555,26 @@ export default function GymAdminRewards() {
                         <h3 className="font-bold text-lg leading-tight" style={{ color: '#FFFFFF' }}>
                           {reward.title}
                         </h3>
-                        <span className="text-xs font-medium text-[#57534E] block mt-0.5">
+                        <span className="text-xs font-medium text-[#64748B] block mt-0.5">
                           Category: {reward.category}
                         </span>
-                        <p className="text-xs line-clamp-2 mt-2 text-[#292524]">
+                        <p className="text-xs line-clamp-2 mt-2 text-[#111827]">
                           {reward.description}
                         </p>
                       </div>
 
                       {/* Criteria & Requirements Box */}
-                      <div className="p-3 rounded-xl bg-[#F3E8E8] text-xs space-y-1.5 border" style={{ borderColor: '#F3E8E8' }}>
+                      <div className="p-3 rounded-xl bg-[#F8FAFC] text-xs space-y-1.5 border" style={{ borderColor: '#F8FAFC' }}>
                         {reward.requiredPoints > 0 && (
                           <div className="flex justify-between">
-                            <span className="text-[#57534E]">Points Cost:</span>
-                            <span className="font-bold text-[#B76E79]">{reward.requiredPoints} points</span>
+                            <span className="text-[#64748B]">Points Cost:</span>
+                            <span className="font-bold text-[#EA580C]">{reward.requiredPoints} points</span>
                           </div>
                         )}
 
                         {reward.bonusAmount > 0 && (
                           <div className="flex justify-between">
-                            <span className="text-[#57534E]">Bonus Payout:</span>
+                            <span className="text-[#64748B]">Bonus Payout:</span>
                             <span className="font-bold text-[#15803D]">
                               ₹{reward.bonusAmount} {reward.currency}
                             </span>
@@ -583,29 +583,29 @@ export default function GymAdminRewards() {
 
                         {reward.minCompletedSessions > 0 && (
                           <div className="flex justify-between">
-                            <span className="text-[#57534E]">Min Sessions:</span>
+                            <span className="text-[#64748B]">Min Sessions:</span>
                             <span className="font-semibold">{reward.minCompletedSessions} completed sessions</span>
                           </div>
                         )}
 
                         {reward.minAverageRating > 0 && (
                           <div className="flex justify-between">
-                            <span className="text-[#57534E]">Min Rating:</span>
+                            <span className="text-[#64748B]">Min Rating:</span>
                             <span className="font-semibold">{reward.minAverageRating}⭐ rating</span>
                           </div>
                         )}
 
                         {reward.requiredChallengeId && (
                           <div className="flex justify-between">
-                            <span className="text-[#57534E]">Challenge:</span>
+                            <span className="text-[#64748B]">Challenge:</span>
                             <span className="font-semibold truncate max-w-[150px]">
                               {(reward.requiredChallengeId as any).title || 'Required'}
                             </span>
                           </div>
                         )}
 
-                        <div className="flex justify-between pt-1 border-t border-[#E7DADD]">
-                          <span className="text-[#57534E]">Inventory:</span>
+                        <div className="flex justify-between pt-1 border-t border-[#E2E8F0]">
+                          <span className="text-[#64748B]">Inventory:</span>
                           <span className="font-bold">
                             {reward.claimedCount} claimed / {remaining} left
                           </span>
@@ -613,15 +613,15 @@ export default function GymAdminRewards() {
                       </div>
                     </div>
 
-                    <div className="pt-4 mt-3 border-t flex justify-between items-center text-xs" style={{ borderColor: '#E7DADD' }}>
-                      <span className="text-[#57534E]">
+                    <div className="pt-4 mt-3 border-t flex justify-between items-center text-xs" style={{ borderColor: '#E2E8F0' }}>
+                      <span className="text-[#64748B]">
                         {reward.requireApproval ? '🔒 Approval required' : '⚡ Instant claim'}
                       </span>
 
                       <div className="flex items-center gap-1">
                         <button
                           onClick={() => openEditModal(reward)}
-                          className="p-1.5 rounded-lg hover:bg-[#F3E8E8] text-[#292524]"
+                          className="p-1.5 rounded-lg hover:bg-[#FFF7ED] text-[#111827]"
                         >
                           <Edit className="w-4 h-4" />
                         </button>
@@ -645,26 +645,26 @@ export default function GymAdminRewards() {
       {activeTab === 'claims' && (
         <div className="space-y-4">
           {/* Controls */}
-          <div className="bg-[#FFFFFF] p-4 rounded-2xl border shadow-sm flex flex-col md:flex-row gap-4 justify-between items-center" style={{ borderColor: '#E7DADD' }}>
+          <div className="bg-[#FFFFFF] p-4 rounded-2xl border shadow-sm flex flex-col md:flex-row gap-4 justify-between items-center" style={{ borderColor: '#E2E8F0' }}>
             <div className="relative w-full md:w-80">
-              <Search className="w-4 h-4 absolute left-3 top-3 text-[#57534E]" />
+              <Search className="w-4 h-4 absolute left-3 top-3 text-[#64748B]" />
               <input
                 type="text"
                 placeholder="Search by code or user name..."
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 className="w-full pl-9 pr-4 py-2 rounded-xl text-sm border focus:outline-none"
-                style={{ borderColor: '#E7DADD' }}
+                style={{ borderColor: '#E2E8F0' }}
               />
             </div>
 
             <div className="flex items-center gap-2">
-              <span className="text-xs font-semibold" style={{ color: '#57534E' }}>STATUS:</span>
+              <span className="text-xs font-semibold" style={{ color: '#64748B' }}>STATUS:</span>
               <select
                 value={claimStatusFilter}
                 onChange={e => setClaimStatusFilter(e.target.value)}
                 className="px-3 py-1.5 rounded-xl text-xs font-medium border bg-[#FFFFFF] focus:outline-none"
-                style={{ borderColor: '#E7DADD', color: '#FFFFFF' }}
+                style={{ borderColor: '#E2E8F0', color: '#FFFFFF' }}
               >
                 <option value="ALL">All Claim Statuses</option>
                 <option value="Pending">Pending Approval</option>
@@ -676,19 +676,19 @@ export default function GymAdminRewards() {
           </div>
 
           {claims.length === 0 ? (
-            <div className="text-center py-16 bg-[#FFFFFF] rounded-2xl border" style={{ borderColor: '#E7DADD' }}>
+            <div className="text-center py-16 bg-[#FFFFFF] rounded-2xl border" style={{ borderColor: '#E2E8F0' }}>
               <Ticket className="w-12 h-12 mx-auto text-gray-300 mb-3" />
               <h3 className="text-base font-bold" style={{ color: '#FFFFFF' }}>No Claim Requests Yet</h3>
-              <p className="text-sm text-[#57534E] max-w-sm mx-auto mt-1">
+              <p className="text-sm text-[#64748B] max-w-sm mx-auto mt-1">
                 When members or trainers claim rewards or bonuses, their voucher requests will appear here for verification and approval.
               </p>
             </div>
           ) : (
-            <div className="bg-[#FFFFFF] rounded-2xl border shadow-sm overflow-hidden" style={{ borderColor: '#E7DADD' }}>
+            <div className="bg-[#FFFFFF] rounded-2xl border shadow-sm overflow-hidden" style={{ borderColor: '#E2E8F0' }}>
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse text-sm">
                   <thead>
-                    <tr className="border-b text-xs uppercase bg-[#F3E8E8]" style={{ borderColor: '#E7DADD', color: '#57534E' }}>
+                    <tr className="border-b text-xs uppercase bg-[#F8FAFC]" style={{ borderColor: '#E2E8F0', color: '#64748B' }}>
                       <th className="py-3 px-4">User</th>
                       <th className="py-3 px-4">Reward</th>
                       <th className="py-3 px-4">Voucher Code</th>
@@ -698,19 +698,19 @@ export default function GymAdminRewards() {
                       <th className="py-3 px-4 text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y" style={{ borderColor: '#E7DADD' }}>
+                  <tbody className="divide-y" style={{ borderColor: '#E2E8F0' }}>
                     {filteredClaims.map(claim => {
                       const isTrainer = claim.userRole === 'TRAINER';
                       const hasBonus = claim.financialPayoutStatus !== 'Not Applicable';
 
                       return (
-                        <tr key={claim._id} className="hover:bg-[#F3E8E8]/50">
+                        <tr key={claim._id} className="hover:bg-[#FFF7ED]/50">
                           <td className="py-3 px-4">
                             <div className="font-semibold" style={{ color: '#FFFFFF' }}>
                               {claim.userId?.firstName || 'User'} {claim.userId?.lastName || ''}
                             </div>
-                            <div className="text-xs text-[#57534E] flex items-center gap-1">
-                              <span className={`px-1.5 py-0.2 rounded font-medium text-[10px] ${isTrainer ? 'bg-[#F3E8E8] text-[#B76E79]' : 'bg-[#F3E8E8] text-[#B76E79]'}`}>
+                            <div className="text-xs text-[#64748B] flex items-center gap-1">
+                              <span className={`px-1.5 py-0.2 rounded font-medium text-[10px] ${isTrainer ? 'bg-[#F8FAFC] text-[#EA580C]' : 'bg-[#F8FAFC] text-[#EA580C]'}`}>
                                 {isTrainer ? 'Trainer' : 'Customer'}
                               </span>
                               <span>• {claim.userId?.email}</span>
@@ -718,25 +718,25 @@ export default function GymAdminRewards() {
                           </td>
 
                           <td className="py-3 px-4">
-                            <div className="font-medium text-xs text-[#292524]">
+                            <div className="font-medium text-xs text-[#111827]">
                               {claim.rewardId?.title || 'Reward'}
                             </div>
-                            <div className="text-[11px] text-[#57534E]">
+                            <div className="text-[11px] text-[#64748B]">
                               {claim.rewardId?.category}
                             </div>
                           </td>
 
                           <td className="py-3 px-4">
-                            <span className="font-mono font-bold text-xs px-2 py-1 rounded bg-[#F3E8E8] border text-[#292524]">
+                            <span className="font-mono font-bold text-xs px-2 py-1 rounded bg-[#F8FAFC] border text-[#111827]">
                               {claim.claimCode}
                             </span>
                           </td>
 
                           <td className="py-3 px-4 text-xs font-semibold">
                             {claim.pointsDeducted > 0 ? (
-                              <span className="text-[#B76E79]">-{claim.pointsDeducted} pts</span>
+                              <span className="text-[#EA580C]">-{claim.pointsDeducted} pts</span>
                             ) : (
-                              <span className="text-[#57534E]">0 pts</span>
+                              <span className="text-[#64748B]">0 pts</span>
                             )}
                           </td>
 
@@ -744,11 +744,11 @@ export default function GymAdminRewards() {
                             <span
                               className={`text-xs px-2.5 py-1 rounded-full font-semibold ${
                                 claim.claimStatus === 'Approved'
-                                  ? 'bg-[#F3E8E8] text-[#B76E79]'
+                                  ? 'bg-[#F8FAFC] text-[#EA580C]'
                                   : claim.claimStatus === 'Pending'
                                   ? 'bg-amber-100 text-amber-800'
                                   : claim.claimStatus === 'Redeemed'
-                                  ? 'bg-[#F3E8E8] text-[#B76E79]'
+                                  ? 'bg-[#F8FAFC] text-[#EA580C]'
                                   : 'bg-red-100 text-red-800'
                               }`}
                             >
@@ -767,20 +767,20 @@ export default function GymAdminRewards() {
                                 <span
                                   className={`px-2 py-0.5 rounded-full font-semibold ${
                                     claim.financialPayoutStatus === 'Paid'
-                                      ? 'bg-[#F3E8E8] text-[#B76E79]'
+                                      ? 'bg-[#F8FAFC] text-[#EA580C]'
                                       : 'bg-amber-100 text-amber-800'
                                   }`}
                                 >
                                   {claim.financialPayoutStatus === 'Paid' ? 'Paid' : 'Pending Payment'}
                                 </span>
                                 {claim.financialPayoutReference && (
-                                  <div className="text-[11px] text-[#57534E] mt-0.5 font-mono">
+                                  <div className="text-[11px] text-[#64748B] mt-0.5 font-mono">
                                     Ref: {claim.financialPayoutReference}
                                   </div>
                                 )}
                               </div>
                             ) : (
-                              <span className="text-[#57534E]">—</span>
+                              <span className="text-[#64748B]">—</span>
                             )}
                           </td>
 
@@ -790,7 +790,7 @@ export default function GymAdminRewards() {
                                 <>
                                   <button
                                     onClick={() => openClaimAction(claim, 'APPROVE')}
-                                    className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-[#F3E8E8] text-[#B76E79] hover:bg-[#F3E8E8] transition"
+                                    className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-[#F8FAFC] text-[#EA580C] hover:bg-[#FFF7ED] transition"
                                   >
                                     Approve
                                   </button>
@@ -806,7 +806,7 @@ export default function GymAdminRewards() {
                               {claim.claimStatus === 'Approved' && (
                                 <button
                                   onClick={() => openClaimAction(claim, 'REDEEM')}
-                                  className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-[#F3E8E8] text-[#B76E79] hover:bg-[#F3E8E8] transition"
+                                  className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-[#F8FAFC] text-[#EA580C] hover:bg-[#FFF7ED] transition"
                                 >
                                   Mark Redeemed
                                 </button>
@@ -836,17 +836,17 @@ export default function GymAdminRewards() {
       {/* CREATE / EDIT REWARD MODAL */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-[#FFFFFF] rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl border my-8" style={{ borderColor: '#E7DADD' }}>
-            <div className="sticky top-0 bg-[#FFFFFF] px-6 py-4 border-b flex justify-between items-center z-10" style={{ borderColor: '#E7DADD' }}>
+          <div className="bg-[#FFFFFF] rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl border my-8" style={{ borderColor: '#E2E8F0' }}>
+            <div className="sticky top-0 bg-[#FFFFFF] px-6 py-4 border-b flex justify-between items-center z-10" style={{ borderColor: '#E2E8F0' }}>
               <div className="flex items-center gap-2">
-                <Gift className="w-5 h-5" style={{ color: '#B76E79' }} />
+                <Gift className="w-5 h-5" style={{ color: '#F97316' }} />
                 <h2 className="text-lg font-bold" style={{ color: '#FFFFFF' }}>
                   {isEditMode ? 'Edit Reward Definition' : 'Create New Gym Reward'}
                 </h2>
               </div>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="p-1.5 rounded-lg hover:bg-[#F3E8E8] text-[#57534E]"
+                className="p-1.5 rounded-lg hover:bg-[#FFF7ED] text-[#64748B]"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -863,7 +863,7 @@ export default function GymAdminRewards() {
                     value={formData.recipientType}
                     onChange={e => setFormData({ ...formData, recipientType: e.target.value as any })}
                     className="w-full px-3 py-2 rounded-xl border text-sm focus:outline-none"
-                    style={{ borderColor: '#E7DADD' }}
+                    style={{ borderColor: '#E2E8F0' }}
                   >
                     <option value="Customer">Customers Only</option>
                     <option value="Trainer">Trainers Only</option>
@@ -879,7 +879,7 @@ export default function GymAdminRewards() {
                     value={formData.category}
                     onChange={e => setFormData({ ...formData, category: e.target.value })}
                     className="w-full px-3 py-2 rounded-xl border text-sm focus:outline-none"
-                    style={{ borderColor: '#E7DADD' }}
+                    style={{ borderColor: '#E2E8F0' }}
                   >
                     <option value="Discount Coupon">Discount Coupon</option>
                     <option value="Membership Renewal Discount">Membership Renewal Discount</option>
@@ -907,7 +907,7 @@ export default function GymAdminRewards() {
                   value={formData.title}
                   onChange={e => setFormData({ ...formData, title: e.target.value })}
                   className="w-full px-3.5 py-2.5 rounded-xl border text-sm focus:outline-none"
-                  style={{ borderColor: '#E7DADD' }}
+                  style={{ borderColor: '#E2E8F0' }}
                 />
               </div>
 
@@ -922,20 +922,20 @@ export default function GymAdminRewards() {
                   value={formData.description}
                   onChange={e => setFormData({ ...formData, description: e.target.value })}
                   className="w-full px-3.5 py-2.5 rounded-xl border text-sm focus:outline-none"
-                  style={{ borderColor: '#E7DADD' }}
+                  style={{ borderColor: '#E2E8F0' }}
                 />
               </div>
 
               {/* Customer Specific Options */}
               {formData.recipientType !== 'Trainer' && (
-                <div className="p-4 rounded-xl border bg-[#F3E8E8]/50 space-y-3" style={{ borderColor: '#E7DADD' }}>
-                  <h4 className="text-xs font-bold text-[#B76E79] flex items-center gap-1.5">
+                <div className="p-4 rounded-xl border bg-[#FFF7ED] space-y-3" style={{ borderColor: '#E2E8F0' }}>
+                  <h4 className="text-xs font-bold text-[#EA580C] flex items-center gap-1.5">
                     <Coins className="w-4 h-4" /> Customer Eligibility & Points
                   </h4>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-medium mb-1" style={{ color: '#57534E' }}>
+                      <label className="block text-xs font-medium mb-1" style={{ color: '#64748B' }}>
                         Required Points to Claim (0 if free / challenge reward)
                       </label>
                       <input
@@ -944,19 +944,19 @@ export default function GymAdminRewards() {
                         value={formData.requiredPoints}
                         onChange={e => setFormData({ ...formData, requiredPoints: Number(e.target.value) })}
                         className="w-full px-3 py-2 rounded-xl border text-sm bg-[#FFFFFF]"
-                        style={{ borderColor: '#E7DADD' }}
+                        style={{ borderColor: '#E2E8F0' }}
                       />
                     </div>
 
                     <div>
-                      <label className="block text-xs font-medium mb-1" style={{ color: '#57534E' }}>
+                      <label className="block text-xs font-medium mb-1" style={{ color: '#64748B' }}>
                         Required Challenge Completion (Optional)
                       </label>
                       <select
                         value={formData.requiredChallengeId}
                         onChange={e => setFormData({ ...formData, requiredChallengeId: e.target.value })}
                         className="w-full px-3 py-2 rounded-xl border text-sm bg-[#FFFFFF]"
-                        style={{ borderColor: '#E7DADD' }}
+                        style={{ borderColor: '#E2E8F0' }}
                       >
                         <option value="">No specific challenge required</option>
                         {challenges.map(ch => (
@@ -972,14 +972,14 @@ export default function GymAdminRewards() {
 
               {/* Trainer Specific Options */}
               {formData.recipientType !== 'Customer' && (
-                <div className="p-4 rounded-xl border bg-[#F3E8E8]/50 space-y-3" style={{ borderColor: '#E7DADD' }}>
-                  <h4 className="text-xs font-bold text-[#B76E79] flex items-center gap-1.5">
+                <div className="p-4 rounded-xl border bg-[#FFF7ED] space-y-3" style={{ borderColor: '#E2E8F0' }}>
+                  <h4 className="text-xs font-bold text-[#EA580C] flex items-center gap-1.5">
                     <Award className="w-4 h-4" /> Trainer Performance Criteria & Financial Bonus
                   </h4>
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div>
-                      <label className="block text-xs font-medium mb-1" style={{ color: '#57534E' }}>
+                      <label className="block text-xs font-medium mb-1" style={{ color: '#64748B' }}>
                         Min Completed Sessions
                       </label>
                       <input
@@ -988,12 +988,12 @@ export default function GymAdminRewards() {
                         value={formData.minCompletedSessions}
                         onChange={e => setFormData({ ...formData, minCompletedSessions: Number(e.target.value) })}
                         className="w-full px-3 py-2 rounded-xl border text-sm bg-[#FFFFFF]"
-                        style={{ borderColor: '#E7DADD' }}
+                        style={{ borderColor: '#E2E8F0' }}
                       />
                     </div>
 
                     <div>
-                      <label className="block text-xs font-medium mb-1" style={{ color: '#57534E' }}>
+                      <label className="block text-xs font-medium mb-1" style={{ color: '#64748B' }}>
                         Min Average Rating (⭐)
                       </label>
                       <input
@@ -1004,12 +1004,12 @@ export default function GymAdminRewards() {
                         value={formData.minAverageRating}
                         onChange={e => setFormData({ ...formData, minAverageRating: Number(e.target.value) })}
                         className="w-full px-3 py-2 rounded-xl border text-sm bg-[#FFFFFF]"
-                        style={{ borderColor: '#E7DADD' }}
+                        style={{ borderColor: '#E2E8F0' }}
                       />
                     </div>
 
                     <div>
-                      <label className="block text-xs font-medium mb-1" style={{ color: '#57534E' }}>
+                      <label className="block text-xs font-medium mb-1" style={{ color: '#64748B' }}>
                         Bonus Amount (₹)
                       </label>
                       <input
@@ -1018,7 +1018,7 @@ export default function GymAdminRewards() {
                         value={formData.bonusAmount}
                         onChange={e => setFormData({ ...formData, bonusAmount: Number(e.target.value) })}
                         className="w-full px-3 py-2 rounded-xl border text-sm bg-[#FFFFFF]"
-                        style={{ borderColor: '#E7DADD' }}
+                        style={{ borderColor: '#E2E8F0' }}
                       />
                     </div>
                   </div>
@@ -1037,7 +1037,7 @@ export default function GymAdminRewards() {
                     value={formData.totalQuantity}
                     onChange={e => setFormData({ ...formData, totalQuantity: Number(e.target.value) })}
                     className="w-full px-3 py-2 rounded-xl border text-sm"
-                    style={{ borderColor: '#E7DADD' }}
+                    style={{ borderColor: '#E2E8F0' }}
                   />
                 </div>
 
@@ -1051,7 +1051,7 @@ export default function GymAdminRewards() {
                     value={formData.maxClaimsPerUser}
                     onChange={e => setFormData({ ...formData, maxClaimsPerUser: Number(e.target.value) })}
                     className="w-full px-3 py-2 rounded-xl border text-sm"
-                    style={{ borderColor: '#E7DADD' }}
+                    style={{ borderColor: '#E2E8F0' }}
                   />
                 </div>
 
@@ -1064,7 +1064,7 @@ export default function GymAdminRewards() {
                     value={formData.expiryDate}
                     onChange={e => setFormData({ ...formData, expiryDate: e.target.value })}
                     className="w-full px-3 py-2 rounded-xl border text-sm"
-                    style={{ borderColor: '#E7DADD' }}
+                    style={{ borderColor: '#E2E8F0' }}
                   />
                 </div>
               </div>
@@ -1080,29 +1080,29 @@ export default function GymAdminRewards() {
                   value={formData.termsAndConditions}
                   onChange={e => setFormData({ ...formData, termsAndConditions: e.target.value })}
                   className="w-full px-3.5 py-2 rounded-xl border text-sm"
-                  style={{ borderColor: '#E7DADD' }}
+                  style={{ borderColor: '#E2E8F0' }}
                 />
               </div>
 
               {/* Toggles & Submit */}
-              <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t" style={{ borderColor: '#E7DADD' }}>
+              <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t" style={{ borderColor: '#E2E8F0' }}>
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={formData.requireApproval}
                     onChange={e => setFormData({ ...formData, requireApproval: e.target.checked })}
-                    className="rounded text-[#B76E79] focus:ring-[#B76E79]"
+                    className="rounded text-[#EA580C] focus:ring-[#F97316]"
                   />
                   <span className="text-xs font-semibold" style={{ color: '#FFFFFF' }}>Require Gym Owner Manual Approval</span>
                 </label>
 
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold text-[#292524]">Status:</span>
+                  <span className="text-xs font-bold text-[#111827]">Status:</span>
                   <select
                     value={formData.status}
                     onChange={e => setFormData({ ...formData, status: e.target.value as any })}
                     className="px-3 py-1.5 rounded-xl border text-xs font-semibold"
-                    style={{ borderColor: '#E7DADD' }}
+                    style={{ borderColor: '#E2E8F0' }}
                   >
                     <option value="Active">Active</option>
                     <option value="Paused">Paused</option>
@@ -1112,19 +1112,19 @@ export default function GymAdminRewards() {
                 </div>
               </div>
 
-              <div className="flex justify-end gap-3 pt-3 border-t" style={{ borderColor: '#E7DADD' }}>
+              <div className="flex justify-end gap-3 pt-3 border-t" style={{ borderColor: '#E2E8F0' }}>
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 rounded-xl border text-sm font-medium hover:bg-[#F3E8E8] text-[#292524]"
-                  style={{ borderColor: '#E7DADD' }}
+                  className="px-4 py-2 rounded-xl border text-sm font-medium hover:bg-[#FFF7ED] text-[#111827]"
+                  style={{ borderColor: '#E2E8F0' }}
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   className="px-6 py-2 rounded-xl text-white text-sm font-semibold shadow hover:opacity-90"
-                  style={{ backgroundColor: '#B76E79' }}
+                  style={{ backgroundColor: '#F97316' }}
                 >
                   {isEditMode ? 'Save Changes' : 'Create Reward'}
                 </button>
@@ -1137,15 +1137,15 @@ export default function GymAdminRewards() {
       {/* CLAIM ACTION MODAL (APPROVE / REJECT / REDEEM / RECORD PAYOUT) */}
       {claimActionModalOpen && selectedClaim && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-[#FFFFFF] rounded-2xl w-full max-w-md p-6 shadow-2xl border" style={{ borderColor: '#E7DADD' }}>
+          <div className="bg-[#FFFFFF] rounded-2xl w-full max-w-md p-6 shadow-2xl border" style={{ borderColor: '#E2E8F0' }}>
             <h3 className="text-lg font-bold mb-1" style={{ color: '#FFFFFF' }}>
               {actionType === 'APPROVE' && 'Approve Reward Claim'}
               {actionType === 'REJECT' && 'Reject Reward Claim'}
               {actionType === 'REDEEM' && 'Mark Voucher as Redeemed'}
               {actionType === 'PAYOUT' && 'Record Financial Bonus Payment'}
             </h3>
-            <p className="text-xs text-[#57534E] mb-4">
-              Voucher: <span className="font-mono font-bold text-[#292524]">{selectedClaim.claimCode}</span> • Recipient: {selectedClaim.userId?.firstName} {selectedClaim.userId?.lastName}
+            <p className="text-xs text-[#64748B] mb-4">
+              Voucher: <span className="font-mono font-bold text-[#111827]">{selectedClaim.claimCode}</span> • Recipient: {selectedClaim.userId?.firstName} {selectedClaim.userId?.lastName}
             </p>
 
             <div className="space-y-4">
@@ -1161,10 +1161,10 @@ export default function GymAdminRewards() {
                     value={rejectionReason}
                     onChange={e => setRejectionReason(e.target.value)}
                     className="w-full px-3 py-2 rounded-xl border text-sm focus:outline-none focus:ring-1 focus:ring-red-400"
-                    style={{ borderColor: '#E7DADD' }}
+                    style={{ borderColor: '#E2E8F0' }}
                   />
                   {selectedClaim.pointsDeducted > 0 && (
-                    <p className="text-[11px] text-[#B76E79] mt-1 font-medium">
+                    <p className="text-[11px] text-[#EA580C] mt-1 font-medium">
                       Note: Rejecting will automatically refund {selectedClaim.pointsDeducted} points back to the user's wallet.
                     </p>
                   )}
@@ -1173,7 +1173,7 @@ export default function GymAdminRewards() {
 
               {actionType === 'PAYOUT' && (
                 <div>
-                  <label className="block text-xs font-bold mb-1 text-[#292524]">
+                  <label className="block text-xs font-bold mb-1 text-[#111827]">
                     Payment Reference / Transaction ID *
                   </label>
                   <input
@@ -1183,16 +1183,16 @@ export default function GymAdminRewards() {
                     value={paymentReference}
                     onChange={e => setPaymentReference(e.target.value)}
                     className="w-full px-3 py-2 rounded-xl border text-sm"
-                    style={{ borderColor: '#E7DADD' }}
+                    style={{ borderColor: '#E2E8F0' }}
                   />
-                  <p className="text-[11px] text-[#57534E] mt-1">
+                  <p className="text-[11px] text-[#64748B] mt-1">
                     Marking as paid ensures financial audit integrity.
                   </p>
                 </div>
               )}
 
               <div>
-                <label className="block text-xs font-bold mb-1 text-[#292524]">
+                <label className="block text-xs font-bold mb-1 text-[#111827]">
                   Optional Notes
                 </label>
                 <input
@@ -1201,16 +1201,16 @@ export default function GymAdminRewards() {
                   value={claimNotes}
                   onChange={e => setClaimNotes(e.target.value)}
                   className="w-full px-3 py-2 rounded-xl border text-sm"
-                  style={{ borderColor: '#E7DADD' }}
+                  style={{ borderColor: '#E2E8F0' }}
                 />
               </div>
 
-              <div className="flex justify-end gap-3 pt-4 border-t" style={{ borderColor: '#E7DADD' }}>
+              <div className="flex justify-end gap-3 pt-4 border-t" style={{ borderColor: '#E2E8F0' }}>
                 <button
                   type="button"
                   onClick={() => setClaimActionModalOpen(false)}
-                  className="px-4 py-2 rounded-xl border text-sm font-medium hover:bg-[#F3E8E8] text-[#292524]"
-                  style={{ borderColor: '#E7DADD' }}
+                  className="px-4 py-2 rounded-xl border text-sm font-medium hover:bg-[#FFF7ED] text-[#111827]"
+                  style={{ borderColor: '#E2E8F0' }}
                 >
                   Cancel
                 </button>
@@ -1218,7 +1218,7 @@ export default function GymAdminRewards() {
                   type="button"
                   onClick={handleProcessClaim}
                   className={`px-5 py-2 rounded-xl text-white text-sm font-semibold shadow hover:opacity-90 ${
-                    actionType === 'REJECT' ? 'bg-red-600' : 'bg-[#B76E79]'
+                    actionType === 'REJECT' ? 'bg-red-600' : 'bg-[#C2410C]'
                   }`}
                 >
                   Confirm

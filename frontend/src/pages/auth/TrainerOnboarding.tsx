@@ -47,46 +47,46 @@ const TrainerOnboarding = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F3E8E8] p-4 md:p-8 font-outfit">
+    <div className="min-h-screen bg-[#F8FAFC] p-4 md:p-8 font-outfit">
       <div className="max-w-3xl mx-auto">
         <div className="text-center mb-10 mt-8">
-          <div className="w-20 h-20 bg-[#B76E79]/10 text-[#B76E79] rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl shadow-[#B76E79]/20">
+          <div className="w-20 h-20 bg-[#FFF7ED] text-[#EA580C] rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl shadow-orange-500/15">
             <UserCircle size={40} />
           </div>
-          <h1 className="text-4xl font-bold text-[#292524] mb-3">Complete Your Profile</h1>
-          <p className="text-[#57534E] text-lg max-w-lg mx-auto">
+          <h1 className="text-4xl font-bold text-[#111827] mb-3">Complete Your Profile</h1>
+          <p className="text-[#64748B] text-lg max-w-lg mx-auto">
             Tell us about your professional background. Once submitted, the gym owner will review your profile.
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-[#FFFFFF] rounded-3xl shadow-xl border border-[#E7DADD] overflow-hidden">
+        <form onSubmit={handleSubmit} className="bg-[#FFFFFF] rounded-3xl shadow-xl border border-[#E2E8F0] overflow-hidden">
           <div className="p-8 space-y-8">
             
             {/* Professional Info */}
             <section>
-              <h3 className="text-xl font-bold text-[#292524] mb-6 flex items-center border-b pb-2">
-                <CheckCircle2 className="mr-2 text-[#B76E79]" size={20} /> Professional Details
+              <h3 className="text-xl font-bold text-[#111827] mb-6 flex items-center border-b pb-2">
+                <CheckCircle2 className="mr-2 text-[#EA580C]" size={20} /> Professional Details
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-bold text-[#57534E] mb-2">Specialization *</label>
-                  <input required placeholder="e.g. Weightlifting, Yoga, HIIT" value={formData.specialization} onChange={e => setFormData({...formData, specialization: e.target.value})} className="w-full border border-[#E7DADD] rounded-xl px-4 py-3 outline-none focus:border-[#B76E79] bg-[#F3E8E8]" />
+                  <label className="block text-sm font-bold text-[#64748B] mb-2">Specialization *</label>
+                  <input required placeholder="e.g. Weightlifting, Yoga, HIIT" value={formData.specialization} onChange={e => setFormData({...formData, specialization: e.target.value})} className="w-full border border-[#E2E8F0] rounded-xl px-4 py-3 outline-none focus:border-[#FDBA74] bg-[#F8FAFC]" />
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-[#57534E] mb-2">Experience (Years) *</label>
-                  <input required type="number" min="0" placeholder="e.g. 5" value={formData.experience} onChange={e => setFormData({...formData, experience: e.target.value})} className="w-full border border-[#E7DADD] rounded-xl px-4 py-3 outline-none focus:border-[#B76E79] bg-[#F3E8E8]" />
+                  <label className="block text-sm font-bold text-[#64748B] mb-2">Experience (Years) *</label>
+                  <input required type="number" min="0" placeholder="e.g. 5" value={formData.experience} onChange={e => setFormData({...formData, experience: e.target.value})} className="w-full border border-[#E2E8F0] rounded-xl px-4 py-3 outline-none focus:border-[#FDBA74] bg-[#F8FAFC]" />
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-[#57534E] mb-2">Training Mode</label>
-                  <select value={formData.trainingMode} onChange={e => setFormData({...formData, trainingMode: e.target.value})} className="w-full border border-[#E7DADD] rounded-xl px-4 py-3 outline-none focus:border-[#B76E79] bg-[#F3E8E8]">
+                  <label className="block text-sm font-bold text-[#64748B] mb-2">Training Mode</label>
+                  <select value={formData.trainingMode} onChange={e => setFormData({...formData, trainingMode: e.target.value})} className="w-full border border-[#E2E8F0] rounded-xl px-4 py-3 outline-none focus:border-[#FDBA74] bg-[#F8FAFC]">
                     <option value="offline">Offline</option>
                     <option value="online">Online</option>
                     <option value="both">Both</option>
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-[#57534E] mb-2">Availability</label>
-                  <select value={formData.availability} onChange={e => setFormData({...formData, availability: e.target.value})} className="w-full border border-[#E7DADD] rounded-xl px-4 py-3 outline-none focus:border-[#B76E79] bg-[#F3E8E8]">
+                  <label className="block text-sm font-bold text-[#64748B] mb-2">Availability</label>
+                  <select value={formData.availability} onChange={e => setFormData({...formData, availability: e.target.value})} className="w-full border border-[#E2E8F0] rounded-xl px-4 py-3 outline-none focus:border-[#FDBA74] bg-[#F8FAFC]">
                     <option value="Full Time">Full Time</option>
                     <option value="Part Time">Part Time</option>
                     <option value="Weekends Only">Weekends Only</option>
@@ -98,32 +98,32 @@ const TrainerOnboarding = () => {
 
             {/* Qualifications */}
             <section>
-              <h3 className="text-xl font-bold text-[#292524] mb-6 flex items-center border-b pb-2">
-                <CheckCircle2 className="mr-2 text-[#B76E79]" size={20} /> Qualifications & Expertise
+              <h3 className="text-xl font-bold text-[#111827] mb-6 flex items-center border-b pb-2">
+                <CheckCircle2 className="mr-2 text-[#EA580C]" size={20} /> Qualifications & Expertise
               </h3>
               <div className="space-y-6">
                 <div>
-                  <label className="block text-sm font-bold text-[#57534E] mb-2">Qualifications & Degrees</label>
-                  <input placeholder="e.g. B.S. in Kinesiology" value={formData.qualifications} onChange={e => setFormData({...formData, qualifications: e.target.value})} className="w-full border border-[#E7DADD] rounded-xl px-4 py-3 outline-none focus:border-[#B76E79] bg-[#F3E8E8]" />
+                  <label className="block text-sm font-bold text-[#64748B] mb-2">Qualifications & Degrees</label>
+                  <input placeholder="e.g. B.S. in Kinesiology" value={formData.qualifications} onChange={e => setFormData({...formData, qualifications: e.target.value})} className="w-full border border-[#E2E8F0] rounded-xl px-4 py-3 outline-none focus:border-[#FDBA74] bg-[#F8FAFC]" />
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-[#57534E] mb-2">Certifications</label>
-                  <input placeholder="e.g. NASM CPT, ACE" value={formData.certifications} onChange={e => setFormData({...formData, certifications: e.target.value})} className="w-full border border-[#E7DADD] rounded-xl px-4 py-3 outline-none focus:border-[#B76E79] bg-[#F3E8E8]" />
+                  <label className="block text-sm font-bold text-[#64748B] mb-2">Certifications</label>
+                  <input placeholder="e.g. NASM CPT, ACE" value={formData.certifications} onChange={e => setFormData({...formData, certifications: e.target.value})} className="w-full border border-[#E2E8F0] rounded-xl px-4 py-3 outline-none focus:border-[#FDBA74] bg-[#F8FAFC]" />
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-[#57534E] mb-2">Areas of Expertise</label>
-                  <textarea rows={3} placeholder="Describe your main areas of expertise..." value={formData.expertise} onChange={e => setFormData({...formData, expertise: e.target.value})} className="w-full border border-[#E7DADD] rounded-xl px-4 py-3 outline-none focus:border-[#B76E79] bg-[#F3E8E8]" />
+                  <label className="block text-sm font-bold text-[#64748B] mb-2">Areas of Expertise</label>
+                  <textarea rows={3} placeholder="Describe your main areas of expertise..." value={formData.expertise} onChange={e => setFormData({...formData, expertise: e.target.value})} className="w-full border border-[#E2E8F0] rounded-xl px-4 py-3 outline-none focus:border-[#FDBA74] bg-[#F8FAFC]" />
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-[#57534E] mb-2">Short Bio</label>
-                  <textarea rows={4} placeholder="Write a short biography about yourself..." value={formData.bio} onChange={e => setFormData({...formData, bio: e.target.value})} className="w-full border border-[#E7DADD] rounded-xl px-4 py-3 outline-none focus:border-[#B76E79] bg-[#F3E8E8]" />
+                  <label className="block text-sm font-bold text-[#64748B] mb-2">Short Bio</label>
+                  <textarea rows={4} placeholder="Write a short biography about yourself..." value={formData.bio} onChange={e => setFormData({...formData, bio: e.target.value})} className="w-full border border-[#E2E8F0] rounded-xl px-4 py-3 outline-none focus:border-[#FDBA74] bg-[#F8FAFC]" />
                 </div>
               </div>
             </section>
 
           </div>
           
-          <div className="p-8 bg-[#F3E8E8] border-t border-[#E7DADD]">
+          <div className="p-8 bg-[#F8FAFC] border-t border-[#E2E8F0]">
             <button 
               type="submit" 
               disabled={isSubmitting}

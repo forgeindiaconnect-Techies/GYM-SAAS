@@ -72,21 +72,21 @@ export const TrainerHowItWorksPage: React.FC = () => {
       <div className="py-16 md:py-24 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <Link
           to="/trainers"
-          className="inline-flex items-center gap-2 text-xs font-bold text-[#57534E] hover:text-[#B76E79] transition-colors mb-8"
+          className="inline-flex items-center gap-2 text-xs font-bold text-[#64748B] hover:text-[#EA580C] transition-colors mb-8"
         >
           <ArrowLeft size={16} />
           <span>Back to Trainer Landing Page</span>
         </Link>
 
         <div className="mb-14">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#B76E79]/10 border border-[#B76E79]/30 text-[#B76E79] text-xs font-semibold mb-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FFF7ED] border border-[#FFEDD5] text-[#EA580C] text-xs font-semibold mb-4">
             <Sparkles size={13} />
             <span>Path to Professional Placement</span>
           </div>
-          <h1 className="text-3xl sm:text-5xl font-extrabold text-[#292524] tracking-tight mb-4">
+          <h1 className="text-3xl sm:text-5xl font-extrabold text-[#111827] tracking-tight mb-4">
             How It Works for Trainers
           </h1>
-          <p className="text-base sm:text-lg text-[#57534E] leading-relaxed">
+          <p className="text-base sm:text-lg text-[#64748B] leading-relaxed">
             A clear, four-stage journey from building your verified professional profile to securing gym placement and coaching dedicated athletes.
           </p>
         </div>
@@ -98,31 +98,31 @@ export const TrainerHowItWorksPage: React.FC = () => {
             return (
               <div
                 key={idx}
-                className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-8 hover:border-[#B76E79]/40 transition-colors"
+                className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-8 hover:border-[#FFEDD5] transition-colors"
               >
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-6 border-b border-[#E7DADD]/60">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-6 border-b border-[#E2E8F0]/60">
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-[#B76E79]/10 border border-[#B76E79]/20 flex items-center justify-center text-[#B76E79] shrink-0">
+                    <div className="w-12 h-12 rounded-xl bg-[#FFF7ED] border border-[#FFEDD5] flex items-center justify-center text-[#EA580C] shrink-0">
                       <Icon size={24} />
                     </div>
                     <div>
-                      <span className="text-xs font-bold uppercase tracking-wider text-[#B76E79]">
+                      <span className="text-xs font-bold uppercase tracking-wider text-[#EA580C]">
                         {s.step}
                       </span>
-                      <h2 className="text-xl font-bold text-[#292524]">{s.title}</h2>
+                      <h2 className="text-xl font-bold text-[#111827]">{s.title}</h2>
                     </div>
                   </div>
-                  <span className="text-xs font-medium text-[#57534E] bg-[#F3E8E8] px-3 py-1.5 rounded-lg border border-[#E7DADD] self-start sm:self-auto">
+                  <span className="text-xs font-medium text-[#64748B] bg-[#F8FAFC] px-3 py-1.5 rounded-lg border border-[#E2E8F0] self-start sm:self-auto">
                     Phase {idx + 1}
                   </span>
                 </div>
 
-                <p className="text-sm font-semibold text-[#292524] mb-4">{s.tagline}</p>
+                <p className="text-sm font-semibold text-[#111827] mb-4">{s.tagline}</p>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
                   {s.details.map((detail, dIdx) => (
-                    <div key={dIdx} className="flex items-start gap-2.5 text-xs text-[#57534E] leading-relaxed">
-                      <CheckCircle2 size={15} className="text-[#B76E79] shrink-0 mt-0.5" />
+                    <div key={dIdx} className="flex items-start gap-2.5 text-xs text-[#64748B] leading-relaxed">
+                      <CheckCircle2 size={15} className="text-[#EA580C] shrink-0 mt-0.5" />
                       <span>{detail}</span>
                     </div>
                   ))}
@@ -133,30 +133,30 @@ export const TrainerHowItWorksPage: React.FC = () => {
         </div>
 
         {/* Informational Scope Note */}
-        <div className="p-6 bg-[#F3E8E8] border border-[#E7DADD] rounded-xl text-xs text-[#57534E] mb-12 flex items-start gap-3">
-          <ShieldCheck size={20} className="text-[#B76E79] shrink-0 mt-0.5" />
+        <div className="p-6 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs text-[#64748B] mb-12 flex items-start gap-3">
+          <ShieldCheck size={20} className="text-[#EA580C] shrink-0 mt-0.5" />
           <div>
-            <span className="font-bold text-[#292524]">Informational Notice: </span>
+            <span className="font-bold text-[#111827]">Informational Notice: </span>
             This walkthrough explains the general onboarding workflow and career milestones. Facility recruitment policies, compensation terms, and evaluation criteria are determined directly between verified gym facilities and the trainer.
           </div>
         </div>
 
         {/* Bottom Navigation CTA */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-8 bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-8 bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl">
           <div>
-            <h3 className="text-base font-bold text-[#292524] mb-1">Ready to create your profile?</h3>
-            <p className="text-xs text-[#57534E]">Join partner gyms and begin your verified coaching journey.</p>
+            <h3 className="text-base font-bold text-[#111827] mb-1">Ready to create your profile?</h3>
+            <p className="text-xs text-[#64748B]">Join partner gyms and begin your verified coaching journey.</p>
           </div>
           <div className="flex items-center gap-3">
             <Link
               to="/trainers/benefits"
-              className="px-5 py-2.5 bg-[#F3E8E8] hover:bg-[#F3E8E8] text-xs font-bold text-[#292524] border border-[#E7DADD] rounded-xl"
+              className="px-5 py-2.5 bg-[#F8FAFC] hover:bg-[#FFF7ED] text-xs font-bold text-[#111827] border border-[#E2E8F0] rounded-xl"
             >
               See Benefits
             </Link>
             <Link
               to="/invite/trainer/onboarding"
-              className="px-5 py-2.5 bg-[#B76E79] hover:bg-[#9F5965] text-xs font-bold text-[#FFFFFF] rounded-xl shadow-md shadow-[#B76E79]/20 flex items-center gap-1.5"
+              className="px-5 py-2.5 bg-[#C2410C] hover:bg-[#9A3412] text-xs font-bold text-[#FFFFFF] rounded-xl shadow-md shadow-orange-500/15 flex items-center gap-1.5"
             >
               <span>Join as a Trainer</span>
               <ArrowRight size={14} />

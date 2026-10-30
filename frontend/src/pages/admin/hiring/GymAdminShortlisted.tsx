@@ -130,7 +130,7 @@ export default function GymAdminShortlisted() {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-[#292524] flex items-center gap-2">
+          <h1 className="text-2xl font-bold text-[#111827] flex items-center gap-2">
             <Award className="w-7 h-7 text-purple-400" />
             Shortlisted Candidates
           </h1>
@@ -141,9 +141,9 @@ export default function GymAdminShortlisted() {
         <div className="flex items-center gap-3">
           <Link
             to="/admin/hiring/applications"
-            className="px-4 py-2 bg-[#FFFFFF] hover:bg-[#F3E8E8] text-slate-300 rounded-xl border border-[#E7DADD] text-sm flex items-center gap-2"
+            className="px-4 py-2 bg-[#FFFFFF] hover:bg-[#FFF7ED] text-slate-300 rounded-xl border border-[#E2E8F0] text-sm flex items-center gap-2"
           >
-            <Users className="w-4 h-4 text-[#B76E79]" />
+            <Users className="w-4 h-4 text-[#EA580C]" />
             All Applications
           </Link>
           <Link
@@ -156,7 +156,7 @@ export default function GymAdminShortlisted() {
       </div>
 
       {/* Search */}
-      <div className="bg-[#F3E8E8] p-4 rounded-2xl border border-[#E7DADD]">
+      <div className="bg-[#F8FAFC] p-4 rounded-2xl border border-[#E2E8F0]">
         <div className="relative">
           <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
@@ -164,20 +164,20 @@ export default function GymAdminShortlisted() {
             placeholder="Search shortlisted candidates..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-purple-400"
+            className="w-full pl-10 pr-4 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-purple-400"
           />
         </div>
       </div>
 
       {loading ? (
-        <div className="p-12 text-center text-slate-400 bg-[#F3E8E8] rounded-2xl border border-[#E7DADD]">
+        <div className="p-12 text-center text-slate-400 bg-[#F8FAFC] rounded-2xl border border-[#E2E8F0]">
           <div className="inline-block animate-spin w-8 h-8 border-4 border-purple-400 border-t-transparent rounded-full mb-3" />
           <p>Loading shortlisted talent...</p>
         </div>
       ) : filtered.length === 0 ? (
-        <div className="p-12 text-center bg-[#F3E8E8] rounded-2xl border border-[#E7DADD]">
+        <div className="p-12 text-center bg-[#F8FAFC] rounded-2xl border border-[#E2E8F0]">
           <Award className="w-12 h-12 text-purple-400/40 mx-auto mb-3" />
-          <h3 className="text-lg font-semibold text-[#292524] mb-1">No shortlisted candidates yet</h3>
+          <h3 className="text-lg font-semibold text-[#111827] mb-1">No shortlisted candidates yet</h3>
           <p className="text-sm text-slate-400 max-w-md mx-auto mb-4">
             Review incoming applications from the Applications tab and click "Shortlist" on candidates who match your qualifications.
           </p>
@@ -193,12 +193,12 @@ export default function GymAdminShortlisted() {
           {filtered.map((candidate) => (
             <div
               key={candidate._id}
-              className="bg-[#F3E8E8] border border-purple-500/20 rounded-2xl p-5 hover:border-purple-500/40 transition-all flex flex-col justify-between space-y-4"
+              className="bg-[#F8FAFC] border border-purple-500/20 rounded-2xl p-5 hover:border-purple-500/40 transition-all flex flex-col justify-between space-y-4"
             >
               <div>
                 <div className="flex items-start justify-between gap-2 mb-2">
                   <div>
-                    <h3 className="text-base font-bold text-[#292524]">{candidate.fullName}</h3>
+                    <h3 className="text-base font-bold text-[#111827]">{candidate.fullName}</h3>
                     <span className="text-xs text-purple-300 font-medium block">
                       {candidate.jobId?.title || 'Gym Trainer'}
                     </span>
@@ -208,7 +208,7 @@ export default function GymAdminShortlisted() {
                   </span>
                 </div>
 
-                <div className="space-y-1.5 text-xs text-slate-400 mt-3 bg-[#FFFFFF] p-3 rounded-xl border border-[#E7DADD]">
+                <div className="space-y-1.5 text-xs text-slate-400 mt-3 bg-[#FFFFFF] p-3 rounded-xl border border-[#E2E8F0]">
                   <div className="flex items-center gap-2">
                     <Mail className="w-3.5 h-3.5 text-slate-500" />
                     <span className="truncate">{candidate.email}</span>
@@ -218,10 +218,10 @@ export default function GymAdminShortlisted() {
                     <span>{candidate.phone}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Briefcase className="w-3.5 h-3.5 text-[#B76E79]" />
+                    <Briefcase className="w-3.5 h-3.5 text-[#EA580C]" />
                     <span className="text-white font-medium">{candidate.yearsOfExperience} yrs exp</span>
                     <span className="text-slate-500">•</span>
-                    <span className="text-[#B76E79] font-mono">{candidate.expectedSalary || 'Negotiable'}</span>
+                    <span className="text-[#EA580C] font-mono">{candidate.expectedSalary || 'Negotiable'}</span>
                   </div>
                 </div>
 
@@ -233,7 +233,7 @@ export default function GymAdminShortlisted() {
                     {candidate.expertise?.map((e: string, i: number) => (
                       <span
                         key={i}
-                        className="text-[10px] bg-[#F3E8E8] text-slate-300 px-2 py-0.5 rounded border border-[#E7DADD]"
+                        className="text-[10px] bg-[#F8FAFC] text-slate-300 px-2 py-0.5 rounded border border-[#E2E8F0]"
                       >
                         {e}
                       </span>
@@ -242,15 +242,15 @@ export default function GymAdminShortlisted() {
                 </div>
               </div>
 
-              <div className="pt-3 border-t border-[#E7DADD] flex flex-col gap-2">
+              <div className="pt-3 border-t border-[#E2E8F0] flex flex-col gap-2">
                 {candidate.resumeUrl && (
                   <a
                     href={`http://localhost:5600${candidate.resumeUrl}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="w-full text-center py-1.5 bg-[#FFFFFF] hover:bg-[#F3E8E8] text-slate-300 text-xs rounded-lg border border-[#E7DADD] transition-all flex items-center justify-center gap-1.5"
+                    className="w-full text-center py-1.5 bg-[#FFFFFF] hover:bg-[#FFF7ED] text-slate-300 text-xs rounded-lg border border-[#E2E8F0] transition-all flex items-center justify-center gap-1.5"
                   >
-                    <FileText className="w-3.5 h-3.5 text-[#B76E79]" />
+                    <FileText className="w-3.5 h-3.5 text-[#EA580C]" />
                     View Resume
                   </a>
                 )}
@@ -270,7 +270,7 @@ export default function GymAdminShortlisted() {
                       setSelectedApp(candidate);
                       setShowOfferModal(true);
                     }}
-                    className="py-1.5 bg-[#B76E79] hover:bg-[#9F5965] text-white font-semibold rounded-xl text-xs flex items-center justify-center gap-1"
+                    className="py-1.5 bg-[#C2410C] hover:bg-[#9A3412] text-white font-semibold rounded-xl text-xs flex items-center justify-center gap-1"
                   >
                     <Gift className="w-3.5 h-3.5" />
                     Job Offer
@@ -285,15 +285,15 @@ export default function GymAdminShortlisted() {
       {/* Schedule Interview Modal */}
       {showInterviewModal && selectedApp && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-2xl max-w-md w-full p-6 text-white space-y-4">
-            <div className="flex items-center justify-between border-b border-[#E7DADD] pb-3">
+          <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl max-w-md w-full p-6 text-[#1F2937] space-y-4">
+            <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-3">
               <h3 className="font-bold text-base flex items-center gap-2 text-cyan-400">
                 <Calendar className="w-5 h-5" />
                 Schedule Interview: {selectedApp.fullName}
               </h3>
               <button
                 onClick={() => setShowInterviewModal(false)}
-                className="text-slate-400 hover:text-white"
+                className="text-[#64748B] hover:text-[#C2410C]"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -308,7 +308,7 @@ export default function GymAdminShortlisted() {
                     required
                     value={interviewForm.date}
                     onChange={(e) => setInterviewForm({ ...interviewForm, date: e.target.value })}
-                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-white focus:outline-none focus:border-cyan-400"
+                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-white focus:outline-none focus:border-cyan-400"
                   />
                 </div>
                 <div>
@@ -318,7 +318,7 @@ export default function GymAdminShortlisted() {
                     required
                     value={interviewForm.time}
                     onChange={(e) => setInterviewForm({ ...interviewForm, time: e.target.value })}
-                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-white focus:outline-none focus:border-cyan-400"
+                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-white focus:outline-none focus:border-cyan-400"
                   />
                 </div>
               </div>
@@ -329,7 +329,7 @@ export default function GymAdminShortlisted() {
                   <select
                     value={interviewForm.mode}
                     onChange={(e) => setInterviewForm({ ...interviewForm, mode: e.target.value })}
-                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-white focus:outline-none focus:border-cyan-400"
+                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-white focus:outline-none focus:border-cyan-400"
                   >
                     <option value="Online">Online (Google Meet / Zoom)</option>
                     <option value="In-Person">In-Person at Gym</option>
@@ -344,7 +344,7 @@ export default function GymAdminShortlisted() {
                     onChange={(e) =>
                       setInterviewForm({ ...interviewForm, duration: e.target.value })
                     }
-                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-white focus:outline-none focus:border-cyan-400"
+                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-white focus:outline-none focus:border-cyan-400"
                   />
                 </div>
               </div>
@@ -359,7 +359,7 @@ export default function GymAdminShortlisted() {
                   onChange={(e) =>
                     setInterviewForm({ ...interviewForm, locationOrLink: e.target.value })
                   }
-                  className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-white focus:outline-none focus:border-cyan-400"
+                  className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-white focus:outline-none focus:border-cyan-400"
                 />
               </div>
 
@@ -372,15 +372,15 @@ export default function GymAdminShortlisted() {
                   onChange={(e) =>
                     setInterviewForm({ ...interviewForm, instructions: e.target.value })
                   }
-                  className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-white focus:outline-none focus:border-cyan-400 resize-none"
+                  className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-white focus:outline-none focus:border-cyan-400 resize-none"
                 />
               </div>
 
-              <div className="pt-3 border-t border-[#E7DADD] flex justify-end gap-2">
+              <div className="pt-3 border-t border-[#E2E8F0] flex justify-end gap-2">
                 <button
                   type="button"
                   onClick={() => setShowInterviewModal(false)}
-                  className="px-3 py-1.5 bg-[#FFFFFF] hover:bg-[#F3E8E8] text-slate-300 rounded-xl"
+                  className="px-3 py-1.5 bg-[#FFFFFF] hover:bg-[#FFF7ED] text-slate-300 rounded-xl"
                 >
                   Cancel
                 </button>
@@ -400,15 +400,15 @@ export default function GymAdminShortlisted() {
       {/* Issue Job Offer Modal */}
       {showOfferModal && selectedApp && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-2xl max-w-md w-full p-6 text-white space-y-4">
-            <div className="flex items-center justify-between border-b border-[#E7DADD] pb-3">
-              <h3 className="font-bold text-base flex items-center gap-2 text-[#B76E79]">
+          <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl max-w-md w-full p-6 text-[#1F2937] space-y-4">
+            <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-3">
+              <h3 className="font-bold text-base flex items-center gap-2 text-[#EA580C]">
                 <Gift className="w-5 h-5" />
                 Issue Offer: {selectedApp.fullName}
               </h3>
               <button
                 onClick={() => setShowOfferModal(false)}
-                className="text-slate-400 hover:text-white"
+                className="text-[#64748B] hover:text-[#C2410C]"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -426,7 +426,7 @@ export default function GymAdminShortlisted() {
                     onChange={(e) =>
                       setOfferForm({ ...offerForm, offeredSalary: e.target.value })
                     }
-                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-white focus:outline-none focus:border-[#B76E79]"
+                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-white focus:outline-none focus:border-[#FDBA74]"
                   />
                 </div>
                 <div>
@@ -436,7 +436,7 @@ export default function GymAdminShortlisted() {
                     onChange={(e) =>
                       setOfferForm({ ...offerForm, salaryPeriod: e.target.value })
                     }
-                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-white focus:outline-none focus:border-[#B76E79]"
+                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-white focus:outline-none focus:border-[#FDBA74]"
                   >
                     <option value="Month">Per Month</option>
                     <option value="Year">Per Annum (LPA)</option>
@@ -453,7 +453,7 @@ export default function GymAdminShortlisted() {
                     onChange={(e) =>
                       setOfferForm({ ...offerForm, employmentType: e.target.value })
                     }
-                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-white focus:outline-none focus:border-[#B76E79]"
+                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-white focus:outline-none focus:border-[#FDBA74]"
                   >
                     <option value="Full-time">Full-time</option>
                     <option value="Part-time">Part-time</option>
@@ -470,7 +470,7 @@ export default function GymAdminShortlisted() {
                     onChange={(e) =>
                       setOfferForm({ ...offerForm, joiningDate: e.target.value })
                     }
-                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-white focus:outline-none focus:border-[#B76E79]"
+                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-white focus:outline-none focus:border-[#FDBA74]"
                   />
                 </div>
               </div>
@@ -482,22 +482,22 @@ export default function GymAdminShortlisted() {
                   placeholder="e.g. Performance bonus, gym gear allowance."
                   value={offerForm.terms}
                   onChange={(e) => setOfferForm({ ...offerForm, terms: e.target.value })}
-                  className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-white focus:outline-none focus:border-[#B76E79] resize-none"
+                  className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-white focus:outline-none focus:border-[#FDBA74] resize-none"
                 />
               </div>
 
-              <div className="pt-3 border-t border-[#E7DADD] flex justify-end gap-2">
+              <div className="pt-3 border-t border-[#E2E8F0] flex justify-end gap-2">
                 <button
                   type="button"
                   onClick={() => setShowOfferModal(false)}
-                  className="px-3 py-1.5 bg-[#FFFFFF] hover:bg-[#F3E8E8] text-slate-300 rounded-xl"
+                  className="px-3 py-1.5 bg-[#FFFFFF] hover:bg-[#FFF7ED] text-slate-300 rounded-xl"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={actionLoading}
-                  className="px-4 py-1.5 bg-[#B76E79] hover:bg-[#9F5965] text-white font-semibold rounded-xl"
+                  className="px-4 py-1.5 bg-[#C2410C] hover:bg-[#9A3412] text-white font-semibold rounded-xl"
                 >
                   Dispatch Job Offer
                 </button>

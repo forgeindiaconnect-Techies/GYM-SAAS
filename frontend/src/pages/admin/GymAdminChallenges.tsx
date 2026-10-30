@@ -323,19 +323,19 @@ export default function GymAdminChallenges() {
   const totalCompletions = challenges.reduce((acc, c) => acc + (c.completionCount || 0), 0);
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto p-4 sm:p-6" style={{ backgroundColor: '#F3E8E8', minHeight: '100vh' }}>
+    <div className="space-y-6 max-w-7xl mx-auto p-4 sm:p-6" style={{ backgroundColor: '#F8FAFC', minHeight: '100vh' }}>
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-[#FFFFFF] p-6 rounded-2xl border shadow-sm" style={{ borderColor: '#E7DADD' }}>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-[#FFFFFF] p-6 rounded-2xl border shadow-sm" style={{ borderColor: '#E2E8F0' }}>
         <div>
           <div className="flex items-center gap-3">
-            <div className="p-3 rounded-xl" style={{ backgroundColor: '#F3E8E8' }}>
-              <Trophy className="w-7 h-7" style={{ color: '#B76E79' }} />
+            <div className="p-3 rounded-xl" style={{ backgroundColor: '#F8FAFC' }}>
+              <Trophy className="w-7 h-7" style={{ color: '#F97316' }} />
             </div>
             <div>
               <h1 className="text-2xl font-bold" style={{ color: '#FFFFFF' }}>
                 Fitness Challenges
               </h1>
-              <p className="text-sm" style={{ color: '#57534E' }}>
+              <p className="text-sm" style={{ color: '#64748B' }}>
                 Create, track, and manage gym attendance and workout challenges to boost member engagement.
               </p>
             </div>
@@ -345,7 +345,7 @@ export default function GymAdminChallenges() {
         <button
           onClick={openCreateModal}
           className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-white font-medium shadow transition hover:opacity-90"
-          style={{ backgroundColor: '#B76E79' }}
+          style={{ backgroundColor: '#F97316' }}
         >
           <Plus className="w-5 h-5" />
           Create Challenge
@@ -357,7 +357,7 @@ export default function GymAdminChallenges() {
         <div
           className={`p-4 rounded-xl flex items-center justify-between border ${
             message.type === 'success'
-              ? 'bg-[#F3E8E8] border-[#E7DADD] text-[#B76E79]'
+              ? 'bg-[#F8FAFC] border-[#E2E8F0] text-[#EA580C]'
               : 'bg-red-50 border-red-200 text-red-800'
           }`}
         >
@@ -373,74 +373,74 @@ export default function GymAdminChallenges() {
 
       {/* Metrics Row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-[#FFFFFF] p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#E7DADD' }}>
+        <div className="bg-[#FFFFFF] p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#E2E8F0' }}>
           <div className="flex justify-between items-center">
-            <span className="text-sm font-medium" style={{ color: '#57534E' }}>Total Challenges</span>
-            <span className="p-2 rounded-lg" style={{ backgroundColor: '#F3E8E8', color: '#B76E79' }}>
+            <span className="text-sm font-medium" style={{ color: '#64748B' }}>Total Challenges</span>
+            <span className="p-2 rounded-lg" style={{ backgroundColor: '#F8FAFC', color: '#F97316' }}>
               <Trophy className="w-4 h-4" />
             </span>
           </div>
           <div className="mt-3 text-3xl font-bold" style={{ color: '#FFFFFF' }}>{totalChallenges}</div>
-          <p className="text-xs mt-1" style={{ color: '#57534E' }}>All time created</p>
+          <p className="text-xs mt-1" style={{ color: '#64748B' }}>All time created</p>
         </div>
 
-        <div className="bg-[#FFFFFF] p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#E7DADD' }}>
+        <div className="bg-[#FFFFFF] p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#E2E8F0' }}>
           <div className="flex justify-between items-center">
-            <span className="text-sm font-medium" style={{ color: '#57534E' }}>Active Challenges</span>
-            <span className="p-2 rounded-lg" style={{ backgroundColor: '#F3E8E8', color: '#B76E79' }}>
+            <span className="text-sm font-medium" style={{ color: '#64748B' }}>Active Challenges</span>
+            <span className="p-2 rounded-lg" style={{ backgroundColor: '#F8FAFC', color: '#F97316' }}>
               <Activity className="w-4 h-4" />
             </span>
           </div>
-          <div className="mt-3 text-3xl font-bold" style={{ color: '#B76E79' }}>{activeChallenges}</div>
-          <p className="text-xs mt-1" style={{ color: '#57534E' }}>Currently published & active</p>
+          <div className="mt-3 text-3xl font-bold" style={{ color: '#F97316' }}>{activeChallenges}</div>
+          <p className="text-xs mt-1" style={{ color: '#64748B' }}>Currently published & active</p>
         </div>
 
-        <div className="bg-[#FFFFFF] p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#E7DADD' }}>
+        <div className="bg-[#FFFFFF] p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#E2E8F0' }}>
           <div className="flex justify-between items-center">
-            <span className="text-sm font-medium" style={{ color: '#57534E' }}>Enrolled Members</span>
-            <span className="p-2 rounded-lg" style={{ backgroundColor: '#F3E8E8', color: '#B76E79' }}>
+            <span className="text-sm font-medium" style={{ color: '#64748B' }}>Enrolled Members</span>
+            <span className="p-2 rounded-lg" style={{ backgroundColor: '#F8FAFC', color: '#F97316' }}>
               <Users className="w-4 h-4" />
             </span>
           </div>
           <div className="mt-3 text-3xl font-bold" style={{ color: '#FFFFFF' }}>{totalParticipants}</div>
-          <p className="text-xs mt-1" style={{ color: '#57534E' }}>Total participant enrollments</p>
+          <p className="text-xs mt-1" style={{ color: '#64748B' }}>Total participant enrollments</p>
         </div>
 
-        <div className="bg-[#FFFFFF] p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#E7DADD' }}>
+        <div className="bg-[#FFFFFF] p-5 rounded-2xl border shadow-sm" style={{ borderColor: '#E2E8F0' }}>
           <div className="flex justify-between items-center">
-            <span className="text-sm font-medium" style={{ color: '#57534E' }}>Completed Goals</span>
-            <span className="p-2 rounded-lg" style={{ backgroundColor: '#F3E8E8', color: '#15803D' }}>
+            <span className="text-sm font-medium" style={{ color: '#64748B' }}>Completed Goals</span>
+            <span className="p-2 rounded-lg" style={{ backgroundColor: '#F8FAFC', color: '#15803D' }}>
               <CheckCircle2 className="w-4 h-4" />
             </span>
           </div>
           <div className="mt-3 text-3xl font-bold" style={{ color: '#15803D' }}>{totalCompletions}</div>
-          <p className="text-xs mt-1" style={{ color: '#57534E' }}>Successful finishes</p>
+          <p className="text-xs mt-1" style={{ color: '#64748B' }}>Successful finishes</p>
         </div>
       </div>
 
       {/* Filters and Search */}
-      <div className="bg-[#FFFFFF] p-4 rounded-2xl border shadow-sm flex flex-col md:flex-row gap-4 justify-between items-center" style={{ borderColor: '#E7DADD' }}>
+      <div className="bg-[#FFFFFF] p-4 rounded-2xl border shadow-sm flex flex-col md:flex-row gap-4 justify-between items-center" style={{ borderColor: '#E2E8F0' }}>
         <div className="relative w-full md:w-80">
-          <Search className="w-4 h-4 absolute left-3 top-3" style={{ color: '#57534E' }} />
+          <Search className="w-4 h-4 absolute left-3 top-3" style={{ color: '#64748B' }} />
           <input
             type="text"
             placeholder="Search challenges..."
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
             className="w-full pl-9 pr-4 py-2 rounded-xl text-sm border focus:outline-none focus:ring-2"
-            style={{ borderColor: '#E7DADD' }}
+            style={{ borderColor: '#E2E8F0' }}
           />
         </div>
 
         <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
           <div className="flex items-center gap-2">
-            <Filter className="w-4 h-4" style={{ color: '#57534E' }} />
-            <span className="text-xs font-semibold" style={{ color: '#57534E' }}>TYPE:</span>
+            <Filter className="w-4 h-4" style={{ color: '#64748B' }} />
+            <span className="text-xs font-semibold" style={{ color: '#64748B' }}>TYPE:</span>
             <select
               value={typeFilter}
               onChange={e => setTypeFilter(e.target.value)}
               className="px-3 py-1.5 rounded-xl text-xs font-medium border bg-[#FFFFFF] focus:outline-none"
-              style={{ borderColor: '#E7DADD', color: '#FFFFFF' }}
+              style={{ borderColor: '#E2E8F0', color: '#FFFFFF' }}
             >
               <option value="ALL">All Types</option>
               <option value="Attendance">Attendance</option>
@@ -450,12 +450,12 @@ export default function GymAdminChallenges() {
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-xs font-semibold" style={{ color: '#57534E' }}>STATUS:</span>
+            <span className="text-xs font-semibold" style={{ color: '#64748B' }}>STATUS:</span>
             <select
               value={statusFilter}
               onChange={e => setStatusFilter(e.target.value)}
               className="px-3 py-1.5 rounded-xl text-xs font-medium border bg-[#FFFFFF] focus:outline-none"
-              style={{ borderColor: '#E7DADD', color: '#FFFFFF' }}
+              style={{ borderColor: '#E2E8F0', color: '#FFFFFF' }}
             >
               <option value="ALL">All Statuses</option>
               <option value="Published">Published</option>
@@ -469,17 +469,17 @@ export default function GymAdminChallenges() {
 
       {/* Challenges List */}
       {loading ? (
-        <div className="text-center py-16 bg-[#FFFFFF] rounded-2xl border" style={{ borderColor: '#E7DADD' }}>
-          <div className="w-10 h-10 border-4 border-t-transparent rounded-full animate-spin mx-auto" style={{ borderColor: '#B76E79', borderTopColor: 'transparent' }} />
-          <p className="mt-3 text-sm font-medium" style={{ color: '#57534E' }}>Loading challenges...</p>
+        <div className="text-center py-16 bg-[#FFFFFF] rounded-2xl border" style={{ borderColor: '#E2E8F0' }}>
+          <div className="w-10 h-10 border-4 border-t-transparent rounded-full animate-spin mx-auto" style={{ borderColor: '#F97316', borderTopColor: 'transparent' }} />
+          <p className="mt-3 text-sm font-medium" style={{ color: '#64748B' }}>Loading challenges...</p>
         </div>
       ) : filteredChallenges.length === 0 ? (
-        <div className="text-center py-16 bg-[#FFFFFF] rounded-2xl border" style={{ borderColor: '#E7DADD' }}>
-          <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{ backgroundColor: '#F3E8E8', color: '#B76E79' }}>
+        <div className="text-center py-16 bg-[#FFFFFF] rounded-2xl border" style={{ borderColor: '#E2E8F0' }}>
+          <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{ backgroundColor: '#F8FAFC', color: '#F97316' }}>
             <Trophy className="w-8 h-8" />
           </div>
           <h3 className="text-lg font-bold" style={{ color: '#FFFFFF' }}>No Fitness Challenges Found</h3>
-          <p className="text-sm max-w-md mx-auto mt-1" style={{ color: '#57534E' }}>
+          <p className="text-sm max-w-md mx-auto mt-1" style={{ color: '#64748B' }}>
             {searchQuery || typeFilter !== 'ALL' || statusFilter !== 'ALL'
               ? 'No challenges match your active filters. Try resetting the search or filter options.'
               : 'Launch your first gym challenge today to motivate your members with verified attendance and workout streaks.'}
@@ -487,7 +487,7 @@ export default function GymAdminChallenges() {
           <button
             onClick={openCreateModal}
             className="mt-5 px-5 py-2.5 rounded-xl text-white font-medium inline-flex items-center gap-2"
-            style={{ backgroundColor: '#B76E79' }}
+            style={{ backgroundColor: '#F97316' }}
           >
             <Plus className="w-4 h-4" /> Create Challenge
           </button>
@@ -507,7 +507,7 @@ export default function GymAdminChallenges() {
               <div
                 key={challenge._id}
                 className="bg-[#FFFFFF] rounded-2xl border shadow-sm flex flex-col justify-between overflow-hidden hover:shadow-md transition-shadow"
-                style={{ borderColor: '#E7DADD' }}
+                style={{ borderColor: '#E2E8F0' }}
               >
                 {/* Card Top */}
                 <div className="p-5 space-y-4">
@@ -518,13 +518,13 @@ export default function GymAdminChallenges() {
                       style={{
                         backgroundColor:
                           challenge.challengeType === 'Attendance'
-                            ? '#F3E8E8'
+                            ? '#F8FAFC'
                             : challenge.challengeType === 'Workout Completion'
                             ? '#FEF3C7'
                             : '#EDE9FE',
                         color:
                           challenge.challengeType === 'Attendance'
-                            ? '#B76E79'
+                            ? '#F97316'
                             : challenge.challengeType === 'Workout Completion'
                             ? '#B45309'
                             : '#7C3AED'
@@ -536,12 +536,12 @@ export default function GymAdminChallenges() {
                     <span
                       className={`text-xs px-2.5 py-1 rounded-full font-semibold ${
                         challenge.status === 'Published'
-                          ? 'bg-[#F3E8E8] text-[#B76E79]'
+                          ? 'bg-[#F8FAFC] text-[#EA580C]'
                           : challenge.status === 'Paused'
                           ? 'bg-amber-100 text-amber-800'
                           : challenge.status === 'Completed'
-                          ? 'bg-[#F3E8E8] text-[#B76E79]'
-                          : 'bg-[#F3E8E8] text-[#292524]'
+                          ? 'bg-[#F8FAFC] text-[#EA580C]'
+                          : 'bg-[#F8FAFC] text-[#111827]'
                       }`}
                     >
                       {challenge.status}
@@ -551,14 +551,14 @@ export default function GymAdminChallenges() {
                   {/* Title & Badge */}
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="p-1.5 rounded-lg" style={{ backgroundColor: '#F3E8E8', color: '#B76E79' }}>
+                      <span className="p-1.5 rounded-lg" style={{ backgroundColor: '#F8FAFC', color: '#F97316' }}>
                         <IconComponent className="w-5 h-5" />
                       </span>
                       <h3 className="font-bold text-lg leading-tight line-clamp-1" style={{ color: '#FFFFFF' }}>
                         {challenge.title}
                       </h3>
                     </div>
-                    <p className="text-xs line-clamp-2 mt-2" style={{ color: '#57534E' }}>
+                    <p className="text-xs line-clamp-2 mt-2" style={{ color: '#64748B' }}>
                       {challenge.description}
                     </p>
                   </div>
@@ -566,25 +566,25 @@ export default function GymAdminChallenges() {
                   {/* Target & Rules */}
                   <div className="grid grid-cols-2 gap-2 p-3 rounded-xl text-xs" style={{ backgroundColor: '#FFFFFF' }}>
                     <div>
-                      <span className="text-muted block text-[11px]" style={{ color: '#57534E' }}>TARGET GOAL</span>
+                      <span className="text-muted block text-[11px]" style={{ color: '#64748B' }}>TARGET GOAL</span>
                       <span className="font-bold text-sm" style={{ color: '#FFFFFF' }}>
                         {challenge.targetValue} {challenge.targetUnit}
                       </span>
                     </div>
                     <div>
-                      <span className="text-muted block text-[11px]" style={{ color: '#57534E' }}>POINTS / ACTIVITY</span>
-                      <span className="font-bold text-sm" style={{ color: '#B76E79' }}>
+                      <span className="text-muted block text-[11px]" style={{ color: '#64748B' }}>POINTS / ACTIVITY</span>
+                      <span className="font-bold text-sm" style={{ color: '#F97316' }}>
                         +{challenge.pointsPerActivity} pts
                       </span>
                     </div>
                     <div>
-                      <span className="text-muted block text-[11px]" style={{ color: '#57534E' }}>COMPLETION BONUS</span>
+                      <span className="text-muted block text-[11px]" style={{ color: '#64748B' }}>COMPLETION BONUS</span>
                       <span className="font-bold text-sm" style={{ color: '#15803D' }}>
                         +{challenge.completionBonusPoints} pts
                       </span>
                     </div>
                     <div>
-                      <span className="text-muted block text-[11px]" style={{ color: '#57534E' }}>BADGE AWARD</span>
+                      <span className="text-muted block text-[11px]" style={{ color: '#64748B' }}>BADGE AWARD</span>
                       <span className="font-semibold text-xs truncate block" style={{ color: '#FFFFFF' }}>
                         {challenge.badgeName}
                       </span>
@@ -593,17 +593,17 @@ export default function GymAdminChallenges() {
 
                   {/* Reward Attached */}
                   {challenge.rewardId && (
-                    <div className="flex items-center gap-2 p-2.5 rounded-xl border border-dashed text-xs" style={{ borderColor: '#B76E79', backgroundColor: '#F0F9F8' }}>
-                      <Gift className="w-4 h-4 shrink-0" style={{ color: '#B76E79' }} />
+                    <div className="flex items-center gap-2 p-2.5 rounded-xl border border-dashed text-xs" style={{ borderColor: '#F97316', backgroundColor: '#F0F9F8' }}>
+                      <Gift className="w-4 h-4 shrink-0" style={{ color: '#F97316' }} />
                       <div className="truncate">
-                        <span className="font-bold" style={{ color: '#B76E79' }}>Linked Reward: </span>
+                        <span className="font-bold" style={{ color: '#F97316' }}>Linked Reward: </span>
                         <span style={{ color: '#FFFFFF' }}>{(challenge.rewardId as any).title || 'Coupon'}</span>
                       </div>
                     </div>
                   )}
 
                   {/* Date Range */}
-                  <div className="flex items-center justify-between text-xs" style={{ color: '#57534E' }}>
+                  <div className="flex items-center justify-between text-xs" style={{ color: '#64748B' }}>
                     <div className="flex items-center gap-1">
                       <Calendar className="w-3.5 h-3.5" />
                       <span>{new Date(challenge.startDate).toLocaleDateString()} - {new Date(challenge.endDate).toLocaleDateString()}</span>
@@ -614,25 +614,25 @@ export default function GymAdminChallenges() {
                   {/* Participation Bar */}
                   <div className="space-y-1">
                     <div className="flex justify-between text-xs font-medium">
-                      <span style={{ color: '#57534E' }}>{challenge.participantCount} Enrolled</span>
+                      <span style={{ color: '#64748B' }}>{challenge.participantCount} Enrolled</span>
                       <span style={{ color: '#15803D' }}>{challenge.completionCount} Completed ({completionRate}%)</span>
                     </div>
-                    <div className="w-full h-2 rounded-full overflow-hidden" style={{ backgroundColor: '#F3E8E8' }}>
+                    <div className="w-full h-2 rounded-full overflow-hidden" style={{ backgroundColor: '#F8FAFC' }}>
                       <div
                         className="h-full rounded-full transition-all duration-300"
-                        style={{ width: `${Math.min(100, completionRate)}%`, backgroundColor: '#B76E79' }}
+                        style={{ width: `${Math.min(100, completionRate)}%`, backgroundColor: '#F97316' }}
                       />
                     </div>
                   </div>
                 </div>
 
                 {/* Card Actions Footer */}
-                <div className="p-4 border-t flex flex-wrap items-center justify-between gap-2" style={{ borderColor: '#E7DADD', backgroundColor: '#FAFCFC' }}>
+                <div className="p-4 border-t flex flex-wrap items-center justify-between gap-2" style={{ borderColor: '#E2E8F0', backgroundColor: '#FAFCFC' }}>
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => openParticipantsModal(challenge)}
                       className="px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 border transition hover:bg-[#FFFFFF]"
-                      style={{ borderColor: '#E7DADD', color: '#FFFFFF' }}
+                      style={{ borderColor: '#E2E8F0', color: '#FFFFFF' }}
                       title="View enrolled participants & verified progress"
                     >
                       <Users className="w-3.5 h-3.5" />
@@ -643,7 +643,7 @@ export default function GymAdminChallenges() {
                       <button
                         onClick={() => openLeaderboardModal(challenge)}
                         className="px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 border transition hover:bg-[#FFFFFF]"
-                        style={{ borderColor: '#E7DADD', color: '#B76E79' }}
+                        style={{ borderColor: '#E2E8F0', color: '#F97316' }}
                         title="View live challenge leaderboard"
                       >
                         <Trophy className="w-3.5 h-3.5" />
@@ -664,7 +664,7 @@ export default function GymAdminChallenges() {
                     ) : challenge.status === 'Paused' ? (
                       <button
                         onClick={() => handleStatusChange(challenge._id, 'Published')}
-                        className="p-1.5 text-xs rounded-lg hover:bg-[#F3E8E8] text-[#B76E79]"
+                        className="p-1.5 text-xs rounded-lg hover:bg-[#FFF7ED] text-[#EA580C]"
                         title="Publish Challenge"
                       >
                         Publish
@@ -673,7 +673,7 @@ export default function GymAdminChallenges() {
 
                     <button
                       onClick={() => openEditModal(challenge)}
-                      className="p-1.5 rounded-lg hover:bg-[#F3E8E8] text-[#292524]"
+                      className="p-1.5 rounded-lg hover:bg-[#FFF7ED] text-[#111827]"
                       title="Edit Challenge"
                     >
                       <Edit className="w-4 h-4" />
@@ -697,17 +697,17 @@ export default function GymAdminChallenges() {
       {/* CREATE / EDIT CHALLENGE MODAL */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-[#FFFFFF] rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl border my-8" style={{ borderColor: '#E7DADD' }}>
-            <div className="sticky top-0 bg-[#FFFFFF] px-6 py-4 border-b flex justify-between items-center z-10" style={{ borderColor: '#E7DADD' }}>
+          <div className="bg-[#FFFFFF] rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl border my-8" style={{ borderColor: '#E2E8F0' }}>
+            <div className="sticky top-0 bg-[#FFFFFF] px-6 py-4 border-b flex justify-between items-center z-10" style={{ borderColor: '#E2E8F0' }}>
               <div className="flex items-center gap-2">
-                <Trophy className="w-5 h-5" style={{ color: '#B76E79' }} />
+                <Trophy className="w-5 h-5" style={{ color: '#F97316' }} />
                 <h2 className="text-lg font-bold" style={{ color: '#FFFFFF' }}>
                   {isEditMode ? 'Edit Fitness Challenge' : 'Create New Fitness Challenge'}
                 </h2>
               </div>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="p-1.5 rounded-lg hover:bg-[#F3E8E8] text-[#57534E]"
+                className="p-1.5 rounded-lg hover:bg-[#FFF7ED] text-[#64748B]"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -726,7 +726,7 @@ export default function GymAdminChallenges() {
                   value={formData.title}
                   onChange={e => setFormData({ ...formData, title: e.target.value })}
                   className="w-full px-3.5 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2"
-                  style={{ borderColor: '#E7DADD' }}
+                  style={{ borderColor: '#E2E8F0' }}
                 />
               </div>
 
@@ -742,7 +742,7 @@ export default function GymAdminChallenges() {
                   value={formData.description}
                   onChange={e => setFormData({ ...formData, description: e.target.value })}
                   className="w-full px-3.5 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2"
-                  style={{ borderColor: '#E7DADD' }}
+                  style={{ borderColor: '#E2E8F0' }}
                 />
               </div>
 
@@ -763,7 +763,7 @@ export default function GymAdminChallenges() {
                       });
                     }}
                     className="w-full px-3 py-2 rounded-xl border text-sm focus:outline-none"
-                    style={{ borderColor: '#E7DADD' }}
+                    style={{ borderColor: '#E2E8F0' }}
                   >
                     <option value="Attendance">Attendance</option>
                     <option value="Workout Completion">Workout Completion</option>
@@ -781,7 +781,7 @@ export default function GymAdminChallenges() {
                     value={formData.startDate}
                     onChange={e => setFormData({ ...formData, startDate: e.target.value })}
                     className="w-full px-3 py-2 rounded-xl border text-sm focus:outline-none"
-                    style={{ borderColor: '#E7DADD' }}
+                    style={{ borderColor: '#E2E8F0' }}
                   />
                 </div>
 
@@ -795,7 +795,7 @@ export default function GymAdminChallenges() {
                     value={formData.endDate}
                     onChange={e => setFormData({ ...formData, endDate: e.target.value })}
                     className="w-full px-3 py-2 rounded-xl border text-sm focus:outline-none"
-                    style={{ borderColor: '#E7DADD' }}
+                    style={{ borderColor: '#E2E8F0' }}
                   />
                 </div>
               </div>
@@ -813,9 +813,9 @@ export default function GymAdminChallenges() {
                     value={formData.targetValue}
                     onChange={e => setFormData({ ...formData, targetValue: Number(e.target.value) })}
                     className="w-full px-3 py-2 rounded-xl border text-sm focus:outline-none"
-                    style={{ borderColor: '#E7DADD' }}
+                    style={{ borderColor: '#E2E8F0' }}
                   />
-                  <span className="text-[11px] mt-0.5 block" style={{ color: '#57534E' }}>
+                  <span className="text-[11px] mt-0.5 block" style={{ color: '#64748B' }}>
                     e.g. 12 gym visits, 15 workouts, or 14 streak days
                   </span>
                 </div>
@@ -829,7 +829,7 @@ export default function GymAdminChallenges() {
                     value={formData.targetUnit}
                     onChange={e => setFormData({ ...formData, targetUnit: e.target.value })}
                     className="w-full px-3 py-2 rounded-xl border text-sm focus:outline-none"
-                    style={{ borderColor: '#E7DADD' }}
+                    style={{ borderColor: '#E2E8F0' }}
                   />
                 </div>
               </div>
@@ -846,7 +846,7 @@ export default function GymAdminChallenges() {
                     value={formData.pointsPerActivity}
                     onChange={e => setFormData({ ...formData, pointsPerActivity: Number(e.target.value) })}
                     className="w-full px-3 py-2 rounded-xl border text-sm focus:outline-none bg-[#FFFFFF]"
-                    style={{ borderColor: '#E7DADD' }}
+                    style={{ borderColor: '#E2E8F0' }}
                   />
                 </div>
 
@@ -860,7 +860,7 @@ export default function GymAdminChallenges() {
                     value={formData.completionBonusPoints}
                     onChange={e => setFormData({ ...formData, completionBonusPoints: Number(e.target.value) })}
                     className="w-full px-3 py-2 rounded-xl border text-sm focus:outline-none bg-[#FFFFFF]"
-                    style={{ borderColor: '#E7DADD' }}
+                    style={{ borderColor: '#E2E8F0' }}
                   />
                 </div>
               </div>
@@ -877,7 +877,7 @@ export default function GymAdminChallenges() {
                     value={formData.badgeName}
                     onChange={e => setFormData({ ...formData, badgeName: e.target.value })}
                     className="w-full px-3 py-2 rounded-xl border text-sm focus:outline-none"
-                    style={{ borderColor: '#E7DADD' }}
+                    style={{ borderColor: '#E2E8F0' }}
                   />
                 </div>
 
@@ -889,7 +889,7 @@ export default function GymAdminChallenges() {
                     value={formData.badgeIcon}
                     onChange={e => setFormData({ ...formData, badgeIcon: e.target.value })}
                     className="w-full px-3 py-2 rounded-xl border text-sm focus:outline-none"
-                    style={{ borderColor: '#E7DADD' }}
+                    style={{ borderColor: '#E2E8F0' }}
                   >
                     <option value="Award">Award (Standard)</option>
                     <option value="Trophy">Trophy (Prestige)</option>
@@ -902,21 +902,21 @@ export default function GymAdminChallenges() {
               </div>
 
               {/* Optional Linked Reward */}
-              <div className="p-4 rounded-xl border" style={{ borderColor: '#E7DADD' }}>
-                <h4 className="text-xs font-bold mb-2 flex items-center gap-1.5" style={{ color: '#B76E79' }}>
+              <div className="p-4 rounded-xl border" style={{ borderColor: '#E2E8F0' }}>
+                <h4 className="text-xs font-bold mb-2 flex items-center gap-1.5" style={{ color: '#F97316' }}>
                   <Gift className="w-4 h-4" /> Optional Completion Reward
                 </h4>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div className="sm:col-span-1">
-                    <label className="block text-xs font-medium mb-1" style={{ color: '#57534E' }}>
+                    <label className="block text-xs font-medium mb-1" style={{ color: '#64748B' }}>
                       Reward Definition
                     </label>
                     <select
                       value={formData.rewardId}
                       onChange={e => setFormData({ ...formData, rewardId: e.target.value })}
                       className="w-full px-3 py-2 rounded-xl border text-sm focus:outline-none"
-                      style={{ borderColor: '#E7DADD' }}
+                      style={{ borderColor: '#E2E8F0' }}
                     >
                       <option value="">No reward attached</option>
                       {rewards.map(r => (
@@ -928,7 +928,7 @@ export default function GymAdminChallenges() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-medium mb-1" style={{ color: '#57534E' }}>
+                    <label className="block text-xs font-medium mb-1" style={{ color: '#64748B' }}>
                       Reward Quantity Limit
                     </label>
                     <input
@@ -938,12 +938,12 @@ export default function GymAdminChallenges() {
                       value={formData.rewardQuantity}
                       onChange={e => setFormData({ ...formData, rewardQuantity: Number(e.target.value) })}
                       className="w-full px-3 py-2 rounded-xl border text-sm focus:outline-none"
-                      style={{ borderColor: '#E7DADD' }}
+                      style={{ borderColor: '#E2E8F0' }}
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-medium mb-1" style={{ color: '#57534E' }}>
+                    <label className="block text-xs font-medium mb-1" style={{ color: '#64748B' }}>
                       Reward Expiry Date
                     </label>
                     <input
@@ -951,7 +951,7 @@ export default function GymAdminChallenges() {
                       value={formData.rewardExpiryDate}
                       onChange={e => setFormData({ ...formData, rewardExpiryDate: e.target.value })}
                       className="w-full px-3 py-2 rounded-xl border text-sm focus:outline-none"
-                      style={{ borderColor: '#E7DADD' }}
+                      style={{ borderColor: '#E2E8F0' }}
                     />
                   </div>
                 </div>
@@ -963,7 +963,7 @@ export default function GymAdminChallenges() {
                   <label className="block text-xs font-bold mb-2" style={{ color: '#FFFFFF' }}>
                     Eligible Customer Packages (Leave unselected for all packages)
                   </label>
-                  <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto p-2 border rounded-xl" style={{ borderColor: '#E7DADD' }}>
+                  <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto p-2 border rounded-xl" style={{ borderColor: '#E2E8F0' }}>
                     {packages.map(pkg => {
                       const isSelected = formData.eligiblePackageIds.includes(pkg._id);
                       return (
@@ -985,8 +985,8 @@ export default function GymAdminChallenges() {
                           }}
                           className={`px-3 py-1.5 rounded-lg text-xs font-medium border flex items-center gap-1.5 transition ${
                             isSelected
-                              ? 'bg-[#F3E8E8] border-[#B76E79] text-[#B76E79]'
-                              : 'bg-[#FFFFFF] border-[#E7DADD] text-[#292524] hover:border-[#E7DADD]'
+                              ? 'bg-[#F8FAFC] border-[#FDBA74] text-[#EA580C]'
+                              : 'bg-[#FFFFFF] border-[#E2E8F0] text-[#111827] hover:border-[#E2E8F0]'
                           }`}
                         >
                           {isSelected && <Check className="w-3.5 h-3.5" />}
@@ -999,14 +999,14 @@ export default function GymAdminChallenges() {
               )}
 
               {/* Toggles & Status */}
-              <div className="flex flex-wrap items-center justify-between gap-4 pt-2 border-t" style={{ borderColor: '#E7DADD' }}>
+              <div className="flex flex-wrap items-center justify-between gap-4 pt-2 border-t" style={{ borderColor: '#E2E8F0' }}>
                 <div className="flex items-center gap-6">
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input
                       type="checkbox"
                       checked={formData.isLeaderboardEnabled}
                       onChange={e => setFormData({ ...formData, isLeaderboardEnabled: e.target.checked })}
-                      className="rounded text-[#B76E79] focus:ring-[#B76E79]"
+                      className="rounded text-[#EA580C] focus:ring-[#F97316]"
                     />
                     <span className="text-xs font-medium" style={{ color: '#FFFFFF' }}>Enable Public Leaderboard</span>
                   </label>
@@ -1016,7 +1016,7 @@ export default function GymAdminChallenges() {
                       type="checkbox"
                       checked={formData.requireApproval}
                       onChange={e => setFormData({ ...formData, requireApproval: e.target.checked })}
-                      className="rounded text-[#B76E79] focus:ring-[#B76E79]"
+                      className="rounded text-[#EA580C] focus:ring-[#F97316]"
                     />
                     <span className="text-xs font-medium" style={{ color: '#FFFFFF' }}>Require Claim Approval</span>
                   </label>
@@ -1028,7 +1028,7 @@ export default function GymAdminChallenges() {
                     value={formData.status}
                     onChange={e => setFormData({ ...formData, status: e.target.value as any })}
                     className="px-3 py-1.5 rounded-xl border text-xs font-semibold focus:outline-none"
-                    style={{ borderColor: '#E7DADD' }}
+                    style={{ borderColor: '#E2E8F0' }}
                   >
                     <option value="Published">Published</option>
                     <option value="Draft">Draft</option>
@@ -1039,19 +1039,19 @@ export default function GymAdminChallenges() {
               </div>
 
               {/* Submit Buttons */}
-              <div className="flex justify-end gap-3 pt-4 border-t" style={{ borderColor: '#E7DADD' }}>
+              <div className="flex justify-end gap-3 pt-4 border-t" style={{ borderColor: '#E2E8F0' }}>
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 rounded-xl border text-sm font-medium hover:bg-[#F3E8E8]"
-                  style={{ borderColor: '#E7DADD', color: '#57534E' }}
+                  className="px-4 py-2 rounded-xl border text-sm font-medium hover:bg-[#FFF7ED]"
+                  style={{ borderColor: '#E2E8F0', color: '#64748B' }}
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   className="px-6 py-2 rounded-xl text-white text-sm font-semibold shadow hover:opacity-90"
-                  style={{ backgroundColor: '#B76E79' }}
+                  style={{ backgroundColor: '#F97316' }}
                 >
                   {isEditMode ? 'Save Changes' : 'Publish Challenge'}
                 </button>
@@ -1064,19 +1064,19 @@ export default function GymAdminChallenges() {
       {/* PARTICIPANTS MODAL */}
       {participantsModalOpen && viewingChallenge && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-[#FFFFFF] rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl border" style={{ borderColor: '#E7DADD' }}>
-            <div className="sticky top-0 bg-[#FFFFFF] px-6 py-4 border-b flex justify-between items-center z-10" style={{ borderColor: '#E7DADD' }}>
+          <div className="bg-[#FFFFFF] rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl border" style={{ borderColor: '#E2E8F0' }}>
+            <div className="sticky top-0 bg-[#FFFFFF] px-6 py-4 border-b flex justify-between items-center z-10" style={{ borderColor: '#E2E8F0' }}>
               <div>
                 <h3 className="text-lg font-bold" style={{ color: '#FFFFFF' }}>
                   Enrolled Participants — {viewingChallenge.title}
                 </h3>
-                <p className="text-xs" style={{ color: '#57534E' }}>
+                <p className="text-xs" style={{ color: '#64748B' }}>
                   Target: {viewingChallenge.targetValue} {viewingChallenge.targetUnit} • Type: {viewingChallenge.challengeType}
                 </p>
               </div>
               <button
                 onClick={() => setParticipantsModalOpen(false)}
-                className="p-1.5 rounded-lg hover:bg-[#F3E8E8] text-[#57534E]"
+                className="p-1.5 rounded-lg hover:bg-[#FFF7ED] text-[#64748B]"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -1084,16 +1084,16 @@ export default function GymAdminChallenges() {
 
             <div className="p-6">
               {loadingParticipants ? (
-                <div className="py-12 text-center text-sm" style={{ color: '#57534E' }}>Loading participants...</div>
+                <div className="py-12 text-center text-sm" style={{ color: '#64748B' }}>Loading participants...</div>
               ) : participants.length === 0 ? (
-                <div className="py-12 text-center text-sm" style={{ color: '#57534E' }}>
+                <div className="py-12 text-center text-sm" style={{ color: '#64748B' }}>
                   No members have joined this challenge yet.
                 </div>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-left border-collapse text-sm">
                     <thead>
-                      <tr className="border-b text-xs uppercase" style={{ borderColor: '#E7DADD', color: '#57534E' }}>
+                      <tr className="border-b text-xs uppercase" style={{ borderColor: '#E2E8F0', color: '#64748B' }}>
                         <th className="py-3 px-3">Member</th>
                         <th className="py-3 px-3">Progress</th>
                         <th className="py-3 px-3">Streak</th>
@@ -1102,16 +1102,16 @@ export default function GymAdminChallenges() {
                         <th className="py-3 px-3">Reward Status</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y" style={{ borderColor: '#E7DADD' }}>
+                    <tbody className="divide-y" style={{ borderColor: '#E2E8F0' }}>
                       {participants.map(p => {
                         const progressPct = Math.min(100, Math.round((p.currentProgress / p.targetValue) * 100));
                         return (
-                          <tr key={p._id} className="hover:bg-[#F3E8E8]/50">
+                          <tr key={p._id} className="hover:bg-[#FFF7ED]/50">
                             <td className="py-3 px-3">
                               <div className="font-semibold" style={{ color: '#FFFFFF' }}>
                                 {p.customerId?.firstName || 'Customer'} {p.customerId?.lastName || ''}
                               </div>
-                              <div className="text-xs text-[#57534E]">{p.customerId?.email}</div>
+                              <div className="text-xs text-[#64748B]">{p.customerId?.email}</div>
                             </td>
 
                             <td className="py-3 px-3">
@@ -1119,13 +1119,13 @@ export default function GymAdminChallenges() {
                                 <span className="font-bold text-xs" style={{ color: '#FFFFFF' }}>
                                   {p.currentProgress} / {p.targetValue}
                                 </span>
-                                <div className="w-20 h-2 bg-[#F3E8E8] rounded-full overflow-hidden">
+                                <div className="w-20 h-2 bg-[#F8FAFC] rounded-full overflow-hidden">
                                   <div
                                     className="h-full rounded-full"
-                                    style={{ width: `${progressPct}%`, backgroundColor: '#B76E79' }}
+                                    style={{ width: `${progressPct}%`, backgroundColor: '#F97316' }}
                                   />
                                 </div>
-                                <span className="text-[11px] text-[#57534E]">{progressPct}%</span>
+                                <span className="text-[11px] text-[#64748B]">{progressPct}%</span>
                               </div>
                             </td>
 
@@ -1133,17 +1133,17 @@ export default function GymAdminChallenges() {
                               🔥 {p.streakDays || 0} days
                             </td>
 
-                            <td className="py-3 px-3 font-bold text-xs" style={{ color: '#B76E79' }}>
+                            <td className="py-3 px-3 font-bold text-xs" style={{ color: '#F97316' }}>
                               +{p.pointsEarned} pts
                             </td>
 
                             <td className="py-3 px-3">
                               {p.completed ? (
-                                <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-[#F3E8E8] text-[#B76E79]">
+                                <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-[#F8FAFC] text-[#EA580C]">
                                   Completed
                                 </span>
                               ) : (
-                                <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-[#F3E8E8] text-[#B76E79]">
+                                <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-[#F8FAFC] text-[#EA580C]">
                                   In Progress
                                 </span>
                               )}
@@ -1153,15 +1153,15 @@ export default function GymAdminChallenges() {
                               <span
                                 className={`px-2 py-0.5 rounded-full font-medium ${
                                   p.rewardClaimStatus === 'Claimed' || p.rewardClaimStatus === 'Approved'
-                                    ? 'bg-[#F3E8E8] text-[#B76E79]'
+                                    ? 'bg-[#F8FAFC] text-[#EA580C]'
                                     : p.rewardClaimStatus === 'Pending Approval'
                                     ? 'bg-amber-100 text-amber-800'
-                                    : 'bg-[#F3E8E8] text-[#292524]'
+                                    : 'bg-[#F8FAFC] text-[#111827]'
                                 }`}
                               >
                                 {p.rewardClaimStatus}
                               </span>
-                              {p.claimCode && <span className="block font-mono text-[11px] text-[#57534E] mt-0.5">Code: {p.claimCode}</span>}
+                              {p.claimCode && <span className="block font-mono text-[11px] text-[#64748B] mt-0.5">Code: {p.claimCode}</span>}
                             </td>
                           </tr>
                         );
@@ -1178,20 +1178,20 @@ export default function GymAdminChallenges() {
       {/* LEADERBOARD MODAL */}
       {leaderboardModalOpen && viewingChallenge && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-[#FFFFFF] rounded-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto shadow-2xl border" style={{ borderColor: '#E7DADD' }}>
-            <div className="sticky top-0 bg-[#FFFFFF] px-6 py-4 border-b flex justify-between items-center z-10" style={{ borderColor: '#E7DADD' }}>
+          <div className="bg-[#FFFFFF] rounded-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto shadow-2xl border" style={{ borderColor: '#E2E8F0' }}>
+            <div className="sticky top-0 bg-[#FFFFFF] px-6 py-4 border-b flex justify-between items-center z-10" style={{ borderColor: '#E2E8F0' }}>
               <div className="flex items-center gap-2">
-                <Trophy className="w-5 h-5" style={{ color: '#B76E79' }} />
+                <Trophy className="w-5 h-5" style={{ color: '#F97316' }} />
                 <div>
                   <h3 className="text-lg font-bold" style={{ color: '#FFFFFF' }}>
                     Challenge Leaderboard
                   </h3>
-                  <p className="text-xs" style={{ color: '#57534E' }}>{viewingChallenge.title}</p>
+                  <p className="text-xs" style={{ color: '#64748B' }}>{viewingChallenge.title}</p>
                 </div>
               </div>
               <button
                 onClick={() => setLeaderboardModalOpen(false)}
-                className="p-1.5 rounded-lg hover:bg-[#F3E8E8] text-[#57534E]"
+                className="p-1.5 rounded-lg hover:bg-[#FFF7ED] text-[#64748B]"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -1199,9 +1199,9 @@ export default function GymAdminChallenges() {
 
             <div className="p-6">
               {loadingLeaderboard ? (
-                <div className="py-12 text-center text-sm" style={{ color: '#57534E' }}>Loading rankings...</div>
+                <div className="py-12 text-center text-sm" style={{ color: '#64748B' }}>Loading rankings...</div>
               ) : leaderboardData.length === 0 ? (
-                <div className="py-12 text-center text-sm" style={{ color: '#57534E' }}>No participants ranked yet.</div>
+                <div className="py-12 text-center text-sm" style={{ color: '#64748B' }}>No participants ranked yet.</div>
               ) : (
                 <div className="space-y-3">
                   {leaderboardData.map((item, idx) => {
@@ -1216,10 +1216,10 @@ export default function GymAdminChallenges() {
                           isTop1
                             ? 'bg-amber-50/60 border-amber-200'
                             : isTop2
-                            ? 'bg-[#F3E8E8] border-[#E7DADD]'
+                            ? 'bg-[#F8FAFC] border-[#E2E8F0]'
                             : isTop3
-                            ? 'bg-[#F3E8E8]/50 border-[#E7DADD]'
-                            : 'bg-[#FFFFFF] border-[#E7DADD]'
+                            ? 'bg-[#FFF7ED] border-[#E2E8F0]'
+                            : 'bg-[#FFFFFF] border-[#E2E8F0]'
                         }`}
                       >
                         <div className="flex items-center gap-3">
@@ -1230,8 +1230,8 @@ export default function GymAdminChallenges() {
                                 : isTop2
                                 ? 'bg-slate-400 text-white'
                                 : isTop3
-                                ? 'bg-[#B76E79] text-white'
-                                : 'bg-[#F3E8E8] text-[#292524]'
+                                ? 'bg-[#C2410C] text-white'
+                                : 'bg-[#F8FAFC] text-[#111827]'
                             }`}
                           >
                             {item.rank}
@@ -1241,7 +1241,7 @@ export default function GymAdminChallenges() {
                             <div className="font-bold text-sm" style={{ color: '#FFFFFF' }}>
                               {item.displayName}
                             </div>
-                            <div className="text-xs" style={{ color: '#57534E' }}>
+                            <div className="text-xs" style={{ color: '#64748B' }}>
                               {item.currentProgress} / {item.targetValue} {viewingChallenge.targetUnit}
                               {item.streakDays > 0 && ` • 🔥 ${item.streakDays}d streak`}
                             </div>
@@ -1249,11 +1249,11 @@ export default function GymAdminChallenges() {
                         </div>
 
                         <div className="text-right">
-                          <span className="font-bold text-sm" style={{ color: '#B76E79' }}>
+                          <span className="font-bold text-sm" style={{ color: '#F97316' }}>
                             +{item.pointsEarned} pts
                           </span>
                           {item.completed && (
-                            <span className="block text-[11px] font-semibold text-[#B76E79]">
+                            <span className="block text-[11px] font-semibold text-[#EA580C]">
                               🏆 Finished
                             </span>
                           )}

@@ -6,27 +6,27 @@ const AdminAIPlans = () => {
       <div className="flex justify-between items-end mb-8">
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-3">
-            <Bot className="text-[#B76E79]" size={32} />
+            <Bot className="text-[#EA580C]" size={32} />
             AI Models & Usage
           </h1>
-          <p className="text-[#57534E] mt-2">Manage AI model parameters and token usage across the platform.</p>
+          <p className="text-[#64748B] mt-2">Manage AI model parameters and token usage across the platform.</p>
         </div>
-        <button className="px-6 py-2 bg-[#B76E79] text-white font-bold rounded-xl font-bold hover:bg-[#9F5965] transition-colors">
+        <button className="px-6 py-2 bg-[#C2410C] text-white font-bold rounded-xl font-bold hover:bg-[#9A3412] transition-colors">
           Manage AI Models & Usage
         </button>
       </div>
       
       
       <div className="grid md:grid-cols-2 gap-6 mb-6">
-        <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-6">
-          <h3 className="text-[#57534E] text-sm mb-2">Total AI Generations (Today)</h3>
-          <p className="text-4xl font-bold text-[#B76E79]">12,492</p>
-          <div className="w-full bg-[#F3E8E8] h-2 rounded-full mt-4">
-            <div className="bg-[#B76E79] h-2 rounded-full" style={{ width: '65%' }}></div>
+        <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-6">
+          <h3 className="text-[#64748B] text-sm mb-2">Total AI Generations (Today)</h3>
+          <p className="text-4xl font-bold text-[#EA580C]">12,492</p>
+          <div className="w-full bg-[#F8FAFC] h-2 rounded-full mt-4">
+            <div className="bg-[#C2410C] h-2 rounded-full" style={{ width: '65%' }}></div>
           </div>
-          <p className="text-xs text-[#57534E] mt-2">65% of daily token limit</p>
+          <p className="text-xs text-[#64748B] mt-2">65% of daily token limit</p>
         </div>
-        <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-6">
+        <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-6">
           <h3 className="font-bold text-lg mb-4">Active Models</h3>
           <ul className="space-y-3">
             <li className="flex justify-between items-center"><span className="text-sm">Diet Generator (v2.1)</span><span className="text-green-500 text-xs">Healthy</span></li>

@@ -13,28 +13,28 @@ const Step7Documents: React.FC<StepProps> = ({ form, set, errors }) => {
 
   return (
     <div className="space-y-6">
-      <div className="border-b border-[#E7DADD] pb-2 flex justify-between items-center">
+      <div className="border-b border-[#E2E8F0] pb-2 flex justify-between items-center">
         <div>
-          <h2 className="text-lg font-bold text-[#292524]">Verification & Documents</h2>
-          <p className="text-sm text-[#57534E]">Acknowledge the requirements for gym verification.</p>
+          <h2 className="text-lg font-bold text-[#111827]">Verification & Documents</h2>
+          <p className="text-sm text-[#64748B]">Acknowledge the requirements for gym verification.</p>
         </div>
-        <FileCheck className="text-[#B76E79]" size={24} />
+        <FileCheck className="text-[#EA580C]" size={24} />
       </div>
 
-      <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-xl p-6 space-y-4 shadow-xs">
-        <p className="text-sm text-[#292524] leading-relaxed font-medium">
+      <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl p-6 space-y-4 shadow-xs">
+        <p className="text-sm text-[#111827] leading-relaxed font-medium">
           To ensure the quality and safety of our platform, all registered gyms must be verified. 
           Our onboarding team will contact you shortly after registration to collect the following documents:
         </p>
         
-        <ul className="list-disc pl-5 text-sm text-[#57534E] space-y-2 font-medium">
+        <ul className="list-disc pl-5 text-sm text-[#64748B] space-y-2 font-medium">
           <li>Business Registration / Trade License</li>
           <li>Owner's Government ID Proof</li>
           <li>Gym Establishment Photos</li>
           <li>Bank Account Details for Payouts</li>
         </ul>
 
-        <div className="pt-4 border-t border-[#E7DADD] space-y-4">
+        <div className="pt-4 border-t border-[#E2E8F0] space-y-4">
           <div>
             <label className="flex items-start space-x-3 cursor-pointer group">
               <div className="relative flex items-center justify-center mt-0.5">
@@ -44,23 +44,23 @@ const Step7Documents: React.FC<StepProps> = ({ form, set, errors }) => {
                   checked={form.acceptTerms || false} 
                   onChange={(e) => set('acceptTerms', e.target.checked)} 
                 />
-                <div className={`w-5 h-5 border rounded flex items-center justify-center transition-colors ${form.acceptTerms ? 'bg-[#B76E79] border-[#B76E79]' : 'border-[#E7DADD] bg-[#FFFFFF] group-hover:border-[#B76E79]'}`}>
+                <div className={`w-5 h-5 border rounded flex items-center justify-center transition-colors ${form.acceptTerms ? 'bg-[#C2410C] border-[#FDBA74]' : 'border-[#E2E8F0] bg-[#FFFFFF] group-hover:border-[#FDBA74]'}`}>
                   {form.acceptTerms && <FileCheck size={14} className="text-[#FFFFFF]" />}
                 </div>
               </div>
-              <div className="text-sm text-[#292524] font-medium flex-1">
-                I confirm that I have the required documents ready for verification and I accept the <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowTerms(!showTerms); }} className="text-[#B76E79] hover:underline font-bold inline-flex items-center">Terms & Conditions {showTerms ? <ChevronUp size={14} className="ml-1" /> : <ChevronDown size={14} className="ml-1" />}</button>.
+              <div className="text-sm text-[#111827] font-medium flex-1">
+                I confirm that I have the required documents ready for verification and I accept the <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowTerms(!showTerms); }} className="text-[#EA580C] hover:underline font-bold inline-flex items-center">Terms & Conditions {showTerms ? <ChevronUp size={14} className="ml-1" /> : <ChevronDown size={14} className="ml-1" />}</button>.
               </div>
             </label>
-            {errors.acceptTerms && <p className="text-red-400 text-xs ml-8 mt-1 font-medium">{errors.acceptTerms}</p>}
+            {errors.acceptTerms && <p className="text-[#B91C1C] text-xs ml-8 mt-1 font-medium">{errors.acceptTerms}</p>}
             
             {showTerms && (
-              <div className="ml-8 mt-3 p-4 bg-[#F3E8E8] border border-[#E7DADD] rounded-lg text-xs text-[#292524] space-y-2">
-                <p><strong className="text-[#292524]">1. Agreement to Terms:</strong> By accessing our platform, you agree to these terms.</p>
-                <p><strong className="text-[#292524]">2. User Responsibilities:</strong> You must provide accurate and verifiable information about your gym facility.</p>
-                <p><strong className="text-[#292524]">3. Platform Fees:</strong> Gymora charges a standard platform fee for transactions processed through the system.</p>
-                <p><strong className="text-[#292524]">4. Termination:</strong> We reserve the right to suspend or terminate gym profiles that violate our community standards.</p>
-                <p><strong className="text-[#292524]">5. Liability:</strong> Gymora is not liable for disputes between gym owners and their members.</p>
+              <div className="ml-8 mt-3 p-4 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-[#111827] space-y-2">
+                <p><strong className="text-[#111827]">1. Agreement to Terms:</strong> By accessing our platform, you agree to these terms.</p>
+                <p><strong className="text-[#111827]">2. User Responsibilities:</strong> You must provide accurate and verifiable information about your gym facility.</p>
+                <p><strong className="text-[#111827]">3. Platform Fees:</strong> Gymora charges a standard platform fee for transactions processed through the system.</p>
+                <p><strong className="text-[#111827]">4. Termination:</strong> We reserve the right to suspend or terminate gym profiles that violate our community standards.</p>
+                <p><strong className="text-[#111827]">5. Liability:</strong> Gymora is not liable for disputes between gym owners and their members.</p>
               </div>
             )}
           </div>
@@ -74,22 +74,22 @@ const Step7Documents: React.FC<StepProps> = ({ form, set, errors }) => {
                   checked={form.acceptPrivacy || false} 
                   onChange={(e) => set('acceptPrivacy', e.target.checked)} 
                 />
-                <div className={`w-5 h-5 border rounded flex items-center justify-center transition-colors ${form.acceptPrivacy ? 'bg-[#B76E79] border-[#B76E79]' : 'border-[#E7DADD] bg-[#FFFFFF] group-hover:border-[#B76E79]'}`}>
+                <div className={`w-5 h-5 border rounded flex items-center justify-center transition-colors ${form.acceptPrivacy ? 'bg-[#C2410C] border-[#FDBA74]' : 'border-[#E2E8F0] bg-[#FFFFFF] group-hover:border-[#FDBA74]'}`}>
                   {form.acceptPrivacy && <FileCheck size={14} className="text-[#FFFFFF]" />}
                 </div>
               </div>
-              <div className="text-sm text-[#292524] font-medium flex-1">
-                I accept the <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowPrivacy(!showPrivacy); }} className="text-[#B76E79] hover:underline font-bold inline-flex items-center">Privacy Policy {showPrivacy ? <ChevronUp size={14} className="ml-1" /> : <ChevronDown size={14} className="ml-1" />}</button>.
+              <div className="text-sm text-[#111827] font-medium flex-1">
+                I accept the <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowPrivacy(!showPrivacy); }} className="text-[#EA580C] hover:underline font-bold inline-flex items-center">Privacy Policy {showPrivacy ? <ChevronUp size={14} className="ml-1" /> : <ChevronDown size={14} className="ml-1" />}</button>.
               </div>
             </label>
-            {errors.acceptPrivacy && <p className="text-red-400 text-xs ml-8 mt-1 font-medium">{errors.acceptPrivacy}</p>}
+            {errors.acceptPrivacy && <p className="text-[#B91C1C] text-xs ml-8 mt-1 font-medium">{errors.acceptPrivacy}</p>}
             
             {showPrivacy && (
-              <div className="ml-8 mt-3 p-4 bg-[#F3E8E8] border border-[#E7DADD] rounded-lg text-xs text-[#292524] space-y-2">
-                <p><strong className="text-[#292524]">1. Data Collection:</strong> We collect business details, contact information, and location data to list your gym on our platform.</p>
-                <p><strong className="text-[#292524]">2. Data Usage:</strong> Your data is used exclusively to facilitate bookings, manage memberships, and improve our services.</p>
-                <p><strong className="text-[#292524]">3. Data Security:</strong> We employ industry-standard security measures to protect your sensitive business information.</p>
-                <p><strong className="text-[#292524]">4. Third-Party Sharing:</strong> We do not sell your data to third parties. Data may be shared with payment processors to facilitate transactions.</p>
+              <div className="ml-8 mt-3 p-4 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-[#111827] space-y-2">
+                <p><strong className="text-[#111827]">1. Data Collection:</strong> We collect business details, contact information, and location data to list your gym on our platform.</p>
+                <p><strong className="text-[#111827]">2. Data Usage:</strong> Your data is used exclusively to facilitate bookings, manage memberships, and improve our services.</p>
+                <p><strong className="text-[#111827]">3. Data Security:</strong> We employ industry-standard security measures to protect your sensitive business information.</p>
+                <p><strong className="text-[#111827]">4. Third-Party Sharing:</strong> We do not sell your data to third parties. Data may be shared with payment processors to facilitate transactions.</p>
               </div>
             )}
           </div>

@@ -73,9 +73,9 @@ export default function TrainerJobOffers() {
       case 'Pending':
         return 'bg-yellow-500/10 text-yellow-400 border-yellow-500/30';
       case 'Accepted':
-        return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30';
+        return 'bg-emerald-500/10 text-[#15803D] border-emerald-500/30';
       case 'Declined':
-        return 'bg-rose-500/10 text-rose-400 border-rose-500/30';
+        return 'bg-rose-500/10 text-[#B91C1C] border-rose-500/30';
       default:
         return 'bg-slate-800 text-slate-400 border-slate-700';
     }
@@ -85,8 +85,8 @@ export default function TrainerJobOffers() {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-[#292524] flex items-center gap-2">
-            <Gift className="w-7 h-7 text-[#B76E79]" />
+          <h1 className="text-2xl font-bold text-[#111827] flex items-center gap-2">
+            <Gift className="w-7 h-7 text-[#EA580C]" />
             Official Job Offers
           </h1>
           <p className="text-sm text-slate-400 mt-1">
@@ -96,14 +96,14 @@ export default function TrainerJobOffers() {
         <div className="flex items-center gap-3">
           <Link
             to="/trainer/applications"
-            className="px-4 py-2 bg-[#FFFFFF] hover:bg-[#F3E8E8] text-slate-300 rounded-xl border border-[#E7DADD] text-sm flex items-center gap-2"
+            className="px-4 py-2 bg-[#FFFFFF] hover:bg-[#FFF7ED] text-slate-300 rounded-xl border border-[#E2E8F0] text-sm flex items-center gap-2"
           >
-            <Briefcase className="w-4 h-4 text-[#B76E79]" />
+            <Briefcase className="w-4 h-4 text-[#EA580C]" />
             My Applications
           </Link>
           <Link
             to="/trainer/jobs"
-            className="px-4 py-2 bg-[#B76E79]/10 hover:bg-[#B76E79]/20 text-[#B76E79] border border-[#B76E79]/30 rounded-xl text-sm font-semibold"
+            className="px-4 py-2 bg-[#FFF7ED] hover:bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5] rounded-xl text-sm font-semibold"
           >
             Find More Jobs
           </Link>
@@ -111,20 +111,20 @@ export default function TrainerJobOffers() {
       </div>
 
       {loading ? (
-        <div className="p-12 text-center text-slate-400 bg-[#F3E8E8] rounded-2xl border border-[#E7DADD]">
-          <div className="inline-block animate-spin w-8 h-8 border-4 border-[#B76E79] border-t-transparent rounded-full mb-3" />
+        <div className="p-12 text-center text-slate-400 bg-[#F8FAFC] rounded-2xl border border-[#E2E8F0]">
+          <div className="inline-block animate-spin w-8 h-8 border-4 border-[#FDBA74] border-t-transparent rounded-full mb-3" />
           <p>Loading your job offers...</p>
         </div>
       ) : offers.length === 0 ? (
-        <div className="p-12 text-center bg-[#F3E8E8] rounded-2xl border border-[#E7DADD]">
-          <Gift className="w-12 h-12 text-[#B76E79]/40 mx-auto mb-3" />
-          <h3 className="text-lg font-semibold text-[#292524] mb-1">No job offers at present</h3>
+        <div className="p-12 text-center bg-[#F8FAFC] rounded-2xl border border-[#E2E8F0]">
+          <Gift className="w-12 h-12 text-[#EA580C]/40 mx-auto mb-3" />
+          <h3 className="text-lg font-semibold text-[#111827] mb-1">No job offers at present</h3>
           <p className="text-sm text-slate-400 max-w-md mx-auto mb-4">
             When a gym owner selects you following an interview assessment, your official offer letter and compensation terms will be published here.
           </p>
           <Link
             to="/trainer/jobs"
-            className="px-4 py-2 bg-[#B76E79] text-white font-semibold rounded-xl text-xs inline-block"
+            className="px-4 py-2 bg-[#C2410C] text-white font-semibold rounded-xl text-xs inline-block"
           >
             Apply to Gyms
           </Link>
@@ -138,20 +138,20 @@ export default function TrainerJobOffers() {
             return (
               <div
                 key={offer._id}
-                className={`bg-[#F3E8E8] border rounded-2xl p-6 transition-all flex flex-col justify-between space-y-5 shadow-xl ${
+                className={`bg-[#F8FAFC] border rounded-2xl p-6 transition-all flex flex-col justify-between space-y-5 shadow-xl ${
                   isAccepted
-                    ? 'border-emerald-500/50 bg-gradient-to-b from-[#F3E8E8] to-emerald-950/10'
-                    : 'border-[#E7DADD] hover:border-[#B76E79]/50'
+                    ? 'border-emerald-500/50 bg-gradient-to-b from-[#F8FAFC] to-emerald-950/10'
+                    : 'border-[#E2E8F0] hover:border-[#FFEDD5]'
                 }`}
               >
                 <div>
                   <div className="flex items-start justify-between gap-2 mb-3">
                     <div>
-                      <span className="text-xs text-[#B76E79] font-semibold flex items-center gap-1">
+                      <span className="text-xs text-[#EA580C] font-semibold flex items-center gap-1">
                         <Building2 className="w-3.5 h-3.5" />
                         {offer.jobId?.gymName || 'Fitness Club'}
                       </span>
-                      <h3 className="text-xl font-bold text-[#292524] mt-1">
+                      <h3 className="text-xl font-bold text-[#111827] mt-1">
                         {offer.jobId?.title || 'Gym Trainer Position'}
                       </h3>
                     </div>
@@ -165,10 +165,10 @@ export default function TrainerJobOffers() {
                   </div>
 
                   {/* Compensation & Contract Details */}
-                  <div className="grid grid-cols-2 gap-3 bg-[#FFFFFF] p-4 rounded-xl border border-[#E7DADD] text-xs mt-4">
+                  <div className="grid grid-cols-2 gap-3 bg-[#FFFFFF] p-4 rounded-xl border border-[#E2E8F0] text-xs mt-4">
                     <div>
                       <span className="text-slate-500 block mb-0.5">Offered Compensation</span>
-                      <span className="text-lg font-bold text-[#B76E79] font-mono">
+                      <span className="text-lg font-bold text-[#EA580C] font-mono">
                         ₹{offer.offeredSalary?.toLocaleString()}
                         <span className="text-xs text-slate-400 font-normal">
                           {' '}
@@ -202,7 +202,7 @@ export default function TrainerJobOffers() {
 
                   {/* Offer Terms */}
                   {offer.terms && (
-                    <div className="mt-4 text-xs text-slate-300 bg-[#F3E8E8] p-3.5 rounded-xl border border-[#E7DADD]">
+                    <div className="mt-4 text-xs text-slate-300 bg-[#F8FAFC] p-3.5 rounded-xl border border-[#E2E8F0]">
                       <span className="text-slate-500 uppercase font-semibold text-[10px] block mb-1">
                         Perks & Contract Terms
                       </span>
@@ -211,7 +211,7 @@ export default function TrainerJobOffers() {
                   )}
 
                   {isAccepted && (
-                    <div className="mt-4 p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-xs text-emerald-400 flex items-center gap-2">
+                    <div className="mt-4 p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-xs text-[#15803D] flex items-center gap-2">
                       <ShieldCheck className="w-5 h-5 shrink-0" />
                       <div>
                         <strong className="block">Offer Accepted & Roster Active</strong>
@@ -223,18 +223,18 @@ export default function TrainerJobOffers() {
 
                 {/* Actions */}
                 {isPending && (
-                  <div className="pt-4 border-t border-[#E7DADD] flex items-center justify-end gap-3">
+                  <div className="pt-4 border-t border-[#E2E8F0] flex items-center justify-end gap-3">
                     <button
                       disabled={actionLoading}
                       onClick={() => handleRespondOffer(offer._id, 'Declined')}
-                      className="px-4 py-2 bg-[#FFFFFF] hover:bg-rose-500/10 text-slate-400 hover:text-rose-400 border border-[#E7DADD] hover:border-rose-500/30 rounded-xl text-xs font-medium transition-all"
+                      className="px-4 py-2 bg-[#FFFFFF] hover:bg-rose-500/10 text-slate-400 hover:text-[#B91C1C] border border-[#E2E8F0] hover:border-rose-500/30 rounded-xl text-xs font-medium transition-all"
                     >
                       Decline Offer
                     </button>
                     <button
                       disabled={actionLoading}
                       onClick={() => handleRespondOffer(offer._id, 'Accepted')}
-                      className="px-5 py-2 bg-[#B76E79] hover:bg-[#9F5965] text-white font-semibold rounded-xl text-xs flex items-center gap-1.5 shadow-lg shadow-[#B76E79]/20 transition-all"
+                      className="px-5 py-2 bg-[#C2410C] hover:bg-[#9A3412] text-white font-semibold rounded-xl text-xs flex items-center gap-1.5 shadow-lg shadow-orange-500/15 transition-all"
                     >
                       <CheckCircle className="w-4 h-4" />
                       Accept & Join Gym

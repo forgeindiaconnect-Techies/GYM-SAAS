@@ -69,7 +69,7 @@ const GymAdminSessionBookings = () => {
 
   const getStatusColor = (status: string) => {
     if (['Pending', 'Awaiting Payment', 'Reschedule Requested'].includes(status)) return 'bg-yellow-100 text-yellow-700';
-    if (['Confirmed', 'Upcoming'].includes(status)) return 'bg-[#F3E8E8] text-[#B76E79]';
+    if (['Confirmed', 'Upcoming'].includes(status)) return 'bg-[#F8FAFC] text-[#EA580C]';
     if (status === 'Completed') return 'bg-green-100 text-green-700';
     return 'bg-red-100 text-red-700';
   };
@@ -78,8 +78,8 @@ const GymAdminSessionBookings = () => {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#292524] tracking-tight">Session Bookings</h1>
-          <p className="text-[#57534E] mt-1">Manage personal training appointments across your gym.</p>
+          <h1 className="text-3xl font-bold text-[#111827] tracking-tight">Session Bookings</h1>
+          <p className="text-[#64748B] mt-1">Manage personal training appointments across your gym.</p>
         </div>
       </div>
 
@@ -90,16 +90,16 @@ const GymAdminSessionBookings = () => {
             placeholder="Search by member, trainer, or booking ID..." 
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl pl-10 pr-4 py-3 text-[#292524] outline-none focus:border-[#B76E79]"
+            className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl pl-10 pr-4 py-3 text-[#111827] outline-none focus:border-[#FDBA74]"
           />
-          <Search className="absolute left-3 top-3.5 text-[#57534E]" size={18} />
+          <Search className="absolute left-3 top-3.5 text-[#64748B]" size={18} />
         </div>
       </div>
 
-      <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl overflow-hidden">
+      <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl overflow-hidden">
         <div className="overflow-x-auto custom-scrollbar">
-          <table className="w-full text-left text-sm text-[#57534E] whitespace-nowrap">
-            <thead className="bg-[#F3E8E8] border-b border-[#E7DADD] text-[#292524]">
+          <table className="w-full text-left text-sm text-[#64748B] whitespace-nowrap">
+            <thead className="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[#111827]">
               <tr>
                 <th className="px-6 py-4 font-semibold">Booking ID</th>
                 <th className="px-6 py-4 font-semibold">Member</th>
@@ -110,31 +110,31 @@ const GymAdminSessionBookings = () => {
                 <th className="px-6 py-4 font-semibold text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#E7DADD]">
+            <tbody className="divide-y divide-[#E2E8F0]">
               {loading ? (
                 <tr>
                   <td colSpan={7} className="px-6 py-12 text-center">
-                    <Loader2 className="animate-spin text-[#B76E79] mx-auto" size={32} />
+                    <Loader2 className="animate-spin text-[#EA580C] mx-auto" size={32} />
                   </td>
                 </tr>
               ) : filteredBookings.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-6 py-12 text-center text-[#57534E]">
+                  <td colSpan={7} className="px-6 py-12 text-center text-[#64748B]">
                     No session bookings found.
                   </td>
                 </tr>
               ) : (
                 filteredBookings.map((booking) => (
-                  <tr key={booking._id} className="hover:bg-[#F3E8E8] transition-colors relative">
+                  <tr key={booking._id} className="hover:bg-[#FFF7ED] transition-colors relative">
                     {actionLoading === booking._id && (
                        <td colSpan={7} className="absolute inset-0 bg-[#FFFFFF]/50 flex items-center justify-center z-10">
-                         <Loader2 className="animate-spin text-[#B76E79]" size={24} />
+                         <Loader2 className="animate-spin text-[#EA580C]" size={24} />
                        </td>
                     )}
-                    <td className="px-6 py-4 font-mono text-[#B76E79] font-bold">{booking.bookingId || booking._id.slice(-6).toUpperCase()}</td>
-                    <td className="px-6 py-4 font-semibold text-[#292524]">
+                    <td className="px-6 py-4 font-mono text-[#EA580C] font-bold">{booking.bookingId || booking._id.slice(-6).toUpperCase()}</td>
+                    <td className="px-6 py-4 font-semibold text-[#111827]">
                       <div className="flex items-center space-x-2">
-                        <div className="w-8 h-8 rounded-full bg-[#F3E8E8] flex items-center justify-center text-xs overflow-hidden shrink-0 border border-[#E7DADD]">
+                        <div className="w-8 h-8 rounded-full bg-[#F8FAFC] flex items-center justify-center text-xs overflow-hidden shrink-0 border border-[#E2E8F0]">
                           {booking.customerId?.profilePhoto ? (
                             <img src={booking.customerId.profilePhoto} alt="profile" className="w-full h-full object-cover" />
                           ) : (
@@ -145,39 +145,39 @@ const GymAdminSessionBookings = () => {
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="flex items-center"><User size={14} className="mr-2 text-[#57534E]"/> {booking.trainerId?.name || 'Trainer'}</span>
+                      <span className="flex items-center"><User size={14} className="mr-2 text-[#64748B]"/> {booking.trainerId?.name || 'Trainer'}</span>
                     </td>
                     <td className="px-6 py-4">
                       <div className="space-y-1 text-xs">
-                        <p className="flex items-center text-[#292524]"><CalendarIcon size={12} className="mr-1.5 text-[#B76E79]"/> {formatDateDisplay(booking.date)}</p>
-                        <p className="flex items-center"><Clock size={12} className="mr-1.5 text-[#57534E]"/> {booking.startTime} - {booking.endTime}</p>
+                        <p className="flex items-center text-[#111827]"><CalendarIcon size={12} className="mr-1.5 text-[#EA580C]"/> {formatDateDisplay(booking.date)}</p>
+                        <p className="flex items-center"><Clock size={12} className="mr-1.5 text-[#64748B]"/> {booking.startTime} - {booking.endTime}</p>
                         {booking.checkInTime && (
-                          <p className="text-[11px] text-[#B76E79] font-semibold">
+                          <p className="text-[11px] text-[#EA580C] font-semibold">
                             In: {new Date(booking.checkInTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
                           </p>
                         )}
                         {booking.checkOutTime && (
-                          <p className="text-[11px] text-[#B76E79] font-semibold">
+                          <p className="text-[11px] text-[#EA580C] font-semibold">
                             Out: {new Date(booking.checkOutTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
                           </p>
                         )}
                       </div>
                     </td>
-                    <td className="px-6 py-4 font-medium text-[#292524] capitalize">
+                    <td className="px-6 py-4 font-medium text-[#111827] capitalize">
                       <span className={`px-2.5 py-1 rounded-md text-xs font-semibold ${
-                        booking.mode === 'Online' ? 'bg-[#F3E8E8] text-[#B76E79] border border-[#E7DADD]' : 'bg-[#F3E8E8] text-[#292524] border border-[#E7DADD]'
+                        booking.mode === 'Online' ? 'bg-[#F8FAFC] text-[#EA580C] border border-[#E2E8F0]' : 'bg-[#F8FAFC] text-[#111827] border border-[#E2E8F0]'
                       }`}>
                         {booking.mode || 'Online'}
                       </span>
                     </td>
-                    <td className="px-6 py-4 font-bold text-[#B76E79]">
+                    <td className="px-6 py-4 font-bold text-[#EA580C]">
                       ₹{booking.fee}
                     </td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
                         <button
                           onClick={() => setSelectedBooking(booking)}
-                          className="px-3.5 py-1.5 bg-[#F3E8E8] text-[#292524] border border-[#E7DADD] hover:bg-[#F3E8E8] font-semibold rounded-xl text-xs transition-colors flex items-center gap-1.5 shadow-sm"
+                          className="px-3.5 py-1.5 bg-[#F8FAFC] text-[#111827] border border-[#E2E8F0] hover:bg-[#FFF7ED] font-semibold rounded-xl text-xs transition-colors flex items-center gap-1.5 shadow-sm"
                         >
                           <Eye size={14} /> View Details
                         </button>
@@ -203,27 +203,27 @@ const GymAdminSessionBookings = () => {
       {/* Booking Details Modal */}
       {selectedBooking && (
         <div className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
-          <div className="bg-[#FFFFFF] rounded-2xl max-w-xl w-full p-6 shadow-2xl border border-[#E7DADD] space-y-6 max-h-[85vh] overflow-y-auto my-auto custom-scrollbar">
+          <div className="bg-[#FFFFFF] rounded-2xl max-w-xl w-full p-6 shadow-2xl border border-[#E2E8F0] space-y-6 max-h-[85vh] overflow-y-auto my-auto custom-scrollbar">
             <div className="flex justify-between items-center border-b pb-4">
               <div>
-                <h3 className="text-xl font-bold text-[#292524]">Session Booking Details</h3>
-                <p className="text-xs text-[#B76E79] font-mono font-bold mt-0.5">
+                <h3 className="text-xl font-bold text-[#111827]">Session Booking Details</h3>
+                <p className="text-xs text-[#EA580C] font-mono font-bold mt-0.5">
                   ID: {selectedBooking.bookingId || selectedBooking._id}
                 </p>
               </div>
               <button 
                 onClick={() => setSelectedBooking(null)} 
-                className="p-2 text-[#57534E] hover:bg-[#F3E8E8] rounded-full transition-colors"
+                className="p-2 text-[#64748B] hover:bg-[#FFF7ED] rounded-full transition-colors"
               >
                 <X size={20} />
               </button>
             </div>
 
-            <div className="space-y-4 text-sm text-[#292524]">
+            <div className="space-y-4 text-sm text-[#111827]">
               {/* Member & Trainer & Session Details - Touching one by one */}
-              <div className="border border-[#E7DADD] rounded-xl overflow-hidden divide-y divide-[#E7DADD] bg-[#FFFFFF] shadow-sm">
+              <div className="border border-[#E2E8F0] rounded-xl overflow-hidden divide-y divide-[#E2E8F0] bg-[#FFFFFF] shadow-sm">
                 <div className="p-3.5 bg-[#FFFFFF] flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-[#F3E8E8] flex items-center justify-center text-sm font-bold overflow-hidden border border-[#E7DADD] shrink-0">
+                  <div className="w-10 h-10 rounded-full bg-[#F8FAFC] flex items-center justify-center text-sm font-bold overflow-hidden border border-[#E2E8F0] shrink-0">
                     {selectedBooking.customerId?.profilePhoto ? (
                       <img src={selectedBooking.customerId.profilePhoto} alt="member" className="w-full h-full object-cover" />
                     ) : (
@@ -231,39 +231,39 @@ const GymAdminSessionBookings = () => {
                     )}
                   </div>
                   <div>
-                    <p className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider">Member Name</p>
-                    <p className="font-bold text-[#292524] text-sm">
+                    <p className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider">Member Name</p>
+                    <p className="font-bold text-[#111827] text-sm">
                       {selectedBooking.customerId ? `${selectedBooking.customerId.firstName} ${selectedBooking.customerId.lastName}` : 'Unknown Member'}
                     </p>
-                    {selectedBooking.customerId?.email && <p className="text-xs text-[#57534E]">{selectedBooking.customerId.email}</p>}
+                    {selectedBooking.customerId?.email && <p className="text-xs text-[#64748B]">{selectedBooking.customerId.email}</p>}
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E7DADD]">
+                <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E2E8F0]">
                   <div className="p-3.5 bg-[#FFFFFF]">
-                    <p className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider mb-1">Assigned Trainer</p>
-                    <p className="font-bold text-[#292524] text-sm">{selectedBooking.trainerId?.name || 'Trainer'}</p>
-                    <p className="text-xs text-[#B76E79] mt-0.5">{selectedBooking.trainerId?.specialization || 'Fitness Coach'}</p>
+                    <p className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1">Assigned Trainer</p>
+                    <p className="font-bold text-[#111827] text-sm">{selectedBooking.trainerId?.name || 'Trainer'}</p>
+                    <p className="text-xs text-[#EA580C] mt-0.5">{selectedBooking.trainerId?.specialization || 'Fitness Coach'}</p>
                   </div>
                   <div className="p-3.5 bg-[#FFFFFF]">
-                    <p className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider mb-1">Session Mode</p>
-                    <p className="font-bold text-[#292524] text-sm capitalize">{selectedBooking.mode || 'Online'}</p>
+                    <p className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1">Session Mode</p>
+                    <p className="font-bold text-[#111827] text-sm capitalize">{selectedBooking.mode || 'Online'}</p>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E7DADD]">
+                <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E2E8F0]">
                   <div className="p-3.5 bg-[#FFFFFF]">
-                    <p className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider mb-1">Date & Time</p>
-                    <p className="font-bold text-[#292524] text-sm">{formatDateDisplay(selectedBooking.date)}</p>
-                    <p className="text-xs text-[#57534E] mt-0.5">{selectedBooking.startTime} - {selectedBooking.endTime}</p>
+                    <p className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1">Date & Time</p>
+                    <p className="font-bold text-[#111827] text-sm">{formatDateDisplay(selectedBooking.date)}</p>
+                    <p className="text-xs text-[#64748B] mt-0.5">{selectedBooking.startTime} - {selectedBooking.endTime}</p>
                   </div>
                   <div className="p-3.5 bg-[#FFFFFF]">
-                    <p className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider mb-1">Status & Fee</p>
+                    <p className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1">Status & Fee</p>
                     <div className="flex items-center gap-2">
                       <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-bold ${getStatusColor(selectedBooking.status)}`}>
                         {selectedBooking.status}
                       </span>
-                      <p className="font-bold text-[#B76E79] text-sm">₹{selectedBooking.fee} ({selectedBooking.paymentStatus || 'Pending'})</p>
+                      <p className="font-bold text-[#EA580C] text-sm">₹{selectedBooking.fee} ({selectedBooking.paymentStatus || 'Pending'})</p>
                     </div>
                   </div>
                 </div>
@@ -271,13 +271,13 @@ const GymAdminSessionBookings = () => {
 
               {/* Meeting Link for Online Sessions */}
               {selectedBooking.mode === 'Online' && (
-                <div className="p-4 bg-[#F3E8E8] border border-[#E7DADD] rounded-2xl space-y-2">
-                  <p className="text-xs font-bold text-[#B76E79] uppercase tracking-wider">Online Session Video Room</p>
+                <div className="p-4 bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl space-y-2">
+                  <p className="text-xs font-bold text-[#EA580C] uppercase tracking-wider">Online Session Video Room</p>
                   <a
                     href={selectedBooking.meetingLink || `https://meet.jit.si/aigym-session-${selectedBooking._id.substr(-6)}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="text-[#B76E79] font-bold hover:underline text-xs flex items-center gap-1.5 break-all"
+                    className="text-[#EA580C] font-bold hover:underline text-xs flex items-center gap-1.5 break-all"
                   >
                     <Video size={14} /> {selectedBooking.meetingLink || `https://meet.jit.si/aigym-session-${selectedBooking._id.substr(-6)}`}
                   </a>
@@ -296,7 +296,7 @@ const GymAdminSessionBookings = () => {
               )}
               <button 
                 onClick={() => setSelectedBooking(null)} 
-                className="px-5 py-2 bg-[#B76E79] text-white font-bold font-bold rounded-xl text-sm hover:bg-[#9F5965] transition-colors"
+                className="px-5 py-2 bg-[#C2410C] text-white font-bold font-bold rounded-xl text-sm hover:bg-[#9A3412] transition-colors"
               >
                 Close
               </button>

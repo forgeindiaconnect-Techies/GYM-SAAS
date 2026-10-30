@@ -53,69 +53,69 @@ const PaymentPage = () => {
   const total = subscription.amount + tax;
 
   return (
-    <div className="min-h-screen bg-[#F3E8E8] flex items-center justify-center px-4 py-12 relative overflow-hidden">
+    <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center px-4 py-12 relative overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(212,255,0,0.04)_0%,_transparent_60%)] pointer-events-none" />
 
       <div className="relative z-10 w-full max-w-4xl mx-auto flex flex-col md:flex-row gap-8">
         
         {/* Payment Form */}
-        <div className="flex-1 bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-8 shadow-2xl">
+        <div className="flex-1 bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-8 shadow-2xl">
           <div className="flex items-center space-x-2 mb-8">
-            <div className="w-10 h-10 bg-[#B76E79] rounded-md flex items-center justify-center">
+            <div className="w-10 h-10 bg-[#C2410C] rounded-md flex items-center justify-center">
               <Activity className="text-black" size={24} />
             </div>
-            <span className="text-2xl font-bold tracking-tight text-[#B76E79]">Gymora Payment</span>
+            <span className="text-2xl font-bold tracking-tight text-[#EA580C]">Gymora Payment</span>
           </div>
 
-          <h2 className="text-xl font-bold text-[#292524] mb-6">Select Payment Method</h2>
+          <h2 className="text-xl font-bold text-[#111827] mb-6">Select Payment Method</h2>
 
           <div className="space-y-4 mb-8">
-            <label className={`flex items-center p-4 border rounded-xl cursor-pointer transition-colors ${paymentMethod === 'bank' ? 'border-[#B76E79] bg-[#B76E79]/5' : 'border-[#E7DADD] hover:border-[#B76E79]/50'}`}>
+            <label className={`flex items-center p-4 border rounded-xl cursor-pointer transition-colors ${paymentMethod === 'bank' ? 'border-[#FDBA74] bg-[#FFF7ED]' : 'border-[#E2E8F0] hover:border-[#FFEDD5]'}`}>
               <input type="radio" name="paymentMethod" value="bank" checked={paymentMethod === 'bank'} onChange={(e) => setPaymentMethod(e.target.value)} className="hidden" />
-              <Landmark className={paymentMethod === 'bank' ? 'text-[#B76E79]' : 'text-[#57534E]'} size={24} />
-              <span className="ml-4 font-medium text-[#292524]">Bank Transfer (Manual)</span>
-              {paymentMethod === 'bank' && <CheckCircle className="ml-auto text-[#B76E79]" size={20} />}
+              <Landmark className={paymentMethod === 'bank' ? 'text-[#EA580C]' : 'text-[#64748B]'} size={24} />
+              <span className="ml-4 font-medium text-[#111827]">Bank Transfer (Manual)</span>
+              {paymentMethod === 'bank' && <CheckCircle className="ml-auto text-[#EA580C]" size={20} />}
             </label>
-            <label className={`flex items-center p-4 border rounded-xl cursor-pointer transition-colors ${paymentMethod === 'qr' ? 'border-[#B76E79] bg-[#B76E79]/5' : 'border-[#E7DADD] hover:border-[#B76E79]/50'}`}>
+            <label className={`flex items-center p-4 border rounded-xl cursor-pointer transition-colors ${paymentMethod === 'qr' ? 'border-[#FDBA74] bg-[#FFF7ED]' : 'border-[#E2E8F0] hover:border-[#FFEDD5]'}`}>
               <input type="radio" name="paymentMethod" value="qr" checked={paymentMethod === 'qr'} onChange={(e) => setPaymentMethod(e.target.value)} className="hidden" />
-              <QrCode className={paymentMethod === 'qr' ? 'text-[#B76E79]' : 'text-[#57534E]'} size={24} />
-              <span className="ml-4 font-medium text-[#292524]">Scan QR Code (UPI)</span>
-              {paymentMethod === 'qr' && <CheckCircle className="ml-auto text-[#B76E79]" size={20} />}
+              <QrCode className={paymentMethod === 'qr' ? 'text-[#EA580C]' : 'text-[#64748B]'} size={24} />
+              <span className="ml-4 font-medium text-[#111827]">Scan QR Code (UPI)</span>
+              {paymentMethod === 'qr' && <CheckCircle className="ml-auto text-[#EA580C]" size={20} />}
             </label>
           </div>
 
           {paymentMethod === 'bank' && (
             <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4">
               <div>
-                <label className="block text-sm font-medium text-[#57534E] mb-2">Bank Name</label>
+                <label className="block text-sm font-medium text-[#64748B] mb-2">Bank Name</label>
                 <div className="relative">
-                  <input type="text" placeholder="e.g. State Bank of India" className="w-full bg-[#F3E8E8] border border-[#E7DADD] rounded-lg px-4 py-3 text-[#292524] focus:outline-none focus:border-[#B76E79] pl-10 transition-colors" />
-                  <Landmark className="absolute left-3 top-3.5 text-[#F3E8E8]" size={20} />
+                  <input type="text" placeholder="e.g. State Bank of India" className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg px-4 py-3 text-[#111827] focus:outline-none focus:border-[#FDBA74] pl-10 transition-colors" />
+                  <Landmark className="absolute left-3 top-3.5 text-[#F8FAFC]" size={20} />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-[#57534E] mb-2">Account Number</label>
+                <label className="block text-sm font-medium text-[#64748B] mb-2">Account Number</label>
                 <input 
                   type="text"
                   inputMode="numeric"
                   placeholder="Enter 9–18 digit account number"
                   maxLength={18}
                   onInput={(e) => { (e.target as HTMLInputElement).value = (e.target as HTMLInputElement).value.replace(/\D/g, ''); }}
-                  className="w-full bg-[#F3E8E8] border border-[#E7DADD] rounded-lg px-4 py-3 text-[#292524] focus:outline-none focus:border-[#B76E79] transition-colors tracking-widest font-mono" />
+                  className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg px-4 py-3 text-[#111827] focus:outline-none focus:border-[#FDBA74] transition-colors tracking-widest font-mono" />
               </div>
               <div className="flex space-x-4">
                 <div className="w-1/2">
-                  <label className="block text-sm font-medium text-[#57534E] mb-2">IFSC Code</label>
+                  <label className="block text-sm font-medium text-[#64748B] mb-2">IFSC Code</label>
                   <input 
                     type="text"
                     placeholder="e.g. SBIN0001234"
                     maxLength={11}
                     onInput={(e) => { (e.target as HTMLInputElement).value = (e.target as HTMLInputElement).value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase(); }}
-                    className="w-full bg-[#F3E8E8] border border-[#E7DADD] rounded-lg px-4 py-3 text-[#292524] focus:outline-none focus:border-[#B76E79] uppercase tracking-widest font-mono transition-colors" />
+                    className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg px-4 py-3 text-[#111827] focus:outline-none focus:border-[#FDBA74] uppercase tracking-widest font-mono transition-colors" />
                 </div>
                 <div className="w-1/2">
-                  <label className="block text-sm font-medium text-[#57534E] mb-2">Branch Name</label>
-                  <input type="text" placeholder="e.g. MG Road Branch" className="w-full bg-[#F3E8E8] border border-[#E7DADD] rounded-lg px-4 py-3 text-[#292524] focus:outline-none focus:border-[#B76E79] transition-colors" />
+                  <label className="block text-sm font-medium text-[#64748B] mb-2">Branch Name</label>
+                  <input type="text" placeholder="e.g. MG Road Branch" className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg px-4 py-3 text-[#111827] focus:outline-none focus:border-[#FDBA74] transition-colors" />
                 </div>
               </div>
             </div>
@@ -123,7 +123,7 @@ const PaymentPage = () => {
 
           {paymentMethod === 'qr' && (
             <div className="flex flex-col items-center justify-center py-6 animate-in fade-in zoom-in-95">
-              <div className="bg-[#FFFFFF] p-4 rounded-xl border-2 border-[#B76E79] shadow-[0_0_20px_rgba(183,110,121,0.15)] mb-6">
+              <div className="bg-[#FFFFFF] p-4 rounded-xl border-2 border-[#FDBA74] shadow-[0_0_20px_rgba(183,110,121,0.15)] mb-6">
                 <img 
                   src={`https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(`upi://pay?pa=aigym@upi&pn=AIGym&am=${total}&cu=INR`)}`} 
                   alt="UPI QR Code" 
@@ -132,27 +132,27 @@ const PaymentPage = () => {
                   className="rounded-lg"
                 />
               </div>
-              <p className="text-[#57534E] font-medium mb-4 text-center">Scan with any UPI app to pay</p>
+              <p className="text-[#64748B] font-medium mb-4 text-center">Scan with any UPI app to pay</p>
               <div className="flex gap-4">
                 <button 
                   onClick={() => handlePayment('GPay')}
                   disabled={isProcessing}
-                  className="flex items-center gap-2 px-4 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-full hover:border-[#B76E79] hover:bg-[#F3E8E8] transition-colors text-sm font-bold text-[#292524] disabled:opacity-50 disabled:cursor-not-allowed">
-                  <Smartphone size={16} className="text-[#F3E8E8]" />
+                  className="flex items-center gap-2 px-4 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-full hover:border-[#FDBA74] hover:bg-[#FFF7ED] transition-colors text-sm font-bold text-[#111827] disabled:opacity-50 disabled:cursor-not-allowed">
+                  <Smartphone size={16} className="text-[#F8FAFC]" />
                   GPay
                 </button>
                 <button 
                   onClick={() => handlePayment('PhonePe')}
                   disabled={isProcessing}
-                  className="flex items-center gap-2 px-4 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-full hover:border-[#B76E79] hover:bg-[#F3E8E8] transition-colors text-sm font-bold text-[#292524] disabled:opacity-50 disabled:cursor-not-allowed">
-                  <Smartphone size={16} className="text-[#F3E8E8]" />
+                  className="flex items-center gap-2 px-4 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-full hover:border-[#FDBA74] hover:bg-[#FFF7ED] transition-colors text-sm font-bold text-[#111827] disabled:opacity-50 disabled:cursor-not-allowed">
+                  <Smartphone size={16} className="text-[#F8FAFC]" />
                   PhonePe
                 </button>
                 <button 
                   onClick={() => handlePayment('Paytm')}
                   disabled={isProcessing}
-                  className="flex items-center gap-2 px-4 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-full hover:border-[#B76E79] hover:bg-[#F3E8E8] transition-colors text-sm font-bold text-[#292524] disabled:opacity-50 disabled:cursor-not-allowed">
-                  <Smartphone size={16} className="text-[#F3E8E8]" />
+                  className="flex items-center gap-2 px-4 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-full hover:border-[#FDBA74] hover:bg-[#FFF7ED] transition-colors text-sm font-bold text-[#111827] disabled:opacity-50 disabled:cursor-not-allowed">
+                  <Smartphone size={16} className="text-[#F8FAFC]" />
                   Paytm
                 </button>
               </div>
@@ -164,8 +164,8 @@ const PaymentPage = () => {
             onClick={() => handlePayment()}
             className={`w-full mt-8 py-4 rounded-xl font-bold text-lg flex items-center justify-center space-x-2 transition-all ${
               isProcessing
-                ? 'bg-[#F3E8E8] text-[#57534E] cursor-not-allowed'
-                : 'bg-[#B76E79] text-white hover:bg-[#9F5965] hover:shadow-[0_0_20px_rgba(183,110,121,0.25)] hover:-translate-y-1'
+                ? 'bg-[#F8FAFC] text-[#64748B] cursor-not-allowed'
+                : 'bg-[#C2410C] text-white hover:bg-[#9A3412] hover:shadow-[0_0_20px_rgba(183,110,121,0.25)] hover:-translate-y-1'
             }`}
           >
             {isProcessing ? (
@@ -178,47 +178,47 @@ const PaymentPage = () => {
             )}
           </button>
 
-          <p className="text-[#57534E] text-xs text-center mt-4 flex items-center justify-center space-x-1">
+          <p className="text-[#64748B] text-xs text-center mt-4 flex items-center justify-center space-x-1">
             <ShieldCheck size={14} className="text-green-500" />
             <span>Payments are secure and encrypted.</span>
           </p>
         </div>
 
         {/* Order Summary */}
-        <div className="md:w-1/3 bg-[#F3E8E8] border border-[#E7DADD] rounded-2xl p-6 h-fit sticky top-6 shadow-xl">
-          <h3 className="text-lg font-bold text-[#292524] mb-6 border-b border-[#E7DADD] pb-4">Order Summary</h3>
+        <div className="md:w-1/3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl p-6 h-fit sticky top-6 shadow-xl">
+          <h3 className="text-lg font-bold text-[#111827] mb-6 border-b border-[#E2E8F0] pb-4">Order Summary</h3>
           
           <div className="space-y-4 mb-6">
             <div className="flex justify-between text-sm">
-              <span className="text-[#57534E]">Plan</span>
-              <span className="font-bold text-[#292524]">{subscription.plan}</span>
+              <span className="text-[#64748B]">Plan</span>
+              <span className="font-bold text-[#111827]">{subscription.plan}</span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-[#57534E]">Billing Cycle</span>
-              <span className="font-bold text-[#292524] capitalize">{subscription.billingCycle}</span>
+              <span className="text-[#64748B]">Billing Cycle</span>
+              <span className="font-bold text-[#111827] capitalize">{subscription.billingCycle}</span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-[#57534E]">Gym Name</span>
-              <span className="font-bold text-[#292524] text-right max-w-[60%] truncate" title={user?.gymName || 'Your Gym'}>{user?.gymName || 'Your Gym'}</span>
+              <span className="text-[#64748B]">Gym Name</span>
+              <span className="font-bold text-[#111827] text-right max-w-[60%] truncate" title={user?.gymName || 'Your Gym'}>{user?.gymName || 'Your Gym'}</span>
             </div>
           </div>
 
-          <div className="border-t border-[#E7DADD] pt-6 space-y-3 mb-6">
+          <div className="border-t border-[#E2E8F0] pt-6 space-y-3 mb-6">
             <div className="flex justify-between text-sm">
-              <span className="text-[#57534E]">Subtotal</span>
-              <span className="text-[#292524]">₹{subscription.amount.toLocaleString('en-IN')}</span>
+              <span className="text-[#64748B]">Subtotal</span>
+              <span className="text-[#111827]">₹{subscription.amount.toLocaleString('en-IN')}</span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-[#57534E]">Taxes (18% GST)</span>
-              <span className="text-[#292524]">₹{tax.toLocaleString('en-IN')}</span>
+              <span className="text-[#64748B]">Taxes (18% GST)</span>
+              <span className="text-[#111827]">₹{tax.toLocaleString('en-IN')}</span>
             </div>
           </div>
 
-          <div className="border-t border-dashed border-[#57534E] pt-4 flex justify-between items-end">
-            <span className="text-[#57534E] font-medium">Total Due</span>
+          <div className="border-t border-dashed border-[#E2E8F0] pt-4 flex justify-between items-end">
+            <span className="text-[#64748B] font-medium">Total Due</span>
             <div className="text-right">
-              <div className="text-2xl font-extrabold text-[#B76E79]">₹{total.toLocaleString('en-IN')}</div>
-              <div className="text-[#57534E] text-xs">Includes all taxes</div>
+              <div className="text-2xl font-extrabold text-[#EA580C]">₹{total.toLocaleString('en-IN')}</div>
+              <div className="text-[#64748B] text-xs">Includes all taxes</div>
             </div>
           </div>
         </div>

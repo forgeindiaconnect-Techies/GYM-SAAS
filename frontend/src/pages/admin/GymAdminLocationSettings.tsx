@@ -273,7 +273,7 @@ export const GymAdminLocationSettings: React.FC = () => {
           <div style="
             width: 38px;
             height: 38px;
-            background: #B76E79;
+            background: #F97316;
             border: 3px solid #FFFFFF;
             border-radius: 50% 50% 50% 0;
             transform: rotate(-45deg);
@@ -494,8 +494,8 @@ export const GymAdminLocationSettings: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[400px] text-[#57534E]">
-        <Loader2 size={40} className="animate-spin text-[#B76E79] mb-3" />
+      <div className="flex flex-col items-center justify-center min-h-[400px] text-[#64748B]">
+        <Loader2 size={40} className="animate-spin text-[#EA580C] mb-3" />
         <p className="font-semibold text-sm">Loading location settings...</p>
       </div>
     );
@@ -506,7 +506,7 @@ export const GymAdminLocationSettings: React.FC = () => {
       {/* Toast Alert */}
       {toast && (
         <div className={`fixed bottom-6 right-6 z-[200] flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-2xl text-white font-semibold text-sm transition-all animate-in slide-in-from-bottom-4 ${
-          toast.type === 'success' ? 'bg-[#B76E79]' : 'bg-red-600'
+          toast.type === 'success' ? 'bg-[#C2410C]' : 'bg-red-600'
         }`}>
           {toast.type === 'success' ? <CheckCircle2 size={18} /> : <AlertCircle size={18} />}
           {toast.msg}
@@ -514,24 +514,24 @@ export const GymAdminLocationSettings: React.FC = () => {
       )}
 
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#FFFFFF] p-6 rounded-3xl border border-[#E7DADD] shadow-xs">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#FFFFFF] p-6 rounded-3xl border border-[#E2E8F0] shadow-xs">
         <div>
           <div className="flex items-center gap-3">
             <Link
               to={branchId ? `/admin/branches/${branchId}` : '/admin/gym-profile'}
-              className="w-10 h-10 rounded-2xl bg-[#F3E8E8] border border-[#E7DADD] text-[#57534E] hover:text-[#B76E79] flex items-center justify-center font-bold transition-colors shrink-0"
+              className="w-10 h-10 rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] text-[#64748B] hover:text-[#EA580C] flex items-center justify-center font-bold transition-colors shrink-0"
               title="Back to profile"
             >
               <ArrowLeft size={20} />
             </Link>
-            <div className="w-10 h-10 rounded-2xl bg-[#B76E79]/10 text-[#B76E79] flex items-center justify-center font-bold shrink-0">
+            <div className="w-10 h-10 rounded-2xl bg-[#FFF7ED] text-[#EA580C] flex items-center justify-center font-bold shrink-0">
               <MapPin size={22} />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-[#292524] tracking-tight">
+              <h1 className="text-2xl font-bold text-[#111827] tracking-tight">
                 Location Settings {isBranchLocation ? `— ${gym?.name}` : ''}
               </h1>
-              <p className="text-xs text-[#57534E] mt-0.5">
+              <p className="text-xs text-[#64748B] mt-0.5">
                 Manage {isBranchLocation ? 'branch' : 'gym'} official address & interactive map GPS pin for member discovery.
               </p>
             </div>
@@ -541,7 +541,7 @@ export const GymAdminLocationSettings: React.FC = () => {
         <div className="flex items-center gap-2">
           <span className={`px-3 py-1 rounded-full text-xs font-bold border flex items-center gap-1.5 ${
             hasSavedLocation
-              ? 'bg-[#F3E8E8] text-[#B76E79] border-[#E7DADD]'
+              ? 'bg-[#F8FAFC] text-[#EA580C] border-[#E2E8F0]'
               : 'bg-amber-50 text-amber-700 border-amber-200'
           }`}>
             <ShieldCheck size={14} />
@@ -552,19 +552,19 @@ export const GymAdminLocationSettings: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Column: Address Form */}
-        <div className="lg:col-span-6 bg-[#FFFFFF] p-6 rounded-3xl border border-[#E7DADD] shadow-xs space-y-5">
-          <div className="border-b border-[#E7DADD] pb-4 flex items-center justify-between">
+        <div className="lg:col-span-6 bg-[#FFFFFF] p-6 rounded-3xl border border-[#E2E8F0] shadow-xs space-y-5">
+          <div className="border-b border-[#E2E8F0] pb-4 flex items-center justify-between">
             <div>
-              <h2 className="text-base font-bold text-[#292524] flex items-center gap-2">
-                <Building2 className="text-[#B76E79]" size={18} />
+              <h2 className="text-base font-bold text-[#111827] flex items-center gap-2">
+                <Building2 className="text-[#EA580C]" size={18} />
                 Gym Address Details
               </h2>
-              <p className="text-xs text-[#57534E] mt-0.5">
+              <p className="text-xs text-[#64748B] mt-0.5">
                 Enter official gym address details to show on receipts & member app.
               </p>
             </div>
             {reverseLoading && (
-              <span className="text-[11px] font-semibold text-[#B76E79] flex items-center gap-1 bg-[#B76E79]/10 px-2.5 py-1 rounded-full border border-[#B76E79]/20">
+              <span className="text-[11px] font-semibold text-[#EA580C] flex items-center gap-1 bg-[#FFF7ED] px-2.5 py-1 rounded-full border border-[#FFEDD5]">
                 <Loader2 size={12} className="animate-spin" /> Reverse Geocoding...
               </span>
             )}
@@ -573,18 +573,18 @@ export const GymAdminLocationSettings: React.FC = () => {
           <form onSubmit={handleSubmit} className="space-y-4 text-xs">
             {/* Gym Name Display */}
             <div>
-              <label className="block font-bold text-[#292524] mb-1">Gym Name</label>
+              <label className="block font-bold text-[#111827] mb-1">Gym Name</label>
               <input
                 type="text"
                 value={gym?.name || ''}
                 disabled
-                className="w-full bg-[#F3E8E8] border border-[#E7DADD] rounded-xl px-3.5 py-2.5 text-sm font-bold text-[#57534E] outline-none cursor-not-allowed"
+                className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-3.5 py-2.5 text-sm font-bold text-[#64748B] outline-none cursor-not-allowed"
               />
             </div>
 
             {/* Address Line 1 */}
             <div>
-              <label className="block font-bold text-[#292524] mb-1">
+              <label className="block font-bold text-[#111827] mb-1">
                 Street Address <span className="text-red-500">*</span>
               </label>
               <input
@@ -593,26 +593,26 @@ export const GymAdminLocationSettings: React.FC = () => {
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
                 required
-                className="w-full bg-[#F3E8E8] border border-[#E7DADD] rounded-xl px-3.5 py-2.5 text-sm text-[#292524] font-medium focus:border-[#B76E79] outline-none transition-colors"
+                className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-3.5 py-2.5 text-sm text-[#111827] font-medium focus:border-[#FDBA74] outline-none transition-colors"
               />
             </div>
 
             {/* Area / Landmark */}
             <div>
-              <label className="block font-bold text-[#292524] mb-1">Area / Landmark</label>
+              <label className="block font-bold text-[#111827] mb-1">Area / Landmark</label>
               <input
                 type="text"
                 placeholder="Near Metro Station, Opp. Park..."
                 value={area}
                 onChange={(e) => setArea(e.target.value)}
-                className="w-full bg-[#F3E8E8] border border-[#E7DADD] rounded-xl px-3.5 py-2.5 text-sm text-[#292524] font-medium focus:border-[#B76E79] outline-none transition-colors"
+                className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-3.5 py-2.5 text-sm text-[#111827] font-medium focus:border-[#FDBA74] outline-none transition-colors"
               />
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               {/* City */}
               <div>
-                <label className="block font-bold text-[#292524] mb-1">
+                <label className="block font-bold text-[#111827] mb-1">
                   City <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -621,13 +621,13 @@ export const GymAdminLocationSettings: React.FC = () => {
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
                   required
-                  className="w-full bg-[#F3E8E8] border border-[#E7DADD] rounded-xl px-3.5 py-2.5 text-sm text-[#292524] font-medium focus:border-[#B76E79] outline-none transition-colors"
+                  className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-3.5 py-2.5 text-sm text-[#111827] font-medium focus:border-[#FDBA74] outline-none transition-colors"
                 />
               </div>
 
               {/* State */}
               <div>
-                <label className="block font-bold text-[#292524] mb-1">
+                <label className="block font-bold text-[#111827] mb-1">
                   State <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -636,7 +636,7 @@ export const GymAdminLocationSettings: React.FC = () => {
                   value={stateName}
                   onChange={(e) => setStateName(e.target.value)}
                   required
-                  className="w-full bg-[#F3E8E8] border border-[#E7DADD] rounded-xl px-3.5 py-2.5 text-sm text-[#292524] font-medium focus:border-[#B76E79] outline-none transition-colors"
+                  className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-3.5 py-2.5 text-sm text-[#111827] font-medium focus:border-[#FDBA74] outline-none transition-colors"
                 />
               </div>
             </div>
@@ -644,7 +644,7 @@ export const GymAdminLocationSettings: React.FC = () => {
             <div className="grid grid-cols-2 gap-3">
               {/* Pincode */}
               <div>
-                <label className="block font-bold text-[#292524] mb-1">
+                <label className="block font-bold text-[#111827] mb-1">
                   Postal / Pincode <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -653,62 +653,62 @@ export const GymAdminLocationSettings: React.FC = () => {
                   value={pinCode}
                   onChange={(e) => setPinCode(e.target.value)}
                   required
-                  className="w-full bg-[#F3E8E8] border border-[#E7DADD] rounded-xl px-3.5 py-2.5 text-sm text-[#292524] font-medium focus:border-[#B76E79] outline-none transition-colors"
+                  className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-3.5 py-2.5 text-sm text-[#111827] font-medium focus:border-[#FDBA74] outline-none transition-colors"
                 />
               </div>
 
               {/* Country */}
               <div>
-                <label className="block font-bold text-[#292524] mb-1">Country</label>
+                <label className="block font-bold text-[#111827] mb-1">Country</label>
                 <input
                   type="text"
                   placeholder="India"
                   value={country}
                   onChange={(e) => setCountry(e.target.value)}
-                  className="w-full bg-[#F3E8E8] border border-[#E7DADD] rounded-xl px-3.5 py-2.5 text-sm text-[#292524] font-medium focus:border-[#B76E79] outline-none transition-colors"
+                  className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-3.5 py-2.5 text-sm text-[#111827] font-medium focus:border-[#FDBA74] outline-none transition-colors"
                 />
               </div>
             </div>
 
             {/* GPS Coordinates Section */}
-            <div className="pt-2 border-t border-[#E7DADD]">
+            <div className="pt-2 border-t border-[#E2E8F0]">
               <div className="flex items-center justify-between mb-2">
-                <label className="font-bold text-[#292524] flex items-center gap-1.5 text-xs">
-                  <Globe className="text-[#B76E79]" size={14} /> GPS Coordinates (Captured from Map)
+                <label className="font-bold text-[#111827] flex items-center gap-1.5 text-xs">
+                  <Globe className="text-[#EA580C]" size={14} /> GPS Coordinates (Captured from Map)
                 </label>
                 {latitude && longitude && (
                   <a
                     href={`https://www.google.com/maps?q=${latitude},${longitude}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="text-[11px] font-bold text-[#B76E79] hover:underline flex items-center gap-1"
+                    className="text-[11px] font-bold text-[#EA580C] hover:underline flex items-center gap-1"
                   >
                     View on Google Maps <ExternalLink size={10} />
                   </a>
                 )}
               </div>
 
-              <div className="grid grid-cols-2 gap-3 bg-[#F3E8E8] p-3 rounded-2xl border border-[#E7DADD]">
+              <div className="grid grid-cols-2 gap-3 bg-[#F8FAFC] p-3 rounded-2xl border border-[#E2E8F0]">
                 <div>
-                  <span className="text-[10px] font-bold text-[#57534E] uppercase block mb-1">Latitude</span>
+                  <span className="text-[10px] font-bold text-[#64748B] uppercase block mb-1">Latitude</span>
                   <input
                     type="number"
                     step="any"
                     placeholder="12.4926"
                     value={latitude}
                     onChange={(e) => setLatitude(e.target.value)}
-                    className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-lg px-2.5 py-1.5 text-xs font-mono font-bold text-[#292524] outline-none focus:border-[#B76E79]"
+                    className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg px-2.5 py-1.5 text-xs font-mono font-bold text-[#111827] outline-none focus:border-[#FDBA74]"
                   />
                 </div>
                 <div>
-                  <span className="text-[10px] font-bold text-[#57534E] uppercase block mb-1">Longitude</span>
+                  <span className="text-[10px] font-bold text-[#64748B] uppercase block mb-1">Longitude</span>
                   <input
                     type="number"
                     step="any"
                     placeholder="78.5679"
                     value={longitude}
                     onChange={(e) => setLongitude(e.target.value)}
-                    className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-lg px-2.5 py-1.5 text-xs font-mono font-bold text-[#292524] outline-none focus:border-[#B76E79]"
+                    className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg px-2.5 py-1.5 text-xs font-mono font-bold text-[#111827] outline-none focus:border-[#FDBA74]"
                   />
                 </div>
               </div>
@@ -719,7 +719,7 @@ export const GymAdminLocationSettings: React.FC = () => {
               <button
                 type="submit"
                 disabled={saving}
-                className="w-full py-3 bg-[#B76E79] text-white font-bold font-bold rounded-xl hover:bg-[#9F5965] transition-colors flex items-center justify-center gap-2 shadow-lg shadow-[#B76E79]/15 text-sm cursor-pointer disabled:opacity-50"
+                className="w-full py-3 bg-[#C2410C] text-white font-bold font-bold rounded-xl hover:bg-[#9A3412] transition-colors flex items-center justify-center gap-2 shadow-lg shadow-orange-500/15 text-sm cursor-pointer disabled:opacity-50"
               >
                 {saving ? (
                   <>
@@ -737,15 +737,15 @@ export const GymAdminLocationSettings: React.FC = () => {
         </div>
 
         {/* Right Column: Interactive OpenStreetMap with Draggable Pin */}
-        <div className="lg:col-span-6 bg-[#FFFFFF] p-6 rounded-3xl border border-[#E7DADD] shadow-xs flex flex-col justify-between space-y-4">
+        <div className="lg:col-span-6 bg-[#FFFFFF] p-6 rounded-3xl border border-[#E2E8F0] shadow-xs flex flex-col justify-between space-y-4">
           <div>
-            <div className="flex items-center justify-between border-b border-[#E7DADD] pb-4 mb-4">
+            <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-4 mb-4">
               <div>
-                <h2 className="text-base font-bold text-[#292524] flex items-center gap-2">
-                  <MapPin className="text-[#B76E79]" size={18} />
+                <h2 className="text-base font-bold text-[#111827] flex items-center gap-2">
+                  <MapPin className="text-[#EA580C]" size={18} />
                   Interactive Map Pinpoint
                 </h2>
-                <p className="text-xs text-[#57534E] mt-0.5">
+                <p className="text-xs text-[#64748B] mt-0.5">
                   Click on map or drag red marker pin to capture precise GPS location.
                 </p>
               </div>
@@ -756,7 +756,7 @@ export const GymAdminLocationSettings: React.FC = () => {
               <button
                 type="button"
                 onClick={handleUseCurrentLocation}
-                className="px-3 py-2 bg-[#F3E8E8] text-[#B76E79] border border-[#E7DADD] font-bold rounded-xl hover:bg-[#F3E8E8] transition-colors flex items-center gap-1.5 text-xs cursor-pointer shadow-2xs"
+                className="px-3 py-2 bg-[#F8FAFC] text-[#EA580C] border border-[#E2E8F0] font-bold rounded-xl hover:bg-[#FFF7ED] transition-colors flex items-center gap-1.5 text-xs cursor-pointer shadow-2xs"
                 title="Use browser GPS current location"
               >
                 <Navigation size={14} />
@@ -767,28 +767,28 @@ export const GymAdminLocationSettings: React.FC = () => {
                 type="button"
                 onClick={() => handleSearchAddressOnMap(false)}
                 disabled={geocoding}
-                className="px-3 py-2 bg-[#F3E8E8] text-[#292524] border border-[#E7DADD] font-bold rounded-xl hover:bg-[#FFFFFF] transition-colors flex items-center gap-1.5 text-xs cursor-pointer shadow-2xs disabled:opacity-50"
+                className="px-3 py-2 bg-[#F8FAFC] text-[#111827] border border-[#E2E8F0] font-bold rounded-xl hover:bg-[#FFFFFF] transition-colors flex items-center gap-1.5 text-xs cursor-pointer shadow-2xs disabled:opacity-50"
                 title="Search entered address on map"
               >
-                {geocoding ? <Loader2 size={14} className="animate-spin text-[#B76E79]" /> : <Search size={14} className="text-[#B76E79]" />}
+                {geocoding ? <Loader2 size={14} className="animate-spin text-[#EA580C]" /> : <Search size={14} className="text-[#EA580C]" />}
                 Search Address on Map
               </button>
             </div>
 
             {/* Leaflet Map Canvas Container */}
-            <div className="relative w-full h-[360px] rounded-2xl overflow-hidden border border-[#E7DADD] shadow-inner bg-[#F3E8E8]">
+            <div className="relative w-full h-[360px] rounded-2xl overflow-hidden border border-[#E2E8F0] shadow-inner bg-[#F8FAFC]">
               <div ref={mapContainerRef} className="w-full h-full z-10" />
 
               {!mapLoaded && (
                 <div className="absolute inset-0 bg-[#FFFFFF]/80 backdrop-blur-xs flex items-center justify-center z-20">
-                  <Loader2 size={32} className="animate-spin text-[#B76E79]" />
+                  <Loader2 size={32} className="animate-spin text-[#EA580C]" />
                 </div>
               )}
             </div>
           </div>
 
-          <div className="bg-[#F3E8E8] border border-[#E7DADD] p-3.5 rounded-2xl text-xs text-[#57534E]">
-            <p className="font-bold text-[#292524] mb-0.5">📌 Interactive Map & Address Auto-Sync:</p>
+          <div className="bg-[#F8FAFC] border border-[#E2E8F0] p-3.5 rounded-2xl text-xs text-[#64748B]">
+            <p className="font-bold text-[#111827] mb-0.5">📌 Interactive Map & Address Auto-Sync:</p>
             <ul className="list-disc list-inside space-y-1 text-[11px]">
               <li><strong>Manual Typing:</strong> Entering address, city, or pincode automatically repositions map pin.</li>
               <li><strong>Map Drag / GPS:</strong> Dragging pin or using GPS reverse-geocodes exact street address to form.</li>

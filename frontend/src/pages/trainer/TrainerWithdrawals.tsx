@@ -3,7 +3,7 @@ import { History, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
 import api from '../../utils/api';
 
 const STATUS_COLORS: Record<string, string> = {
-  Approved: 'bg-[#F3E8E8]/10 text-[#B76E79]',
+  Approved: 'bg-[#FFF7ED] text-[#EA580C]',
   Rejected: 'bg-red-100 text-red-700',
 };
 
@@ -35,47 +35,47 @@ const TrainerWithdrawals = () => {
     <div className="max-w-4xl mx-auto space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-[#292524]">Withdrawal History</h1>
-          <p className="text-[#57534E] text-sm mt-1">Your past payout requests and their status</p>
+          <h1 className="text-2xl font-bold text-[#111827]">Withdrawal History</h1>
+          <p className="text-[#64748B] text-sm mt-1">Your past payout requests and their status</p>
         </div>
       </div>
 
-      <div className="bg-[#FFFFFF] border border-[#F3E8E8] rounded-2xl overflow-hidden shadow-sm">
+      <div className="bg-[#FFFFFF] border border-[#F8FAFC] rounded-2xl overflow-hidden shadow-sm">
         {loading ? (
           <div className="flex items-center justify-center py-20">
-            <div className="w-8 h-8 border-4 border-[#B76E79] border-t-transparent rounded-full animate-spin" />
+            <div className="w-8 h-8 border-4 border-[#FDBA74] border-t-transparent rounded-full animate-spin" />
           </div>
         ) : history.length === 0 ? (
           <div className="text-center py-20">
-            <History size={40} className="mx-auto text-[#E7DADD] mb-3" />
-            <p className="text-[#57534E] font-semibold">No withdrawal history</p>
-            <p className="text-[#57534E] text-sm mt-1">You haven't had any processed withdrawals yet</p>
+            <History size={40} className="mx-auto text-[#E2E8F0] mb-3" />
+            <p className="text-[#64748B] font-semibold">No withdrawal history</p>
+            <p className="text-[#64748B] text-sm mt-1">You haven't had any processed withdrawals yet</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead>
-                <tr className="bg-[#F3E8E8] border-b border-[#F3E8E8]">
-                  <th className="px-5 py-3.5 font-semibold text-[#57534E]">Date Requested</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#57534E]">Processed At</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#57534E] text-right">Amount</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#57534E] text-right">Status</th>
+                <tr className="bg-[#F8FAFC] border-b border-[#F8FAFC]">
+                  <th className="px-5 py-3.5 font-semibold text-[#64748B]">Date Requested</th>
+                  <th className="px-5 py-3.5 font-semibold text-[#64748B]">Processed At</th>
+                  <th className="px-5 py-3.5 font-semibold text-[#64748B] text-right">Amount</th>
+                  <th className="px-5 py-3.5 font-semibold text-[#64748B] text-right">Status</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#F3E8E8]">
+              <tbody className="divide-y divide-[#F8FAFC]">
                 {history.map((h, idx) => {
                   const Icon = STATUS_ICONS[h.status] || AlertCircle;
                   return (
-                    <tr key={idx} className="hover:bg-[#F3E8E8] transition-colors">
-                      <td className="px-5 py-4 text-[#57534E] whitespace-nowrap">
+                    <tr key={idx} className="hover:bg-[#FFF7ED] transition-colors">
+                      <td className="px-5 py-4 text-[#64748B] whitespace-nowrap">
                         {new Date(h.requestedAt || h.createdAt).toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true })}
                       </td>
-                      <td className="px-5 py-4 text-[#57534E] whitespace-nowrap">
+                      <td className="px-5 py-4 text-[#64748B] whitespace-nowrap">
                         {h.processedAt ? new Date(h.processedAt).toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '-'}
                       </td>
-                      <td className="px-5 py-4 text-right font-bold text-[#292524]">₹{h.amount?.toLocaleString('en-IN')}</td>
+                      <td className="px-5 py-4 text-right font-bold text-[#111827]">₹{h.amount?.toLocaleString('en-IN')}</td>
                       <td className="px-5 py-4 text-right">
-                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold ${STATUS_COLORS[h.status] || 'bg-[#F3E8E8] text-[#57534E]'}`}>
+                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold ${STATUS_COLORS[h.status] || 'bg-[#F8FAFC] text-[#64748B]'}`}>
                           <Icon size={12} />
                           {h.status}
                         </span>

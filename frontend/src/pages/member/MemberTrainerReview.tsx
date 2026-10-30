@@ -52,7 +52,7 @@ const MemberTrainerReview = () => {
     }
   };
 
-  if (loading) return <div className="text-center py-20 text-[#57534E]">Loading trainer feedback...</div>;
+  if (loading) return <div className="text-center py-20 text-[#64748B]">Loading trainer feedback...</div>;
   if (!recommendation) return <div className="text-center py-20 text-[#B91C1C]">No AI Plan found.</div>;
 
   const isRevisionRequested = recommendation.status === 'Revision Requested';
@@ -81,10 +81,10 @@ const MemberTrainerReview = () => {
 
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl sm:text-3xl font-bold text-[#292524] tracking-tight">Trainer Review &amp; Feedback</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-[#111827] tracking-tight">Trainer Review &amp; Feedback</h1>
         <div className={`px-3.5 py-1.5 rounded-full text-xs font-bold border flex items-center gap-2 ${
-          isApproved ? 'bg-[#B76E79]/15 border-[#B76E79]/30 text-[#B76E79]'
-          : isRevisionRequested ? 'bg-amber-500/15 border-amber-500/30 text-amber-400'
+          isApproved ? 'bg-[#FFF7ED] border-[#FFEDD5] text-[#EA580C]'
+          : isRevisionRequested ? 'bg-amber-500/15 border-amber-500/30 text-[#B45309]'
           : 'bg-sky-500/15 border-sky-500/30 text-sky-400'
         }`}>
           {isApproved ? <CheckCircle2 size={14} />
@@ -95,14 +95,14 @@ const MemberTrainerReview = () => {
       </div>
 
       {/* Plan Status Banner */}
-      <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-6 md:p-8 shadow-xl relative overflow-hidden">
+      <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-6 md:p-8 shadow-xl relative overflow-hidden">
         <div className="absolute top-0 right-0 w-80 h-80 bg-[radial-gradient(circle,_rgba(183,110,121,0.12)_0%,_transparent_70%)] pointer-events-none -mr-16 -mt-16" />
         <div className="relative z-10 flex flex-col md:flex-row gap-6 items-center md:items-start justify-between">
           <div className="flex-1">
-            <h2 className="text-2xl font-bold mb-2 flex items-center gap-2 text-[#292524]">
-              <FileText size={24} className="text-[#B76E79]" /> Plan Status
+            <h2 className="text-2xl font-bold mb-2 flex items-center gap-2 text-[#111827]">
+              <FileText size={24} className="text-[#EA580C]" /> Plan Status
             </h2>
-            <p className="text-[#292524] text-sm sm:text-base leading-relaxed">
+            <p className="text-[#111827] text-sm sm:text-base leading-relaxed">
               {isApproved
                 ? "Your trainer has reviewed and approved your AI-generated plan. You are good to go!"
                 : isRevisionRequested
@@ -111,9 +111,9 @@ const MemberTrainerReview = () => {
             </p>
           </div>
           {recommendation.trainerId && (
-            <div className="bg-[#F3E8E8] p-4 rounded-xl text-center min-w-[200px] border border-[#E7DADD] shadow-inner">
-              <div className="text-xs text-[#57534E] uppercase tracking-wider mb-1 font-bold">Reviewed By</div>
-              <div className="font-bold text-lg text-[#292524]">{recommendation.trainerId.name || 'Your Assigned Trainer'}</div>
+            <div className="bg-[#F8FAFC] p-4 rounded-xl text-center min-w-[200px] border border-[#E2E8F0] shadow-inner">
+              <div className="text-xs text-[#64748B] uppercase tracking-wider mb-1 font-bold">Reviewed By</div>
+              <div className="font-bold text-lg text-[#111827]">{recommendation.trainerId.name || 'Your Assigned Trainer'}</div>
             </div>
           )}
         </div>
@@ -121,11 +121,11 @@ const MemberTrainerReview = () => {
 
       {/* Trainer Notes */}
       {trainerNotes && (
-        <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-6 shadow-sm">
-          <h2 className="text-xl font-bold text-[#292524] mb-4 flex items-center">
-            <AlertCircle className="mr-2 text-[#B76E79]" size={20} /> Professional Trainer Notes
+        <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-6 shadow-sm">
+          <h2 className="text-xl font-bold text-[#111827] mb-4 flex items-center">
+            <AlertCircle className="mr-2 text-[#EA580C]" size={20} /> Professional Trainer Notes
           </h2>
-          <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-xl p-4 text-[#292524] min-h-[80px] whitespace-pre-wrap font-medium leading-relaxed">
+          <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-4 text-[#111827] min-h-[80px] whitespace-pre-wrap font-medium leading-relaxed">
             {trainerNotes}
           </div>
         </div>
@@ -137,17 +137,17 @@ const MemberTrainerReview = () => {
           <h2 className="text-xl font-bold text-red-700 mb-4 flex items-center"><RefreshCw className="mr-2" size={20} /> Revision Request Details</h2>
           <div className="bg-[#FFFFFF] border border-red-100 rounded-xl p-6 space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pb-4 border-b border-red-100">
-              <div className="flex items-center gap-3 text-sm text-[#57534E]">
+              <div className="flex items-center gap-3 text-sm text-[#64748B]">
                 <Calendar size={16} className="text-red-500" />
-                <span className="font-semibold text-[#292524]">Date:</span> {revisionDate ? new Date(revisionDate).toLocaleDateString() : new Date(recommendation.updatedAt || recommendation.createdAt).toLocaleDateString()}
+                <span className="font-semibold text-[#111827]">Date:</span> {revisionDate ? new Date(revisionDate).toLocaleDateString() : new Date(recommendation.updatedAt || recommendation.createdAt).toLocaleDateString()}
               </div>
-              <div className="flex items-center gap-3 text-sm text-[#57534E]">
+              <div className="flex items-center gap-3 text-sm text-[#64748B]">
                 <Clock size={16} className="text-red-500" />
-                <span className="font-semibold text-[#292524]">Time:</span> {revisionDate ? new Date(revisionDate).toLocaleTimeString() : new Date(recommendation.updatedAt || recommendation.createdAt).toLocaleTimeString()}
+                <span className="font-semibold text-[#111827]">Time:</span> {revisionDate ? new Date(revisionDate).toLocaleTimeString() : new Date(recommendation.updatedAt || recommendation.createdAt).toLocaleTimeString()}
               </div>
-              <div className="flex items-center gap-3 text-sm text-[#57534E]">
+              <div className="flex items-center gap-3 text-sm text-[#64748B]">
                 <User size={16} className="text-red-500" />
-                <span className="font-semibold text-[#292524]">Trainer:</span> {revisionTrainer}
+                <span className="font-semibold text-[#111827]">Trainer:</span> {revisionTrainer}
               </div>
             </div>
             {revisionReason && (
@@ -162,11 +162,11 @@ const MemberTrainerReview = () => {
 
       {/* ── REPLY TO TRAINER & CHAT SECTION ────────────────────────── */}
       {hasFeedbackOrChat && (
-        <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-6 shadow-sm">
-          <h2 className="text-xl font-bold text-[#292524] mb-1 flex items-center gap-2">
-            <MessageSquare size={20} className="text-[#B76E79]" /> Chat &amp; Feedback Discussion
+        <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-6 shadow-sm">
+          <h2 className="text-xl font-bold text-[#111827] mb-1 flex items-center gap-2">
+            <MessageSquare size={20} className="text-[#EA580C]" /> Chat &amp; Feedback Discussion
           </h2>
-          <p className="text-sm text-[#57534E] mb-4">
+          <p className="text-sm text-[#64748B] mb-4">
             {alreadyReplied
               ? 'You can send additional replies or messages to your trainer below.'
               : 'Send a reply or message to your trainer regarding their feedback.'}
@@ -180,40 +180,40 @@ const MemberTrainerReview = () => {
                   key={idx}
                   className={`p-4 rounded-xl border ${
                     msg.senderRole === 'MEMBER'
-                      ? 'bg-[#F3E8E8] border-[#F3E8E8]/40 mr-6'
-                      : 'bg-[#F3E8E8] border-[#E7DADD] ml-6'
+                      ? 'bg-[#F8FAFC] border-[#F8FAFC]/40 mr-6'
+                      : 'bg-[#F8FAFC] border-[#E2E8F0] ml-6'
                   }`}
                 >
                   <div className="flex items-center justify-between text-xs font-bold mb-1.5">
-                    <span className={msg.senderRole === 'MEMBER' ? 'text-[#B76E79]' : 'text-[#B76E79]'}>
+                    <span className={msg.senderRole === 'MEMBER' ? 'text-[#EA580C]' : 'text-[#EA580C]'}>
                       {msg.senderRole === 'MEMBER' ? '👤 You (Member)' : `💬 Trainer (${msg.senderName || 'Assigned Trainer'})`}
                     </span>
-                    <span className="text-[#57534E] font-normal">{msg.date ? new Date(msg.date).toLocaleString() : ''}</span>
+                    <span className="text-[#64748B] font-normal">{msg.date ? new Date(msg.date).toLocaleString() : ''}</span>
                   </div>
-                  <p className="text-sm text-[#292524] whitespace-pre-wrap font-medium">{msg.message}</p>
+                  <p className="text-sm text-[#111827] whitespace-pre-wrap font-medium">{msg.message}</p>
                 </div>
               ))}
             </div>
           ) : (
             <>
               {alreadyReplied && (
-                <div className="bg-[#F3E8E8] border border-[#F3E8E8]/40 rounded-xl p-4 mb-4">
+                <div className="bg-[#F8FAFC] border border-[#F8FAFC]/40 rounded-xl p-4 mb-4">
                   <div className="flex items-center gap-2 mb-2">
-                    <CheckCircle2 size={15} className="text-[#B76E79]" />
-                    <span className="text-xs font-bold text-[#B76E79] uppercase tracking-wider">Your Reply</span>
-                    <span className="text-xs text-[#57534E] ml-auto">{new Date(recommendation.memberReply.date).toLocaleString()}</span>
+                    <CheckCircle2 size={15} className="text-[#EA580C]" />
+                    <span className="text-xs font-bold text-[#EA580C] uppercase tracking-wider">Your Reply</span>
+                    <span className="text-xs text-[#64748B] ml-auto">{new Date(recommendation.memberReply.date).toLocaleString()}</span>
                   </div>
-                  <p className="text-sm text-[#57534E] whitespace-pre-wrap">{recommendation.memberReply.message}</p>
+                  <p className="text-sm text-[#64748B] whitespace-pre-wrap">{recommendation.memberReply.message}</p>
                 </div>
               )}
               {recommendation.trainerReply?.message && (
-                <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-xl p-4 mb-4">
+                <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-4 mb-4">
                   <div className="flex items-center gap-2 mb-2">
-                    <MessageSquare size={15} className="text-[#B76E79]" />
-                    <span className="text-xs font-bold text-[#B76E79] uppercase tracking-wider">Trainer's Reply</span>
-                    <span className="text-xs text-[#57534E] ml-auto">{new Date(recommendation.trainerReply.date).toLocaleString()}</span>
+                    <MessageSquare size={15} className="text-[#EA580C]" />
+                    <span className="text-xs font-bold text-[#EA580C] uppercase tracking-wider">Trainer's Reply</span>
+                    <span className="text-xs text-[#64748B] ml-auto">{new Date(recommendation.trainerReply.date).toLocaleString()}</span>
                   </div>
-                  <p className="text-sm text-[#292524] whitespace-pre-wrap">{recommendation.trainerReply.message}</p>
+                  <p className="text-sm text-[#111827] whitespace-pre-wrap">{recommendation.trainerReply.message}</p>
                 </div>
               )}
             </>
@@ -226,7 +226,7 @@ const MemberTrainerReview = () => {
               value={replyText}
               onChange={e => { setReplyText(e.target.value); setReplySuccess(false); setReplyError(''); }}
               placeholder="Type your reply to the trainer here... e.g. 'That works for me, please proceed with the changes.'"
-              className="w-full px-4 py-3 rounded-xl border border-[#E7DADD] focus:outline-none focus:border-[#B76E79] focus:ring-1 focus:ring-[#B76E79]/20 text-sm text-[#292524] resize-none placeholder:text-[#57534E] transition-all"
+              className="w-full px-4 py-3 rounded-xl border border-[#E2E8F0] focus:outline-none focus:border-[#FDBA74] focus:ring-1 focus:ring-[#F97316]/20 text-sm text-[#111827] resize-none placeholder:text-[#64748B] transition-all"
             />
 
             {replyError && (
@@ -244,7 +244,7 @@ const MemberTrainerReview = () => {
             <button
               onClick={sendReply}
               disabled={replySending || !replyText.trim()}
-              className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#B76E79] to-[#9F5965] text-[#FFFFFF] font-bold font-bold rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-[#B76E79]/15 text-sm"
+              className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#EA580C] to-[#C2410C] text-[#FFFFFF] font-bold font-bold rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-orange-500/15 text-sm"
             >
               {replySending
                 ? <><RefreshCw size={16} className="animate-spin" /> Sending...</>
@@ -256,26 +256,26 @@ const MemberTrainerReview = () => {
 
       {/* Awaiting Trainer Review (Only when pending & no feedback/chat) */}
       {isPending && !hasFeedbackOrChat && (
-        <div className="bg-[#F3E8E8] border border-[#F3E8E8] rounded-2xl p-8 text-center shadow-sm">
-          <Bot size={48} className="mx-auto text-[#57534E] mb-4" />
-          <h3 className="text-lg font-bold text-[#57534E] mb-2">Awaiting Trainer Feedback</h3>
-          <p className="text-[#57534E] max-w-md mx-auto">Your trainer hasn't left any notes yet. Once they review your AI plan and leave feedback, it will appear here.</p>
+        <div className="bg-[#F8FAFC] border border-[#F8FAFC] rounded-2xl p-8 text-center shadow-sm">
+          <Bot size={48} className="mx-auto text-[#64748B] mb-4" />
+          <h3 className="text-lg font-bold text-[#64748B] mb-2">Awaiting Trainer Feedback</h3>
+          <p className="text-[#64748B] max-w-md mx-auto">Your trainer hasn't left any notes yet. Once they review your AI plan and leave feedback, it will appear here.</p>
         </div>
       )}
 
       {isApproved && !hasFeedbackOrChat && (
-        <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-8 text-center shadow-sm">
+        <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-8 text-center shadow-sm">
           <CheckCircle2 size={48} className="mx-auto text-[#15803D] mb-4" />
-          <h3 className="text-lg font-bold text-[#292524] mb-2">Plan Approved</h3>
-          <p className="text-[#292524] max-w-md mx-auto text-sm">Your trainer has reviewed and approved your plan. You can view your routine in the Workout and Diet sections.</p>
+          <h3 className="text-lg font-bold text-[#111827] mb-2">Plan Approved</h3>
+          <p className="text-[#111827] max-w-md mx-auto text-sm">Your trainer has reviewed and approved your plan. You can view your routine in the Workout and Diet sections.</p>
         </div>
       )}
 
       {/* Previous Version Notes */}
       {history.length > 0 && history[0].trainerNotes && (
-        <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-2xl p-6 shadow-sm">
-          <h2 className="text-lg font-bold text-[#57534E] mb-4 flex items-center"><Clock className="mr-2" size={18} /> Previous Trainer Notes (Version {history[0].version})</h2>
-          <div className="bg-[#FFFFFF]/50 border border-[#E7DADD] rounded-xl p-4 text-[#57534E] min-h-[80px] whitespace-pre-wrap font-medium">
+        <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl p-6 shadow-sm">
+          <h2 className="text-lg font-bold text-[#64748B] mb-4 flex items-center"><Clock className="mr-2" size={18} /> Previous Trainer Notes (Version {history[0].version})</h2>
+          <div className="bg-[#FFFFFF]/50 border border-[#E2E8F0] rounded-xl p-4 text-[#64748B] min-h-[80px] whitespace-pre-wrap font-medium">
             {history[0].trainerNotes}
           </div>
         </div>

@@ -83,9 +83,9 @@ export default function GymAdminInterviews() {
       case 'Scheduled':
         return 'bg-cyan-500/10 text-cyan-300 border-cyan-500/30';
       case 'Completed':
-        return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30';
+        return 'bg-emerald-500/10 text-[#15803D] border-emerald-500/30';
       case 'Cancelled':
-        return 'bg-rose-500/10 text-rose-400 border-rose-500/30';
+        return 'bg-rose-500/10 text-[#B91C1C] border-rose-500/30';
       case 'Rescheduled':
         return 'bg-yellow-500/10 text-yellow-400 border-yellow-500/30';
       default:
@@ -97,7 +97,7 @@ export default function GymAdminInterviews() {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-[#292524] flex items-center gap-2">
+          <h1 className="text-2xl font-bold text-[#111827] flex items-center gap-2">
             <Calendar className="w-7 h-7 text-cyan-400" />
             Interview Schedule
           </h1>
@@ -108,14 +108,14 @@ export default function GymAdminInterviews() {
         <div className="flex items-center gap-3">
           <Link
             to="/admin/hiring/applications"
-            className="px-4 py-2 bg-[#FFFFFF] hover:bg-[#F3E8E8] text-slate-300 rounded-xl border border-[#E7DADD] text-sm flex items-center gap-2"
+            className="px-4 py-2 bg-[#FFFFFF] hover:bg-[#FFF7ED] text-slate-300 rounded-xl border border-[#E2E8F0] text-sm flex items-center gap-2"
           >
-            <Users className="w-4 h-4 text-[#B76E79]" />
+            <Users className="w-4 h-4 text-[#EA580C]" />
             Applications
           </Link>
           <Link
             to="/admin/hiring/hired"
-            className="px-4 py-2 bg-[#B76E79]/10 hover:bg-[#B76E79]/20 text-[#B76E79] border border-[#B76E79]/30 rounded-xl text-sm font-medium"
+            className="px-4 py-2 bg-[#FFF7ED] hover:bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5] rounded-xl text-sm font-medium"
           >
             Hired Trainers
           </Link>
@@ -123,7 +123,7 @@ export default function GymAdminInterviews() {
       </div>
 
       {/* Filter / Search */}
-      <div className="bg-[#F3E8E8] p-4 rounded-2xl border border-[#E7DADD] flex flex-col md:flex-row gap-4 items-center justify-between">
+      <div className="bg-[#F8FAFC] p-4 rounded-2xl border border-[#E2E8F0] flex flex-col md:flex-row gap-4 items-center justify-between">
         <div className="relative flex-1 w-full">
           <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
@@ -131,14 +131,14 @@ export default function GymAdminInterviews() {
             placeholder="Search interviews by candidate name or job title..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-cyan-400"
+            className="w-full pl-10 pr-4 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-cyan-400"
           />
         </div>
 
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="px-3 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-slate-300 text-sm focus:outline-none focus:border-cyan-400 w-full md:w-auto"
+          className="px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-slate-300 text-sm focus:outline-none focus:border-cyan-400 w-full md:w-auto"
         >
           <option value="">All Statuses</option>
           <option value="Scheduled">Scheduled</option>
@@ -149,14 +149,14 @@ export default function GymAdminInterviews() {
       </div>
 
       {loading ? (
-        <div className="p-12 text-center text-slate-400 bg-[#F3E8E8] rounded-2xl border border-[#E7DADD]">
+        <div className="p-12 text-center text-slate-400 bg-[#F8FAFC] rounded-2xl border border-[#E2E8F0]">
           <div className="inline-block animate-spin w-8 h-8 border-4 border-cyan-400 border-t-transparent rounded-full mb-3" />
           <p>Loading interview schedule...</p>
         </div>
       ) : filtered.length === 0 ? (
-        <div className="p-12 text-center bg-[#F3E8E8] rounded-2xl border border-[#E7DADD]">
+        <div className="p-12 text-center bg-[#F8FAFC] rounded-2xl border border-[#E2E8F0]">
           <Calendar className="w-12 h-12 text-cyan-500/30 mx-auto mb-3" />
-          <h3 className="text-lg font-semibold text-[#292524] mb-1">No interviews found</h3>
+          <h3 className="text-lg font-semibold text-[#111827] mb-1">No interviews found</h3>
           <p className="text-sm text-slate-400 max-w-md mx-auto">
             {search || statusFilter
               ? 'No interviews match your filters.'
@@ -173,13 +173,13 @@ export default function GymAdminInterviews() {
             return (
               <div
                 key={inv._id}
-                className="bg-[#F3E8E8] border border-[#E7DADD] rounded-2xl p-5 hover:border-cyan-500/40 transition-all flex flex-col justify-between space-y-4"
+                className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl p-5 hover:border-cyan-500/40 transition-all flex flex-col justify-between space-y-4"
               >
                 <div>
                   <div className="flex items-start justify-between gap-2 mb-3">
                     <div>
-                      <h3 className="text-base font-bold text-[#292524]">{candidateName}</h3>
-                      <span className="text-xs text-[#B76E79] font-medium block">
+                      <h3 className="text-base font-bold text-[#111827]">{candidateName}</h3>
+                      <span className="text-xs text-[#EA580C] font-medium block">
                         {inv.jobId?.title || 'Gym Trainer Position'}
                       </span>
                     </div>
@@ -192,7 +192,7 @@ export default function GymAdminInterviews() {
                     </span>
                   </div>
 
-                  <div className="bg-[#FFFFFF] p-3 rounded-xl border border-[#E7DADD] space-y-2 text-xs">
+                  <div className="bg-[#FFFFFF] p-3 rounded-xl border border-[#E2E8F0] space-y-2 text-xs">
                     <div className="flex items-center gap-2 text-slate-300">
                       <Calendar className="w-3.5 h-3.5 text-cyan-400" />
                       <span className="font-semibold text-white">
@@ -215,7 +215,7 @@ export default function GymAdminInterviews() {
                   </div>
 
                   {/* Location or Meeting Link */}
-                  <div className="mt-3 text-xs bg-[#F3E8E8] p-3 rounded-xl border border-[#E7DADD]">
+                  <div className="mt-3 text-xs bg-[#F8FAFC] p-3 rounded-xl border border-[#E2E8F0]">
                     <span className="text-slate-500 block uppercase font-semibold text-[10px] mb-1">
                       Venue / Link
                     </span>
@@ -238,7 +238,7 @@ export default function GymAdminInterviews() {
                   </div>
 
                   {inv.instructions && (
-                    <div className="mt-3 text-xs text-slate-400 italic bg-[#FFFFFF] p-2.5 rounded-lg border border-[#E7DADD]">
+                    <div className="mt-3 text-xs text-slate-400 italic bg-[#FFFFFF] p-2.5 rounded-lg border border-[#E2E8F0]">
                       "{inv.instructions}"
                     </div>
                   )}
@@ -250,13 +250,13 @@ export default function GymAdminInterviews() {
                 </div>
 
                 {/* Actions */}
-                <div className="pt-3 border-t border-[#E7DADD] flex items-center justify-end gap-2">
+                <div className="pt-3 border-t border-[#E2E8F0] flex items-center justify-end gap-2">
                   {inv.status === 'Scheduled' && (
                     <>
                       <button
                         disabled={actionLoading}
                         onClick={() => handleUpdateStatus(inv._id, 'Completed')}
-                        className="px-3 py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-xl text-xs font-medium flex items-center gap-1"
+                        className="px-3 py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-[#15803D] border border-emerald-500/30 rounded-xl text-xs font-medium flex items-center gap-1"
                       >
                         <CheckCircle className="w-3 h-3" />
                         Mark Done
@@ -264,7 +264,7 @@ export default function GymAdminInterviews() {
                       <button
                         disabled={actionLoading}
                         onClick={() => handleUpdateStatus(inv._id, 'Cancelled')}
-                        className="px-3 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 rounded-xl text-xs font-medium flex items-center gap-1"
+                        className="px-3 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-[#B91C1C] border border-rose-500/30 rounded-xl text-xs font-medium flex items-center gap-1"
                       >
                         <XCircle className="w-3 h-3" />
                         Cancel
@@ -272,7 +272,7 @@ export default function GymAdminInterviews() {
                     </>
                   )}
                   {inv.status === 'Completed' && (
-                    <span className="text-xs text-emerald-400 font-medium flex items-center gap-1">
+                    <span className="text-xs text-[#15803D] font-medium flex items-center gap-1">
                       <CheckCircle className="w-3.5 h-3.5" /> Assessment Finished
                     </span>
                   )}

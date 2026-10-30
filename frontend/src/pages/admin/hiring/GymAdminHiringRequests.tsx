@@ -183,7 +183,7 @@ export default function GymAdminHiringRequests() {
         );
       case 'Confirmed':
         return (
-          <span className="px-2.5 py-1 bg-[#B76E79]/20 text-[#B76E79] border border-[#B76E79]/40 text-xs font-bold rounded-full flex items-center gap-1.5">
+          <span className="px-2.5 py-1 bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5] text-xs font-bold rounded-full flex items-center gap-1.5">
             <UserCheck className="w-3 h-3" />
             Hired & Onboarded
           </span>
@@ -221,8 +221,8 @@ export default function GymAdminHiringRequests() {
       {/* Top Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-[#292524] flex items-center gap-2.5">
-            <Briefcase className="w-7 h-7 text-[#B76E79]" />
+          <h1 className="text-2xl font-bold text-[#111827] flex items-center gap-2.5">
+            <Briefcase className="w-7 h-7 text-[#EA580C]" />
             Trainer Hiring Requests
           </h1>
           <p className="text-sm text-slate-400 mt-1">
@@ -232,7 +232,7 @@ export default function GymAdminHiringRequests() {
         <div className="flex items-center gap-3">
           <Link
             to="/admin/hiring/trainers"
-            className="px-4 py-2 bg-[#B76E79] hover:bg-[#9F5965] text-white font-semibold rounded-xl text-sm transition-all flex items-center gap-2"
+            className="px-4 py-2 bg-[#C2410C] hover:bg-[#9A3412] text-white font-semibold rounded-xl text-sm transition-all flex items-center gap-2"
           >
             <Search className="w-4 h-4" />
             Browse More Trainers
@@ -244,12 +244,12 @@ export default function GymAdminHiringRequests() {
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
         {[
           { label: 'Total Dispatched', count: requests.length, color: 'text-white' },
-          { label: 'Pending Review', count: requests.filter(r => r.status === 'Pending').length, color: 'text-amber-400' },
+          { label: 'Pending Review', count: requests.filter(r => r.status === 'Pending').length, color: 'text-[#B45309]' },
           { label: 'In Negotiation', count: requests.filter(r => r.status === 'Negotiating').length, color: 'text-purple-400' },
-          { label: 'Accepted (Ready to Confirm)', count: requests.filter(r => r.status === 'Accepted').length, color: 'text-emerald-400' },
-          { label: 'Hired & Active', count: requests.filter(r => r.status === 'Confirmed').length, color: 'text-[#B76E79]' }
+          { label: 'Accepted (Ready to Confirm)', count: requests.filter(r => r.status === 'Accepted').length, color: 'text-[#15803D]' },
+          { label: 'Hired & Active', count: requests.filter(r => r.status === 'Confirmed').length, color: 'text-[#EA580C]' }
         ].map((s, idx) => (
-          <div key={idx} className="bg-[#F3E8E8] border border-[#E7DADD] p-4 rounded-xl">
+          <div key={idx} className="bg-[#F8FAFC] border border-[#E2E8F0] p-4 rounded-xl">
             <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">{s.label}</span>
             <span className={`text-2xl font-bold mt-1 font-mono block ${s.color}`}>{s.count}</span>
           </div>
@@ -257,7 +257,7 @@ export default function GymAdminHiringRequests() {
       </div>
 
       {/* Filter and Search Controls */}
-      <div className="bg-[#F3E8E8] p-4 rounded-2xl border border-[#E7DADD] flex flex-col md:flex-row gap-3 items-center justify-between">
+      <div className="bg-[#F8FAFC] p-4 rounded-2xl border border-[#E2E8F0] flex flex-col md:flex-row gap-3 items-center justify-between">
         <div className="relative w-full md:w-80">
           <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
@@ -265,7 +265,7 @@ export default function GymAdminHiringRequests() {
             placeholder="Search by trainer or position..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-[#B76E79]"
+            className="w-full pl-10 pr-4 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-[#FDBA74]"
           />
         </div>
 
@@ -277,8 +277,8 @@ export default function GymAdminHiringRequests() {
               onClick={() => setStatusFilter(status)}
               className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
                 statusFilter === status
-                  ? 'bg-[#B76E79] text-white shadow-md shadow-[#B76E79]/20'
-                  : 'bg-[#FFFFFF] text-slate-400 hover:text-white border border-[#E7DADD]'
+                  ? 'bg-[#C2410C] text-white shadow-md shadow-orange-500/15'
+                  : 'bg-[#FFFFFF] text-[#64748B] hover:text-[#C2410C] border border-[#E2E8F0]'
               }`}
             >
               {status === 'ALL' ? 'All Requests' : status}
@@ -289,20 +289,20 @@ export default function GymAdminHiringRequests() {
 
       {/* Main Request Cards */}
       {loading ? (
-        <div className="p-16 text-center text-slate-400 bg-[#F3E8E8] rounded-2xl border border-[#E7DADD]">
-          <div className="inline-block animate-spin w-8 h-8 border-4 border-[#B76E79] border-t-transparent rounded-full mb-3" />
+        <div className="p-16 text-center text-slate-400 bg-[#F8FAFC] rounded-2xl border border-[#E2E8F0]">
+          <div className="inline-block animate-spin w-8 h-8 border-4 border-[#FDBA74] border-t-transparent rounded-full mb-3" />
           <p className="text-sm">Fetching hiring requests from database...</p>
         </div>
       ) : filteredRequests.length === 0 ? (
-        <div className="p-16 text-center bg-[#F3E8E8] rounded-2xl border border-[#E7DADD]">
-          <Briefcase className="w-12 h-12 text-[#B76E79]/40 mx-auto mb-3" />
-          <h3 className="text-lg font-bold text-[#292524] mb-1">No hiring requests match your filter</h3>
+        <div className="p-16 text-center bg-[#F8FAFC] rounded-2xl border border-[#E2E8F0]">
+          <Briefcase className="w-12 h-12 text-[#EA580C]/40 mx-auto mb-3" />
+          <h3 className="text-lg font-bold text-[#111827] mb-1">No hiring requests match your filter</h3>
           <p className="text-sm text-slate-400 max-w-md mx-auto mb-5">
             Discover verified personal trainers, functional coaches, and group fitness experts in our directory and initiate direct hiring proposals.
           </p>
           <Link
             to="/admin/hiring/trainers"
-            className="px-5 py-2.5 bg-[#B76E79] hover:bg-[#9F5965] text-white font-semibold rounded-xl text-sm inline-flex items-center gap-2"
+            className="px-5 py-2.5 bg-[#C2410C] hover:bg-[#9A3412] text-white font-semibold rounded-xl text-sm inline-flex items-center gap-2"
           >
             <Search className="w-4 h-4" />
             Explore Trainer Profiles
@@ -317,31 +317,31 @@ export default function GymAdminHiringRequests() {
             return (
               <div
                 key={req._id}
-                className={`bg-[#F3E8E8] border rounded-2xl p-5 transition-all ${
+                className={`bg-[#F8FAFC] border rounded-2xl p-5 transition-all ${
                   req.status === 'Accepted'
-                    ? 'border-emerald-500/40 bg-gradient-to-r from-[#F3E8E8] via-[#F3E8E8] to-emerald-950/20 shadow-lg shadow-emerald-950/30'
+                    ? 'border-emerald-500/40 bg-gradient-to-r from-[#F8FAFC] via-[#F8FAFC] to-emerald-950/20 shadow-lg shadow-emerald-950/30'
                     : req.status === 'Confirmed'
-                    ? 'border-[#B76E79]/30'
-                    : 'border-[#E7DADD] hover:border-slate-600'
+                    ? 'border-[#FFEDD5]'
+                    : 'border-[#E2E8F0] hover:border-slate-600'
                 }`}
               >
                 <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                   {/* Left Column: Trainer Details & Role */}
                   <div className="flex items-start gap-4">
-                    <div className="w-13 h-13 rounded-2xl bg-[#FFFFFF] border border-[#E7DADD] flex items-center justify-center text-lg font-bold text-[#B76E79] shrink-0">
+                    <div className="w-13 h-13 rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0] flex items-center justify-center text-lg font-bold text-[#EA580C] shrink-0">
                       {req.trainerName ? req.trainerName[0].toUpperCase() : 'T'}
                     </div>
 
                     <div>
                       <div className="flex items-center gap-2.5 flex-wrap">
-                        <h3 className="text-base font-bold text-[#292524]">{req.trainerName}</h3>
+                        <h3 className="text-base font-bold text-[#111827]">{req.trainerName}</h3>
                         {getStatusBadge(req.status)}
                       </div>
 
                       <div className="flex items-center gap-2 mt-1 text-xs text-slate-400 flex-wrap">
-                        <span className="font-semibold text-[#B76E79]">{req.role}</span>
+                        <span className="font-semibold text-[#EA580C]">{req.role}</span>
                         <span>•</span>
-                        <span className="px-2 py-0.5 rounded-md bg-[#FFFFFF] border border-[#E7DADD] text-slate-300">
+                        <span className="px-2 py-0.5 rounded-md bg-[#FFFFFF] border border-[#E2E8F0] text-slate-300">
                           {req.employmentType}
                         </span>
                         <span>•</span>
@@ -361,24 +361,24 @@ export default function GymAdminHiringRequests() {
                   </div>
 
                   {/* Middle Column: Compensation breakdown (Monthly vs PT Fee) */}
-                  <div className="bg-[#FFFFFF] p-3.5 rounded-xl border border-[#E7DADD] flex flex-wrap sm:flex-nowrap items-center gap-4 lg:min-w-[320px]">
+                  <div className="bg-[#FFFFFF] p-3.5 rounded-xl border border-[#E2E8F0] flex flex-wrap sm:flex-nowrap items-center gap-4 lg:min-w-[320px]">
                     <div className="flex-1">
                       <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider block">
                         Monthly Salary
                       </span>
-                      <span className="text-base font-bold text-white font-mono flex items-center gap-0.5">
+                      <span className="text-base font-bold text-[#111827] font-mono flex items-center gap-0.5">
                         ₹{req.offeredCompensation?.toLocaleString()}
                         <span className="text-[10px] text-slate-400 font-normal">/mo</span>
                       </span>
                     </div>
 
-                    <div className="w-px h-8 bg-[#E7DADD] hidden sm:block" />
+                    <div className="w-px h-8 bg-[#E2E8F0] hidden sm:block" />
 
                     <div className="flex-1">
                       <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider block">
                         Personal Training Fee
                       </span>
-                      <span className="text-base font-bold text-[#B76E79] font-mono flex items-center gap-0.5">
+                      <span className="text-base font-bold text-[#EA580C] font-mono flex items-center gap-0.5">
                         ₹{(req.personalTrainingFee || 0).toLocaleString()}
                         <span className="text-[10px] text-slate-400 font-normal">/session</span>
                       </span>
@@ -393,9 +393,9 @@ export default function GymAdminHiringRequests() {
                         setSelectedReq(req);
                         setViewModalOpen(true);
                       }}
-                      className="px-3.5 py-2 bg-[#FFFFFF] hover:bg-[#F3E8E8] text-slate-200 border border-[#E7DADD] rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all"
+                      className="px-3.5 py-2 bg-[#FFFFFF] hover:bg-[#FFF7ED] text-slate-200 border border-[#E2E8F0] rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all"
                     >
-                      <MessageSquare className="w-3.5 h-3.5 text-[#B76E79]" />
+                      <MessageSquare className="w-3.5 h-3.5 text-[#EA580C]" />
                       Details & History
                     </button>
 
@@ -435,7 +435,7 @@ export default function GymAdminHiringRequests() {
                     {req.status === 'Confirmed' && (
                       <Link
                         to="/admin/trainers"
-                        className="px-3.5 py-2 bg-[#B76E79]/15 hover:bg-[#B76E79]/25 text-[#B76E79] border border-[#B76E79]/30 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all"
+                        className="px-3.5 py-2 bg-[#FFF7ED] hover:bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5] rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all"
                       >
                         <UserCheck className="w-3.5 h-3.5" />
                         Gym Roster
@@ -446,7 +446,7 @@ export default function GymAdminHiringRequests() {
 
                 {/* Sub-banner if recent negotiation item */}
                 {lastNegotiation && req.status === 'Negotiating' && (
-                  <div className="mt-4 pt-3 border-t border-[#E7DADD] flex items-center justify-between text-xs text-slate-400">
+                  <div className="mt-4 pt-3 border-t border-[#E2E8F0] flex items-center justify-between text-xs text-slate-400">
                     <span className="flex items-center gap-1.5 text-purple-300">
                       <Sparkles className="w-3.5 h-3.5" />
                       Latest update by {lastNegotiation.senderRole === 'TRAINER' ? req.trainerName : 'You'}:
@@ -469,15 +469,15 @@ export default function GymAdminHiringRequests() {
       {/* Confirmation Modal */}
       {confirmModalOpen && selectedReq && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#F3E8E8] border border-emerald-500/50 rounded-2xl max-w-xl w-full p-6 text-white shadow-2xl relative">
-            <div className="flex items-center justify-between pb-4 border-b border-[#E7DADD]">
+          <div className="bg-[#F8FAFC] border border-emerald-500/50 rounded-2xl max-w-xl w-full p-6 text-[#1F2937] shadow-2xl relative">
+            <div className="flex items-center justify-between pb-4 border-b border-[#E2E8F0]">
               <div className="flex items-center gap-2">
-                <UserCheck className="w-6 h-6 text-emerald-400" />
+                <UserCheck className="w-6 h-6 text-[#15803D]" />
                 <h3 className="text-lg font-bold">Confirm Final Hiring Terms</h3>
               </div>
               <button
                 onClick={() => setConfirmModalOpen(false)}
-                className="text-slate-400 hover:text-white"
+                className="text-[#64748B] hover:text-[#C2410C]"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -485,17 +485,17 @@ export default function GymAdminHiringRequests() {
 
             {actionSuccessMsg ? (
               <div className="py-8 text-center space-y-3">
-                <CheckCircle2 className="w-12 h-12 text-emerald-400 mx-auto" />
-                <h4 className="text-lg font-bold text-[#292524]">{actionSuccessMsg}</h4>
+                <CheckCircle2 className="w-12 h-12 text-[#15803D] mx-auto" />
+                <h4 className="text-lg font-bold text-[#111827]">{actionSuccessMsg}</h4>
                 <p className="text-xs text-slate-400">Redirecting and refreshing rosters...</p>
               </div>
             ) : (
               <div className="space-y-4 py-4">
                 <p className="text-sm text-slate-300">
-                  <strong className="text-white">{selectedReq.trainerName}</strong> has officially accepted your direct hiring proposal for the position of <strong className="text-[#B76E79]">{selectedReq.role}</strong>.
+                  <strong className="text-white">{selectedReq.trainerName}</strong> has officially accepted your direct hiring proposal for the position of <strong className="text-[#EA580C]">{selectedReq.role}</strong>.
                 </p>
 
-                <div className="bg-[#FFFFFF] p-4 rounded-xl border border-[#E7DADD] space-y-2 text-xs">
+                <div className="bg-[#FFFFFF] p-4 rounded-xl border border-[#E2E8F0] space-y-2 text-xs">
                   <div className="flex justify-between">
                     <span className="text-slate-400">Role:</span>
                     <span className="font-semibold text-white">{selectedReq.role}</span>
@@ -511,7 +511,7 @@ export default function GymAdminHiringRequests() {
                   {selectedReq.personalTrainingFee ? (
                     <div className="flex justify-between">
                       <span className="text-slate-400">Per-Session PT Fee:</span>
-                      <span className="font-bold text-[#B76E79] font-mono">₹{selectedReq.personalTrainingFee.toLocaleString()} / session</span>
+                      <span className="font-bold text-[#EA580C] font-mono">₹{selectedReq.personalTrainingFee.toLocaleString()} / session</span>
                     </div>
                   ) : null}
                   <div className="flex justify-between">
@@ -527,7 +527,7 @@ export default function GymAdminHiringRequests() {
                 <div className="flex items-center justify-end gap-3 pt-3">
                   <button
                     onClick={() => setConfirmModalOpen(false)}
-                    className="px-4 py-2 bg-[#FFFFFF] text-slate-300 rounded-xl text-xs font-semibold hover:bg-[#F3E8E8]"
+                    className="px-4 py-2 bg-[#FFFFFF] text-slate-300 rounded-xl text-xs font-semibold hover:bg-[#FFF7ED]"
                   >
                     Cancel
                   </button>
@@ -553,15 +553,15 @@ export default function GymAdminHiringRequests() {
       {/* Counter Negotiation Modal */}
       {negotiateModalOpen && selectedReq && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#F3E8E8] border border-purple-500/40 rounded-2xl max-w-xl w-full p-6 text-white shadow-2xl relative">
-            <div className="flex items-center justify-between pb-4 border-b border-[#E7DADD]">
+          <div className="bg-[#F8FAFC] border border-purple-500/40 rounded-2xl max-w-xl w-full p-6 text-[#1F2937] shadow-2xl relative">
+            <div className="flex items-center justify-between pb-4 border-b border-[#E2E8F0]">
               <div className="flex items-center gap-2">
                 <Sparkles className="w-6 h-6 text-purple-400" />
                 <h3 className="text-lg font-bold">Propose Counter-Terms to {selectedReq.trainerName}</h3>
               </div>
               <button
                 onClick={() => setNegotiateModalOpen(false)}
-                className="text-slate-400 hover:text-white"
+                className="text-[#64748B] hover:text-[#C2410C]"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -570,7 +570,7 @@ export default function GymAdminHiringRequests() {
             {actionSuccessMsg ? (
               <div className="py-8 text-center space-y-3">
                 <CheckCircle2 className="w-12 h-12 text-purple-400 mx-auto" />
-                <h4 className="text-lg font-bold text-[#292524]">{actionSuccessMsg}</h4>
+                <h4 className="text-lg font-bold text-[#111827]">{actionSuccessMsg}</h4>
               </div>
             ) : (
               <form onSubmit={handleSendCounterOffer} className="space-y-4 py-4">
@@ -584,7 +584,7 @@ export default function GymAdminHiringRequests() {
                       value={counterSalary}
                       onChange={(e) => setCounterSalary(e.target.value)}
                       required
-                      className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-white text-sm focus:border-purple-400"
+                      className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-white text-sm focus:border-purple-400"
                     />
                   </div>
                   <div>
@@ -596,7 +596,7 @@ export default function GymAdminHiringRequests() {
                       value={counterPtFee}
                       onChange={(e) => setCounterPtFee(e.target.value)}
                       placeholder="e.g. 600"
-                      className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-white text-sm focus:border-purple-400"
+                      className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-white text-sm focus:border-purple-400"
                     />
                   </div>
                 </div>
@@ -610,7 +610,7 @@ export default function GymAdminHiringRequests() {
                     value={counterTerms}
                     onChange={(e) => setCounterTerms(e.target.value)}
                     placeholder="e.g. 5 days/week morning shift, commission on supplements..."
-                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-white text-sm focus:border-purple-400"
+                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-white text-sm focus:border-purple-400"
                   />
                 </div>
 
@@ -623,7 +623,7 @@ export default function GymAdminHiringRequests() {
                     value={counterMessage}
                     onChange={(e) => setCounterMessage(e.target.value)}
                     placeholder="Explain the revised compensation structure or answer their counter question..."
-                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-white text-sm focus:border-purple-400"
+                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-white text-sm focus:border-purple-400"
                   />
                 </div>
 
@@ -631,7 +631,7 @@ export default function GymAdminHiringRequests() {
                   <button
                     type="button"
                     onClick={() => setNegotiateModalOpen(false)}
-                    className="px-4 py-2 bg-[#FFFFFF] text-slate-300 rounded-xl text-xs font-semibold hover:bg-[#F3E8E8]"
+                    className="px-4 py-2 bg-[#FFFFFF] text-slate-300 rounded-xl text-xs font-semibold hover:bg-[#FFF7ED]"
                   >
                     Cancel
                   </button>
@@ -653,21 +653,21 @@ export default function GymAdminHiringRequests() {
       {/* Details & Negotiation History Modal */}
       {viewModalOpen && selectedReq && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-2xl max-w-2xl w-full p-6 text-white shadow-2xl relative max-h-[85vh] overflow-y-auto">
-            <div className="flex items-center justify-between pb-4 border-b border-[#E7DADD]">
+          <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl max-w-2xl w-full p-6 text-[#1F2937] shadow-2xl relative max-h-[85vh] overflow-y-auto">
+            <div className="flex items-center justify-between pb-4 border-b border-[#E2E8F0]">
               <div>
-                <h3 className="text-lg font-bold text-[#292524] flex items-center gap-2">
+                <h3 className="text-lg font-bold text-[#111827] flex items-center gap-2">
                   <span>Hiring Request: {selectedReq.trainerName}</span>
                 </h3>
-                <span className="text-xs text-[#B76E79] font-semibold">{selectedReq.role}</span>
+                <span className="text-xs text-[#EA580C] font-semibold">{selectedReq.role}</span>
               </div>
-              <button onClick={() => setViewModalOpen(false)} className="text-slate-400 hover:text-white">
+              <button onClick={() => setViewModalOpen(false)} className="text-[#64748B] hover:text-[#C2410C]">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             <div className="space-y-4 py-4 text-xs">
-              <div className="grid grid-cols-2 gap-3 bg-[#FFFFFF] p-4 rounded-xl border border-[#E7DADD]">
+              <div className="grid grid-cols-2 gap-3 bg-[#FFFFFF] p-4 rounded-xl border border-[#E2E8F0]">
                 <div>
                   <span className="text-slate-500 block">Status:</span>
                   <div className="mt-1">{getStatusBadge(selectedReq.status)}</div>
@@ -684,7 +684,7 @@ export default function GymAdminHiringRequests() {
                 </div>
                 <div>
                   <span className="text-slate-500 block">Personal Training Fee:</span>
-                  <span className="font-bold text-[#B76E79] font-mono mt-1 block">
+                  <span className="font-bold text-[#EA580C] font-mono mt-1 block">
                     ₹{(selectedReq.personalTrainingFee || 0).toLocaleString()} / session
                   </span>
                 </div>
@@ -700,7 +700,7 @@ export default function GymAdminHiringRequests() {
 
               <div>
                 <h4 className="font-bold text-slate-300 mb-1">Job Responsibilities</h4>
-                <p className="bg-[#FFFFFF] p-3 rounded-xl border border-[#E7DADD] text-slate-300 whitespace-pre-line">
+                <p className="bg-[#FFFFFF] p-3 rounded-xl border border-[#E2E8F0] text-slate-300 whitespace-pre-line">
                   {selectedReq.jobResponsibilities}
                 </p>
               </div>
@@ -708,7 +708,7 @@ export default function GymAdminHiringRequests() {
               {selectedReq.additionalTerms && (
                 <div>
                   <h4 className="font-bold text-slate-300 mb-1">Additional Terms</h4>
-                  <p className="bg-[#FFFFFF] p-3 rounded-xl border border-[#E7DADD] text-slate-300">
+                  <p className="bg-[#FFFFFF] p-3 rounded-xl border border-[#E2E8F0] text-slate-300">
                     {selectedReq.additionalTerms}
                   </p>
                 </div>
@@ -716,13 +716,13 @@ export default function GymAdminHiringRequests() {
 
               {/* Negotiation Thread History */}
               <div className="pt-2">
-                <h4 className="font-bold text-[#292524] mb-2 flex items-center gap-1.5">
-                  <MessageSquare className="w-4 h-4 text-[#B76E79]" />
+                <h4 className="font-bold text-[#111827] mb-2 flex items-center gap-1.5">
+                  <MessageSquare className="w-4 h-4 text-[#EA580C]" />
                   Negotiation & Counter-Offer Thread
                 </h4>
 
                 {(!selectedReq.negotiationHistory || selectedReq.negotiationHistory.length === 0) ? (
-                  <p className="text-slate-500 italic bg-[#FFFFFF] p-3 rounded-xl border border-[#E7DADD]">
+                  <p className="text-slate-500 italic bg-[#FFFFFF] p-3 rounded-xl border border-[#E2E8F0]">
                     No counter-negotiations recorded yet. Request is currently with original terms.
                   </p>
                 ) : (
@@ -769,10 +769,10 @@ export default function GymAdminHiringRequests() {
               </div>
             </div>
 
-            <div className="flex justify-end pt-3 border-t border-[#E7DADD]">
+            <div className="flex justify-end pt-3 border-t border-[#E2E8F0]">
               <button
                 onClick={() => setViewModalOpen(false)}
-                className="px-4 py-2 bg-[#FFFFFF] text-slate-300 rounded-xl text-xs font-semibold hover:bg-[#F3E8E8]"
+                className="px-4 py-2 bg-[#FFFFFF] text-slate-300 rounded-xl text-xs font-semibold hover:bg-[#FFF7ED]"
               >
                 Close
               </button>

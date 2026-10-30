@@ -6,42 +6,42 @@ const AdminSubscriptions = () => {
       <div className="flex justify-between items-end mb-8">
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-3">
-            <Wallet className="text-[#B76E79]" size={32} />
+            <Wallet className="text-[#EA580C]" size={32} />
             Active Subscriptions
           </h1>
-          <p className="text-[#57534E] mt-2">Monitor user billing cycles and active passes.</p>
+          <p className="text-[#64748B] mt-2">Monitor user billing cycles and active passes.</p>
         </div>
-        <button className="px-6 py-2 bg-[#B76E79] text-white font-bold rounded-xl font-bold hover:bg-[#9F5965] transition-colors">
+        <button className="px-6 py-2 bg-[#C2410C] text-white font-bold rounded-xl font-bold hover:bg-[#9A3412] transition-colors">
           Manage Active Subscriptions
         </button>
       </div>
       
       
-      <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-6 mb-6 flex justify-between items-center">
+      <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-6 mb-6 flex justify-between items-center">
          <div>
-           <p className="text-[#57534E] text-sm">Monthly Recurring Revenue</p>
-           <h2 className="text-3xl font-bold text-[#B76E79]">$24,500</h2>
+           <p className="text-[#64748B] text-sm">Monthly Recurring Revenue</p>
+           <h2 className="text-3xl font-bold text-[#EA580C]">$24,500</h2>
          </div>
          <div className="text-right">
-           <p className="text-[#57534E] text-sm">Active Subscribers</p>
+           <p className="text-[#64748B] text-sm">Active Subscribers</p>
            <h2 className="text-3xl font-bold">842</h2>
          </div>
       </div>
-      <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl overflow-hidden">
+      <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl overflow-hidden">
         <table className="w-full text-left">
           <thead>
-            <tr className="bg-[#FFFFFF] text-[#57534E] text-sm border-b border-[#E7DADD]">
+            <tr className="bg-[#FFFFFF] text-[#64748B] text-sm border-b border-[#E2E8F0]">
               <th className="p-4 font-medium">User</th>
               <th className="p-4 font-medium">Plan</th>
               <th className="p-4 font-medium">Billing Cycle</th>
               <th className="p-4 font-medium">Next Charge</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#E7DADD] text-sm">
+          <tbody className="divide-y divide-[#E2E8F0] text-sm">
             {[1, 2, 3, 4, 5].map((row) => (
               <tr key={row} className="hover:bg-[#FFFFFF]">
                 <td className="p-4 font-bold">User {row}</td>
-                <td className="p-4 text-[#B76E79]">Pro Tier</td>
+                <td className="p-4 text-[#EA580C]">Pro Tier</td>
                 <td className="p-4">Monthly</td>
                 <td className="p-4">Oct {20 + row}, 2026</td>
               </tr>

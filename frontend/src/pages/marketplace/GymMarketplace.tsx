@@ -140,7 +140,7 @@ const GymMarketplace = () => {
   const currentSlide = HERO_SLIDES[slideIdx];
 
   return (
-    <div className="min-h-screen bg-[#F3E8E8]">
+    <div className="min-h-screen bg-[#F8FAFC]">
 
       {/* ===== HERO VIDEO SECTION ===== */}
       <div className="relative w-full min-h-screen overflow-hidden flex flex-col justify-between">
@@ -148,16 +148,16 @@ const GymMarketplace = () => {
         {/* Floating Top Header */}
         <header className="absolute top-0 left-0 right-0 z-30 px-4 sm:px-8 py-5 flex items-center justify-between pointer-events-auto">
           <Link to="/" className="flex items-center space-x-2.5 group">
-            <div className="w-10 h-10 bg-gradient-to-br from-[#B76E79] to-[#9F5965] rounded-xl flex items-center justify-center shadow-lg shadow-[#B76E79]/20">
+            <div className="w-10 h-10 bg-gradient-to-br from-[#EA580C] to-[#C2410C] rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/15">
               <Activity className="text-[#FFFFFF]" size={22} strokeWidth={2.5} />
             </div>
-            <span className="text-2xl font-bold tracking-tight text-[#292524] group-hover:text-[#B76E79] transition-colors">Gymora</span>
+            <span className="text-2xl font-bold tracking-tight text-[#111827] group-hover:text-[#EA580C] transition-colors">Gymora</span>
           </Link>
 
           <div className="flex items-center gap-3">
             <Link 
               to={returnPath} 
-              className="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#FFFFFF] bg-[#B76E79] hover:bg-[#9F5965] transition-all shadow-md shadow-[#B76E79]/20 flex items-center gap-1.5"
+              className="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#FFFFFF] bg-[#C2410C] hover:bg-[#9A3412] transition-all shadow-md shadow-orange-500/15 flex items-center gap-1.5"
             >
               <ArrowLeft size={16} />
               <span>{returnLabel}</span>
@@ -189,7 +189,7 @@ const GymMarketplace = () => {
 
         {/* Strong dark gradient overlays — ensures text is always readable */}
         <div className="absolute inset-0 bg-black/65 z-[1]" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-[#F3E8E8] z-[1]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-[#F8FAFC] z-[1]" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-black/60 z-[1]" />
         {/* Teal glow at center */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(183,110,121,0.08)_0%,_transparent_65%)] z-[1] pointer-events-none" />
@@ -201,7 +201,7 @@ const GymMarketplace = () => {
               <button
                 key={i}
                 onClick={() => setSlideIdx(i)}
-                className={`rounded-full transition-all duration-500 ${i === slideIdx ? 'w-8 h-2 bg-[#B76E79]' : 'w-2 h-2 bg-[#FFFFFF]/30 hover:bg-[#FFFFFF]/60'}`}
+                className={`rounded-full transition-all duration-500 ${i === slideIdx ? 'w-8 h-2 bg-[#C2410C]' : 'w-2 h-2 bg-[#FFFFFF]/30 hover:bg-[#FFFFFF]/60'}`}
               />
             ))}
           </div>
@@ -210,7 +210,7 @@ const GymMarketplace = () => {
         {/* Volume Control */}
         <button
           onClick={toggleMute}
-          className="absolute bottom-10 right-8 z-20 p-3 rounded-full bg-[#FFFFFF]/40 backdrop-blur-md border border-white/20 text-[#292524] hover:bg-[#FFFFFF]/60 transition-all cursor-pointer"
+          className="absolute bottom-10 right-8 z-20 p-3 rounded-full bg-[#FFFFFF]/40 backdrop-blur-md border border-white/20 text-[#111827] hover:bg-[#FFFFFF]/60 transition-all cursor-pointer"
           title={muted ? 'Unmute' : 'Mute'}
         >
           {muted ? <VolumeX size={18} /> : <Volume2 size={18} />}
@@ -222,24 +222,24 @@ const GymMarketplace = () => {
           {/* Slide label badge — comfortably spaced down */}
           <div
             key={`badge-${slideIdx}`}
-            className="inline-flex items-center gap-2 bg-[#B76E79]/20 backdrop-blur-md border border-[#B76E79]/50 text-[#B76E79] text-xs sm:text-sm font-bold px-5 py-2.5 rounded-full mb-6 tracking-widest uppercase shadow-lg shadow-[#B76E79]/15"
+            className="inline-flex items-center gap-2 bg-[#FFF7ED] backdrop-blur-md border border-[#FFEDD5] text-[#EA580C] text-xs sm:text-sm font-bold px-5 py-2.5 rounded-full mb-6 tracking-widest uppercase shadow-lg shadow-orange-500/15"
             style={{ animation: 'fadeInUp 0.7s ease' }}
           >
-            <Star size={14} className="fill-current text-[#B76E79]" />
+            <Star size={14} className="fill-current text-[#EA580C]" />
             <span>{currentSlide.badge}</span>
           </div>
 
           {/* Main Headline — changes with slide */}
           <h1
             key={`title-${slideIdx}`}
-            className="text-4xl sm:text-6xl md:text-7xl font-extrabold text-[#292524] leading-[1.15] tracking-tight drop-shadow-2xl mb-4 max-w-4xl"
+            className="text-4xl sm:text-6xl md:text-7xl font-extrabold text-[#111827] leading-[1.15] tracking-tight drop-shadow-2xl mb-4 max-w-4xl"
             style={{ animation: 'fadeInUp 0.8s ease' }}
           >
             {currentSlide.title}
             <br />
-            <span className="text-[#B76E79] relative inline-block">
+            <span className="text-[#EA580C] relative inline-block">
               {currentSlide.highlight}
-              <span className="absolute -bottom-2 left-0 right-0 h-1 bg-[#B76E79]/40 rounded-full blur-sm" />
+              <span className="absolute -bottom-2 left-0 right-0 h-1 bg-[#FFF7ED] rounded-full blur-sm" />
             </span>
           </h1>
 
@@ -271,7 +271,7 @@ const GymMarketplace = () => {
               </div>
               <button
                 type="submit"
-                className="px-8 py-3 bg-[#B76E79] text-white font-extrabold rounded-xl hover:bg-[#9F5965] transition-all shadow-[0_4px_20px_rgba(183,110,121,0.3)] whitespace-nowrap text-sm tracking-wide cursor-pointer"
+                className="px-8 py-3 bg-[#C2410C] text-white font-extrabold rounded-xl hover:bg-[#9A3412] transition-all shadow-[0_4px_20px_rgba(183,110,121,0.3)] whitespace-nowrap text-sm tracking-wide cursor-pointer"
               >
                 Search
               </button>
@@ -286,9 +286,9 @@ const GymMarketplace = () => {
               className="flex items-center gap-2 px-5 py-2.5 bg-[#FFFFFF]/40 backdrop-blur-md border border-white/20 text-white rounded-full hover:bg-[#FFFFFF]/60 transition-all text-sm font-medium disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
             >
               {locationLoading ? (
-                <><Loader2 size={15} className="animate-spin text-[#B76E79]" /> Detecting location...</>
+                <><Loader2 size={15} className="animate-spin text-[#EA580C]" /> Detecting location...</>
               ) : (
-                <><Navigation size={15} className="text-[#B76E79]" /> Use My Location</>
+                <><Navigation size={15} className="text-[#EA580C]" /> Use My Location</>
               )}
             </button>
             <div className="h-4 w-px bg-white/20" />
@@ -305,7 +305,7 @@ const GymMarketplace = () => {
         {/* Scroll Down Arrow */}
         <button
           onClick={scrollToGyms}
-          className="relative z-20 mx-auto pb-6 flex flex-col items-center gap-1.5 text-white/70 hover:text-[#B76E79] transition-colors cursor-pointer"
+          className="relative z-20 mx-auto pb-6 flex flex-col items-center gap-1.5 text-white/70 hover:text-[#EA580C] transition-colors cursor-pointer"
           style={{ animation: 'bounce 2s infinite' }}
         >
           <span className="text-[10px] tracking-[0.2em] uppercase font-semibold">Explore Gyms</span>
@@ -329,17 +329,17 @@ const GymMarketplace = () => {
       <div id="gym-results" className="max-w-7xl mx-auto px-4 py-16">
 
         {/* Search Bar (Static in page flow) */}
-        <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-3 mb-10 shadow-sm relative">
+        <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-3 mb-10 shadow-sm relative">
           <form onSubmit={handleSearchSubmit} className="flex items-center gap-3">
             <div className="flex-1 relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[#57534E]" size={20} />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[#64748B]" size={20} />
               <input
                 type="text"
                 placeholder="Search gym, area, city or pincode..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSearchSubmit(e as any)}
-                className="w-full bg-[#F3E8E8] border border-[#E7DADD] rounded-xl pl-12 pr-4 py-3 text-[#292524] placeholder:text-[#57534E] focus:outline-none focus:border-[#B76E79] transition-colors"
+                className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl pl-12 pr-4 py-3 text-[#111827] placeholder:text-[#64748B] focus:outline-none focus:border-[#FDBA74] transition-colors"
               />
             </div>
             <button
@@ -347,10 +347,10 @@ const GymMarketplace = () => {
               onClick={handleUseLocation}
               title="Near Me"
               disabled={locationLoading}
-              className="shrink-0 p-3 bg-[#F3E8E8] border border-[#E7DADD] text-[#292524] hover:text-[#B76E79] hover:border-[#B76E79] rounded-xl transition-colors flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+              className="shrink-0 p-3 bg-[#F8FAFC] border border-[#E2E8F0] text-[#111827] hover:text-[#EA580C] hover:border-[#FDBA74] rounded-xl transition-colors flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {locationLoading ? (
-                <Loader2 size={18} className="animate-spin text-[#B76E79]" />
+                <Loader2 size={18} className="animate-spin text-[#EA580C]" />
               ) : (
                 <Navigation size={18} />
               )}
@@ -360,7 +360,7 @@ const GymMarketplace = () => {
             </button>
             <button
               type="submit"
-              className="shrink-0 px-7 py-3 bg-[#B76E79] text-white font-extrabold rounded-xl hover:bg-[#9F5965] transition-colors whitespace-nowrap text-sm cursor-pointer shadow-md shadow-[#B76E79]/20"
+              className="shrink-0 px-7 py-3 bg-[#C2410C] text-white font-extrabold rounded-xl hover:bg-[#9A3412] transition-colors whitespace-nowrap text-sm cursor-pointer shadow-md shadow-orange-500/15"
             >
               Search
             </button>
@@ -370,12 +370,12 @@ const GymMarketplace = () => {
         {/* Results Header */}
         <div id="gym-results" className="flex items-center justify-between mb-8">
           <div>
-            <h2 className="text-3xl font-extrabold text-[#292524]">
+            <h2 className="text-3xl font-extrabold text-[#111827]">
               {loading ? 'Searching...' : `${gyms.length} Gym${gyms.length !== 1 ? 's' : ''} Found`}
             </h2>
-            <p className="text-[#57534E] text-sm mt-1">
+            <p className="text-[#64748B] text-sm mt-1">
               {locationCity
-                ? <span>Gyms near <span className="text-[#B76E79] font-semibold">{locationCity}</span></span>
+                ? <span>Gyms near <span className="text-[#EA580C] font-semibold">{locationCity}</span></span>
                 : 'Verified fitness centres ready for you'
               }
             </p>
@@ -383,7 +383,7 @@ const GymMarketplace = () => {
           {locationCity && (
             <button
               onClick={() => { setLocationCity(''); setSearchQuery(''); fetchGyms(''); }}
-              className="text-xs text-[#57534E] hover:text-[#B76E79] border border-[#E7DADD] px-3 py-1.5 rounded-lg transition-colors cursor-pointer"
+              className="text-xs text-[#64748B] hover:text-[#EA580C] border border-[#E2E8F0] px-3 py-1.5 rounded-lg transition-colors cursor-pointer"
             >
               Clear Location ✕
             </button>
@@ -393,24 +393,24 @@ const GymMarketplace = () => {
         {/* Results Grid */}
         {loading ? (
           <div className="flex flex-col justify-center items-center py-28 gap-4">
-            <Loader2 className="animate-spin text-[#B76E79]" size={48} />
-            <p className="text-[#57534E]">Finding the best gyms for you...</p>
+            <Loader2 className="animate-spin text-[#EA580C]" size={48} />
+            <p className="text-[#64748B]">Finding the best gyms for you...</p>
           </div>
         ) : gyms.length === 0 ? (
-          <div className="text-center py-28 bg-[#FFFFFF] rounded-2xl border border-[#E7DADD]">
-            <MapPin size={56} className="mx-auto text-[#57534E] mb-4" />
-            <h3 className="text-2xl font-bold text-[#292524] mb-2">No Gyms Found</h3>
-            <p className="text-[#57534E]">Try adjusting your search or filters to find gyms in your area.</p>
+          <div className="text-center py-28 bg-[#FFFFFF] rounded-2xl border border-[#E2E8F0]">
+            <MapPin size={56} className="mx-auto text-[#64748B] mb-4" />
+            <h3 className="text-2xl font-bold text-[#111827] mb-2">No Gyms Found</h3>
+            <p className="text-[#64748B]">Try adjusting your search or filters to find gyms in your area.</p>
           </div>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {gyms.map((gym) => (
               <div
                 key={gym._id}
-                className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl overflow-hidden hover:border-[#B76E79]/60 hover:shadow-[0_0_35px_rgba(183,110,121,0.15)] transition-all duration-300 group flex flex-col"
+                className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl overflow-hidden hover:border-[#FFEDD5] hover:shadow-[0_0_35px_rgba(183,110,121,0.15)] transition-all duration-300 group flex flex-col"
               >
                 {/* Card image */}
-                <div className="h-52 bg-[#F3E8E8] relative overflow-hidden">
+                <div className="h-52 bg-[#F8FAFC] relative overflow-hidden">
                   {gym.logo ? (
                     <img
                       src={gym.logo}
@@ -418,22 +418,22 @@ const GymMarketplace = () => {
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#FFFFFF] to-[#F3E8E8]">
-                      <Activity size={52} className="text-[#B76E79]/30" />
+                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#FFFFFF] to-[#F8FAFC]">
+                      <Activity size={52} className="text-[#EA580C]/30" />
                     </div>
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
 
                   {/* Rating badge */}
                   <div className="absolute top-3 right-3 bg-black/80 backdrop-blur-md px-2.5 py-1.5 rounded-full flex items-center gap-1 border border-white/10">
-                    <Star size={13} className="text-[#B76E79] fill-[#B76E79]" />
-                    <span className="text-[#292524] text-xs font-bold">{gym.rating || 4.5}</span>
-                    {gym.reviewCount > 0 && <span className="text-[#292524] text-[10px] ml-0.5">({gym.reviewCount})</span>}
+                    <Star size={13} className="text-[#EA580C] fill-[#F97316]" />
+                    <span className="text-[#111827] text-xs font-bold">{gym.rating || 4.5}</span>
+                    {gym.reviewCount > 0 && <span className="text-[#111827] text-[10px] ml-0.5">({gym.reviewCount})</span>}
                   </div>
 
                   {/* Gym type badge */}
                   {gym.gymType && (
-                    <div className="absolute top-3 left-3 bg-[#B76E79] text-white px-2.5 py-1 rounded-full text-xs font-bold shadow-md">
+                    <div className="absolute top-3 left-3 bg-[#C2410C] text-white px-2.5 py-1 rounded-full text-xs font-bold shadow-md">
                       {gym.gymType}
                     </div>
                   )}
@@ -442,12 +442,12 @@ const GymMarketplace = () => {
                 {/* Card body */}
                 <div className="p-5 flex-1 flex flex-col justify-between">
                   <div>
-                    <h3 className="text-xl font-bold text-[#292524] group-hover:text-[#B76E79] transition-colors mb-2 leading-snug">
+                    <h3 className="text-xl font-bold text-[#111827] group-hover:text-[#EA580C] transition-colors mb-2 leading-snug">
                       {gym.name}
                     </h3>
-                    <div className="flex items-start text-[#292524] text-sm mb-3">
-                      <MapPin size={14} className="mr-1.5 shrink-0 mt-0.5 text-[#B76E79]" />
-                      <span className="line-clamp-2 text-xs font-medium text-[#292524]">
+                    <div className="flex items-start text-[#111827] text-sm mb-3">
+                      <MapPin size={14} className="mr-1.5 shrink-0 mt-0.5 text-[#EA580C]" />
+                      <span className="line-clamp-2 text-xs font-medium text-[#111827]">
                         {[
                           gym.location?.address,
                           gym.location?.area,
@@ -459,10 +459,10 @@ const GymMarketplace = () => {
 
                     {gym.branches && gym.branches.length > 0 && (
                       <div className="mb-4">
-                        <p className="text-[10px] font-bold text-[#57534E] mb-1.5 uppercase tracking-wider">Other Branches:</p>
+                        <p className="text-[10px] font-bold text-[#64748B] mb-1.5 uppercase tracking-wider">Other Branches:</p>
                         <div className="flex flex-wrap gap-1.5">
                           {gym.branches.map((branch: any) => (
-                            <span key={branch._id} className="bg-[#F3E8E8] text-[#B76E79] text-[10px] font-bold px-2 py-1 rounded-md border border-[#E7DADD] flex items-center gap-1">
+                            <span key={branch._id} className="bg-[#F8FAFC] text-[#EA580C] text-[10px] font-bold px-2 py-1 rounded-md border border-[#E2E8F0] flex items-center gap-1">
                               <MapPin size={10} /> {branch.location?.area || branch.location?.city || branch.branchName}
                             </span>
                           ))}
@@ -476,7 +476,7 @@ const GymMarketplace = () => {
                         ? (gym.facilities || [])
                         : (gym.facilities || []).slice(0, 3)
                       ).map((facility: string, idx: number) => (
-                        <span key={idx} className="bg-[#F3E8E8] text-[#292524] text-xs px-2.5 py-1 rounded-lg border border-[#E7DADD] shadow-xs">
+                        <span key={idx} className="bg-[#F8FAFC] text-[#111827] text-xs px-2.5 py-1 rounded-lg border border-[#E2E8F0] shadow-xs">
                           {facility}
                         </span>
                       ))}
@@ -490,7 +490,7 @@ const GymMarketplace = () => {
                               [gym._id]: !prev[gym._id]
                             }));
                           }}
-                          className="bg-[#B76E79]/15 hover:bg-[#B76E79]/25 text-[#B76E79] text-xs px-2.5 py-1 rounded-lg border border-[#B76E79]/30 font-semibold transition-colors cursor-pointer select-none inline-flex items-center gap-1 active:scale-95"
+                          className="bg-[#FFF7ED] hover:bg-[#FFF7ED] text-[#EA580C] text-xs px-2.5 py-1 rounded-lg border border-[#FFEDD5] font-semibold transition-colors cursor-pointer select-none inline-flex items-center gap-1 active:scale-95"
                           title={expandedFacilities[gym._id] ? "Show fewer facilities" : "Click to view all facilities"}
                         >
                           {expandedFacilities[gym._id]
@@ -502,12 +502,12 @@ const GymMarketplace = () => {
                   </div>
 
                   {/* Price + CTA */}
-                  <div className="mt-auto pt-4 border-t border-[#E7DADD] flex items-center justify-between gap-3">
+                  <div className="mt-auto pt-4 border-t border-[#E2E8F0] flex items-center justify-between gap-3">
                     <div>
-                      <p className="text-[10px] text-[#57534E] uppercase tracking-widest mb-0.5 font-bold">Starting from</p>
-                      <p className="text-xl font-extrabold text-[#292524]">
+                      <p className="text-[10px] text-[#64748B] uppercase tracking-widest mb-0.5 font-bold">Starting from</p>
+                      <p className="text-xl font-extrabold text-[#111827]">
                         ₹{gym.subscriptionPlans?.[0]?.price || '0'}
-                        <span className="text-xs font-normal text-[#57534E] ml-1">
+                        <span className="text-xs font-normal text-[#64748B] ml-1">
                           /{gym.subscriptionPlans?.[0]?.duration || 'mo'}
                         </span>
                       </p>
@@ -515,13 +515,13 @@ const GymMarketplace = () => {
                     <div className="flex flex-col gap-2 shrink-0">
                       <Link
                         to={`/gyms/${gym._id}`}
-                        className="px-4 py-2 text-center bg-[#F3E8E8] text-[#292524] hover:bg-[#B76E79] hover:text-[#FFFFFF] font-bold rounded-xl text-xs sm:text-sm transition-all border border-[#E7DADD] hover:border-[#B76E79] cursor-pointer"
+                        className="px-4 py-2 text-center bg-[#F8FAFC] text-[#111827] hover:bg-[#C2410C] hover:text-[#FFFFFF] font-bold rounded-xl text-xs sm:text-sm transition-all border border-[#E2E8F0] hover:border-[#FDBA74] cursor-pointer"
                       >
                         View Details
                       </Link>
                       <button
                         onClick={() => setEnquiryGym({ id: gym._id, name: gym.name })}
-                        className="px-4 py-2 text-center bg-[#B76E79] text-white font-bold hover:bg-[#9F5965] rounded-xl text-xs sm:text-sm transition-all border border-[#B76E79] cursor-pointer shadow-md shadow-[#B76E79]/20"
+                        className="px-4 py-2 text-center bg-[#C2410C] text-white font-bold hover:bg-[#9A3412] rounded-xl text-xs sm:text-sm transition-all border border-[#FDBA74] cursor-pointer shadow-md shadow-orange-500/15"
                       >
                         Enquire Now
                       </button>

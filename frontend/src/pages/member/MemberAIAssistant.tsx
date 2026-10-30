@@ -44,7 +44,7 @@ const renderFormattedText = (text: string) => {
     const parts = line.split(/(\*\*.*?\*\*)/g);
     const renderedLine = parts.map((part, idx) => {
       if (part.startsWith('**') && part.endsWith('**')) {
-        return <strong key={idx} className="font-bold text-[#B76E79]">{part.slice(2, -2)}</strong>;
+        return <strong key={idx} className="font-bold text-[#EA580C]">{part.slice(2, -2)}</strong>;
       }
       return part;
     });
@@ -52,7 +52,7 @@ const renderFormattedText = (text: string) => {
     const isBullet = line.trim().startsWith('•') || line.trim().startsWith('-') || /^\d+\./.test(line.trim());
 
     return (
-      <span key={lineIdx} className={`block ${lineIdx > 0 ? 'mt-1' : ''} ${isBullet ? 'pl-2 text-[#292524]' : ''}`}>
+      <span key={lineIdx} className={`block ${lineIdx > 0 ? 'mt-1' : ''} ${isBullet ? 'pl-2 text-[#111827]' : ''}`}>
         {renderedLine}
       </span>
     );
@@ -140,20 +140,20 @@ const MemberAIAssistant = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto h-[calc(100vh-9rem)] flex flex-col bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl overflow-hidden shadow-sm relative">
+    <div className="max-w-4xl mx-auto h-[calc(100vh-9rem)] flex flex-col bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl overflow-hidden shadow-sm relative">
       {/* Header */}
-      <div className="p-4 border-b border-[#E7DADD] flex items-center justify-between bg-[#FFFFFF] text-white">
+      <div className="p-4 border-b border-[#E2E8F0] flex items-center justify-between bg-[#FFFFFF] text-white">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-[#B76E79] rounded-xl flex items-center justify-center text-[#292524] shadow-xs">
+          <div className="w-10 h-10 bg-[#C2410C] rounded-xl flex items-center justify-center text-[#111827] shadow-xs">
             <Bot size={22} />
           </div>
           <div>
-            <h2 className="font-bold text-[#292524] text-base flex items-center gap-1.5">
+            <h2 className="font-bold text-[#111827] text-base flex items-center gap-1.5">
               Gym Smart Assistant
-              <Sparkles size={14} className="text-[#B76E79]" />
+              <Sparkles size={14} className="text-[#EA580C]" />
             </h2>
-            <p className="text-xs text-[#57534E] font-medium flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-[#B76E79] animate-pulse" />
+            <p className="text-xs text-[#64748B] font-medium flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-[#C2410C] animate-pulse" />
               Instant Search &middot; Real-time Gym Knowledge
             </p>
           </div>
@@ -162,35 +162,35 @@ const MemberAIAssistant = () => {
           {messages.length > 0 && (
             <button
               onClick={handleClearChat}
-              className="px-3 py-1.5 bg-[#F3E8E8] hover:bg-[#FFFFFF] text-[#292524] text-xs font-semibold rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer"
+              className="px-3 py-1.5 bg-[#F8FAFC] hover:bg-[#FFFFFF] text-[#111827] text-xs font-semibold rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer"
             >
               <RotateCcw size={13} />
               <span>Clear</span>
             </button>
           )}
-          <span className="text-xs text-[#57534E] bg-[#F3E8E8] border border-[#E7DADD] px-3 py-1.5 rounded-full font-medium hidden sm:inline-block">
+          <span className="text-xs text-[#64748B] bg-[#F8FAFC] border border-[#E2E8F0] px-3 py-1.5 rounded-full font-medium hidden sm:inline-block">
             {user?.firstName ? `Hi, ${user.firstName}` : 'Gym Member'}
           </span>
         </div>
       </div>
 
       {/* Messages Scroll Area */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-[#F3E8E8]">
+      <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-[#F8FAFC]">
         {messages.length === 0 ? (
           <div className="max-w-xl mx-auto space-y-6 pt-4 text-center">
-            <div className="w-16 h-16 rounded-2xl bg-[#B76E79]/10 text-[#B76E79] flex items-center justify-center mx-auto shadow-xs">
+            <div className="w-16 h-16 rounded-2xl bg-[#FFF7ED] text-[#EA580C] flex items-center justify-center mx-auto shadow-xs">
               <Bot size={32} />
             </div>
             <div>
-              <h3 className="text-xl font-bold text-[#292524]">Hi {user?.firstName || 'there'}! How can I assist you?</h3>
-              <p className="text-xs text-[#57534E] mt-1 max-w-md mx-auto">
+              <h3 className="text-xl font-bold text-[#111827]">Hi {user?.firstName || 'there'}! How can I assist you?</h3>
+              <p className="text-xs text-[#64748B] mt-1 max-w-md mx-auto">
                 Search anything about membership plans, personal trainers, workout routines, diet guidance, gym equipment, or gym store supplements.
               </p>
             </div>
 
             <div className="text-left space-y-2">
-              <p className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider px-1 flex items-center gap-1">
-                <Compass size={12} className="text-[#B76E79]" />
+              <p className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider px-1 flex items-center gap-1">
+                <Compass size={12} className="text-[#EA580C]" />
                 Suggested Inquiries
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -198,10 +198,10 @@ const MemberAIAssistant = () => {
                   <button
                     key={idx}
                     onClick={() => handleSendMessage(q)}
-                    className="text-left p-3 bg-[#FFFFFF] border border-[#E7DADD] hover:border-[#B76E79] hover:bg-[#F3E8E8] text-xs font-semibold text-[#292524] rounded-xl transition-all shadow-2xs flex items-center justify-between group cursor-pointer"
+                    className="text-left p-3 bg-[#FFFFFF] border border-[#E2E8F0] hover:border-[#FDBA74] hover:bg-[#FFF7ED] text-xs font-semibold text-[#111827] rounded-xl transition-all shadow-2xs flex items-center justify-between group cursor-pointer"
                   >
                     <span className="truncate pr-2">{q}</span>
-                    <ArrowRight size={13} className="text-[#B76E79] opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
+                    <ArrowRight size={13} className="text-[#EA580C] opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
                   </button>
                 ))}
               </div>
@@ -211,7 +211,7 @@ const MemberAIAssistant = () => {
           messages.map(msg => (
             <div key={msg.id} className={`flex gap-3 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
               {msg.sender === 'bot' && (
-                <div className="w-8 h-8 rounded-xl bg-[#B76E79] text-white font-bold flex items-center justify-center shrink-0 text-xs shadow-xs mt-0.5">
+                <div className="w-8 h-8 rounded-xl bg-[#C2410C] text-white font-bold flex items-center justify-center shrink-0 text-xs shadow-xs mt-0.5">
                   <Bot size={16} />
                 </div>
               )}
@@ -219,10 +219,10 @@ const MemberAIAssistant = () => {
                 {/* Bubble */}
                 <div className={`p-4 rounded-2xl text-xs sm:text-sm leading-relaxed ${
                   msg.sender === 'user'
-                    ? 'bg-[#B76E79] text-white rounded-tr-xs font-medium shadow-xs'
+                    ? 'bg-[#C2410C] text-white rounded-tr-xs font-medium shadow-xs'
                     : msg.isRestricted
                     ? 'bg-rose-50 text-rose-900 border border-rose-200 rounded-tl-xs shadow-2xs'
-                    : 'bg-[#FFFFFF] text-[#292524] border border-[#E7DADD] rounded-tl-xs shadow-2xs'
+                    : 'bg-[#FFFFFF] text-[#111827] border border-[#E2E8F0] rounded-tl-xs shadow-2xs'
                 }`}>
                   {renderFormattedText(msg.text)}
                 </div>
@@ -230,33 +230,33 @@ const MemberAIAssistant = () => {
                 {/* Matched Feature Cards */}
                 {msg.sender === 'bot' && msg.matchedItems && msg.matchedItems.length > 0 && (
                   <div className="space-y-1.5 pt-1">
-                    <span className="text-[10px] font-bold text-[#57534E] uppercase tracking-wider block px-1">
+                    <span className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider block px-1">
                       Matching Gym Pages
                     </span>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                       {msg.matchedItems.map(item => (
                         <div
                           key={item.id}
-                          className="p-3 bg-[#FFFFFF] border border-[#E7DADD] hover:border-[#B76E79] rounded-xl transition-all shadow-2xs group flex flex-col justify-between"
+                          className="p-3 bg-[#FFFFFF] border border-[#E2E8F0] hover:border-[#FDBA74] rounded-xl transition-all shadow-2xs group flex flex-col justify-between"
                         >
                           <div>
                             <div className="flex items-center justify-between gap-1">
-                              <h5 className="font-bold text-xs text-[#292524] group-hover:text-[#B76E79] truncate">
+                              <h5 className="font-bold text-xs text-[#111827] group-hover:text-[#EA580C] truncate">
                                 {item.title}
                               </h5>
                               {item.badge && (
-                                <span className="text-[9px] font-bold px-1.5 py-0.5 bg-[#B76E79]/10 text-[#B76E79] rounded-full shrink-0">
+                                <span className="text-[9px] font-bold px-1.5 py-0.5 bg-[#FFF7ED] text-[#EA580C] rounded-full shrink-0">
                                   {item.badge}
                                 </span>
                               )}
                             </div>
-                            <p className="text-[11px] text-[#57534E] line-clamp-2 mt-1">
+                            <p className="text-[11px] text-[#64748B] line-clamp-2 mt-1">
                               {item.description}
                             </p>
                           </div>
                           <button
                             onClick={() => navigate(item.route)}
-                            className="mt-2.5 px-3 py-1.5 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold text-xs font-bold rounded-lg transition-colors flex items-center justify-center gap-1 cursor-pointer w-full"
+                            className="mt-2.5 px-3 py-1.5 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold text-xs font-bold rounded-lg transition-colors flex items-center justify-center gap-1 cursor-pointer w-full"
                           >
                             <span>{item.actionLabel}</span>
                             <ChevronRight size={13} />
@@ -270,8 +270,8 @@ const MemberAIAssistant = () => {
                 {/* Live Items */}
                 {msg.sender === 'bot' && msg.liveItems && msg.liveItems.length > 0 && (
                   <div className="space-y-1.5 pt-1">
-                    <span className="text-[10px] font-bold text-[#57534E] uppercase tracking-wider block px-1 flex items-center gap-1">
-                      <ShoppingBag size={11} className="text-[#B76E79]" />
+                    <span className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider block px-1 flex items-center gap-1">
+                      <ShoppingBag size={11} className="text-[#EA580C]" />
                       Products & Plans
                     </span>
                     <div className="grid grid-cols-2 gap-2">
@@ -279,26 +279,26 @@ const MemberAIAssistant = () => {
                         <div
                           key={live.id}
                           onClick={() => navigate(live.route || '/member/store')}
-                          className="p-2.5 bg-[#FFFFFF] border border-[#E7DADD] hover:border-[#B76E79] rounded-xl text-left cursor-pointer transition-all shadow-2xs group"
+                          className="p-2.5 bg-[#FFFFFF] border border-[#E2E8F0] hover:border-[#FDBA74] rounded-xl text-left cursor-pointer transition-all shadow-2xs group"
                         >
                           {live.image ? (
-                            <div className="w-full h-20 rounded-lg bg-[#F3E8E8] overflow-hidden mb-1.5">
+                            <div className="w-full h-20 rounded-lg bg-[#F8FAFC] overflow-hidden mb-1.5">
                               <img src={live.image} alt={live.title} className="w-full h-full object-contain p-1" />
                             </div>
                           ) : (
-                            <div className="w-full h-14 rounded-lg bg-[#B76E79]/5 text-[#B76E79] flex items-center justify-center mb-1.5">
+                            <div className="w-full h-14 rounded-lg bg-[#FFF7ED] text-[#EA580C] flex items-center justify-center mb-1.5">
                               <Tag size={18} />
                             </div>
                           )}
-                          <h6 className="font-bold text-xs text-[#292524] truncate group-hover:text-[#B76E79]">
+                          <h6 className="font-bold text-xs text-[#111827] truncate group-hover:text-[#EA580C]">
                             {live.title}
                           </h6>
                           <div className="flex items-center justify-between mt-1">
-                            <span className="font-extrabold text-xs text-[#B76E79]">
+                            <span className="font-extrabold text-xs text-[#EA580C]">
                               ₹{live.price}
                             </span>
                             {live.tag && (
-                              <span className="text-[9px] text-[#57534E] truncate max-w-[80px]">
+                              <span className="text-[9px] text-[#64748B] truncate max-w-[80px]">
                                 {live.tag}
                               </span>
                             )}
@@ -312,7 +312,7 @@ const MemberAIAssistant = () => {
                 {/* Follow Ups */}
                 {msg.sender === 'bot' && msg.followUps && msg.followUps.length > 0 && (
                   <div className="pt-1">
-                    <span className="text-[10px] text-[#57534E] font-semibold uppercase tracking-wider block mb-1 px-1">
+                    <span className="text-[10px] text-[#64748B] font-semibold uppercase tracking-wider block mb-1 px-1">
                       Suggested Follow-ups:
                     </span>
                     <div className="flex flex-wrap gap-1.5">
@@ -320,7 +320,7 @@ const MemberAIAssistant = () => {
                         <button
                           key={fIdx}
                           onClick={() => handleSendMessage(fu)}
-                          className="text-xs px-3 py-1 bg-[#F3E8E8] hover:bg-[#B76E79]/10 hover:text-[#B76E79] text-[#292524] rounded-full font-medium transition-colors border border-[#E7DADD] cursor-pointer"
+                          className="text-xs px-3 py-1 bg-[#F8FAFC] hover:bg-[#FFF7ED] hover:text-[#EA580C] text-[#111827] rounded-full font-medium transition-colors border border-[#E2E8F0] cursor-pointer"
                         >
                           {fu}
                         </button>
@@ -329,7 +329,7 @@ const MemberAIAssistant = () => {
                   </div>
                 )}
 
-                <span className={`text-[10px] text-[#57534E] block px-1 ${msg.sender === 'user' ? 'text-right' : 'text-left'}`}>
+                <span className={`text-[10px] text-[#64748B] block px-1 ${msg.sender === 'user' ? 'text-right' : 'text-left'}`}>
                   {msg.timestamp}
                 </span>
               </div>
@@ -339,11 +339,11 @@ const MemberAIAssistant = () => {
 
         {loading && (
           <div className="flex gap-3 items-start">
-            <div className="w-8 h-8 rounded-xl bg-[#B76E79] text-white font-bold flex items-center justify-center shrink-0 text-xs">
+            <div className="w-8 h-8 rounded-xl bg-[#C2410C] text-white font-bold flex items-center justify-center shrink-0 text-xs">
               <Bot size={16} />
             </div>
-            <div className="bg-[#FFFFFF] border border-[#E7DADD] p-3.5 rounded-2xl rounded-tl-xs text-xs text-[#57534E] flex items-center gap-2 shadow-2xs">
-              <Loader2 size={16} className="animate-spin text-[#B76E79]" />
+            <div className="bg-[#FFFFFF] border border-[#E2E8F0] p-3.5 rounded-2xl rounded-tl-xs text-xs text-[#64748B] flex items-center gap-2 shadow-2xs">
+              <Loader2 size={16} className="animate-spin text-[#EA580C]" />
               <span>Searching gym features and verified knowledge...</span>
             </div>
           </div>
@@ -352,7 +352,7 @@ const MemberAIAssistant = () => {
       </div>
 
       {/* Input */}
-      <div className="p-4 border-t border-[#E7DADD] bg-[#FFFFFF]">
+      <div className="p-4 border-t border-[#E2E8F0] bg-[#FFFFFF]">
         <div className="flex gap-2">
           <input
             type="text"
@@ -361,12 +361,12 @@ const MemberAIAssistant = () => {
             onKeyDown={e => e.key === 'Enter' && handleSendMessage()}
             disabled={loading}
             placeholder="Ask anything about your gym..."
-            className="flex-1 bg-[#F3E8E8] border border-[#E7DADD] rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-[#B76E79] text-[#292524] placeholder:text-[#57534E]"
+            className="flex-1 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-[#FDBA74] text-[#111827] placeholder:text-[#64748B]"
           />
           <button
             onClick={() => handleSendMessage()}
             disabled={!inputMessage.trim() || loading}
-            className="px-5 py-3 bg-[#B76E79] text-white font-bold rounded-xl hover:bg-[#9F5965] transition-colors disabled:opacity-40 font-bold flex items-center gap-2 shadow-xs cursor-pointer"
+            className="px-5 py-3 bg-[#C2410C] text-white font-bold rounded-xl hover:bg-[#9A3412] transition-colors disabled:opacity-40 font-bold flex items-center gap-2 shadow-xs cursor-pointer"
           >
             <Send size={16} />
             <span className="hidden sm:inline">Search</span>
