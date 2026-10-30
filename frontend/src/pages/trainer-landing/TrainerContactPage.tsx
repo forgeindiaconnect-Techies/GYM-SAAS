@@ -37,21 +37,21 @@ export const TrainerContactPage: React.FC = () => {
       <div className="py-16 md:py-24 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <Link
           to="/trainers"
-          className="inline-flex items-center gap-2 text-xs font-bold text-[#9AAEAE] hover:text-[#2DD4BF] transition-colors mb-8"
+          className="inline-flex items-center gap-2 text-xs font-bold text-[#57534E] hover:text-[#B76E79] transition-colors mb-8"
         >
           <ArrowLeft size={16} />
           <span>Back to Trainer Landing Page</span>
         </Link>
 
         <div className="mb-12">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#2DD4BF]/10 border border-[#2DD4BF]/30 text-[#2DD4BF] text-xs font-semibold mb-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#B76E79]/10 border border-[#B76E79]/30 text-[#B76E79] text-xs font-semibold mb-4">
             <Mail size={13} />
             <span>Direct Trainer Inquiries</span>
           </div>
-          <h1 className="text-3xl sm:text-5xl font-extrabold text-[#F5FAFA] tracking-tight mb-4">
+          <h1 className="text-3xl sm:text-5xl font-extrabold text-[#292524] tracking-tight mb-4">
             Contact Trainer Support
           </h1>
-          <p className="text-base sm:text-lg text-[#9AAEAE] leading-relaxed">
+          <p className="text-base sm:text-lg text-[#57534E] leading-relaxed">
             Have questions about joining as a coach, verifying certifications, or connecting with gym facilities? Reach out to our trainer relations team.
           </p>
         </div>
@@ -59,76 +59,76 @@ export const TrainerContactPage: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
           {/* Contact Details Column */}
           <div className="lg:col-span-5 space-y-6">
-            <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-7">
-              <h2 className="text-lg font-bold text-[#F5FAFA] mb-5">Trainer Relations Desk</h2>
+            <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-7">
+              <h2 className="text-lg font-bold text-[#292524] mb-5">Trainer Relations Desk</h2>
               
-              <div className="space-y-5 text-xs sm:text-sm text-[#9AAEAE]">
+              <div className="space-y-5 text-xs sm:text-sm text-[#57534E]">
                 <div className="flex items-start gap-3.5">
-                  <div className="w-9 h-9 rounded-xl bg-[#2DD4BF]/10 border border-[#2DD4BF]/20 flex items-center justify-center text-[#2DD4BF] shrink-0">
+                  <div className="w-9 h-9 rounded-xl bg-[#B76E79]/10 border border-[#B76E79]/20 flex items-center justify-center text-[#B76E79] shrink-0">
                     <Mail size={16} />
                   </div>
                   <div>
-                    <div className="font-bold text-[#F5FAFA] text-xs mb-0.5">Trainer Email Inquiries</div>
-                    <a href="mailto:trainers@gymora.com" className="text-[#2DD4BF] hover:underline">
+                    <div className="font-bold text-[#292524] text-xs mb-0.5">Trainer Email Inquiries</div>
+                    <a href="mailto:trainers@gymora.com" className="text-[#B76E79] hover:underline">
                       trainers@gymora.com
                     </a>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-3.5">
-                  <div className="w-9 h-9 rounded-xl bg-[#2DD4BF]/10 border border-[#2DD4BF]/20 flex items-center justify-center text-[#2DD4BF] shrink-0">
+                  <div className="w-9 h-9 rounded-xl bg-[#B76E79]/10 border border-[#B76E79]/20 flex items-center justify-center text-[#B76E79] shrink-0">
                     <Clock size={16} />
                   </div>
                   <div>
-                    <div className="font-bold text-[#F5FAFA] text-xs mb-0.5">Support Availability</div>
+                    <div className="font-bold text-[#292524] text-xs mb-0.5">Support Availability</div>
                     <p className="text-xs">Monday – Saturday, 9:00 AM – 7:00 PM IST</p>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-3.5">
-                  <div className="w-9 h-9 rounded-xl bg-[#2DD4BF]/10 border border-[#2DD4BF]/20 flex items-center justify-center text-[#2DD4BF] shrink-0">
+                  <div className="w-9 h-9 rounded-xl bg-[#B76E79]/10 border border-[#B76E79]/20 flex items-center justify-center text-[#B76E79] shrink-0">
                     <ShieldCheck size={16} />
                   </div>
                   <div>
-                    <div className="font-bold text-[#F5FAFA] text-xs mb-0.5">Credential Verification</div>
+                    <div className="font-bold text-[#292524] text-xs mb-0.5">Credential Verification</div>
                     <p className="text-xs">Turnaround time: 24 to 48 business hours upon document submission.</p>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="bg-[#0E1415] border border-[#2A3A3A] rounded-2xl p-6 text-xs text-[#9AAEAE]">
-              <span className="font-bold text-[#F5FAFA] block mb-1">Direct Gym Communication:</span>
+            <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-2xl p-6 text-xs text-[#57534E]">
+              <span className="font-bold text-[#292524] block mb-1">Direct Gym Communication:</span>
               Once approved by a specific partner club, you can also coordinate directly with the gym management through their assigned coordinator.
             </div>
           </div>
 
           {/* Contact Form Column */}
           <div className="lg:col-span-7">
-            <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-8 sm:p-9">
+            <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-8 sm:p-9">
               {submitted ? (
                 <div className="text-center py-10 animate-fadeIn">
-                  <div className="w-16 h-16 rounded-2xl bg-[#2DD4BF]/15 border border-[#2DD4BF]/30 flex items-center justify-center text-[#2DD4BF] mx-auto mb-4">
+                  <div className="w-16 h-16 rounded-2xl bg-[#B76E79]/15 border border-[#B76E79]/30 flex items-center justify-center text-[#B76E79] mx-auto mb-4">
                     <CheckCircle2 size={32} />
                   </div>
-                  <h3 className="text-xl font-bold text-[#F5FAFA] mb-2">Inquiry Submitted Successfully</h3>
-                  <p className="text-xs sm:text-sm text-[#9AAEAE] max-w-md mx-auto mb-6 leading-relaxed">
+                  <h3 className="text-xl font-bold text-[#292524] mb-2">Inquiry Submitted Successfully</h3>
+                  <p className="text-xs sm:text-sm text-[#57534E] max-w-md mx-auto mb-6 leading-relaxed">
                     Thank you for reaching out to Gymora Trainer Support. A representative from our trainer relations team will respond to your registered email shortly.
                   </p>
                   <button
                     onClick={() => setSubmitted(false)}
-                    className="px-6 py-2.5 bg-[#0E1415] hover:bg-[#1B2728] text-xs font-bold text-[#2DD4BF] border border-[#2DD4BF]/30 rounded-xl"
+                    className="px-6 py-2.5 bg-[#F3E8E8] hover:bg-[#F3E8E8] text-xs font-bold text-[#B76E79] border border-[#B76E79]/30 rounded-xl"
                   >
                     Send Another Message
                   </button>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-4">
-                  <h2 className="text-lg font-bold text-[#F5FAFA] mb-4">Send an Inquiry</h2>
+                  <h2 className="text-lg font-bold text-[#292524] mb-4">Send an Inquiry</h2>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-semibold text-[#C1D0D0] mb-1.5">
+                      <label className="block text-xs font-semibold text-[#292524] mb-1.5">
                         Full Name *
                       </label>
                       <input
@@ -137,11 +137,11 @@ export const TrainerContactPage: React.FC = () => {
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                         placeholder="e.g. Alex Henderson"
-                        className="w-full bg-[#0E1415] border border-[#2A3A3A] rounded-xl px-4 py-3 text-xs text-[#F5FAFA] focus:outline-none focus:border-[#2DD4BF]"
+                        className="w-full bg-[#F3E8E8] border border-[#E7DADD] rounded-xl px-4 py-3 text-xs text-[#292524] focus:outline-none focus:border-[#B76E79]"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-[#C1D0D0] mb-1.5">
+                      <label className="block text-xs font-semibold text-[#292524] mb-1.5">
                         Email Address *
                       </label>
                       <input
@@ -150,14 +150,14 @@ export const TrainerContactPage: React.FC = () => {
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                         placeholder="alex@example.com"
-                        className="w-full bg-[#0E1415] border border-[#2A3A3A] rounded-xl px-4 py-3 text-xs text-[#F5FAFA] focus:outline-none focus:border-[#2DD4BF]"
+                        className="w-full bg-[#F3E8E8] border border-[#E7DADD] rounded-xl px-4 py-3 text-xs text-[#292524] focus:outline-none focus:border-[#B76E79]"
                       />
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-semibold text-[#C1D0D0] mb-1.5">
+                      <label className="block text-xs font-semibold text-[#292524] mb-1.5">
                         Phone Number (Optional)
                       </label>
                       <input
@@ -165,17 +165,17 @@ export const TrainerContactPage: React.FC = () => {
                         value={formData.phone}
                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                         placeholder="+91 98765 43210"
-                        className="w-full bg-[#0E1415] border border-[#2A3A3A] rounded-xl px-4 py-3 text-xs text-[#F5FAFA] focus:outline-none focus:border-[#2DD4BF]"
+                        className="w-full bg-[#F3E8E8] border border-[#E7DADD] rounded-xl px-4 py-3 text-xs text-[#292524] focus:outline-none focus:border-[#B76E79]"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-[#C1D0D0] mb-1.5">
+                      <label className="block text-xs font-semibold text-[#292524] mb-1.5">
                         Primary Specialization
                       </label>
                       <select
                         value={formData.specialization}
                         onChange={(e) => setFormData({ ...formData, specialization: e.target.value })}
-                        className="w-full bg-[#0E1415] border border-[#2A3A3A] rounded-xl px-4 py-3 text-xs text-[#F5FAFA] focus:outline-none focus:border-[#2DD4BF]"
+                        className="w-full bg-[#F3E8E8] border border-[#E7DADD] rounded-xl px-4 py-3 text-xs text-[#292524] focus:outline-none focus:border-[#B76E79]"
                       >
                         <option value="Strength & Conditioning">Strength & Conditioning</option>
                         <option value="Hypertrophy & Bodybuilding">Hypertrophy & Bodybuilding</option>
@@ -188,7 +188,7 @@ export const TrainerContactPage: React.FC = () => {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-[#C1D0D0] mb-1.5">
+                    <label className="block text-xs font-semibold text-[#292524] mb-1.5">
                       Subject *
                     </label>
                     <input
@@ -197,12 +197,12 @@ export const TrainerContactPage: React.FC = () => {
                       value={formData.subject}
                       onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                       placeholder="e.g. Question regarding ACE certification accreditation"
-                      className="w-full bg-[#0E1415] border border-[#2A3A3A] rounded-xl px-4 py-3 text-xs text-[#F5FAFA] focus:outline-none focus:border-[#2DD4BF]"
+                      className="w-full bg-[#F3E8E8] border border-[#E7DADD] rounded-xl px-4 py-3 text-xs text-[#292524] focus:outline-none focus:border-[#B76E79]"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-[#C1D0D0] mb-1.5">
+                    <label className="block text-xs font-semibold text-[#292524] mb-1.5">
                       Message *
                     </label>
                     <textarea
@@ -211,13 +211,13 @@ export const TrainerContactPage: React.FC = () => {
                       value={formData.message}
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                       placeholder="Please describe your inquiry in detail..."
-                      className="w-full bg-[#0E1415] border border-[#2A3A3A] rounded-xl p-4 text-xs text-[#F5FAFA] focus:outline-none focus:border-[#2DD4BF]"
+                      className="w-full bg-[#F3E8E8] border border-[#E7DADD] rounded-xl p-4 text-xs text-[#292524] focus:outline-none focus:border-[#B76E79]"
                     ></textarea>
                   </div>
 
                   <button
                     type="submit"
-                    className="w-full py-3.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold rounded-xl text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md shadow-teal-500/20 transition-all cursor-pointer"
+                    className="w-full py-3.5 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold rounded-xl text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md shadow-[#B76E79]/20 transition-all cursor-pointer"
                   >
                     <Send size={16} />
                     <span>Submit Inquiry</span>

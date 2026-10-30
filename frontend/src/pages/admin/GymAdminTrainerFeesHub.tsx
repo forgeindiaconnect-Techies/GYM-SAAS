@@ -7,9 +7,9 @@ const cards = [
     description: 'Configure and manage fees for each trainer in your gym.',
     icon: Settings,
     path: '/admin/trainer-fees/settings',
-    color: 'from-[#2DD4BF] to-[#5EEAD4]',
+    color: 'from-[#B76E79] to-[#9F5965]',
     bg: 'bg-green-50',
-    iconColor: 'text-[#2DD4BF]',
+    iconColor: 'text-[#B76E79]',
   },
   {
     title: 'Pending Trainer Payments',
@@ -26,8 +26,8 @@ const cards = [
     icon: History,
     path: '/admin/trainer-fees/history',
     color: 'from-blue-500 to-indigo-500',
-    bg: 'bg-[#1B2728]',
-    iconColor: 'text-[#2DD4BF]',
+    bg: 'bg-[#F3E8E8]',
+    iconColor: 'text-[#B76E79]',
   },
   {
     title: 'Trainer Earnings',
@@ -35,8 +35,8 @@ const cards = [
     icon: TrendingUp,
     path: '/admin/trainer-fees/earnings',
     color: 'from-purple-500 to-pink-500',
-    bg: 'bg-[#0E1415]',
-    iconColor: 'text-[#2DD4BF]',
+    bg: 'bg-[#F3E8E8]',
+    iconColor: 'text-[#B76E79]',
   },
 ];
 
@@ -44,8 +44,8 @@ const GymAdminTrainerFeesHub = () => {
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-[#F5FAFA]">Trainer Fees & Payments</h1>
-        <p className="text-[#9AAEAE] text-sm mt-1">Manage all trainer fee configurations and payment records</p>
+        <h1 className="text-2xl font-bold text-[#292524]">Trainer Fees & Payments</h1>
+        <p className="text-[#57534E] text-sm mt-1">Manage all trainer fee configurations and payment records</p>
       </div>
 
       <div className="grid sm:grid-cols-2 gap-5">
@@ -55,16 +55,16 @@ const GymAdminTrainerFeesHub = () => {
             <Link
               key={card.path}
               to={card.path}
-              className="bg-[#141D1E] border border-[#1B2728] rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-[#2A3A3A] transition-all group"
+              className="bg-[#FFFFFF] border border-[#F3E8E8] rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-[#E7DADD] transition-all group"
             >
               <div className="flex items-start justify-between mb-4">
                 <div className={`w-12 h-12 rounded-xl ${card.bg} flex items-center justify-center`}>
                   <Icon size={22} className={card.iconColor} />
                 </div>
-                <ChevronRight size={18} className="text-[#2A3A3A] group-hover:text-[#2DD4BF] group-hover:translate-x-0.5 transition-all" />
+                <ChevronRight size={18} className="text-[#E7DADD] group-hover:text-[#B76E79] group-hover:translate-x-0.5 transition-all" />
               </div>
-              <h3 className="font-bold text-[#F5FAFA] mb-1">{card.title}</h3>
-              <p className="text-sm text-[#9AAEAE]">{card.description}</p>
+              <h3 className="font-bold text-[#292524] mb-1">{card.title}</h3>
+              <p className="text-sm text-[#57534E]">{card.description}</p>
             </Link>
           );
         })}

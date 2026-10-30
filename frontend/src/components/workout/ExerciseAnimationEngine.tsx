@@ -131,9 +131,9 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
 
       // Studio Radial lighting gradient
       const bgGrad = ctx.createRadialGradient(width / 2, height / 2 - 20, 30, width / 2, height / 2, width / 1.3);
-      bgGrad.addColorStop(0, '#141D1E');
-      bgGrad.addColorStop(0.5, '#141D1E');
-      bgGrad.addColorStop(1, '#090D16');
+      bgGrad.addColorStop(0, '#FFFFFF');
+      bgGrad.addColorStop(0.5, '#FFFFFF');
+      bgGrad.addColorStop(1, '#FFFFFF');
       ctx.fillStyle = bgGrad;
       ctx.fillRect(0, 0, width, height);
 
@@ -186,9 +186,9 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
       }
 
       // Biomechanical Style Configuration
-      const mannequinColor = '#2A3A3A';
+      const mannequinColor = '#E7DADD';
       const jointColor = '#38BDF8';
-      const highlightColor = '#34D399'; // Emerald neon glow for active target muscles
+      const highlightColor = '#15803D'; // Emerald neon glow for active target muscles
       const accentGlow = '#06B6D4';
 
       ctx.lineCap = 'round';
@@ -251,7 +251,7 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
         ctx.rotate(rot);
 
         // Bar handle
-        ctx.strokeStyle = '#2A3A3A';
+        ctx.strokeStyle = '#E7DADD';
         ctx.lineWidth = 3.5;
         ctx.beginPath();
         ctx.moveTo(-13, 0);
@@ -259,7 +259,7 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
         ctx.stroke();
 
         // Hex plates
-        ctx.fillStyle = '#141D1E';
+        ctx.fillStyle = '#FFFFFF';
         ctx.strokeStyle = '#06B6D4';
         ctx.lineWidth = 1.5;
 
@@ -273,14 +273,14 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
       };
 
       const drawBarbell = (bx: number, by: number, widthPx: number = 210) => {
-        ctx.strokeStyle = '#2A3A3A';
+        ctx.strokeStyle = '#E7DADD';
         ctx.lineWidth = 5;
         ctx.beginPath();
         ctx.moveTo(bx - widthPx / 2, by);
         ctx.lineTo(bx + widthPx / 2, by);
         ctx.stroke();
 
-        ctx.fillStyle = '#C43D35';
+        ctx.fillStyle = '#B91C1C';
         ctx.strokeStyle = '#FCA5A5';
         ctx.lineWidth = 2;
 
@@ -486,7 +486,7 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
             ctx.setLineDash([]);
 
             ctx.font = 'bold 9px sans-serif';
-            ctx.fillStyle = '#34D399';
+            ctx.fillStyle = '#15803D';
             ctx.fillText('Parallel Depth', hipX - 85, kneeY + 3);
           }
 
@@ -575,9 +575,9 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
         const baseFloor = isBenchPress ? floorY - 40 : floorY;
 
         if (isBenchPress) {
-          ctx.fillStyle = '#141D1E';
+          ctx.fillStyle = '#FFFFFF';
           ctx.fillRect(centerX - 105, baseFloor + 12, 210, 16);
-          ctx.fillStyle = '#141D1E';
+          ctx.fillStyle = '#FFFFFF';
           ctx.fillRect(centerX - 85, baseFloor + 28, 14, 22);
           ctx.fillRect(centerX + 70, baseFloor + 28, 14, 22);
         }
@@ -616,7 +616,7 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
         const barY = 38;
         const barX = centerX;
 
-        ctx.strokeStyle = '#9AAEAE';
+        ctx.strokeStyle = '#57534E';
         ctx.lineWidth = 7;
         ctx.beginPath();
         ctx.moveTo(barX - 110, barY);
@@ -744,7 +744,7 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
         drawLimb(torsoTopX - 10, torsoTopY + 4, ballX - 4, ballY - 4, 7, false, 0.5);
         drawLimb(torsoTopX + 10, torsoTopY + 4, ballX, ballY, 8, false);
 
-        ctx.fillStyle = '#C43D35';
+        ctx.fillStyle = '#B91C1C';
         ctx.beginPath();
         ctx.arc(ballX, ballY, 12, 0, Math.PI * 2);
         ctx.fill();
@@ -820,7 +820,7 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
       ctx.font = 'bold 9px monospace';
       ctx.fillText(`1-MIN AI FORM VIDEO • ${formatTime(currentVideoTime)} / ${formatTime(totalDuration)}`, 22, 28);
 
-      ctx.fillStyle = '#0E1415';
+      ctx.fillStyle = '#F3E8E8';
       ctx.font = 'bold 12px sans-serif';
       ctx.fillText(phaseLabel, 22, 48);
 
@@ -875,9 +875,9 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
   };
 
   return (
-    <div className={`relative rounded-2xl overflow-hidden bg-[#141D1E] border border-white/10 flex flex-col ${className}`}>
+    <div className={`relative rounded-2xl overflow-hidden bg-[#FFFFFF] border border-white/10 flex flex-col ${className}`}>
       {/* 60fps Canvas Display */}
-      <div className={`relative w-full bg-[#090D16] flex items-center justify-center overflow-hidden ${
+      <div className={`relative w-full bg-[#FFFFFF] flex items-center justify-center overflow-hidden ${
         compact ? 'h-full' : 'aspect-video min-h-[220px] max-h-[360px]'
       }`}>
         <canvas
@@ -889,8 +889,8 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
 
         {/* Compact Mode Badge */}
         {compact && (
-          <div className="absolute bottom-2 left-2 z-10 flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-black/70 backdrop-blur-sm border border-[#2A3A3A]/40 text-[9px] font-extrabold text-emerald-400 uppercase tracking-wider">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#2DD4BF] animate-pulse" />
+          <div className="absolute bottom-2 left-2 z-10 flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-black/70 backdrop-blur-sm border border-[#E7DADD]/40 text-[9px] font-extrabold text-emerald-400 uppercase tracking-wider">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#B76E79] animate-pulse" />
             <span>1-Min Form Demo</span>
           </div>
         )}
@@ -904,7 +904,7 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
               className="px-2.5 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 bg-black/60 hover:bg-black/80 text-white/90 border border-white/15 backdrop-blur-md cursor-pointer shadow-md"
               title="Toggle Front View vs Side Profile"
             >
-              <Compass size={12} className="text-[#2DD4BF]" />
+              <Compass size={12} className="text-[#B76E79]" />
               <span>{viewAngle === 'front' ? 'Side Profile' : 'Front View'}</span>
             </button>
 
@@ -927,7 +927,7 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
               onClick={() => setHighlightMuscles(!highlightMuscles)}
               className={`px-3 py-1.5 rounded-xl text-[10px] font-extrabold uppercase tracking-wider transition-all flex items-center gap-1.5 border backdrop-blur-md cursor-pointer shadow-md ${
                 highlightMuscles
-                  ? 'bg-[#2DD4BF]/20 text-emerald-400 border-[#2A3A3A]/50 shadow-emerald-500/20'
+                  ? 'bg-[#B76E79]/20 text-emerald-400 border-[#E7DADD]/50 shadow-emerald-500/20'
                   : 'bg-black/60 text-white/50 border-white/10'
               }`}
               title="Toggle Target Muscle Activation Glow"
@@ -944,7 +944,7 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
             onClick={togglePlay}
             className="absolute inset-0 bg-black/40 backdrop-blur-[2px] flex items-center justify-center cursor-pointer group"
           >
-            <div className="w-14 h-14 rounded-full bg-[#2DD4BF] text-[#090D16] flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform">
+            <div className="w-14 h-14 rounded-full bg-[#B76E79] text-[#FFFFFF] flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform">
               <Play size={24} className="ml-1 fill-current" />
             </div>
           </div>
@@ -953,7 +953,7 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
 
       {/* 1-Minute Video Scrubber & Playback HUD (Full Mode Only) */}
       {!compact && (
-        <div className="bg-[#141D1E]/95 border-t border-white/10 px-4 py-3 flex flex-col gap-2.5">
+        <div className="bg-[#FFFFFF]/95 border-t border-white/10 px-4 py-3 flex flex-col gap-2.5">
           {/* Row 1: Interactive 1-Minute Scrubber Bar */}
           <div className="flex items-center gap-3">
             <div
@@ -961,14 +961,14 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
               onClick={handleSeek}
               onMouseMove={handleMouseMoveBar}
               onMouseLeave={() => setHoverTime(null)}
-              className="relative flex-1 h-2 hover:h-3 bg-[#141D1E]/15 rounded-full overflow-hidden cursor-pointer transition-all group/scrub"
+              className="relative flex-1 h-2 hover:h-3 bg-[#FFFFFF]/15 rounded-full overflow-hidden cursor-pointer transition-all group/scrub"
               title="Seek through 1-minute animated video"
             >
               <div
-                className="h-full bg-gradient-to-r from-[#2DD4BF] via-teal-400 to-cyan-400 rounded-full transition-all duration-75 relative"
+                className="h-full bg-gradient-to-r from-[#B76E79] via-teal-400 to-cyan-400 rounded-full transition-all duration-75 relative"
                 style={{ width: `${Math.min(100, (currentTimeSec / totalDuration) * 100)}%` }}
               >
-                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-[#141D1E] rounded-full shadow-md scale-0 group-hover/scrub:scale-100 transition-transform" />
+                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-[#FFFFFF] rounded-full shadow-md scale-0 group-hover/scrub:scale-100 transition-transform" />
               </div>
 
               {hoverTime !== null && (
@@ -986,7 +986,7 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
               <span className="font-bold text-white">{formatTime(currentTimeSec)}</span>
               <span className="text-white/40">/</span>
               <span className="text-white/70 font-bold">{formatTime(totalDuration)}</span>
-              <span className="text-[10px] font-bold text-emerald-400 bg-[#2DD4BF]/10 px-1.5 py-0.5 rounded border border-[#2A3A3A]/20 ml-1">
+              <span className="text-[10px] font-bold text-emerald-400 bg-[#B76E79]/10 px-1.5 py-0.5 rounded border border-[#E7DADD]/20 ml-1">
                 1-MIN
               </span>
             </div>
@@ -997,7 +997,7 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
             <div className="flex items-center gap-1.5">
               <button
                 onClick={togglePlay}
-                className="p-1.5 rounded-lg bg-[#2DD4BF] text-black hover:bg-[#2DD4BF] transition-colors cursor-pointer"
+                className="p-1.5 rounded-lg bg-[#B76E79] text-white hover:bg-[#B76E79] transition-colors cursor-pointer"
                 title={isPlaying ? 'Pause' : 'Play'}
               >
                 {isPlaying ? <Pause size={15} /> : <Play size={15} className="fill-current" />}
@@ -1005,7 +1005,7 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
 
               <button
                 onClick={() => handleSkip(-10)}
-                className="p-1.5 rounded-lg bg-[#141D1E]/10 hover:bg-[#141D1E]/20 text-white/80 hover:text-white transition-colors cursor-pointer"
+                className="p-1.5 rounded-lg bg-[#FFFFFF]/10 hover:bg-[#FFFFFF]/20 text-white/80 hover:text-white transition-colors cursor-pointer"
                 title="Rewind 10 Seconds"
               >
                 <Rewind size={14} />
@@ -1013,7 +1013,7 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
 
               <button
                 onClick={() => handleSkip(10)}
-                className="p-1.5 rounded-lg bg-[#141D1E]/10 hover:bg-[#141D1E]/20 text-white/80 hover:text-white transition-colors cursor-pointer"
+                className="p-1.5 rounded-lg bg-[#FFFFFF]/10 hover:bg-[#FFFFFF]/20 text-white/80 hover:text-white transition-colors cursor-pointer"
                 title="Forward 10 Seconds"
               >
                 <FastForward size={14} />
@@ -1021,7 +1021,7 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
 
               <button
                 onClick={handleRestart}
-                className="p-1.5 rounded-lg bg-[#141D1E]/10 hover:bg-[#141D1E]/20 text-white/70 hover:text-white transition-colors cursor-pointer"
+                className="p-1.5 rounded-lg bg-[#FFFFFF]/10 hover:bg-[#FFFFFF]/20 text-white/70 hover:text-white transition-colors cursor-pointer"
                 title="Restart 1-Minute Animation"
               >
                 <RotateCcw size={14} />
@@ -1034,7 +1034,7 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
 
             {/* Current Form Phase Pill */}
             <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/40 border border-white/10 text-[11px] font-semibold text-white/90">
-              <Activity size={12} className="text-[#2DD4BF]" />
+              <Activity size={12} className="text-[#B76E79]" />
               <span>{currentPhase}</span>
             </div>
 
@@ -1046,7 +1046,7 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
                   onClick={() => setSpeed(s)}
                   className={`px-2 py-0.5 rounded text-[10px] font-extrabold transition-colors cursor-pointer ${
                     speed === s
-                      ? 'bg-[#2DD4BF] text-[#090D16]'
+                      ? 'bg-[#B76E79] text-[#FFFFFF]'
                       : 'text-white/60 hover:text-white'
                   }`}
                 >

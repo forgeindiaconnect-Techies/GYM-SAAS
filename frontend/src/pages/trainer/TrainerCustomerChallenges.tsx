@@ -129,18 +129,18 @@ export default function TrainerCustomerChallenges() {
   });
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto p-4 sm:p-6" style={{ backgroundColor: '#0E1415', minHeight: '100vh' }}>
+    <div className="space-y-6 max-w-7xl mx-auto p-4 sm:p-6" style={{ backgroundColor: '#F3E8E8', minHeight: '100vh' }}>
       {/* Header */}
-      <div className="bg-[#141D1E] p-6 rounded-2xl border shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4" style={{ borderColor: '#2A3A3A' }}>
+      <div className="bg-[#FFFFFF] p-6 rounded-2xl border shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4" style={{ borderColor: '#E7DADD' }}>
         <div className="flex items-center gap-3">
-          <div className="p-3 rounded-xl" style={{ backgroundColor: '#1B2728' }}>
-            <Trophy className="w-7 h-7" style={{ color: '#2DD4BF' }} />
+          <div className="p-3 rounded-xl" style={{ backgroundColor: '#F3E8E8' }}>
+            <Trophy className="w-7 h-7" style={{ color: '#B76E79' }} />
           </div>
           <div>
-            <h1 className="text-2xl font-bold" style={{ color: '#141D1E' }}>
+            <h1 className="text-2xl font-bold" style={{ color: '#FFFFFF' }}>
               Customer Challenge Progress
             </h1>
-            <p className="text-sm" style={{ color: '#9AAEAE' }}>
+            <p className="text-sm" style={{ color: '#57534E' }}>
               Monitor and verify assigned client progress, attendance milestones, and provide coaching feedback.
             </p>
           </div>
@@ -152,7 +152,7 @@ export default function TrainerCustomerChallenges() {
         <div
           className={`p-4 rounded-xl flex items-center justify-between border ${
             message.type === 'success'
-              ? 'bg-[#1B2728] border-[#2A3A3A] text-[#2DD4BF]'
+              ? 'bg-[#F3E8E8] border-[#E7DADD] text-[#B76E79]'
               : 'bg-red-50 border-red-200 text-red-800'
           }`}
         >
@@ -167,26 +167,26 @@ export default function TrainerCustomerChallenges() {
       )}
 
       {/* Search & Filters */}
-      <div className="bg-[#141D1E] p-4 rounded-2xl border shadow-sm flex flex-col md:flex-row justify-between items-center gap-4" style={{ borderColor: '#2A3A3A' }}>
+      <div className="bg-[#FFFFFF] p-4 rounded-2xl border shadow-sm flex flex-col md:flex-row justify-between items-center gap-4" style={{ borderColor: '#E7DADD' }}>
         <div className="relative w-full md:w-80">
-          <Search className="w-4 h-4 absolute left-3 top-3 text-[#9AAEAE]" />
+          <Search className="w-4 h-4 absolute left-3 top-3 text-[#57534E]" />
           <input
             type="text"
             placeholder="Search by customer or challenge..."
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
             className="w-full pl-9 pr-4 py-2 rounded-xl text-sm border focus:outline-none"
-            style={{ borderColor: '#2A3A3A' }}
+            style={{ borderColor: '#E7DADD' }}
           />
         </div>
 
         <div className="flex items-center gap-2 w-full md:w-auto">
-          <span className="text-xs font-semibold" style={{ color: '#9AAEAE' }}>FILTER:</span>
+          <span className="text-xs font-semibold" style={{ color: '#57534E' }}>FILTER:</span>
           <select
             value={statusFilter}
             onChange={e => setStatusFilter(e.target.value)}
-            className="px-3 py-1.5 rounded-xl text-xs font-medium border bg-[#141D1E] focus:outline-none"
-            style={{ borderColor: '#2A3A3A', color: '#141D1E' }}
+            className="px-3 py-1.5 rounded-xl text-xs font-medium border bg-[#FFFFFF] focus:outline-none"
+            style={{ borderColor: '#E7DADD', color: '#FFFFFF' }}
           >
             <option value="ALL">All Participants</option>
             <option value="IN_PROGRESS">In Progress</option>
@@ -197,24 +197,24 @@ export default function TrainerCustomerChallenges() {
 
       {/* Participants Table / Cards */}
       {loading ? (
-        <div className="text-center py-16 bg-[#141D1E] rounded-2xl border" style={{ borderColor: '#2A3A3A' }}>
-          <div className="w-8 h-8 border-4 border-t-transparent rounded-full animate-spin mx-auto" style={{ borderColor: '#2DD4BF', borderTopColor: 'transparent' }} />
-          <p className="mt-2 text-xs text-[#9AAEAE]">Loading assigned customer challenge records...</p>
+        <div className="text-center py-16 bg-[#FFFFFF] rounded-2xl border" style={{ borderColor: '#E7DADD' }}>
+          <div className="w-8 h-8 border-4 border-t-transparent rounded-full animate-spin mx-auto" style={{ borderColor: '#B76E79', borderTopColor: 'transparent' }} />
+          <p className="mt-2 text-xs text-[#57534E]">Loading assigned customer challenge records...</p>
         </div>
       ) : filteredParticipants.length === 0 ? (
-        <div className="text-center py-16 bg-[#141D1E] rounded-2xl border" style={{ borderColor: '#2A3A3A' }}>
+        <div className="text-center py-16 bg-[#FFFFFF] rounded-2xl border" style={{ borderColor: '#E7DADD' }}>
           <Users className="w-12 h-12 mx-auto text-gray-300 mb-3" />
-          <h3 className="text-base font-bold" style={{ color: '#141D1E' }}>No Customer Progress Found</h3>
-          <p className="text-sm max-w-sm mx-auto mt-1" style={{ color: '#9AAEAE' }}>
+          <h3 className="text-base font-bold" style={{ color: '#FFFFFF' }}>No Customer Progress Found</h3>
+          <p className="text-sm max-w-sm mx-auto mt-1" style={{ color: '#57534E' }}>
             When clients enrolled in your training sessions participate in gym challenges, their progress will display here.
           </p>
         </div>
       ) : (
-        <div className="bg-[#141D1E] rounded-2xl border shadow-sm overflow-hidden" style={{ borderColor: '#2A3A3A' }}>
+        <div className="bg-[#FFFFFF] rounded-2xl border shadow-sm overflow-hidden" style={{ borderColor: '#E7DADD' }}>
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-sm">
               <thead>
-                <tr className="border-b text-xs uppercase bg-[#0E1415]" style={{ borderColor: '#2A3A3A', color: '#9AAEAE' }}>
+                <tr className="border-b text-xs uppercase bg-[#F3E8E8]" style={{ borderColor: '#E7DADD', color: '#57534E' }}>
                   <th className="py-3 px-4">Client</th>
                   <th className="py-3 px-4">Challenge</th>
                   <th className="py-3 px-4">Progress</th>
@@ -225,42 +225,42 @@ export default function TrainerCustomerChallenges() {
                   <th className="py-3 px-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y" style={{ borderColor: '#2A3A3A' }}>
+              <tbody className="divide-y" style={{ borderColor: '#E7DADD' }}>
                 {filteredParticipants.map(p => {
                   const progressPct = Math.min(100, Math.round((p.currentProgress / (p.targetValue || 1)) * 100));
 
                   return (
-                    <tr key={p._id} className="hover:bg-[#0E1415]/50">
+                    <tr key={p._id} className="hover:bg-[#F3E8E8]/50">
                       <td className="py-3 px-4">
-                        <div className="font-semibold" style={{ color: '#141D1E' }}>
+                        <div className="font-semibold" style={{ color: '#FFFFFF' }}>
                           {p.customerId?.firstName || 'Client'} {p.customerId?.lastName || ''}
                         </div>
-                        <div className="text-xs text-[#9AAEAE]">
+                        <div className="text-xs text-[#57534E]">
                           {p.customerId?.email}
                         </div>
                       </td>
 
                       <td className="py-3 px-4">
-                        <div className="font-medium text-xs text-[#F5FAFA]">
+                        <div className="font-medium text-xs text-[#292524]">
                           {p.challengeId?.title || 'Challenge'}
                         </div>
-                        <span className="text-[11px] text-[#9AAEAE]">
+                        <span className="text-[11px] text-[#57534E]">
                           Type: {p.challengeId?.challengeType}
                         </span>
                       </td>
 
                       <td className="py-3 px-4">
                         <div className="flex items-center gap-2">
-                          <span className="font-bold text-xs" style={{ color: '#141D1E' }}>
+                          <span className="font-bold text-xs" style={{ color: '#FFFFFF' }}>
                             {p.currentProgress} / {p.targetValue}
                           </span>
-                          <div className="w-16 h-2 bg-[#1B2728] rounded-full overflow-hidden">
+                          <div className="w-16 h-2 bg-[#F3E8E8] rounded-full overflow-hidden">
                             <div
                               className="h-full rounded-full"
-                              style={{ width: `${progressPct}%`, backgroundColor: '#2DD4BF' }}
+                              style={{ width: `${progressPct}%`, backgroundColor: '#B76E79' }}
                             />
                           </div>
-                          <span className="text-[11px] text-[#9AAEAE]">{progressPct}%</span>
+                          <span className="text-[11px] text-[#57534E]">{progressPct}%</span>
                         </div>
                       </td>
 
@@ -268,17 +268,17 @@ export default function TrainerCustomerChallenges() {
                         🔥 {p.streakDays || 0}d
                       </td>
 
-                      <td className="py-3 px-4 font-bold text-xs text-[#2DD4BF]">
+                      <td className="py-3 px-4 font-bold text-xs text-[#B76E79]">
                         +{p.pointsEarned} pts
                       </td>
 
                       <td className="py-3 px-4">
                         {p.completed ? (
-                          <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-[#1B2728] text-[#2DD4BF]">
+                          <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-[#F3E8E8] text-[#B76E79]">
                             Completed
                           </span>
                         ) : (
-                          <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-[#1B2728] text-[#2DD4BF]">
+                          <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-[#F3E8E8] text-[#B76E79]">
                             In Progress
                           </span>
                         )}
@@ -286,19 +286,19 @@ export default function TrainerCustomerChallenges() {
 
                       <td className="py-3 px-4 text-xs max-w-[200px]">
                         {p.trainerFeedback ? (
-                          <span className="text-[#C1D0D0] italic line-clamp-1" title={p.trainerFeedback}>
+                          <span className="text-[#292524] italic line-clamp-1" title={p.trainerFeedback}>
                             "{p.trainerFeedback}"
                           </span>
                         ) : (
-                          <span className="text-[#9AAEAE]">No feedback yet</span>
+                          <span className="text-[#57534E]">No feedback yet</span>
                         )}
                       </td>
 
                       <td className="py-3 px-4 text-right">
                         <button
                           onClick={() => openVerifyModal(p)}
-                          className="px-3 py-1.5 rounded-xl text-xs font-semibold border transition hover:bg-[#0E1415] flex items-center gap-1.5 ml-auto"
-                          style={{ borderColor: '#2A3A3A', color: '#2DD4BF' }}
+                          className="px-3 py-1.5 rounded-xl text-xs font-semibold border transition hover:bg-[#F3E8E8] flex items-center gap-1.5 ml-auto"
+                          style={{ borderColor: '#E7DADD', color: '#B76E79' }}
                         >
                           <Check className="w-3.5 h-3.5" />
                           Verify & Feedback
@@ -316,40 +316,40 @@ export default function TrainerCustomerChallenges() {
       {/* VERIFY & FEEDBACK MODAL */}
       {verifyModalOpen && selectedParticipant && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-[#141D1E] rounded-2xl w-full max-w-md p-6 shadow-2xl border" style={{ borderColor: '#2A3A3A' }}>
+          <div className="bg-[#FFFFFF] rounded-2xl w-full max-w-md p-6 shadow-2xl border" style={{ borderColor: '#E7DADD' }}>
             <div className="flex justify-between items-start mb-4">
               <div>
-                <h3 className="text-lg font-bold" style={{ color: '#141D1E' }}>
+                <h3 className="text-lg font-bold" style={{ color: '#FFFFFF' }}>
                   Verify Workout & Add Feedback
                 </h3>
-                <p className="text-xs text-[#9AAEAE]">
+                <p className="text-xs text-[#57534E]">
                   Client: {selectedParticipant.customerId?.firstName} {selectedParticipant.customerId?.lastName}
                 </p>
               </div>
               <button
                 onClick={() => setVerifyModalOpen(false)}
-                className="p-1 rounded-lg hover:bg-[#1B2728] text-[#9AAEAE]"
+                className="p-1 rounded-lg hover:bg-[#F3E8E8] text-[#57534E]"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             <form onSubmit={handleVerifySubmit} className="space-y-4">
-              <div className="p-3.5 rounded-xl bg-[#0E1415] border text-xs space-y-1" style={{ borderColor: '#0E1415' }}>
+              <div className="p-3.5 rounded-xl bg-[#F3E8E8] border text-xs space-y-1" style={{ borderColor: '#F3E8E8' }}>
                 <div className="flex justify-between">
-                  <span className="text-[#9AAEAE]">Challenge:</span>
-                  <span className="font-bold text-[#F5FAFA]">{selectedParticipant.challengeId?.title}</span>
+                  <span className="text-[#57534E]">Challenge:</span>
+                  <span className="font-bold text-[#292524]">{selectedParticipant.challengeId?.title}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-[#9AAEAE]">Current Progress:</span>
-                  <span className="font-bold text-[#2DD4BF]">
+                  <span className="text-[#57534E]">Current Progress:</span>
+                  <span className="font-bold text-[#B76E79]">
                     {selectedParticipant.currentProgress} / {selectedParticipant.targetValue}
                   </span>
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold mb-1 text-[#C1D0D0]">
+                <label className="block text-xs font-bold mb-1 text-[#292524]">
                   Verification Note / Workout Summary
                 </label>
                 <input
@@ -358,12 +358,12 @@ export default function TrainerCustomerChallenges() {
                   value={verificationNote}
                   onChange={e => setVerificationNote(e.target.value)}
                   className="w-full px-3 py-2 rounded-xl border text-sm"
-                  style={{ borderColor: '#2A3A3A' }}
+                  style={{ borderColor: '#E7DADD' }}
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold mb-1 text-[#C1D0D0]">
+                <label className="block text-xs font-bold mb-1 text-[#292524]">
                   Coaching Feedback for Client
                 </label>
                 <textarea
@@ -372,16 +372,16 @@ export default function TrainerCustomerChallenges() {
                   value={feedbackText}
                   onChange={e => setFeedbackText(e.target.value)}
                   className="w-full px-3 py-2 rounded-xl border text-sm"
-                  style={{ borderColor: '#2A3A3A' }}
+                  style={{ borderColor: '#E7DADD' }}
                 />
               </div>
 
-              <div className="flex justify-end gap-3 pt-3 border-t" style={{ borderColor: '#2A3A3A' }}>
+              <div className="flex justify-end gap-3 pt-3 border-t" style={{ borderColor: '#E7DADD' }}>
                 <button
                   type="button"
                   onClick={() => setVerifyModalOpen(false)}
-                  className="px-4 py-2 rounded-xl border text-xs font-semibold text-[#C1D0D0] hover:bg-[#0E1415]"
-                  style={{ borderColor: '#2A3A3A' }}
+                  className="px-4 py-2 rounded-xl border text-xs font-semibold text-[#292524] hover:bg-[#F3E8E8]"
+                  style={{ borderColor: '#E7DADD' }}
                 >
                   Cancel
                 </button>
@@ -389,7 +389,7 @@ export default function TrainerCustomerChallenges() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="px-5 py-2 rounded-xl text-xs font-bold text-white shadow bg-[#2DD4BF] hover:opacity-90"
+                  className="px-5 py-2 rounded-xl text-xs font-bold text-white shadow bg-[#B76E79] hover:opacity-90"
                 >
                   {submitting ? 'Submitting...' : 'Submit Verification'}
                 </button>

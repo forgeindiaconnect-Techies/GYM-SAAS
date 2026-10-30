@@ -36,27 +36,27 @@ const GymAdminAIFitnessPlans = () => {
         );
       case 'Under Trainer Review':
         return (
-          <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-[#1B2728] text-[#2DD4BF] border border-[#2A3A3A] inline-flex items-center gap-1">
+          <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-[#F3E8E8] text-[#B76E79] border border-[#E7DADD] inline-flex items-center gap-1">
             <Clock size={12} /> Under Review
           </span>
         );
       case 'Trainer Edited':
       case 'Trainer Modified':
         return (
-          <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-[#1B2728] text-[#5EEAD4] border border-[#2A3A3A] inline-flex items-center gap-1">
+          <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-[#F3E8E8] text-[#9F5965] border border-[#E7DADD] inline-flex items-center gap-1">
             <FileEdit size={12} /> Trainer Edited
           </span>
         );
       case 'Trainer Approved':
       case 'Published to Customer':
         return (
-          <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-[#1B2728] text-[#2DD4BF] border border-[#2A3A3A] inline-flex items-center gap-1">
+          <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-[#F3E8E8] text-[#B76E79] border border-[#E7DADD] inline-flex items-center gap-1">
             <CheckCircle2 size={12} /> Trainer Approved
           </span>
         );
       default:
         return (
-          <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-[#1B2728] text-[#C1D0D0]">
+          <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-[#F3E8E8] text-[#292524]">
             {status}
           </span>
         );
@@ -84,35 +84,35 @@ const GymAdminAIFitnessPlans = () => {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <h1 className="text-3xl font-bold text-[#F5FAFA]">AI Fitness Plans &amp; Trainer Review Monitor</h1>
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#2DD4BF]/10 text-[#2DD4BF]">
+            <h1 className="text-3xl font-bold text-[#292524]">AI Fitness Plans &amp; Trainer Review Monitor</h1>
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#B76E79]/10 text-[#B76E79]">
               Owner Visibility Hub
             </span>
           </div>
-          <p className="text-sm text-[#9AAEAE]">
+          <p className="text-sm text-[#57534E]">
             Audit customer AI analyses, assigned trainer reviews, modifications diff, and final approved plans.
           </p>
         </div>
       </div>
 
       {/* Search & Filter Toolbar */}
-      <div className="bg-[#141D1E] p-4 rounded-3xl border border-[#2A3A3A] shadow-sm flex flex-col sm:flex-row gap-4">
+      <div className="bg-[#FFFFFF] p-4 rounded-3xl border border-[#E7DADD] shadow-sm flex flex-col sm:flex-row gap-4">
         <div className="relative flex-1">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9AAEAE]" size={18} />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#57534E]" size={18} />
           <input 
             type="text" 
             placeholder="Search customers by name or fitness goal..." 
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 border border-[#1B2728] rounded-2xl outline-none focus:border-[#2DD4BF] bg-[#0E1415] text-sm text-[#F5FAFA]"
+            className="w-full pl-10 pr-4 py-2.5 border border-[#F3E8E8] rounded-2xl outline-none focus:border-[#B76E79] bg-[#F3E8E8] text-sm text-[#292524]"
           />
         </div>
         <div className="flex items-center gap-2">
-          <Filter className="text-[#9AAEAE]" size={18} />
+          <Filter className="text-[#57534E]" size={18} />
           <select 
             value={filterStatus}
             onChange={e => setFilterStatus(e.target.value)}
-            className="border border-[#1B2728] rounded-2xl px-4 py-2.5 outline-none focus:border-[#2DD4BF] bg-[#0E1415] text-xs font-bold text-[#F5FAFA]"
+            className="border border-[#F3E8E8] rounded-2xl px-4 py-2.5 outline-none focus:border-[#B76E79] bg-[#F3E8E8] text-xs font-bold text-[#292524]"
           >
             <option value="All">All Workflow Statuses</option>
             <option value="Pending">Pending Trainer Review</option>
@@ -124,10 +124,10 @@ const GymAdminAIFitnessPlans = () => {
       </div>
 
       {/* Data Table (Requirement 9: Customer, Assigned Trainer, AI Status, Review Status, Approval, Modifications, Date) */}
-      <div className="bg-[#141D1E] rounded-3xl border border-[#2A3A3A] shadow-sm overflow-hidden">
+      <div className="bg-[#FFFFFF] rounded-3xl border border-[#E7DADD] shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left">
-            <thead className="bg-[#0E1415] text-[#9AAEAE] text-xs font-bold uppercase tracking-wider">
+            <thead className="bg-[#F3E8E8] text-[#57534E] text-xs font-bold uppercase tracking-wider">
               <tr>
                 <th className="px-6 py-4">Customer</th>
                 <th className="px-6 py-4">Fitness Goal</th>
@@ -139,19 +139,19 @@ const GymAdminAIFitnessPlans = () => {
                 <th className="px-6 py-4 text-right">Audit &amp; Plan</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#1B2728]">
+            <tbody className="divide-y divide-[#F3E8E8]">
               {loading ? (
                 <tr>
-                  <td colSpan={8} className="text-center py-16 text-[#9AAEAE]">
-                    <div className="w-8 h-8 border-4 border-[#2DD4BF] border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+                  <td colSpan={8} className="text-center py-16 text-[#57534E]">
+                    <div className="w-8 h-8 border-4 border-[#B76E79] border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
                     <p className="font-semibold text-xs">Loading plans...</p>
                   </td>
                 </tr>
               ) : filteredPlans.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="text-center py-16 text-[#9AAEAE]">
-                    <Bot size={36} className="mx-auto text-[#2A3A3A] mb-2" />
-                    <p className="font-bold text-sm text-[#F5FAFA]">No customer plans found</p>
+                  <td colSpan={8} className="text-center py-16 text-[#57534E]">
+                    <Bot size={36} className="mx-auto text-[#E7DADD] mb-2" />
+                    <p className="font-bold text-sm text-[#292524]">No customer plans found</p>
                   </td>
                 </tr>
               ) : (
@@ -163,11 +163,11 @@ const GymAdminAIFitnessPlans = () => {
                   const isApproved = rec.status === 'Trainer Approved' || rec.status === 'Published to Customer';
 
                   return (
-                    <tr key={plan._id} className="hover:bg-[#0E1415] transition-colors">
+                    <tr key={plan._id} className="hover:bg-[#F3E8E8] transition-colors">
                       {/* Customer */}
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center font-bold text-sm overflow-hidden shrink-0">
+                          <div className="w-10 h-10 rounded-full bg-[#B76E79]/10 text-[#B76E79] flex items-center justify-center font-bold text-sm overflow-hidden shrink-0">
                             {plan.customer?.profileImage || plan.customer?.profilePhoto ? (
                               <img src={plan.customer.profileImage || plan.customer.profilePhoto} alt="" className="w-full h-full object-cover" />
                             ) : (
@@ -175,17 +175,17 @@ const GymAdminAIFitnessPlans = () => {
                             )}
                           </div>
                           <div>
-                            <div className="font-bold text-sm text-[#F5FAFA]">
+                            <div className="font-bold text-sm text-[#292524]">
                               {plan.customer?.firstName} {plan.customer?.lastName}
                             </div>
-                            <div className="text-xs text-[#9AAEAE]">{plan.customer?.email}</div>
+                            <div className="text-xs text-[#57534E]">{plan.customer?.email}</div>
                           </div>
                         </div>
                       </td>
 
                       {/* Fitness Goal */}
                       <td className="px-6 py-4">
-                        <span className="text-sm font-semibold text-[#2DD4BF]">
+                        <span className="text-sm font-semibold text-[#B76E79]">
                           {rec.fitnessProfile?.fitnessGoal || 'General Fitness'}
                         </span>
                       </td>
@@ -194,22 +194,22 @@ const GymAdminAIFitnessPlans = () => {
                       <td className="px-6 py-4">
                         {plan.trainer ? (
                           <div>
-                            <span className="text-sm font-bold text-[#F5FAFA] block">
+                            <span className="text-sm font-bold text-[#292524] block">
                               {plan.trainer.name || `${plan.trainer.firstName} ${plan.trainer.lastName || ''}`}
                             </span>
-                            <span className="inline-flex items-center gap-1 text-[10px] text-[#2DD4BF] font-bold">
-                              <span className="w-1.5 h-1.5 rounded-full bg-[#2DD4BF]" />
+                            <span className="inline-flex items-center gap-1 text-[10px] text-[#B76E79] font-bold">
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#B76E79]" />
                               {plan.trainer.availabilityStatus || 'Online'}
                             </span>
                           </div>
                         ) : (
-                          <span className="text-xs text-[#9AAEAE] italic">Unassigned</span>
+                          <span className="text-xs text-[#57534E] italic">Unassigned</span>
                         )}
                       </td>
 
                       {/* AI Analysis Status */}
                       <td className="px-6 py-4">
-                        <span className="px-2 py-0.5 rounded text-[11px] font-extrabold bg-[#1B2728] text-[#2DD4BF] border border-[#2A3A3A]">
+                        <span className="px-2 py-0.5 rounded text-[11px] font-extrabold bg-[#F3E8E8] text-[#B76E79] border border-[#E7DADD]">
                           AI Draft Generated
                         </span>
                       </td>
@@ -222,21 +222,21 @@ const GymAdminAIFitnessPlans = () => {
                       {/* Trainer Modifications */}
                       <td className="px-6 py-4">
                         {hasModifications ? (
-                          <span className="px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-[#1B2728] text-[#5EEAD4] border border-[#2A3A3A] inline-flex items-center gap-1">
+                          <span className="px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-[#F3E8E8] text-[#9F5965] border border-[#E7DADD] inline-flex items-center gap-1">
                             <FileEdit size={11} /> {modCount} Edit(s) Made
                           </span>
                         ) : isApproved ? (
-                          <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-[#1B2728] text-[#2DD4BF] border border-[#2A3A3A]">
+                          <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-[#F3E8E8] text-[#B76E79] border border-[#E7DADD]">
                             Approved as AI Draft
                           </span>
                         ) : (
-                          <span className="text-xs text-[#9AAEAE]">-</span>
+                          <span className="text-xs text-[#57534E]">-</span>
                         )}
                       </td>
 
                       {/* Review Date */}
                       <td className="px-6 py-4">
-                        <span className="text-xs text-[#9AAEAE]">
+                        <span className="text-xs text-[#57534E]">
                           {rec.updatedAt ? new Date(rec.updatedAt).toLocaleDateString() : '-'}
                         </span>
                       </td>
@@ -245,7 +245,7 @@ const GymAdminAIFitnessPlans = () => {
                       <td className="px-6 py-4 text-right">
                         <Link 
                           to={`/admin/ai-plans/${rec._id}`}
-                          className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#141D1E] border border-[#2A3A3A] hover:border-[#2DD4BF] text-[#2DD4BF] rounded-xl text-xs font-bold hover:bg-[#0E1415] transition-colors shadow-sm"
+                          className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#FFFFFF] border border-[#E7DADD] hover:border-[#B76E79] text-[#B76E79] rounded-xl text-xs font-bold hover:bg-[#F3E8E8] transition-colors shadow-sm"
                         >
                           <Eye size={14} /> View Audit
                         </Link>

@@ -319,20 +319,20 @@ const MemberTrainerPlan: React.FC = () => {
   return (
     <div className="space-y-6 pb-16 max-w-7xl mx-auto">
       {/* Top Header Card */}
-      <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-3xl p-6 md:p-8 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+      <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-3xl p-6 md:p-8 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
           <div className="flex items-center space-x-3 mb-2">
-            <div className="w-10 h-10 rounded-2xl bg-[#2DD4BF] flex items-center justify-center text-[#F5FAFA] shadow-md shadow-teal-900/10/50">
+            <div className="w-10 h-10 rounded-2xl bg-[#B76E79] flex items-center justify-center text-[#292524] shadow-md shadow-[#B76E79]/15/50">
               <Dumbbell size={20} />
             </div>
-            <h1 className="text-2xl md:text-3xl font-extrabold text-[#F5FAFA] tracking-tight">
+            <h1 className="text-2xl md:text-3xl font-extrabold text-[#292524] tracking-tight">
               Trainer&apos;s Plan
             </h1>
-            <span className="px-2.5 py-1 bg-[#1B2728] text-[#5EEAD4] text-xs font-bold rounded-full">
+            <span className="px-2.5 py-1 bg-[#F3E8E8] text-[#9F5965] text-xs font-bold rounded-full">
               Coach Verified
             </span>
           </div>
-          <p className="text-sm text-[#9AAEAE] max-w-2xl">
+          <p className="text-sm text-[#57534E] max-w-2xl">
             Access your trainer-assigned and approved workout routines, meal plans, video demonstrations, gym exercise library, and approved equipment.
           </p>
         </div>
@@ -340,7 +340,7 @@ const MemberTrainerPlan: React.FC = () => {
         {/* Enter Manually Button */}
         <button
           onClick={() => setIsModalOpen(true)}
-          className="px-5 py-3 bg-gradient-to-r from-[#2DD4BF] to-[#5EEAD4] text-[#06201D] font-bold font-bold rounded-2xl flex items-center space-x-2 shadow-lg shadow-teal-900/10 hover:shadow-teal-900/10 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer shrink-0"
+          className="px-5 py-3 bg-gradient-to-r from-[#B76E79] to-[#9F5965] text-[#FFFFFF] font-bold font-bold rounded-2xl flex items-center space-x-2 shadow-lg shadow-[#B76E79]/15 hover:shadow-[#B76E79]/15 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer shrink-0"
         >
           <Plus size={18} />
           <span>Enter Manually</span>
@@ -348,7 +348,7 @@ const MemberTrainerPlan: React.FC = () => {
       </div>
 
       {/* Tabs Menu */}
-      <div className="flex border-b border-[#2A3A3A] overflow-x-auto gap-2 scrollbar-none">
+      <div className="flex border-b border-[#E7DADD] overflow-x-auto gap-2 scrollbar-none">
         {[
           { key: 'workout', label: 'Workout Plan', icon: Dumbbell, count: approvedWorkoutRequests.length + publishedWorkoutPlans.length },
           { key: 'diet', label: 'Diet Plan', icon: Utensils, count: approvedDietRequests.length },
@@ -364,15 +364,15 @@ const MemberTrainerPlan: React.FC = () => {
               onClick={() => setActiveTab(tab.key as any)}
               className={`flex items-center space-x-2 py-3 px-5 border-b-2 font-semibold text-sm transition-all whitespace-nowrap cursor-pointer ${
                 isActive
-                  ? 'border-[#2DD4BF] text-[#2DD4BF]'
-                  : 'border-transparent text-[#9AAEAE] hover:text-[#FFFFFF] hover:border-[#2A3A3A]'
+                  ? 'border-[#B76E79] text-[#B76E79]'
+                  : 'border-transparent text-[#57534E] hover:text-[#FFFFFF] hover:border-[#E7DADD]'
               }`}
             >
               <Icon size={17} />
               <span>{tab.label}</span>
               {tab.count > 0 && (
                 <span className={`text-xs px-2 py-0.5 rounded-full font-bold ${
-                  isActive ? 'bg-[#2DD4BF] text-white' : 'bg-[#1B2728] text-[#9AAEAE]'
+                  isActive ? 'bg-[#B76E79] text-white' : 'bg-[#F3E8E8] text-[#57534E]'
                 }`}>
                   {tab.count}
                 </span>
@@ -384,8 +384,8 @@ const MemberTrainerPlan: React.FC = () => {
 
       {loading ? (
         <div className="flex flex-col items-center justify-center py-24 gap-3">
-          <Loader2 className="animate-spin text-[#2DD4BF]" size={36} />
-          <p className="text-sm font-medium text-[#9AAEAE]">Loading your trainer plans...</p>
+          <Loader2 className="animate-spin text-[#B76E79]" size={36} />
+          <p className="text-sm font-medium text-[#57534E]">Loading your trainer plans...</p>
         </div>
       ) : (
         <>
@@ -400,15 +400,15 @@ const MemberTrainerPlan: React.FC = () => {
                     <span>Pending Trainer Approval ({pendingWorkoutRequests.length})</span>
                   </div>
                   {pendingWorkoutRequests.map(req => (
-                    <div key={req._id} className="bg-[#141D1E] p-4 rounded-xl border border-amber-200/80 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+                    <div key={req._id} className="bg-[#FFFFFF] p-4 rounded-xl border border-amber-200/80 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
                       <div>
                         <div className="flex items-center gap-2">
-                          <h4 className="font-bold text-[#F5FAFA] text-base">{req.title}</h4>
+                          <h4 className="font-bold text-[#292524] text-base">{req.title}</h4>
                           <span className="text-[11px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full font-semibold">
                             Awaiting Trainer Approval
                           </span>
                         </div>
-                        <p className="text-xs text-[#9AAEAE] mt-1">
+                        <p className="text-xs text-[#57534E] mt-1">
                           Sent to Coach <strong>{req.trainerId?.name || req.trainerId?.firstName || 'Trainer'}</strong>: &ldquo;{req.customerMessage}&rdquo;
                         </p>
                       </div>
@@ -422,24 +422,24 @@ const MemberTrainerPlan: React.FC = () => {
 
               {/* Display Approved Custom Plans */}
               {approvedWorkoutRequests.map(plan => (
-                <div key={plan._id} className="bg-[#141D1E] border border-[#2A3A3A] rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
-                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-4 border-b border-[#2A3A3A]">
+                <div key={plan._id} className="bg-[#FFFFFF] border border-[#E7DADD] rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
+                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-4 border-b border-[#E7DADD]">
                     <div>
                       <div className="flex items-center gap-2.5">
-                        <span className="bg-[#1B2728] text-[#2DD4BF] text-xs font-extrabold px-3 py-1 rounded-full flex items-center gap-1">
+                        <span className="bg-[#F3E8E8] text-[#B76E79] text-xs font-extrabold px-3 py-1 rounded-full flex items-center gap-1">
                           <CheckCircle2 size={13} /> Approved by Coach {plan.trainerId?.name || plan.trainerId?.firstName || 'Trainer'}
                         </span>
-                        <span className="text-xs text-[#9AAEAE]">
+                        <span className="text-xs text-[#57534E]">
                           {plan.approvedAt ? new Date(plan.approvedAt).toLocaleDateString() : 'Active'}
                         </span>
                       </div>
-                      <h3 className="text-2xl font-black text-[#F5FAFA] mt-2">{plan.title}</h3>
-                      {plan.goal && <p className="text-sm font-semibold text-[#2DD4BF]">Goal: {plan.goal}</p>}
+                      <h3 className="text-2xl font-black text-[#292524] mt-2">{plan.title}</h3>
+                      {plan.goal && <p className="text-sm font-semibold text-[#B76E79]">Goal: {plan.goal}</p>}
                     </div>
 
                     {plan.trainerFeedback && (
-                      <div className="bg-[#1B2728] border border-[#2A3A3A] rounded-xl p-3 max-w-md">
-                        <p className="text-xs text-[#2DD4BF] font-medium">
+                      <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-xl p-3 max-w-md">
+                        <p className="text-xs text-[#B76E79] font-medium">
                           <strong>Coach Note:</strong> &ldquo;{plan.trainerFeedback}&rdquo;
                         </p>
                       </div>
@@ -448,25 +448,25 @@ const MemberTrainerPlan: React.FC = () => {
 
                   {/* Workout Days */}
                   {plan.workoutDetails?.days?.map((day, dIdx) => (
-                    <div key={dIdx} className="bg-[#1B2728] border border-[#2A3A3A]/80 rounded-2xl p-5 space-y-4">
+                    <div key={dIdx} className="bg-[#F3E8E8] border border-[#E7DADD]/80 rounded-2xl p-5 space-y-4">
                       <div className="flex items-center justify-between">
-                        <h4 className="font-bold text-[#F5FAFA] text-lg">{day.dayName}</h4>
-                        {day.focus && <span className="text-xs bg-[#1B2728] text-[#5EEAD4] px-2.5 py-1 rounded-lg font-bold">{day.focus}</span>}
+                        <h4 className="font-bold text-[#292524] text-lg">{day.dayName}</h4>
+                        {day.focus && <span className="text-xs bg-[#F3E8E8] text-[#9F5965] px-2.5 py-1 rounded-lg font-bold">{day.focus}</span>}
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                         {day.exercises.map((ex, eIdx) => (
-                          <div key={eIdx} className="bg-[#141D1E] p-4 rounded-xl border border-[#2A3A3A] shadow-xs flex flex-col justify-between">
+                          <div key={eIdx} className="bg-[#FFFFFF] p-4 rounded-xl border border-[#E7DADD] shadow-xs flex flex-col justify-between">
                             <div>
                               <div className="flex items-center justify-between">
-                                <span className="text-xs font-bold text-[#2DD4BF]">#{eIdx + 1}</span>
-                                <span className="text-xs bg-[#1B2728] text-[#9AAEAE] px-2 py-0.5 rounded font-medium">Rest {ex.rest || '60s'}</span>
+                                <span className="text-xs font-bold text-[#B76E79]">#{eIdx + 1}</span>
+                                <span className="text-xs bg-[#F3E8E8] text-[#57534E] px-2 py-0.5 rounded font-medium">Rest {ex.rest || '60s'}</span>
                               </div>
-                              <h5 className="font-bold text-[#F5FAFA] text-sm mt-1">{ex.name}</h5>
-                              <p className="text-xs text-[#9AAEAE] mt-1 font-medium">{ex.sets} sets &bull; {ex.reps} reps</p>
+                              <h5 className="font-bold text-[#292524] text-sm mt-1">{ex.name}</h5>
+                              <p className="text-xs text-[#57534E] mt-1 font-medium">{ex.sets} sets &bull; {ex.reps} reps</p>
                             </div>
                             {ex.notes && (
-                              <p className="text-[11px] text-[#9AAEAE] italic bg-[#1B2728] p-1.5 rounded mt-2 border border-[#2A3A3A]">
+                              <p className="text-[11px] text-[#57534E] italic bg-[#F3E8E8] p-1.5 rounded mt-2 border border-[#E7DADD]">
                                 {ex.notes}
                               </p>
                             )}
@@ -480,14 +480,14 @@ const MemberTrainerPlan: React.FC = () => {
 
               {/* Published Workout Plans directly assigned by trainer */}
               {publishedWorkoutPlans.map(plan => (
-                <div key={plan._id} className="bg-[#141D1E] border border-[#2A3A3A] rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
-                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-4 border-b border-[#2A3A3A]">
+                <div key={plan._id} className="bg-[#FFFFFF] border border-[#E7DADD] rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
+                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-4 border-b border-[#E7DADD]">
                     <div>
-                      <span className="bg-[#1B2728] text-[#2DD4BF] text-xs font-extrabold px-3 py-1 rounded-full flex items-center gap-1 w-fit">
+                      <span className="bg-[#F3E8E8] text-[#B76E79] text-xs font-extrabold px-3 py-1 rounded-full flex items-center gap-1 w-fit">
                         <ShieldCheck size={13} /> Official Trainer Workout Plan
                       </span>
-                      <h3 className="text-2xl font-black text-[#F5FAFA] mt-2">{plan.planName}</h3>
-                      <p className="text-xs text-[#9AAEAE] mt-0.5">
+                      <h3 className="text-2xl font-black text-[#292524] mt-2">{plan.planName}</h3>
+                      <p className="text-xs text-[#57534E] mt-0.5">
                         Assigned by Coach {plan.trainerId?.firstName || 'Trainer'} &bull; {plan.workoutDays?.length || 0} Workout Days
                       </p>
                     </div>
@@ -495,22 +495,22 @@ const MemberTrainerPlan: React.FC = () => {
 
                   <div className="grid grid-cols-1 gap-4">
                     {plan.workoutDays?.map((day: any, dIdx: number) => (
-                      <div key={dIdx} className="bg-[#1B2728] border border-[#2A3A3A] rounded-2xl p-5">
+                      <div key={dIdx} className="bg-[#F3E8E8] border border-[#E7DADD] rounded-2xl p-5">
                         <div className="flex items-center justify-between mb-3">
-                          <h4 className="font-bold text-[#F5FAFA]">{day.dayName}</h4>
-                          <span className="text-xs bg-[#1B2728] text-[#5EEAD4] px-2.5 py-1 rounded-lg font-bold">{day.focus || 'Strength'}</span>
+                          <h4 className="font-bold text-[#292524]">{day.dayName}</h4>
+                          <span className="text-xs bg-[#F3E8E8] text-[#9F5965] px-2.5 py-1 rounded-lg font-bold">{day.focus || 'Strength'}</span>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                           {day.exercises?.map((item: any, eIdx: number) => {
                             const ex = item.exerciseId || {};
                             return (
-                              <div key={eIdx} className="bg-[#141D1E] p-3.5 rounded-xl border border-[#2A3A3A]">
-                                <h5 className="font-bold text-sm text-[#F5FAFA]">{ex.name || 'Exercise'}</h5>
-                                <p className="text-xs text-[#2DD4BF] font-semibold mt-1">
+                              <div key={eIdx} className="bg-[#FFFFFF] p-3.5 rounded-xl border border-[#E7DADD]">
+                                <h5 className="font-bold text-sm text-[#292524]">{ex.name || 'Exercise'}</h5>
+                                <p className="text-xs text-[#B76E79] font-semibold mt-1">
                                   {item.sets} sets &bull; {item.repetitions} reps
                                 </p>
                                 {item.trainerNotes && (
-                                  <p className="text-[11px] text-[#9AAEAE] italic mt-1">&ldquo;{item.trainerNotes}&rdquo;</p>
+                                  <p className="text-[11px] text-[#57534E] italic mt-1">&ldquo;{item.trainerNotes}&rdquo;</p>
                                 )}
                               </div>
                             );
@@ -523,12 +523,12 @@ const MemberTrainerPlan: React.FC = () => {
               ))}
 
               {approvedWorkoutRequests.length === 0 && publishedWorkoutPlans.length === 0 && pendingWorkoutRequests.length === 0 && (
-                <div className="text-center py-16 bg-[#141D1E] border border-dashed border-[#2A3A3A] rounded-3xl p-8 space-y-4 max-w-lg mx-auto">
-                  <div className="w-16 h-16 bg-[#1B2728] rounded-2xl flex items-center justify-center text-[#2DD4BF] mx-auto">
+                <div className="text-center py-16 bg-[#FFFFFF] border border-dashed border-[#E7DADD] rounded-3xl p-8 space-y-4 max-w-lg mx-auto">
+                  <div className="w-16 h-16 bg-[#F3E8E8] rounded-2xl flex items-center justify-center text-[#B76E79] mx-auto">
                     <Dumbbell size={28} />
                   </div>
-                  <h3 className="font-bold text-xl text-[#F5FAFA]">No Workout Plans Active Yet</h3>
-                  <p className="text-sm text-[#9AAEAE]">
+                  <h3 className="font-bold text-xl text-[#292524]">No Workout Plans Active Yet</h3>
+                  <p className="text-sm text-[#57534E]">
                     You can click &ldquo;Enter Manually&rdquo; above to create a workout routine and send it directly to your trainer for approval.
                   </p>
                   <button
@@ -536,7 +536,7 @@ const MemberTrainerPlan: React.FC = () => {
                       setModalPlanType('Workout Plan');
                       setIsModalOpen(true);
                     }}
-                    className="px-6 py-2.5 bg-[#2DD4BF] text-[#06201D] font-bold font-bold rounded-xl text-sm hover:bg-[#5EEAD4] transition-colors"
+                    className="px-6 py-2.5 bg-[#B76E79] text-white font-bold font-bold rounded-xl text-sm hover:bg-[#9F5965] transition-colors"
                   >
                     Enter Workout Plan Manually
                   </button>
@@ -556,10 +556,10 @@ const MemberTrainerPlan: React.FC = () => {
                     <span>Pending Diet Plan Approvals ({pendingDietRequests.length})</span>
                   </div>
                   {pendingDietRequests.map(req => (
-                    <div key={req._id} className="bg-[#141D1E] p-4 rounded-xl border border-amber-200/80 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+                    <div key={req._id} className="bg-[#FFFFFF] p-4 rounded-xl border border-amber-200/80 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
                       <div>
-                        <h4 className="font-bold text-[#F5FAFA] text-base">{req.title}</h4>
-                        <p className="text-xs text-[#9AAEAE] mt-1">
+                        <h4 className="font-bold text-[#292524] text-base">{req.title}</h4>
+                        <p className="text-xs text-[#57534E] mt-1">
                           Sent to Coach <strong>{req.trainerId?.name || req.trainerId?.firstName || 'Trainer'}</strong>: &ldquo;{req.customerMessage}&rdquo;
                         </p>
                       </div>
@@ -573,19 +573,19 @@ const MemberTrainerPlan: React.FC = () => {
 
               {/* Display Approved Diet Plans */}
               {approvedDietRequests.map(diet => (
-                <div key={diet._id} className="bg-[#141D1E] border border-[#2A3A3A] rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
-                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-4 border-b border-[#2A3A3A]">
+                <div key={diet._id} className="bg-[#FFFFFF] border border-[#E7DADD] rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
+                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-4 border-b border-[#E7DADD]">
                     <div>
-                      <span className="bg-[#1B2728] text-[#2DD4BF] text-xs font-extrabold px-3 py-1 rounded-full flex items-center gap-1 w-fit">
+                      <span className="bg-[#F3E8E8] text-[#B76E79] text-xs font-extrabold px-3 py-1 rounded-full flex items-center gap-1 w-fit">
                         <CheckCircle2 size={13} /> Approved by Coach {diet.trainerId?.name || diet.trainerId?.firstName || 'Trainer'}
                       </span>
-                      <h3 className="text-2xl font-black text-[#F5FAFA] mt-2">{diet.title}</h3>
-                      {diet.goal && <p className="text-sm font-semibold text-[#2DD4BF]">Goal: {diet.goal}</p>}
+                      <h3 className="text-2xl font-black text-[#292524] mt-2">{diet.title}</h3>
+                      {diet.goal && <p className="text-sm font-semibold text-[#B76E79]">Goal: {diet.goal}</p>}
                     </div>
 
                     {diet.trainerFeedback && (
-                      <div className="bg-[#1B2728] border border-[#2A3A3A] rounded-xl p-3 max-w-md">
-                        <p className="text-xs text-[#2DD4BF] font-medium">
+                      <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-xl p-3 max-w-md">
+                        <p className="text-xs text-[#B76E79] font-medium">
                           <strong>Coach Advice:</strong> &ldquo;{diet.trainerFeedback}&rdquo;
                         </p>
                       </div>
@@ -594,44 +594,44 @@ const MemberTrainerPlan: React.FC = () => {
 
                   {/* Macro Target Summary Cards */}
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div className="bg-[#1B2728]/70 border border-[#2A3A3A] rounded-2xl p-4 text-center">
-                      <Flame size={20} className="text-[#2DD4BF] mx-auto mb-1" />
-                      <span className="text-xs text-[#9AAEAE] font-semibold">Calories</span>
-                      <p className="text-xl font-black text-[#F5FAFA]">{diet.dietDetails?.dailyCalories || '2400 kcal'}</p>
+                    <div className="bg-[#F3E8E8]/70 border border-[#E7DADD] rounded-2xl p-4 text-center">
+                      <Flame size={20} className="text-[#B76E79] mx-auto mb-1" />
+                      <span className="text-xs text-[#57534E] font-semibold">Calories</span>
+                      <p className="text-xl font-black text-[#292524]">{diet.dietDetails?.dailyCalories || '2400 kcal'}</p>
                     </div>
-                    <div className="bg-[#1B2728]/70 border border-[#2A3A3A] rounded-2xl p-4 text-center">
-                      <Target size={20} className="text-[#2DD4BF] mx-auto mb-1" />
-                      <span className="text-xs text-[#9AAEAE] font-semibold">Protein</span>
-                      <p className="text-xl font-black text-[#F5FAFA]">{diet.dietDetails?.protein || '160g'}</p>
+                    <div className="bg-[#F3E8E8]/70 border border-[#E7DADD] rounded-2xl p-4 text-center">
+                      <Target size={20} className="text-[#B76E79] mx-auto mb-1" />
+                      <span className="text-xs text-[#57534E] font-semibold">Protein</span>
+                      <p className="text-xl font-black text-[#292524]">{diet.dietDetails?.protein || '160g'}</p>
                     </div>
                     <div className="bg-amber-50/70 border border-amber-100 rounded-2xl p-4 text-center">
                       <Utensils size={20} className="text-amber-600 mx-auto mb-1" />
-                      <span className="text-xs text-[#9AAEAE] font-semibold">Carbs</span>
-                      <p className="text-xl font-black text-[#F5FAFA]">{diet.dietDetails?.carbs || '240g'}</p>
+                      <span className="text-xs text-[#57534E] font-semibold">Carbs</span>
+                      <p className="text-xl font-black text-[#292524]">{diet.dietDetails?.carbs || '240g'}</p>
                     </div>
-                    <div className="bg-[#1B2728]/70 border border-[#2A3A3A] rounded-2xl p-4 text-center">
-                      <Droplets size={20} className="text-[#2DD4BF] mx-auto mb-1" />
-                      <span className="text-xs text-[#9AAEAE] font-semibold">Hydration</span>
-                      <p className="text-xl font-black text-[#F5FAFA]">{diet.dietDetails?.hydration || '3.5L'}</p>
+                    <div className="bg-[#F3E8E8]/70 border border-[#E7DADD] rounded-2xl p-4 text-center">
+                      <Droplets size={20} className="text-[#B76E79] mx-auto mb-1" />
+                      <span className="text-xs text-[#57534E] font-semibold">Hydration</span>
+                      <p className="text-xl font-black text-[#292524]">{diet.dietDetails?.hydration || '3.5L'}</p>
                     </div>
                   </div>
 
                   {/* Meal Schedule */}
                   <div className="space-y-3">
-                    <h4 className="font-bold text-lg text-[#F5FAFA]">Approved Meal Schedule</h4>
+                    <h4 className="font-bold text-lg text-[#292524]">Approved Meal Schedule</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {diet.dietDetails?.meals?.map((meal, mIdx) => (
-                        <div key={mIdx} className="bg-[#1B2728] border border-[#2A3A3A] rounded-2xl p-4 flex flex-col justify-between">
+                        <div key={mIdx} className="bg-[#F3E8E8] border border-[#E7DADD] rounded-2xl p-4 flex flex-col justify-between">
                           <div>
                             <div className="flex items-center justify-between mb-1.5">
-                              <h5 className="font-bold text-[#F5FAFA] text-base">{meal.mealName}</h5>
-                              <span className="text-xs bg-[#141D1E] text-[#9AAEAE] px-2 py-0.5 rounded border border-[#2A3A3A] font-medium">
+                              <h5 className="font-bold text-[#292524] text-base">{meal.mealName}</h5>
+                              <span className="text-xs bg-[#FFFFFF] text-[#57534E] px-2 py-0.5 rounded border border-[#E7DADD] font-medium">
                                 {meal.time}
                               </span>
                             </div>
-                            <p className="text-xs text-[#9AAEAE] leading-relaxed font-medium">{meal.items}</p>
+                            <p className="text-xs text-[#57534E] leading-relaxed font-medium">{meal.items}</p>
                           </div>
-                          <div className="flex items-center gap-3 mt-3 pt-2 border-t border-[#2A3A3A]/60 text-xs font-semibold text-[#2DD4BF]">
+                          <div className="flex items-center gap-3 mt-3 pt-2 border-t border-[#E7DADD]/60 text-xs font-semibold text-[#B76E79]">
                             <span>{meal.calories}</span>
                             <span>&bull;</span>
                             <span>{meal.protein} protein</span>
@@ -644,12 +644,12 @@ const MemberTrainerPlan: React.FC = () => {
               ))}
 
               {approvedDietRequests.length === 0 && pendingDietRequests.length === 0 && (
-                <div className="text-center py-16 bg-[#141D1E] border border-dashed border-[#2A3A3A] rounded-3xl p-8 space-y-4 max-w-lg mx-auto">
-                  <div className="w-16 h-16 bg-[#1B2728] rounded-2xl flex items-center justify-center text-[#2DD4BF] mx-auto">
+                <div className="text-center py-16 bg-[#FFFFFF] border border-dashed border-[#E7DADD] rounded-3xl p-8 space-y-4 max-w-lg mx-auto">
+                  <div className="w-16 h-16 bg-[#F3E8E8] rounded-2xl flex items-center justify-center text-[#B76E79] mx-auto">
                     <Utensils size={28} />
                   </div>
-                  <h3 className="font-bold text-xl text-[#F5FAFA]">No Diet Plan Approved Yet</h3>
-                  <p className="text-sm text-[#9AAEAE]">
+                  <h3 className="font-bold text-xl text-[#292524]">No Diet Plan Approved Yet</h3>
+                  <p className="text-sm text-[#57534E]">
                     Click &ldquo;Enter Manually&rdquo; to input your preferred diet schedule and message your coach for immediate review.
                   </p>
                   <button
@@ -657,7 +657,7 @@ const MemberTrainerPlan: React.FC = () => {
                       setModalPlanType('Diet Plan');
                       setIsModalOpen(true);
                     }}
-                    className="px-6 py-2.5 bg-[#2DD4BF] text-[#06201D] font-bold font-bold rounded-xl text-sm hover:bg-[#5EEAD4] transition-colors"
+                    className="px-6 py-2.5 bg-[#B76E79] text-white font-bold font-bold rounded-xl text-sm hover:bg-[#9F5965] transition-colors"
                   >
                     Enter Diet Plan Manually
                   </button>
@@ -670,26 +670,26 @@ const MemberTrainerPlan: React.FC = () => {
           {activeTab === 'videos' && (
             <div className="space-y-6">
               {/* Header */}
-              <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-3xl p-6 md:p-7 shadow-xs">
+              <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-3xl p-6 md:p-7 shadow-xs">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div>
                     <div className="flex items-center gap-2 mb-1.5">
                       <span className="w-8 h-8 rounded-xl bg-red-600 text-white flex items-center justify-center shadow-md">
                         <Video size={18} />
                       </span>
-                      <h3 className="text-xl md:text-2xl font-black text-[#F5FAFA]">Gym Exercise Videos (YouTube)</h3>
+                      <h3 className="text-xl md:text-2xl font-black text-[#292524]">Gym Exercise Videos (YouTube)</h3>
                       <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-red-500/20 text-red-400 border border-red-500/30">
                         YouTube Tutorials
                       </span>
                     </div>
-                    <p className="text-xs sm:text-sm text-[#9AAEAE] max-w-2xl leading-relaxed">
-                      Watch instructional workout videos with step-by-step technique tips in both <strong className="text-[#2DD4BF]">Tamil (தமிழ்)</strong> and <strong className="text-[#2DD4BF]">English</strong>.
+                    <p className="text-xs sm:text-sm text-[#57534E] max-w-2xl leading-relaxed">
+                      Watch instructional workout videos with step-by-step technique tips in both <strong className="text-[#B76E79]">Tamil (தமிழ்)</strong> and <strong className="text-[#B76E79]">English</strong>.
                     </p>
                   </div>
 
                   {/* Language Selector */}
-                  <div className="flex items-center gap-1.5 bg-[#141D1E] p-1.5 rounded-2xl border border-[#2A3A3A] shadow-xs shrink-0">
-                    <Globe size={15} className="text-[#2DD4BF] ml-2 shrink-0" />
+                  <div className="flex items-center gap-1.5 bg-[#FFFFFF] p-1.5 rounded-2xl border border-[#E7DADD] shadow-xs shrink-0">
+                    <Globe size={15} className="text-[#B76E79] ml-2 shrink-0" />
                     {(['All', 'Tamil', 'English'] as const).map(lang => (
                       <button
                         key={lang}
@@ -697,7 +697,7 @@ const MemberTrainerPlan: React.FC = () => {
                         className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                           youtubeLanguage === lang
                             ? 'bg-red-600 text-white shadow-xs'
-                            : 'text-[#9AAEAE] hover:text-[#FFFFFF] hover:bg-[#1B2728]'
+                            : 'text-[#57534E] hover:text-[#FFFFFF] hover:bg-[#F3E8E8]'
                         }`}
                       >
                         {lang === 'Tamil' ? 'தமிழ் (Tamil)' : lang}
@@ -707,18 +707,18 @@ const MemberTrainerPlan: React.FC = () => {
                 </div>
 
                 {/* Categories & Search */}
-                <div className="mt-5 pt-4 border-t border-[#2A3A3A]/80 flex flex-col md:flex-row md:items-center justify-between gap-3">
+                <div className="mt-5 pt-4 border-t border-[#E7DADD]/80 flex flex-col md:flex-row md:items-center justify-between gap-3">
                   <div className="flex items-center gap-2 overflow-x-auto scrollbar-none pb-1">
-                    <Filter size={14} className="text-[#9AAEAE] shrink-0" />
-                    <span className="text-xs font-bold text-[#9AAEAE] uppercase mr-1 shrink-0">Muscle:</span>
+                    <Filter size={14} className="text-[#57534E] shrink-0" />
+                    <span className="text-xs font-bold text-[#57534E] uppercase mr-1 shrink-0">Muscle:</span>
                     {youtubeCategories.map(cat => (
                       <button
                         key={cat}
                         onClick={() => setYoutubeCategory(cat)}
                         className={`px-3 py-1 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
                           youtubeCategory === cat
-                            ? 'bg-[#141D1E] text-white shadow-xs'
-                            : 'bg-[#141D1E] border border-[#2A3A3A] text-[#9AAEAE] hover:border-[#2DD4BF] hover:text-[#2DD4BF]'
+                            ? 'bg-[#FFFFFF] text-white shadow-xs'
+                            : 'bg-[#FFFFFF] border border-[#E7DADD] text-[#57534E] hover:border-[#B76E79] hover:text-[#B76E79]'
                         }`}
                       >
                         {cat}
@@ -728,16 +728,16 @@ const MemberTrainerPlan: React.FC = () => {
 
                   {/* Search box */}
                   <div className="relative w-full md:w-64 shrink-0">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9AAEAE]" size={15} />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#57534E]" size={15} />
                     <input
                       type="text"
                       placeholder="Search YouTube videos..."
                       value={youtubeSearch}
                       onChange={e => setYoutubeSearch(e.target.value)}
-                      className="w-full bg-[#141D1E] border border-[#2A3A3A] rounded-xl pl-9 pr-3 py-1.5 text-xs text-[#F5FAFA] focus:outline-none focus:border-red-500"
+                      className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl pl-9 pr-3 py-1.5 text-xs text-[#292524] focus:outline-none focus:border-red-500"
                     />
                     {youtubeSearch && (
-                      <button onClick={() => setYoutubeSearch('')} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#9AAEAE] hover:text-[#9AAEAE]">
+                      <button onClick={() => setYoutubeSearch('')} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#57534E] hover:text-[#57534E]">
                         <X size={13} />
                       </button>
                     )}
@@ -747,19 +747,19 @@ const MemberTrainerPlan: React.FC = () => {
 
               {/* Coach Assigned Videos Banner if any */}
               {assignedVideos.length > 0 && (
-                <div className="bg-[#1B2728]/70 border border-[#2A3A3A] rounded-2xl p-4 space-y-3">
+                <div className="bg-[#F3E8E8]/70 border border-[#E7DADD] rounded-2xl p-4 space-y-3">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-[#5EEAD4] font-bold text-sm">
+                    <div className="flex items-center gap-2 text-[#9F5965] font-bold text-sm">
                       <Sparkles size={16} />
                       <span>Assigned by Coach ({assignedVideos.length})</span>
                     </div>
-                    <span className="text-xs text-[#9AAEAE]">Personalized routines assigned directly to you</span>
+                    <span className="text-xs text-[#57534E]">Personalized routines assigned directly to you</span>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {assignedVideos.map((v: any) => {
                       const ytId = extractYouTubeId(v.videoUrl || '');
                       return (
-                        <div key={v._id} className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl overflow-hidden hover:shadow-md transition-all flex flex-col justify-between">
+                        <div key={v._id} className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl overflow-hidden hover:shadow-md transition-all flex flex-col justify-between">
                           <div
                             className="relative aspect-video bg-black overflow-hidden cursor-pointer group"
                             onClick={() => {
@@ -809,11 +809,11 @@ const MemberTrainerPlan: React.FC = () => {
                             </span>
                           </div>
                           <div className="p-3.5 space-y-2">
-                            <span className="text-[10px] uppercase font-bold text-[#5EEAD4] bg-[#1B2728] px-2 py-0.5 rounded-full">
+                            <span className="text-[10px] uppercase font-bold text-[#9F5965] bg-[#F3E8E8] px-2 py-0.5 rounded-full">
                               Coach Assigned
                             </span>
-                            <h4 className="font-bold text-sm text-[#F5FAFA] line-clamp-1">{v.title || v.exerciseName}</h4>
-                            <p className="text-xs text-[#9AAEAE] line-clamp-2">{v.instructions || 'Watch and follow coach technique guide.'}</p>
+                            <h4 className="font-bold text-sm text-[#292524] line-clamp-1">{v.title || v.exerciseName}</h4>
+                            <p className="text-xs text-[#57534E] line-clamp-2">{v.instructions || 'Watch and follow coach technique guide.'}</p>
                           </div>
                         </div>
                       );
@@ -828,7 +828,7 @@ const MemberTrainerPlan: React.FC = () => {
                   {filteredYoutubeVideos.map(video => (
                     <div
                       key={video.id}
-                      className="bg-[#141D1E] border border-[#2A3A3A] rounded-3xl overflow-hidden hover:border-red-400/60 hover:shadow-lg transition-all flex flex-col justify-between group shadow-xs"
+                      className="bg-[#FFFFFF] border border-[#E7DADD] rounded-3xl overflow-hidden hover:border-red-400/60 hover:shadow-lg transition-all flex flex-col justify-between group shadow-xs"
                     >
                       {/* Video Thumbnail */}
                       <div
@@ -856,7 +856,7 @@ const MemberTrainerPlan: React.FC = () => {
 
                         <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5">
                           <span className={`text-[10px] font-extrabold px-2.5 py-0.5 rounded-md shadow-xs ${
-                            video.language === 'Tamil' ? 'bg-[#2DD4BF] text-white' : 'bg-[#2DD4BF] text-white'
+                            video.language === 'Tamil' ? 'bg-[#B76E79] text-white' : 'bg-[#B76E79] text-white'
                           }`}>
                             {video.language === 'Tamil' ? 'தமிழ் (Tamil)' : 'English'}
                           </span>
@@ -870,7 +870,7 @@ const MemberTrainerPlan: React.FC = () => {
                       <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
                         <div>
                           <div className="flex items-center gap-2 mb-1.5">
-                            <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-[#1B2728] text-[#9AAEAE] border border-[#2A3A3A]">
+                            <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-[#F3E8E8] text-[#57534E] border border-[#E7DADD]">
                               {video.category}
                             </span>
                             <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200">
@@ -880,21 +880,21 @@ const MemberTrainerPlan: React.FC = () => {
 
                           <h4
                             onClick={() => setActiveYoutubeVideo(video)}
-                            className="font-bold text-base text-[#F5FAFA] line-clamp-2 group-hover:text-red-600 transition-colors cursor-pointer"
+                            className="font-bold text-base text-[#292524] line-clamp-2 group-hover:text-red-600 transition-colors cursor-pointer"
                           >
                             {video.title}
                           </h4>
                           {video.titleTamil && (
-                            <p className="text-xs font-semibold text-[#2DD4BF] mt-0.5 line-clamp-1">{video.titleTamil}</p>
+                            <p className="text-xs font-semibold text-[#B76E79] mt-0.5 line-clamp-1">{video.titleTamil}</p>
                           )}
-                          <p className="text-xs text-[#9AAEAE] line-clamp-2 mt-2 leading-relaxed">
+                          <p className="text-xs text-[#57534E] line-clamp-2 mt-2 leading-relaxed">
                             {video.language === 'Tamil' && video.descriptionTamil ? video.descriptionTamil : video.description}
                           </p>
                         </div>
 
                         {/* Footer Specs & Action */}
-                        <div className="pt-3 border-t border-[#2A3A3A] flex items-center justify-between">
-                          <span className="text-xs text-[#9AAEAE] truncate max-w-[150px] font-medium" title={video.targetMuscle}>
+                        <div className="pt-3 border-t border-[#E7DADD] flex items-center justify-between">
+                          <span className="text-xs text-[#57534E] truncate max-w-[150px] font-medium" title={video.targetMuscle}>
                             {video.targetMuscle.split(',')[0]}
                           </span>
                           <button
@@ -910,12 +910,12 @@ const MemberTrainerPlan: React.FC = () => {
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-16 bg-[#141D1E] border border-dashed border-[#2A3A3A] rounded-3xl p-8 space-y-4 max-w-lg mx-auto">
+                <div className="text-center py-16 bg-[#FFFFFF] border border-dashed border-[#E7DADD] rounded-3xl p-8 space-y-4 max-w-lg mx-auto">
                   <div className="w-16 h-16 bg-red-50 rounded-2xl flex items-center justify-center text-red-600 mx-auto">
                     <Video size={28} />
                   </div>
-                  <h3 className="font-bold text-xl text-[#F5FAFA]">No YouTube Videos Found</h3>
-                  <p className="text-sm text-[#9AAEAE]">Try clearing search or changing your muscle/language filters.</p>
+                  <h3 className="font-bold text-xl text-[#292524]">No YouTube Videos Found</h3>
+                  <p className="text-sm text-[#57534E]">Try clearing search or changing your muscle/language filters.</p>
                   <button
                     onClick={() => {
                       setYoutubeSearch('');
@@ -935,19 +935,19 @@ const MemberTrainerPlan: React.FC = () => {
           {activeTab === 'library' && (
             <div className="space-y-6">
               {/* Header */}
-              <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-3xl p-6 md:p-7 shadow-xs">
+              <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-3xl p-6 md:p-7 shadow-xs">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div>
                     <div className="flex items-center gap-2 mb-1.5">
-                      <span className="w-8 h-8 rounded-xl bg-[#2DD4BF] text-[#06201D] font-bold flex items-center justify-center shadow-md">
+                      <span className="w-8 h-8 rounded-xl bg-[#B76E79] text-white font-bold flex items-center justify-center shadow-md">
                         <BookOpen size={18} />
                       </span>
-                      <h3 className="text-xl md:text-2xl font-black text-[#F5FAFA]">Animated Exercise Library</h3>
-                      <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#1B2728] text-[#5EEAD4] border border-[#2A3A3A]">
+                      <h3 className="text-xl md:text-2xl font-black text-[#292524]">Animated Exercise Library</h3>
+                      <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#F3E8E8] text-[#9F5965] border border-[#E7DADD]">
                         Biomechanical 3D/2D Animations
                       </span>
                     </div>
-                    <p className="text-xs sm:text-sm text-[#9AAEAE] max-w-2xl leading-relaxed">
+                    <p className="text-xs sm:text-sm text-[#57534E] max-w-2xl leading-relaxed">
                       Interactive procedural animated workout demonstrations showing proper posture, execution angles, and exact muscle contractions.
                     </p>
                   </div>
@@ -957,7 +957,7 @@ const MemberTrainerPlan: React.FC = () => {
                       setModalPlanType('Exercise Library');
                       setIsModalOpen(true);
                     }}
-                    className="px-4 py-2.5 bg-[#141D1E] border border-[#2DD4BF] text-[#2DD4BF] hover:bg-[#2DD4BF] hover:text-[#06201D] font-bold font-bold rounded-2xl text-xs flex items-center gap-1.5 shadow-xs transition-all cursor-pointer shrink-0"
+                    className="px-4 py-2.5 bg-[#FFFFFF] border border-[#B76E79] text-[#B76E79] hover:bg-[#B76E79] hover:text-[#FFFFFF] font-bold font-bold rounded-2xl text-xs flex items-center gap-1.5 shadow-xs transition-all cursor-pointer shrink-0"
                   >
                     <Plus size={15} />
                     <span>Request Exercise from Coach</span>
@@ -965,18 +965,18 @@ const MemberTrainerPlan: React.FC = () => {
                 </div>
 
                 {/* Categories & Search */}
-                <div className="mt-5 pt-4 border-t border-[#2A3A3A]/80 flex flex-col md:flex-row md:items-center justify-between gap-3">
+                <div className="mt-5 pt-4 border-t border-[#E7DADD]/80 flex flex-col md:flex-row md:items-center justify-between gap-3">
                   <div className="flex items-center gap-2 overflow-x-auto scrollbar-none pb-1">
-                    <Filter size={14} className="text-[#9AAEAE] shrink-0" />
-                    <span className="text-xs font-bold text-[#9AAEAE] uppercase mr-1 shrink-0">Muscle:</span>
+                    <Filter size={14} className="text-[#57534E] shrink-0" />
+                    <span className="text-xs font-bold text-[#57534E] uppercase mr-1 shrink-0">Muscle:</span>
                     {categories.map(cat => (
                       <button
                         key={cat}
                         onClick={() => setLibraryCategory(cat)}
                         className={`px-3 py-1 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
                           libraryCategory === cat
-                            ? 'bg-[#2DD4BF] text-white shadow-xs'
-                            : 'bg-[#141D1E] border border-[#2A3A3A] text-[#9AAEAE] hover:border-[#2DD4BF] hover:text-[#2DD4BF]'
+                            ? 'bg-[#B76E79] text-white shadow-xs'
+                            : 'bg-[#FFFFFF] border border-[#E7DADD] text-[#57534E] hover:border-[#B76E79] hover:text-[#B76E79]'
                         }`}
                       >
                         {cat}
@@ -986,16 +986,16 @@ const MemberTrainerPlan: React.FC = () => {
 
                   {/* Search box */}
                   <div className="relative w-full md:w-64 shrink-0">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9AAEAE]" size={15} />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#57534E]" size={15} />
                     <input
                       type="text"
                       placeholder="Search animated exercises..."
                       value={librarySearch}
                       onChange={e => setLibrarySearch(e.target.value)}
-                      className="w-full bg-[#141D1E] border border-[#2A3A3A] rounded-xl pl-9 pr-3 py-1.5 text-xs text-[#F5FAFA] focus:outline-none focus:border-[#2DD4BF]"
+                      className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl pl-9 pr-3 py-1.5 text-xs text-[#292524] focus:outline-none focus:border-[#B76E79]"
                     />
                     {librarySearch && (
-                      <button onClick={() => setLibrarySearch('')} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#9AAEAE] hover:text-[#9AAEAE]">
+                      <button onClick={() => setLibrarySearch('')} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#57534E] hover:text-[#57534E]">
                         <X size={13} />
                       </button>
                     )}
@@ -1011,15 +1011,15 @@ const MemberTrainerPlan: React.FC = () => {
                     <span>Pending Trainer Approval ({pendingLibraryRequests.length})</span>
                   </div>
                   {pendingLibraryRequests.map(req => (
-                    <div key={req._id} className="bg-[#141D1E] p-4 rounded-xl border border-amber-200/80 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+                    <div key={req._id} className="bg-[#FFFFFF] p-4 rounded-xl border border-amber-200/80 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
                       <div>
                         <div className="flex items-center gap-2">
-                          <h4 className="font-bold text-[#F5FAFA] text-base">{req.title}</h4>
+                          <h4 className="font-bold text-[#292524] text-base">{req.title}</h4>
                           <span className="text-[11px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full font-semibold">
                             Awaiting Trainer Approval
                           </span>
                         </div>
-                        <p className="text-xs text-[#9AAEAE] mt-1">
+                        <p className="text-xs text-[#57534E] mt-1">
                           Sent to Coach <strong>{req.trainerId?.name || req.trainerId?.firstName || 'Trainer'}</strong>: &ldquo;{req.customerMessage}&rdquo;
                         </p>
                       </div>
@@ -1041,11 +1041,11 @@ const MemberTrainerPlan: React.FC = () => {
                     return (
                       <div
                         key={ex._id || ex.id || idx}
-                        className="bg-[#141D1E] border border-[#2A3A3A] rounded-3xl overflow-hidden hover:border-[#2DD4BF]/60 hover:shadow-lg transition-all flex flex-col justify-between group shadow-xs"
+                        className="bg-[#FFFFFF] border border-[#E7DADD] rounded-3xl overflow-hidden hover:border-[#B76E79]/60 hover:shadow-lg transition-all flex flex-col justify-between group shadow-xs"
                       >
                         {/* Animated Video Preview Screen */}
                         <div
-                          className="relative aspect-video bg-[#0E1415] overflow-hidden cursor-pointer group"
+                          className="relative aspect-video bg-[#F3E8E8] overflow-hidden cursor-pointer group"
                           onClick={() => setActiveAnimatedExercise(ex)}
                           title="Click to watch full animated exercise video"
                         >
@@ -1066,7 +1066,7 @@ const MemberTrainerPlan: React.FC = () => {
                               {ex.category}
                             </span>
                             <span className={`text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-md text-white backdrop-blur-xs ${
-                              ex.difficulty === 'Beginner' ? 'bg-[#2DD4BF]/90' : ex.difficulty === 'Intermediate' ? 'bg-amber-600/90' : 'bg-rose-600/90'
+                              ex.difficulty === 'Beginner' ? 'bg-[#B76E79]/90' : ex.difficulty === 'Intermediate' ? 'bg-amber-600/90' : 'bg-rose-600/90'
                             }`}>
                               {ex.difficulty || 'All Levels'}
                             </span>
@@ -1074,17 +1074,17 @@ const MemberTrainerPlan: React.FC = () => {
 
                           <div className="absolute top-2.5 right-2.5 z-10 flex items-center gap-1">
                             {isApprovedReq && (
-                              <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-md bg-[#2DD4BF] text-[#06201D] font-bold flex items-center gap-1 shadow-xs">
+                              <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-md bg-[#B76E79] text-white font-bold flex items-center gap-1 shadow-xs">
                                 <CheckCircle2 size={11} /> Approved
                               </span>
                             )}
-                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-[#2DD4BF] text-[#06201D] font-bold flex items-center gap-1 shadow-xs">
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-[#B76E79] text-white font-bold flex items-center gap-1 shadow-xs">
                               <Sparkles size={11} /> Animated
                             </span>
                           </div>
 
                           <div className="absolute bottom-2.5 right-2.5 z-10">
-                            <div className="w-9 h-9 rounded-full bg-[#2DD4BF] text-[#06201D] font-bold flex items-center justify-center shadow group-hover:scale-110 transition-transform">
+                            <div className="w-9 h-9 rounded-full bg-[#B76E79] text-white font-bold flex items-center justify-center shadow group-hover:scale-110 transition-transform">
                               <Play size={16} className="ml-0.5 fill-white" />
                             </div>
                           </div>
@@ -1094,51 +1094,51 @@ const MemberTrainerPlan: React.FC = () => {
                         <div className="p-5 flex-1 flex flex-col justify-between space-y-3">
                           <div>
                             <div className="flex items-center justify-between mb-1">
-                              <span className="text-xs text-[#2DD4BF] font-bold uppercase tracking-wider">{ex.category}</span>
-                              <span className="text-xs text-[#9AAEAE] font-semibold">{ex.targetMuscle}</span>
+                              <span className="text-xs text-[#B76E79] font-bold uppercase tracking-wider">{ex.category}</span>
+                              <span className="text-xs text-[#57534E] font-semibold">{ex.targetMuscle}</span>
                             </div>
 
                             <h4
                               onClick={() => setActiveAnimatedExercise(ex)}
-                              className="font-extrabold text-lg text-[#F5FAFA] group-hover:text-[#2DD4BF] transition-colors cursor-pointer"
+                              className="font-extrabold text-lg text-[#292524] group-hover:text-[#B76E79] transition-colors cursor-pointer"
                             >
                               {ex.name}
                             </h4>
 
-                            <p className="text-xs text-[#9AAEAE] line-clamp-2 mt-1.5 leading-relaxed">
+                            <p className="text-xs text-[#57534E] line-clamp-2 mt-1.5 leading-relaxed">
                               {ex.description || ex.instructions}
                             </p>
 
                             {/* Sets & Reps specs */}
-                            <div className="grid grid-cols-3 gap-2 py-2 px-3 bg-[#0E1415] rounded-xl border border-[#2A3A3A] text-center mt-3">
+                            <div className="grid grid-cols-3 gap-2 py-2 px-3 bg-[#F3E8E8] rounded-xl border border-[#E7DADD] text-center mt-3">
                               <div>
-                                <span className="text-[10px] uppercase font-bold text-[#9AAEAE] block">Sets</span>
-                                <span className="text-xs font-black text-[#F5FAFA]">{ex.defaultSets || 3} sets</span>
+                                <span className="text-[10px] uppercase font-bold text-[#57534E] block">Sets</span>
+                                <span className="text-xs font-black text-[#292524]">{ex.defaultSets || 3} sets</span>
                               </div>
                               <div>
-                                <span className="text-[10px] uppercase font-bold text-[#9AAEAE] block">Reps</span>
-                                <span className="text-xs font-black text-[#F5FAFA]">{ex.defaultRepetitions || 12} reps</span>
+                                <span className="text-[10px] uppercase font-bold text-[#57534E] block">Reps</span>
+                                <span className="text-xs font-black text-[#292524]">{ex.defaultRepetitions || 12} reps</span>
                               </div>
                               <div>
-                                <span className="text-[10px] uppercase font-bold text-[#9AAEAE] block">Rest</span>
-                                <span className="text-xs font-black text-[#F5FAFA]">{ex.defaultRest || 45}s</span>
+                                <span className="text-[10px] uppercase font-bold text-[#57534E] block">Rest</span>
+                                <span className="text-xs font-black text-[#292524]">{ex.defaultRest || 45}s</span>
                               </div>
                             </div>
 
                             {/* Coach Feedback if approved */}
                             {isApprovedReq?.trainerFeedback && (
-                              <div className="bg-[#1B2728]/80 p-2.5 rounded-xl border border-[#2A3A3A] text-xs text-[#2DD4BF] mt-2.5 italic">
+                              <div className="bg-[#F3E8E8]/80 p-2.5 rounded-xl border border-[#E7DADD] text-xs text-[#B76E79] mt-2.5 italic">
                                 <strong>Coach Note:</strong> &ldquo;{isApprovedReq.trainerFeedback}&rdquo;
                               </div>
                             )}
                           </div>
 
                           {/* Action Button */}
-                          <div className="pt-3 border-t border-[#2A3A3A] flex items-center justify-between">
-                            <span className="text-xs text-[#9AAEAE] font-medium truncate max-w-[150px]">{ex.equipment || 'Gym Equipment'}</span>
+                          <div className="pt-3 border-t border-[#E7DADD] flex items-center justify-between">
+                            <span className="text-xs text-[#57534E] font-medium truncate max-w-[150px]">{ex.equipment || 'Gym Equipment'}</span>
                             <button
                               onClick={() => setActiveAnimatedExercise(ex)}
-                              className="px-4 py-1.5 bg-[#1B2728] hover:bg-[#2DD4BF] text-[#5EEAD4] hover:text-[#FFFFFF] rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs"
+                              className="px-4 py-1.5 bg-[#F3E8E8] hover:bg-[#B76E79] text-[#9F5965] hover:text-[#FFFFFF] rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs"
                             >
                               <Play size={12} className="fill-current" />
                               <span>Watch Animated Guide</span>
@@ -1150,18 +1150,18 @@ const MemberTrainerPlan: React.FC = () => {
                   })}
                 </div>
               ) : (
-                <div className="text-center py-16 bg-[#141D1E] border border-dashed border-[#2A3A3A] rounded-3xl p-8 space-y-4 max-w-lg mx-auto">
-                  <div className="w-16 h-16 bg-[#1B2728] rounded-2xl flex items-center justify-center text-[#2DD4BF] mx-auto">
+                <div className="text-center py-16 bg-[#FFFFFF] border border-dashed border-[#E7DADD] rounded-3xl p-8 space-y-4 max-w-lg mx-auto">
+                  <div className="w-16 h-16 bg-[#F3E8E8] rounded-2xl flex items-center justify-center text-[#B76E79] mx-auto">
                     <BookOpen size={28} />
                   </div>
-                  <h3 className="font-bold text-xl text-[#F5FAFA]">No Animated Exercises Found</h3>
-                  <p className="text-sm text-[#9AAEAE]">Try resetting your search query or category filters.</p>
+                  <h3 className="font-bold text-xl text-[#292524]">No Animated Exercises Found</h3>
+                  <p className="text-sm text-[#57534E]">Try resetting your search query or category filters.</p>
                   <button
                     onClick={() => {
                       setLibrarySearch('');
                       setLibraryCategory('All');
                     }}
-                    className="px-5 py-2 bg-[#2DD4BF] text-[#06201D] font-bold font-bold rounded-xl text-xs hover:bg-[#5EEAD4] transition cursor-pointer"
+                    className="px-5 py-2 bg-[#B76E79] text-white font-bold font-bold rounded-xl text-xs hover:bg-[#9F5965] transition cursor-pointer"
                   >
                     Reset Filters
                   </button>
@@ -1174,38 +1174,38 @@ const MemberTrainerPlan: React.FC = () => {
           {activeTab === 'equipments' && (
             <div className="space-y-6">
               {/* Header Banner */}
-              <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-3xl p-6 md:p-8 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+              <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-3xl p-6 md:p-8 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-2xl bg-[#2DD4BF] text-[#06201D] font-bold flex items-center justify-center font-extrabold text-xl shadow-md">
+                  <div className="w-12 h-12 rounded-2xl bg-[#B76E79] text-white font-bold flex items-center justify-center font-extrabold text-xl shadow-md">
                     <ShieldCheck size={26} />
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold uppercase bg-[#1B2728] text-[#2DD4BF] border border-[#2A3A3A] flex items-center gap-1">
-                        <CheckCircle2 size={12} className="text-[#2DD4BF]" /> Trainer Verified & Approved
+                      <span className="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold uppercase bg-[#F3E8E8] text-[#B76E79] border border-[#E7DADD] flex items-center gap-1">
+                        <CheckCircle2 size={12} className="text-[#B76E79]" /> Trainer Verified & Approved
                       </span>
-                      <span className="text-xs text-[#9AAEAE]">
+                      <span className="text-xs text-[#57534E]">
                         {approvedEquipments.length} Approved Available Machines & Weights
                       </span>
                     </div>
-                    <h2 className="text-xl md:text-2xl font-extrabold text-[#F5FAFA] mt-1">
+                    <h2 className="text-xl md:text-2xl font-extrabold text-[#292524] mt-1">
                       Gym Equipments & Machines
                     </h2>
-                    <p className="text-xs text-[#9AAEAE] mt-1">
+                    <p className="text-xs text-[#57534E] mt-1">
                       These equipments have been checked and approved by your certified gym trainers for safe and effective member workouts.
                     </p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-2 shrink-0">
-                  <span className="text-xs font-bold text-[#2DD4BF] bg-[#141D1E]/80 px-3.5 py-2 rounded-xl border border-[#2A3A3A] shadow-2xs">
+                  <span className="text-xs font-bold text-[#B76E79] bg-[#FFFFFF]/80 px-3.5 py-2 rounded-xl border border-[#E7DADD] shadow-2xs">
                     Ready for Workout
                   </span>
                 </div>
               </div>
 
               {/* Search & Category Filter */}
-              <div className="flex flex-col sm:flex-row gap-3 items-center justify-between bg-[#141D1E] p-4 rounded-2xl border border-[#2A3A3A] shadow-xs">
+              <div className="flex flex-col sm:flex-row gap-3 items-center justify-between bg-[#FFFFFF] p-4 rounded-2xl border border-[#E7DADD] shadow-xs">
                 <div className="flex gap-2 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0 scrollbar-none">
                   {equipmentCategories.map(cat => (
                     <button
@@ -1213,8 +1213,8 @@ const MemberTrainerPlan: React.FC = () => {
                       onClick={() => setEquipmentCategory(cat)}
                       className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-colors whitespace-nowrap ${
                         equipmentCategory === cat
-                          ? 'bg-[#2DD4BF] text-white'
-                          : 'bg-[#1B2728] text-[#9AAEAE] hover:bg-[#1B2728]'
+                          ? 'bg-[#B76E79] text-white'
+                          : 'bg-[#F3E8E8] text-[#57534E] hover:bg-[#F3E8E8]'
                       }`}
                     >
                       {cat}
@@ -1228,7 +1228,7 @@ const MemberTrainerPlan: React.FC = () => {
                     placeholder="Search equipment or brand..."
                     value={equipmentSearch}
                     onChange={e => setEquipmentSearch(e.target.value)}
-                    className="w-full px-3.5 py-2 bg-[#1B2728] border border-[#2A3A3A] rounded-xl text-xs focus:outline-none focus:border-[#2DD4BF]"
+                    className="w-full px-3.5 py-2 bg-[#F3E8E8] border border-[#E7DADD] rounded-xl text-xs focus:outline-none focus:border-[#B76E79]"
                   />
                 </div>
               </div>
@@ -1240,54 +1240,54 @@ const MemberTrainerPlan: React.FC = () => {
                   return (
                     <div
                       key={eq._id || eq.id || idx}
-                      className={`bg-[#141D1E] border rounded-3xl p-6 shadow-sm hover:shadow-md transition-all flex flex-col justify-between ${
-                        isApproved ? 'border-[#2A3A3A] ring-1 ring-emerald-500/15' : 'border-[#2A3A3A]'
+                      className={`bg-[#FFFFFF] border rounded-3xl p-6 shadow-sm hover:shadow-md transition-all flex flex-col justify-between ${
+                        isApproved ? 'border-[#E7DADD] ring-1 ring-emerald-500/15' : 'border-[#E7DADD]'
                       }`}
                     >
                       <div>
                         <div className="flex items-center justify-between mb-3">
-                          <span className="text-[10px] uppercase font-bold tracking-wider px-2.5 py-0.5 rounded-full bg-[#1B2728] text-[#5EEAD4]">
+                          <span className="text-[10px] uppercase font-bold tracking-wider px-2.5 py-0.5 rounded-full bg-[#F3E8E8] text-[#9F5965]">
                             {eq.category || 'Gym Equipment'}
                           </span>
-                          <span className="text-xs font-extrabold px-2.5 py-0.5 rounded-full bg-[#1B2728] text-[#2DD4BF] border border-[#2A3A3A] flex items-center gap-1">
-                            <CheckCircle2 size={12} className="text-[#2DD4BF]" /> Trainer Approved
+                          <span className="text-xs font-extrabold px-2.5 py-0.5 rounded-full bg-[#F3E8E8] text-[#B76E79] border border-[#E7DADD] flex items-center gap-1">
+                            <CheckCircle2 size={12} className="text-[#B76E79]" /> Trainer Approved
                           </span>
                         </div>
 
-                        <h4 className="font-extrabold text-lg text-[#F5FAFA] mb-1">
+                        <h4 className="font-extrabold text-lg text-[#292524] mb-1">
                           {eq.name}
                         </h4>
                         {eq.brand && (
-                          <p className="text-xs font-semibold text-[#9AAEAE] mb-3">
-                            Brand: <span className="text-[#F5FAFA]">{eq.brand}</span>
+                          <p className="text-xs font-semibold text-[#57534E] mb-3">
+                            Brand: <span className="text-[#292524]">{eq.brand}</span>
                           </p>
                         )}
 
-                        <div className="grid grid-cols-2 gap-2 bg-[#0E1415] p-3 rounded-2xl border border-[#2A3A3A] text-xs mb-4">
+                        <div className="grid grid-cols-2 gap-2 bg-[#F3E8E8] p-3 rounded-2xl border border-[#E7DADD] text-xs mb-4">
                           <div>
-                            <span className="text-[10px] uppercase font-bold text-[#9AAEAE] block">Units</span>
-                            <strong className="text-[#F5FAFA]">{eq.quantity || 1} Available</strong>
+                            <span className="text-[10px] uppercase font-bold text-[#57534E] block">Units</span>
+                            <strong className="text-[#292524]">{eq.quantity || 1} Available</strong>
                           </div>
                           <div>
-                            <span className="text-[10px] uppercase font-bold text-[#9AAEAE] block">Condition</span>
-                            <span className="font-semibold text-[#2DD4BF]">{eq.condition || 'Good'}</span>
+                            <span className="text-[10px] uppercase font-bold text-[#57534E] block">Condition</span>
+                            <span className="font-semibold text-[#B76E79]">{eq.condition || 'Good'}</span>
                           </div>
                         </div>
 
-                        <div className="bg-[#1B2728]/60 p-3 rounded-xl border border-[#2A3A3A] text-xs text-[#2DD4BF] space-y-1">
+                        <div className="bg-[#F3E8E8]/60 p-3 rounded-xl border border-[#E7DADD] text-xs text-[#B76E79] space-y-1">
                           <div className="flex items-center gap-1.5 font-bold text-[11px]">
-                            <ShieldCheck size={14} className="text-[#2DD4BF]" />
+                            <ShieldCheck size={14} className="text-[#B76E79]" />
                             <span>Verified by Coach {eq.approvedByName || 'Trainer'}</span>
                           </div>
-                          <p className="text-[11px] text-[#2DD4BF]/80">
+                          <p className="text-[11px] text-[#B76E79]/80">
                             Safe for all fitness levels. Please wipe down after workout and re-rack weights properly.
                           </p>
                         </div>
                       </div>
 
-                      <div className="pt-4 mt-4 border-t border-[#2A3A3A] flex items-center justify-between text-xs">
-                        <span className="text-[#9AAEAE] font-semibold">Status: <strong className="text-[#2DD4BF] font-bold">Active in Gym</strong></span>
-                        <span className="text-[11px] text-[#9AAEAE]">
+                      <div className="pt-4 mt-4 border-t border-[#E7DADD] flex items-center justify-between text-xs">
+                        <span className="text-[#57534E] font-semibold">Status: <strong className="text-[#B76E79] font-bold">Active in Gym</strong></span>
+                        <span className="text-[11px] text-[#57534E]">
                           {eq.approvedAt ? new Date(eq.approvedAt).toLocaleDateString() : 'Active'}
                         </span>
                       </div>
@@ -1297,12 +1297,12 @@ const MemberTrainerPlan: React.FC = () => {
               </div>
 
               {filteredEquipments.length === 0 && (
-                <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-3xl p-12 text-center">
-                  <Wrench size={44} className="mx-auto text-[#9AAEAE] mb-3" />
-                  <h4 className="font-bold text-base text-[#F5FAFA]">
+                <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-3xl p-12 text-center">
+                  <Wrench size={44} className="mx-auto text-[#57534E] mb-3" />
+                  <h4 className="font-bold text-base text-[#292524]">
                     {approvedEquipments.length === 0 ? 'Equipment Verification in Progress' : 'No matching equipment'}
                   </h4>
-                  <p className="text-xs text-[#9AAEAE] mt-1 max-w-md mx-auto">
+                  <p className="text-xs text-[#57534E] mt-1 max-w-md mx-auto">
                     {approvedEquipments.length === 0
                       ? 'Your certified gym trainers are currently verifying gym machinery and equipment. Once approved, they will automatically show here.'
                       : 'Try selecting a different category or clearing your search term.'}
@@ -1319,25 +1319,25 @@ const MemberTrainerPlan: React.FC = () => {
       {/* ============================================================ */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-[#141D1E] rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-[#2A3A3A] shadow-2xl p-6 md:p-8 space-y-6 animate-in fade-in zoom-in-95 duration-150">
+          <div className="bg-[#FFFFFF] rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-[#E7DADD] shadow-2xl p-6 md:p-8 space-y-6 animate-in fade-in zoom-in-95 duration-150">
             {/* Header */}
-            <div className="flex items-center justify-between border-b border-[#2A3A3A] pb-4">
+            <div className="flex items-center justify-between border-b border-[#E7DADD] pb-4">
               <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 rounded-xl bg-[#1B2728] text-[#2DD4BF] flex items-center justify-center">
+                <div className="w-8 h-8 rounded-xl bg-[#F3E8E8] text-[#B76E79] flex items-center justify-center">
                   <Plus size={18} />
                 </div>
-                <h3 className="font-black text-xl text-[#F5FAFA]">Enter Plan Manually</h3>
+                <h3 className="font-black text-xl text-[#292524]">Enter Plan Manually</h3>
               </div>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="w-8 h-8 rounded-full bg-[#1B2728] text-[#9AAEAE] hover:bg-[#1B2728] flex items-center justify-center cursor-pointer"
+                className="w-8 h-8 rounded-full bg-[#F3E8E8] text-[#57534E] hover:bg-[#F3E8E8] flex items-center justify-center cursor-pointer"
               >
                 <X size={16} />
               </button>
             </div>
 
             {submissionSuccess && (
-              <div className="p-3 bg-[#1B2728] border border-[#2A3A3A] text-[#2DD4BF] rounded-xl text-xs font-semibold flex items-center gap-2">
+              <div className="p-3 bg-[#F3E8E8] border border-[#E7DADD] text-[#B76E79] rounded-xl text-xs font-semibold flex items-center gap-2">
                 <CheckCircle2 size={16} />
                 <span>{submissionSuccess}</span>
               </div>
@@ -1353,7 +1353,7 @@ const MemberTrainerPlan: React.FC = () => {
             <form onSubmit={handleManualPlanSubmit} className="space-y-5">
               {/* Plan Type Selector */}
               <div>
-                <label className="block text-xs font-bold text-[#9AAEAE] uppercase mb-2">Select Plan Category</label>
+                <label className="block text-xs font-bold text-[#57534E] uppercase mb-2">Select Plan Category</label>
                 <div className="grid grid-cols-2 gap-2">
                   {(['Workout Plan', 'Diet Plan'] as const).map(type => (
                     <button
@@ -1362,8 +1362,8 @@ const MemberTrainerPlan: React.FC = () => {
                       onClick={() => setModalPlanType(type)}
                       className={`py-2.5 px-3 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
                         modalPlanType === type
-                          ? 'bg-[#2DD4BF] border-[#2DD4BF] text-[#F5FAFA] shadow-xs'
-                          : 'bg-[#1B2728] border-[#2A3A3A] text-[#F5FAFA] hover:bg-[#1B2728]'
+                          ? 'bg-[#B76E79] border-[#B76E79] text-[#292524] shadow-xs'
+                          : 'bg-[#F3E8E8] border-[#E7DADD] text-[#292524] hover:bg-[#F3E8E8]'
                       }`}
                     >
                       {type}
@@ -1374,11 +1374,11 @@ const MemberTrainerPlan: React.FC = () => {
 
               {/* Select Trainer */}
               <div>
-                <label className="block text-xs font-bold text-[#9AAEAE] uppercase mb-1.5">Select Trainer</label>
+                <label className="block text-xs font-bold text-[#57534E] uppercase mb-1.5">Select Trainer</label>
                 <select
                   value={selectedTrainerId}
                   onChange={e => setSelectedTrainerId(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-[#1B2728] border border-[#2A3A3A] rounded-xl text-sm font-medium text-[#F5FAFA] focus:outline-none focus:border-[#2DD4BF]"
+                  className="w-full px-3.5 py-2.5 bg-[#F3E8E8] border border-[#E7DADD] rounded-xl text-sm font-medium text-[#292524] focus:outline-none focus:border-[#B76E79]"
                   required
                 >
                   <option value="">-- Choose Coach for Approval --</option>
@@ -1393,47 +1393,47 @@ const MemberTrainerPlan: React.FC = () => {
               {/* Title & Goal */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-bold text-[#9AAEAE] uppercase mb-1">Plan Title</label>
+                  <label className="block text-xs font-bold text-[#57534E] uppercase mb-1">Plan Title</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. 4-Day Hypertrophy Split"
                     value={planTitle}
                     onChange={e => setPlanTitle(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#1B2728] border border-[#2A3A3A] rounded-xl text-xs font-medium focus:outline-none focus:border-[#2DD4BF]"
+                    className="w-full px-3 py-2 bg-[#F3E8E8] border border-[#E7DADD] rounded-xl text-xs font-medium focus:outline-none focus:border-[#B76E79]"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-[#9AAEAE] uppercase mb-1">Primary Goal</label>
+                  <label className="block text-xs font-bold text-[#57534E] uppercase mb-1">Primary Goal</label>
                   <input
                     type="text"
                     placeholder="e.g. Muscle Gain / Fat Loss"
                     value={planGoal}
                     onChange={e => setPlanGoal(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#1B2728] border border-[#2A3A3A] rounded-xl text-xs font-medium focus:outline-none focus:border-[#2DD4BF]"
+                    className="w-full px-3 py-2 bg-[#F3E8E8] border border-[#E7DADD] rounded-xl text-xs font-medium focus:outline-none focus:border-[#B76E79]"
                   />
                 </div>
               </div>
 
               {/* Workout Details Preview/Input if Workout Plan */}
               {modalPlanType === 'Workout Plan' && (
-                <div className="bg-[#1B2728] p-4 rounded-2xl border border-[#2A3A3A] space-y-3">
+                <div className="bg-[#F3E8E8] p-4 rounded-2xl border border-[#E7DADD] space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-[#F5FAFA] uppercase">Workout Days & Exercises</span>
+                    <span className="text-xs font-bold text-[#292524] uppercase">Workout Days & Exercises</span>
                     <button
                       type="button"
                       onClick={() => setWorkoutDays(prev => [
                         ...prev,
                         { dayName: `Day ${prev.length + 1} - Routine`, focus: 'Full Body', exercises: [{ name: 'Squats', sets: 3, reps: '12', duration: 60, rest: '60s', notes: '' }] }
                       ])}
-                      className="text-xs font-bold text-[#2DD4BF] hover:underline"
+                      className="text-xs font-bold text-[#B76E79] hover:underline"
                     >
                       + Add Day
                     </button>
                   </div>
 
                   {workoutDays.map((d, idx) => (
-                    <div key={idx} className="bg-[#141D1E] p-3 rounded-xl border border-[#2A3A3A] space-y-2">
+                    <div key={idx} className="bg-[#FFFFFF] p-3 rounded-xl border border-[#E7DADD] space-y-2">
                       <div className="flex gap-2">
                         <input
                           type="text"
@@ -1442,7 +1442,7 @@ const MemberTrainerPlan: React.FC = () => {
                             const val = e.target.value;
                             setWorkoutDays(prev => prev.map((x, i) => i === idx ? { ...x, dayName: val } : x));
                           }}
-                          className="font-bold text-xs px-2 py-1 bg-[#1B2728] border border-[#2A3A3A] rounded flex-1"
+                          className="font-bold text-xs px-2 py-1 bg-[#F3E8E8] border border-[#E7DADD] rounded flex-1"
                         />
                         <input
                           type="text"
@@ -1452,7 +1452,7 @@ const MemberTrainerPlan: React.FC = () => {
                             setWorkoutDays(prev => prev.map((x, i) => i === idx ? { ...x, focus: val } : x));
                           }}
                           placeholder="Focus (e.g. Chest)"
-                          className="text-xs px-2 py-1 bg-[#1B2728] border border-[#2A3A3A] rounded w-1/3"
+                          className="text-xs px-2 py-1 bg-[#F3E8E8] border border-[#E7DADD] rounded w-1/3"
                         />
                       </div>
 
@@ -1470,7 +1470,7 @@ const MemberTrainerPlan: React.FC = () => {
                                   exercises: x.exercises.map((y, yi) => yi === exIdx ? { ...y, name: val } : y)
                                 } : x));
                               }}
-                              className="col-span-2 px-1.5 py-0.5 bg-[#1B2728] border rounded"
+                              className="col-span-2 px-1.5 py-0.5 bg-[#F3E8E8] border rounded"
                               placeholder="Exercise Name"
                             />
                             <input
@@ -1483,7 +1483,7 @@ const MemberTrainerPlan: React.FC = () => {
                                   exercises: x.exercises.map((y, yi) => yi === exIdx ? { ...y, sets: val } : y)
                                 } : x));
                               }}
-                              className="px-1.5 py-0.5 bg-[#1B2728] border rounded"
+                              className="px-1.5 py-0.5 bg-[#F3E8E8] border rounded"
                               placeholder="Sets"
                             />
                             <input
@@ -1496,7 +1496,7 @@ const MemberTrainerPlan: React.FC = () => {
                                   exercises: x.exercises.map((y, yi) => yi === exIdx ? { ...y, reps: val } : y)
                                 } : x));
                               }}
-                              className="px-1.5 py-0.5 bg-[#1B2728] border rounded"
+                              className="px-1.5 py-0.5 bg-[#F3E8E8] border rounded"
                               placeholder="Reps"
                             />
                           </div>
@@ -1509,53 +1509,53 @@ const MemberTrainerPlan: React.FC = () => {
 
               {/* Diet Details Preview/Input if Diet Plan */}
               {modalPlanType === 'Diet Plan' && (
-                <div className="bg-[#1B2728] p-4 rounded-2xl border border-[#2A3A3A] space-y-3">
+                <div className="bg-[#F3E8E8] p-4 rounded-2xl border border-[#E7DADD] space-y-3">
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                     <div>
-                      <label className="text-[10px] font-bold text-[#9AAEAE] uppercase">Calories</label>
+                      <label className="text-[10px] font-bold text-[#57534E] uppercase">Calories</label>
                       <input
                         type="text"
                         value={dailyCalories}
                         onChange={e => setDailyCalories(e.target.value)}
-                        className="w-full text-xs px-2 py-1 bg-[#141D1E] border border-[#2A3A3A] rounded-lg font-bold"
+                        className="w-full text-xs px-2 py-1 bg-[#FFFFFF] border border-[#E7DADD] rounded-lg font-bold"
                       />
                     </div>
                     <div>
-                      <label className="text-[10px] font-bold text-[#9AAEAE] uppercase">Protein</label>
+                      <label className="text-[10px] font-bold text-[#57534E] uppercase">Protein</label>
                       <input
                         type="text"
                         value={proteinTarget}
                         onChange={e => setProteinTarget(e.target.value)}
-                        className="w-full text-xs px-2 py-1 bg-[#141D1E] border border-[#2A3A3A] rounded-lg font-bold"
+                        className="w-full text-xs px-2 py-1 bg-[#FFFFFF] border border-[#E7DADD] rounded-lg font-bold"
                       />
                     </div>
                     <div>
-                      <label className="text-[10px] font-bold text-[#9AAEAE] uppercase">Carbs</label>
+                      <label className="text-[10px] font-bold text-[#57534E] uppercase">Carbs</label>
                       <input
                         type="text"
                         value={carbsTarget}
                         onChange={e => setCarbsTarget(e.target.value)}
-                        className="w-full text-xs px-2 py-1 bg-[#141D1E] border border-[#2A3A3A] rounded-lg font-bold"
+                        className="w-full text-xs px-2 py-1 bg-[#FFFFFF] border border-[#E7DADD] rounded-lg font-bold"
                       />
                     </div>
                     <div>
-                      <label className="text-[10px] font-bold text-[#9AAEAE] uppercase">Hydration</label>
+                      <label className="text-[10px] font-bold text-[#57534E] uppercase">Hydration</label>
                       <input
                         type="text"
                         value={hydrationTarget}
                         onChange={e => setHydrationTarget(e.target.value)}
-                        className="w-full text-xs px-2 py-1 bg-[#141D1E] border border-[#2A3A3A] rounded-lg font-bold"
+                        className="w-full text-xs px-2 py-1 bg-[#FFFFFF] border border-[#E7DADD] rounded-lg font-bold"
                       />
                     </div>
                   </div>
 
                   <div className="space-y-2 mt-2">
-                    <span className="text-[11px] font-bold text-[#F5FAFA]">Meals Schedule:</span>
+                    <span className="text-[11px] font-bold text-[#292524]">Meals Schedule:</span>
                     {dietMeals.map((m, idx) => (
-                      <div key={idx} className="bg-[#141D1E] p-2.5 rounded-xl border border-[#2A3A3A] flex flex-col gap-1 text-xs">
-                        <div className="flex justify-between font-bold text-[#F5FAFA]">
+                      <div key={idx} className="bg-[#FFFFFF] p-2.5 rounded-xl border border-[#E7DADD] flex flex-col gap-1 text-xs">
+                        <div className="flex justify-between font-bold text-[#292524]">
                           <span>{m.mealName} ({m.time})</span>
-                          <span className="text-[#2DD4BF]">{m.calories}</span>
+                          <span className="text-[#B76E79]">{m.calories}</span>
                         </div>
                         <input
                           type="text"
@@ -1564,7 +1564,7 @@ const MemberTrainerPlan: React.FC = () => {
                             const val = e.target.value;
                             setDietMeals(prev => prev.map((x, i) => i === idx ? { ...x, items: val } : x));
                           }}
-                          className="px-2 py-1 bg-[#1B2728] border rounded text-[11px]"
+                          className="px-2 py-1 bg-[#F3E8E8] border rounded text-[11px]"
                         />
                       </div>
                     ))}
@@ -1574,8 +1574,8 @@ const MemberTrainerPlan: React.FC = () => {
 
               {/* Message to Trainer */}
               <div>
-                <label className="block text-xs font-bold text-[#9AAEAE] uppercase mb-1">
-                  Message to Trainer <span className="text-[#2DD4BF]">*</span>
+                <label className="block text-xs font-bold text-[#57534E] uppercase mb-1">
+                  Message to Trainer <span className="text-[#B76E79]">*</span>
                 </label>
                 <textarea
                   required
@@ -1583,26 +1583,26 @@ const MemberTrainerPlan: React.FC = () => {
                   placeholder="Hi Coach, please review this custom plan I prepared for my fitness journey and approve it for my dashboard..."
                   value={customerMessage}
                   onChange={e => setCustomerMessage(e.target.value)}
-                  className="w-full px-3 py-2 bg-[#1B2728] border border-[#2A3A3A] rounded-xl text-xs font-medium focus:outline-none focus:border-[#2DD4BF]"
+                  className="w-full px-3 py-2 bg-[#F3E8E8] border border-[#E7DADD] rounded-xl text-xs font-medium focus:outline-none focus:border-[#B76E79]"
                 />
-                <p className="text-[11px] text-[#9AAEAE] mt-1">
+                <p className="text-[11px] text-[#57534E] mt-1">
                   This message will appear directly on your trainer&apos;s dashboard. Once they give approval, it will immediately become active on your dashboard.
                 </p>
               </div>
 
               {/* Submit Buttons */}
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#2A3A3A]">
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#E7DADD]">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 border border-[#2A3A3A] text-[#9AAEAE] hover:bg-[#1B2728] rounded-xl text-xs font-bold cursor-pointer"
+                  className="px-4 py-2 border border-[#E7DADD] text-[#57534E] hover:bg-[#F3E8E8] rounded-xl text-xs font-bold cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={submittingManual}
-                  className="px-6 py-2.5 bg-gradient-to-r from-[#2DD4BF] to-[#5EEAD4] text-[#06201D] font-bold font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-md shadow-teal-900/10 hover:shadow-teal-900/10 transition-all cursor-pointer disabled:opacity-50"
+                  className="px-6 py-2.5 bg-gradient-to-r from-[#B76E79] to-[#9F5965] text-[#FFFFFF] font-bold font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-md shadow-[#B76E79]/15 hover:shadow-[#B76E79]/15 transition-all cursor-pointer disabled:opacity-50"
                 >
                   {submittingManual ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />}
                   <span>Send to Trainer for Approval</span>
@@ -1616,30 +1616,30 @@ const MemberTrainerPlan: React.FC = () => {
       {/* YouTube Video Player Modal */}
       {activeYoutubeVideo && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-3 sm:p-5">
-          <div className="bg-[#141D1E] rounded-3xl max-w-3xl w-full border border-[#2A3A3A] shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
-            <div className="p-4 sm:p-5 border-b border-[#2A3A3A] flex items-center justify-between bg-[#1B2728]">
+          <div className="bg-[#FFFFFF] rounded-3xl max-w-3xl w-full border border-[#E7DADD] shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
+            <div className="p-4 sm:p-5 border-b border-[#E7DADD] flex items-center justify-between bg-[#F3E8E8]">
               <div>
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-[#1B2728] text-[#5EEAD4]">
+                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-[#F3E8E8] text-[#9F5965]">
                     {activeYoutubeVideo.category}
                   </span>
                   <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${
-                    activeYoutubeVideo.language === 'Tamil' ? 'bg-[#1B2728] text-[#2DD4BF]' : 'bg-[#1B2728] text-[#2DD4BF]'
+                    activeYoutubeVideo.language === 'Tamil' ? 'bg-[#F3E8E8] text-[#B76E79]' : 'bg-[#F3E8E8] text-[#B76E79]'
                   }`}>
                     {activeYoutubeVideo.language === 'Tamil' ? 'தமிழ் (Tamil)' : 'English'}
                   </span>
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-[#1B2728] text-[#F5FAFA]">
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-[#F3E8E8] text-[#292524]">
                     {activeYoutubeVideo.duration}
                   </span>
                 </div>
-                <h3 className="font-extrabold text-base sm:text-lg text-[#F5FAFA]">{activeYoutubeVideo.title}</h3>
+                <h3 className="font-extrabold text-base sm:text-lg text-[#292524]">{activeYoutubeVideo.title}</h3>
                 {activeYoutubeVideo.titleTamil && (
-                  <p className="text-xs text-[#2DD4BF] font-semibold">{activeYoutubeVideo.titleTamil}</p>
+                  <p className="text-xs text-[#B76E79] font-semibold">{activeYoutubeVideo.titleTamil}</p>
                 )}
               </div>
               <button
                 onClick={() => setActiveYoutubeVideo(null)}
-                className="w-9 h-9 rounded-full bg-[#1B2728] hover:bg-[#1B2728] text-[#F5FAFA] flex items-center justify-center transition cursor-pointer shrink-0 ml-3"
+                className="w-9 h-9 rounded-full bg-[#F3E8E8] hover:bg-[#F3E8E8] text-[#292524] flex items-center justify-center transition cursor-pointer shrink-0 ml-3"
               >
                 <X size={18} />
               </button>
@@ -1659,33 +1659,33 @@ const MemberTrainerPlan: React.FC = () => {
             {/* Video coaching details & tips */}
             <div className="p-5 overflow-y-auto space-y-4 text-xs">
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-                <div className="bg-[#0E1415] p-2.5 rounded-xl border border-[#2A3A3A]">
-                  <span className="text-[#9AAEAE] block text-[10px] uppercase font-bold">Category</span>
-                  <span className="font-bold text-[#F5FAFA]">{activeYoutubeVideo.category}</span>
+                <div className="bg-[#F3E8E8] p-2.5 rounded-xl border border-[#E7DADD]">
+                  <span className="text-[#57534E] block text-[10px] uppercase font-bold">Category</span>
+                  <span className="font-bold text-[#292524]">{activeYoutubeVideo.category}</span>
                 </div>
-                <div className="bg-[#0E1415] p-2.5 rounded-xl border border-[#2A3A3A]">
-                  <span className="text-[#9AAEAE] block text-[10px] uppercase font-bold">Difficulty</span>
-                  <span className="font-bold text-[#F5FAFA]">{activeYoutubeVideo.level}</span>
+                <div className="bg-[#F3E8E8] p-2.5 rounded-xl border border-[#E7DADD]">
+                  <span className="text-[#57534E] block text-[10px] uppercase font-bold">Difficulty</span>
+                  <span className="font-bold text-[#292524]">{activeYoutubeVideo.level}</span>
                 </div>
-                <div className="bg-[#0E1415] p-2.5 rounded-xl border border-[#2A3A3A]">
-                  <span className="text-[#9AAEAE] block text-[10px] uppercase font-bold">Equipment</span>
-                  <span className="font-bold text-[#F5FAFA] truncate block" title={activeYoutubeVideo.equipment}>{activeYoutubeVideo.equipment}</span>
+                <div className="bg-[#F3E8E8] p-2.5 rounded-xl border border-[#E7DADD]">
+                  <span className="text-[#57534E] block text-[10px] uppercase font-bold">Equipment</span>
+                  <span className="font-bold text-[#292524] truncate block" title={activeYoutubeVideo.equipment}>{activeYoutubeVideo.equipment}</span>
                 </div>
-                <div className="bg-[#0E1415] p-2.5 rounded-xl border border-[#2A3A3A]">
-                  <span className="text-[#9AAEAE] block text-[10px] uppercase font-bold">Target Muscle</span>
-                  <span className="font-bold text-[#F5FAFA] truncate block" title={activeYoutubeVideo.targetMuscle}>{activeYoutubeVideo.targetMuscle}</span>
+                <div className="bg-[#F3E8E8] p-2.5 rounded-xl border border-[#E7DADD]">
+                  <span className="text-[#57534E] block text-[10px] uppercase font-bold">Target Muscle</span>
+                  <span className="font-bold text-[#292524] truncate block" title={activeYoutubeVideo.targetMuscle}>{activeYoutubeVideo.targetMuscle}</span>
                 </div>
               </div>
 
               {activeYoutubeVideo.tips && activeYoutubeVideo.tips.length > 0 && (
-                <div className="bg-[#1B2728]/70 p-4 rounded-2xl border border-[#2A3A3A] space-y-2">
-                  <h4 className="font-bold text-xs text-[#5EEAD4] uppercase tracking-wider flex items-center gap-1.5">
+                <div className="bg-[#F3E8E8]/70 p-4 rounded-2xl border border-[#E7DADD] space-y-2">
+                  <h4 className="font-bold text-xs text-[#9F5965] uppercase tracking-wider flex items-center gap-1.5">
                     <Sparkles size={14} /> Certified Coaching Form Checklist
                   </h4>
-                  <ul className="space-y-1.5 text-[#F5FAFA]">
+                  <ul className="space-y-1.5 text-[#292524]">
                     {activeYoutubeVideo.tips.map((tip, i) => (
                       <li key={i} className="flex items-start gap-2">
-                        <CheckCircle2 size={13} className="text-[#5EEAD4] mt-0.5 shrink-0" />
+                        <CheckCircle2 size={13} className="text-[#9F5965] mt-0.5 shrink-0" />
                         <span>{tip}</span>
                       </li>
                     ))}
@@ -1696,7 +1696,7 @@ const MemberTrainerPlan: React.FC = () => {
               <div className="pt-2 flex justify-end">
                 <button
                   onClick={() => setActiveYoutubeVideo(null)}
-                  className="px-5 py-2 bg-[#0E1415] hover:bg-black text-white font-bold rounded-xl text-xs transition cursor-pointer"
+                  className="px-5 py-2 bg-[#F3E8E8] hover:bg-black text-white font-bold rounded-xl text-xs transition cursor-pointer"
                 >
                   Close Video
                 </button>
@@ -1709,32 +1709,32 @@ const MemberTrainerPlan: React.FC = () => {
       {/* Animated Exercise Player Modal */}
       {activeAnimatedExercise && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-3 sm:p-5">
-          <div className="bg-[#141D1E] rounded-3xl max-w-2xl w-full border border-[#2A3A3A] shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
-            <div className="p-4 sm:p-5 border-b border-[#2A3A3A] flex items-center justify-between bg-[#1B2728]">
+          <div className="bg-[#FFFFFF] rounded-3xl max-w-2xl w-full border border-[#E7DADD] shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
+            <div className="p-4 sm:p-5 border-b border-[#E7DADD] flex items-center justify-between bg-[#F3E8E8]">
               <div>
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-[#1B2728] text-[#5EEAD4]">
+                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-[#F3E8E8] text-[#9F5965]">
                     {activeAnimatedExercise.category}
                   </span>
                   <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-amber-100 text-amber-800">
                     {activeAnimatedExercise.difficulty || 'All Levels'}
                   </span>
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-[#1B2728] text-[#2DD4BF] flex items-center gap-1">
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-[#F3E8E8] text-[#B76E79] flex items-center gap-1">
                     <Sparkles size={11} /> Biomechanical Animation
                   </span>
                 </div>
-                <h3 className="font-black text-lg sm:text-xl text-[#F5FAFA]">{activeAnimatedExercise.name}</h3>
+                <h3 className="font-black text-lg sm:text-xl text-[#292524]">{activeAnimatedExercise.name}</h3>
               </div>
               <button
                 onClick={() => setActiveAnimatedExercise(null)}
-                className="w-9 h-9 rounded-full bg-[#1B2728] hover:bg-[#1B2728] text-[#F5FAFA] flex items-center justify-center transition cursor-pointer shrink-0 ml-3"
+                className="w-9 h-9 rounded-full bg-[#F3E8E8] hover:bg-[#F3E8E8] text-[#292524] flex items-center justify-center transition cursor-pointer shrink-0 ml-3"
               >
                 <X size={18} />
               </button>
             </div>
 
             {/* Interactive Animated Video Player */}
-            <div className="w-full bg-[#0E1415] border-b border-[#2A3A3A]">
+            <div className="w-full bg-[#F3E8E8] border-b border-[#E7DADD]">
               <ExerciseVideoPlayer
                 exerciseName={activeAnimatedExercise.name}
                 category={activeAnimatedExercise.category}
@@ -1750,28 +1750,28 @@ const MemberTrainerPlan: React.FC = () => {
             {/* Details & Execution Instructions */}
             <div className="p-5 overflow-y-auto space-y-4 text-xs">
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-                <div className="bg-[#0E1415] p-2.5 rounded-xl border border-[#2A3A3A]">
-                  <span className="text-[#9AAEAE] block text-[10px] uppercase font-bold">Target Muscle</span>
-                  <span className="font-bold text-[#F5FAFA]">{activeAnimatedExercise.targetMuscle}</span>
+                <div className="bg-[#F3E8E8] p-2.5 rounded-xl border border-[#E7DADD]">
+                  <span className="text-[#57534E] block text-[10px] uppercase font-bold">Target Muscle</span>
+                  <span className="font-bold text-[#292524]">{activeAnimatedExercise.targetMuscle}</span>
                 </div>
-                <div className="bg-[#0E1415] p-2.5 rounded-xl border border-[#2A3A3A]">
-                  <span className="text-[#9AAEAE] block text-[10px] uppercase font-bold">Equipment</span>
-                  <span className="font-bold text-[#F5FAFA]">{activeAnimatedExercise.equipment || 'Gym Equipment'}</span>
+                <div className="bg-[#F3E8E8] p-2.5 rounded-xl border border-[#E7DADD]">
+                  <span className="text-[#57534E] block text-[10px] uppercase font-bold">Equipment</span>
+                  <span className="font-bold text-[#292524]">{activeAnimatedExercise.equipment || 'Gym Equipment'}</span>
                 </div>
-                <div className="bg-[#0E1415] p-2.5 rounded-xl border border-[#2A3A3A]">
-                  <span className="text-[#9AAEAE] block text-[10px] uppercase font-bold">Recommended Sets</span>
-                  <span className="font-bold text-[#F5FAFA]">{activeAnimatedExercise.defaultSets || 3} sets</span>
+                <div className="bg-[#F3E8E8] p-2.5 rounded-xl border border-[#E7DADD]">
+                  <span className="text-[#57534E] block text-[10px] uppercase font-bold">Recommended Sets</span>
+                  <span className="font-bold text-[#292524]">{activeAnimatedExercise.defaultSets || 3} sets</span>
                 </div>
-                <div className="bg-[#0E1415] p-2.5 rounded-xl border border-[#2A3A3A]">
-                  <span className="text-[#9AAEAE] block text-[10px] uppercase font-bold">Reps & Rest</span>
-                  <span className="font-bold text-[#F5FAFA]">{activeAnimatedExercise.defaultRepetitions || 12} reps • {activeAnimatedExercise.defaultRest || 45}s</span>
+                <div className="bg-[#F3E8E8] p-2.5 rounded-xl border border-[#E7DADD]">
+                  <span className="text-[#57534E] block text-[10px] uppercase font-bold">Reps & Rest</span>
+                  <span className="font-bold text-[#292524]">{activeAnimatedExercise.defaultRepetitions || 12} reps • {activeAnimatedExercise.defaultRest || 45}s</span>
                 </div>
               </div>
 
               {activeAnimatedExercise.description && (
                 <div>
-                  <h4 className="font-bold text-[#F5FAFA] uppercase tracking-wider text-[11px] mb-1">Exercise Overview</h4>
-                  <p className="text-[#9AAEAE] leading-relaxed bg-[#0E1415] p-3 rounded-xl border border-[#2A3A3A]">
+                  <h4 className="font-bold text-[#292524] uppercase tracking-wider text-[11px] mb-1">Exercise Overview</h4>
+                  <p className="text-[#57534E] leading-relaxed bg-[#F3E8E8] p-3 rounded-xl border border-[#E7DADD]">
                     {activeAnimatedExercise.description}
                   </p>
                 </div>
@@ -1779,8 +1779,8 @@ const MemberTrainerPlan: React.FC = () => {
 
               {activeAnimatedExercise.instructions && (
                 <div>
-                  <h4 className="font-bold text-[#F5FAFA] uppercase tracking-wider text-[11px] mb-1">Proper Form & Execution</h4>
-                  <div className="text-[#F5FAFA] leading-relaxed bg-[#1B2728] p-3.5 rounded-xl border border-[#2A3A3A] whitespace-pre-line font-mono text-[11px]">
+                  <h4 className="font-bold text-[#292524] uppercase tracking-wider text-[11px] mb-1">Proper Form & Execution</h4>
+                  <div className="text-[#292524] leading-relaxed bg-[#F3E8E8] p-3.5 rounded-xl border border-[#E7DADD] whitespace-pre-line font-mono text-[11px]">
                     {activeAnimatedExercise.instructions}
                   </div>
                 </div>
@@ -1789,7 +1789,7 @@ const MemberTrainerPlan: React.FC = () => {
               <div className="pt-2 flex justify-end">
                 <button
                   onClick={() => setActiveAnimatedExercise(null)}
-                  className="px-5 py-2 bg-[#2DD4BF] text-[#06201D] font-bold font-bold rounded-xl text-xs hover:bg-[#5EEAD4] transition cursor-pointer"
+                  className="px-5 py-2 bg-[#B76E79] text-white font-bold font-bold rounded-xl text-xs hover:bg-[#9F5965] transition cursor-pointer"
                 >
                   Close Animation
                 </button>

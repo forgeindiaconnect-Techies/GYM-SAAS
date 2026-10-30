@@ -21,19 +21,19 @@ const Blog = () => {
   });
 
   return (
-    <div className="min-h-screen bg-[#0E1415] text-[#F5FAFA] selection:bg-[#2DD4BF] selection:text-[#F5FAFA]">
+    <div className="min-h-screen bg-[#F3E8E8] text-[#292524] selection:bg-[#B76E79] selection:text-[#292524]">
       {/* Top Navigation */}
-      <nav className="border-b border-[#2A3A3A] bg-[#FFFFFF]/80 backdrop-blur-md sticky top-0 z-50">
+      <nav className="border-b border-[#E7DADD] bg-[#FFFFFF]/80 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           <Link to="/" className="flex items-center space-x-2 group">
-            <div className="w-8 h-8 bg-[#2DD4BF] rounded-sm flex items-center justify-center group-hover:scale-105 transition-transform">
+            <div className="w-8 h-8 bg-[#B76E79] rounded-sm flex items-center justify-center group-hover:scale-105 transition-transform">
               <Activity className="text-black" size={20} />
             </div>
-            <span className="text-xl font-bold tracking-tight text-[#2DD4BF]">Gymora</span>
+            <span className="text-xl font-bold tracking-tight text-[#B76E79]">Gymora</span>
           </Link>
           <Link
             to="/"
-            className="text-sm font-medium text-[#9AAEAE] hover:text-[#2DD4BF] flex items-center space-x-2 transition-colors"
+            className="text-sm font-medium text-[#57534E] hover:text-[#B76E79] flex items-center space-x-2 transition-colors"
           >
             <ArrowLeft size={16} /> <span>Back to Home</span>
           </Link>
@@ -43,17 +43,17 @@ const Blog = () => {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {/* Header Section */}
         <div className="max-w-3xl mb-12">
-          <span className="text-[#2DD4BF] text-sm font-bold uppercase tracking-wider mb-3 block">
+          <span className="text-[#B76E79] text-sm font-bold uppercase tracking-wider mb-3 block">
             Knowledge Base & Insights
           </span>
           <h1 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight">The Gymora Blog</h1>
-          <p className="text-lg text-[#9AAEAE] leading-relaxed">
+          <p className="text-lg text-[#57534E] leading-relaxed">
             Evidence-based fitness training, cutting-edge AI workout algorithms, and sports nutrition strategies designed to help you reach peak performance.
           </p>
         </div>
 
         {/* Filter and Search Bar */}
-        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 mb-10 pb-6 border-b border-[#2A3A3A]">
+        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 mb-10 pb-6 border-b border-[#E7DADD]">
           {/* Categories */}
           <div className="flex flex-wrap items-center gap-2">
             {categories.map((category) => (
@@ -62,8 +62,8 @@ const Blog = () => {
                 onClick={() => setSelectedCategory(category)}
                 className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
                   selectedCategory === category
-                    ? 'bg-[#2DD4BF] text-white shadow-sm'
-                    : 'bg-[#FFFFFF] border border-[#2A3A3A] text-[#9AAEAE] hover:text-[#FFFFFF] hover:border-[#2DD4BF]/50'
+                    ? 'bg-[#B76E79] text-white shadow-sm'
+                    : 'bg-[#FFFFFF] border border-[#E7DADD] text-[#57534E] hover:text-[#FFFFFF] hover:border-[#B76E79]/50'
                 }`}
               >
                 {category}
@@ -73,22 +73,22 @@ const Blog = () => {
 
           {/* Search Input */}
           <div className="relative w-full md:w-72">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9AAEAE]" size={16} />
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#57534E]" size={16} />
             <input
               type="text"
               placeholder="Search articles..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-[#FFFFFF] border border-[#2A3A3A] rounded-xl text-sm focus:outline-none focus:border-[#2DD4BF] transition-colors placeholder-[#9AAEAE]"
+              className="w-full pl-10 pr-4 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-sm focus:outline-none focus:border-[#B76E79] transition-colors placeholder-[#57534E]"
             />
           </div>
         </div>
 
         {/* Blog Post Grid */}
         {filteredPosts.length === 0 ? (
-          <div className="text-center py-20 bg-[#FFFFFF] border border-[#2A3A3A] rounded-2xl">
-            <p className="text-lg font-semibold text-[#F5FAFA] mb-2">No articles found</p>
-            <p className="text-sm text-[#9AAEAE] mb-6">
+          <div className="text-center py-20 bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl">
+            <p className="text-lg font-semibold text-[#292524] mb-2">No articles found</p>
+            <p className="text-sm text-[#57534E] mb-6">
               Try adjusting your category filter or search query.
             </p>
             <button
@@ -96,7 +96,7 @@ const Blog = () => {
                 setSelectedCategory('All');
                 setSearchQuery('');
               }}
-              className="px-5 py-2.5 bg-[#1B2728] text-[#F5FAFA] font-semibold text-sm rounded-lg hover:bg-[#2DD4BF] transition-colors"
+              className="px-5 py-2.5 bg-[#F3E8E8] text-[#292524] font-semibold text-sm rounded-lg hover:bg-[#B76E79] transition-colors"
             >
               Reset Filters
             </button>
@@ -107,7 +107,7 @@ const Blog = () => {
               <div
                 key={post.id}
                 onClick={() => navigate(`/blog/${post.slug}`)}
-                className="bg-[#FFFFFF] border border-[#2A3A3A] rounded-2xl overflow-hidden group hover:border-[#2DD4BF]/60 hover:shadow-lg transition-all duration-300 cursor-pointer flex flex-col"
+                className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl overflow-hidden group hover:border-[#B76E79]/60 hover:shadow-lg transition-all duration-300 cursor-pointer flex flex-col"
               >
                 {/* Image */}
                 <div className="h-48 overflow-hidden relative">
@@ -116,7 +116,7 @@ const Blog = () => {
                     alt={post.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  <span className="absolute top-3 left-3 bg-[#1B2728] px-2.5 py-1 rounded text-xs font-semibold text-[#F5FAFA] shadow-xs">
+                  <span className="absolute top-3 left-3 bg-[#F3E8E8] px-2.5 py-1 rounded text-xs font-semibold text-[#292524] shadow-xs">
                     {post.category}
                   </span>
                 </div>
@@ -124,7 +124,7 @@ const Blog = () => {
                 {/* Content */}
                 <div className="p-6 flex-1 flex flex-col">
                   {/* Meta */}
-                  <div className="flex items-center justify-between text-xs text-[#9AAEAE] mb-3">
+                  <div className="flex items-center justify-between text-xs text-[#57534E] mb-3">
                     <span className="flex items-center space-x-1">
                       <Calendar size={13} />
                       <span>{post.date}</span>
@@ -136,21 +136,21 @@ const Blog = () => {
                   </div>
 
                   {/* Title */}
-                  <h3 className="text-xl font-bold mb-3 text-[#F5FAFA] group-hover:text-[#2DD4BF] transition-colors leading-snug">
+                  <h3 className="text-xl font-bold mb-3 text-[#292524] group-hover:text-[#B76E79] transition-colors leading-snug">
                     {post.title}
                   </h3>
 
                   {/* Excerpt */}
-                  <p className="text-sm text-[#9AAEAE] leading-relaxed mb-6 line-clamp-3">
+                  <p className="text-sm text-[#57534E] leading-relaxed mb-6 line-clamp-3">
                     {post.excerpt}
                   </p>
 
                   {/* Read Article Action */}
-                  <div className="mt-auto pt-4 border-t border-[#2A3A3A] flex items-center justify-between">
+                  <div className="mt-auto pt-4 border-t border-[#E7DADD] flex items-center justify-between">
                     <Link
                       to={`/blog/${post.slug}`}
                       onClick={(e) => e.stopPropagation()}
-                      className="inline-flex items-center space-x-2 text-[#2DD4BF] hover:text-[#2DD4BF] text-sm font-semibold group-hover:translate-x-1 transition-all"
+                      className="inline-flex items-center space-x-2 text-[#B76E79] hover:text-[#B76E79] text-sm font-semibold group-hover:translate-x-1 transition-all"
                     >
                       <span>Read Article</span>
                       <ArrowRight size={16} />
@@ -160,9 +160,9 @@ const Blog = () => {
                       <img
                         src={post.author.avatar}
                         alt={post.author.name}
-                        className="w-6 h-6 rounded-full object-cover border border-[#1B2728]"
+                        className="w-6 h-6 rounded-full object-cover border border-[#F3E8E8]"
                       />
-                      <span className="text-xs text-[#9AAEAE] truncate max-w-[100px]">
+                      <span className="text-xs text-[#57534E] truncate max-w-[100px]">
                         {post.author.name}
                       </span>
                     </div>
@@ -175,19 +175,19 @@ const Blog = () => {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-[#2A3A3A] bg-[#FFFFFF] py-12 mt-20 text-center text-sm text-[#9AAEAE]">
+      <footer className="border-t border-[#E7DADD] bg-[#FFFFFF] py-12 mt-20 text-center text-sm text-[#57534E]">
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center space-x-2">
-            <div className="w-6 h-6 bg-[#2DD4BF] rounded-sm flex items-center justify-center">
+            <div className="w-6 h-6 bg-[#B76E79] rounded-sm flex items-center justify-center">
               <Activity className="text-black" size={16} />
             </div>
-            <span className="font-bold text-[#2DD4BF]">Gymora</span>
+            <span className="font-bold text-[#B76E79]">Gymora</span>
           </div>
           <p>&copy; {new Date().getFullYear()} Gymora Technologies Inc. All rights reserved.</p>
           <div className="flex items-center space-x-6 text-xs">
-            <Link to="/about" className="hover:text-[#2DD4BF]">About</Link>
-            <Link to="/blog" className="hover:text-[#2DD4BF]">Blog</Link>
-            <Link to="/contact" className="hover:text-[#2DD4BF]">Contact</Link>
+            <Link to="/about" className="hover:text-[#B76E79]">About</Link>
+            <Link to="/blog" className="hover:text-[#B76E79]">Blog</Link>
+            <Link to="/contact" className="hover:text-[#B76E79]">Contact</Link>
           </div>
         </div>
       </footer>

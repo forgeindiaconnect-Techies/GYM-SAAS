@@ -283,41 +283,26 @@ export default function GymAdminApplications() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-            <Users className="w-7 h-7 text-[#2DD4BF]" />
+          <h1 className="text-2xl font-bold text-[#292524] flex items-center gap-2">
+            <Users className="w-7 h-7 text-[#B76E79]" />
             Trainer Applications
           </h1>
           <p className="text-sm text-slate-400 mt-1">
             Review candidate resumes, shortlist elite fitness experts, schedule interviews and extend offers
           </p>
         </div>
-        <div className="flex items-center gap-3">
-          <Link
-            to="/admin/hiring/jobs"
-            className="px-4 py-2 bg-[#141D1E] hover:bg-[#1B2728] text-slate-300 hover:text-white rounded-xl border border-[#2A3A3A] text-sm transition-all flex items-center gap-2"
-          >
-            <Briefcase className="w-4 h-4 text-[#2DD4BF]" />
-            Manage Vacancies
-          </Link>
-          <Link
-            to="/admin/hiring/shortlisted"
-            className="px-4 py-2 bg-[#2DD4BF]/10 hover:bg-[#2DD4BF]/20 text-[#2DD4BF] border border-[#2DD4BF]/30 rounded-xl text-sm font-medium transition-all"
-          >
-            View Shortlisted
-          </Link>
-        </div>
       </div>
 
       {/* Status Feedback Banner */}
       {statusFeedback && (
-        <div className="bg-[#2DD4BF]/10 border border-[#2DD4BF]/40 text-[#2DD4BF] px-4 py-3 rounded-xl flex items-center justify-between text-sm shadow-lg shadow-[#2DD4BF]/5">
+        <div className="bg-[#B76E79]/10 border border-[#B76E79]/40 text-[#B76E79] px-4 py-3 rounded-xl flex items-center justify-between text-sm shadow-lg shadow-[#B76E79]/5">
           <div className="flex items-center gap-2">
-            <CheckCircle className="w-4 h-4 shrink-0 text-[#2DD4BF]" />
+            <CheckCircle className="w-4 h-4 shrink-0 text-[#B76E79]" />
             <span className="font-medium">{statusFeedback}</span>
           </div>
           <button
             onClick={() => setStatusFeedback(null)}
-            className="text-[#2DD4BF]/70 hover:text-[#2DD4BF] p-1 transition-colors"
+            className="text-[#B76E79]/70 hover:text-[#B76E79] p-1 transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
@@ -325,7 +310,7 @@ export default function GymAdminApplications() {
       )}
 
       {/* Filter / Search Bar */}
-      <div className="bg-[#0E1415] p-4 rounded-2xl border border-[#2A3A3A] flex flex-col md:flex-row gap-4 items-center justify-between">
+      <div className="bg-[#F3E8E8] p-4 rounded-2xl border border-[#E7DADD] flex flex-col md:flex-row gap-4 items-center justify-between">
         <div className="relative flex-1 w-full">
           <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
@@ -333,7 +318,7 @@ export default function GymAdminApplications() {
             placeholder="Search candidates by name, email, job title, expertise..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-[#141D1E] border border-[#2A3A3A] rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-[#2DD4BF]"
+            className="w-full pl-10 pr-4 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-[#B76E79]"
           />
         </div>
 
@@ -342,7 +327,7 @@ export default function GymAdminApplications() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3 py-2 bg-[#141D1E] border border-[#2A3A3A] rounded-xl text-slate-300 text-sm focus:outline-none focus:border-[#2DD4BF]"
+            className="px-3 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-slate-300 text-sm focus:outline-none focus:border-[#B76E79]"
           >
             <option value="">All Statuses</option>
             <option value="Applied">Applied</option>
@@ -359,14 +344,14 @@ export default function GymAdminApplications() {
 
       {/* Applications Table / Cards */}
       {loading ? (
-        <div className="p-12 text-center text-slate-400 bg-[#0E1415] rounded-2xl border border-[#2A3A3A]">
-          <div className="inline-block animate-spin w-8 h-8 border-4 border-[#2DD4BF] border-t-transparent rounded-full mb-3" />
+        <div className="p-12 text-center text-slate-400 bg-[#F3E8E8] rounded-2xl border border-[#E7DADD]">
+          <div className="inline-block animate-spin w-8 h-8 border-4 border-[#B76E79] border-t-transparent rounded-full mb-3" />
           <p>Loading candidate applications...</p>
         </div>
       ) : filteredApps.length === 0 ? (
-        <div className="p-12 text-center bg-[#0E1415] rounded-2xl border border-[#2A3A3A]">
+        <div className="p-12 text-center bg-[#F3E8E8] rounded-2xl border border-[#E7DADD]">
           <Users className="w-12 h-12 text-slate-600 mx-auto mb-3" />
-          <h3 className="text-lg font-semibold text-white mb-1">No applications found</h3>
+          <h3 className="text-lg font-semibold text-[#292524] mb-1">No applications found</h3>
           <p className="text-sm text-slate-400 max-w-md mx-auto">
             {search || statusFilter || jobFilter
               ? 'No candidate applications match your filter criteria.'
@@ -374,10 +359,10 @@ export default function GymAdminApplications() {
           </p>
         </div>
       ) : (
-        <div className="bg-[#0E1415] rounded-2xl border border-[#2A3A3A] overflow-hidden">
+        <div className="bg-[#F3E8E8] rounded-2xl border border-[#E7DADD] overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm text-slate-300">
-              <thead className="bg-[#141D1E] text-xs uppercase text-slate-400 font-semibold border-b border-[#2A3A3A]">
+              <thead className="bg-[#FFFFFF] text-xs uppercase text-slate-400 font-semibold border-b border-[#E7DADD]">
                 <tr>
                   <th className="px-6 py-4">Candidate</th>
                   <th className="px-6 py-4">Applied Vacancy</th>
@@ -387,9 +372,9 @@ export default function GymAdminApplications() {
                   <th className="px-6 py-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#2A3A3A]">
+              <tbody className="divide-y divide-[#E7DADD]">
                 {filteredApps.map((app) => (
-                  <tr key={app._id} className="hover:bg-[#141D1E]/50 transition-colors">
+                  <tr key={app._id} className="hover:bg-[#FFFFFF]/50 transition-colors">
                     <td className="px-6 py-4">
                       <div>
                         <div className="font-semibold text-white flex items-center gap-2">
@@ -400,7 +385,7 @@ export default function GymAdminApplications() {
                               target="_blank"
                               rel="noreferrer"
                               title="Download / View Resume"
-                              className="text-[#2DD4BF] hover:text-[#5EEAD4]"
+                              className="text-[#B76E79] hover:text-[#9F5965]"
                             >
                               <FileText className="w-3.5 h-3.5" />
                             </a>
@@ -436,7 +421,7 @@ export default function GymAdminApplications() {
                         {parseList(app.expertise).slice(0, 2).map((exp, i) => (
                           <span
                             key={i}
-                            className="text-[10px] bg-[#1B2728] text-slate-300 px-1.5 py-0.5 rounded border border-[#2A3A3A]"
+                            className="text-[10px] bg-[#F3E8E8] text-slate-300 px-1.5 py-0.5 rounded border border-[#E7DADD]"
                           >
                             {exp}
                           </span>
@@ -468,9 +453,9 @@ export default function GymAdminApplications() {
                       <div className="flex items-center justify-end gap-2">
                         <button
                           onClick={() => setSelectedApp(app)}
-                          className="px-2.5 py-1.5 bg-[#141D1E] hover:bg-[#1B2728] border border-[#2A3A3A] rounded-lg text-slate-300 hover:text-white text-xs flex items-center gap-1.5 transition-all"
+                          className="px-2.5 py-1.5 bg-[#FFFFFF] hover:bg-[#F3E8E8] border border-[#E7DADD] rounded-lg text-slate-300 hover:text-white text-xs flex items-center gap-1.5 transition-all"
                         >
-                          <Eye className="w-3.5 h-3.5 text-[#2DD4BF]" />
+                          <Eye className="w-3.5 h-3.5 text-[#B76E79]" />
                           Review
                         </button>
 
@@ -484,30 +469,30 @@ export default function GymAdminApplications() {
                                 handleStatusChange(app._id, e.target.value);
                               }
                             }}
-                            className="appearance-none pl-2.5 pr-7 py-1.5 bg-[#141D1E] hover:bg-[#1B2728] border border-[#2A3A3A] hover:border-[#2DD4BF]/50 rounded-lg text-slate-200 hover:text-white text-xs font-medium cursor-pointer transition-all focus:outline-none focus:border-[#2DD4BF]"
+                            className="appearance-none pl-2.5 pr-7 py-1.5 bg-[#FFFFFF] hover:bg-[#F3E8E8] border border-[#E7DADD] hover:border-[#B76E79]/50 rounded-lg text-slate-200 hover:text-white text-xs font-medium cursor-pointer transition-all focus:outline-none focus:border-[#B76E79]"
                             title="Update candidate status"
                           >
-                            <option value="" disabled className="bg-[#0E1415] text-slate-400">
+                            <option value="" disabled className="bg-[#F3E8E8] text-slate-400">
                               Action ▾
                             </option>
                             <option
                               value="Shortlisted"
                               disabled={app.status === 'Shortlisted'}
-                              className="bg-[#0E1415] text-purple-400 py-1"
+                              className="bg-[#F3E8E8] text-purple-400 py-1"
                             >
                               Shortlist {app.status === 'Shortlisted' ? '(Current)' : ''}
                             </option>
                             <option
                               value="Under Review"
                               disabled={app.status === 'Under Review'}
-                              className="bg-[#0E1415] text-amber-400 py-1"
+                              className="bg-[#F3E8E8] text-amber-400 py-1"
                             >
                               Mark Under Review {app.status === 'Under Review' ? '(Current)' : ''}
                             </option>
                             <option
                               value="Rejected"
                               disabled={app.status === 'Rejected'}
-                              className="bg-[#0E1415] text-rose-400 py-1"
+                              className="bg-[#F3E8E8] text-rose-400 py-1"
                             >
                               Reject {app.status === 'Rejected' ? '(Current)' : ''}
                             </option>
@@ -527,10 +512,10 @@ export default function GymAdminApplications() {
       {/* Candidate Profile / Detailed Review Modal */}
       {selectedApp && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-[#0E1415] border border-[#2A3A3A] rounded-2xl max-w-2xl w-full p-6 text-white space-y-5 max-h-[90vh] overflow-y-auto shadow-2xl">
-            <div className="flex items-start justify-between border-b border-[#2A3A3A] pb-4">
+          <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-2xl max-w-2xl w-full p-6 text-white space-y-5 max-h-[90vh] overflow-y-auto shadow-2xl">
+            <div className="flex items-start justify-between border-b border-[#E7DADD] pb-4">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-[#2DD4BF]/10 text-[#2DD4BF] border border-[#2DD4BF]/30 flex items-center justify-center font-bold text-lg overflow-hidden shrink-0">
+                <div className="w-12 h-12 rounded-xl bg-[#B76E79]/10 text-[#B76E79] border border-[#B76E79]/30 flex items-center justify-center font-bold text-lg overflow-hidden shrink-0">
                   {selectedApp.profilePhoto ? (
                     <img
                       src={
@@ -560,7 +545,7 @@ export default function GymAdminApplications() {
                   </h3>
                   <p className="text-xs text-slate-400 mt-1">
                     Applied for:{' '}
-                    <span className="text-[#2DD4BF]">
+                    <span className="text-[#B76E79]">
                       {selectedApp.jobId?.title || 'Gym Trainer Position'}
                     </span>{' '}
                     •{' '}
@@ -572,14 +557,14 @@ export default function GymAdminApplications() {
               </div>
               <button
                 onClick={() => setSelectedApp(null)}
-                className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-[#141D1E]"
+                className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-[#FFFFFF]"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Contact & Basics Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 bg-[#141D1E] p-4 rounded-xl border border-[#2A3A3A] text-xs">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 bg-[#FFFFFF] p-4 rounded-xl border border-[#E7DADD] text-xs">
               <div>
                 <span className="text-slate-500 block">Phone</span>
                 <span className="font-semibold text-slate-200">
@@ -602,14 +587,14 @@ export default function GymAdminApplications() {
               </div>
               <div>
                 <span className="text-slate-500 block">Expected Salary</span>
-                <span className="font-semibold text-[#2DD4BF] font-mono">
+                <span className="font-semibold text-[#B76E79] font-mono">
                   {selectedApp.expectedSalary || 'Negotiable'}
                 </span>
               </div>
             </div>
 
             {/* Additional Candidate Info Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 bg-[#141D1E]/70 p-4 rounded-xl border border-[#2A3A3A] text-xs">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 bg-[#FFFFFF]/70 p-4 rounded-xl border border-[#E7DADD] text-xs">
               <div>
                 <span className="text-slate-500 block">Preferred Location</span>
                 <span className="font-semibold text-slate-200">
@@ -624,7 +609,7 @@ export default function GymAdminApplications() {
               </div>
               <div>
                 <span className="text-slate-500 block">Training Mode</span>
-                <span className="font-semibold text-[#2DD4BF]">
+                <span className="font-semibold text-[#B76E79]">
                   {selectedApp.employmentPreference || (selectedApp as any).trainingMode || 'Both (Hybrid)'}
                 </span>
               </div>
@@ -646,7 +631,7 @@ export default function GymAdminApplications() {
                   parseList(selectedApp.expertise).map((e, idx) => (
                     <span
                       key={idx}
-                      className="text-xs bg-[#1B2728] text-slate-300 px-2.5 py-1 rounded-lg border border-[#2A3A3A]"
+                      className="text-xs bg-[#F3E8E8] text-slate-300 px-2.5 py-1 rounded-lg border border-[#E7DADD]"
                     >
                       {e}
                     </span>
@@ -659,8 +644,8 @@ export default function GymAdminApplications() {
 
             {/* Certifications & Qualifications */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-[#141D1E] p-3.5 rounded-xl border border-[#2A3A3A]">
-                <h4 className="text-xs uppercase font-semibold text-[#2DD4BF] mb-2 flex items-center gap-1.5">
+              <div className="bg-[#FFFFFF] p-3.5 rounded-xl border border-[#E7DADD]">
+                <h4 className="text-xs uppercase font-semibold text-[#B76E79] mb-2 flex items-center gap-1.5">
                   <Award className="w-3.5 h-3.5" /> Fitness Certifications
                 </h4>
                 {parseList(selectedApp.certifications).length > 0 ? (
@@ -674,8 +659,8 @@ export default function GymAdminApplications() {
                 )}
               </div>
 
-              <div className="bg-[#141D1E] p-3.5 rounded-xl border border-[#2A3A3A]">
-                <h4 className="text-xs uppercase font-semibold text-[#2DD4BF] mb-2 flex items-center gap-1.5">
+              <div className="bg-[#FFFFFF] p-3.5 rounded-xl border border-[#E7DADD]">
+                <h4 className="text-xs uppercase font-semibold text-[#B76E79] mb-2 flex items-center gap-1.5">
                   <Briefcase className="w-3.5 h-3.5" /> Education & Qualifications
                 </h4>
                 {parseList(selectedApp.qualifications).length > 0 ? (
@@ -696,7 +681,7 @@ export default function GymAdminApplications() {
                 <h4 className="text-xs uppercase font-semibold text-slate-400 mb-1">
                   Introduction / Cover Note
                 </h4>
-                <div className="text-xs text-slate-300 bg-[#141D1E] p-3.5 rounded-xl border border-[#2A3A3A] leading-relaxed">
+                <div className="text-xs text-slate-300 bg-[#FFFFFF] p-3.5 rounded-xl border border-[#E7DADD] leading-relaxed">
                   {selectedApp.coverLetter}
                 </div>
               </div>
@@ -709,9 +694,9 @@ export default function GymAdminApplications() {
               </h4>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {selectedApp.resumeUrl ? (
-                  <div className="flex items-center justify-between bg-[#1B2728] p-3.5 rounded-xl border border-[#2DD4BF]/30">
+                  <div className="flex items-center justify-between bg-[#F3E8E8] p-3.5 rounded-xl border border-[#B76E79]/30">
                     <div className="flex items-center gap-2">
-                      <FileText className="w-5 h-5 text-[#2DD4BF]" />
+                      <FileText className="w-5 h-5 text-[#B76E79]" />
                       <div>
                         <span className="text-xs font-semibold text-white block">
                           Resume / CV
@@ -729,23 +714,23 @@ export default function GymAdminApplications() {
                       }
                       target="_blank"
                       rel="noreferrer"
-                      className="px-3 py-1.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-black font-semibold text-xs rounded-lg transition-all flex items-center gap-1.5"
+                      className="px-3 py-1.5 bg-[#B76E79] hover:bg-[#9F5965] text-white font-semibold text-xs rounded-lg transition-all flex items-center gap-1.5"
                     >
                       <ExternalLink className="w-3.5 h-3.5" />
                       Open Resume
                     </a>
                   </div>
                 ) : (
-                  <div className="flex items-center gap-2 bg-[#141D1E] p-3.5 rounded-xl border border-[#2A3A3A] text-slate-500 text-xs">
+                  <div className="flex items-center gap-2 bg-[#FFFFFF] p-3.5 rounded-xl border border-[#E7DADD] text-slate-500 text-xs">
                     <FileText className="w-5 h-5" />
                     <span>No resume attached</span>
                   </div>
                 )}
 
                 {(selectedApp as any).certificationUrl ? (
-                  <div className="flex items-center justify-between bg-[#1B2728] p-3.5 rounded-xl border border-[#2DD4BF]/30">
+                  <div className="flex items-center justify-between bg-[#F3E8E8] p-3.5 rounded-xl border border-[#B76E79]/30">
                     <div className="flex items-center gap-2">
-                      <Award className="w-5 h-5 text-[#2DD4BF]" />
+                      <Award className="w-5 h-5 text-[#B76E79]" />
                       <div>
                         <span className="text-xs font-semibold text-white block">
                           Certification File
@@ -763,7 +748,7 @@ export default function GymAdminApplications() {
                       }
                       target="_blank"
                       rel="noreferrer"
-                      className="px-3 py-1.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-black font-semibold text-xs rounded-lg transition-all flex items-center gap-1.5"
+                      className="px-3 py-1.5 bg-[#B76E79] hover:bg-[#9F5965] text-white font-semibold text-xs rounded-lg transition-all flex items-center gap-1.5"
                     >
                       <ExternalLink className="w-3.5 h-3.5" />
                       Open Certificate
@@ -774,12 +759,12 @@ export default function GymAdminApplications() {
             </div>
 
             {/* Action Bar */}
-            <div className="pt-4 border-t border-[#2A3A3A] flex flex-wrap items-center justify-between gap-3">
+            <div className="pt-4 border-t border-[#E7DADD] flex flex-wrap items-center justify-between gap-3">
               <div className="flex items-center gap-2">
                 <button
                   disabled={actionLoading}
                   onClick={() => handleStatusChange(selectedApp._id, 'Under Review')}
-                  className="px-3 py-2 bg-[#141D1E] hover:bg-[#1B2728] border border-yellow-500/40 text-yellow-400 rounded-xl text-xs font-medium transition-all"
+                  className="px-3 py-2 bg-[#FFFFFF] hover:bg-[#F3E8E8] border border-yellow-500/40 text-yellow-400 rounded-xl text-xs font-medium transition-all"
                 >
                   Mark Under Review
                 </button>
@@ -809,7 +794,7 @@ export default function GymAdminApplications() {
                 </button>
                 <button
                   onClick={() => setShowOfferModal(true)}
-                  className="px-3 py-2 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-black font-semibold rounded-xl text-xs transition-all flex items-center gap-1.5"
+                  className="px-3 py-2 bg-[#B76E79] hover:bg-[#9F5965] text-white font-semibold rounded-xl text-xs transition-all flex items-center gap-1.5"
                 >
                   <Gift className="w-3.5 h-3.5" />
                   Issue Job Offer
@@ -823,8 +808,8 @@ export default function GymAdminApplications() {
       {/* Schedule Interview Modal */}
       {showInterviewModal && selectedApp && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="bg-[#0E1415] border border-[#2A3A3A] rounded-2xl max-w-md w-full p-6 text-white space-y-4">
-            <div className="flex items-center justify-between border-b border-[#2A3A3A] pb-3">
+          <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-2xl max-w-md w-full p-6 text-white space-y-4">
+            <div className="flex items-center justify-between border-b border-[#E7DADD] pb-3">
               <h3 className="font-bold text-base flex items-center gap-2 text-cyan-400">
                 <Calendar className="w-5 h-5" />
                 Schedule Interview: {selectedApp.fullName}
@@ -846,7 +831,7 @@ export default function GymAdminApplications() {
                     required
                     value={interviewForm.date}
                     onChange={(e) => setInterviewForm({ ...interviewForm, date: e.target.value })}
-                    className="w-full px-3 py-2 bg-[#141D1E] border border-[#2A3A3A] rounded-xl text-white focus:outline-none focus:border-cyan-400"
+                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-white focus:outline-none focus:border-cyan-400"
                   />
                 </div>
                 <div>
@@ -856,7 +841,7 @@ export default function GymAdminApplications() {
                     required
                     value={interviewForm.time}
                     onChange={(e) => setInterviewForm({ ...interviewForm, time: e.target.value })}
-                    className="w-full px-3 py-2 bg-[#141D1E] border border-[#2A3A3A] rounded-xl text-white focus:outline-none focus:border-cyan-400"
+                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-white focus:outline-none focus:border-cyan-400"
                   />
                 </div>
               </div>
@@ -867,7 +852,7 @@ export default function GymAdminApplications() {
                   <select
                     value={interviewForm.mode}
                     onChange={(e) => setInterviewForm({ ...interviewForm, mode: e.target.value })}
-                    className="w-full px-3 py-2 bg-[#141D1E] border border-[#2A3A3A] rounded-xl text-white focus:outline-none focus:border-cyan-400"
+                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-white focus:outline-none focus:border-cyan-400"
                   >
                     <option value="Online">Online (Google Meet / Zoom)</option>
                     <option value="In-Person">In-Person at Gym</option>
@@ -883,7 +868,7 @@ export default function GymAdminApplications() {
                       setInterviewForm({ ...interviewForm, duration: e.target.value })
                     }
                     placeholder="e.g. 30 mins"
-                    className="w-full px-3 py-2 bg-[#141D1E] border border-[#2A3A3A] rounded-xl text-white focus:outline-none focus:border-cyan-400"
+                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-white focus:outline-none focus:border-cyan-400"
                   />
                 </div>
               </div>
@@ -898,7 +883,7 @@ export default function GymAdminApplications() {
                   onChange={(e) =>
                     setInterviewForm({ ...interviewForm, locationOrLink: e.target.value })
                   }
-                  className="w-full px-3 py-2 bg-[#141D1E] border border-[#2A3A3A] rounded-xl text-white focus:outline-none focus:border-cyan-400"
+                  className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-white focus:outline-none focus:border-cyan-400"
                 />
               </div>
 
@@ -911,15 +896,15 @@ export default function GymAdminApplications() {
                   onChange={(e) =>
                     setInterviewForm({ ...interviewForm, instructions: e.target.value })
                   }
-                  className="w-full px-3 py-2 bg-[#141D1E] border border-[#2A3A3A] rounded-xl text-white focus:outline-none focus:border-cyan-400 resize-none"
+                  className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-white focus:outline-none focus:border-cyan-400 resize-none"
                 />
               </div>
 
-              <div className="pt-3 border-t border-[#2A3A3A] flex justify-end gap-2">
+              <div className="pt-3 border-t border-[#E7DADD] flex justify-end gap-2">
                 <button
                   type="button"
                   onClick={() => setShowInterviewModal(false)}
-                  className="px-3 py-1.5 bg-[#141D1E] hover:bg-[#1B2728] text-slate-300 rounded-xl"
+                  className="px-3 py-1.5 bg-[#FFFFFF] hover:bg-[#F3E8E8] text-slate-300 rounded-xl"
                 >
                   Cancel
                 </button>
@@ -939,9 +924,9 @@ export default function GymAdminApplications() {
       {/* Issue Job Offer Modal */}
       {showOfferModal && selectedApp && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="bg-[#0E1415] border border-[#2A3A3A] rounded-2xl max-w-md w-full p-6 text-white space-y-4">
-            <div className="flex items-center justify-between border-b border-[#2A3A3A] pb-3">
-              <h3 className="font-bold text-base flex items-center gap-2 text-[#2DD4BF]">
+          <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-2xl max-w-md w-full p-6 text-white space-y-4">
+            <div className="flex items-center justify-between border-b border-[#E7DADD] pb-3">
+              <h3 className="font-bold text-base flex items-center gap-2 text-[#B76E79]">
                 <Gift className="w-5 h-5" />
                 Issue Offer: {selectedApp.fullName}
               </h3>
@@ -965,7 +950,7 @@ export default function GymAdminApplications() {
                     onChange={(e) =>
                       setOfferForm({ ...offerForm, offeredSalary: e.target.value })
                     }
-                    className="w-full px-3 py-2 bg-[#141D1E] border border-[#2A3A3A] rounded-xl text-white focus:outline-none focus:border-[#2DD4BF]"
+                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-white focus:outline-none focus:border-[#B76E79]"
                   />
                 </div>
                 <div>
@@ -975,7 +960,7 @@ export default function GymAdminApplications() {
                     onChange={(e) =>
                       setOfferForm({ ...offerForm, salaryPeriod: e.target.value })
                     }
-                    className="w-full px-3 py-2 bg-[#141D1E] border border-[#2A3A3A] rounded-xl text-white focus:outline-none focus:border-[#2DD4BF]"
+                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-white focus:outline-none focus:border-[#B76E79]"
                   >
                     <option value="Month">Per Month</option>
                     <option value="Year">Per Annum (LPA)</option>
@@ -992,7 +977,7 @@ export default function GymAdminApplications() {
                     onChange={(e) =>
                       setOfferForm({ ...offerForm, employmentType: e.target.value })
                     }
-                    className="w-full px-3 py-2 bg-[#141D1E] border border-[#2A3A3A] rounded-xl text-white focus:outline-none focus:border-[#2DD4BF]"
+                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-white focus:outline-none focus:border-[#B76E79]"
                   >
                     <option value="Full-time">Full-time</option>
                     <option value="Part-time">Part-time</option>
@@ -1009,7 +994,7 @@ export default function GymAdminApplications() {
                     onChange={(e) =>
                       setOfferForm({ ...offerForm, joiningDate: e.target.value })
                     }
-                    className="w-full px-3 py-2 bg-[#141D1E] border border-[#2A3A3A] rounded-xl text-white focus:outline-none focus:border-[#2DD4BF]"
+                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-white focus:outline-none focus:border-[#B76E79]"
                   />
                 </div>
               </div>
@@ -1021,22 +1006,22 @@ export default function GymAdminApplications() {
                   placeholder="e.g. Includes gym membership, performance bonus, and training gear allowance."
                   value={offerForm.terms}
                   onChange={(e) => setOfferForm({ ...offerForm, terms: e.target.value })}
-                  className="w-full px-3 py-2 bg-[#141D1E] border border-[#2A3A3A] rounded-xl text-white focus:outline-none focus:border-[#2DD4BF] resize-none"
+                  className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-white focus:outline-none focus:border-[#B76E79] resize-none"
                 />
               </div>
 
-              <div className="pt-3 border-t border-[#2A3A3A] flex justify-end gap-2">
+              <div className="pt-3 border-t border-[#E7DADD] flex justify-end gap-2">
                 <button
                   type="button"
                   onClick={() => setShowOfferModal(false)}
-                  className="px-3 py-1.5 bg-[#141D1E] hover:bg-[#1B2728] text-slate-300 rounded-xl"
+                  className="px-3 py-1.5 bg-[#FFFFFF] hover:bg-[#F3E8E8] text-slate-300 rounded-xl"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={actionLoading}
-                  className="px-4 py-1.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-black font-semibold rounded-xl"
+                  className="px-4 py-1.5 bg-[#B76E79] hover:bg-[#9F5965] text-white font-semibold rounded-xl"
                 >
                   Dispatch Job Offer
                 </button>

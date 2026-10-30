@@ -230,26 +230,26 @@ const MemberLayout = () => {
   const renderSidebar = () => (
     <>
       {/* Logo */}
-      <div className="p-5 border-b border-[#2A3A3A]">
+      <div className="p-5 border-b border-[#E7DADD]">
         <Link to="/" className="flex items-center space-x-2" onClick={() => setSidebarOpen(false)}>
-          <div className="w-9 h-9 bg-gradient-to-br from-[#2DD4BF] to-[#5EEAD4] text-[#06201D] font-bold rounded-xl flex items-center justify-center shadow-md shadow-[#2DD4BF]/25 shrink-0">
+          <div className="w-9 h-9 bg-gradient-to-br from-[#B76E79] to-[#9F5965] text-[#FFFFFF] font-bold rounded-xl flex items-center justify-center shadow-md shadow-[#B76E79]/20 shrink-0">
             <Activity className="text-white" size={20} />
           </div>
-          <span className="text-xl font-bold tracking-tight text-[#F5FAFA] truncate max-w-[160px]" title={gym?.name || 'Gymora'}>
+          <span className="text-xl font-bold tracking-tight text-[#292524] truncate max-w-[160px]" title={gym?.name || 'Gymora'}>
             {gym?.name || 'Gymora'}
           </span>
         </Link>
         <div className="mt-4 flex items-center space-x-3">
-          <div className="w-10 h-10 bg-[#141D1E] border border-[#2A3A3A] rounded-full flex items-center justify-center text-[#2DD4BF] font-bold text-base shadow-xs">
+          <div className="w-10 h-10 bg-[#FFFFFF] border border-[#E7DADD] rounded-full flex items-center justify-center text-[#B76E79] font-bold text-base shadow-xs">
             {user?.firstName?.[0] || 'U'}
           </div>
           <div className="flex-1 overflow-hidden">
-            <p className="font-semibold text-sm text-[#F5FAFA] truncate">{user?.firstName} {user?.lastName}</p>
+            <p className="font-semibold text-sm text-[#292524] truncate">{user?.firstName} {user?.lastName}</p>
             <div className="flex items-center gap-1.5 mt-0.5">
-              <span className="text-xs text-[#9AAEAE] font-medium truncate capitalize">
+              <span className="text-xs text-[#57534E] font-medium truncate capitalize">
                 {isExpired ? 'Free Trial Completed' : `${user?.subscriptionPlan || 'Member'} Plan`}
               </span>
-              <span className="px-1.5 py-0.2 bg-[#2DD4BF]/15 text-[#2DD4BF] border border-[#2DD4BF]/30 rounded text-[9px] font-bold uppercase tracking-wider">MEMBER</span>
+              <span className="px-1.5 py-0.2 bg-[#B76E79]/15 text-[#B76E79] border border-[#B76E79]/30 rounded text-[9px] font-bold uppercase tracking-wider">MEMBER</span>
             </div>
           </div>
         </div>
@@ -259,7 +259,7 @@ const MemberLayout = () => {
       <nav className="flex-1 overflow-y-auto px-3 py-3 space-y-4">
         {displayNavGroups.map((group, groupIdx) => (
           <div key={groupIdx}>
-            <h4 className="px-3 mb-2 text-[10px] font-bold text-[#9AAEAE] uppercase tracking-widest">{group.title}</h4>
+            <h4 className="px-3 mb-2 text-[10px] font-bold text-[#57534E] uppercase tracking-widest">{group.title}</h4>
             <div className="space-y-0.5">
               {group.items.map((item) => {
                 const isTrainingItem = item.path === '/member/find-trainers';
@@ -278,15 +278,15 @@ const MemberLayout = () => {
                     className={clsx(
                       'flex items-center space-x-3 px-3 py-2 rounded-xl transition-all duration-150 text-sm font-medium group',
                       isActive
-                        ? 'bg-[#2DD4BF]/15 text-[#F5FAFA] font-semibold border-l-4 border-[#2DD4BF] shadow-sm'
-                        : 'text-[#9AAEAE] hover:bg-[#141D1E] hover:text-[#F5FAFA]'
+                        ? 'bg-[#B76E79]/15 text-[#292524] font-semibold border-l-4 border-[#B76E79] shadow-sm'
+                        : 'text-[#57534E] hover:bg-[#FFFFFF] hover:text-[#292524]'
                     )}
                   >
                     <Icon
                       size={17}
                       className={clsx(
                         'shrink-0 transition-colors',
-                        isActive ? 'text-[#2DD4BF]' : 'text-[#9AAEAE] group-hover:text-[#2DD4BF]'
+                        isActive ? 'text-[#B76E79]' : 'text-[#57534E] group-hover:text-[#B76E79]'
                       )}
                     />
                     <span className="truncate">{item.label}</span>
@@ -300,22 +300,22 @@ const MemberLayout = () => {
 
       {/* Locked Menus Notice when Free Trial is completed / expired */}
       {isExpired && (
-        <div className="mx-3 my-2 p-3 bg-[#141D1E] border border-[#FBBF24]/30 rounded-xl text-center">
-          <div className="w-8 h-8 mx-auto mb-1.5 bg-[#FBBF24]/15 rounded-full flex items-center justify-center text-[#FBBF24]">
+        <div className="mx-3 my-2 p-3 bg-[#FFFFFF] border border-[#B45309]/30 rounded-xl text-center">
+          <div className="w-8 h-8 mx-auto mb-1.5 bg-[#B45309]/15 rounded-full flex items-center justify-center text-[#B45309]">
             <Lock size={15} />
           </div>
-          <p className="text-xs font-bold text-[#FBBF24] mb-0.5">Side Menus Locked</p>
-          <p className="text-[11px] text-[#9AAEAE] leading-tight">
+          <p className="text-xs font-bold text-[#B45309] mb-0.5">Side Menus Locked</p>
+          <p className="text-[11px] text-[#57534E] leading-tight">
             Complete your subscription payment below to unlock remaining side menus.
           </p>
         </div>
       )}
 
       {/* Logout */}
-      <div className="p-3 border-t border-[#2A3A3A]">
+      <div className="p-3 border-t border-[#E7DADD]">
         <button
           onClick={logout}
-          className="flex items-center justify-center space-x-2 px-3 py-2.5 w-full text-[#F87171] hover:bg-red-950/25 hover:text-red-400 rounded-xl transition-colors font-semibold text-sm cursor-pointer border border-transparent hover:border-[#F87171]/30"
+          className="flex items-center justify-center space-x-2 px-3 py-2.5 w-full text-[#B91C1C] hover:bg-red-950/25 hover:text-red-400 rounded-xl transition-colors font-semibold text-sm cursor-pointer border border-transparent hover:border-[#B91C1C]/30"
         >
           <LogOut size={16} />
           <span>Logout</span>
@@ -325,7 +325,7 @@ const MemberLayout = () => {
   );
 
   return (
-    <div className="flex h-screen bg-[#080B0C] text-[#F5FAFA] overflow-hidden">
+    <div className="flex h-screen bg-[#FFFFFF] text-[#292524] overflow-hidden">
 
       {/* Mobile overlay */}
       {sidebarOpen && (
@@ -338,26 +338,26 @@ const MemberLayout = () => {
       {/* Expiry Warning Popup */}
       {showExpiryWarning && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-          <div className="bg-[#141D1E] rounded-2xl max-w-md w-full p-6 shadow-2xl relative animate-in fade-in zoom-in-95 border border-[#F87171] text-center text-[#F5FAFA]">
+          <div className="bg-[#FFFFFF] rounded-2xl max-w-md w-full p-6 shadow-2xl relative animate-in fade-in zoom-in-95 border border-[#B91C1C] text-center text-[#292524]">
             <div className="w-16 h-16 bg-red-950/40 border border-red-500/30 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Clock className="text-[#FBBF24]" size={32} />
+              <Clock className="text-[#B45309]" size={32} />
             </div>
-            <h2 className="text-2xl font-bold text-[#F5FAFA] mb-2">Plan Expiring Soon!</h2>
-            <p className="text-[#9AAEAE] mb-6">
-              Your <span className="font-bold text-[#F5FAFA]">{user?.subscriptionPlan}</span> will expire in less than 1 hour. 
+            <h2 className="text-2xl font-bold text-[#292524] mb-2">Plan Expiring Soon!</h2>
+            <p className="text-[#57534E] mb-6">
+              Your <span className="font-bold text-[#292524]">{user?.subscriptionPlan}</span> will expire in less than 1 hour. 
               Please renew to continue accessing the gym seamlessly.
             </p>
             <div className="flex gap-4">
               <button 
                 onClick={() => setShowExpiryWarning(false)}
-                className="flex-1 py-3 bg-[#0E1415] border border-[#2A3A3A] text-[#F5FAFA] font-bold rounded-xl hover:bg-[#1B2728] transition-colors"
+                className="flex-1 py-3 bg-[#F3E8E8] border border-[#E7DADD] text-[#292524] font-bold rounded-xl hover:bg-[#F3E8E8] transition-colors"
               >
                 Dismiss
               </button>
               <Link 
                 to="/member/subscription"
                 onClick={() => setShowExpiryWarning(false)}
-                className="flex-1 py-3 bg-gradient-to-r from-[#2DD4BF] to-[#5EEAD4] hover:from-[#5EEAD4] hover:to-[#2DD4BF] text-[#06201D] font-bold font-bold rounded-xl transition-all flex items-center justify-center shadow-lg shadow-[#2DD4BF]/25"
+                className="flex-1 py-3 bg-gradient-to-r from-[#B76E79] to-[#9F5965] hover:from-[#9F5965] hover:to-[#B76E79] text-[#FFFFFF] font-bold font-bold rounded-xl transition-all flex items-center justify-center shadow-lg shadow-[#B76E79]/20"
               >
                 Renew Now
               </Link>
@@ -369,7 +369,7 @@ const MemberLayout = () => {
       {/* Sidebar */}
       <aside
         className={clsx(
-          'fixed lg:static top-0 left-0 h-full w-64 bg-[#0B1112] text-[#F5FAFA] border-r border-[#2A3A3A] flex flex-col z-40 shrink-0 transition-transform duration-300 ease-in-out shadow-2xl lg:shadow-none',
+          'fixed lg:static top-0 left-0 h-full w-64 bg-[#FFFFFF] text-[#292524] border-r border-[#E7DADD] flex flex-col z-40 shrink-0 transition-transform duration-300 ease-in-out shadow-2xl lg:shadow-none',
           sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         )}
       >
@@ -377,21 +377,21 @@ const MemberLayout = () => {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col h-full overflow-hidden relative min-w-0 bg-[#080B0C]">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(45, 212, 191,0.06)_0%,_transparent_60%)] pointer-events-none" />
+      <main className="flex-1 flex flex-col h-full overflow-hidden relative min-w-0 bg-[#FFFFFF]">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(183,110,121,0.06)_0%,_transparent_60%)] pointer-events-none" />
 
         {/* Header */}
-        <header className="h-16 border-b border-[#2A3A3A] flex items-center px-4 md:px-8 justify-between bg-[#0E1415]/95 backdrop-blur-md z-10 sticky top-0 shrink-0 shadow-sm text-[#F5FAFA]">
+        <header className="h-16 border-b border-[#E7DADD] flex items-center px-4 md:px-8 justify-between bg-[#F3E8E8]/95 backdrop-blur-md z-10 sticky top-0 shrink-0 shadow-sm text-[#292524]">
           <div className="flex items-center space-x-3">
             <button
-              className="lg:hidden text-[#9AAEAE] hover:text-[#2DD4BF] transition-colors p-1 rounded-lg hover:bg-[#141D1E]"
+              className="lg:hidden text-[#57534E] hover:text-[#B76E79] transition-colors p-1 rounded-lg hover:bg-[#FFFFFF]"
               onClick={() => setSidebarOpen(true)}
               aria-label="Open menu"
             >
               <Menu size={22} />
             </button>
-            {currentNav && <currentNav.icon size={20} className="text-[#2DD4BF] hidden sm:block" />}
-            <h2 className="text-base md:text-lg font-bold tracking-tight text-[#F5FAFA]">
+            {currentNav && <currentNav.icon size={20} className="text-[#B76E79] hidden sm:block" />}
+            <h2 className="text-base md:text-lg font-bold tracking-tight text-[#292524]">
               {currentNav?.label || 'Customer Dashboard'}
             </h2>
           </div>
@@ -401,12 +401,12 @@ const MemberLayout = () => {
               <div className="relative" ref={notifRef}>
                 <button
                   onClick={() => setNotifOpen(!notifOpen)}
-                  className="relative text-[#9AAEAE] hover:text-[#2DD4BF] transition-colors p-1.5 rounded-xl hover:bg-[#141D1E] cursor-pointer"
+                  className="relative text-[#57534E] hover:text-[#B76E79] transition-colors p-1.5 rounded-xl hover:bg-[#FFFFFF] cursor-pointer"
                   title="Notifications"
                 >
                   <Bell size={20} />
                   {unreadCount > 0 && (
-                    <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 bg-[#2DD4BF] text-[#06201D] font-bold text-[10px] font-bold rounded-full flex items-center justify-center shadow shadow-blue-900/40 animate-pulse">
+                    <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 bg-[#B76E79] text-white font-bold text-[10px] font-bold rounded-full flex items-center justify-center shadow shadow-blue-900/40 animate-pulse">
                       {unreadCount > 9 ? '9+' : unreadCount}
                     </span>
                   )}
@@ -414,12 +414,12 @@ const MemberLayout = () => {
 
                 {/* Notifications Dropdown */}
                 {notifOpen && (
-                  <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-[#141D1E] border border-[#2A3A3A] rounded-2xl shadow-2xl z-50 overflow-hidden animate-fadeIn">
-                    <div className="p-3.5 border-b border-[#2A3A3A] flex items-center justify-between">
+                  <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl shadow-2xl z-50 overflow-hidden animate-fadeIn">
+                    <div className="p-3.5 border-b border-[#E7DADD] flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <h3 className="font-bold text-[#F5FAFA] text-sm">Notifications</h3>
+                        <h3 className="font-bold text-[#292524] text-sm">Notifications</h3>
                         {unreadCount > 0 && (
-                          <span className="bg-[#2DD4BF]/15 text-[#2DD4BF] border border-[#2DD4BF]/30 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                          <span className="bg-[#B76E79]/15 text-[#B76E79] border border-[#B76E79]/30 text-[10px] font-bold px-2 py-0.5 rounded-full">
                             {unreadCount} new
                           </span>
                         )}
@@ -427,16 +427,16 @@ const MemberLayout = () => {
                       {unreadCount > 0 && (
                         <button
                           onClick={markAllAsRead}
-                          className="text-[11px] font-semibold text-[#2DD4BF] hover:underline cursor-pointer"
+                          className="text-[11px] font-semibold text-[#B76E79] hover:underline cursor-pointer"
                         >
                           Mark all read
                         </button>
                       )}
                     </div>
 
-                    <div className="divide-y divide-[#2A3A3A] max-h-72 overflow-y-auto">
+                    <div className="divide-y divide-[#E7DADD] max-h-72 overflow-y-auto">
                       {notifications.length === 0 ? (
-                        <div className="p-6 text-center text-xs text-[#9AAEAE]">
+                        <div className="p-6 text-center text-xs text-[#57534E]">
                           No notifications yet.
                         </div>
                       ) : (
@@ -449,39 +449,39 @@ const MemberLayout = () => {
                               if (notif.link) navigate(notif.link);
                               else navigate('/member/notifications');
                             }}
-                            className={`flex items-start gap-3 px-4 py-3 hover:bg-[#1B2728] transition-colors cursor-pointer ${
-                              !notif.isRead ? 'bg-[#2DD4BF]/5' : ''
+                            className={`flex items-start gap-3 px-4 py-3 hover:bg-[#F3E8E8] transition-colors cursor-pointer ${
+                              !notif.isRead ? 'bg-[#B76E79]/5' : ''
                             }`}
                           >
-                            <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 bg-[#0E1415] border border-[#2A3A3A]">
-                              {notif.type === 'alert' ? <AlertCircle size={15} className="text-[#F87171]" /> :
-                               notif.type === 'success' ? <CheckCircle size={15} className="text-[#34D399]" /> :
-                               notif.type === 'message' ? <MessageSquare size={15} className="text-[#2DD4BF]" /> :
-                               <Bell size={15} className="text-[#2DD4BF]" />}
+                            <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 bg-[#F3E8E8] border border-[#E7DADD]">
+                              {notif.type === 'alert' ? <AlertCircle size={15} className="text-[#B91C1C]" /> :
+                               notif.type === 'success' ? <CheckCircle size={15} className="text-[#15803D]" /> :
+                               notif.type === 'message' ? <MessageSquare size={15} className="text-[#B76E79]" /> :
+                               <Bell size={15} className="text-[#B76E79]" />}
                             </div>
                             <div className="flex-1 min-w-0">
-                              <p className={`text-xs font-semibold text-[#F5FAFA] truncate ${!notif.isRead ? 'font-bold' : ''}`}>
+                              <p className={`text-xs font-semibold text-[#292524] truncate ${!notif.isRead ? 'font-bold' : ''}`}>
                                 {notif.title}
                               </p>
-                              <p className="text-[11px] text-[#9AAEAE] mt-0.5 line-clamp-2 leading-relaxed">
+                              <p className="text-[11px] text-[#57534E] mt-0.5 line-clamp-2 leading-relaxed">
                                 {notif.message}
                               </p>
-                              <p className="text-[9px] text-[#9AAEAE]/70 mt-1">
+                              <p className="text-[9px] text-[#57534E]/70 mt-1">
                                 {notif.createdAt ? new Date(notif.createdAt).toLocaleDateString() : ''}
                               </p>
                             </div>
                             {!notif.isRead && (
-                              <div className="w-2 h-2 bg-[#2DD4BF] rounded-full mt-1.5 shrink-0" />
+                              <div className="w-2 h-2 bg-[#B76E79] rounded-full mt-1.5 shrink-0" />
                             )}
                           </div>
                         ))
                       )}
                     </div>
 
-                    <div className="border-t border-[#2A3A3A]">
+                    <div className="border-t border-[#E7DADD]">
                       <button
                         onClick={() => { setNotifOpen(false); navigate('/member/notifications'); }}
-                        className="w-full py-2.5 text-xs font-bold text-[#2DD4BF] hover:bg-[#1B2728] transition-colors text-center block cursor-pointer"
+                        className="w-full py-2.5 text-xs font-bold text-[#B76E79] hover:bg-[#F3E8E8] transition-colors text-center block cursor-pointer"
                       >
                         View All Notifications →
                       </button>
@@ -493,20 +493,20 @@ const MemberLayout = () => {
             {!isExpired ? (
               <Link to="/member/profile" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
                 <div className="text-right hidden md:block">
-                  <p className="text-sm font-semibold text-[#F5FAFA] leading-none mb-0.5">{user?.firstName} {user?.lastName}</p>
-                  <p className="text-xs text-[#9AAEAE] leading-none capitalize">{user?.subscriptionPlan || 'Member'} Plan</p>
+                  <p className="text-sm font-semibold text-[#292524] leading-none mb-0.5">{user?.firstName} {user?.lastName}</p>
+                  <p className="text-xs text-[#57534E] leading-none capitalize">{user?.subscriptionPlan || 'Member'} Plan</p>
                 </div>
-                <div className="w-9 h-9 bg-gradient-to-br from-[#2DD4BF] to-[#5EEAD4] text-[#06201D] font-bold rounded-full flex items-center justify-center font-bold text-sm shadow">
+                <div className="w-9 h-9 bg-gradient-to-br from-[#B76E79] to-[#9F5965] text-[#FFFFFF] font-bold rounded-full flex items-center justify-center font-bold text-sm shadow">
                   {user?.firstName?.[0] || 'U'}
                 </div>
               </Link>
             ) : (
               <div className="flex items-center space-x-2">
                 <div className="text-right hidden md:block">
-                  <p className="text-sm font-semibold text-[#F5FAFA] leading-none mb-0.5">{user?.firstName} {user?.lastName}</p>
-                  <span className="text-[11px] font-bold text-[#FBBF24] bg-[#FBBF24]/15 border border-[#FBBF24]/30 px-2 py-0.5 rounded-full">Free Trial Completed</span>
+                  <p className="text-sm font-semibold text-[#292524] leading-none mb-0.5">{user?.firstName} {user?.lastName}</p>
+                  <span className="text-[11px] font-bold text-[#B45309] bg-[#B45309]/15 border border-[#B45309]/30 px-2 py-0.5 rounded-full">Free Trial Completed</span>
                 </div>
-                <div className="w-9 h-9 bg-gradient-to-br from-[#2DD4BF] to-[#5EEAD4] text-[#06201D] font-bold rounded-full flex items-center justify-center font-bold text-sm shadow">
+                <div className="w-9 h-9 bg-gradient-to-br from-[#B76E79] to-[#9F5965] text-[#FFFFFF] font-bold rounded-full flex items-center justify-center font-bold text-sm shadow">
                   {user?.firstName?.[0] || 'U'}
                 </div>
               </div>
@@ -515,12 +515,12 @@ const MemberLayout = () => {
         </header>
 
         {isExpired && (
-          <div className="bg-[#141D1E] border-b border-[#FBBF24]/30 px-4 py-3 flex items-center justify-between text-[#FBBF24] text-sm">
+          <div className="bg-[#FFFFFF] border-b border-[#B45309]/30 px-4 py-3 flex items-center justify-between text-[#B45309] text-sm">
             <div className="flex items-center gap-2">
-              <Clock size={18} className="text-[#FBBF24] shrink-0" />
+              <Clock size={18} className="text-[#B45309] shrink-0" />
               <span><strong>Free Trial / Membership Ended:</strong> Your plan has completed. Please subscribe to an active membership plan to access workouts, diet plans, and trainers.</span>
             </div>
-            <Link to="/member/subscription" className="px-3 py-1 bg-gradient-to-r from-[#2DD4BF] to-[#5EEAD4] text-[#06201D] font-bold font-bold rounded-xl text-xs shrink-0 transition-colors shadow-sm">
+            <Link to="/member/subscription" className="px-3 py-1 bg-gradient-to-r from-[#B76E79] to-[#9F5965] text-[#FFFFFF] font-bold font-bold rounded-xl text-xs shrink-0 transition-colors shadow-sm">
               View Plans
             </Link>
           </div>

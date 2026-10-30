@@ -107,9 +107,9 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#080B0C] flex flex-col items-center justify-center px-4 py-12 sm:py-16 relative">
+    <div className="min-h-screen bg-[#FFFFFF] flex flex-col items-center justify-center px-4 py-12 sm:py-16 relative">
       {/* Background glow */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(45,212,191,0.07)_0%,_transparent_65%)] pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(183,110,121,0.07)_0%,_transparent_65%)] pointer-events-none" />
 
       {/* Dynamic Back Button */}
       <Link 
@@ -125,7 +125,7 @@ const LoginPage = () => {
           }
           window.scrollTo(0, 0);
         }}
-        className="absolute top-6 left-6 sm:top-8 sm:left-8 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#06201D] bg-[#2DD4BF] hover:bg-[#5EEAD4] transition-all shadow-md shadow-teal-500/20 flex items-center gap-2 z-20 cursor-pointer"
+        className="absolute top-6 left-6 sm:top-8 sm:left-8 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#FFFFFF] bg-[#B76E79] hover:bg-[#9F5965] transition-all shadow-md shadow-[#B76E79]/20 flex items-center gap-2 z-20 cursor-pointer"
       >
         <ArrowLeft size={16} />
         <span>
@@ -140,35 +140,35 @@ const LoginPage = () => {
 
       {/* Logo */}
       <Link to="/" className="flex items-center space-x-2.5 mt-8 sm:mt-4 mb-6 sm:mb-8 group z-10">
-        <div className="w-10 h-10 bg-gradient-to-br from-[#2DD4BF] to-[#5EEAD4] rounded-xl flex items-center justify-center shadow-lg shadow-teal-500/10">
-          <Activity className="text-[#06201D]" size={22} strokeWidth={2.5} />
+        <div className="w-10 h-10 bg-gradient-to-br from-[#B76E79] to-[#9F5965] rounded-xl flex items-center justify-center shadow-lg shadow-[#B76E79]/15">
+          <Activity className="text-[#FFFFFF]" size={22} strokeWidth={2.5} />
         </div>
-        <span className="text-2xl font-bold tracking-tight text-[#F5FAFA] group-hover:text-[#2DD4BF] transition-colors">Gymora</span>
+        <span className="text-2xl font-bold tracking-tight text-[#292524] group-hover:text-[#B76E79] transition-colors">Gymora</span>
       </Link>
 
-      <div className="w-full max-w-md bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-8 sm:p-9 shadow-2xl relative z-10 backdrop-blur-sm">
+      <div className="w-full max-w-md bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-8 sm:p-9 shadow-2xl relative z-10 backdrop-blur-sm">
         {/* Context Badge */}
         {portal === 'super-admin' && (
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#2DD4BF]/10 text-[#2DD4BF] border border-[#2DD4BF]/20 mb-3">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#B76E79]/10 text-[#B76E79] border border-[#B76E79]/20 mb-3">
             <ShieldCheck size={13} />
             <span>Super Admin Login</span>
           </div>
         )}
         {portal === 'gym-owner' && (
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#2DD4BF]/10 text-[#2DD4BF] border border-[#2DD4BF]/20 mb-3">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#B76E79]/10 text-[#B76E79] border border-[#B76E79]/20 mb-3">
             <Building2 size={13} />
             <span>Gym Owner Login</span>
           </div>
         )}
         {portal === 'trainer' && (
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#2DD4BF]/10 text-[#2DD4BF] border border-[#2DD4BF]/20 mb-3">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#B76E79]/10 text-[#B76E79] border border-[#B76E79]/20 mb-3">
             <UserCheck size={13} />
             <span>Trainer Login</span>
           </div>
         )}
 
-        <h1 className="text-2xl sm:text-3xl font-bold text-[#F5FAFA] mb-1.5 tracking-tight">Welcome back</h1>
-        <p className="text-[#9AAEAE] text-sm mb-7">Log in to your Gymora account</p>
+        <h1 className="text-2xl sm:text-3xl font-bold text-[#292524] mb-1.5 tracking-tight">Welcome back</h1>
+        <p className="text-[#57534E] text-sm mb-7">Log in to your Gymora account</p>
 
         {error && (
           <div className="flex items-center space-x-3 bg-red-500/10 border border-red-500/25 text-red-400 rounded-xl px-4 py-3 mb-6 text-sm">
@@ -180,7 +180,7 @@ const LoginPage = () => {
         <form onSubmit={handleSubmit} noValidate autoComplete="off" className="space-y-5">
           {/* Email */}
           <div>
-            <label className="block text-sm font-medium text-[#C1D0D0] mb-2">Email Address</label>
+            <label className="block text-sm font-medium text-[#292524] mb-2">Email Address</label>
             <input
               id="login-email"
               type="email"
@@ -188,7 +188,7 @@ const LoginPage = () => {
               onChange={(e) => { setForm({ ...form, email: e.target.value }); setFieldErrors({ ...fieldErrors, email: '' }); }}
               placeholder="you@example.com"
               autoComplete="off"
-              className={`w-full bg-[#101819] border ${fieldErrors.email ? 'border-red-400/80' : 'border-[#2A3A3A]'} text-[#F5FAFA] placeholder-[#6A7F7F] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#2DD4BF] focus:ring-1 focus:ring-[#2DD4BF] transition-all`}
+              className={`w-full bg-[#FFFFFF] border ${fieldErrors.email ? 'border-red-400/80' : 'border-[#E7DADD]'} text-[#292524] placeholder-[#57534E] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#B76E79] focus:ring-1 focus:ring-[#B76E79] transition-all`}
             />
             {fieldErrors.email && <p className="text-red-400 text-xs mt-1.5">{fieldErrors.email}</p>}
           </div>
@@ -196,8 +196,8 @@ const LoginPage = () => {
           {/* Password */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="block text-sm font-medium text-[#C1D0D0]">Password</label>
-              <Link to="/forgot-password" className="text-xs text-[#2DD4BF] hover:text-[#5EEAD4] hover:underline font-medium transition-colors">Forgot Password?</Link>
+              <label className="block text-sm font-medium text-[#292524]">Password</label>
+              <Link to="/forgot-password" className="text-xs text-[#B76E79] hover:text-[#9F5965] hover:underline font-medium transition-colors">Forgot Password?</Link>
             </div>
             <div className="relative">
               <input
@@ -207,12 +207,12 @@ const LoginPage = () => {
                 onChange={(e) => { setForm({ ...form, password: e.target.value }); setFieldErrors({ ...fieldErrors, password: '' }); }}
                 placeholder="Enter your password"
                 autoComplete="new-password"
-                className={`w-full bg-[#101819] border ${fieldErrors.password ? 'border-red-400/80' : 'border-[#2A3A3A]'} text-[#F5FAFA] placeholder-[#6A7F7F] rounded-xl px-4 py-3 pr-12 text-sm outline-none focus:border-[#2DD4BF] focus:ring-1 focus:ring-[#2DD4BF] transition-all`}
+                className={`w-full bg-[#FFFFFF] border ${fieldErrors.password ? 'border-red-400/80' : 'border-[#E7DADD]'} text-[#292524] placeholder-[#57534E] rounded-xl px-4 py-3 pr-12 text-sm outline-none focus:border-[#B76E79] focus:ring-1 focus:ring-[#B76E79] transition-all`}
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-[#9AAEAE] hover:text-[#2DD4BF] transition-colors cursor-pointer"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-[#57534E] hover:text-[#B76E79] transition-colors cursor-pointer"
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -228,16 +228,16 @@ const LoginPage = () => {
               id="remember-me"
               onClick={() => setRememberMe(!rememberMe)}
               className={`w-5 h-5 rounded-md border flex items-center justify-center flex-shrink-0 transition-colors cursor-pointer ${
-                rememberMe ? 'bg-[#2DD4BF] border-[#2DD4BF]' : 'border-[#2A3A3A] bg-[#101819] hover:border-[#2DD4BF]/50'
+                rememberMe ? 'bg-[#B76E79] border-[#B76E79]' : 'border-[#E7DADD] bg-[#FFFFFF] hover:border-[#B76E79]/50'
               }`}
             >
               {rememberMe && (
                 <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
-                  <path d="M1 4L3.5 6.5L9 1" stroke="#06201D" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M1 4L3.5 6.5L9 1" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               )}
             </button>
-            <label className="text-sm text-[#C1D0D0] cursor-pointer select-none" onClick={() => setRememberMe(!rememberMe)}>
+            <label className="text-sm text-[#292524] cursor-pointer select-none" onClick={() => setRememberMe(!rememberMe)}>
               Remember me
             </label>
           </div>
@@ -247,7 +247,7 @@ const LoginPage = () => {
             id="login-submit"
             type="submit"
             disabled={isLoading}
-            className="w-full py-3.5 bg-gradient-to-r from-[#2DD4BF] to-[#5EEAD4] text-[#06201D] font-bold rounded-xl hover:from-[#5EEAD4] hover:to-[#5EEAD4] transition-all disabled:opacity-60 flex items-center justify-center space-x-2 shadow-lg shadow-teal-500/20 hover:shadow-teal-500/30 cursor-pointer"
+            className="w-full py-3.5 bg-gradient-to-r from-[#B76E79] to-[#9F5965] text-[#FFFFFF] font-bold rounded-xl hover:from-[#9F5965] hover:to-[#9F5965] transition-all disabled:opacity-60 flex items-center justify-center space-x-2 shadow-lg shadow-[#B76E79]/20 hover:shadow-teal-500/30 cursor-pointer"
           >
             {isLoading ? (
               <>
@@ -260,18 +260,18 @@ const LoginPage = () => {
           </button>
         </form>
 
-        <div className="mt-6 text-center text-sm text-[#9AAEAE]">
+        <div className="mt-6 text-center text-sm text-[#57534E]">
           Don't have an account?{' '}
           <Link
             to={portal === 'trainer' ? '/register/trainer' : (portal === 'gym-owner' ? '/register/gym-owner' : '/register/customer')}
-            className="text-[#2DD4BF] font-semibold hover:text-[#5EEAD4] hover:underline transition-colors"
+            className="text-[#B76E79] font-semibold hover:text-[#9F5965] hover:underline transition-colors"
           >
             Sign Up
           </Link>
         </div>
       </div>
 
-      <p className="mt-8 text-xs text-[#9AAEAE] z-10">&copy; {new Date().getFullYear()} Gymora Technologies. All rights reserved.</p>
+      <p className="mt-8 text-xs text-[#57534E] z-10">&copy; {new Date().getFullYear()} Gymora Technologies. All rights reserved.</p>
     </div>
   );
 };

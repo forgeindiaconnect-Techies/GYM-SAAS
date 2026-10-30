@@ -5,60 +5,60 @@ const MemberDiet = () => {
     <div className="max-w-5xl mx-auto space-y-6">
       <div>
         <h1 className="text-3xl font-bold">Diet & Nutrition</h1>
-        <p className="text-[#9AAEAE]">Your personalized meal plan</p>
+        <p className="text-[#57534E]">Your personalized meal plan</p>
       </div>
 
       <div className="grid md:grid-cols-4 gap-4">
         {[
-          { label: 'Calories', value: '2,100', target: '2,400', unit: 'kcal', icon: Flame, color: 'text-[#2DD4BF]', bg: 'bg-[#2DD4BF]/10' },
-          { label: 'Protein', value: '140', target: '160', unit: 'g', icon: Utensils, color: 'text-[#2DD4BF]', bg: 'bg-[#2DD4BF]/10' },
+          { label: 'Calories', value: '2,100', target: '2,400', unit: 'kcal', icon: Flame, color: 'text-[#B76E79]', bg: 'bg-[#B76E79]/10' },
+          { label: 'Protein', value: '140', target: '160', unit: 'g', icon: Utensils, color: 'text-[#B76E79]', bg: 'bg-[#B76E79]/10' },
           { label: 'Carbs', value: '200', target: '250', unit: 'g', icon: Utensils, color: 'text-green-500', bg: 'bg-green-500/10' },
           { label: 'Fat', value: '50', target: '70', unit: 'g', icon: Droplets, color: 'text-yellow-500', bg: 'bg-yellow-500/10' },
         ].map((macro, i) => (
-          <div key={i} className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-5">
+          <div key={i} className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-5">
             <div className="flex items-center gap-3 mb-3">
               <div className={`p-2 rounded-lg ${macro.bg} ${macro.color}`}>
                 <macro.icon size={18} />
               </div>
-              <span className="font-medium text-[#9AAEAE]">{macro.label}</span>
+              <span className="font-medium text-[#57534E]">{macro.label}</span>
             </div>
             <div className="flex items-baseline gap-1">
               <span className="text-2xl font-bold">{macro.value}</span>
-              <span className="text-[#9AAEAE]">/ {macro.target}{macro.unit}</span>
+              <span className="text-[#57534E]">/ {macro.target}{macro.unit}</span>
             </div>
-            <div className="mt-3 w-full bg-[#1B2728] h-1.5 rounded-full overflow-hidden">
+            <div className="mt-3 w-full bg-[#F3E8E8] h-1.5 rounded-full overflow-hidden">
               <div className={`h-full rounded-full ${macro.color.replace('text-', 'bg-')}`} style={{ width: `${(parseInt(macro.value.replace(',','')) / parseInt(macro.target.replace(',',''))) * 100}%` }}></div>
             </div>
           </div>
         ))}
       </div>
 
-      <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl overflow-hidden">
-        <div className="p-6 border-b border-[#2A3A3A] flex justify-between items-center">
+      <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl overflow-hidden">
+        <div className="p-6 border-b border-[#E7DADD] flex justify-between items-center">
           <h2 className="text-xl font-bold">Today's Meals</h2>
-          <button className="text-sm text-[#2DD4BF] hover:underline">Generate New Plan</button>
+          <button className="text-sm text-[#B76E79] hover:underline">Generate New Plan</button>
         </div>
         
-        <div className="divide-y divide-[#2A3A3A]">
+        <div className="divide-y divide-[#E7DADD]">
           {[
             { meal: 'Breakfast', time: '08:00 AM', items: 'Oatmeal with berries & 2 boiled eggs', cal: 450, icon: Coffee },
             { meal: 'Lunch', time: '01:00 PM', items: 'Grilled chicken breast with quinoa and broccoli', cal: 650, icon: Utensils },
             { meal: 'Snack', time: '04:30 PM', items: 'Protein shake & apple', cal: 250, icon: Info },
             { meal: 'Dinner', time: '07:30 PM', items: 'Baked salmon with sweet potato', cal: 550, icon: Utensils },
           ].map((m, i) => (
-            <div key={i} className="p-6 flex items-center justify-between hover:bg-[#1B2728] transition-colors">
+            <div key={i} className="p-6 flex items-center justify-between hover:bg-[#F3E8E8] transition-colors">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-[#1B2728] rounded-xl flex items-center justify-center text-[#9AAEAE]">
+                <div className="w-12 h-12 bg-[#F3E8E8] rounded-xl flex items-center justify-center text-[#57534E]">
                   <m.icon size={20} />
                 </div>
                 <div>
-                  <h3 className="font-bold text-lg">{m.meal} <span className="text-xs font-normal text-[#9AAEAE] ml-2">{m.time}</span></h3>
-                  <p className="text-sm text-[#9AAEAE] mt-1">{m.items}</p>
+                  <h3 className="font-bold text-lg">{m.meal} <span className="text-xs font-normal text-[#57534E] ml-2">{m.time}</span></h3>
+                  <p className="text-sm text-[#57534E] mt-1">{m.items}</p>
                 </div>
               </div>
               <div className="text-right">
-                <span className="font-bold text-[#2DD4BF]">{m.cal}</span>
-                <span className="text-xs text-[#9AAEAE] ml-1">kcal</span>
+                <span className="font-bold text-[#B76E79]">{m.cal}</span>
+                <span className="text-xs text-[#57534E] ml-1">kcal</span>
               </div>
             </div>
           ))}

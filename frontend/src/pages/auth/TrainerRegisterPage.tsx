@@ -373,9 +373,9 @@ export default function TrainerRegisterPage() {
       case 2:
         return { score: 50, label: 'Fair', color: 'bg-amber-400' };
       case 3:
-        return { score: 75, label: 'Good', color: 'bg-[#2DD4BF]' };
+        return { score: 75, label: 'Good', color: 'bg-[#B76E79]' };
       case 4:
-        return { score: 100, label: 'Strong', color: 'bg-[#5EEAD4]' };
+        return { score: 100, label: 'Strong', color: 'bg-[#9F5965]' };
       default:
         return { score: 15, label: 'Very Weak', color: 'bg-rose-500' };
     }
@@ -534,33 +534,33 @@ export default function TrainerRegisterPage() {
   // Success view
   if (successData) {
     return (
-      <div className="min-h-screen bg-[#080B0C] text-[#F5FAFA] flex flex-col items-center justify-center px-4 py-12">
-        <div className="w-full max-w-lg bg-[#0E1415] border border-[#2DD4BF]/40 rounded-3xl p-8 sm:p-10 shadow-2xl text-center space-y-6">
-          <div className="w-16 h-16 rounded-2xl bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center mx-auto border border-[#2DD4BF]/30 shadow-lg shadow-teal-500/10">
+      <div className="min-h-screen bg-[#FFFFFF] text-[#292524] flex flex-col items-center justify-center px-4 py-12">
+        <div className="w-full max-w-lg bg-[#F3E8E8] border border-[#B76E79]/40 rounded-3xl p-8 sm:p-10 shadow-2xl text-center space-y-6">
+          <div className="w-16 h-16 rounded-2xl bg-[#B76E79]/10 text-[#B76E79] flex items-center justify-center mx-auto border border-[#B76E79]/30 shadow-lg shadow-[#B76E79]/15">
             <CheckCircle2 size={36} strokeWidth={2.5} />
           </div>
 
           <div className="space-y-2">
-            <span className="text-xs uppercase font-bold text-[#2DD4BF] tracking-wider">
+            <span className="text-xs uppercase font-bold text-[#B76E79] tracking-wider">
               {jobId ? 'Application Submitted' : 'Registration Complete'}
             </span>
-            <h2 className="text-2xl font-black text-white">
+            <h2 className="text-2xl font-black text-[#292524]">
               {jobId ? 'You Are All Set!' : 'Welcome Coach!'}
             </h2>
-            <p className="text-xs sm:text-sm text-[#9AAEAE] leading-relaxed">
+            <p className="text-xs sm:text-sm text-[#57534E] leading-relaxed">
               {successData.message}
             </p>
           </div>
 
           {jobInfo && (
-            <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-4 text-left space-y-2 text-xs">
+            <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-4 text-left space-y-2 text-xs">
               <div className="flex items-center justify-between">
                 <span className="text-slate-400">Position:</span>
                 <span className="font-bold text-white">{jobInfo.title}</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-slate-400">Gym Facility:</span>
-                <span className="font-bold text-[#2DD4BF]">{jobInfo.gymName}</span>
+                <span className="font-bold text-[#B76E79]">{jobInfo.gymName}</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-slate-400">Status:</span>
@@ -574,13 +574,13 @@ export default function TrainerRegisterPage() {
           <div className="pt-2 flex flex-col sm:flex-row gap-3 justify-center">
             <button
               onClick={() => navigate('/trainer/applications')}
-              className="px-6 py-3 bg-gradient-to-r from-[#2DD4BF] to-[#5EEAD4] text-[#06201D] font-bold rounded-xl text-xs sm:text-sm hover:scale-[1.02] transition-all shadow-md shadow-teal-500/20 cursor-pointer"
+              className="px-6 py-3 bg-gradient-to-r from-[#B76E79] to-[#9F5965] text-[#FFFFFF] font-bold rounded-xl text-xs sm:text-sm hover:scale-[1.02] transition-all shadow-md shadow-[#B76E79]/20 cursor-pointer"
             >
               View My Applications
             </button>
             <button
               onClick={() => navigate('/trainer/jobs')}
-              className="px-6 py-3 bg-[#141D1E] hover:bg-[#1B2728] text-white border border-[#2A3A3A] font-semibold rounded-xl text-xs sm:text-sm transition-all cursor-pointer"
+              className="px-6 py-3 bg-[#FFFFFF] hover:bg-[#F3E8E8] text-white border border-[#E7DADD] font-semibold rounded-xl text-xs sm:text-sm transition-all cursor-pointer"
             >
               Browse More Jobs
             </button>
@@ -591,49 +591,49 @@ export default function TrainerRegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#080B0C] text-[#F5FAFA] flex flex-col items-center justify-center px-4 py-12 relative selection:bg-[#2DD4BF] selection:text-[#06201D]">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(45,212,191,0.06)_0%,_transparent_60%)] pointer-events-none" />
+    <div className="min-h-screen bg-[#FFFFFF] text-[#292524] flex flex-col items-center justify-center px-4 py-12 relative selection:bg-[#B76E79] selection:text-[#FFFFFF]">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(183,110,121,0.06)_0%,_transparent_60%)] pointer-events-none" />
 
       {/* Top Header Navigation */}
       <div className="w-full max-w-3xl flex items-center justify-between mb-6 z-10">
         <Link
           to={returnUrl ? decodeURIComponent(returnUrl) : (jobId ? `/careers?jobId=${jobId}` : '/careers')}
-          className="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#06201D] bg-[#2DD4BF] hover:bg-[#5EEAD4] transition-all shadow-md shadow-teal-500/20 flex items-center gap-1.5"
+          className="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#FFFFFF] bg-[#B76E79] hover:bg-[#9F5965] transition-all shadow-md shadow-[#B76E79]/20 flex items-center gap-1.5"
         >
           <ArrowLeft size={16} />
           <span>Back to Trainers Careers</span>
         </Link>
 
         <Link to="/" className="flex items-center space-x-2 group">
-          <div className="w-9 h-9 bg-gradient-to-br from-[#2DD4BF] to-[#5EEAD4] rounded-xl flex items-center justify-center shadow-md shadow-teal-500/20 group-hover:scale-105 transition-transform">
-            <Activity className="text-[#06201D]" size={22} strokeWidth={2.5} />
+          <div className="w-9 h-9 bg-gradient-to-br from-[#B76E79] to-[#9F5965] rounded-xl flex items-center justify-center shadow-md shadow-[#B76E79]/20 group-hover:scale-105 transition-transform">
+            <Activity className="text-[#FFFFFF]" size={22} strokeWidth={2.5} />
           </div>
-          <span className="text-2xl font-black tracking-tight text-[#F5FAFA] group-hover:text-[#2DD4BF] transition-colors">
+          <span className="text-2xl font-black tracking-tight text-[#292524] group-hover:text-[#B76E79] transition-colors">
             Gymora
           </span>
         </Link>
       </div>
 
       {/* Main Container Card */}
-      <div className="w-full max-w-3xl bg-[#0E1415] border border-[#2A3A3A] rounded-3xl shadow-2xl p-6 sm:p-10 z-10 space-y-7">
+      <div className="w-full max-w-3xl bg-[#F3E8E8] border border-[#E7DADD] rounded-3xl shadow-2xl p-6 sm:p-10 z-10 space-y-7">
         
         {/* 5. JOB APPLICATION DETAILS (Read-only banner if jobId present) */}
         {jobInfo ? (
-          <div className="p-5 bg-[#141D1E] border border-[#2DD4BF]/40 rounded-2xl relative overflow-hidden space-y-3 shadow-lg">
+          <div className="p-5 bg-[#FFFFFF] border border-[#B76E79]/40 rounded-2xl relative overflow-hidden space-y-3 shadow-lg">
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center shrink-0 border border-[#2DD4BF]/20">
+                <div className="w-12 h-12 rounded-xl bg-[#B76E79]/10 text-[#B76E79] flex items-center justify-center shrink-0 border border-[#B76E79]/20">
                   <Briefcase size={22} />
                 </div>
                 <div>
-                  <span className="text-[10px] uppercase font-bold text-[#2DD4BF] tracking-wider block">
+                  <span className="text-[10px] uppercase font-bold text-[#B76E79] tracking-wider block">
                     Job Application Position
                   </span>
-                  <h3 className="text-lg font-bold text-white leading-tight">
+                  <h3 className="text-lg font-bold text-[#292524] leading-tight">
                     {jobInfo.title}
                   </h3>
-                  <p className="text-xs text-[#9AAEAE] flex items-center gap-1.5 mt-0.5">
-                    <Building2 size={13} className="text-[#2DD4BF]" />
+                  <p className="text-xs text-[#57534E] flex items-center gap-1.5 mt-0.5">
+                    <Building2 size={13} className="text-[#B76E79]" />
                     <span className="font-semibold text-white">{jobInfo.gymName}</span>
                     <span>·</span>
                     <MapPin size={13} className="text-slate-500" />
@@ -641,13 +641,13 @@ export default function TrainerRegisterPage() {
                   </p>
                 </div>
               </div>
-              <span className="hidden sm:inline-flex px-3 py-1 bg-[#0E1415] text-[10px] font-mono text-slate-400 border border-[#2A3A3A] rounded-full">
+              <span className="hidden sm:inline-flex px-3 py-1 bg-[#F3E8E8] text-[10px] font-mono text-slate-400 border border-[#E7DADD] rounded-full">
                 ID: {jobInfo.id.slice(-6).toUpperCase()}
               </span>
             </div>
 
-            <div className="pt-2.5 border-t border-[#2A3A3A]/70 flex flex-wrap items-center justify-between text-[11px] text-slate-400">
-              <span className="flex items-center gap-1.5 text-[#2DD4BF]">
+            <div className="pt-2.5 border-t border-[#E7DADD]/70 flex flex-wrap items-center justify-between text-[11px] text-slate-400">
+              <span className="flex items-center gap-1.5 text-[#B76E79]">
                 <ShieldCheck size={14} /> Read-only position details verified by Gymora
               </span>
               <span className="text-slate-500">Applications set to: <strong className="text-yellow-400">Pending Review</strong></span>
@@ -656,14 +656,14 @@ export default function TrainerRegisterPage() {
         ) : (
           /* General Registration Header */
           <div className="text-center space-y-1.5">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#2DD4BF]/10 border border-[#2DD4BF]/30 text-[#2DD4BF] text-xs font-semibold mb-1">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#B76E79]/10 border border-[#B76E79]/30 text-[#B76E79] text-xs font-semibold mb-1">
               <UserCheck size={14} />
               <span>Trainer Registration</span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-[#292524] tracking-tight">
               Join as a Certified Trainer
             </h1>
-            <p className="text-xs sm:text-sm text-[#9AAEAE] max-w-lg mx-auto">
+            <p className="text-xs sm:text-sm text-[#57534E] max-w-lg mx-auto">
               Create your coach profile to apply directly for verified gym vacancies and coaching opportunities.
             </p>
           </div>
@@ -673,12 +673,12 @@ export default function TrainerRegisterPage() {
         {isLoggedInTrainer && (
           <div className="p-3.5 bg-cyan-950/40 border border-cyan-500/30 rounded-xl text-xs text-cyan-300 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <UserCheck size={16} className="text-[#2DD4BF] shrink-0" />
+              <UserCheck size={16} className="text-[#B76E79] shrink-0" />
               <span>
                 Logged in as <strong>{user?.firstName} {user?.lastName}</strong> ({user?.email}). Profile details prefilled below.
               </span>
             </div>
-            <span className="text-[10px] bg-[#2DD4BF]/20 text-[#2DD4BF] px-2 py-0.5 rounded font-bold">
+            <span className="text-[10px] bg-[#B76E79]/20 text-[#B76E79] px-2 py-0.5 rounded font-bold">
               Active Trainer
             </span>
           </div>
@@ -699,17 +699,17 @@ export default function TrainerRegisterPage() {
           {/* 1. PERSONAL INFORMATION */}
           {/* ========================================================= */}
           <div className="space-y-4">
-            <div className="flex items-center justify-between border-b border-[#2A3A3A] pb-2">
-              <span className="text-xs uppercase font-bold text-[#2DD4BF] tracking-wider flex items-center gap-2">
+            <div className="flex items-center justify-between border-b border-[#E7DADD] pb-2">
+              <span className="text-xs uppercase font-bold text-[#B76E79] tracking-wider flex items-center gap-2">
                 <span>1. Personal Information</span>
               </span>
               <span className="text-[11px] text-slate-500">* Required fields</span>
             </div>
 
             {/* Profile Photo Upload & Preview */}
-            <div className="flex flex-col sm:flex-row items-center gap-4 p-4 rounded-2xl bg-[#141D1E] border border-[#2A3A3A]">
+            <div className="flex flex-col sm:flex-row items-center gap-4 p-4 rounded-2xl bg-[#FFFFFF] border border-[#E7DADD]">
               <div className="relative group">
-                <div className="w-20 h-20 rounded-full border-2 border-[#2DD4BF] overflow-hidden bg-[#0E1415] flex items-center justify-center">
+                <div className="w-20 h-20 rounded-full border-2 border-[#B76E79] overflow-hidden bg-[#F3E8E8] flex items-center justify-center">
                   {form.profilePhoto ? (
                     <img
                       src={`http://localhost:5600${form.profilePhoto}`}
@@ -722,7 +722,7 @@ export default function TrainerRegisterPage() {
                 </div>
                 {uploadingPhoto && (
                   <div className="absolute inset-0 rounded-full bg-black/60 flex items-center justify-center">
-                    <Loader2 size={20} className="animate-spin text-[#2DD4BF]" />
+                    <Loader2 size={20} className="animate-spin text-[#B76E79]" />
                   </div>
                 )}
               </div>
@@ -731,7 +731,7 @@ export default function TrainerRegisterPage() {
                 <label className="block text-xs font-bold text-white">
                   Profile Photo <span className="text-slate-500 font-normal">(Optional)</span>
                 </label>
-                <p className="text-[11px] text-[#9AAEAE]">
+                <p className="text-[11px] text-[#57534E]">
                   Upload a professional headshot to enhance your profile visibility to gym owners. JPG, PNG or WEBP (Max 10MB).
                 </p>
                 <div className="flex items-center gap-2 pt-1 justify-center sm:justify-start">
@@ -748,9 +748,9 @@ export default function TrainerRegisterPage() {
                     type="button"
                     onClick={() => photoInputRef.current?.click()}
                     disabled={uploadingPhoto}
-                    className="px-3 py-1.5 rounded-xl bg-[#0E1415] hover:bg-[#1B2728] border border-[#2A3A3A] text-xs font-semibold text-slate-200 hover:text-white flex items-center gap-1.5 transition-all"
+                    className="px-3 py-1.5 rounded-xl bg-[#F3E8E8] hover:bg-[#F3E8E8] border border-[#E7DADD] text-xs font-semibold text-slate-200 hover:text-white flex items-center gap-1.5 transition-all"
                   >
-                    <Camera size={13} className="text-[#2DD4BF]" />
+                    <Camera size={13} className="text-[#B76E79]" />
                     <span>{form.profilePhoto ? 'Change Photo' : 'Upload Photo'}</span>
                   </button>
 
@@ -758,7 +758,7 @@ export default function TrainerRegisterPage() {
                     <button
                       type="button"
                       onClick={() => setForm((prev) => ({ ...prev, profilePhoto: '' }))}
-                      className="px-2.5 py-1.5 rounded-xl bg-[#0E1415] hover:bg-red-950/40 border border-[#2A3A3A] text-xs text-slate-400 hover:text-red-400 transition-all"
+                      className="px-2.5 py-1.5 rounded-xl bg-[#F3E8E8] hover:bg-red-950/40 border border-[#E7DADD] text-xs text-slate-400 hover:text-red-400 transition-all"
                       title="Remove Photo"
                     >
                       <Trash2 size={13} />
@@ -780,7 +780,7 @@ export default function TrainerRegisterPage() {
                   placeholder="e.g. John"
                   value={form.firstName}
                   onChange={(e) => setForm({ ...form, firstName: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-[#141D1E] border border-[#2A3A3A] focus:border-[#2DD4BF] rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none transition-colors"
+                  className="w-full px-4 py-2.5 bg-[#FFFFFF] border border-[#E7DADD] focus:border-[#B76E79] rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none transition-colors"
                 />
                 {fieldErrors.firstName && (
                   <p className="text-red-400 text-[11px] mt-1 flex items-center gap-1">
@@ -799,7 +799,7 @@ export default function TrainerRegisterPage() {
                   placeholder="e.g. Doe"
                   value={form.lastName}
                   onChange={(e) => setForm({ ...form, lastName: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-[#141D1E] border border-[#2A3A3A] focus:border-[#2DD4BF] rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none transition-colors"
+                  className="w-full px-4 py-2.5 bg-[#FFFFFF] border border-[#E7DADD] focus:border-[#B76E79] rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none transition-colors"
                 />
                 {fieldErrors.lastName && (
                   <p className="text-red-400 text-[11px] mt-1 flex items-center gap-1">
@@ -817,7 +817,7 @@ export default function TrainerRegisterPage() {
                     Email Address <span className="text-red-400">*</span>
                   </label>
                   {otpVerified && (
-                    <span className="text-[10px] font-bold text-[#2DD4BF] bg-[#2DD4BF]/15 border border-[#2DD4BF]/30 px-2 py-0.5 rounded-full flex items-center gap-1">
+                    <span className="text-[10px] font-bold text-[#B76E79] bg-[#B76E79]/15 border border-[#B76E79]/30 px-2 py-0.5 rounded-full flex items-center gap-1">
                       <Check size={11} strokeWidth={3} /> Verified
                     </span>
                   )}
@@ -841,12 +841,12 @@ export default function TrainerRegisterPage() {
                         handleSendOtp(form.email);
                       }
                     }}
-                    className={`w-full px-4 py-2.5 bg-[#141D1E] border ${
+                    className={`w-full px-4 py-2.5 bg-[#FFFFFF] border ${
                       otpVerified
-                        ? 'border-[#2DD4BF]/60 text-[#2DD4BF]'
+                        ? 'border-[#B76E79]/60 text-[#B76E79]'
                         : fieldErrors.email
                         ? 'border-red-500/60'
-                        : 'border-[#2A3A3A] focus:border-[#2DD4BF]'
+                        : 'border-[#E7DADD] focus:border-[#B76E79]'
                     } rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none disabled:opacity-75 transition-colors pr-24`}
                   />
 
@@ -861,7 +861,7 @@ export default function TrainerRegisterPage() {
                             setOtpSent(false);
                             setOtp('');
                           }}
-                          className="px-2.5 py-1 text-[11px] font-semibold text-slate-400 hover:text-white bg-[#0E1415] border border-[#2A3A3A] rounded-lg transition-all"
+                          className="px-2.5 py-1 text-[11px] font-semibold text-slate-400 hover:text-white bg-[#F3E8E8] border border-[#E7DADD] rounded-lg transition-all"
                         >
                           Change
                         </button>
@@ -870,7 +870,7 @@ export default function TrainerRegisterPage() {
                           type="button"
                           disabled={otpSending || !form.email || !/^\S+@\S+\.\S+$/.test(form.email.trim())}
                           onClick={() => handleSendOtp(form.email)}
-                          className="px-2.5 py-1 text-[11px] font-bold text-[#06201D] bg-[#2DD4BF] hover:bg-[#5EEAD4] disabled:opacity-40 disabled:hover:bg-[#2DD4BF] rounded-lg transition-all shadow-sm flex items-center gap-1 cursor-pointer"
+                          className="px-2.5 py-1 text-[11px] font-bold text-[#FFFFFF] bg-[#B76E79] hover:bg-[#9F5965] disabled:opacity-40 disabled:hover:bg-[#B76E79] rounded-lg transition-all shadow-sm flex items-center gap-1 cursor-pointer"
                         >
                           {otpSending ? (
                             <>
@@ -894,7 +894,7 @@ export default function TrainerRegisterPage() {
 
                 {/* OTP Verification Box */}
                 {!isLoggedInTrainer && !otpVerified && otpSent && (
-                  <div className="mt-2.5 p-3 rounded-xl bg-[#0E1415] border border-[#2DD4BF]/40 space-y-2.5 shadow-md">
+                  <div className="mt-2.5 p-3 rounded-xl bg-[#F3E8E8] border border-[#B76E79]/40 space-y-2.5 shadow-md">
                     <div className="flex items-center justify-between text-[11px]">
                       <span className="font-semibold text-white">Enter 6-digit OTP code</span>
                       <span className="text-[10px] text-slate-400">Sent to your inbox</span>
@@ -907,13 +907,13 @@ export default function TrainerRegisterPage() {
                         placeholder="••••••"
                         value={otp}
                         onChange={(e) => setOtp(e.target.value.replace(/[^0-9]/g, ''))}
-                        className="w-32 px-3 py-1.5 bg-[#141D1E] border border-[#2A3A3A] focus:border-[#2DD4BF] rounded-lg text-sm text-center font-mono font-bold text-[#2DD4BF] tracking-widest focus:outline-none"
+                        className="w-32 px-3 py-1.5 bg-[#FFFFFF] border border-[#E7DADD] focus:border-[#B76E79] rounded-lg text-sm text-center font-mono font-bold text-[#B76E79] tracking-widest focus:outline-none"
                       />
                       <button
                         type="button"
                         disabled={otpVerifying || otp.length < 6}
                         onClick={handleVerifyOtp}
-                        className="px-3.5 py-1.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] disabled:opacity-40 text-[#06201D] font-bold text-xs rounded-lg transition-all flex items-center gap-1 cursor-pointer shrink-0"
+                        className="px-3.5 py-1.5 bg-[#B76E79] hover:bg-[#9F5965] disabled:opacity-40 text-[#FFFFFF] font-bold text-xs rounded-lg transition-all flex items-center gap-1 cursor-pointer shrink-0"
                       >
                         {otpVerifying ? (
                           <>
@@ -937,7 +937,7 @@ export default function TrainerRegisterPage() {
                           type="button"
                           disabled={otpSending}
                           onClick={() => handleSendOtp(form.email)}
-                          className="text-[10px] text-[#2DD4BF] hover:underline ml-auto"
+                          className="text-[10px] text-[#B76E79] hover:underline ml-auto"
                         >
                           Resend OTP
                         </button>
@@ -945,7 +945,7 @@ export default function TrainerRegisterPage() {
                     </div>
 
                     {otpMessage && (
-                      <p className="text-[10px] text-[#2DD4BF] flex items-center gap-1">
+                      <p className="text-[10px] text-[#B76E79] flex items-center gap-1">
                         <CheckCircle2 size={11} /> {otpMessage}
                       </p>
                     )}
@@ -970,13 +970,13 @@ export default function TrainerRegisterPage() {
                 </div>
 
                 <div
-                  className={`flex rounded-xl overflow-hidden border bg-[#141D1E] transition-colors ${
+                  className={`flex rounded-xl overflow-hidden border bg-[#FFFFFF] transition-colors ${
                     fieldErrors.mobile
                       ? 'border-red-500/60'
-                      : 'border-[#2A3A3A] focus-within:border-[#2DD4BF]'
+                      : 'border-[#E7DADD] focus-within:border-[#B76E79]'
                   }`}
                 >
-                  <span className="inline-flex items-center px-3.5 text-xs font-bold text-[#2DD4BF] bg-[#0E1415] border-r border-[#2A3A3A] select-none">
+                  <span className="inline-flex items-center px-3.5 text-xs font-bold text-[#B76E79] bg-[#F3E8E8] border-r border-[#E7DADD] select-none">
                     +91
                   </span>
                   <input
@@ -1024,7 +1024,7 @@ export default function TrainerRegisterPage() {
                 placeholder="e.g. Bangalore, Karnataka"
                 value={form.city}
                 onChange={(e) => setForm({ ...form, city: e.target.value })}
-                className="w-full px-4 py-2.5 bg-[#141D1E] border border-[#2A3A3A] focus:border-[#2DD4BF] rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none transition-colors"
+                className="w-full px-4 py-2.5 bg-[#FFFFFF] border border-[#E7DADD] focus:border-[#B76E79] rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none transition-colors"
               />
               {fieldErrors.city && (
                 <p className="text-red-400 text-[11px] mt-1 flex items-center gap-1">
@@ -1037,8 +1037,8 @@ export default function TrainerRegisterPage() {
           {/* ========================================================= */}
           {/* 2. PROFESSIONAL QUALIFICATIONS & EXPERTISE */}
           {/* ========================================================= */}
-          <div className="space-y-4 pt-3 border-t border-[#2A3A3A]">
-            <span className="text-xs uppercase font-bold text-[#2DD4BF] tracking-wider block">
+          <div className="space-y-4 pt-3 border-t border-[#E7DADD]">
+            <span className="text-xs uppercase font-bold text-[#B76E79] tracking-wider block">
               2. Professional Qualifications & Expertise
             </span>
 
@@ -1051,7 +1051,7 @@ export default function TrainerRegisterPage() {
                 <select
                   value={form.specialization}
                   onChange={(e) => setForm({ ...form, specialization: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-[#141D1E] border border-[#2A3A3A] focus:border-[#2DD4BF] rounded-xl text-xs text-white focus:outline-none cursor-pointer"
+                  className="w-full px-4 py-2.5 bg-[#FFFFFF] border border-[#E7DADD] focus:border-[#B76E79] rounded-xl text-xs text-white focus:outline-none cursor-pointer"
                 >
                   {SPECIALIZATIONS.map((s) => (
                     <option key={s} value={s}>
@@ -1068,7 +1068,7 @@ export default function TrainerRegisterPage() {
                 <select
                   value={form.experience}
                   onChange={(e) => setForm({ ...form, experience: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-[#141D1E] border border-[#2A3A3A] focus:border-[#2DD4BF] rounded-xl text-xs text-white focus:outline-none cursor-pointer"
+                  className="w-full px-4 py-2.5 bg-[#FFFFFF] border border-[#E7DADD] focus:border-[#B76E79] rounded-xl text-xs text-white focus:outline-none cursor-pointer"
                 >
                   {EXPERIENCE_OPTIONS.map((opt) => (
                     <option key={opt} value={opt}>
@@ -1094,18 +1094,18 @@ export default function TrainerRegisterPage() {
                       onClick={() => setForm({ ...form, trainingMode: mode.value })}
                       className={`flex items-center gap-2.5 p-3 rounded-2xl border text-left transition-all ${
                         selected
-                          ? 'bg-[#2DD4BF]/10 border-[#2DD4BF] shadow-sm shadow-teal-500/20'
-                          : 'bg-[#141D1E] border-[#2A3A3A] hover:border-[#2DD4BF]/40'
+                          ? 'bg-[#B76E79]/10 border-[#B76E79] shadow-sm shadow-[#B76E79]/20'
+                          : 'bg-[#FFFFFF] border-[#E7DADD] hover:border-[#B76E79]/40'
                       }`}
                     >
                       <span className="text-lg">{mode.icon}</span>
                       <div className="flex-1 min-w-0">
-                        <div className={`text-xs font-bold truncate ${selected ? 'text-[#2DD4BF]' : 'text-white'}`}>
+                        <div className={`text-xs font-bold truncate ${selected ? 'text-[#B76E79]' : 'text-white'}`}>
                           {mode.label}
                         </div>
                         <div className="text-[10px] text-slate-400 truncate">{mode.desc}</div>
                       </div>
-                      {selected && <Check size={14} className="text-[#2DD4BF] shrink-0" />}
+                      {selected && <Check size={14} className="text-[#B76E79] shrink-0" />}
                     </button>
                   );
                 })}
@@ -1123,7 +1123,7 @@ export default function TrainerRegisterPage() {
                   placeholder="e.g. ACE CPT, ISSA, CPR/AED, K11"
                   value={form.certifications}
                   onChange={(e) => setForm({ ...form, certifications: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-[#141D1E] border border-[#2A3A3A] focus:border-[#2DD4BF] rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none transition-colors"
+                  className="w-full px-4 py-2.5 bg-[#FFFFFF] border border-[#E7DADD] focus:border-[#B76E79] rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none transition-colors"
                 />
               </div>
 
@@ -1136,7 +1136,7 @@ export default function TrainerRegisterPage() {
                   placeholder="e.g. B.Sc Exercise Science / Certified Coach"
                   value={form.qualifications}
                   onChange={(e) => setForm({ ...form, qualifications: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-[#141D1E] border border-[#2A3A3A] focus:border-[#2DD4BF] rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none transition-colors"
+                  className="w-full px-4 py-2.5 bg-[#FFFFFF] border border-[#E7DADD] focus:border-[#B76E79] rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none transition-colors"
                 />
               </div>
             </div>
@@ -1152,7 +1152,7 @@ export default function TrainerRegisterPage() {
                   placeholder="e.g. Gold's Gym, Cult.fit, Anytime Fitness"
                   value={form.previousGym}
                   onChange={(e) => setForm({ ...form, previousGym: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-[#141D1E] border border-[#2A3A3A] focus:border-[#2DD4BF] rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none transition-colors"
+                  className="w-full px-4 py-2.5 bg-[#FFFFFF] border border-[#E7DADD] focus:border-[#B76E79] rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none transition-colors"
                 />
               </div>
 
@@ -1165,7 +1165,7 @@ export default function TrainerRegisterPage() {
                   placeholder="e.g. 35,000 / Monthly"
                   value={form.expectedSalary}
                   onChange={(e) => setForm({ ...form, expectedSalary: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-[#141D1E] border border-[#2A3A3A] focus:border-[#2DD4BF] rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none transition-colors"
+                  className="w-full px-4 py-2.5 bg-[#FFFFFF] border border-[#E7DADD] focus:border-[#B76E79] rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none transition-colors"
                 />
               </div>
             </div>
@@ -1179,7 +1179,7 @@ export default function TrainerRegisterPage() {
                 <select
                   value={form.availability}
                   onChange={(e) => setForm({ ...form, availability: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-[#141D1E] border border-[#2A3A3A] focus:border-[#2DD4BF] rounded-xl text-xs text-white focus:outline-none cursor-pointer"
+                  className="w-full px-4 py-2.5 bg-[#FFFFFF] border border-[#E7DADD] focus:border-[#B76E79] rounded-xl text-xs text-white focus:outline-none cursor-pointer"
                 >
                   {AVAILABILITY_OPTIONS.map((a) => (
                     <option key={a} value={a}>
@@ -1199,7 +1199,7 @@ export default function TrainerRegisterPage() {
                   placeholder="e.g. Indiranagar, Bangalore / Tirupattur"
                   value={form.preferredLocation}
                   onChange={(e) => setForm({ ...form, preferredLocation: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-[#141D1E] border border-[#2A3A3A] focus:border-[#2DD4BF] rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none transition-colors"
+                  className="w-full px-4 py-2.5 bg-[#FFFFFF] border border-[#E7DADD] focus:border-[#B76E79] rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none transition-colors"
                 />
                 {fieldErrors.preferredLocation && (
                   <p className="text-red-400 text-[11px] mt-1 flex items-center gap-1">
@@ -1213,9 +1213,9 @@ export default function TrainerRegisterPage() {
           {/* ========================================================= */}
           {/* 3. RESUME & DOCUMENTS */}
           {/* ========================================================= */}
-          <div className="space-y-4 pt-3 border-t border-[#2A3A3A]">
+          <div className="space-y-4 pt-3 border-t border-[#E7DADD]">
             <div className="flex items-center justify-between">
-              <span className="text-xs uppercase font-bold text-[#2DD4BF] tracking-wider block">
+              <span className="text-xs uppercase font-bold text-[#B76E79] tracking-wider block">
                 3. Resume & Documents
               </span>
               <span className="text-[11px] text-slate-400">PDF, DOC, DOCX up to 10MB</span>
@@ -1225,17 +1225,17 @@ export default function TrainerRegisterPage() {
               
               {/* Document 1: Resume / CV */}
               <div
-                className={`p-4 rounded-2xl bg-[#141D1E] border transition-all ${
+                className={`p-4 rounded-2xl bg-[#FFFFFF] border transition-all ${
                   fieldErrors.resumeUrl
                     ? 'border-red-500/50'
                     : form.resumeUrl
-                    ? 'border-[#2DD4BF]/50'
-                    : 'border-[#2A3A3A]'
+                    ? 'border-[#B76E79]/50'
+                    : 'border-[#E7DADD]'
                 }`}
               >
                 <div className="flex items-start justify-between gap-2 mb-2">
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-lg bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-lg bg-[#B76E79]/10 text-[#B76E79] flex items-center justify-center">
                       <FileText size={16} />
                     </div>
                     <div>
@@ -1247,7 +1247,7 @@ export default function TrainerRegisterPage() {
                   </div>
 
                   {form.resumeUrl && (
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#2DD4BF]/15 text-[#2DD4BF] border border-[#2DD4BF]/30 flex items-center gap-1">
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#B76E79]/15 text-[#B76E79] border border-[#B76E79]/30 flex items-center gap-1">
                       <Check size={10} strokeWidth={3} /> Uploaded
                     </span>
                   )}
@@ -1264,7 +1264,7 @@ export default function TrainerRegisterPage() {
                 />
 
                 {form.resumeUrl ? (
-                  <div className="mt-3 p-2.5 rounded-xl bg-[#0E1415] border border-[#2A3A3A] flex items-center justify-between text-xs">
+                  <div className="mt-3 p-2.5 rounded-xl bg-[#F3E8E8] border border-[#E7DADD] flex items-center justify-between text-xs">
                     <div className="truncate flex-1 pr-2">
                       <p className="font-semibold text-white truncate">{form.resumeOriginalName || 'Resume.pdf'}</p>
                       {resumeSizeText && <p className="text-[10px] text-slate-500">{resumeSizeText}</p>}
@@ -1274,7 +1274,7 @@ export default function TrainerRegisterPage() {
                         type="button"
                         onClick={() => resumeInputRef.current?.click()}
                         disabled={uploadingResume}
-                        className="p-1.5 rounded-lg bg-[#141D1E] hover:bg-[#1B2728] text-slate-300 hover:text-white"
+                        className="p-1.5 rounded-lg bg-[#FFFFFF] hover:bg-[#F3E8E8] text-slate-300 hover:text-white"
                         title="Replace Resume"
                       >
                         <RefreshCw size={13} className={uploadingResume ? 'animate-spin' : ''} />
@@ -1282,7 +1282,7 @@ export default function TrainerRegisterPage() {
                       <button
                         type="button"
                         onClick={() => setForm((prev) => ({ ...prev, resumeUrl: '', resumeOriginalName: '' }))}
-                        className="p-1.5 rounded-lg bg-[#141D1E] hover:bg-red-950/40 text-slate-400 hover:text-red-400"
+                        className="p-1.5 rounded-lg bg-[#FFFFFF] hover:bg-red-950/40 text-slate-400 hover:text-red-400"
                         title="Remove Resume"
                       >
                         <Trash2 size={13} />
@@ -1294,16 +1294,16 @@ export default function TrainerRegisterPage() {
                     type="button"
                     onClick={() => resumeInputRef.current?.click()}
                     disabled={uploadingResume}
-                    className="w-full mt-3 py-3 px-4 border border-dashed border-[#2A3A3A] hover:border-[#2DD4BF] rounded-xl bg-[#0E1415] text-xs font-semibold text-slate-300 hover:text-white flex items-center justify-center gap-2 transition-all cursor-pointer group"
+                    className="w-full mt-3 py-3 px-4 border border-dashed border-[#E7DADD] hover:border-[#B76E79] rounded-xl bg-[#F3E8E8] text-xs font-semibold text-slate-300 hover:text-white flex items-center justify-center gap-2 transition-all cursor-pointer group"
                   >
                     {uploadingResume ? (
                       <>
-                        <Loader2 size={14} className="animate-spin text-[#2DD4BF]" />
+                        <Loader2 size={14} className="animate-spin text-[#B76E79]" />
                         <span>Uploading Resume...</span>
                       </>
                     ) : (
                       <>
-                        <Upload size={14} className="text-[#2DD4BF] group-hover:scale-110 transition-transform" />
+                        <Upload size={14} className="text-[#B76E79] group-hover:scale-110 transition-transform" />
                         <span>Choose Resume File</span>
                       </>
                     )}
@@ -1319,13 +1319,13 @@ export default function TrainerRegisterPage() {
 
               {/* Document 2: Fitness Certifications */}
               <div
-                className={`p-4 rounded-2xl bg-[#141D1E] border transition-all ${
-                  form.certificationUrl ? 'border-[#2DD4BF]/50' : 'border-[#2A3A3A]'
+                className={`p-4 rounded-2xl bg-[#FFFFFF] border transition-all ${
+                  form.certificationUrl ? 'border-[#B76E79]/50' : 'border-[#E7DADD]'
                 }`}
               >
                 <div className="flex items-start justify-between gap-2 mb-2">
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-lg bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-lg bg-[#B76E79]/10 text-[#B76E79] flex items-center justify-center">
                       <Award size={16} />
                     </div>
                     <div>
@@ -1337,7 +1337,7 @@ export default function TrainerRegisterPage() {
                   </div>
 
                   {form.certificationUrl && (
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#2DD4BF]/15 text-[#2DD4BF] border border-[#2DD4BF]/30 flex items-center gap-1">
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#B76E79]/15 text-[#B76E79] border border-[#B76E79]/30 flex items-center gap-1">
                       <Check size={10} strokeWidth={3} /> Uploaded
                     </span>
                   )}
@@ -1354,7 +1354,7 @@ export default function TrainerRegisterPage() {
                 />
 
                 {form.certificationUrl ? (
-                  <div className="mt-3 p-2.5 rounded-xl bg-[#0E1415] border border-[#2A3A3A] flex items-center justify-between text-xs">
+                  <div className="mt-3 p-2.5 rounded-xl bg-[#F3E8E8] border border-[#E7DADD] flex items-center justify-between text-xs">
                     <div className="truncate flex-1 pr-2">
                       <p className="font-semibold text-white truncate">{form.certificationOriginalName || 'Certification.pdf'}</p>
                       {certSizeText && <p className="text-[10px] text-slate-500">{certSizeText}</p>}
@@ -1364,7 +1364,7 @@ export default function TrainerRegisterPage() {
                         type="button"
                         onClick={() => certInputRef.current?.click()}
                         disabled={uploadingCert}
-                        className="p-1.5 rounded-lg bg-[#141D1E] hover:bg-[#1B2728] text-slate-300 hover:text-white"
+                        className="p-1.5 rounded-lg bg-[#FFFFFF] hover:bg-[#F3E8E8] text-slate-300 hover:text-white"
                         title="Replace Document"
                       >
                         <RefreshCw size={13} className={uploadingCert ? 'animate-spin' : ''} />
@@ -1372,7 +1372,7 @@ export default function TrainerRegisterPage() {
                       <button
                         type="button"
                         onClick={() => setForm((prev) => ({ ...prev, certificationUrl: '', certificationOriginalName: '' }))}
-                        className="p-1.5 rounded-lg bg-[#141D1E] hover:bg-red-950/40 text-slate-400 hover:text-red-400"
+                        className="p-1.5 rounded-lg bg-[#FFFFFF] hover:bg-red-950/40 text-slate-400 hover:text-red-400"
                         title="Remove Document"
                       >
                         <Trash2 size={13} />
@@ -1384,16 +1384,16 @@ export default function TrainerRegisterPage() {
                     type="button"
                     onClick={() => certInputRef.current?.click()}
                     disabled={uploadingCert}
-                    className="w-full mt-3 py-3 px-4 border border-dashed border-[#2A3A3A] hover:border-[#2DD4BF] rounded-xl bg-[#0E1415] text-xs font-semibold text-slate-300 hover:text-white flex items-center justify-center gap-2 transition-all cursor-pointer group"
+                    className="w-full mt-3 py-3 px-4 border border-dashed border-[#E7DADD] hover:border-[#B76E79] rounded-xl bg-[#F3E8E8] text-xs font-semibold text-slate-300 hover:text-white flex items-center justify-center gap-2 transition-all cursor-pointer group"
                   >
                     {uploadingCert ? (
                       <>
-                        <Loader2 size={14} className="animate-spin text-[#2DD4BF]" />
+                        <Loader2 size={14} className="animate-spin text-[#B76E79]" />
                         <span>Uploading Document...</span>
                       </>
                     ) : (
                       <>
-                        <Upload size={14} className="text-[#2DD4BF] group-hover:scale-110 transition-transform" />
+                        <Upload size={14} className="text-[#B76E79] group-hover:scale-110 transition-transform" />
                         <span>Upload Certifications</span>
                       </>
                     )}
@@ -1407,8 +1407,8 @@ export default function TrainerRegisterPage() {
           {/* 4. ACCOUNT SECURITY (Only shown when not logged in) */}
           {/* ========================================================= */}
           {!isLoggedInTrainer && (
-            <div className="space-y-4 pt-3 border-t border-[#2A3A3A]">
-              <span className="text-xs uppercase font-bold text-[#2DD4BF] tracking-wider block">
+            <div className="space-y-4 pt-3 border-t border-[#E7DADD]">
+              <span className="text-xs uppercase font-bold text-[#B76E79] tracking-wider block">
                 4. Account Security
               </span>
 
@@ -1424,7 +1424,7 @@ export default function TrainerRegisterPage() {
                       placeholder="Minimum 8 characters"
                       value={form.password}
                       onChange={(e) => setForm({ ...form, password: e.target.value })}
-                      className="w-full px-4 py-2.5 bg-[#141D1E] border border-[#2A3A3A] focus:border-[#2DD4BF] rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none pr-10 transition-colors"
+                      className="w-full px-4 py-2.5 bg-[#FFFFFF] border border-[#E7DADD] focus:border-[#B76E79] rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none pr-10 transition-colors"
                     />
                     <button
                       type="button"
@@ -1443,7 +1443,7 @@ export default function TrainerRegisterPage() {
                   {/* Password strength visual indicator */}
                   {form.password && (
                     <div className="mt-2 space-y-1">
-                      <div className="h-1.5 w-full bg-[#141D1E] rounded-full overflow-hidden flex gap-1">
+                      <div className="h-1.5 w-full bg-[#FFFFFF] rounded-full overflow-hidden flex gap-1">
                         <div
                           className={`h-full rounded-full transition-all duration-300 ${pwdStrength.color}`}
                           style={{ width: `${pwdStrength.score}%` }}
@@ -1468,7 +1468,7 @@ export default function TrainerRegisterPage() {
                       placeholder="Repeat password"
                       value={form.confirmPassword}
                       onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
-                      className="w-full px-4 py-2.5 bg-[#141D1E] border border-[#2A3A3A] focus:border-[#2DD4BF] rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none pr-10 transition-colors"
+                      className="w-full px-4 py-2.5 bg-[#FFFFFF] border border-[#E7DADD] focus:border-[#B76E79] rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none pr-10 transition-colors"
                     />
                     <button
                       type="button"
@@ -1493,15 +1493,15 @@ export default function TrainerRegisterPage() {
                     type="checkbox"
                     checked={form.acceptTerms}
                     onChange={(e) => setForm({ ...form, acceptTerms: e.target.checked })}
-                    className="mt-0.5 rounded border-[#2A3A3A] text-[#2DD4BF] focus:ring-0 cursor-pointer"
+                    className="mt-0.5 rounded border-[#E7DADD] text-[#B76E79] focus:ring-0 cursor-pointer"
                   />
                   <span className="text-xs text-slate-400 leading-relaxed">
                     I agree to the Gymora{' '}
-                    <Link to="/terms-of-service" className="text-[#2DD4BF] hover:underline" target="_blank">
+                    <Link to="/terms-of-service" className="text-[#B76E79] hover:underline" target="_blank">
                       Terms of Service
                     </Link>{' '}
                     and{' '}
-                    <Link to="/privacy-policy" className="text-[#2DD4BF] hover:underline" target="_blank">
+                    <Link to="/privacy-policy" className="text-[#B76E79] hover:underline" target="_blank">
                       Privacy Policy
                     </Link>
                     .
@@ -1523,7 +1523,7 @@ export default function TrainerRegisterPage() {
             <button
               type="submit"
               disabled={isLoading || uploadingResume || uploadingCert}
-              className="w-full py-4 bg-gradient-to-r from-[#2DD4BF] to-[#5EEAD4] text-[#06201D] font-extrabold rounded-2xl hover:from-[#5EEAD4] hover:to-[#5EEAD4] transition-all disabled:opacity-60 flex items-center justify-center space-x-2 shadow-xl shadow-teal-500/20 cursor-pointer text-sm sm:text-base"
+              className="w-full py-4 bg-gradient-to-r from-[#B76E79] to-[#9F5965] text-[#FFFFFF] font-extrabold rounded-2xl hover:from-[#9F5965] hover:to-[#9F5965] transition-all disabled:opacity-60 flex items-center justify-center space-x-2 shadow-xl shadow-[#B76E79]/20 cursor-pointer text-sm sm:text-base"
             >
               {isLoading ? (
                 <>
@@ -1548,11 +1548,11 @@ export default function TrainerRegisterPage() {
 
         {/* Existing account footer link */}
         {!isLoggedInTrainer && (
-          <div className="pt-4 border-t border-[#2A3A3A] text-center text-xs text-slate-400">
+          <div className="pt-4 border-t border-[#E7DADD] text-center text-xs text-slate-400">
             Already have a Trainer account?{' '}
             <Link
               to={jobId ? `/login?portal=trainer&redirect=${encodeURIComponent(`/register/trainer?jobId=${jobId}`)}` : '/login?portal=trainer'}
-              className="text-[#2DD4BF] font-semibold hover:underline"
+              className="text-[#B76E79] font-semibold hover:underline"
             >
               Log In here
             </Link>

@@ -111,8 +111,8 @@ const TrainerMembers = () => {
       <TrainerClientsTabs />
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#F5FAFA]">Assigned Users</h1>
-          <p className="text-[#9AAEAE]">
+          <h1 className="text-3xl font-bold text-[#292524]">Assigned Users</h1>
+          <p className="text-[#57534E]">
             {searchTerm.trim()
               ? `Showing ${filteredClients.length} of ${clients.length} active clients`
               : `Manage your ${clients.length} active clients`}
@@ -120,18 +120,18 @@ const TrainerMembers = () => {
         </div>
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">
           <div className="relative flex-1 md:w-64">
-            <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9AAEAE]" />
+            <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#57534E]" />
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search clients..."
-              className="w-full bg-[#101819] border border-[#2A3A3A] rounded-xl pl-10 pr-10 py-2 text-sm focus:outline-none focus:border-[#2DD4BF] transition-colors text-[#F5FAFA] placeholder:text-[#9AAEAE]"
+              className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl pl-10 pr-10 py-2 text-sm focus:outline-none focus:border-[#B76E79] transition-colors text-[#292524] placeholder:text-[#57534E]"
             />
             {searchTerm && (
               <button
                 onClick={() => setSearchTerm('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9AAEAE] hover:text-[#FFFFFF]"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#57534E] hover:text-[#FFFFFF]"
                 title="Clear search"
               >
                 <X size={16} />
@@ -141,7 +141,7 @@ const TrainerMembers = () => {
           <div className="flex items-center gap-2">
             <button
               onClick={() => handleDownloadReport('excel')}
-              className="flex items-center gap-1.5 px-3.5 py-2 bg-[#0E1415] border border-[#2A3A3A] hover:bg-[#2DD4BF] hover:text-[#06201D] font-bold hover:border-[#2DD4BF] text-[#F5FAFA] font-semibold text-xs sm:text-sm rounded-xl transition-all shadow-xs shrink-0"
+              className="flex items-center gap-1.5 px-3.5 py-2 bg-[#F3E8E8] border border-[#E7DADD] hover:bg-[#B76E79] hover:text-[#FFFFFF] font-bold hover:border-[#B76E79] text-[#292524] font-semibold text-xs sm:text-sm rounded-xl transition-all shadow-xs shrink-0"
               title="Download Excel Report"
             >
               <Download size={16} />
@@ -149,7 +149,7 @@ const TrainerMembers = () => {
             </button>
             <button
               onClick={() => handleDownloadReport('pdf')}
-              className="flex items-center gap-1.5 px-3.5 py-2 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold font-semibold text-xs sm:text-sm rounded-xl transition-colors shadow-xs shrink-0"
+              className="flex items-center gap-1.5 px-3.5 py-2 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold font-semibold text-xs sm:text-sm rounded-xl transition-colors shadow-xs shrink-0"
               title="Download PDF Report"
             >
               <Download size={16} />
@@ -160,18 +160,18 @@ const TrainerMembers = () => {
       </div>
 
       {loading ? (
-        <div className="text-center py-12 text-[#9AAEAE]">Loading clients...</div>
+        <div className="text-center py-12 text-[#57534E]">Loading clients...</div>
       ) : filteredClients.length === 0 ? (
-        <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-12 text-center">
-          <Users size={48} className="mx-auto text-[#9AAEAE] mb-3" />
-          <h3 className="text-lg font-bold text-[#F5FAFA]">No clients found</h3>
-          <p className="text-sm text-[#9AAEAE] mt-1">
+        <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-12 text-center">
+          <Users size={48} className="mx-auto text-[#57534E] mb-3" />
+          <h3 className="text-lg font-bold text-[#292524]">No clients found</h3>
+          <p className="text-sm text-[#57534E] mt-1">
             {searchTerm ? `No active clients matching "${searchTerm}".` : 'You have no assigned clients yet.'}
           </p>
           {searchTerm && (
             <button
               onClick={() => setSearchTerm('')}
-              className="mt-4 px-4 py-2 bg-[#2DD4BF] text-[#06201D] font-bold font-medium text-sm rounded-xl hover:bg-[#5EEAD4] transition-colors"
+              className="mt-4 px-4 py-2 bg-[#B76E79] text-white font-bold font-medium text-sm rounded-xl hover:bg-[#9F5965] transition-colors"
             >
               Clear Search
             </button>
@@ -182,11 +182,11 @@ const TrainerMembers = () => {
           {filteredClients.map((client) => (
             <div
               key={client.id}
-              className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-5 hover:border-[#2DD4BF]/40 transition-all flex flex-col relative shadow-lg"
+              className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-5 hover:border-[#B76E79]/40 transition-all flex flex-col relative shadow-lg"
             >
               <div className="flex justify-between items-start mb-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-[#0E1415] rounded-full flex items-center justify-center font-bold text-[#2DD4BF] border border-[#2A3A3A] overflow-hidden">
+                  <div className="w-12 h-12 bg-[#F3E8E8] rounded-full flex items-center justify-center font-bold text-[#B76E79] border border-[#E7DADD] overflow-hidden">
                     {client.profilePhoto ? (
                       <img src={client.profilePhoto} alt={client.name} className="w-full h-full object-cover" />
                     ) : (
@@ -194,12 +194,12 @@ const TrainerMembers = () => {
                     )}
                   </div>
                   <div>
-                    <h3 className="font-bold text-[#F5FAFA] leading-tight">{client.name}</h3>
+                    <h3 className="font-bold text-[#292524] leading-tight">{client.name}</h3>
                     <span
                       className={`text-xs px-2 py-0.5 rounded-full inline-block mt-1 font-medium ${
                         client.status === 'Active'
                           ? 'bg-green-100 text-green-700'
-                          : 'bg-[#1B2728] text-[#C1D0D0]'
+                          : 'bg-[#F3E8E8] text-[#292524]'
                       }`}
                     >
                       {client.status}
@@ -209,21 +209,21 @@ const TrainerMembers = () => {
                 <div className="relative">
                   <button 
                     onClick={() => setOpenMenu(openMenu === client.id ? null : client.id)}
-                    className="text-[#9AAEAE] hover:text-[#FFFFFF] transition-colors"
+                    className="text-[#57534E] hover:text-[#FFFFFF] transition-colors"
                   >
                     <MoreVertical size={18} />
                   </button>
                   {openMenu === client.id && (
-                    <div className="absolute right-0 mt-2 w-48 bg-[#141D1E] border border-[#2A3A3A] rounded-xl shadow-lg overflow-hidden z-10">
+                    <div className="absolute right-0 mt-2 w-48 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl shadow-lg overflow-hidden z-10">
                       <button 
                         onClick={() => { navigate('/trainer/session-bookings'); setOpenMenu(null); }}
-                        className="w-full text-left px-4 py-3 text-sm text-[#F5FAFA] hover:bg-[#0E1415] transition-colors"
+                        className="w-full text-left px-4 py-3 text-sm text-[#292524] hover:bg-[#F3E8E8] transition-colors"
                       >
                         View Sessions
                       </button>
                       <button 
                         onClick={() => { alert('Assign Workout Plan feature coming soon!'); setOpenMenu(null); }}
-                        className="w-full text-left px-4 py-3 text-sm text-[#F5FAFA] hover:bg-[#0E1415] transition-colors border-t border-[#2A3A3A]"
+                        className="w-full text-left px-4 py-3 text-sm text-[#292524] hover:bg-[#F3E8E8] transition-colors border-t border-[#E7DADD]"
                       >
                         Assign Workout Plan
                       </button>
@@ -234,19 +234,19 @@ const TrainerMembers = () => {
 
               <div className="space-y-3 mb-6 flex-1">
                 <div className="flex justify-between items-center text-sm">
-                  <span className="text-[#9AAEAE]">Goal:</span>
-                  <span className="font-medium text-[#F5FAFA]">{client.goal}</span>
+                  <span className="text-[#57534E]">Goal:</span>
+                  <span className="font-medium text-[#292524]">{client.goal}</span>
                 </div>
                 <div className="flex justify-between items-center text-sm">
-                  <span className="text-[#9AAEAE]">Next Session:</span>
-                  <span className="font-medium text-[#2DD4BF]">{client.nextSession}</span>
+                  <span className="text-[#57534E]">Next Session:</span>
+                  <span className="font-medium text-[#B76E79]">{client.nextSession}</span>
                 </div>
               </div>
 
-              <div className="mt-auto pt-4 border-t border-[#2A3A3A]">
+              <div className="mt-auto pt-4 border-t border-[#E7DADD]">
                 <button
                   onClick={() => setOpenDetailsModal(client)}
-                  className="w-full flex items-center justify-center gap-2 py-2.5 bg-[#141D1E] text-[#2DD4BF] text-sm font-semibold rounded-xl border border-[#2DD4BF] hover:bg-[#2DD4BF] hover:text-[#06201D] font-bold transition-all shadow-sm"
+                  className="w-full flex items-center justify-center gap-2 py-2.5 bg-[#FFFFFF] text-[#B76E79] text-sm font-semibold rounded-xl border border-[#B76E79] hover:bg-[#B76E79] hover:text-[#FFFFFF] font-bold transition-all shadow-sm"
                 >
                   <User size={16} /> View Details
                 </button>
@@ -259,15 +259,15 @@ const TrainerMembers = () => {
       {/* Member Details Modal */}
       {openDetailsModal && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4 sm:p-6 overflow-y-auto">
-          <div className="bg-[#141D1E] rounded-2xl w-full max-w-xl overflow-hidden flex flex-col max-h-[85vh] shadow-2xl border border-[#2A3A3A] my-auto">
-            <div className="px-6 py-5 border-b border-[#2A3A3A] flex justify-between items-center bg-[#0E1415]">
+          <div className="bg-[#FFFFFF] rounded-2xl w-full max-w-xl overflow-hidden flex flex-col max-h-[85vh] shadow-2xl border border-[#E7DADD] my-auto">
+            <div className="px-6 py-5 border-b border-[#E7DADD] flex justify-between items-center bg-[#F3E8E8]">
               <div>
-                <h2 className="text-xl font-bold text-[#F5FAFA]">Member Details</h2>
-                <p className="text-xs text-[#9AAEAE] mt-0.5">Comprehensive member overview and profile information</p>
+                <h2 className="text-xl font-bold text-[#292524]">Member Details</h2>
+                <p className="text-xs text-[#57534E] mt-0.5">Comprehensive member overview and profile information</p>
               </div>
               <button 
                 onClick={() => setOpenDetailsModal(null)} 
-                className="w-9 h-9 flex items-center justify-center rounded-full text-[#9AAEAE] hover:text-[#FFFFFF] hover:bg-[#1B2728] transition-colors"
+                className="w-9 h-9 flex items-center justify-center rounded-full text-[#57534E] hover:text-[#FFFFFF] hover:bg-[#F3E8E8] transition-colors"
               >
                 <X size={20} />
               </button>
@@ -275,8 +275,8 @@ const TrainerMembers = () => {
             
             <div className="p-6 sm:p-7 overflow-y-auto space-y-6">
               {/* Member Profile Header Card */}
-              <div className="flex items-center space-x-4 bg-[#0E1415] p-4 rounded-2xl border border-[#2A3A3A]">
-                <div className="w-16 h-16 bg-[#2DD4BF]/10 text-[#2DD4BF] rounded-2xl flex items-center justify-center text-2xl font-bold border border-[#2DD4BF]/20 uppercase overflow-hidden shrink-0 shadow-sm">
+              <div className="flex items-center space-x-4 bg-[#F3E8E8] p-4 rounded-2xl border border-[#E7DADD]">
+                <div className="w-16 h-16 bg-[#B76E79]/10 text-[#B76E79] rounded-2xl flex items-center justify-center text-2xl font-bold border border-[#B76E79]/20 uppercase overflow-hidden shrink-0 shadow-sm">
                   {openDetailsModal.profilePhoto ? (
                     <img src={openDetailsModal.profilePhoto} alt={openDetailsModal.name} className="w-full h-full object-cover" />
                   ) : (
@@ -284,17 +284,17 @@ const TrainerMembers = () => {
                   )}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <h3 className="text-2xl font-bold text-[#F5FAFA] mb-1 capitalize truncate">{openDetailsModal.name}</h3>
+                  <h3 className="text-2xl font-bold text-[#292524] mb-1 capitalize truncate">{openDetailsModal.name}</h3>
                   <div className="flex items-center gap-2">
                     <span className={`px-3 py-0.5 rounded-full text-xs font-semibold ${
                       openDetailsModal.status === 'Active' 
-                        ? 'bg-[#1B2728] text-[#2DD4BF] border border-[#2A3A3A]' 
-                        : 'bg-[#1B2728] text-[#C1D0D0] border border-[#2A3A3A]'
+                        ? 'bg-[#F3E8E8] text-[#B76E79] border border-[#E7DADD]' 
+                        : 'bg-[#F3E8E8] text-[#292524] border border-[#E7DADD]'
                     }`}>
                       {openDetailsModal.status}
                     </span>
                     {openDetailsModal.goal && (
-                      <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#1B2728] text-[#2DD4BF] border border-[#2A3A3A]">
+                      <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#F3E8E8] text-[#B76E79] border border-[#E7DADD]">
                         {openDetailsModal.goal}
                       </span>
                     )}
@@ -304,62 +304,62 @@ const TrainerMembers = () => {
               
               {/* Member Info Contiguous Grid Touching One by One */}
               <div className="space-y-3">
-                <h4 className="text-xs font-bold text-[#9AAEAE] uppercase tracking-wider">Profile Information</h4>
-                <div className="border border-[#2A3A3A] rounded-xl overflow-hidden divide-y divide-[#2A3A3A] bg-[#141D1E] shadow-sm">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#2A3A3A]">
-                    <div className="p-3.5 bg-[#141D1E]">
-                      <p className="text-[11px] font-bold text-[#9AAEAE] uppercase tracking-wider mb-1">Email</p>
-                      <p className="font-semibold text-sm text-[#F5FAFA] break-all">{openDetailsModal.email || 'Not specified'}</p>
+                <h4 className="text-xs font-bold text-[#57534E] uppercase tracking-wider">Profile Information</h4>
+                <div className="border border-[#E7DADD] rounded-xl overflow-hidden divide-y divide-[#E7DADD] bg-[#FFFFFF] shadow-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E7DADD]">
+                    <div className="p-3.5 bg-[#FFFFFF]">
+                      <p className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider mb-1">Email</p>
+                      <p className="font-semibold text-sm text-[#292524] break-all">{openDetailsModal.email || 'Not specified'}</p>
                     </div>
-                    <div className="p-3.5 bg-[#141D1E]">
-                      <p className="text-[11px] font-bold text-[#9AAEAE] uppercase tracking-wider mb-1">Phone</p>
-                      <p className="font-semibold text-sm text-[#F5FAFA]">{openDetailsModal.phone || 'Not specified'}</p>
+                    <div className="p-3.5 bg-[#FFFFFF]">
+                      <p className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider mb-1">Phone</p>
+                      <p className="font-semibold text-sm text-[#292524]">{openDetailsModal.phone || 'Not specified'}</p>
                     </div>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#2A3A3A]">
-                    <div className="p-3.5 bg-[#141D1E]">
-                      <p className="text-[11px] font-bold text-[#9AAEAE] uppercase tracking-wider mb-1">Membership Plan</p>
-                      <p className="font-semibold text-sm text-[#2DD4BF]">{openDetailsModal.originalUser?.subscriptionPlan || 'Standard Plan'}</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E7DADD]">
+                    <div className="p-3.5 bg-[#FFFFFF]">
+                      <p className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider mb-1">Membership Plan</p>
+                      <p className="font-semibold text-sm text-[#B76E79]">{openDetailsModal.originalUser?.subscriptionPlan || 'Standard Plan'}</p>
                     </div>
-                    <div className="p-3.5 bg-[#141D1E]">
-                      <p className="text-[11px] font-bold text-[#9AAEAE] uppercase tracking-wider mb-1">Join Date</p>
-                      <p className="font-semibold text-sm text-[#F5FAFA]">
+                    <div className="p-3.5 bg-[#FFFFFF]">
+                      <p className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider mb-1">Join Date</p>
+                      <p className="font-semibold text-sm text-[#292524]">
                         {openDetailsModal.originalUser?.createdAt ? new Date(openDetailsModal.originalUser.createdAt).toLocaleDateString() : 'Not specified'}
                       </p>
                     </div>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#2A3A3A]">
-                    <div className="p-3.5 bg-[#141D1E]">
-                      <p className="text-[11px] font-bold text-[#9AAEAE] uppercase tracking-wider mb-1">Gender</p>
-                      <p className="font-semibold text-sm text-[#F5FAFA] capitalize">{openDetailsModal.originalUser?.gender || 'Not specified'}</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E7DADD]">
+                    <div className="p-3.5 bg-[#FFFFFF]">
+                      <p className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider mb-1">Gender</p>
+                      <p className="font-semibold text-sm text-[#292524] capitalize">{openDetailsModal.originalUser?.gender || 'Not specified'}</p>
                     </div>
-                    <div className="p-3.5 bg-[#141D1E]">
-                      <p className="text-[11px] font-bold text-[#9AAEAE] uppercase tracking-wider mb-1">Renewal Date</p>
-                      <p className="font-semibold text-sm text-[#F5FAFA]">
+                    <div className="p-3.5 bg-[#FFFFFF]">
+                      <p className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider mb-1">Renewal Date</p>
+                      <p className="font-semibold text-sm text-[#292524]">
                         {openDetailsModal.originalUser?.subscriptionExpiry ? new Date(openDetailsModal.originalUser.subscriptionExpiry).toLocaleDateString() : 'Not Set'}
                       </p>
                     </div>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#2A3A3A]">
-                    <div className="p-3.5 bg-[#141D1E]">
-                      <p className="text-[11px] font-bold text-[#9AAEAE] uppercase tracking-wider mb-1">Height / Weight</p>
-                      <p className="font-semibold text-sm text-[#F5FAFA]">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E7DADD]">
+                    <div className="p-3.5 bg-[#FFFFFF]">
+                      <p className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider mb-1">Height / Weight</p>
+                      <p className="font-semibold text-sm text-[#292524]">
                         {openDetailsModal.originalUser?.height ? `${openDetailsModal.originalUser.height} cm` : '--'} / {openDetailsModal.originalUser?.weight ? `${openDetailsModal.originalUser.weight} kg` : '--'}
                       </p>
                     </div>
-                    <div className="p-3.5 bg-[#141D1E]">
-                      <p className="text-[11px] font-bold text-[#9AAEAE] uppercase tracking-wider mb-1">Experience Level</p>
-                      <p className="font-semibold text-sm text-[#F5FAFA] capitalize">{openDetailsModal.originalUser?.experienceLevel || 'Intermediate'}</p>
+                    <div className="p-3.5 bg-[#FFFFFF]">
+                      <p className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider mb-1">Experience Level</p>
+                      <p className="font-semibold text-sm text-[#292524] capitalize">{openDetailsModal.originalUser?.experienceLevel || 'Intermediate'}</p>
                     </div>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#2A3A3A]">
-                    <div className="p-3.5 bg-[#141D1E]">
-                      <p className="text-[11px] font-bold text-[#9AAEAE] uppercase tracking-wider mb-1">Pref. Training</p>
-                      <p className="font-semibold text-sm text-[#F5FAFA]">{openDetailsModal.originalUser?.preferredTraining || 'General Fitness'}</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E7DADD]">
+                    <div className="p-3.5 bg-[#FFFFFF]">
+                      <p className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider mb-1">Pref. Training</p>
+                      <p className="font-semibold text-sm text-[#292524]">{openDetailsModal.originalUser?.preferredTraining || 'General Fitness'}</p>
                     </div>
-                    <div className="p-3.5 bg-[#141D1E]">
-                      <p className="text-[11px] font-bold text-[#9AAEAE] uppercase tracking-wider mb-1">Pref. Workout Time</p>
-                      <p className="font-semibold text-sm text-[#F5FAFA]">{openDetailsModal.originalUser?.preferredWorkoutTime || 'Morning'}</p>
+                    <div className="p-3.5 bg-[#FFFFFF]">
+                      <p className="text-[11px] font-bold text-[#57534E] uppercase tracking-wider mb-1">Pref. Workout Time</p>
+                      <p className="font-semibold text-sm text-[#292524]">{openDetailsModal.originalUser?.preferredWorkoutTime || 'Morning'}</p>
                     </div>
                   </div>
                 </div>
@@ -367,33 +367,33 @@ const TrainerMembers = () => {
               
               {/* Recent Sessions */}
               <div className="space-y-3">
-                <h4 className="text-xs font-bold text-[#9AAEAE] uppercase tracking-wider">Recent Bookings</h4>
+                <h4 className="text-xs font-bold text-[#57534E] uppercase tracking-wider">Recent Bookings</h4>
                 {openDetailsModal.sessions && openDetailsModal.sessions.length > 0 ? (
                   <div className="space-y-2.5">
                     {openDetailsModal.sessions.slice(0, 3).map((s: any, idx: number) => (
-                      <div key={idx} className="flex justify-between items-center p-3.5 bg-[#0E1415] border border-[#2A3A3A] rounded-xl">
+                      <div key={idx} className="flex justify-between items-center p-3.5 bg-[#F3E8E8] border border-[#E7DADD] rounded-xl">
                         <div className="space-y-0.5">
-                          <p className="font-bold text-sm text-[#F5FAFA]">{new Date(s.date).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}</p>
-                          <p className="text-xs text-[#9AAEAE]">{s.startTime} - {s.endTime} <span className="font-semibold text-[#2DD4BF]">({s.mode || 'Online'})</span></p>
+                          <p className="font-bold text-sm text-[#292524]">{new Date(s.date).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}</p>
+                          <p className="text-xs text-[#57534E]">{s.startTime} - {s.endTime} <span className="font-semibold text-[#B76E79]">({s.mode || 'Online'})</span></p>
                         </div>
-                        <span className="text-[11px] font-bold uppercase px-2.5 py-1 rounded-full bg-[#1B2728] text-[#2DD4BF] border border-[#2A3A3A]">
+                        <span className="text-[11px] font-bold uppercase px-2.5 py-1 rounded-full bg-[#F3E8E8] text-[#B76E79] border border-[#E7DADD]">
                           {s.status}
                         </span>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <div className="p-4 bg-[#0E1415] border border-[#2A3A3A] rounded-xl text-center">
-                    <p className="text-xs text-[#9AAEAE]">No session history available for this member.</p>
+                  <div className="p-4 bg-[#F3E8E8] border border-[#E7DADD] rounded-xl text-center">
+                    <p className="text-xs text-[#57534E]">No session history available for this member.</p>
                   </div>
                 )}
               </div>
             </div>
             
-            <div className="p-4 px-6 border-t border-[#2A3A3A] bg-[#0E1415] flex justify-end">
+            <div className="p-4 px-6 border-t border-[#E7DADD] bg-[#F3E8E8] flex justify-end">
               <button 
                 onClick={() => setOpenDetailsModal(null)}
-                className="px-6 py-2.5 bg-[#2DD4BF] text-[#06201D] font-bold rounded-xl font-bold hover:bg-[#5EEAD4] transition-colors shadow-sm text-sm"
+                className="px-6 py-2.5 bg-[#B76E79] text-white font-bold rounded-xl font-bold hover:bg-[#9F5965] transition-colors shadow-sm text-sm"
               >
                 Close
               </button>

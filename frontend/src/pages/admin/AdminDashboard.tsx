@@ -6,43 +6,43 @@ const AdminDashboard = () => {
       <div className="flex justify-between items-end mb-8">
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-3">
-            <LayoutDashboard className="text-[#2DD4BF]" size={32} />
+            <LayoutDashboard className="text-[#B76E79]" size={32} />
             Dashboard Overview
           </h1>
-          <p className="text-[#9AAEAE] mt-2">High-level view of your gym platform operations.</p>
+          <p className="text-[#57534E] mt-2">High-level view of your gym platform operations.</p>
         </div>
-        <button className="px-6 py-2 bg-[#2DD4BF] text-[#06201D] font-bold rounded-xl font-bold hover:bg-[#5EEAD4] transition-colors">
+        <button className="px-6 py-2 bg-[#B76E79] text-white font-bold rounded-xl font-bold hover:bg-[#9F5965] transition-colors">
           Manage Dashboard Overview
         </button>
       </div>
       
       
       <div className="grid md:grid-cols-4 gap-4 mb-8">
-        <div className="bg-[#FFFFFF] border border-[#2A3A3A] rounded-2xl p-5">
-           <p className="text-[#9AAEAE] text-sm">Total Active Users</p>
-           <p className="text-3xl font-bold text-[#F5FAFA] mt-1">1,248</p>
+        <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-5">
+           <p className="text-[#57534E] text-sm">Total Active Users</p>
+           <p className="text-3xl font-bold text-[#292524] mt-1">1,248</p>
            <p className="text-green-500 text-xs mt-2">+12% this month</p>
         </div>
-        <div className="bg-[#FFFFFF] border border-[#2A3A3A] rounded-2xl p-5">
-           <p className="text-[#9AAEAE] text-sm">Monthly Revenue</p>
-           <p className="text-3xl font-bold text-[#F5FAFA] mt-1">$48,290</p>
+        <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-5">
+           <p className="text-[#57534E] text-sm">Monthly Revenue</p>
+           <p className="text-3xl font-bold text-[#292524] mt-1">$48,290</p>
            <p className="text-green-500 text-xs mt-2">+5.4% this month</p>
         </div>
-        <div className="bg-[#FFFFFF] border border-[#2A3A3A] rounded-2xl p-5">
-           <p className="text-[#9AAEAE] text-sm">Active Trainers</p>
-           <p className="text-3xl font-bold text-[#F5FAFA] mt-1">42</p>
+        <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-5">
+           <p className="text-[#57534E] text-sm">Active Trainers</p>
+           <p className="text-3xl font-bold text-[#292524] mt-1">42</p>
            <p className="text-green-500 text-xs mt-2">+3 new this week</p>
         </div>
-        <div className="bg-[#FFFFFF] border border-[#2A3A3A] rounded-2xl p-5">
-           <p className="text-[#9AAEAE] text-sm">AI Sessions Today</p>
-           <p className="text-3xl font-bold text-[#F5FAFA] mt-1">3,492</p>
+        <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-5">
+           <p className="text-[#57534E] text-sm">AI Sessions Today</p>
+           <p className="text-3xl font-bold text-[#292524] mt-1">3,492</p>
            <p className="text-green-500 text-xs mt-2">+18% vs yesterday</p>
         </div>
       </div>
-      <div className="bg-[#FFFFFF] border border-[#2A3A3A] rounded-2xl overflow-hidden p-6">
+      <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl overflow-hidden p-6">
          <h2 className="text-lg font-bold mb-4">Platform Activity Map</h2>
-         <div className="h-64 bg-[#FFFFFF] rounded-xl flex items-center justify-center border border-[#2A3A3A]">
-           <p className="text-[#9AAEAE]">Interactive Chart Component Placeholder</p>
+         <div className="h-64 bg-[#FFFFFF] rounded-xl flex items-center justify-center border border-[#E7DADD]">
+           <p className="text-[#57534E]">Interactive Chart Component Placeholder</p>
          </div>
       </div>
     

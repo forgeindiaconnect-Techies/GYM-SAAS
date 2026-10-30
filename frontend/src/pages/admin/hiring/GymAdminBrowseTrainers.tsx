@@ -185,10 +185,10 @@ export default function GymAdminBrowseTrainers() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <span className="text-xs font-bold text-[#2DD4BF] uppercase tracking-wider block mb-1">
+          <span className="text-xs font-bold text-[#B76E79] uppercase tracking-wider block mb-1">
             DIRECT TALENT RECRUITMENT
           </span>
-          <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-black text-[#292524] tracking-tight">
             Browse & Hire Trainers
           </h1>
           <p className="text-xs sm:text-sm text-slate-400 mt-1">
@@ -200,8 +200,8 @@ export default function GymAdminBrowseTrainers() {
           onClick={() => setShortlistedOnly(!shortlistedOnly)}
           className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 border ${
             shortlistedOnly
-              ? 'bg-[#2DD4BF] text-black border-[#2DD4BF]'
-              : 'bg-[#141D1E] text-slate-300 border-[#2A3A3A] hover:border-[#2DD4BF]/50'
+              ? 'bg-[#B76E79] text-white border-[#B76E79]'
+              : 'bg-[#FFFFFF] text-slate-300 border-[#E7DADD] hover:border-[#B76E79]/50'
           }`}
         >
           <Bookmark size={14} className={shortlistedOnly ? 'fill-black' : ''} />
@@ -210,7 +210,7 @@ export default function GymAdminBrowseTrainers() {
       </div>
 
       {/* Filter Toolbar */}
-      <div className="bg-[#0E1415] border border-[#2A3A3A] rounded-3xl p-5 shadow-xl space-y-4">
+      <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-3xl p-5 shadow-xl space-y-4">
         <div className="flex flex-col md:flex-row gap-3">
           <div className="relative flex-1">
             <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -219,7 +219,7 @@ export default function GymAdminBrowseTrainers() {
               placeholder="Search candidate trainers by name, headline, expertise..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full bg-[#141D1E] border border-[#2A3A3A] rounded-2xl pl-10 pr-4 py-2.5 text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#2DD4BF]"
+              className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl pl-10 pr-4 py-2.5 text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#B76E79]"
             />
           </div>
 
@@ -228,7 +228,7 @@ export default function GymAdminBrowseTrainers() {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="bg-[#141D1E] border border-[#2A3A3A] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#2DD4BF]"
+              className="bg-[#FFFFFF] border border-[#E7DADD] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#B76E79]"
             >
               <option value="relevance">Relevance</option>
               <option value="experience">Experience (High to Low)</option>
@@ -239,13 +239,13 @@ export default function GymAdminBrowseTrainers() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 border-t border-[#2A3A3A]/60">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 border-t border-[#E7DADD]/60">
           <div>
             <label className="text-[10px] text-slate-400 font-bold uppercase block mb-1">Preferred Location</label>
             <select
               value={locationFilter}
               onChange={(e) => setLocationFilter(e.target.value)}
-              className="w-full bg-[#141D1E] border border-[#2A3A3A] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#2DD4BF]"
+              className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#B76E79]"
             >
               <option value="all">All Locations</option>
               <option value="Bangalore">Bangalore</option>
@@ -261,7 +261,7 @@ export default function GymAdminBrowseTrainers() {
             <select
               value={expertiseFilter}
               onChange={(e) => setExpertiseFilter(e.target.value)}
-              className="w-full bg-[#141D1E] border border-[#2A3A3A] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#2DD4BF]"
+              className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#B76E79]"
             >
               <option value="all">All Specialties</option>
               <option value="Strength">Strength & Powerlifting</option>
@@ -276,7 +276,7 @@ export default function GymAdminBrowseTrainers() {
             <select
               value={experienceFilter}
               onChange={(e) => setExperienceFilter(e.target.value)}
-              className="w-full bg-[#141D1E] border border-[#2A3A3A] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#2DD4BF]"
+              className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#B76E79]"
             >
               <option value="all">Any Experience</option>
               <option value="2">2+ Years</option>
@@ -290,15 +290,15 @@ export default function GymAdminBrowseTrainers() {
       {/* Loading */}
       {loading && (
         <div className="py-20 text-center space-y-3">
-          <div className="w-10 h-10 border-2 border-[#2DD4BF] border-t-transparent rounded-full animate-spin mx-auto" />
+          <div className="w-10 h-10 border-2 border-[#B76E79] border-t-transparent rounded-full animate-spin mx-auto" />
           <p className="text-xs text-slate-400">Loading candidate trainers...</p>
         </div>
       )}
 
       {/* Empty State */}
       {!loading && trainers.length === 0 && (
-        <div className="bg-[#0E1415] border border-[#2A3A3A] rounded-3xl p-12 text-center space-y-3">
-          <h3 className="text-base font-bold text-white">No Candidate Trainers Found</h3>
+        <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-3xl p-12 text-center space-y-3">
+          <h3 className="text-base font-bold text-[#292524]">No Candidate Trainers Found</h3>
           <p className="text-xs text-slate-400 max-w-sm mx-auto">
             Try resetting your search query or toggling off the shortlisted filter.
           </p>
@@ -311,25 +311,25 @@ export default function GymAdminBrowseTrainers() {
           {trainers.map((trainer) => (
             <div
               key={trainer._id}
-              className="bg-[#0E1415] border border-[#2A3A3A] hover:border-[#2DD4BF]/50 rounded-3xl p-6 shadow-xl transition-all flex flex-col justify-between space-y-4 group relative"
+              className="bg-[#F3E8E8] border border-[#E7DADD] hover:border-[#B76E79]/50 rounded-3xl p-6 shadow-xl transition-all flex flex-col justify-between space-y-4 group relative"
             >
               <div>
                 <div className="flex items-start justify-between gap-3 mb-3">
                   <div className="flex items-center gap-3">
-                    <div className="w-13 h-13 rounded-2xl overflow-hidden bg-[#141D1E] border border-[#2A3A3A] shrink-0">
+                    <div className="w-13 h-13 rounded-2xl overflow-hidden bg-[#FFFFFF] border border-[#E7DADD] shrink-0">
                       {trainer.profilePhoto ? (
                         <img src={trainer.profilePhoto} alt={trainer.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-lg font-bold text-[#2DD4BF]">
+                        <div className="w-full h-full flex items-center justify-center text-lg font-bold text-[#B76E79]">
                           {trainer.name.charAt(0)}
                         </div>
                       )}
                     </div>
                     <div>
-                      <h3 className="text-base font-bold text-white group-hover:text-[#2DD4BF] transition-colors leading-tight">
+                      <h3 className="text-base font-bold text-[#292524] group-hover:text-[#B76E79] transition-colors leading-tight">
                         {trainer.name}
                       </h3>
-                      <p className="text-xs text-[#2DD4BF] font-semibold truncate max-w-[160px]">
+                      <p className="text-xs text-[#B76E79] font-semibold truncate max-w-[160px]">
                         {trainer.professionalHeadline || trainer.specialization || 'Fitness Coach'}
                       </p>
                     </div>
@@ -337,7 +337,7 @@ export default function GymAdminBrowseTrainers() {
 
                   <button
                     onClick={() => toggleShortlist(trainer._id)}
-                    className="p-2 rounded-xl bg-[#141D1E] hover:bg-[#1B2728] text-slate-400 hover:text-amber-400 transition-colors border border-[#2A3A3A]"
+                    className="p-2 rounded-xl bg-[#FFFFFF] hover:bg-[#F3E8E8] text-slate-400 hover:text-amber-400 transition-colors border border-[#E7DADD]"
                     title={trainer.isShortlisted ? 'Remove Bookmark' : 'Shortlist Candidate'}
                   >
                     <Bookmark size={15} className={trainer.isShortlisted ? 'fill-amber-400 text-amber-400' : ''} />
@@ -345,13 +345,13 @@ export default function GymAdminBrowseTrainers() {
                 </div>
 
                 <div className="flex flex-wrap gap-1.5 mb-3 text-[10px]">
-                  <span className="px-2 py-0.5 rounded-md bg-[#141D1E] text-slate-300 border border-[#2A3A3A] flex items-center gap-1">
-                    <Briefcase size={10} className="text-[#2DD4BF]" /> {trainer.experience || 3}+ Yrs
+                  <span className="px-2 py-0.5 rounded-md bg-[#FFFFFF] text-slate-300 border border-[#E7DADD] flex items-center gap-1">
+                    <Briefcase size={10} className="text-[#B76E79]" /> {trainer.experience || 3}+ Yrs
                   </span>
-                  <span className="px-2 py-0.5 rounded-md bg-[#141D1E] text-slate-300 border border-[#2A3A3A] flex items-center gap-1">
-                    <MapPin size={10} className="text-[#2DD4BF]" /> {trainer.preferredLocation || 'India'}
+                  <span className="px-2 py-0.5 rounded-md bg-[#FFFFFF] text-slate-300 border border-[#E7DADD] flex items-center gap-1">
+                    <MapPin size={10} className="text-[#B76E79]" /> {trainer.preferredLocation || 'India'}
                   </span>
-                  <span className="px-2 py-0.5 rounded-md bg-[#141D1E] text-slate-300 border border-[#2A3A3A]">
+                  <span className="px-2 py-0.5 rounded-md bg-[#FFFFFF] text-slate-300 border border-[#E7DADD]">
                     {trainer.employmentPreference || 'Full-time'}
                   </span>
                 </div>
@@ -360,14 +360,14 @@ export default function GymAdminBrowseTrainers() {
                   {trainer.bio || 'Experienced fitness trainer specializing in progressive overload, client accountability, and body transformations.'}
                 </p>
 
-                <div className="grid grid-cols-2 gap-2 pt-3 border-t border-[#2A3A3A] text-xs">
-                  <div className="bg-[#141D1E]/60 p-2 rounded-xl border border-[#2A3A3A]/60">
+                <div className="grid grid-cols-2 gap-2 pt-3 border-t border-[#E7DADD] text-xs">
+                  <div className="bg-[#FFFFFF]/60 p-2 rounded-xl border border-[#E7DADD]/60">
                     <span className="text-[10px] text-slate-500 uppercase block font-bold">Expected Salary</span>
-                    <span className="font-mono font-bold text-[#2DD4BF]">
+                    <span className="font-mono font-bold text-[#B76E79]">
                       {trainer.expectedSalary ? `₹${trainer.expectedSalary.toLocaleString()}/mo` : 'Negotiable'}
                     </span>
                   </div>
-                  <div className="bg-[#141D1E]/60 p-2 rounded-xl border border-[#2A3A3A]/60">
+                  <div className="bg-[#FFFFFF]/60 p-2 rounded-xl border border-[#E7DADD]/60">
                     <span className="text-[10px] text-slate-500 uppercase block font-bold">PT Fee / Session</span>
                     <span className="font-mono font-bold text-white">
                       {trainer.personalTrainingFee ? `₹${trainer.personalTrainingFee.toLocaleString()}` : 'Custom'}
@@ -379,13 +379,13 @@ export default function GymAdminBrowseTrainers() {
               <div className="flex items-center gap-2 pt-2">
                 <button
                   onClick={() => setSelectedTrainer(trainer)}
-                  className="flex-1 py-2.5 bg-[#141D1E] hover:bg-[#1B2728] text-white border border-[#2A3A3A] hover:border-[#2DD4BF]/40 font-bold text-xs rounded-xl transition-all"
+                  className="flex-1 py-2.5 bg-[#FFFFFF] hover:bg-[#F3E8E8] text-white border border-[#E7DADD] hover:border-[#B76E79]/40 font-bold text-xs rounded-xl transition-all"
                 >
                   View Profile
                 </button>
                 <button
                   onClick={() => openHiringModal(trainer)}
-                  className="flex-1 py-2.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-black font-bold text-xs rounded-xl transition-all shadow-md shadow-[#2DD4BF]/20 flex items-center justify-center gap-1.5"
+                  className="flex-1 py-2.5 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold text-xs rounded-xl transition-all shadow-md shadow-[#B76E79]/20 flex items-center justify-center gap-1.5"
                 >
                   <Send size={13} />
                   <span>Send Request</span>
@@ -399,11 +399,11 @@ export default function GymAdminBrowseTrainers() {
       {/* MODAL 1: VIEW TRAINER PROFILE (FULL DETAILS) */}
       {selectedTrainer && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#0E1415] border border-[#2DD4BF]/40 rounded-3xl max-w-2xl w-full p-6 sm:p-8 space-y-5 shadow-2xl max-h-[90vh] overflow-y-auto">
+          <div className="bg-[#F3E8E8] border border-[#B76E79]/40 rounded-3xl max-w-2xl w-full p-6 sm:p-8 space-y-5 shadow-2xl max-h-[90vh] overflow-y-auto">
             {/* Header */}
-            <div className="flex items-start justify-between border-b border-[#2A3A3A] pb-4">
+            <div className="flex items-start justify-between border-b border-[#E7DADD] pb-4">
               <div className="flex items-center gap-3.5">
-                <div className="w-16 h-16 rounded-2xl overflow-hidden bg-[#141D1E] border-2 border-[#2DD4BF]/40 shrink-0">
+                <div className="w-16 h-16 rounded-2xl overflow-hidden bg-[#FFFFFF] border-2 border-[#B76E79]/40 shrink-0">
                   {selectedTrainer.profilePhoto ? (
                     <img
                       src={
@@ -415,19 +415,19 @@ export default function GymAdminBrowseTrainers() {
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-xl font-black text-[#2DD4BF] bg-[#2DD4BF]/10">
+                    <div className="w-full h-full flex items-center justify-center text-xl font-black text-[#B76E79] bg-[#B76E79]/10">
                       {selectedTrainer.name.charAt(0).toUpperCase()}
                     </div>
                   )}
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <h3 className="text-xl font-extrabold text-white">{selectedTrainer.name}</h3>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#2DD4BF]/15 text-[#2DD4BF] border border-[#2DD4BF]/30">
+                    <h3 className="text-xl font-extrabold text-[#292524]">{selectedTrainer.name}</h3>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#B76E79]/15 text-[#B76E79] border border-[#B76E79]/30">
                       Verified Coach
                     </span>
                   </div>
-                  <p className="text-xs text-[#2DD4BF] font-semibold mt-0.5">
+                  <p className="text-xs text-[#B76E79] font-semibold mt-0.5">
                     {selectedTrainer.specialization || selectedTrainer.professionalHeadline || 'Fitness Trainer'}
                   </p>
                   <div className="flex flex-wrap items-center gap-3 text-[11px] text-slate-400 mt-1">
@@ -437,7 +437,7 @@ export default function GymAdminBrowseTrainers() {
                     </span>
                     {selectedTrainer.phone && (
                       <span className="flex items-center gap-1">
-                        <Phone size={12} className="text-[#2DD4BF]" />
+                        <Phone size={12} className="text-[#B76E79]" />
                         +91 {selectedTrainer.phone.replace(/^\+?91/, '').trim()}
                       </span>
                     )}
@@ -452,7 +452,7 @@ export default function GymAdminBrowseTrainers() {
               </div>
               <button
                 onClick={() => setSelectedTrainer(null)}
-                className="p-1.5 rounded-xl bg-[#141D1E] text-slate-400 hover:text-white border border-[#2A3A3A] transition-colors"
+                className="p-1.5 rounded-xl bg-[#FFFFFF] text-slate-400 hover:text-white border border-[#E7DADD] transition-colors"
               >
                 ✕
               </button>
@@ -460,7 +460,7 @@ export default function GymAdminBrowseTrainers() {
 
             {/* Quick Stats Grid (4 Cards) */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-              <div className="p-3 rounded-2xl bg-[#141D1E] border border-[#2A3A3A] text-left">
+              <div className="p-3 rounded-2xl bg-[#FFFFFF] border border-[#E7DADD] text-left">
                 <span className="text-[10px] text-slate-400 uppercase font-bold block">Experience</span>
                 <span className="font-bold text-xs text-white mt-0.5 block">
                   {selectedTrainer.experience
@@ -471,9 +471,9 @@ export default function GymAdminBrowseTrainers() {
                 </span>
               </div>
 
-              <div className="p-3 rounded-2xl bg-[#141D1E] border border-[#2A3A3A] text-left">
+              <div className="p-3 rounded-2xl bg-[#FFFFFF] border border-[#E7DADD] text-left">
                 <span className="text-[10px] text-slate-400 uppercase font-bold block">Training Mode</span>
-                <span className="font-bold text-xs text-[#2DD4BF] mt-0.5 block">
+                <span className="font-bold text-xs text-[#B76E79] mt-0.5 block">
                   {selectedTrainer.trainingMode === 'online'
                     ? 'Online / Remote'
                     : selectedTrainer.trainingMode === 'offline'
@@ -482,16 +482,16 @@ export default function GymAdminBrowseTrainers() {
                 </span>
               </div>
 
-              <div className="p-3 rounded-2xl bg-[#141D1E] border border-[#2A3A3A] text-left">
+              <div className="p-3 rounded-2xl bg-[#FFFFFF] border border-[#E7DADD] text-left">
                 <span className="text-[10px] text-slate-400 uppercase font-bold block">Availability</span>
                 <span className="font-bold text-xs text-white mt-0.5 block truncate">
                   {selectedTrainer.availability || selectedTrainer.earliestJoiningDate || 'Immediately'}
                 </span>
               </div>
 
-              <div className="p-3 rounded-2xl bg-[#141D1E] border border-[#2A3A3A] text-left">
+              <div className="p-3 rounded-2xl bg-[#FFFFFF] border border-[#E7DADD] text-left">
                 <span className="text-[10px] text-slate-400 uppercase font-bold block">Expected Salary</span>
-                <span className="font-bold font-mono text-xs text-[#2DD4BF] mt-0.5 block">
+                <span className="font-bold font-mono text-xs text-[#B76E79] mt-0.5 block">
                   {selectedTrainer.expectedSalary ? `₹${selectedTrainer.expectedSalary.toLocaleString()}` : 'Negotiable'}
                 </span>
               </div>
@@ -501,18 +501,18 @@ export default function GymAdminBrowseTrainers() {
             <div className="space-y-3.5 text-xs">
               {/* Previous Gym & Preferred Location Row */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="p-3.5 rounded-2xl bg-[#141D1E]/60 border border-[#2A3A3A] space-y-1">
+                <div className="p-3.5 rounded-2xl bg-[#FFFFFF]/60 border border-[#E7DADD] space-y-1">
                   <span className="text-[10px] font-bold text-slate-400 uppercase flex items-center gap-1.5">
-                    <Building2 size={12} className="text-[#2DD4BF]" /> Previous Gym / Employer
+                    <Building2 size={12} className="text-[#B76E79]" /> Previous Gym / Employer
                   </span>
                   <p className="text-white font-medium">
                     {selectedTrainer.previousGym || 'Fresher / Independent Coach'}
                   </p>
                 </div>
 
-                <div className="p-3.5 rounded-2xl bg-[#141D1E]/60 border border-[#2A3A3A] space-y-1">
+                <div className="p-3.5 rounded-2xl bg-[#FFFFFF]/60 border border-[#E7DADD] space-y-1">
                   <span className="text-[10px] font-bold text-slate-400 uppercase flex items-center gap-1.5">
-                    <MapPin size={12} className="text-[#2DD4BF]" /> Preferred Work Location
+                    <MapPin size={12} className="text-[#B76E79]" /> Preferred Work Location
                   </span>
                   <p className="text-white font-medium">
                     {selectedTrainer.preferredLocation || selectedTrainer.city || 'Flexible / Bangalore'}
@@ -521,9 +521,9 @@ export default function GymAdminBrowseTrainers() {
               </div>
 
               {/* Education & Qualifications */}
-              <div className="p-3.5 rounded-2xl bg-[#141D1E]/60 border border-[#2A3A3A] space-y-1">
+              <div className="p-3.5 rounded-2xl bg-[#FFFFFF]/60 border border-[#E7DADD] space-y-1">
                 <span className="text-[10px] font-bold text-slate-400 uppercase flex items-center gap-1.5">
-                  <Award size={12} className="text-[#2DD4BF]" /> Education &amp; Qualifications
+                  <Award size={12} className="text-[#B76E79]" /> Education &amp; Qualifications
                 </span>
                 <p className="text-slate-200 font-medium">
                   {selectedTrainer.qualifications || 'Certified Personal Coach / Exercise Specialist'}
@@ -531,9 +531,9 @@ export default function GymAdminBrowseTrainers() {
               </div>
 
               {/* Certifications */}
-              <div className="p-3.5 rounded-2xl bg-[#141D1E]/60 border border-[#2A3A3A] space-y-1">
+              <div className="p-3.5 rounded-2xl bg-[#FFFFFF]/60 border border-[#E7DADD] space-y-1">
                 <span className="text-[10px] font-bold text-slate-400 uppercase flex items-center gap-1.5">
-                  <Sparkles size={12} className="text-[#2DD4BF]" /> Fitness Certifications
+                  <Sparkles size={12} className="text-[#B76E79]" /> Fitness Certifications
                 </span>
                 <p className="text-slate-200 font-medium">
                   {selectedTrainer.certifications || 'ACE, CSCS, CPR/AED Certified'}
@@ -541,9 +541,9 @@ export default function GymAdminBrowseTrainers() {
               </div>
 
               {/* Professional Introduction / Bio */}
-              <div className="p-3.5 rounded-2xl bg-[#141D1E]/60 border border-[#2A3A3A] space-y-1">
+              <div className="p-3.5 rounded-2xl bg-[#FFFFFF]/60 border border-[#E7DADD] space-y-1">
                 <span className="text-[10px] font-bold text-slate-400 uppercase flex items-center gap-1.5">
-                  <UserCheck size={12} className="text-[#2DD4BF]" /> Professional Introduction
+                  <UserCheck size={12} className="text-[#B76E79]" /> Professional Introduction
                 </span>
                 <p className="text-slate-300 leading-relaxed italic">
                   {selectedTrainer.bio ||
@@ -568,23 +568,23 @@ export default function GymAdminBrowseTrainers() {
                       }
                       target="_blank"
                       rel="noreferrer"
-                      className="p-3 rounded-2xl bg-[#141D1E] hover:bg-[#1B2728] border border-[#2DD4BF]/40 hover:border-[#2DD4BF] flex items-center justify-between transition-all group shadow-sm"
+                      className="p-3 rounded-2xl bg-[#FFFFFF] hover:bg-[#F3E8E8] border border-[#B76E79]/40 hover:border-[#B76E79] flex items-center justify-between transition-all group shadow-sm"
                     >
                       <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-xl bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center">
+                        <div className="w-8 h-8 rounded-xl bg-[#B76E79]/10 text-[#B76E79] flex items-center justify-center">
                           <FileText size={16} />
                         </div>
                         <div>
-                          <span className="font-bold text-white text-xs block group-hover:text-[#2DD4BF] transition-colors">
+                          <span className="font-bold text-white text-xs block group-hover:text-[#B76E79] transition-colors">
                             Resume / CV
                           </span>
                           <span className="text-[10px] text-slate-400">PDF / Word Document</span>
                         </div>
                       </div>
-                      <ExternalLink size={14} className="text-[#2DD4BF]" />
+                      <ExternalLink size={14} className="text-[#B76E79]" />
                     </a>
                   ) : (
-                    <div className="p-3 rounded-2xl bg-[#141D1E]/40 border border-[#2A3A3A] flex items-center gap-2.5 text-slate-500">
+                    <div className="p-3 rounded-2xl bg-[#FFFFFF]/40 border border-[#E7DADD] flex items-center gap-2.5 text-slate-500">
                       <FileText size={16} />
                       <span className="text-xs">No resume uploaded</span>
                     </div>
@@ -600,23 +600,23 @@ export default function GymAdminBrowseTrainers() {
                       }
                       target="_blank"
                       rel="noreferrer"
-                      className="p-3 rounded-2xl bg-[#141D1E] hover:bg-[#1B2728] border border-[#2DD4BF]/40 hover:border-[#2DD4BF] flex items-center justify-between transition-all group shadow-sm"
+                      className="p-3 rounded-2xl bg-[#FFFFFF] hover:bg-[#F3E8E8] border border-[#B76E79]/40 hover:border-[#B76E79] flex items-center justify-between transition-all group shadow-sm"
                     >
                       <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-xl bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center">
+                        <div className="w-8 h-8 rounded-xl bg-[#B76E79]/10 text-[#B76E79] flex items-center justify-center">
                           <Award size={16} />
                         </div>
                         <div>
-                          <span className="font-bold text-white text-xs block group-hover:text-[#2DD4BF] transition-colors">
+                          <span className="font-bold text-white text-xs block group-hover:text-[#B76E79] transition-colors">
                             Certification File
                           </span>
                           <span className="text-[10px] text-slate-400">PDF / Image Document</span>
                         </div>
                       </div>
-                      <ExternalLink size={14} className="text-[#2DD4BF]" />
+                      <ExternalLink size={14} className="text-[#B76E79]" />
                     </a>
                   ) : (
-                    <div className="p-3 rounded-2xl bg-[#141D1E]/40 border border-[#2A3A3A] flex items-center gap-2.5 text-slate-500">
+                    <div className="p-3 rounded-2xl bg-[#FFFFFF]/40 border border-[#E7DADD] flex items-center gap-2.5 text-slate-500">
                       <Award size={16} />
                       <span className="text-xs">No certificate file</span>
                     </div>
@@ -626,21 +626,21 @@ export default function GymAdminBrowseTrainers() {
             </div>
 
             {/* Bottom Actions */}
-            <div className="pt-3 border-t border-[#2A3A3A] flex gap-3">
+            <div className="pt-3 border-t border-[#E7DADD] flex gap-3">
               <button
                 onClick={() => {
                   const t = selectedTrainer;
                   setSelectedTrainer(null);
                   openHiringModal(t);
                 }}
-                className="flex-1 py-3 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-black font-extrabold text-xs rounded-xl shadow-lg shadow-[#2DD4BF]/20 flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                className="flex-1 py-3 bg-[#B76E79] hover:bg-[#9F5965] text-white font-extrabold text-xs rounded-xl shadow-lg shadow-[#B76E79]/20 flex items-center justify-center gap-1.5 transition-all cursor-pointer"
               >
                 <Send size={14} />
                 <span>Send Hiring Proposal</span>
               </button>
               <button
                 onClick={() => setSelectedTrainer(null)}
-                className="px-6 py-3 bg-[#141D1E] hover:bg-[#1B2728] border border-[#2A3A3A] text-slate-300 hover:text-white text-xs font-semibold rounded-xl transition-all cursor-pointer"
+                className="px-6 py-3 bg-[#FFFFFF] hover:bg-[#F3E8E8] border border-[#E7DADD] text-slate-300 hover:text-white text-xs font-semibold rounded-xl transition-all cursor-pointer"
               >
                 Close
               </button>
@@ -652,13 +652,13 @@ export default function GymAdminBrowseTrainers() {
       {/* MODAL 2: SEND HIRING REQUEST */}
       {hiringModalOpen && hiringTrainer && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#0E1415] border border-[#2DD4BF]/40 rounded-3xl max-w-xl w-full p-6 sm:p-8 space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between border-b border-[#2A3A3A] pb-3">
+          <div className="bg-[#F3E8E8] border border-[#B76E79]/40 rounded-3xl max-w-xl w-full p-6 sm:p-8 space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-[#E7DADD] pb-3">
               <div>
-                <span className="text-[10px] font-bold text-[#2DD4BF] uppercase tracking-wider block">
+                <span className="text-[10px] font-bold text-[#B76E79] uppercase tracking-wider block">
                   PROPOSAL INTAKE
                 </span>
-                <h3 className="text-base font-bold text-white">Send Hiring Request to {hiringTrainer.name}</h3>
+                <h3 className="text-base font-bold text-[#292524]">Send Hiring Request to {hiringTrainer.name}</h3>
               </div>
               <button onClick={() => setHiringModalOpen(false)} className="text-slate-400 hover:text-white text-sm">✕</button>
             </div>
@@ -685,7 +685,7 @@ export default function GymAdminBrowseTrainers() {
                     required
                     value={hiringForm.role}
                     onChange={(e) => setHiringForm({ ...hiringForm, role: e.target.value })}
-                    className="w-full bg-[#141D1E] border border-[#2A3A3A] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#2DD4BF]"
+                    className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#B76E79]"
                   />
                 </div>
                 <div>
@@ -693,7 +693,7 @@ export default function GymAdminBrowseTrainers() {
                   <select
                     value={hiringForm.employmentType}
                     onChange={(e) => setHiringForm({ ...hiringForm, employmentType: e.target.value as any })}
-                    className="w-full bg-[#141D1E] border border-[#2A3A3A] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#2DD4BF]"
+                    className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#B76E79]"
                   >
                     <option value="Full-time">Full-time</option>
                     <option value="Part-time">Part-time</option>
@@ -711,7 +711,7 @@ export default function GymAdminBrowseTrainers() {
                     min={1}
                     value={hiringForm.offeredCompensation}
                     onChange={(e) => setHiringForm({ ...hiringForm, offeredCompensation: e.target.value })}
-                    className="w-full bg-[#141D1E] border border-[#2A3A3A] rounded-xl px-3 py-2 text-white font-mono focus:outline-none focus:border-[#2DD4BF]"
+                    className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl px-3 py-2 text-white font-mono focus:outline-none focus:border-[#B76E79]"
                   />
                 </div>
                 <div>
@@ -721,7 +721,7 @@ export default function GymAdminBrowseTrainers() {
                     min={0}
                     value={hiringForm.personalTrainingFee}
                     onChange={(e) => setHiringForm({ ...hiringForm, personalTrainingFee: e.target.value })}
-                    className="w-full bg-[#141D1E] border border-[#2A3A3A] rounded-xl px-3 py-2 text-white font-mono focus:outline-none focus:border-[#2DD4BF]"
+                    className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl px-3 py-2 text-white font-mono focus:outline-none focus:border-[#B76E79]"
                   />
                 </div>
               </div>
@@ -733,7 +733,7 @@ export default function GymAdminBrowseTrainers() {
                     type="text"
                     value={hiringForm.workingHours}
                     onChange={(e) => setHiringForm({ ...hiringForm, workingHours: e.target.value })}
-                    className="w-full bg-[#141D1E] border border-[#2A3A3A] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#2DD4BF]"
+                    className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#B76E79]"
                   />
                 </div>
                 <div>
@@ -743,7 +743,7 @@ export default function GymAdminBrowseTrainers() {
                     required
                     value={hiringForm.expectedJoiningDate}
                     onChange={(e) => setHiringForm({ ...hiringForm, expectedJoiningDate: e.target.value })}
-                    className="w-full bg-[#141D1E] border border-[#2A3A3A] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#2DD4BF]"
+                    className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#B76E79]"
                   />
                 </div>
               </div>
@@ -755,7 +755,7 @@ export default function GymAdminBrowseTrainers() {
                   rows={2}
                   value={hiringForm.jobResponsibilities}
                   onChange={(e) => setHiringForm({ ...hiringForm, jobResponsibilities: e.target.value })}
-                  className="w-full bg-[#141D1E] border border-[#2A3A3A] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#2DD4BF]"
+                  className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#B76E79]"
                 />
               </div>
 
@@ -765,22 +765,22 @@ export default function GymAdminBrowseTrainers() {
                   rows={2}
                   value={hiringForm.message}
                   onChange={(e) => setHiringForm({ ...hiringForm, message: e.target.value })}
-                  className="w-full bg-[#141D1E] border border-[#2A3A3A] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#2DD4BF]"
+                  className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#B76E79]"
                 />
               </div>
 
-              <div className="pt-3 border-t border-[#2A3A3A] flex justify-end gap-2">
+              <div className="pt-3 border-t border-[#E7DADD] flex justify-end gap-2">
                 <button
                   type="button"
                   onClick={() => setHiringModalOpen(false)}
-                  className="px-4 py-2 bg-[#141D1E] text-slate-400 hover:text-white rounded-xl"
+                  className="px-4 py-2 bg-[#FFFFFF] text-slate-400 hover:text-white rounded-xl"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={submittingHiring}
-                  className="px-6 py-2 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-black font-bold rounded-xl transition-all shadow-md shadow-[#2DD4BF]/20 flex items-center gap-1.5"
+                  className="px-6 py-2 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold rounded-xl transition-all shadow-md shadow-[#B76E79]/20 flex items-center gap-1.5"
                 >
                   {submittingHiring ? 'Sending...' : 'Send Hiring Request'}
                 </button>

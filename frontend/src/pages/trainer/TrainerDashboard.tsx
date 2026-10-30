@@ -119,12 +119,12 @@ const TrainerDashboard = () => {
   return (
     <div className="space-y-8 pb-12">
       {/* Welcome Bar */}
-      <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-3xl p-6 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-3xl p-6 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#F5FAFA] tracking-tight">
-            Welcome back, <span className="text-[#2DD4BF]">{user?.firstName || 'Trainer'}!</span>
+          <h1 className="text-3xl font-bold text-[#292524] tracking-tight">
+            Welcome back, <span className="text-[#B76E79]">{user?.firstName || 'Trainer'}!</span>
           </h1>
-          <p className="text-[#9AAEAE] mt-1 text-sm">
+          <p className="text-[#57534E] mt-1 text-sm">
             Here is your coaching overview, client completed workouts, AI drafts, and today&apos;s schedule.
           </p>
         </div>
@@ -139,45 +139,45 @@ const TrainerDashboard = () => {
 
       {loading ? (
         <div className="flex justify-center py-20">
-          <Loader2 className="animate-spin text-[#2DD4BF]" size={40} />
+          <Loader2 className="animate-spin text-[#B76E79]" size={40} />
         </div>
       ) : (
         <>
           {/* Key Stat Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
             {[
-              { label: 'Active Clients', value: uniqueClients.toString(), icon: Users, color: 'text-[#F5FAFA]', bg: 'bg-[#1B2728]' },
-              { label: 'Completed Exercises', value: totalExercisesDone.toString(), icon: Dumbbell, color: 'text-[#34D399]', bg: 'bg-[#34D399]/10' },
-              { label: 'Pending AI Reviews', value: pendingAiReviews.length.toString(), icon: Bot, color: 'text-[#2DD4BF]', bg: 'bg-[#2DD4BF]/10' },
-              { label: 'Today\'s Sessions', value: todaySessions.toString(), icon: Calendar, color: 'text-[#F5FAFA]', bg: 'bg-[#1B2728]' },
-              { label: 'Total Earnings', value: `₹${thisMonthEarnings.toLocaleString('en-IN')}`, icon: IndianRupee, color: 'text-[#F5FAFA]', bg: 'bg-[#1B2728]' },
+              { label: 'Active Clients', value: uniqueClients.toString(), icon: Users, color: 'text-[#292524]', bg: 'bg-[#F3E8E8]' },
+              { label: 'Completed Exercises', value: totalExercisesDone.toString(), icon: Dumbbell, color: 'text-[#15803D]', bg: 'bg-[#15803D]/10' },
+              { label: 'Pending AI Reviews', value: pendingAiReviews.length.toString(), icon: Bot, color: 'text-[#B76E79]', bg: 'bg-[#B76E79]/10' },
+              { label: 'Today\'s Sessions', value: todaySessions.toString(), icon: Calendar, color: 'text-[#292524]', bg: 'bg-[#F3E8E8]' },
+              { label: 'Total Earnings', value: `₹${thisMonthEarnings.toLocaleString('en-IN')}`, icon: IndianRupee, color: 'text-[#292524]', bg: 'bg-[#F3E8E8]' },
               { label: 'Rewards & Honors', value: 'Perks', icon: Award, color: 'text-amber-700', bg: 'bg-amber-50', link: '/trainer/rewards' },
             ].map((stat, i) => (
               <Link
                 key={i}
                 to={stat.link || '#'}
-                className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-5 flex items-center space-x-3 shadow-sm hover:shadow-md transition-shadow"
+                className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-5 flex items-center space-x-3 shadow-sm hover:shadow-md transition-shadow"
               >
                 <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${stat.bg} ${stat.color}`}>
                   <stat.icon size={22} />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="text-[#9AAEAE] text-[11px] font-semibold uppercase tracking-wider truncate">{stat.label}</p>
-                  <h3 className="text-lg font-extrabold text-[#F5FAFA] mt-0.5 truncate">{stat.value}</h3>
+                  <p className="text-[#57534E] text-[11px] font-semibold uppercase tracking-wider truncate">{stat.label}</p>
+                  <h3 className="text-lg font-extrabold text-[#292524] mt-0.5 truncate">{stat.value}</h3>
                 </div>
               </Link>
             ))}
           </div>
 
           {/* DEDICATED SECTION: Member Plan Requests & Messages (User Request) */}
-          <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#1B2728] pb-4">
+          <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#F3E8E8] pb-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center font-bold">
+                <div className="w-10 h-10 rounded-2xl bg-[#B76E79]/10 text-[#B76E79] flex items-center justify-center font-bold">
                   <MessageSquare size={22} />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-[#F5FAFA] flex items-center gap-2">
+                  <h2 className="text-xl font-bold text-[#292524] flex items-center gap-2">
                     Member Plan Requests &amp; Messages
                     {planRequests.filter(r => r.status === 'Pending').length > 0 && (
                       <span className="px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-amber-100 text-amber-800 border border-amber-300">
@@ -185,7 +185,7 @@ const TrainerDashboard = () => {
                       </span>
                     )}
                   </h2>
-                  <p className="text-xs text-[#9AAEAE] mt-0.5">
+                  <p className="text-xs text-[#57534E] mt-0.5">
                     Members can manually submit their workout and diet plans with messages. Review and give approval to directly publish to their dashboard.
                   </p>
                 </div>
@@ -193,10 +193,10 @@ const TrainerDashboard = () => {
             </div>
 
             {planRequests.length === 0 ? (
-              <div className="text-center py-10 text-[#9AAEAE] bg-[#0E1415] border border-dashed border-[#1B2728] rounded-2xl p-6">
-                <CheckCircle2 size={32} className="text-[#2DD4BF] mx-auto mb-2" />
-                <h4 className="font-bold text-sm text-[#F5FAFA]">No Member Plan Requests</h4>
-                <p className="text-xs text-[#9AAEAE] mt-1">
+              <div className="text-center py-10 text-[#57534E] bg-[#F3E8E8] border border-dashed border-[#F3E8E8] rounded-2xl p-6">
+                <CheckCircle2 size={32} className="text-[#B76E79] mx-auto mb-2" />
+                <h4 className="font-bold text-sm text-[#292524]">No Member Plan Requests</h4>
+                <p className="text-xs text-[#57534E] mt-1">
                   When members create manual workout or diet plans and message you for review, their submissions will appear here for approval.
                 </p>
               </div>
@@ -214,17 +214,17 @@ const TrainerDashboard = () => {
                       key={req._id}
                       className={`border rounded-2xl p-5 transition-all flex flex-col justify-between space-y-4 shadow-xs ${
                         isApproved
-                          ? 'border-[#2A3A3A] bg-[#1B2728]/20'
+                          ? 'border-[#E7DADD] bg-[#F3E8E8]/20'
                           : isPending
-                            ? 'border-amber-300 bg-amber-50/10 hover:border-[#2DD4BF]'
-                            : 'border-[#2A3A3A] bg-[#1B2728]'
+                            ? 'border-amber-300 bg-amber-50/10 hover:border-[#B76E79]'
+                            : 'border-[#E7DADD] bg-[#F3E8E8]'
                       }`}
                     >
                       <div>
                         {/* Customer Header */}
                         <div className="flex items-start justify-between gap-2 mb-3">
                           <div className="flex items-center gap-3 min-w-0">
-                            <div className="w-10 h-10 rounded-full bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center font-black text-sm shrink-0 border border-[#1B2728]">
+                            <div className="w-10 h-10 rounded-full bg-[#B76E79]/10 text-[#B76E79] flex items-center justify-center font-black text-sm shrink-0 border border-[#F3E8E8]">
                               {req.customerId?.profilePhoto ? (
                                 <img src={req.customerId.profilePhoto} alt="profile" className="w-full h-full object-cover rounded-full" />
                               ) : (
@@ -232,20 +232,20 @@ const TrainerDashboard = () => {
                               )}
                             </div>
                             <div className="min-w-0">
-                              <h4 className="font-extrabold text-sm text-[#F5FAFA] truncate">
+                              <h4 className="font-extrabold text-sm text-[#292524] truncate">
                                 {custName}
                               </h4>
-                              <p className="text-xs text-[#9AAEAE] truncate">{req.customerId?.email}</p>
+                              <p className="text-xs text-[#57534E] truncate">{req.customerId?.email}</p>
                             </div>
                           </div>
 
                           <span
                             className={`px-2.5 py-0.5 rounded-full text-[10px] font-extrabold border shrink-0 mt-0.5 ${
                               isApproved
-                                ? 'bg-[#1B2728] text-[#2DD4BF] border-[#2A3A3A]'
+                                ? 'bg-[#F3E8E8] text-[#B76E79] border-[#E7DADD]'
                                 : isPending
                                   ? 'bg-amber-100 text-amber-800 border-amber-300'
-                                  : 'bg-[#1B2728] text-[#F5FAFA] border-[#2A3A3A]'
+                                  : 'bg-[#F3E8E8] text-[#292524] border-[#E7DADD]'
                             }`}
                           >
                             {req.status}
@@ -253,42 +253,42 @@ const TrainerDashboard = () => {
                         </div>
 
                         {/* Plan Details Card */}
-                        <div className="bg-[#141D1E] p-3.5 rounded-xl border border-[#2A3A3A]/80 space-y-2">
+                        <div className="bg-[#FFFFFF] p-3.5 rounded-xl border border-[#E7DADD]/80 space-y-2">
                           <div className="flex items-center justify-between">
-                            <span className="text-[10px] font-bold uppercase tracking-wider text-[#2DD4BF] bg-[#1B2728] px-2 py-0.5 rounded">
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-[#B76E79] bg-[#F3E8E8] px-2 py-0.5 rounded">
                               {req.planType}
                             </span>
-                            <span className="text-[11px] text-[#9AAEAE] font-medium">
+                            <span className="text-[11px] text-[#57534E] font-medium">
                               {new Date(req.createdAt).toLocaleDateString()}
                             </span>
                           </div>
-                          <h4 className="font-bold text-sm text-[#F5FAFA]">{req.title}</h4>
+                          <h4 className="font-bold text-sm text-[#292524]">{req.title}</h4>
                           {req.goal && (
-                            <p className="text-xs text-[#9AAEAE]">
-                              <strong className="text-[#F5FAFA]">Goal:</strong> {req.goal}
+                            <p className="text-xs text-[#57534E]">
+                              <strong className="text-[#292524]">Goal:</strong> {req.goal}
                             </p>
                           )}
 
                           {/* Customer Message */}
-                          <div className="bg-[#1B2728]/60 border border-[#2A3A3A]/70 p-2.5 rounded-lg mt-2">
-                            <div className="flex items-center gap-1 text-[10px] font-bold text-[#5EEAD4] uppercase tracking-wider mb-0.5">
+                          <div className="bg-[#F3E8E8]/60 border border-[#E7DADD]/70 p-2.5 rounded-lg mt-2">
+                            <div className="flex items-center gap-1 text-[10px] font-bold text-[#9F5965] uppercase tracking-wider mb-0.5">
                               <MessageSquare size={11} />
                               <span>Customer Message:</span>
                             </div>
-                            <p className="text-xs text-[#F5FAFA] italic">
+                            <p className="text-xs text-[#292524] italic">
                               &ldquo;{req.customerMessage}&rdquo;
                             </p>
                           </div>
 
                           {/* Preview Details */}
                           {req.planType === 'Workout Plan' && req.workoutDetails?.days && (
-                            <div className="text-[11px] text-[#9AAEAE] bg-[#1B2728] p-2 rounded border border-[#2A3A3A]">
+                            <div className="text-[11px] text-[#57534E] bg-[#F3E8E8] p-2 rounded border border-[#E7DADD]">
                               <strong>Routine:</strong> {req.workoutDetails.days.map((d: any) => `${d.dayName} (${d.exercises?.length || 0} exercises)`).join(', ')}
                             </div>
                           )}
 
                           {req.planType === 'Diet Plan' && req.dietDetails && (
-                            <div className="text-[11px] text-[#9AAEAE] bg-[#1B2728] p-2 rounded border border-[#2A3A3A]">
+                            <div className="text-[11px] text-[#57534E] bg-[#F3E8E8] p-2 rounded border border-[#E7DADD]">
                               <strong>Target:</strong> {req.dietDetails.dailyCalories} &bull; {req.dietDetails.protein} Protein &bull; {req.dietDetails.meals?.length || 0} Meals
                             </div>
                           )}
@@ -297,19 +297,19 @@ const TrainerDashboard = () => {
 
                       {/* Action Area */}
                       {isPending ? (
-                        <div className="pt-2 border-t border-[#2A3A3A] space-y-2">
+                        <div className="pt-2 border-t border-[#E7DADD] space-y-2">
                           <input
                             type="text"
                             placeholder="Add coach advice / note (optional)..."
                             value={approvalFeedback[req._id] || ''}
                             onChange={e => setApprovalFeedback({ ...approvalFeedback, [req._id]: e.target.value })}
-                            className="w-full text-xs px-3 py-1.5 bg-[#141D1E] border border-[#2A3A3A] rounded-lg focus:outline-none focus:border-[#2DD4BF]"
+                            className="w-full text-xs px-3 py-1.5 bg-[#FFFFFF] border border-[#E7DADD] rounded-lg focus:outline-none focus:border-[#B76E79]"
                           />
                           <div className="flex items-center gap-2">
                             <button
                               onClick={() => handleApprovePlan(req._id)}
                               disabled={approvingId === req._id}
-                              className="flex-1 py-2 bg-gradient-to-r from-[#2DD4BF] to-emerald-500 hover:from-[#2DD4BF] hover:to-[#5EEAD4] text-[#06201D] font-bold rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1 shadow-xs cursor-pointer disabled:opacity-50"
+                              className="flex-1 py-2 bg-gradient-to-r from-[#B76E79] to-emerald-500 hover:from-[#B76E79] hover:to-[#9F5965] text-[#FFFFFF] font-bold rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1 shadow-xs cursor-pointer disabled:opacity-50"
                             >
                               {approvingId === req._id ? (
                                 <Loader2 size={13} className="animate-spin" />
@@ -321,19 +321,19 @@ const TrainerDashboard = () => {
                             <button
                               onClick={() => handleRejectPlan(req._id)}
                               disabled={approvingId === req._id}
-                              className="px-3 py-2 bg-[#1B2728] hover:bg-[#1B2728] text-[#9AAEAE] rounded-xl text-xs font-semibold transition-colors cursor-pointer"
+                              className="px-3 py-2 bg-[#F3E8E8] hover:bg-[#F3E8E8] text-[#57534E] rounded-xl text-xs font-semibold transition-colors cursor-pointer"
                             >
                               Decline
                             </button>
                           </div>
                         </div>
                       ) : (
-                        <div className="pt-2 border-t border-[#2A3A3A] flex items-center justify-between text-xs">
-                          <span className="font-bold text-[#2DD4BF] flex items-center gap-1">
+                        <div className="pt-2 border-t border-[#E7DADD] flex items-center justify-between text-xs">
+                          <span className="font-bold text-[#B76E79] flex items-center gap-1">
                             <CheckCircle2 size={13} /> Active on Customer Dashboard
                           </span>
                           {req.trainerFeedback && (
-                            <span className="text-[11px] text-[#9AAEAE] italic truncate max-w-[200px]">
+                            <span className="text-[11px] text-[#57534E] italic truncate max-w-[200px]">
                               &ldquo;{req.trainerFeedback}&rdquo;
                             </span>
                           )}
@@ -347,14 +347,14 @@ const TrainerDashboard = () => {
           </div>
 
           {/* DEDICATED SECTION: AI Analysis Review (Requirement 3) */}
-          <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#1B2728] pb-4">
+          <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#F3E8E8] pb-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center font-bold">
+                <div className="w-10 h-10 rounded-2xl bg-[#B76E79]/10 text-[#B76E79] flex items-center justify-center font-bold">
                   <Bot size={22} />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-[#F5FAFA] flex items-center gap-2">
+                  <h2 className="text-xl font-bold text-[#292524] flex items-center gap-2">
                     AI Analysis Review
                     {pendingAiReviews.length > 0 && (
                       <span className="px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-amber-100 text-amber-800 border border-amber-300">
@@ -362,7 +362,7 @@ const TrainerDashboard = () => {
                       </span>
                     )}
                   </h2>
-                  <p className="text-xs text-[#9AAEAE] mt-0.5">
+                  <p className="text-xs text-[#57534E] mt-0.5">
                     Review and calibrate AI-generated drafts before publishing official plans to customers.
                   </p>
                 </div>
@@ -370,17 +370,17 @@ const TrainerDashboard = () => {
 
               <Link
                 to="/trainer/ai-assistant"
-                className="text-xs text-[#2DD4BF] font-bold hover:underline flex items-center gap-1 self-start sm:self-center"
+                className="text-xs text-[#B76E79] font-bold hover:underline flex items-center gap-1 self-start sm:self-center"
               >
                 View All Client AI Plans →
               </Link>
             </div>
 
             {pendingAiReviews.length === 0 ? (
-              <div className="text-center py-12 text-[#9AAEAE] bg-[#0E1415] border border-dashed border-[#1B2728] rounded-2xl p-6">
-                <CheckCircle2 size={36} className="text-[#2DD4BF] mx-auto mb-2" />
-                <h4 className="font-bold text-sm text-[#F5FAFA]">All AI Drafts Reviewed</h4>
-                <p className="text-xs text-[#9AAEAE] mt-1">
+              <div className="text-center py-12 text-[#57534E] bg-[#F3E8E8] border border-dashed border-[#F3E8E8] rounded-2xl p-6">
+                <CheckCircle2 size={36} className="text-[#B76E79] mx-auto mb-2" />
+                <h4 className="font-bold text-sm text-[#292524]">All AI Drafts Reviewed</h4>
+                <p className="text-xs text-[#57534E] mt-1">
                   You have no customer AI assessments pending review. New client submissions will appear here.
                 </p>
               </div>
@@ -389,13 +389,13 @@ const TrainerDashboard = () => {
                 {pendingAiReviews.map((customer) => (
                   <div
                     key={customer._id}
-                    className="border border-[#1B2728] rounded-2xl p-5 bg-[#0E1415] hover:bg-[#141D1E] hover:border-[#2DD4BF] transition-all hover:shadow-md flex flex-col justify-between space-y-4 shadow-xs"
+                    className="border border-[#F3E8E8] rounded-2xl p-5 bg-[#F3E8E8] hover:bg-[#FFFFFF] hover:border-[#B76E79] transition-all hover:shadow-md flex flex-col justify-between space-y-4 shadow-xs"
                   >
                     <div>
                       {/* Customer Header */}
                       <div className="flex items-start justify-between gap-2 mb-3">
                         <div className="flex items-center gap-3 min-w-0">
-                          <div className="w-10 h-10 rounded-full bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center font-black text-sm shrink-0 border border-[#1B2728]">
+                          <div className="w-10 h-10 rounded-full bg-[#B76E79]/10 text-[#B76E79] flex items-center justify-center font-black text-sm shrink-0 border border-[#F3E8E8]">
                             {customer.profilePhoto ? (
                               <img src={customer.profilePhoto} alt="profile" className="w-full h-full object-cover rounded-full" />
                             ) : (
@@ -403,10 +403,10 @@ const TrainerDashboard = () => {
                             )}
                           </div>
                           <div className="min-w-0">
-                            <h4 className="font-extrabold text-sm text-[#F5FAFA] truncate">
+                            <h4 className="font-extrabold text-sm text-[#292524] truncate">
                               {customer.firstName} {customer.lastName}
                             </h4>
-                            <p className="text-xs text-[#9AAEAE] truncate">{customer.email}</p>
+                            <p className="text-xs text-[#57534E] truncate">{customer.email}</p>
                           </div>
                         </div>
 
@@ -416,31 +416,31 @@ const TrainerDashboard = () => {
                       </div>
 
                       {/* Assessment Highlights - Clean 2x2 Grid for perfect alignment */}
-                      <div className="grid grid-cols-2 gap-2 text-xs bg-[#141D1E] p-3.5 rounded-xl border border-[#1B2728]/80">
+                      <div className="grid grid-cols-2 gap-2 text-xs bg-[#FFFFFF] p-3.5 rounded-xl border border-[#F3E8E8]/80">
                         <div>
-                          <span className="text-[10px] font-bold text-[#9AAEAE] uppercase block">Goal</span>
-                          <span className="font-extrabold text-[#2DD4BF] truncate block">{customer.goal || 'General Fitness'}</span>
+                          <span className="text-[10px] font-bold text-[#57534E] uppercase block">Goal</span>
+                          <span className="font-extrabold text-[#B76E79] truncate block">{customer.goal || 'General Fitness'}</span>
                         </div>
                         <div>
-                          <span className="text-[10px] font-bold text-[#9AAEAE] uppercase block">Level</span>
-                          <span className="font-extrabold text-[#F5FAFA] truncate block">{customer.level || 'Beginner'}</span>
+                          <span className="text-[10px] font-bold text-[#57534E] uppercase block">Level</span>
+                          <span className="font-extrabold text-[#292524] truncate block">{customer.level || 'Beginner'}</span>
                         </div>
                         <div>
-                          <span className="text-[10px] font-bold text-[#9AAEAE] uppercase block">Equipment</span>
-                          <span className="font-semibold text-[#F5FAFA] truncate block">{customer.assessmentData?.equipmentAvailability || 'Full Commercial Gym'}</span>
+                          <span className="text-[10px] font-bold text-[#57534E] uppercase block">Equipment</span>
+                          <span className="font-semibold text-[#292524] truncate block">{customer.assessmentData?.equipmentAvailability || 'Full Commercial Gym'}</span>
                         </div>
                         <div>
-                          <span className="text-[10px] font-bold text-[#9AAEAE] uppercase block">Frequency</span>
-                          <span className="font-semibold text-[#F5FAFA] truncate block">{customer.assessmentData?.availableWorkoutDays || '4 Days'}</span>
+                          <span className="text-[10px] font-bold text-[#57534E] uppercase block">Frequency</span>
+                          <span className="font-semibold text-[#292524] truncate block">{customer.assessmentData?.availableWorkoutDays || '4 Days'}</span>
                         </div>
                       </div>
                     </div>
 
                     {/* Actions */}
-                    <div className="pt-2 border-t border-[#1B2728]">
+                    <div className="pt-2 border-t border-[#F3E8E8]">
                       <Link
                         to={`/trainer/ai-review/${customer._id}`}
-                        className="w-full py-2.5 bg-gradient-to-r from-[#2DD4BF] to-[#5EEAD4] hover:opacity-95 text-[#06201D] font-bold rounded-xl text-xs font-bold transition-all text-center flex items-center justify-center gap-1.5 shadow-sm"
+                        className="w-full py-2.5 bg-gradient-to-r from-[#B76E79] to-[#9F5965] hover:opacity-95 text-[#FFFFFF] font-bold rounded-xl text-xs font-bold transition-all text-center flex items-center justify-center gap-1.5 shadow-sm"
                       >
                         <Eye size={14} />
                         <span>Review &amp; Approve</span>
@@ -453,22 +453,22 @@ const TrainerDashboard = () => {
           </div>
 
           {/* DEDICATED SECTION: Client Workout Activity & Completed Exercises */}
-          <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#1B2728] pb-4">
+          <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#F3E8E8] pb-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center font-bold">
+                <div className="w-10 h-10 rounded-2xl bg-[#B76E79]/10 text-[#B76E79] flex items-center justify-center font-bold">
                   <Activity size={22} />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-[#F5FAFA] flex items-center gap-2">
+                  <h2 className="text-xl font-bold text-[#292524] flex items-center gap-2">
                     Client Workout Activity & Completed Exercises
                     {recentCompletedExercises.length > 0 && (
-                      <span className="px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-[#1B2728] text-[#2DD4BF] border border-[#2A3A3A]">
+                      <span className="px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-[#F3E8E8] text-[#B76E79] border border-[#E7DADD]">
                         {recentCompletedExercises.length} Logged
                       </span>
                     )}
                   </h2>
-                  <p className="text-xs text-[#9AAEAE] mt-0.5">
+                  <p className="text-xs text-[#57534E] mt-0.5">
                     Live tracking of exercises, sets, and repetitions finished by your assigned members.
                   </p>
                 </div>
@@ -476,17 +476,17 @@ const TrainerDashboard = () => {
 
               <Link
                 to="/trainer/customer-progress"
-                className="text-xs text-[#2DD4BF] font-bold hover:underline flex items-center gap-1 self-start sm:self-center"
+                className="text-xs text-[#B76E79] font-bold hover:underline flex items-center gap-1 self-start sm:self-center"
               >
                 View Full Progress Analytics →
               </Link>
             </div>
 
             {recentCompletedExercises.length === 0 ? (
-              <div className="text-center py-12 text-[#9AAEAE] bg-[#0E1415] border border-dashed border-[#1B2728] rounded-2xl p-6">
-                <Dumbbell size={36} className="text-[#9AAEAE] mx-auto mb-2 opacity-60" />
-                <h4 className="font-bold text-sm text-[#F5FAFA]">No Completed Exercises Logged Yet</h4>
-                <p className="text-xs text-[#9AAEAE] mt-1">
+              <div className="text-center py-12 text-[#57534E] bg-[#F3E8E8] border border-dashed border-[#F3E8E8] rounded-2xl p-6">
+                <Dumbbell size={36} className="text-[#57534E] mx-auto mb-2 opacity-60" />
+                <h4 className="font-bold text-sm text-[#292524]">No Completed Exercises Logged Yet</h4>
+                <p className="text-xs text-[#57534E] mt-1">
                   When your clients complete exercises in their interactive workout routines, their completed sets and form logs will appear here in real-time.
                 </p>
               </div>
@@ -494,8 +494,8 @@ const TrainerDashboard = () => {
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Recent Completed Exercise Feed (2 Columns) */}
                 <div className="lg:col-span-2 space-y-3">
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-[#9AAEAE] mb-2 flex items-center gap-1.5">
-                    <CheckCircle2 size={14} className="text-[#2DD4BF]" />
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-[#57534E] mb-2 flex items-center gap-1.5">
+                    <CheckCircle2 size={14} className="text-[#B76E79]" />
                     Latest Completed Exercises
                   </h3>
                   <div className="space-y-3 max-h-[380px] overflow-y-auto pr-1">
@@ -507,10 +507,10 @@ const TrainerDashboard = () => {
                       return (
                         <div
                           key={log._id}
-                          className="p-4 bg-[#0E1415] hover:bg-[#141D1E] border border-[#1B2728] hover:border-[#2A3A3A]/40 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-all hover:shadow-sm"
+                          className="p-4 bg-[#F3E8E8] hover:bg-[#FFFFFF] border border-[#F3E8E8] hover:border-[#E7DADD]/40 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-all hover:shadow-sm"
                         >
                           <div className="flex items-center gap-3.5">
-                            <div className="w-10 h-10 rounded-full bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center font-bold text-sm shrink-0 overflow-hidden">
+                            <div className="w-10 h-10 rounded-full bg-[#B76E79]/10 text-[#B76E79] flex items-center justify-center font-bold text-sm shrink-0 overflow-hidden">
                               {log.profilePhoto || log.customerId?.profilePhoto ? (
                                 <img src={log.profilePhoto || log.customerId?.profilePhoto} alt="client" className="w-full h-full object-cover" />
                               ) : (
@@ -519,29 +519,29 @@ const TrainerDashboard = () => {
                             </div>
                             <div>
                               <div className="flex items-center gap-2">
-                                <span className="font-extrabold text-sm text-[#F5FAFA]">
+                                <span className="font-extrabold text-sm text-[#292524]">
                                   {clientName}
                                 </span>
-                                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#1B2728] text-[#2DD4BF] border border-[#2A3A3A] flex items-center gap-0.5">
+                                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#F3E8E8] text-[#B76E79] border border-[#E7DADD] flex items-center gap-0.5">
                                   <CheckCircle2 size={10} /> Completed
                                 </span>
                               </div>
-                              <h4 className="font-bold text-sm text-[#2DD4BF] mt-0.5">
+                              <h4 className="font-bold text-sm text-[#B76E79] mt-0.5">
                                 {exTitle}
                               </h4>
-                              <p className="text-[11px] text-[#9AAEAE] mt-0.5">
+                              <p className="text-[11px] text-[#57534E] mt-0.5">
                                 {log.dayName && log.dayName !== 'General' ? `${log.dayName} • ` : ''}
-                                <span className="font-semibold text-[#F5FAFA]">{log.completedSets} Sets × {log.completedRepetitions || 12} Reps</span>
+                                <span className="font-semibold text-[#292524]">{log.completedSets} Sets × {log.completedRepetitions || 12} Reps</span>
                                 {log.duration ? ` • ${Math.round(log.duration)}s` : ''}
                               </p>
                             </div>
                           </div>
 
                           <div className="text-right sm:self-center shrink-0">
-                            <span className="text-[11px] font-medium text-[#9AAEAE] block">
+                            <span className="text-[11px] font-medium text-[#57534E] block">
                               {new Date(log.completedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                             </span>
-                            <span className="text-[10px] text-[#9AAEAE]/70 block">
+                            <span className="text-[10px] text-[#57534E]/70 block">
                               {new Date(log.completedAt).toLocaleDateString([], { month: 'short', day: 'numeric' })}
                             </span>
                           </div>
@@ -553,19 +553,19 @@ const TrainerDashboard = () => {
 
                 {/* Client Compliance Overview (1 Column) */}
                 <div className="space-y-3">
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-[#9AAEAE] mb-2 flex items-center gap-1.5">
-                    <TrendingUp size={14} className="text-[#2DD4BF]" />
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-[#57534E] mb-2 flex items-center gap-1.5">
+                    <TrendingUp size={14} className="text-[#B76E79]" />
                     Routine Adherence Summary
                   </h3>
                   <div className="space-y-3 max-h-[380px] overflow-y-auto pr-1">
                     {clientProgress.map((cp: any) => (
                       <div
                         key={cp.customer.id}
-                        className="p-4 bg-[#141D1E] border border-[#1B2728] rounded-2xl space-y-3 shadow-xs"
+                        className="p-4 bg-[#FFFFFF] border border-[#F3E8E8] rounded-2xl space-y-3 shadow-xs"
                       >
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2.5">
-                            <div className="w-8 h-8 rounded-full bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center font-bold text-xs shrink-0 overflow-hidden">
+                            <div className="w-8 h-8 rounded-full bg-[#B76E79]/10 text-[#B76E79] flex items-center justify-center font-bold text-xs shrink-0 overflow-hidden">
                               {cp.customer.profilePhoto ? (
                                 <img src={cp.customer.profilePhoto} alt="client" className="w-full h-full object-cover" />
                               ) : (
@@ -573,28 +573,28 @@ const TrainerDashboard = () => {
                               )}
                             </div>
                             <div>
-                              <h4 className="font-bold text-xs text-[#F5FAFA] truncate max-w-[120px]">
+                              <h4 className="font-bold text-xs text-[#292524] truncate max-w-[120px]">
                                 {cp.customer.name}
                               </h4>
-                              <p className="text-[10px] text-[#9AAEAE] truncate max-w-[120px]">
+                              <p className="text-[10px] text-[#57534E] truncate max-w-[120px]">
                                 {cp.plan?.name || 'Assigned Plan'}
                               </p>
                             </div>
                           </div>
-                          <span className="text-xs font-black text-[#2DD4BF]">
+                          <span className="text-xs font-black text-[#B76E79]">
                             {cp.stats?.completionPercentage || 0}%
                           </span>
                         </div>
 
                         {/* Progress bar */}
                         <div>
-                          <div className="w-full bg-[#1B2728] h-2 rounded-full overflow-hidden">
+                          <div className="w-full bg-[#F3E8E8] h-2 rounded-full overflow-hidden">
                             <div
-                              className="bg-gradient-to-r from-[#2DD4BF] to-[#5EEAD4] h-full rounded-full transition-all duration-500"
+                              className="bg-gradient-to-r from-[#B76E79] to-[#9F5965] h-full rounded-full transition-all duration-500"
                               style={{ width: `${Math.min(100, cp.stats?.completionPercentage || 0)}%` }}
                             />
                           </div>
-                          <div className="flex justify-between items-center text-[10px] text-[#9AAEAE] mt-1 font-medium">
+                          <div className="flex justify-between items-center text-[10px] text-[#57534E] mt-1 font-medium">
                             <span>{cp.stats?.totalExercisesCompleted || 0} finished</span>
                             <span>{cp.stats?.pendingExercises || 0} remaining</span>
                           </div>
@@ -602,7 +602,7 @@ const TrainerDashboard = () => {
 
                         <Link
                           to="/trainer/customer-progress"
-                          className="w-full py-1.5 bg-[#0E1415] hover:bg-[#1B2728] text-[#F5FAFA] rounded-xl text-[11px] font-bold text-center block transition-colors"
+                          className="w-full py-1.5 bg-[#F3E8E8] hover:bg-[#F3E8E8] text-[#292524] rounded-xl text-[11px] font-bold text-center block transition-colors"
                         >
                           View Member Breakdown →
                         </Link>
@@ -617,24 +617,24 @@ const TrainerDashboard = () => {
           {/* Sessions & Recent Progress Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
             {/* Upcoming Sessions */}
-            <div className="lg:col-span-2 bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-6 flex flex-col h-full shadow-sm">
-              <div className="flex justify-between items-center mb-5 border-b border-[#2A3A3A] pb-4">
-                <h2 className="text-xl font-bold text-[#F5FAFA]">Upcoming Training Sessions</h2>
-                <Link to="/trainer/session-bookings" className="text-xs text-[#2DD4BF] hover:underline font-semibold flex items-center gap-1">
+            <div className="lg:col-span-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-6 flex flex-col h-full shadow-sm">
+              <div className="flex justify-between items-center mb-5 border-b border-[#E7DADD] pb-4">
+                <h2 className="text-xl font-bold text-[#292524]">Upcoming Training Sessions</h2>
+                <Link to="/trainer/session-bookings" className="text-xs text-[#B76E79] hover:underline font-semibold flex items-center gap-1">
                   View All Sessions →
                 </Link>
               </div>
               <div className="space-y-3 flex-1">
                 {upcomingSessions.length === 0 ? (
-                  <div className="text-center py-12 text-[#9AAEAE] flex flex-col items-center justify-center">
-                    <Calendar className="text-[#2A3A3A] mb-2" size={36} />
+                  <div className="text-center py-12 text-[#57534E] flex flex-col items-center justify-center">
+                    <Calendar className="text-[#E7DADD] mb-2" size={36} />
                     <p className="text-sm font-medium">No upcoming sessions scheduled.</p>
                   </div>
                 ) : (
                   upcomingSessions.map((session) => (
-                    <div key={session._id} className="flex items-center justify-between p-3.5 bg-[#141D1E] border border-[#2A3A3A] rounded-xl hover:border-[#2DD4BF]/50 transition-colors">
+                    <div key={session._id} className="flex items-center justify-between p-3.5 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl hover:border-[#B76E79]/50 transition-colors">
                       <div className="flex items-center gap-3.5">
-                        <div className="w-10 h-10 rounded-full bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center text-sm font-bold overflow-hidden shrink-0">
+                        <div className="w-10 h-10 rounded-full bg-[#B76E79]/10 text-[#B76E79] flex items-center justify-center text-sm font-bold overflow-hidden shrink-0">
                           {session.customerId?.profilePhoto ? (
                             <img src={session.customerId.profilePhoto} alt="profile" className="w-full h-full object-cover" />
                           ) : (
@@ -642,13 +642,13 @@ const TrainerDashboard = () => {
                           )}
                         </div>
                         <div>
-                          <h4 className="font-bold text-sm text-[#F5FAFA]">{session.customerId ? `${session.customerId.firstName} ${session.customerId.lastName}` : 'Client'}</h4>
-                          <p className="text-xs text-[#9AAEAE]">{session.mode} Session</p>
+                          <h4 className="font-bold text-sm text-[#292524]">{session.customerId ? `${session.customerId.firstName} ${session.customerId.lastName}` : 'Client'}</h4>
+                          <p className="text-xs text-[#57534E]">{session.mode} Session</p>
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="font-bold text-sm text-[#2DD4BF]">{new Date(session.date).toLocaleDateString()}</div>
-                        <div className="text-xs text-[#9AAEAE]">{session.startTime} ({session.duration || 60}m)</div>
+                        <div className="font-bold text-sm text-[#B76E79]">{new Date(session.date).toLocaleDateString()}</div>
+                        <div className="text-xs text-[#57534E]">{session.startTime} ({session.duration || 60}m)</div>
                       </div>
                     </div>
                   ))
@@ -657,22 +657,22 @@ const TrainerDashboard = () => {
             </div>
 
             {/* Quick AI Coaching Tips */}
-            <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-6 flex flex-col h-full shadow-sm">
-              <div className="flex justify-between items-center mb-5 border-b border-[#2A3A3A] pb-4">
-                <h2 className="text-xl font-bold text-[#F5FAFA]">Trainer Review Standards</h2>
-                <span className="text-xs text-[#9AAEAE] font-medium">Protocol</span>
+            <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-6 flex flex-col h-full shadow-sm">
+              <div className="flex justify-between items-center mb-5 border-b border-[#E7DADD] pb-4">
+                <h2 className="text-xl font-bold text-[#292524]">Trainer Review Standards</h2>
+                <span className="text-xs text-[#57534E] font-medium">Protocol</span>
               </div>
-              <div className="space-y-3.5 flex-1 text-xs text-[#9AAEAE] leading-relaxed">
-                <div className="p-3 bg-[#0E1415] rounded-xl border border-[#2A3A3A]/60">
-                  <strong className="text-[#F5FAFA] block font-bold mb-1">1. Calibrate Sets & Reps</strong>
+              <div className="space-y-3.5 flex-1 text-xs text-[#57534E] leading-relaxed">
+                <div className="p-3 bg-[#F3E8E8] rounded-xl border border-[#E7DADD]/60">
+                  <strong className="text-[#292524] block font-bold mb-1">1. Calibrate Sets & Reps</strong>
                   Verify the AI recommendation matches client experience. For beginners, taper high intensity to 3 sets × 10 reps.
                 </div>
-                <div className="p-3 bg-[#0E1415] rounded-xl border border-[#2A3A3A]/60">
-                  <strong className="text-[#F5FAFA] block font-bold mb-1">2. Screen Contraindicated Movements</strong>
+                <div className="p-3 bg-[#F3E8E8] rounded-xl border border-[#E7DADD]/60">
+                  <strong className="text-[#292524] block font-bold mb-1">2. Screen Contraindicated Movements</strong>
                   Check for reported knee, spine, or shoulder injuries and replace unsuitable exercises.
                 </div>
-                <div className="p-3 bg-[#0E1415] rounded-xl border border-[#2A3A3A]/60">
-                  <strong className="text-[#F5FAFA] block font-bold mb-1">3. Personalize Coach Notes</strong>
+                <div className="p-3 bg-[#F3E8E8] rounded-xl border border-[#E7DADD]/60">
+                  <strong className="text-[#292524] block font-bold mb-1">3. Personalize Coach Notes</strong>
                   Provide welcoming motivation and hydration advice before finalizing the plan.
                 </div>
               </div>

@@ -4,7 +4,7 @@ import api from '../../utils/api';
 
 const STATUS_COLORS: Record<string, string> = {
   Pending: 'bg-amber-100 text-amber-700',
-  Approved: 'bg-[#1B2728]/10 text-[#2DD4BF]',
+  Approved: 'bg-[#F3E8E8]/10 text-[#B76E79]',
   Rejected: 'bg-red-100 text-red-700',
 };
 
@@ -31,41 +31,41 @@ const TrainerWithdrawalRequests = () => {
     <div className="max-w-4xl mx-auto space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-[#F5FAFA]">Withdrawal Requests</h1>
-          <p className="text-[#9AAEAE] text-sm mt-1">Track your pending payout requests</p>
+          <h1 className="text-2xl font-bold text-[#292524]">Withdrawal Requests</h1>
+          <p className="text-[#57534E] text-sm mt-1">Track your pending payout requests</p>
         </div>
       </div>
 
-      <div className="bg-[#141D1E] border border-[#1B2728] rounded-2xl overflow-hidden shadow-sm">
+      <div className="bg-[#FFFFFF] border border-[#F3E8E8] rounded-2xl overflow-hidden shadow-sm">
         {loading ? (
           <div className="flex items-center justify-center py-20">
-            <div className="w-8 h-8 border-4 border-[#2DD4BF] border-t-transparent rounded-full animate-spin" />
+            <div className="w-8 h-8 border-4 border-[#B76E79] border-t-transparent rounded-full animate-spin" />
           </div>
         ) : requests.length === 0 ? (
           <div className="text-center py-20">
-            <CreditCard size={40} className="mx-auto text-[#2A3A3A] mb-3" />
-            <p className="text-[#9AAEAE] font-semibold">No pending requests</p>
-            <p className="text-[#9AAEAE] text-sm mt-1">You don't have any pending withdrawal requests</p>
+            <CreditCard size={40} className="mx-auto text-[#E7DADD] mb-3" />
+            <p className="text-[#57534E] font-semibold">No pending requests</p>
+            <p className="text-[#57534E] text-sm mt-1">You don't have any pending withdrawal requests</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead>
-                <tr className="bg-[#0E1415] border-b border-[#1B2728]">
-                  <th className="px-5 py-3.5 font-semibold text-[#9AAEAE]">Date Requested</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#9AAEAE] text-right">Amount</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#9AAEAE] text-right">Status</th>
+                <tr className="bg-[#F3E8E8] border-b border-[#F3E8E8]">
+                  <th className="px-5 py-3.5 font-semibold text-[#57534E]">Date Requested</th>
+                  <th className="px-5 py-3.5 font-semibold text-[#57534E] text-right">Amount</th>
+                  <th className="px-5 py-3.5 font-semibold text-[#57534E] text-right">Status</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#0E1415]">
+              <tbody className="divide-y divide-[#F3E8E8]">
                 {requests.map((r, idx) => (
-                  <tr key={idx} className="hover:bg-[#0E1415] transition-colors">
-                    <td className="px-5 py-4 text-[#9AAEAE] whitespace-nowrap">
+                  <tr key={idx} className="hover:bg-[#F3E8E8] transition-colors">
+                    <td className="px-5 py-4 text-[#57534E] whitespace-nowrap">
                       {new Date(r.requestedAt || r.createdAt).toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true })}
                     </td>
-                    <td className="px-5 py-4 text-right font-bold text-[#F5FAFA]">₹{r.amount?.toLocaleString('en-IN')}</td>
+                    <td className="px-5 py-4 text-right font-bold text-[#292524]">₹{r.amount?.toLocaleString('en-IN')}</td>
                     <td className="px-5 py-4 text-right">
-                      <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold ${STATUS_COLORS[r.status] || 'bg-[#1B2728] text-[#9AAEAE]'}`}>
+                      <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold ${STATUS_COLORS[r.status] || 'bg-[#F3E8E8] text-[#57534E]'}`}>
                         <Clock size={12} />
                         {r.status}
                       </span>
@@ -78,7 +78,7 @@ const TrainerWithdrawalRequests = () => {
         )}
       </div>
 
-      <div className="p-4 bg-[#1B2728] border border-[#2A3A3A] rounded-xl flex gap-3 text-[#2DD4BF] text-sm">
+      <div className="p-4 bg-[#F3E8E8] border border-[#E7DADD] rounded-xl flex gap-3 text-[#B76E79] text-sm">
         <AlertCircle size={20} className="shrink-0 mt-0.5" />
         <p>Your Gym Owner will review and process your pending withdrawal requests. Once approved, the funds will be transferred to your configured bank account.</p>
       </div>

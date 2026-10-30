@@ -27,7 +27,7 @@ export const TrainerClientsTabs = () => {
 
   return (
     <div className="w-full pb-2">
-      <div className="flex items-center gap-2 p-1.5 bg-[#141D1E] border border-[#2A3A3A] rounded-2xl w-full sm:w-fit overflow-x-auto shadow-xs">
+      <div className="flex items-center gap-2 p-1.5 bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl w-full sm:w-fit overflow-x-auto shadow-xs">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           return (
@@ -36,11 +36,11 @@ export const TrainerClientsTabs = () => {
               to={tab.path}
               className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm transition-all whitespace-nowrap shrink-0 ${
                 tab.isActive
-                  ? 'bg-[#2DD4BF] text-white font-bold shadow-sm'
-                  : 'text-[#9AAEAE] hover:text-[#FFFFFF] hover:bg-[#0E1415] font-medium'
+                  ? 'bg-[#B76E79] text-white font-bold shadow-sm'
+                  : 'text-[#57534E] hover:text-[#FFFFFF] hover:bg-[#F3E8E8] font-medium'
               }`}
             >
-              <Icon size={16} className={tab.isActive ? 'text-white' : 'text-[#9AAEAE]'} />
+              <Icon size={16} className={tab.isActive ? 'text-white' : 'text-[#57534E]'} />
               <span>{tab.label}</span>
             </Link>
           );

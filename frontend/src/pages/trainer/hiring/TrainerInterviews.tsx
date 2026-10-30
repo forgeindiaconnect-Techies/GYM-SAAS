@@ -57,7 +57,7 @@ export default function TrainerInterviews() {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white flex items-center gap-2">
+          <h1 className="text-2xl font-bold text-[#292524] flex items-center gap-2">
             <Calendar className="w-7 h-7 text-cyan-400" />
             Interview Schedule
           </h1>
@@ -68,14 +68,14 @@ export default function TrainerInterviews() {
         <div className="flex items-center gap-3">
           <Link
             to="/trainer/applications"
-            className="px-4 py-2 bg-[#141D1E] hover:bg-[#1B2728] text-slate-300 rounded-xl border border-[#2A3A3A] text-sm flex items-center gap-2"
+            className="px-4 py-2 bg-[#FFFFFF] hover:bg-[#F3E8E8] text-slate-300 rounded-xl border border-[#E7DADD] text-sm flex items-center gap-2"
           >
-            <Briefcase className="w-4 h-4 text-[#2DD4BF]" />
+            <Briefcase className="w-4 h-4 text-[#B76E79]" />
             Applications
           </Link>
           <Link
             to="/trainer/job-offers"
-            className="px-4 py-2 bg-[#2DD4BF]/10 hover:bg-[#2DD4BF]/20 text-[#2DD4BF] border border-[#2DD4BF]/30 rounded-xl text-sm font-semibold"
+            className="px-4 py-2 bg-[#B76E79]/10 hover:bg-[#B76E79]/20 text-[#B76E79] border border-[#B76E79]/30 rounded-xl text-sm font-semibold"
           >
             Job Offers
           </Link>
@@ -83,20 +83,20 @@ export default function TrainerInterviews() {
       </div>
 
       {loading ? (
-        <div className="p-12 text-center text-slate-400 bg-[#0E1415] rounded-2xl border border-[#2A3A3A]">
+        <div className="p-12 text-center text-slate-400 bg-[#F3E8E8] rounded-2xl border border-[#E7DADD]">
           <div className="inline-block animate-spin w-8 h-8 border-4 border-cyan-400 border-t-transparent rounded-full mb-3" />
           <p>Loading your interview invites...</p>
         </div>
       ) : interviews.length === 0 ? (
-        <div className="p-12 text-center bg-[#0E1415] rounded-2xl border border-[#2A3A3A]">
+        <div className="p-12 text-center bg-[#F3E8E8] rounded-2xl border border-[#E7DADD]">
           <Calendar className="w-12 h-12 text-cyan-500/30 mx-auto mb-3" />
-          <h3 className="text-lg font-semibold text-white mb-1">No interviews scheduled yet</h3>
+          <h3 className="text-lg font-semibold text-[#292524] mb-1">No interviews scheduled yet</h3>
           <p className="text-sm text-slate-400 max-w-md mx-auto mb-4">
             Once a gym owner reviews your profile and schedules an interview, the meeting details and links will appear here.
           </p>
           <Link
             to="/trainer/jobs"
-            className="px-4 py-2 bg-[#2DD4BF] text-black font-semibold rounded-xl text-xs inline-block"
+            className="px-4 py-2 bg-[#B76E79] text-white font-semibold rounded-xl text-xs inline-block"
           >
             Explore Vacancies
           </Link>
@@ -106,16 +106,16 @@ export default function TrainerInterviews() {
           {interviews.map((inv) => (
             <div
               key={inv._id}
-              className="bg-[#0E1415] border border-[#2A3A3A] hover:border-cyan-500/40 rounded-2xl p-5 transition-all flex flex-col justify-between space-y-4"
+              className="bg-[#F3E8E8] border border-[#E7DADD] hover:border-cyan-500/40 rounded-2xl p-5 transition-all flex flex-col justify-between space-y-4"
             >
               <div>
                 <div className="flex items-start justify-between gap-2 mb-2">
                   <div>
-                    <span className="text-xs text-[#2DD4BF] font-semibold flex items-center gap-1">
+                    <span className="text-xs text-[#B76E79] font-semibold flex items-center gap-1">
                       <Building2 className="w-3.5 h-3.5" />
                       {inv.jobId?.gymName || 'Fitness Club'}
                     </span>
-                    <h3 className="text-base font-bold text-white mt-1">
+                    <h3 className="text-base font-bold text-[#292524] mt-1">
                       {inv.jobId?.title || 'Gym Trainer'}
                     </h3>
                   </div>
@@ -128,7 +128,7 @@ export default function TrainerInterviews() {
                   </span>
                 </div>
 
-                <div className="bg-[#141D1E] p-3 rounded-xl border border-[#2A3A3A] space-y-2 text-xs mt-3">
+                <div className="bg-[#FFFFFF] p-3 rounded-xl border border-[#E7DADD] space-y-2 text-xs mt-3">
                   <div className="flex items-center gap-2 text-slate-300">
                     <Calendar className="w-3.5 h-3.5 text-cyan-400" />
                     <span className="font-semibold text-white">
@@ -151,7 +151,7 @@ export default function TrainerInterviews() {
                 </div>
 
                 {/* Venue or Link */}
-                <div className="mt-3 text-xs bg-[#1B2728] p-3 rounded-xl border border-[#2A3A3A]">
+                <div className="mt-3 text-xs bg-[#F3E8E8] p-3 rounded-xl border border-[#E7DADD]">
                   <span className="text-slate-500 block uppercase font-semibold text-[10px] mb-1">
                     Meeting Location / Link
                   </span>
@@ -174,7 +174,7 @@ export default function TrainerInterviews() {
                 </div>
 
                 {inv.instructions && (
-                  <div className="mt-3 text-xs text-slate-300 italic bg-[#141D1E] p-2.5 rounded-lg border border-[#2A3A3A]">
+                  <div className="mt-3 text-xs text-slate-300 italic bg-[#FFFFFF] p-2.5 rounded-lg border border-[#E7DADD]">
                     <span className="text-slate-500 not-italic uppercase font-semibold text-[10px] block mb-0.5">
                       Instructions from Gym Owner
                     </span>

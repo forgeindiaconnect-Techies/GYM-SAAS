@@ -249,8 +249,8 @@ const GymAdminTrainers = () => {
       <TrainerNavigationTabs />
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-[#F5FAFA] tracking-tight">Trainers</h1>
-          <p className="text-[#9AAEAE] mt-1">Manage all trainers hired by your gym.</p>
+          <h1 className="text-3xl font-bold text-[#292524] tracking-tight">Trainers</h1>
+          <p className="text-[#57534E] mt-1">Manage all trainers hired by your gym.</p>
         </div>
         <button 
           onClick={() => { 
@@ -262,16 +262,16 @@ const GymAdminTrainers = () => {
               setShowHireModal(true); setHireMethod(null); 
             }
           }} 
-          className="flex items-center space-x-2 px-4 py-2 bg-[#2DD4BF] text-[#06201D] font-bold rounded-xl font-semibold hover:bg-[#5EEAD4] transition-colors"
+          className="flex items-center space-x-2 px-4 py-2 bg-[#B76E79] text-white font-bold rounded-xl font-semibold hover:bg-[#9F5965] transition-colors"
         >
           <Plus size={20} />
           <span>Hire Trainer</span>
         </button>
       </div>
 
-      <div className="bg-[#FFFFFF] border border-[#2A3A3A] rounded-2xl overflow-hidden">
-        <table className="w-full text-left text-sm text-[#9AAEAE]">
-          <thead className="bg-[#0E1415] border-b border-[#2A3A3A] text-[#F5FAFA]">
+      <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl overflow-hidden">
+        <table className="w-full text-left text-sm text-[#57534E]">
+          <thead className="bg-[#F3E8E8] border-b border-[#E7DADD] text-[#292524]">
             <tr>
               <th className="px-6 py-4 font-bold">Trainer Info</th>
               <th className="px-6 py-4 font-bold">Specialization</th>
@@ -281,7 +281,7 @@ const GymAdminTrainers = () => {
               <th className="px-6 py-4 font-bold">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#2A3A3A]">
+          <tbody className="divide-y divide-[#E7DADD]">
             {isLoading ? (
               <tr><td colSpan={6} className="px-6 py-8 text-center">Loading trainers...</td></tr>
             ) : trainers.length === 0 && invitations.length === 0 ? (
@@ -290,69 +290,69 @@ const GymAdminTrainers = () => {
               <>
                 {/* Active/Suspended/Pending Profiles */}
                 {trainers.map(trainer => (
-                  <tr key={trainer._id} className="hover:bg-[#0E1415] transition-colors">
+                  <tr key={trainer._id} className="hover:bg-[#F3E8E8] transition-colors">
                     <td className="px-6 py-4">
-                      <div className="font-bold text-[#F5FAFA]">{trainer.name}</div>
-                      <div className="text-xs text-[#9AAEAE]">{trainer.email}</div>
-                      {trainer.phone && <div className="text-xs text-[#9AAEAE]">{trainer.phone}</div>}
+                      <div className="font-bold text-[#292524]">{trainer.name}</div>
+                      <div className="text-xs text-[#57534E]">{trainer.email}</div>
+                      {trainer.phone && <div className="text-xs text-[#57534E]">{trainer.phone}</div>}
                     </td>
                     <td className="px-6 py-4 font-medium">{trainer.specialization || 'General'}</td>
                     <td className="px-6 py-4 capitalize font-medium">
                       <span className={`px-2 py-0.5 rounded text-xs font-semibold ${
-                        trainer.trainingMode === 'online' ? 'bg-[#1B2728] text-[#2DD4BF]' :
-                        trainer.trainingMode === 'both' ? 'bg-[#1B2728] text-[#2DD4BF]' :
-                        'bg-[#1B2728] text-[#C1D0D0]'
+                        trainer.trainingMode === 'online' ? 'bg-[#F3E8E8] text-[#B76E79]' :
+                        trainer.trainingMode === 'both' ? 'bg-[#F3E8E8] text-[#B76E79]' :
+                        'bg-[#F3E8E8] text-[#292524]'
                       }`}>
                         {trainer.trainingMode || 'offline'}
                       </span>
                     </td>
-                    <td className="px-6 py-4 font-semibold text-[#F5FAFA]">
+                    <td className="px-6 py-4 font-semibold text-[#292524]">
                       {trainer.fee ? (
                         <div>
                           <span>₹{Number(trainer.fee).toLocaleString('en-IN')}</span>
-                          <span className="text-xs text-[#9AAEAE] font-normal"> / {trainer.paymentType === 'Per Week' ? 'wk' : trainer.paymentType === 'Per Session' ? 'ses' : 'mo'}</span>
+                          <span className="text-xs text-[#57534E] font-normal"> / {trainer.paymentType === 'Per Week' ? 'wk' : trainer.paymentType === 'Per Session' ? 'ses' : 'mo'}</span>
                         </div>
                       ) : trainer.expectedSalary ? (
                         <div>
                           <span>₹{Number(trainer.expectedSalary).toLocaleString('en-IN')}</span>
-                          <span className="text-xs text-[#2DD4BF] font-normal block text-[10px]">Expected</span>
+                          <span className="text-xs text-[#B76E79] font-normal block text-[10px]">Expected</span>
                         </div>
                       ) : (
-                        <span className="text-[#9AAEAE] italic text-xs">Not configured</span>
+                        <span className="text-[#57534E] italic text-xs">Not configured</span>
                       )}
                     </td>
                     <td className="px-6 py-4">
                       <span className={`px-2.5 py-1 rounded-full text-xs font-bold border ${
-                        trainer.status === 'Active' ? 'bg-[#2DD4BF]/10 text-[#2DD4BF] border-[#2DD4BF]/20' : 
-                        trainer.status === 'Pending' ? 'bg-[#2DD4BF]/10 text-[#2DD4BF] border-[#2A3A3A]/20' : 
+                        trainer.status === 'Active' ? 'bg-[#B76E79]/10 text-[#B76E79] border-[#B76E79]/20' : 
+                        trainer.status === 'Pending' ? 'bg-[#B76E79]/10 text-[#B76E79] border-[#E7DADD]/20' : 
                         'bg-red-500/10 text-red-500 border-red-500/20'}`}>
                         {trainer.status}
                       </span>
                     </td>
                     <td className="px-6 py-4 flex space-x-3 items-center">
-                      <button onClick={() => setSelectedTrainer(trainer)} className="text-[#9AAEAE] hover:text-[#2DD4BF] transition-colors" title="View Profile">
+                      <button onClick={() => setSelectedTrainer(trainer)} className="text-[#57534E] hover:text-[#B76E79] transition-colors" title="View Profile">
                         <Eye size={18} />
                       </button>
-                      <button onClick={() => openEditModal(trainer)} className="text-[#9AAEAE] hover:text-[#2DD4BF] transition-colors" title="Edit Trainer">
+                      <button onClick={() => openEditModal(trainer)} className="text-[#57534E] hover:text-[#B76E79] transition-colors" title="Edit Trainer">
                         <Edit size={18} />
                       </button>
                       
-                      <div className="flex space-x-2 border-l border-r border-[#2A3A3A] px-3">
-                        <button onClick={() => handleSetStatus(trainer._id, 'Active')} className={`transition-colors ${trainer.status === 'Active' ? 'text-[#2DD4BF]' : 'text-[#9AAEAE] hover:text-[#2DD4BF]'}`} title="Set Active">
+                      <div className="flex space-x-2 border-l border-r border-[#E7DADD] px-3">
+                        <button onClick={() => handleSetStatus(trainer._id, 'Active')} className={`transition-colors ${trainer.status === 'Active' ? 'text-[#B76E79]' : 'text-[#57534E] hover:text-[#B76E79]'}`} title="Set Active">
                           <CheckCircle size={18} />
                         </button>
-                        <button onClick={() => handleSetStatus(trainer._id, 'Suspended')} className={`transition-colors ${trainer.status === 'Suspended' ? 'text-[#2DD4BF]' : 'text-[#9AAEAE] hover:text-[#2DD4BF]'}`} title="Set Inactive (Suspend)">
+                        <button onClick={() => handleSetStatus(trainer._id, 'Suspended')} className={`transition-colors ${trainer.status === 'Suspended' ? 'text-[#B76E79]' : 'text-[#57534E] hover:text-[#B76E79]'}`} title="Set Inactive (Suspend)">
                           <PauseCircle size={18} />
                         </button>
-                        <button onClick={() => handleSetStatus(trainer._id, 'Pending')} className={`transition-colors ${trainer.status === 'Pending' ? 'text-[#2DD4BF]' : 'text-[#9AAEAE] hover:text-[#2DD4BF]'}`} title="Set Pending">
+                        <button onClick={() => handleSetStatus(trainer._id, 'Pending')} className={`transition-colors ${trainer.status === 'Pending' ? 'text-[#B76E79]' : 'text-[#57534E] hover:text-[#B76E79]'}`} title="Set Pending">
                           <Clock size={18} />
                         </button>
-                        <button onClick={() => handleSetStatus(trainer._id, 'Rejected')} className={`transition-colors ${trainer.status === 'Rejected' ? 'text-[#2DD4BF]' : 'text-[#9AAEAE] hover:text-[#2DD4BF]'}`} title="Set Rejected">
+                        <button onClick={() => handleSetStatus(trainer._id, 'Rejected')} className={`transition-colors ${trainer.status === 'Rejected' ? 'text-[#B76E79]' : 'text-[#57534E] hover:text-[#B76E79]'}`} title="Set Rejected">
                           <Ban size={18} />
                         </button>
                       </div>
                       
-                      <button onClick={() => handleDelete(trainer._id)} className="text-[#9AAEAE] hover:text-red-500 transition-colors" title="Remove">
+                      <button onClick={() => handleDelete(trainer._id)} className="text-[#57534E] hover:text-red-500 transition-colors" title="Remove">
                         <Trash2 size={18} />
                       </button>
                     </td>
@@ -361,24 +361,24 @@ const GymAdminTrainers = () => {
                 
                 {/* Pending Invitations */}
                 {invitations.map(invite => (
-                  <tr key={invite._id} className="bg-[#0E1415]/50 hover:bg-[#0E1415] transition-colors opacity-70">
+                  <tr key={invite._id} className="bg-[#F3E8E8]/50 hover:bg-[#F3E8E8] transition-colors opacity-70">
                     <td className="px-6 py-4">
-                      <div className="font-bold text-[#F5FAFA]">{invite.trainerName} <span className="text-xs font-normal ml-2 bg-[#1B2728] text-[#2DD4BF] px-2 py-0.5 rounded-full">Invited</span></div>
+                      <div className="font-bold text-[#292524]">{invite.trainerName} <span className="text-xs font-normal ml-2 bg-[#F3E8E8] text-[#B76E79] px-2 py-0.5 rounded-full">Invited</span></div>
                       <div className="text-xs">{invite.email}</div>
                     </td>
                     <td className="px-6 py-4 font-medium">-</td>
                     <td className="px-6 py-4 capitalize font-medium">{invite.trainingMode || 'offline'}</td>
-                    <td className="px-6 py-4 text-xs text-[#9AAEAE]">—</td>
+                    <td className="px-6 py-4 text-xs text-[#57534E]">—</td>
                     <td className="px-6 py-4">
                       <span className={`px-2.5 py-1 rounded-full text-xs font-bold border ${
-                        invite.status === 'Pending' ? 'bg-[#1B2728] text-[#2DD4BF] border-[#1B2728]/20' : 
-                        invite.status === 'Accepted' ? 'bg-[#2DD4BF]/10 text-[#2DD4BF] border-[#2DD4BF]/20' : 
-                        'bg-gray-500/10 text-[#9AAEAE] border-gray-500/20'}`}>
+                        invite.status === 'Pending' ? 'bg-[#F3E8E8] text-[#B76E79] border-[#F3E8E8]/20' : 
+                        invite.status === 'Accepted' ? 'bg-[#B76E79]/10 text-[#B76E79] border-[#B76E79]/20' : 
+                        'bg-gray-500/10 text-[#57534E] border-gray-500/20'}`}>
                         Invite {invite.status}
                       </span>
                     </td>
                     <td className="px-6 py-4 flex space-x-3 items-center">
-                      <button disabled className="text-[#9AAEAE] cursor-not-allowed" title="Profile not created yet">
+                      <button disabled className="text-[#57534E] cursor-not-allowed" title="Profile not created yet">
                         <Eye size={18} />
                       </button>
                     </td>
@@ -393,27 +393,27 @@ const GymAdminTrainers = () => {
       {/* Hire Trainer Selection Modal */}
       {showHireModal && !hireMethod && (
         <div className="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-[#FFFFFF] rounded-2xl max-w-2xl w-full shadow-2xl overflow-hidden border border-[#2A3A3A] mt-10 mb-10">
-            <div className="p-6 border-b border-[#2A3A3A] flex justify-between items-center">
-              <h2 className="text-2xl font-bold text-[#F5FAFA]">Hire Trainer</h2>
-              <button onClick={() => setShowHireModal(false)} className="text-[#9AAEAE] hover:text-[#FFFFFF]"><X size={24} /></button>
+          <div className="bg-[#FFFFFF] rounded-2xl max-w-2xl w-full shadow-2xl overflow-hidden border border-[#E7DADD] mt-10 mb-10">
+            <div className="p-6 border-b border-[#E7DADD] flex justify-between items-center">
+              <h2 className="text-2xl font-bold text-[#292524]">Hire Trainer</h2>
+              <button onClick={() => setShowHireModal(false)} className="text-[#57534E] hover:text-[#FFFFFF]"><X size={24} /></button>
             </div>
             <div className="p-8">
-              <h3 className="text-center text-lg text-[#9AAEAE] mb-8">How would you like to add the trainer?</h3>
+              <h3 className="text-center text-lg text-[#57534E] mb-8">How would you like to add the trainer?</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <button onClick={() => setHireMethod('manual')} className="flex flex-col items-center p-8 border-2 border-[#2A3A3A] rounded-2xl hover:border-[#2DD4BF] hover:bg-[#0E1415] transition-all group text-left">
-                  <div className="w-16 h-16 bg-[#2DD4BF]/10 text-[#2DD4BF] rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <button onClick={() => setHireMethod('manual')} className="flex flex-col items-center p-8 border-2 border-[#E7DADD] rounded-2xl hover:border-[#B76E79] hover:bg-[#F3E8E8] transition-all group text-left">
+                  <div className="w-16 h-16 bg-[#B76E79]/10 text-[#B76E79] rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                     <UserPlus size={32} />
                   </div>
-                  <h4 className="text-xl font-bold text-[#F5FAFA] mb-2">Manual Add</h4>
-                  <p className="text-sm text-[#9AAEAE] text-center">Enter the trainer's details and create their profile yourself.</p>
+                  <h4 className="text-xl font-bold text-[#292524] mb-2">Manual Add</h4>
+                  <p className="text-sm text-[#57534E] text-center">Enter the trainer's details and create their profile yourself.</p>
                 </button>
-                <button onClick={() => setHireMethod('invite')} className="flex flex-col items-center p-8 border-2 border-[#2A3A3A] rounded-2xl hover:border-[#2DD4BF] hover:bg-[#0E1415] transition-all group text-left">
-                  <div className="w-16 h-16 bg-[#2DD4BF]/10 text-[#2DD4BF] rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <button onClick={() => setHireMethod('invite')} className="flex flex-col items-center p-8 border-2 border-[#E7DADD] rounded-2xl hover:border-[#B76E79] hover:bg-[#F3E8E8] transition-all group text-left">
+                  <div className="w-16 h-16 bg-[#B76E79]/10 text-[#B76E79] rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                     <Mail size={32} />
                   </div>
-                  <h4 className="text-xl font-bold text-[#F5FAFA] mb-2">Send Invitation</h4>
-                  <p className="text-sm text-[#9AAEAE] text-center">Send a secure invitation so the trainer can create and complete their own profile.</p>
+                  <h4 className="text-xl font-bold text-[#292524] mb-2">Send Invitation</h4>
+                  <p className="text-sm text-[#57534E] text-center">Send a secure invitation so the trainer can create and complete their own profile.</p>
                 </button>
               </div>
             </div>
@@ -424,40 +424,40 @@ const GymAdminTrainers = () => {
       {/* Manual Add Form Modal */}
       {showHireModal && hireMethod === 'manual' && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-[#FFFFFF] rounded-2xl max-w-3xl w-full max-h-[85vh] flex flex-col shadow-2xl border border-[#2A3A3A] overflow-hidden my-auto">
-            <div className="p-6 border-b border-[#2A3A3A] flex justify-between items-center bg-[#141D1E] z-10 shrink-0">
+          <div className="bg-[#FFFFFF] rounded-2xl max-w-3xl w-full max-h-[85vh] flex flex-col shadow-2xl border border-[#E7DADD] overflow-hidden my-auto">
+            <div className="p-6 border-b border-[#E7DADD] flex justify-between items-center bg-[#FFFFFF] z-10 shrink-0">
               <div>
-                <h2 className="text-2xl font-bold text-[#F5FAFA]">Manual Add Trainer</h2>
-                <p className="text-xs text-[#9AAEAE] mt-0.5">
+                <h2 className="text-2xl font-bold text-[#292524]">Manual Add Trainer</h2>
+                <p className="text-xs text-[#57534E] mt-0.5">
                   {!otpVerified ? 'Step 1 of 2: Verify trainer email address with OTP' : 'Step 2 of 2: Complete trainer profile details'}
                 </p>
               </div>
               <button 
                 onClick={() => { setShowHireModal(false); setHireMethod(null); setOtpVerified(false); setOtpSent(false); setOtpInput(''); }} 
-                className="text-[#9AAEAE] hover:text-[#FFFFFF]"
+                className="text-[#57534E] hover:text-[#FFFFFF]"
               >
                 <X size={24} />
               </button>
             </div>
 
             {/* Stepper Indicator */}
-            <div className="px-6 py-3 border-b border-[#2A3A3A] bg-[#0E1415] flex items-center justify-between shrink-0">
+            <div className="px-6 py-3 border-b border-[#E7DADD] bg-[#F3E8E8] flex items-center justify-between shrink-0">
               <div className="flex items-center gap-2">
-                <span className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ${otpVerified ? 'bg-[#2DD4BF] text-white' : 'bg-[#2DD4BF] text-white ring-4 ring-[#2DD4BF]/10'}`}>
+                <span className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ${otpVerified ? 'bg-[#B76E79] text-white' : 'bg-[#B76E79] text-white ring-4 ring-[#B76E79]/10'}`}>
                   {otpVerified ? <Check size={14} /> : '1'}
                 </span>
-                <span className={`text-sm font-bold ${otpVerified ? 'text-[#2DD4BF]' : 'text-[#F5FAFA]'}`}>
+                <span className={`text-sm font-bold ${otpVerified ? 'text-[#B76E79]' : 'text-[#292524]'}`}>
                   Email Verification {otpVerified && '✓'}
                 </span>
               </div>
               <div className="h-0.5 flex-1 mx-4 bg-gray-200">
-                <div className={`h-full transition-all duration-500 ${otpVerified ? 'bg-[#2DD4BF] w-full' : 'w-0'}`} />
+                <div className={`h-full transition-all duration-500 ${otpVerified ? 'bg-[#B76E79] w-full' : 'w-0'}`} />
               </div>
               <div className="flex items-center gap-2">
-                <span className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ${otpVerified ? 'bg-[#2DD4BF] text-white ring-4 ring-[#2DD4BF]/10' : 'bg-gray-200 text-[#9AAEAE]'}`}>
+                <span className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ${otpVerified ? 'bg-[#B76E79] text-white ring-4 ring-[#B76E79]/10' : 'bg-gray-200 text-[#57534E]'}`}>
                   {otpVerified ? '2' : <Lock size={12} />}
                 </span>
-                <span className={`text-sm font-bold ${otpVerified ? 'text-[#F5FAFA]' : 'text-[#9AAEAE]'}`}>
+                <span className={`text-sm font-bold ${otpVerified ? 'text-[#292524]' : 'text-[#57534E]'}`}>
                   Trainer Information
                 </span>
               </div>
@@ -467,13 +467,13 @@ const GymAdminTrainers = () => {
               
               <section>
                 <div className="flex items-center justify-between border-b pb-2 mb-4">
-                  <h3 className="text-lg font-bold text-[#F5FAFA]">Basic Information</h3>
+                  <h3 className="text-lg font-bold text-[#292524]">Basic Information</h3>
                   {!otpVerified ? (
                     <span className="text-xs font-semibold px-2.5 py-1 bg-amber-50 text-amber-700 border border-amber-200 rounded-full flex items-center gap-1">
                       <Lock size={12} /> Email OTP Verification Required
                     </span>
                   ) : (
-                    <span className="text-xs font-semibold px-2.5 py-1 bg-[#1B2728] text-[#2DD4BF] border border-[#2A3A3A] rounded-full flex items-center gap-1">
+                    <span className="text-xs font-semibold px-2.5 py-1 bg-[#F3E8E8] text-[#B76E79] border border-[#E7DADD] rounded-full flex items-center gap-1">
                       <Check size={12} /> Email Verified
                     </span>
                   )}
@@ -481,17 +481,17 @@ const GymAdminTrainers = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-bold text-[#9AAEAE] mb-1">Full Name *</label>
+                    <label className="block text-sm font-bold text-[#57534E] mb-1">Full Name *</label>
                     <input 
                       required 
                       value={manualForm.name} 
                       onChange={e => setManualForm({...manualForm, name: e.target.value})} 
                       placeholder="e.g. John Doe"
-                      className="w-full border border-[#2A3A3A] rounded-lg px-4 py-2 outline-none focus:border-[#2DD4BF]" 
+                      className="w-full border border-[#E7DADD] rounded-lg px-4 py-2 outline-none focus:border-[#B76E79]" 
                     />
                   </div>
                   <div className="flex flex-col">
-                    <label className="block text-sm font-bold text-[#9AAEAE] mb-1">Email *</label>
+                    <label className="block text-sm font-bold text-[#57534E] mb-1">Email *</label>
                     <div className="flex space-x-2">
                       <input 
                         type="email" 
@@ -500,7 +500,7 @@ const GymAdminTrainers = () => {
                         onChange={e => { setManualForm({...manualForm, email: e.target.value}); setOtpVerified(false); setOtpSent(false); }} 
                         disabled={otpVerified}
                         placeholder="trainer@example.com"
-                        className="w-full border border-[#2A3A3A] rounded-lg px-4 py-2 outline-none focus:border-[#2DD4BF] disabled:bg-[#1B2728] disabled:text-[#C1D0D0]" 
+                        className="w-full border border-[#E7DADD] rounded-lg px-4 py-2 outline-none focus:border-[#B76E79] disabled:bg-[#F3E8E8] disabled:text-[#292524]" 
                       />
                       {!otpVerified && (
                         <button 
@@ -522,15 +522,15 @@ const GymAdminTrainers = () => {
                               alert('Enter a valid email address first'); 
                             } 
                           }} 
-                          className="px-3.5 py-2 bg-[#1B2728] text-[#2DD4BF] font-bold rounded-lg hover:bg-[#1B2728] text-sm whitespace-nowrap transition-colors"
+                          className="px-3.5 py-2 bg-[#F3E8E8] text-[#B76E79] font-bold rounded-lg hover:bg-[#F3E8E8] text-sm whitespace-nowrap transition-colors"
                         >
                           {otpSent ? 'Resend OTP' : 'Send OTP'}
                         </button>
                       )}
                       {otpVerified && (
                         <div className="flex items-center gap-1.5 shrink-0">
-                          <div className="px-3 py-2 bg-[#1B2728] text-[#2DD4BF] border border-[#2A3A3A] font-bold rounded-lg flex items-center text-sm whitespace-nowrap">
-                            <Check size={16} className="mr-1 text-[#2DD4BF]"/> Verified
+                          <div className="px-3 py-2 bg-[#F3E8E8] text-[#B76E79] border border-[#E7DADD] font-bold rounded-lg flex items-center text-sm whitespace-nowrap">
+                            <Check size={16} className="mr-1 text-[#B76E79]"/> Verified
                           </div>
                           <button
                             type="button"
@@ -539,7 +539,7 @@ const GymAdminTrainers = () => {
                               setOtpSent(false);
                               setOtpInput('');
                             }}
-                            className="px-2.5 py-2 text-xs font-semibold text-[#9AAEAE] hover:text-red-600 hover:bg-[#1B2728] rounded-lg transition-colors border border-[#2A3A3A]"
+                            className="px-2.5 py-2 text-xs font-semibold text-[#57534E] hover:text-red-600 hover:bg-[#F3E8E8] rounded-lg transition-colors border border-[#E7DADD]"
                             title="Change email and re-verify"
                           >
                             Change
@@ -572,7 +572,7 @@ const GymAdminTrainers = () => {
                               }
                             }
                           }}
-                          className="w-full border border-[#2A3A3A] rounded-lg px-4 py-2 outline-none focus:border-[#2DD4BF] bg-[#1B2728]/30" 
+                          className="w-full border border-[#E7DADD] rounded-lg px-4 py-2 outline-none focus:border-[#B76E79] bg-[#F3E8E8]/30" 
                         />
                         <button 
                           type="button" 
@@ -591,7 +591,7 @@ const GymAdminTrainers = () => {
                               alert(err.response?.data?.message || 'Invalid or expired OTP');
                             }
                           }} 
-                          className="px-4 py-2 bg-[#2DD4BF] text-[#06201D] font-bold font-bold rounded-lg hover:bg-[#5EEAD4] text-sm whitespace-nowrap shadow-sm transition-colors"
+                          className="px-4 py-2 bg-[#B76E79] text-white font-bold font-bold rounded-lg hover:bg-[#9F5965] text-sm whitespace-nowrap shadow-sm transition-colors"
                         >
                           Verify
                         </button>
@@ -615,41 +615,41 @@ const GymAdminTrainers = () => {
                     </div>
                   ) : (
                     <>
-                      <div className="md:col-span-2 p-3 bg-[#1B2728] border border-[#2A3A3A] rounded-xl flex items-center gap-2.5 text-[#2DD4BF] mb-2">
-                        <div className="w-6 h-6 rounded-full bg-[#1B2728] flex items-center justify-center shrink-0 text-[#2DD4BF]">
+                      <div className="md:col-span-2 p-3 bg-[#F3E8E8] border border-[#E7DADD] rounded-xl flex items-center gap-2.5 text-[#B76E79] mb-2">
+                        <div className="w-6 h-6 rounded-full bg-[#F3E8E8] flex items-center justify-center shrink-0 text-[#B76E79]">
                           <Check size={14} />
                         </div>
-                        <p className="text-xs font-semibold text-[#2DD4BF]">
+                        <p className="text-xs font-semibold text-[#B76E79]">
                           Email OTP completed successfully! You can now fill in the remaining trainer details below.
                         </p>
                       </div>
 
                       <div>
-                        <label className="block text-sm font-bold text-[#9AAEAE] mb-1">Password *</label>
+                        <label className="block text-sm font-bold text-[#57534E] mb-1">Password *</label>
                         <div className="relative">
-                          <input type={showPassword ? "text" : "password"} required value={manualForm.password} onChange={e => setManualForm({...manualForm, password: e.target.value})} className="w-full border border-[#2A3A3A] rounded-lg px-4 py-2 outline-none focus:border-[#2DD4BF] pr-10" placeholder="Trainer login password" />
-                          <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9AAEAE] hover:text-[#2DD4BF] focus:outline-none">
+                          <input type={showPassword ? "text" : "password"} required value={manualForm.password} onChange={e => setManualForm({...manualForm, password: e.target.value})} className="w-full border border-[#E7DADD] rounded-lg px-4 py-2 outline-none focus:border-[#B76E79] pr-10" placeholder="Trainer login password" />
+                          <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#57534E] hover:text-[#B76E79] focus:outline-none">
                             {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                           </button>
                         </div>
                       </div>
                       <div>
-                        <label className="block text-sm font-bold text-[#9AAEAE] mb-1">Confirm Password *</label>
+                        <label className="block text-sm font-bold text-[#57534E] mb-1">Confirm Password *</label>
                         <div className="relative">
-                          <input type={showConfirmPassword ? "text" : "password"} required value={manualForm.confirmPassword} onChange={e => setManualForm({...manualForm, confirmPassword: e.target.value})} className="w-full border border-[#2A3A3A] rounded-lg px-4 py-2 outline-none focus:border-[#2DD4BF] pr-10" placeholder="Confirm password" />
-                          <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9AAEAE] hover:text-[#2DD4BF] focus:outline-none">
+                          <input type={showConfirmPassword ? "text" : "password"} required value={manualForm.confirmPassword} onChange={e => setManualForm({...manualForm, confirmPassword: e.target.value})} className="w-full border border-[#E7DADD] rounded-lg px-4 py-2 outline-none focus:border-[#B76E79] pr-10" placeholder="Confirm password" />
+                          <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#57534E] hover:text-[#B76E79] focus:outline-none">
                             {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                           </button>
                         </div>
                       </div>
 
                       <div>
-                        <label className="block text-sm font-bold text-[#9AAEAE] mb-1">Phone Number *</label>
-                        <input required type="text" maxLength={10} placeholder="10-digit number" value={manualForm.phone} onChange={e => setManualForm({...manualForm, phone: e.target.value.replace(/\D/g, '')})} className="w-full border border-[#2A3A3A] rounded-lg px-4 py-2 outline-none focus:border-[#2DD4BF]" />
+                        <label className="block text-sm font-bold text-[#57534E] mb-1">Phone Number *</label>
+                        <input required type="text" maxLength={10} placeholder="10-digit number" value={manualForm.phone} onChange={e => setManualForm({...manualForm, phone: e.target.value.replace(/\D/g, '')})} className="w-full border border-[#E7DADD] rounded-lg px-4 py-2 outline-none focus:border-[#B76E79]" />
                       </div>
                       <div>
-                        <label className="block text-sm font-bold text-[#9AAEAE] mb-1">Trainer Mode *</label>
-                        <select required value={manualForm.trainingMode} onChange={e => setManualForm({...manualForm, trainingMode: e.target.value})} className="w-full border border-[#2A3A3A] rounded-lg px-4 py-2 outline-none focus:border-[#2DD4BF]">
+                        <label className="block text-sm font-bold text-[#57534E] mb-1">Trainer Mode *</label>
+                        <select required value={manualForm.trainingMode} onChange={e => setManualForm({...manualForm, trainingMode: e.target.value})} className="w-full border border-[#E7DADD] rounded-lg px-4 py-2 outline-none focus:border-[#B76E79]">
                           {renderTrainerModeOptions()}
                         </select>
                       </div>
@@ -661,41 +661,41 @@ const GymAdminTrainers = () => {
               {otpVerified && (
                 <>
                   <section>
-                    <h3 className="text-lg font-bold text-[#F5FAFA] mb-4 border-b pb-2">Professional Information</h3>
+                    <h3 className="text-lg font-bold text-[#292524] mb-4 border-b pb-2">Professional Information</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-bold text-[#9AAEAE] mb-1">Specialization *</label>
-                        <input required value={manualForm.specialization} onChange={e => setManualForm({...manualForm, specialization: e.target.value})} className="w-full border border-[#2A3A3A] rounded-lg px-4 py-2 outline-none focus:border-[#2DD4BF]" />
+                        <label className="block text-sm font-bold text-[#57534E] mb-1">Specialization *</label>
+                        <input required value={manualForm.specialization} onChange={e => setManualForm({...manualForm, specialization: e.target.value})} className="w-full border border-[#E7DADD] rounded-lg px-4 py-2 outline-none focus:border-[#B76E79]" />
                       </div>
                       <div>
-                        <label className="block text-sm font-bold text-[#9AAEAE] mb-1">Experience (Years)</label>
-                        <input type="number" value={manualForm.experience} onChange={e => setManualForm({...manualForm, experience: e.target.value})} className="w-full border border-[#2A3A3A] rounded-lg px-4 py-2 outline-none focus:border-[#2DD4BF]" />
+                        <label className="block text-sm font-bold text-[#57534E] mb-1">Experience (Years)</label>
+                        <input type="number" value={manualForm.experience} onChange={e => setManualForm({...manualForm, experience: e.target.value})} className="w-full border border-[#E7DADD] rounded-lg px-4 py-2 outline-none focus:border-[#B76E79]" />
                       </div>
                       <div>
-                        <label className="block text-sm font-bold text-[#9AAEAE] mb-1">Qualifications *</label>
-                        <input required value={manualForm.qualifications} onChange={e => setManualForm({...manualForm, qualifications: e.target.value})} className="w-full border border-[#2A3A3A] rounded-lg px-4 py-2 outline-none focus:border-[#2DD4BF]" />
+                        <label className="block text-sm font-bold text-[#57534E] mb-1">Qualifications *</label>
+                        <input required value={manualForm.qualifications} onChange={e => setManualForm({...manualForm, qualifications: e.target.value})} className="w-full border border-[#E7DADD] rounded-lg px-4 py-2 outline-none focus:border-[#B76E79]" />
                       </div>
                       <div>
-                        <label className="block text-sm font-bold text-[#9AAEAE] mb-1">Certifications</label>
-                        <input value={manualForm.certifications} onChange={e => setManualForm({...manualForm, certifications: e.target.value})} className="w-full border border-[#2A3A3A] rounded-lg px-4 py-2 outline-none focus:border-[#2DD4BF]" />
+                        <label className="block text-sm font-bold text-[#57534E] mb-1">Certifications</label>
+                        <input value={manualForm.certifications} onChange={e => setManualForm({...manualForm, certifications: e.target.value})} className="w-full border border-[#E7DADD] rounded-lg px-4 py-2 outline-none focus:border-[#B76E79]" />
                       </div>
                       <div className="md:col-span-2">
-                        <label className="block text-sm font-bold text-[#9AAEAE] mb-1">Areas of Expertise *</label>
-                        <textarea required rows={2} value={manualForm.expertise} onChange={e => setManualForm({...manualForm, expertise: e.target.value})} className="w-full border border-[#2A3A3A] rounded-lg px-4 py-2 outline-none focus:border-[#2DD4BF]" />
+                        <label className="block text-sm font-bold text-[#57534E] mb-1">Areas of Expertise *</label>
+                        <textarea required rows={2} value={manualForm.expertise} onChange={e => setManualForm({...manualForm, expertise: e.target.value})} className="w-full border border-[#E7DADD] rounded-lg px-4 py-2 outline-none focus:border-[#B76E79]" />
                       </div>
                       <div className="md:col-span-2">
-                        <label className="block text-sm font-bold text-[#9AAEAE] mb-1">Short Bio</label>
-                        <textarea rows={3} value={manualForm.bio} onChange={e => setManualForm({...manualForm, bio: e.target.value})} className="w-full border border-[#2A3A3A] rounded-lg px-4 py-2 outline-none focus:border-[#2DD4BF]" />
+                        <label className="block text-sm font-bold text-[#57534E] mb-1">Short Bio</label>
+                        <textarea rows={3} value={manualForm.bio} onChange={e => setManualForm({...manualForm, bio: e.target.value})} className="w-full border border-[#E7DADD] rounded-lg px-4 py-2 outline-none focus:border-[#B76E79]" />
                       </div>
                     </div>
                   </section>
 
                   <section>
-                    <h3 className="text-lg font-bold text-[#F5FAFA] mb-4 border-b pb-2">Availability Settings</h3>
+                    <h3 className="text-lg font-bold text-[#292524] mb-4 border-b pb-2">Availability Settings</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-bold text-[#9AAEAE] mb-1">Available Days</label>
-                        <select value={manualForm.availableDays} onChange={e => setManualForm({...manualForm, availableDays: e.target.value})} className="w-full border border-[#2A3A3A] rounded-lg px-4 py-2 outline-none focus:border-[#2DD4BF]">
+                        <label className="block text-sm font-bold text-[#57534E] mb-1">Available Days</label>
+                        <select value={manualForm.availableDays} onChange={e => setManualForm({...manualForm, availableDays: e.target.value})} className="w-full border border-[#E7DADD] rounded-lg px-4 py-2 outline-none focus:border-[#B76E79]">
                           <option value="Monday to Friday">Monday to Friday</option>
                           <option value="Monday to Saturday">Monday to Saturday</option>
                           <option value="Weekends (Sat & Sun)">Weekends (Sat & Sun)</option>
@@ -703,18 +703,18 @@ const GymAdminTrainers = () => {
                         </select>
                       </div>
                       <div>
-                        <label className="block text-sm font-bold text-[#9AAEAE] mb-1">Available Slots per Day</label>
-                        <input type="number" min="1" placeholder="e.g. 5" value={manualForm.availableSlot} onChange={e => setManualForm({...manualForm, availableSlot: e.target.value})} className="w-full border border-[#2A3A3A] rounded-lg px-4 py-2 outline-none focus:border-[#2DD4BF]" />
+                        <label className="block text-sm font-bold text-[#57534E] mb-1">Available Slots per Day</label>
+                        <input type="number" min="1" placeholder="e.g. 5" value={manualForm.availableSlot} onChange={e => setManualForm({...manualForm, availableSlot: e.target.value})} className="w-full border border-[#E7DADD] rounded-lg px-4 py-2 outline-none focus:border-[#B76E79]" />
                       </div>
                       <div>
-                        <label className="block text-sm font-bold text-[#9AAEAE] mb-1">Start Time</label>
-                        <select value={manualForm.availableStartTime} onChange={e => setManualForm({...manualForm, availableStartTime: e.target.value})} className="w-full border border-[#2A3A3A] rounded-lg px-4 py-2 outline-none focus:border-[#2DD4BF]">
+                        <label className="block text-sm font-bold text-[#57534E] mb-1">Start Time</label>
+                        <select value={manualForm.availableStartTime} onChange={e => setManualForm({...manualForm, availableStartTime: e.target.value})} className="w-full border border-[#E7DADD] rounded-lg px-4 py-2 outline-none focus:border-[#B76E79]">
                           {renderTimeOptions()}
                         </select>
                       </div>
                       <div>
-                        <label className="block text-sm font-bold text-[#9AAEAE] mb-1">End Time</label>
-                        <select value={manualForm.availableEndTime} onChange={e => setManualForm({...manualForm, availableEndTime: e.target.value})} className="w-full border border-[#2A3A3A] rounded-lg px-4 py-2 outline-none focus:border-[#2DD4BF]">
+                        <label className="block text-sm font-bold text-[#57534E] mb-1">End Time</label>
+                        <select value={manualForm.availableEndTime} onChange={e => setManualForm({...manualForm, availableEndTime: e.target.value})} className="w-full border border-[#E7DADD] rounded-lg px-4 py-2 outline-none focus:border-[#B76E79]">
                           {renderTimeOptions()}
                         </select>
                       </div>
@@ -722,15 +722,15 @@ const GymAdminTrainers = () => {
                   </section>
 
                   <section>
-                    <h3 className="text-lg font-bold text-[#F5FAFA] mb-4 border-b pb-2">Employment / Payment</h3>
+                    <h3 className="text-lg font-bold text-[#292524] mb-4 border-b pb-2">Employment / Payment</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-bold text-[#9AAEAE] mb-1">Trainer Fee</label>
-                        <input type="number" value={manualForm.fee} onChange={e => setManualForm({...manualForm, fee: e.target.value})} className="w-full border border-[#2A3A3A] rounded-lg px-4 py-2 outline-none focus:border-[#2DD4BF]" />
+                        <label className="block text-sm font-bold text-[#57534E] mb-1">Trainer Fee</label>
+                        <input type="number" value={manualForm.fee} onChange={e => setManualForm({...manualForm, fee: e.target.value})} className="w-full border border-[#E7DADD] rounded-lg px-4 py-2 outline-none focus:border-[#B76E79]" />
                       </div>
                       <div>
-                        <label className="block text-sm font-bold text-[#9AAEAE] mb-1">Payment Type</label>
-                        <select value={manualForm.paymentType} onChange={e => setManualForm({...manualForm, paymentType: e.target.value})} className="w-full border border-[#2A3A3A] rounded-lg px-4 py-2 outline-none focus:border-[#2DD4BF]">
+                        <label className="block text-sm font-bold text-[#57534E] mb-1">Payment Type</label>
+                        <select value={manualForm.paymentType} onChange={e => setManualForm({...manualForm, paymentType: e.target.value})} className="w-full border border-[#E7DADD] rounded-lg px-4 py-2 outline-none focus:border-[#B76E79]">
                           <option value="Per Week">Per Week</option>
                           <option value="Per Month">Per Month</option>
                         </select>
@@ -740,18 +740,18 @@ const GymAdminTrainers = () => {
                 </>
               )}
 
-              <div className="flex justify-end space-x-3 p-4 border-t border-[#2A3A3A] bg-[#0E1415] shrink-0">
+              <div className="flex justify-end space-x-3 p-4 border-t border-[#E7DADD] bg-[#F3E8E8] shrink-0">
                 <button 
                   type="button" 
                   onClick={() => { setShowHireModal(false); setHireMethod(null); setOtpVerified(false); setOtpSent(false); setOtpInput(''); }} 
-                  className="px-6 py-2 text-[#9AAEAE] font-bold hover:bg-[#1B2728] rounded-xl transition-colors"
+                  className="px-6 py-2 text-[#57534E] font-bold hover:bg-[#F3E8E8] rounded-xl transition-colors"
                 >
                   Cancel
                 </button>
                 {otpVerified ? (
                   <button 
                     type="submit" 
-                    className="px-8 py-2 bg-[#2DD4BF] text-[#06201D] font-bold rounded-xl font-bold hover:bg-[#5EEAD4] transition-colors shadow-lg shadow-[#2DD4BF]/20"
+                    className="px-8 py-2 bg-[#B76E79] text-white font-bold rounded-xl font-bold hover:bg-[#9F5965] transition-colors shadow-lg shadow-[#B76E79]/20"
                   >
                     Add Trainer
                   </button>
@@ -759,7 +759,7 @@ const GymAdminTrainers = () => {
                   <button 
                     type="button" 
                     disabled 
-                    className="px-6 py-2 bg-gray-200 text-[#9AAEAE] rounded-xl font-bold cursor-not-allowed flex items-center gap-2"
+                    className="px-6 py-2 bg-gray-200 text-[#57534E] rounded-xl font-bold cursor-not-allowed flex items-center gap-2"
                   >
                     <Lock size={16} /> Complete Email OTP First
                   </button>
@@ -773,39 +773,39 @@ const GymAdminTrainers = () => {
       {/* Send Invitation Form Modal */}
       {showHireModal && hireMethod === 'invite' && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-[#FFFFFF] rounded-2xl max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl border border-[#2A3A3A] overflow-hidden my-auto">
-            <div className="p-6 border-b border-[#2A3A3A] flex justify-between items-center bg-[#141D1E] z-10 shrink-0">
-              <h2 className="text-2xl font-bold text-[#F5FAFA]">Invite New Trainer</h2>
-              <button onClick={() => { setShowHireModal(false); setHireMethod(null); }} className="text-[#9AAEAE] hover:text-[#FFFFFF]"><X size={24} /></button>
+          <div className="bg-[#FFFFFF] rounded-2xl max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl border border-[#E7DADD] overflow-hidden my-auto">
+            <div className="p-6 border-b border-[#E7DADD] flex justify-between items-center bg-[#FFFFFF] z-10 shrink-0">
+              <h2 className="text-2xl font-bold text-[#292524]">Invite New Trainer</h2>
+              <button onClick={() => { setShowHireModal(false); setHireMethod(null); }} className="text-[#57534E] hover:text-[#FFFFFF]"><X size={24} /></button>
             </div>
             <form onSubmit={handleSendInvite} className="p-6 space-y-6 overflow-y-auto flex-1 custom-scrollbar">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-bold text-[#9AAEAE] mb-1">Trainer Name *</label>
-                  <input required value={inviteForm.trainerName} onChange={e => setInviteForm({...inviteForm, trainerName: e.target.value})} className="w-full border border-[#2A3A3A] rounded-lg px-4 py-2 outline-none focus:border-[#2DD4BF]" />
+                  <label className="block text-sm font-bold text-[#57534E] mb-1">Trainer Name *</label>
+                  <input required value={inviteForm.trainerName} onChange={e => setInviteForm({...inviteForm, trainerName: e.target.value})} className="w-full border border-[#E7DADD] rounded-lg px-4 py-2 outline-none focus:border-[#B76E79]" />
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-[#9AAEAE] mb-1">Email Address *</label>
-                  <input type="email" required value={inviteForm.email} onChange={e => setInviteForm({...inviteForm, email: e.target.value})} className="w-full border border-[#2A3A3A] rounded-lg px-4 py-2 outline-none focus:border-[#2DD4BF]" />
+                  <label className="block text-sm font-bold text-[#57534E] mb-1">Email Address *</label>
+                  <input type="email" required value={inviteForm.email} onChange={e => setInviteForm({...inviteForm, email: e.target.value})} className="w-full border border-[#E7DADD] rounded-lg px-4 py-2 outline-none focus:border-[#B76E79]" />
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-[#9AAEAE] mb-1">Phone Number</label>
-                  <input type="text" maxLength={10} placeholder="10-digit number" value={inviteForm.phone} onChange={e => setInviteForm({...inviteForm, phone: e.target.value.replace(/\D/g, '')})} className="w-full border border-[#2A3A3A] rounded-lg px-4 py-2 outline-none focus:border-[#2DD4BF]" />
+                  <label className="block text-sm font-bold text-[#57534E] mb-1">Phone Number</label>
+                  <input type="text" maxLength={10} placeholder="10-digit number" value={inviteForm.phone} onChange={e => setInviteForm({...inviteForm, phone: e.target.value.replace(/\D/g, '')})} className="w-full border border-[#E7DADD] rounded-lg px-4 py-2 outline-none focus:border-[#B76E79]" />
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-[#9AAEAE] mb-1">Specialization</label>
-                  <input value={inviteForm.specialization} onChange={e => setInviteForm({...inviteForm, specialization: e.target.value})} className="w-full border border-[#2A3A3A] rounded-lg px-4 py-2 outline-none focus:border-[#2DD4BF]" />
+                  <label className="block text-sm font-bold text-[#57534E] mb-1">Specialization</label>
+                  <input value={inviteForm.specialization} onChange={e => setInviteForm({...inviteForm, specialization: e.target.value})} className="w-full border border-[#E7DADD] rounded-lg px-4 py-2 outline-none focus:border-[#B76E79]" />
                 </div>
 
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-bold text-[#9AAEAE] mb-1">Personal Message</label>
-                  <textarea rows={3} placeholder="Add a personal note to the email invitation..." value={inviteForm.personalMessage} onChange={e => setInviteForm({...inviteForm, personalMessage: e.target.value})} className="w-full border border-[#2A3A3A] rounded-lg px-4 py-2 outline-none focus:border-[#2DD4BF]" />
+                  <label className="block text-sm font-bold text-[#57534E] mb-1">Personal Message</label>
+                  <textarea rows={3} placeholder="Add a personal note to the email invitation..." value={inviteForm.personalMessage} onChange={e => setInviteForm({...inviteForm, personalMessage: e.target.value})} className="w-full border border-[#E7DADD] rounded-lg px-4 py-2 outline-none focus:border-[#B76E79]" />
                 </div>
               </div>
 
-              <div className="flex justify-end space-x-3 p-4 border-t border-[#2A3A3A] bg-[#0E1415] shrink-0">
-                <button type="button" onClick={() => { setShowHireModal(false); setHireMethod(null); }} className="px-6 py-2 text-[#9AAEAE] font-bold hover:bg-[#1B2728] rounded-xl transition-colors">Cancel</button>
-                <button type="submit" className="px-8 py-2 bg-[#2DD4BF] text-[#06201D] font-bold rounded-xl font-bold hover:bg-[#5EEAD4] transition-colors shadow-lg shadow-[#2DD4BF]/20 flex items-center gap-2">
+              <div className="flex justify-end space-x-3 p-4 border-t border-[#E7DADD] bg-[#F3E8E8] shrink-0">
+                <button type="button" onClick={() => { setShowHireModal(false); setHireMethod(null); }} className="px-6 py-2 text-[#57534E] font-bold hover:bg-[#F3E8E8] rounded-xl transition-colors">Cancel</button>
+                <button type="submit" className="px-8 py-2 bg-[#B76E79] text-white font-bold rounded-xl font-bold hover:bg-[#9F5965] transition-colors shadow-lg shadow-[#B76E79]/20 flex items-center gap-2">
                   <Mail size={18} /> Send Invitation
                 </button>
               </div>
@@ -817,13 +817,13 @@ const GymAdminTrainers = () => {
       {/* Trainer View Modal */}
       {selectedTrainer && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-[#FFFFFF] rounded-2xl max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden border border-[#2A3A3A] my-auto">
+          <div className="bg-[#FFFFFF] rounded-2xl max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden border border-[#E7DADD] my-auto">
             {/* Header */}
-            <div className="p-6 border-b border-[#2A3A3A] flex justify-between items-center bg-[#0E1415] shrink-0">
-              <h2 className="text-xl font-bold text-[#F5FAFA]">Trainer Profile</h2>
+            <div className="p-6 border-b border-[#E7DADD] flex justify-between items-center bg-[#F3E8E8] shrink-0">
+              <h2 className="text-xl font-bold text-[#292524]">Trainer Profile</h2>
               <button
                 onClick={() => setSelectedTrainer(null)}
-                className="p-1.5 rounded-lg text-[#9AAEAE] hover:text-[#FFFFFF] hover:bg-slate-200 transition-colors"
+                className="p-1.5 rounded-lg text-[#57534E] hover:text-[#FFFFFF] hover:bg-slate-200 transition-colors"
               >
                 <X size={20} />
               </button>
@@ -831,18 +831,18 @@ const GymAdminTrainers = () => {
 
             <div className="p-6 space-y-6 overflow-y-auto flex-1 custom-scrollbar">
               {/* Avatar + Name + Status */}
-              <div className="flex items-center space-x-4 pb-4 border-b border-[#2A3A3A]">
+              <div className="flex items-center space-x-4 pb-4 border-b border-[#E7DADD]">
                 {selectedTrainer.profilePhoto ? (
-                  <img src={selectedTrainer.profilePhoto} alt={selectedTrainer.name} className="w-20 h-20 rounded-full object-cover border-2 border-[#2A3A3A] shrink-0" />
+                  <img src={selectedTrainer.profilePhoto} alt={selectedTrainer.name} className="w-20 h-20 rounded-full object-cover border-2 border-[#E7DADD] shrink-0" />
                 ) : (
-                  <div className="w-20 h-20 bg-[#2DD4BF]/10 text-[#2DD4BF] rounded-full flex items-center justify-center text-3xl font-bold shrink-0 border-2 border-[#2A3A3A]">
+                  <div className="w-20 h-20 bg-[#B76E79]/10 text-[#B76E79] rounded-full flex items-center justify-center text-3xl font-bold shrink-0 border-2 border-[#E7DADD]">
                     {selectedTrainer.name?.charAt(0).toUpperCase()}
                   </div>
                 )}
                 <div>
-                  <h3 className="text-2xl font-bold text-[#F5FAFA]">{selectedTrainer.name}</h3>
-                  <p className="text-[#9AAEAE] text-sm mt-0.5">{selectedTrainer.specialization}</p>
-                  <span className={`mt-2 inline-block px-3 py-1 rounded-full text-xs font-bold border ${selectedTrainer.status === 'Active' ? 'bg-[#2DD4BF]/10 text-[#2DD4BF] border-[#2DD4BF]/20' : selectedTrainer.status === 'Pending' ? 'bg-[#2DD4BF]/10 text-[#2DD4BF] border-[#2A3A3A]/20' : 'bg-red-50 text-rose-600 border-red-500/20'}`}>
+                  <h3 className="text-2xl font-bold text-[#292524]">{selectedTrainer.name}</h3>
+                  <p className="text-[#57534E] text-sm mt-0.5">{selectedTrainer.specialization}</p>
+                  <span className={`mt-2 inline-block px-3 py-1 rounded-full text-xs font-bold border ${selectedTrainer.status === 'Active' ? 'bg-[#B76E79]/10 text-[#B76E79] border-[#B76E79]/20' : selectedTrainer.status === 'Pending' ? 'bg-[#B76E79]/10 text-[#B76E79] border-[#E7DADD]/20' : 'bg-red-50 text-rose-600 border-red-500/20'}`}>
                     {selectedTrainer.status}
                   </span>
                 </div>
@@ -850,22 +850,22 @@ const GymAdminTrainers = () => {
 
               {/* Section: Contact Info - Contiguous touching one by one */}
               <div>
-                <h4 className="text-xs font-bold text-[#9AAEAE] uppercase tracking-wider mb-2">Contact Information</h4>
-                <div className="border border-[#2A3A3A] rounded-xl overflow-hidden divide-y divide-[#2A3A3A] bg-[#141D1E] shadow-sm">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#2A3A3A]">
-                    <div className="p-3.5 bg-[#141D1E]">
-                      <p className="text-[#9AAEAE] text-[11px] font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">
-                        <Mail size={12} className="text-[#2DD4BF]" />
+                <h4 className="text-xs font-bold text-[#57534E] uppercase tracking-wider mb-2">Contact Information</h4>
+                <div className="border border-[#E7DADD] rounded-xl overflow-hidden divide-y divide-[#E7DADD] bg-[#FFFFFF] shadow-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E7DADD]">
+                    <div className="p-3.5 bg-[#FFFFFF]">
+                      <p className="text-[#57534E] text-[11px] font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                        <Mail size={12} className="text-[#B76E79]" />
                         <span>Email</span>
                       </p>
-                      <p className="font-semibold text-[#F5FAFA] text-sm break-all">{selectedTrainer.email || 'N/A'}</p>
+                      <p className="font-semibold text-[#292524] text-sm break-all">{selectedTrainer.email || 'N/A'}</p>
                     </div>
-                    <div className="p-3.5 bg-[#141D1E]">
-                      <p className="text-[#9AAEAE] text-[11px] font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">
-                        <Phone size={12} className="text-[#2DD4BF]" />
+                    <div className="p-3.5 bg-[#FFFFFF]">
+                      <p className="text-[#57534E] text-[11px] font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                        <Phone size={12} className="text-[#B76E79]" />
                         <span>Phone</span>
                       </p>
-                      <p className="font-semibold text-[#F5FAFA] text-sm">{selectedTrainer.phone || 'N/A'}</p>
+                      <p className="font-semibold text-[#292524] text-sm">{selectedTrainer.phone || 'N/A'}</p>
                     </div>
                   </div>
                 </div>
@@ -873,58 +873,58 @@ const GymAdminTrainers = () => {
 
               {/* Section: Professional Info - Contiguous touching one by one */}
               <div>
-                <h4 className="text-xs font-bold text-[#9AAEAE] uppercase tracking-wider mb-2">Professional Details</h4>
-                <div className="border border-[#2A3A3A] rounded-xl overflow-hidden divide-y divide-[#2A3A3A] bg-[#141D1E] shadow-sm">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#2A3A3A]">
-                    <div className="p-3.5 bg-[#141D1E]">
-                      <p className="text-[#9AAEAE] text-[11px] font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">
-                        <Dumbbell size={12} className="text-[#2DD4BF]" />
+                <h4 className="text-xs font-bold text-[#57534E] uppercase tracking-wider mb-2">Professional Details</h4>
+                <div className="border border-[#E7DADD] rounded-xl overflow-hidden divide-y divide-[#E7DADD] bg-[#FFFFFF] shadow-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E7DADD]">
+                    <div className="p-3.5 bg-[#FFFFFF]">
+                      <p className="text-[#57534E] text-[11px] font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                        <Dumbbell size={12} className="text-[#B76E79]" />
                         <span>Specialization</span>
                       </p>
-                      <p className="font-semibold text-[#F5FAFA] text-sm">{selectedTrainer.specialization || 'N/A'}</p>
+                      <p className="font-semibold text-[#292524] text-sm">{selectedTrainer.specialization || 'N/A'}</p>
                     </div>
-                    <div className="p-3.5 bg-[#141D1E]">
-                      <p className="text-[#9AAEAE] text-[11px] font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">
-                        <Briefcase size={12} className="text-[#2DD4BF]" />
+                    <div className="p-3.5 bg-[#FFFFFF]">
+                      <p className="text-[#57534E] text-[11px] font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                        <Briefcase size={12} className="text-[#B76E79]" />
                         <span>Experience</span>
                       </p>
-                      <p className="font-semibold text-[#F5FAFA] text-sm">{selectedTrainer.experience ? `${selectedTrainer.experience} Years` : 'N/A'}</p>
+                      <p className="font-semibold text-[#292524] text-sm">{selectedTrainer.experience ? `${selectedTrainer.experience} Years` : 'N/A'}</p>
                     </div>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#2A3A3A]">
-                    <div className="p-3.5 bg-[#141D1E]">
-                      <p className="text-[#9AAEAE] text-[11px] font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">
-                        <Activity size={12} className="text-[#2DD4BF]" />
+                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E7DADD]">
+                    <div className="p-3.5 bg-[#FFFFFF]">
+                      <p className="text-[#57534E] text-[11px] font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                        <Activity size={12} className="text-[#B76E79]" />
                         <span>Training Mode</span>
                       </p>
-                      <p className="font-semibold text-[#F5FAFA] text-sm capitalize">{selectedTrainer.trainingMode || 'N/A'}</p>
+                      <p className="font-semibold text-[#292524] text-sm capitalize">{selectedTrainer.trainingMode || 'N/A'}</p>
                     </div>
-                    <div className="p-3.5 bg-[#141D1E]">
-                      <p className="text-[#9AAEAE] text-[11px] font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">
-                        <GraduationCap size={12} className="text-[#2DD4BF]" />
+                    <div className="p-3.5 bg-[#FFFFFF]">
+                      <p className="text-[#57534E] text-[11px] font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                        <GraduationCap size={12} className="text-[#B76E79]" />
                         <span>Qualifications</span>
                       </p>
-                      <p className="font-semibold text-[#F5FAFA] text-sm">{selectedTrainer.qualifications || 'N/A'}</p>
+                      <p className="font-semibold text-[#292524] text-sm">{selectedTrainer.qualifications || 'N/A'}</p>
                     </div>
                   </div>
                   {selectedTrainer.certifications && (
-                    <div className="p-3.5 bg-[#141D1E]">
-                      <p className="text-[#9AAEAE] text-[11px] font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">
-                        <Award size={12} className="text-[#2DD4BF]" />
+                    <div className="p-3.5 bg-[#FFFFFF]">
+                      <p className="text-[#57534E] text-[11px] font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                        <Award size={12} className="text-[#B76E79]" />
                         <span>Certifications</span>
                       </p>
-                      <p className="font-semibold text-[#F5FAFA] text-sm">{selectedTrainer.certifications}</p>
+                      <p className="font-semibold text-[#292524] text-sm">{selectedTrainer.certifications}</p>
                     </div>
                   )}
                   {selectedTrainer.expertise && (
-                    <div className="p-3.5 bg-[#141D1E]">
-                      <p className="text-[#9AAEAE] text-[11px] font-bold uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
-                        <Sparkles size={12} className="text-[#2DD4BF]" />
+                    <div className="p-3.5 bg-[#FFFFFF]">
+                      <p className="text-[#57534E] text-[11px] font-bold uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                        <Sparkles size={12} className="text-[#B76E79]" />
                         <span>Areas of Expertise</span>
                       </p>
                       <div className="flex flex-wrap gap-1.5">
                         {getExpertiseList(selectedTrainer.expertise).map((item, idx) => (
-                          <span key={idx} className="px-2.5 py-0.5 bg-[#0E1415] border border-[#2A3A3A] text-[#F5FAFA] text-xs font-semibold rounded-md">
+                          <span key={idx} className="px-2.5 py-0.5 bg-[#F3E8E8] border border-[#E7DADD] text-[#292524] text-xs font-semibold rounded-md">
                             {item}
                           </span>
                         ))}
@@ -936,24 +936,24 @@ const GymAdminTrainers = () => {
 
               {/* Section: Fee Info - Contiguous touching one by one */}
               <div>
-                <h4 className="text-xs font-bold text-[#9AAEAE] uppercase tracking-wider mb-2">Fee & Payment</h4>
-                <div className="border border-[#2A3A3A] rounded-xl overflow-hidden divide-y divide-[#2A3A3A] bg-[#141D1E] shadow-sm">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#2A3A3A]">
-                    <div className="p-3.5 bg-[#141D1E]">
-                      <p className="text-[#9AAEAE] text-[11px] font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">
-                        <IndianRupee size={12} className="text-[#2DD4BF]" />
+                <h4 className="text-xs font-bold text-[#57534E] uppercase tracking-wider mb-2">Fee & Payment</h4>
+                <div className="border border-[#E7DADD] rounded-xl overflow-hidden divide-y divide-[#E7DADD] bg-[#FFFFFF] shadow-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E7DADD]">
+                    <div className="p-3.5 bg-[#FFFFFF]">
+                      <p className="text-[#57534E] text-[11px] font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                        <IndianRupee size={12} className="text-[#B76E79]" />
                         <span>Fee / Compensation</span>
                       </p>
-                      <p className="font-bold text-[#2DD4BF] text-sm">
+                      <p className="font-bold text-[#B76E79] text-sm">
                         {selectedTrainer.fee ? `₹${selectedTrainer.fee}` : selectedTrainer.expectedSalary ? `₹${Number(selectedTrainer.expectedSalary).toLocaleString('en-IN')} (Expected)` : 'N/A'}
                       </p>
                     </div>
-                    <div className="p-3.5 bg-[#141D1E]">
-                      <p className="text-[#9AAEAE] text-[11px] font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">
-                        <Clock size={12} className="text-[#2DD4BF]" />
+                    <div className="p-3.5 bg-[#FFFFFF]">
+                      <p className="text-[#57534E] text-[11px] font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                        <Clock size={12} className="text-[#B76E79]" />
                         <span>Payment Type</span>
                       </p>
-                      <p className="font-semibold text-[#F5FAFA] text-sm">{selectedTrainer.paymentType || 'N/A'}</p>
+                      <p className="font-semibold text-[#292524] text-sm">{selectedTrainer.paymentType || 'N/A'}</p>
                     </div>
                   </div>
                 </div>
@@ -961,22 +961,22 @@ const GymAdminTrainers = () => {
 
               {/* Section: Availability - Contiguous touching one by one */}
               <div>
-                <h4 className="text-xs font-bold text-[#9AAEAE] uppercase tracking-wider mb-2">Availability</h4>
-                <div className="border border-[#2A3A3A] rounded-xl overflow-hidden divide-y divide-[#2A3A3A] bg-[#141D1E] shadow-sm">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#2A3A3A]">
-                    <div className="p-3.5 bg-[#141D1E]">
-                      <p className="text-[#9AAEAE] text-[11px] font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">
-                        <Calendar size={12} className="text-[#2DD4BF]" />
+                <h4 className="text-xs font-bold text-[#57534E] uppercase tracking-wider mb-2">Availability</h4>
+                <div className="border border-[#E7DADD] rounded-xl overflow-hidden divide-y divide-[#E7DADD] bg-[#FFFFFF] shadow-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E7DADD]">
+                    <div className="p-3.5 bg-[#FFFFFF]">
+                      <p className="text-[#57534E] text-[11px] font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                        <Calendar size={12} className="text-[#B76E79]" />
                         <span>Available Days</span>
                       </p>
-                      <p className="font-semibold text-[#F5FAFA] text-sm">{selectedTrainer.availableDays || selectedTrainer.availability?.days || 'N/A'}</p>
+                      <p className="font-semibold text-[#292524] text-sm">{selectedTrainer.availableDays || selectedTrainer.availability?.days || 'N/A'}</p>
                     </div>
-                    <div className="p-3.5 bg-[#141D1E]">
-                      <p className="text-[#9AAEAE] text-[11px] font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">
-                        <Clock size={12} className="text-[#2DD4BF]" />
+                    <div className="p-3.5 bg-[#FFFFFF]">
+                      <p className="text-[#57534E] text-[11px] font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                        <Clock size={12} className="text-[#B76E79]" />
                         <span>Timings</span>
                       </p>
-                      <p className="font-semibold text-[#F5FAFA] text-sm">
+                      <p className="font-semibold text-[#292524] text-sm">
                         {selectedTrainer.availableStartTime || selectedTrainer.availability?.startTime || '—'}
                         {(selectedTrainer.availableStartTime || selectedTrainer.availability?.startTime) ? ' → ' : ''}
                         {selectedTrainer.availableEndTime || selectedTrainer.availability?.endTime || 'N/A'}
@@ -984,9 +984,9 @@ const GymAdminTrainers = () => {
                     </div>
                   </div>
                   {(selectedTrainer.availableSlot || selectedTrainer.availability?.slot) && (
-                    <div className="p-3.5 bg-[#141D1E]">
-                      <p className="text-[#9AAEAE] text-[11px] font-bold uppercase tracking-wider mb-1">Slot Duration</p>
-                      <p className="font-semibold text-[#F5FAFA] text-sm">{selectedTrainer.availableSlot || selectedTrainer.availability?.slot}</p>
+                    <div className="p-3.5 bg-[#FFFFFF]">
+                      <p className="text-[#57534E] text-[11px] font-bold uppercase tracking-wider mb-1">Slot Duration</p>
+                      <p className="font-semibold text-[#292524] text-sm">{selectedTrainer.availableSlot || selectedTrainer.availability?.slot}</p>
                     </div>
                   )}
                 </div>
@@ -995,9 +995,9 @@ const GymAdminTrainers = () => {
               {/* Section: Bio */}
               {selectedTrainer.bio && (
                 <div>
-                  <h4 className="text-xs font-bold text-[#9AAEAE] uppercase tracking-wider mb-2">About</h4>
-                  <div className="border border-[#2A3A3A] rounded-xl p-4 bg-[#141D1E] shadow-sm">
-                    <p className="text-[#F5FAFA] text-sm leading-relaxed">{selectedTrainer.bio}</p>
+                  <h4 className="text-xs font-bold text-[#57534E] uppercase tracking-wider mb-2">About</h4>
+                  <div className="border border-[#E7DADD] rounded-xl p-4 bg-[#FFFFFF] shadow-sm">
+                    <p className="text-[#292524] text-sm leading-relaxed">{selectedTrainer.bio}</p>
                   </div>
                 </div>
               )}
@@ -1005,14 +1005,14 @@ const GymAdminTrainers = () => {
               {/* Section: Uploaded Documents */}
               {(selectedTrainer.resumeUrl || selectedTrainer.certificationUrl) && (
                 <div>
-                  <h4 className="text-xs font-bold text-[#9AAEAE] uppercase tracking-wider mb-2">Candidate Documents</h4>
+                  <h4 className="text-xs font-bold text-[#57534E] uppercase tracking-wider mb-2">Candidate Documents</h4>
                   <div className="flex flex-wrap gap-2.5">
                     {selectedTrainer.resumeUrl && (
                       <a
                         href={selectedTrainer.resumeUrl.startsWith('http') ? selectedTrainer.resumeUrl : `http://localhost:5600${selectedTrainer.resumeUrl}`}
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-flex items-center gap-2 px-3.5 py-2 bg-[#141D1E] hover:bg-[#1B2728] border border-[#2A3A3A] hover:border-[#2DD4BF] rounded-xl text-xs font-semibold text-[#2DD4BF] transition-all"
+                        className="inline-flex items-center gap-2 px-3.5 py-2 bg-[#FFFFFF] hover:bg-[#F3E8E8] border border-[#E7DADD] hover:border-[#B76E79] rounded-xl text-xs font-semibold text-[#B76E79] transition-all"
                       >
                         <Briefcase size={14} />
                         <span>View Resume / CV</span>
@@ -1023,7 +1023,7 @@ const GymAdminTrainers = () => {
                         href={selectedTrainer.certificationUrl.startsWith('http') ? selectedTrainer.certificationUrl : `http://localhost:5600${selectedTrainer.certificationUrl}`}
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-flex items-center gap-2 px-3.5 py-2 bg-[#141D1E] hover:bg-[#1B2728] border border-[#2A3A3A] hover:border-[#2DD4BF] rounded-xl text-xs font-semibold text-[#2DD4BF] transition-all"
+                        className="inline-flex items-center gap-2 px-3.5 py-2 bg-[#FFFFFF] hover:bg-[#F3E8E8] border border-[#E7DADD] hover:border-[#B76E79] rounded-xl text-xs font-semibold text-[#B76E79] transition-all"
                       >
                         <Award size={14} />
                         <span>View Certification Document</span>
@@ -1034,10 +1034,10 @@ const GymAdminTrainers = () => {
               )}
             </div>
 
-            <div className="p-4 bg-[#0E1415] border-t border-[#2A3A3A] flex justify-end shrink-0">
+            <div className="p-4 bg-[#F3E8E8] border-t border-[#E7DADD] flex justify-end shrink-0">
               <button
                 onClick={() => setSelectedTrainer(null)}
-                className="px-6 py-2 bg-[#141D1E] border border-[#2A3A3A] text-[#F5FAFA] rounded-xl font-bold hover:bg-[#1B2728] transition-colors shadow-2xs"
+                className="px-6 py-2 bg-[#FFFFFF] border border-[#E7DADD] text-[#292524] rounded-xl font-bold hover:bg-[#F3E8E8] transition-colors shadow-2xs"
               >
                 Close
               </button>
@@ -1049,31 +1049,31 @@ const GymAdminTrainers = () => {
       {/* Edit Trainer Form Modal */}
       {editTrainer && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-[#FFFFFF] rounded-2xl max-w-3xl w-full max-h-[85vh] flex flex-col shadow-2xl border border-[#2A3A3A] overflow-hidden my-auto">
-            <div className="p-6 border-b border-[#2A3A3A] flex justify-between items-center bg-[#141D1E] z-10 shrink-0">
-              <h2 className="text-2xl font-bold text-[#F5FAFA]">Edit Trainer</h2>
-              <button onClick={() => setEditTrainer(null)} className="text-[#9AAEAE] hover:text-[#FFFFFF]"><X size={24} /></button>
+          <div className="bg-[#FFFFFF] rounded-2xl max-w-3xl w-full max-h-[85vh] flex flex-col shadow-2xl border border-[#E7DADD] overflow-hidden my-auto">
+            <div className="p-6 border-b border-[#E7DADD] flex justify-between items-center bg-[#FFFFFF] z-10 shrink-0">
+              <h2 className="text-2xl font-bold text-[#292524]">Edit Trainer</h2>
+              <button onClick={() => setEditTrainer(null)} className="text-[#57534E] hover:text-[#FFFFFF]"><X size={24} /></button>
             </div>
             <form onSubmit={handleEditSubmit} className="p-6 space-y-6 overflow-y-auto flex-1 custom-scrollbar">
               
               <section>
-                <h3 className="text-lg font-bold text-[#F5FAFA] mb-4 border-b pb-2">Basic Information</h3>
+                <h3 className="text-lg font-bold text-[#292524] mb-4 border-b pb-2">Basic Information</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-bold text-[#9AAEAE] mb-1">Full Name *</label>
-                    <input required value={editForm.name} onChange={e => setEditForm({...editForm, name: e.target.value})} className="w-full border border-[#2A3A3A] rounded-lg px-4 py-2 outline-none focus:border-[#2DD4BF]" />
+                    <label className="block text-sm font-bold text-[#57534E] mb-1">Full Name *</label>
+                    <input required value={editForm.name} onChange={e => setEditForm({...editForm, name: e.target.value})} className="w-full border border-[#E7DADD] rounded-lg px-4 py-2 outline-none focus:border-[#B76E79]" />
                   </div>
                   <div>
-                    <label className="block text-sm font-bold text-[#9AAEAE] mb-1">Email *</label>
-                    <input type="email" required value={editForm.email} onChange={e => setEditForm({...editForm, email: e.target.value})} className="w-full border border-[#2A3A3A] rounded-lg px-4 py-2 outline-none focus:border-[#2DD4BF]" />
+                    <label className="block text-sm font-bold text-[#57534E] mb-1">Email *</label>
+                    <input type="email" required value={editForm.email} onChange={e => setEditForm({...editForm, email: e.target.value})} className="w-full border border-[#E7DADD] rounded-lg px-4 py-2 outline-none focus:border-[#B76E79]" />
                   </div>
                   <div>
-                    <label className="block text-sm font-bold text-[#9AAEAE] mb-1">Phone Number *</label>
-                    <input required type="text" maxLength={10} placeholder="10-digit number" value={editForm.phone} onChange={e => setEditForm({...editForm, phone: e.target.value.replace(/\D/g, '')})} className="w-full border border-[#2A3A3A] rounded-lg px-4 py-2 outline-none focus:border-[#2DD4BF]" />
+                    <label className="block text-sm font-bold text-[#57534E] mb-1">Phone Number *</label>
+                    <input required type="text" maxLength={10} placeholder="10-digit number" value={editForm.phone} onChange={e => setEditForm({...editForm, phone: e.target.value.replace(/\D/g, '')})} className="w-full border border-[#E7DADD] rounded-lg px-4 py-2 outline-none focus:border-[#B76E79]" />
                   </div>
                   <div>
-                    <label className="block text-sm font-bold text-[#9AAEAE] mb-1">Trainer Mode *</label>
-                    <select required value={editForm.trainingMode} onChange={e => setEditForm({...editForm, trainingMode: e.target.value})} className="w-full border border-[#2A3A3A] rounded-lg px-4 py-2 outline-none focus:border-[#2DD4BF]">
+                    <label className="block text-sm font-bold text-[#57534E] mb-1">Trainer Mode *</label>
+                    <select required value={editForm.trainingMode} onChange={e => setEditForm({...editForm, trainingMode: e.target.value})} className="w-full border border-[#E7DADD] rounded-lg px-4 py-2 outline-none focus:border-[#B76E79]">
                       {renderTrainerModeOptions()}
                     </select>
                   </div>
@@ -1081,40 +1081,40 @@ const GymAdminTrainers = () => {
               </section>
 
               <section>
-                <h3 className="text-lg font-bold text-[#F5FAFA] mb-4 border-b pb-2">Professional Information</h3>
+                <h3 className="text-lg font-bold text-[#292524] mb-4 border-b pb-2">Professional Information</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-bold text-[#9AAEAE] mb-1">Specialization *</label>
-                    <input required value={editForm.specialization} onChange={e => setEditForm({...editForm, specialization: e.target.value})} className="w-full border border-[#2A3A3A] rounded-lg px-4 py-2 outline-none focus:border-[#2DD4BF]" />
+                    <label className="block text-sm font-bold text-[#57534E] mb-1">Specialization *</label>
+                    <input required value={editForm.specialization} onChange={e => setEditForm({...editForm, specialization: e.target.value})} className="w-full border border-[#E7DADD] rounded-lg px-4 py-2 outline-none focus:border-[#B76E79]" />
                   </div>
                   <div>
-                    <label className="block text-sm font-bold text-[#9AAEAE] mb-1">Experience (Years)</label>
-                    <input type="number" value={editForm.experience} onChange={e => setEditForm({...editForm, experience: e.target.value})} className="w-full border border-[#2A3A3A] rounded-lg px-4 py-2 outline-none focus:border-[#2DD4BF]" />
+                    <label className="block text-sm font-bold text-[#57534E] mb-1">Experience (Years)</label>
+                    <input type="number" value={editForm.experience} onChange={e => setEditForm({...editForm, experience: e.target.value})} className="w-full border border-[#E7DADD] rounded-lg px-4 py-2 outline-none focus:border-[#B76E79]" />
                   </div>
                   <div>
-                    <label className="block text-sm font-bold text-[#9AAEAE] mb-1">Qualifications *</label>
-                    <input required value={editForm.qualifications} onChange={e => setEditForm({...editForm, qualifications: e.target.value})} className="w-full border border-[#2A3A3A] rounded-lg px-4 py-2 outline-none focus:border-[#2DD4BF]" />
+                    <label className="block text-sm font-bold text-[#57534E] mb-1">Qualifications *</label>
+                    <input required value={editForm.qualifications} onChange={e => setEditForm({...editForm, qualifications: e.target.value})} className="w-full border border-[#E7DADD] rounded-lg px-4 py-2 outline-none focus:border-[#B76E79]" />
                   </div>
                   <div>
-                    <label className="block text-sm font-bold text-[#9AAEAE] mb-1">Certifications</label>
-                    <input value={editForm.certifications} onChange={e => setEditForm({...editForm, certifications: e.target.value})} className="w-full border border-[#2A3A3A] rounded-lg px-4 py-2 outline-none focus:border-[#2DD4BF]" />
+                    <label className="block text-sm font-bold text-[#57534E] mb-1">Certifications</label>
+                    <input value={editForm.certifications} onChange={e => setEditForm({...editForm, certifications: e.target.value})} className="w-full border border-[#E7DADD] rounded-lg px-4 py-2 outline-none focus:border-[#B76E79]" />
                   </div>
                   <div className="md:col-span-2">
-                    <label className="block text-sm font-bold text-[#9AAEAE] mb-1">Areas of Expertise *</label>
-                    <textarea required rows={2} value={editForm.expertise} onChange={e => setEditForm({...editForm, expertise: e.target.value})} className="w-full border border-[#2A3A3A] rounded-lg px-4 py-2 outline-none focus:border-[#2DD4BF]" />
+                    <label className="block text-sm font-bold text-[#57534E] mb-1">Areas of Expertise *</label>
+                    <textarea required rows={2} value={editForm.expertise} onChange={e => setEditForm({...editForm, expertise: e.target.value})} className="w-full border border-[#E7DADD] rounded-lg px-4 py-2 outline-none focus:border-[#B76E79]" />
                   </div>
                   <div className="md:col-span-2">
-                    <label className="block text-sm font-bold text-[#9AAEAE] mb-1">Short Bio</label>
-                    <textarea rows={3} value={editForm.bio} onChange={e => setEditForm({...editForm, bio: e.target.value})} className="w-full border border-[#2A3A3A] rounded-lg px-4 py-2 outline-none focus:border-[#2DD4BF]" />
+                    <label className="block text-sm font-bold text-[#57534E] mb-1">Short Bio</label>
+                    <textarea rows={3} value={editForm.bio} onChange={e => setEditForm({...editForm, bio: e.target.value})} className="w-full border border-[#E7DADD] rounded-lg px-4 py-2 outline-none focus:border-[#B76E79]" />
                   </div>
                 </div>
               </section>
               <section>
-                <h3 className="text-lg font-bold text-[#F5FAFA] mb-4 border-b pb-2">Availability Settings</h3>
+                <h3 className="text-lg font-bold text-[#292524] mb-4 border-b pb-2">Availability Settings</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-bold text-[#9AAEAE] mb-1">Available Days</label>
-                    <select value={editForm.availableDays} onChange={e => setEditForm({...editForm, availableDays: e.target.value})} className="w-full border border-[#2A3A3A] rounded-lg px-4 py-2 outline-none focus:border-[#2DD4BF]">
+                    <label className="block text-sm font-bold text-[#57534E] mb-1">Available Days</label>
+                    <select value={editForm.availableDays} onChange={e => setEditForm({...editForm, availableDays: e.target.value})} className="w-full border border-[#E7DADD] rounded-lg px-4 py-2 outline-none focus:border-[#B76E79]">
                       <option value="Monday to Friday">Monday to Friday</option>
                       <option value="Monday to Saturday">Monday to Saturday</option>
                       <option value="Weekends (Sat & Sun)">Weekends (Sat & Sun)</option>
@@ -1122,18 +1122,18 @@ const GymAdminTrainers = () => {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-bold text-[#9AAEAE] mb-1">Available Slots per Day</label>
-                    <input type="number" min="1" placeholder="e.g. 5" value={editForm.availableSlot} onChange={e => setEditForm({...editForm, availableSlot: e.target.value})} className="w-full border border-[#2A3A3A] rounded-lg px-4 py-2 outline-none focus:border-[#2DD4BF]" />
+                    <label className="block text-sm font-bold text-[#57534E] mb-1">Available Slots per Day</label>
+                    <input type="number" min="1" placeholder="e.g. 5" value={editForm.availableSlot} onChange={e => setEditForm({...editForm, availableSlot: e.target.value})} className="w-full border border-[#E7DADD] rounded-lg px-4 py-2 outline-none focus:border-[#B76E79]" />
                   </div>
                   <div>
-                    <label className="block text-sm font-bold text-[#9AAEAE] mb-1">Start Time</label>
-                    <select value={editForm.availableStartTime} onChange={e => setEditForm({...editForm, availableStartTime: e.target.value})} className="w-full border border-[#2A3A3A] rounded-lg px-4 py-2 outline-none focus:border-[#2DD4BF]">
+                    <label className="block text-sm font-bold text-[#57534E] mb-1">Start Time</label>
+                    <select value={editForm.availableStartTime} onChange={e => setEditForm({...editForm, availableStartTime: e.target.value})} className="w-full border border-[#E7DADD] rounded-lg px-4 py-2 outline-none focus:border-[#B76E79]">
                       {renderTimeOptions()}
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-bold text-[#9AAEAE] mb-1">End Time</label>
-                    <select value={editForm.availableEndTime} onChange={e => setEditForm({...editForm, availableEndTime: e.target.value})} className="w-full border border-[#2A3A3A] rounded-lg px-4 py-2 outline-none focus:border-[#2DD4BF]">
+                    <label className="block text-sm font-bold text-[#57534E] mb-1">End Time</label>
+                    <select value={editForm.availableEndTime} onChange={e => setEditForm({...editForm, availableEndTime: e.target.value})} className="w-full border border-[#E7DADD] rounded-lg px-4 py-2 outline-none focus:border-[#B76E79]">
                       {renderTimeOptions()}
                     </select>
                   </div>
@@ -1141,15 +1141,15 @@ const GymAdminTrainers = () => {
               </section>
 
               <section>
-                <h3 className="text-lg font-bold text-[#F5FAFA] mb-4 border-b pb-2">Employment / Payment</h3>
+                <h3 className="text-lg font-bold text-[#292524] mb-4 border-b pb-2">Employment / Payment</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-bold text-[#9AAEAE] mb-1">Trainer Fee</label>
-                    <input type="number" value={editForm.fee} onChange={e => setEditForm({...editForm, fee: e.target.value})} className="w-full border border-[#2A3A3A] rounded-lg px-4 py-2 outline-none focus:border-[#2DD4BF]" />
+                    <label className="block text-sm font-bold text-[#57534E] mb-1">Trainer Fee</label>
+                    <input type="number" value={editForm.fee} onChange={e => setEditForm({...editForm, fee: e.target.value})} className="w-full border border-[#E7DADD] rounded-lg px-4 py-2 outline-none focus:border-[#B76E79]" />
                   </div>
                   <div>
-                    <label className="block text-sm font-bold text-[#9AAEAE] mb-1">Payment Type</label>
-                    <select value={editForm.paymentType} onChange={e => setEditForm({...editForm, paymentType: e.target.value})} className="w-full border border-[#2A3A3A] rounded-lg px-4 py-2 outline-none focus:border-[#2DD4BF]">
+                    <label className="block text-sm font-bold text-[#57534E] mb-1">Payment Type</label>
+                    <select value={editForm.paymentType} onChange={e => setEditForm({...editForm, paymentType: e.target.value})} className="w-full border border-[#E7DADD] rounded-lg px-4 py-2 outline-none focus:border-[#B76E79]">
                       <option value="Per Week">Per Week</option>
                       <option value="Per Month">Per Month</option>
                     </select>
@@ -1157,9 +1157,9 @@ const GymAdminTrainers = () => {
                 </div>
               </section>
 
-              <div className="flex justify-end space-x-3 p-4 border-t border-[#2A3A3A] bg-[#0E1415] shrink-0">
-                <button type="button" onClick={() => setEditTrainer(null)} className="px-6 py-2 text-[#9AAEAE] font-bold hover:bg-[#1B2728] rounded-xl transition-colors">Cancel</button>
-                <button type="submit" className="px-8 py-2 bg-[#2DD4BF] text-[#06201D] font-bold rounded-xl font-bold hover:bg-[#5EEAD4] transition-colors shadow-lg shadow-teal-900/10">Save Changes</button>
+              <div className="flex justify-end space-x-3 p-4 border-t border-[#E7DADD] bg-[#F3E8E8] shrink-0">
+                <button type="button" onClick={() => setEditTrainer(null)} className="px-6 py-2 text-[#57534E] font-bold hover:bg-[#F3E8E8] rounded-xl transition-colors">Cancel</button>
+                <button type="submit" className="px-8 py-2 bg-[#B76E79] text-white font-bold rounded-xl font-bold hover:bg-[#9F5965] transition-colors shadow-lg shadow-[#B76E79]/15">Save Changes</button>
               </div>
             </form>
           </div>
@@ -1168,33 +1168,33 @@ const GymAdminTrainers = () => {
       {/* Upgrade Prompt Modal */}
       {showUpgradeModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="bg-[#FFFFFF] border border-[#2A3A3A] rounded-2xl max-w-md w-full p-8 text-center shadow-2xl relative">
+          <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl max-w-md w-full p-8 text-center shadow-2xl relative">
             <button 
               onClick={() => setShowUpgradeModal(false)}
-              className="absolute top-4 right-4 text-[#9AAEAE] hover:text-[#2DD4BF] transition-colors"
+              className="absolute top-4 right-4 text-[#57534E] hover:text-[#B76E79] transition-colors"
             >
               <X size={20} />
             </button>
             
-            <div className="w-16 h-16 bg-[#1B2728]/10 border border-[#1B2728]/20 text-[#5EEAD4] rounded-full flex items-center justify-center mx-auto mb-6">
+            <div className="w-16 h-16 bg-[#F3E8E8]/10 border border-[#F3E8E8]/20 text-[#9F5965] rounded-full flex items-center justify-center mx-auto mb-6">
               <ShieldCheck size={32} />
             </div>
             
-            <h2 className="text-2xl font-bold text-[#F5FAFA] mb-3">Trainer Limit Reached</h2>
-            <p className="text-[#9AAEAE] mb-8 leading-relaxed">
-              Your current <span className="text-[#2DD4BF] font-semibold">{user?.subscriptionPlan || 'Free Trial'}</span> plan allows up to {getTrainerLimit(user?.subscriptionPlan)} trainers. If you want to add more trainers and branches, you need to upgrade your subscription plan.
+            <h2 className="text-2xl font-bold text-[#292524] mb-3">Trainer Limit Reached</h2>
+            <p className="text-[#57534E] mb-8 leading-relaxed">
+              Your current <span className="text-[#B76E79] font-semibold">{user?.subscriptionPlan || 'Free Trial'}</span> plan allows up to {getTrainerLimit(user?.subscriptionPlan)} trainers. If you want to add more trainers and branches, you need to upgrade your subscription plan.
             </p>
             
             <div className="space-y-3">
               <button 
                 onClick={() => navigate('/admin/subscription')} 
-                className="w-full py-3.5 bg-[#2DD4BF] text-[#06201D] font-bold font-bold rounded-xl hover:bg-[#5EEAD4] transition-colors shadow-lg shadow-[#2DD4BF]/20"
+                className="w-full py-3.5 bg-[#B76E79] text-white font-bold font-bold rounded-xl hover:bg-[#9F5965] transition-colors shadow-lg shadow-[#B76E79]/20"
               >
                 View Upgrade Plans
               </button>
               <button 
                 onClick={() => setShowUpgradeModal(false)} 
-                className="w-full py-3.5 bg-[#FFFFFF] text-[#F5FAFA] font-medium rounded-xl border border-[#2A3A3A] hover:bg-[#1B2728] transition-colors"
+                className="w-full py-3.5 bg-[#FFFFFF] text-[#292524] font-medium rounded-xl border border-[#E7DADD] hover:bg-[#F3E8E8] transition-colors"
               >
                 Maybe Later
               </button>

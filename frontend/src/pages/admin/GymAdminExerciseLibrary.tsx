@@ -243,7 +243,7 @@ export const GymAdminExerciseLibrary: React.FC = () => {
     <div className="space-y-6 pb-20">
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed top-6 right-6 z-50 bg-[#2DD4BF] text-[#06201D] font-bold px-5 py-3 rounded-xl shadow-2xl flex items-center gap-2 animate-in fade-in slide-in-from-top-4 duration-200">
+        <div className="fixed top-6 right-6 z-50 bg-[#B76E79] text-white font-bold px-5 py-3 rounded-xl shadow-2xl flex items-center gap-2 animate-in fade-in slide-in-from-top-4 duration-200">
           <CheckCircle2 size={18} className="text-emerald-400" />
           <span className="text-sm font-semibold">{toastMessage}</span>
         </div>
@@ -252,11 +252,11 @@ export const GymAdminExerciseLibrary: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#F5FAFA] tracking-tight flex items-center gap-3">
-            <Dumbbell className="text-[#2DD4BF]" size={32} />
+          <h1 className="text-3xl font-bold text-[#292524] tracking-tight flex items-center gap-3">
+            <Dumbbell className="text-[#B76E79]" size={32} />
             Exercise Library
           </h1>
-          <p className="text-[#9AAEAE] mt-1">
+          <p className="text-[#57534E] mt-1">
             Manage your master workout exercises and upload demonstration videos/animations for trainers and members.
           </p>
         </div>
@@ -265,14 +265,14 @@ export const GymAdminExerciseLibrary: React.FC = () => {
           <button
             onClick={handleSeedDefaults}
             disabled={seedingLoading}
-            className="px-4 py-2.5 bg-[#0E1415] text-[#2DD4BF] hover:bg-[#1B2728] border border-[#2A3A3A] font-bold rounded-xl transition-colors flex items-center gap-2 text-sm cursor-pointer disabled:opacity-50"
+            className="px-4 py-2.5 bg-[#F3E8E8] text-[#B76E79] hover:bg-[#F3E8E8] border border-[#E7DADD] font-bold rounded-xl transition-colors flex items-center gap-2 text-sm cursor-pointer disabled:opacity-50"
           >
             <Sparkles size={16} className={seedingLoading ? 'animate-spin' : ''} />
             {seedingLoading ? 'Loading Standard Exercises...' : 'Load Standard Exercises'}
           </button>
           <button
             onClick={handleOpenAdd}
-            className="px-5 py-2.5 bg-[#2DD4BF] text-[#06201D] font-bold font-bold rounded-xl hover:bg-[#5EEAD4] transition-colors flex items-center gap-2 shadow-lg shadow-[#2DD4BF]/20 text-sm cursor-pointer"
+            className="px-5 py-2.5 bg-[#B76E79] text-white font-bold font-bold rounded-xl hover:bg-[#9F5965] transition-colors flex items-center gap-2 shadow-lg shadow-[#B76E79]/20 text-sm cursor-pointer"
           >
             <Plus size={18} />
             Add Exercise
@@ -282,41 +282,41 @@ export const GymAdminExerciseLibrary: React.FC = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-[#141D1E] p-5 rounded-2xl border border-[#2A3A3A] shadow-sm">
-          <p className="text-xs font-bold text-[#9AAEAE] uppercase tracking-wider">Total Exercises</p>
-          <p className="text-2xl font-black text-[#F5FAFA] mt-1">{exercises.length}</p>
+        <div className="bg-[#FFFFFF] p-5 rounded-2xl border border-[#E7DADD] shadow-sm">
+          <p className="text-xs font-bold text-[#57534E] uppercase tracking-wider">Total Exercises</p>
+          <p className="text-2xl font-black text-[#292524] mt-1">{exercises.length}</p>
         </div>
-        <div className="bg-[#141D1E] p-5 rounded-2xl border border-[#2A3A3A] shadow-sm">
-          <p className="text-xs font-bold text-[#9AAEAE] uppercase tracking-wider">Active in Gym</p>
-          <p className="text-2xl font-black text-[#2DD4BF] mt-1">{activeCount}</p>
+        <div className="bg-[#FFFFFF] p-5 rounded-2xl border border-[#E7DADD] shadow-sm">
+          <p className="text-xs font-bold text-[#57534E] uppercase tracking-wider">Active in Gym</p>
+          <p className="text-2xl font-black text-[#B76E79] mt-1">{activeCount}</p>
         </div>
-        <div className="bg-[#141D1E] p-5 rounded-2xl border border-[#2A3A3A] shadow-sm">
-          <p className="text-xs font-bold text-[#9AAEAE] uppercase tracking-wider">Videos & Animations</p>
-          <p className="text-2xl font-black text-[#2DD4BF] mt-1">{videoCount}</p>
+        <div className="bg-[#FFFFFF] p-5 rounded-2xl border border-[#E7DADD] shadow-sm">
+          <p className="text-xs font-bold text-[#57534E] uppercase tracking-wider">Videos & Animations</p>
+          <p className="text-2xl font-black text-[#B76E79] mt-1">{videoCount}</p>
         </div>
-        <div className="bg-[#141D1E] p-5 rounded-2xl border border-[#2A3A3A] shadow-sm">
-          <p className="text-xs font-bold text-[#9AAEAE] uppercase tracking-wider">Muscle Categories</p>
-          <p className="text-2xl font-black text-[#9AAEAE] mt-1">{categoriesCount}</p>
+        <div className="bg-[#FFFFFF] p-5 rounded-2xl border border-[#E7DADD] shadow-sm">
+          <p className="text-xs font-bold text-[#57534E] uppercase tracking-wider">Muscle Categories</p>
+          <p className="text-2xl font-black text-[#57534E] mt-1">{categoriesCount}</p>
         </div>
       </div>
 
       {/* Search & Filters */}
-      <div className="bg-[#141D1E] p-4 rounded-2xl border border-[#2A3A3A] shadow-sm flex flex-col lg:flex-row gap-4 justify-between items-stretch lg:items-center">
+      <div className="bg-[#FFFFFF] p-4 rounded-2xl border border-[#E7DADD] shadow-sm flex flex-col lg:flex-row gap-4 justify-between items-stretch lg:items-center">
         {/* Search */}
         <div className="relative flex-1">
-          <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9AAEAE]" />
+          <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#57534E]" />
           <input
             type="text"
             placeholder="Search exercises by name, category, muscle, equipment..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[#2A3A3A] text-sm text-[#F5FAFA] focus:border-[#2DD4BF] outline-none"
+            className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[#E7DADD] text-sm text-[#292524] focus:border-[#B76E79] outline-none"
           />
         </div>
 
         {/* Filter Dropdowns */}
         <div className="flex items-center gap-2.5 flex-wrap">
-          <div className="flex items-center gap-1.5 text-xs text-[#9AAEAE] font-bold">
+          <div className="flex items-center gap-1.5 text-xs text-[#57534E] font-bold">
             <Filter size={14} /> Filter:
           </div>
 
@@ -324,7 +324,7 @@ export const GymAdminExerciseLibrary: React.FC = () => {
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="px-3 py-2 bg-[#0E1415] border border-[#2A3A3A] rounded-xl text-xs font-semibold text-[#F5FAFA] outline-none cursor-pointer"
+            className="px-3 py-2 bg-[#F3E8E8] border border-[#E7DADD] rounded-xl text-xs font-semibold text-[#292524] outline-none cursor-pointer"
           >
             {CATEGORIES.map(c => (
               <option key={c} value={c}>{c === 'All' ? 'All Categories' : c}</option>
@@ -335,7 +335,7 @@ export const GymAdminExerciseLibrary: React.FC = () => {
           <select
             value={difficultyFilter}
             onChange={(e) => setDifficultyFilter(e.target.value)}
-            className="px-3 py-2 bg-[#0E1415] border border-[#2A3A3A] rounded-xl text-xs font-semibold text-[#F5FAFA] outline-none cursor-pointer"
+            className="px-3 py-2 bg-[#F3E8E8] border border-[#E7DADD] rounded-xl text-xs font-semibold text-[#292524] outline-none cursor-pointer"
           >
             {DIFFICULTIES.map(d => (
               <option key={d} value={d}>{d === 'All' ? 'All Difficulties' : d}</option>
@@ -346,7 +346,7 @@ export const GymAdminExerciseLibrary: React.FC = () => {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3 py-2 bg-[#0E1415] border border-[#2A3A3A] rounded-xl text-xs font-semibold text-[#F5FAFA] outline-none cursor-pointer"
+            className="px-3 py-2 bg-[#F3E8E8] border border-[#E7DADD] rounded-xl text-xs font-semibold text-[#292524] outline-none cursor-pointer"
           >
             <option value="All">All Statuses</option>
             <option value="Active">Active Only</option>
@@ -371,15 +371,15 @@ export const GymAdminExerciseLibrary: React.FC = () => {
 
       {/* Exercises Grid */}
       {loading ? (
-        <div className="text-center py-20 text-[#9AAEAE]">
-          <RefreshCw size={32} className="animate-spin mx-auto text-[#2DD4BF] mb-3" />
+        <div className="text-center py-20 text-[#57534E]">
+          <RefreshCw size={32} className="animate-spin mx-auto text-[#B76E79] mb-3" />
           <p className="font-semibold">Loading exercise library...</p>
         </div>
       ) : filtered.length === 0 ? (
-        <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-3xl p-12 text-center shadow-sm">
-          <Dumbbell size={52} className="mx-auto text-[#2A3A3A] mb-4" />
-          <h3 className="text-xl font-bold text-[#F5FAFA]">No exercises found</h3>
-          <p className="text-sm text-[#9AAEAE] mt-1 max-w-md mx-auto">
+        <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-3xl p-12 text-center shadow-sm">
+          <Dumbbell size={52} className="mx-auto text-[#E7DADD] mb-4" />
+          <h3 className="text-xl font-bold text-[#292524]">No exercises found</h3>
+          <p className="text-sm text-[#57534E] mt-1 max-w-md mx-auto">
             {search || categoryFilter !== 'All'
               ? 'Try adjusting your search criteria or filters.'
               : 'Your library is empty. Click "Add Exercise" to create your own.'}
@@ -387,7 +387,7 @@ export const GymAdminExerciseLibrary: React.FC = () => {
           <div className="mt-6 flex justify-center gap-3">
             <button
               onClick={handleOpenAdd}
-              className="px-5 py-2.5 bg-[#2DD4BF] text-[#06201D] font-bold font-bold rounded-xl hover:bg-[#5EEAD4] transition-colors text-sm"
+              className="px-5 py-2.5 bg-[#B76E79] text-white font-bold font-bold rounded-xl hover:bg-[#9F5965] transition-colors text-sm"
             >
               Add New Exercise
             </button>
@@ -400,8 +400,8 @@ export const GymAdminExerciseLibrary: React.FC = () => {
             return (
               <div
                 key={ex._id}
-                className={`bg-[#141D1E] rounded-2xl border transition-all shadow-sm hover:shadow-md flex flex-col overflow-hidden ${
-                  isInactive ? 'opacity-75 border-[#2A3A3A]' : 'border-[#2A3A3A] hover:border-[#2DD4BF]/50'
+                className={`bg-[#FFFFFF] rounded-2xl border transition-all shadow-sm hover:shadow-md flex flex-col overflow-hidden ${
+                  isInactive ? 'opacity-75 border-[#E7DADD]' : 'border-[#E7DADD] hover:border-[#B76E79]/50'
                 }`}
               >
                 {/* Video / Animated Preview Player Area */}
@@ -428,7 +428,7 @@ export const GymAdminExerciseLibrary: React.FC = () => {
                     <span
                       className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border shadow-sm ${
                         ex.status === 'Active'
-                          ? 'bg-[#2DD4BF] text-white border-[#2A3A3A]'
+                          ? 'bg-[#B76E79] text-white border-[#E7DADD]'
                           : 'bg-gray-700 text-gray-200 border-gray-600'
                       }`}
                     >
@@ -441,7 +441,7 @@ export const GymAdminExerciseLibrary: React.FC = () => {
                     <span
                       className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border shadow-sm ${
                         ex.difficulty === 'Beginner'
-                          ? 'bg-[#2DD4BF]/90 text-white border-[#2DD4BF]'
+                          ? 'bg-[#B76E79]/90 text-white border-[#B76E79]'
                           : ex.difficulty === 'Intermediate'
                           ? 'bg-amber-600/90 text-white border-amber-500'
                           : 'bg-rose-600/90 text-white border-rose-500'
@@ -456,49 +456,49 @@ export const GymAdminExerciseLibrary: React.FC = () => {
                 <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
                   <div>
                     <div className="flex items-start justify-between gap-2">
-                      <h3 className="font-bold text-lg text-[#F5FAFA] tracking-tight">{ex.name}</h3>
-                      <span className="text-xs font-semibold text-[#2DD4BF] bg-[#2DD4BF]/10 px-2 py-0.5 rounded shrink-0">
+                      <h3 className="font-bold text-lg text-[#292524] tracking-tight">{ex.name}</h3>
+                      <span className="text-xs font-semibold text-[#B76E79] bg-[#B76E79]/10 px-2 py-0.5 rounded shrink-0">
                         {ex.category}
                       </span>
                     </div>
 
-                    <div className="mt-2 text-xs space-y-1 text-[#9AAEAE]">
+                    <div className="mt-2 text-xs space-y-1 text-[#57534E]">
                       <p>
-                        <span className="font-semibold text-[#F5FAFA]">Target:</span> {ex.targetMuscle}
+                        <span className="font-semibold text-[#292524]">Target:</span> {ex.targetMuscle}
                       </p>
                       {ex.secondaryMuscle && (
                         <p>
-                          <span className="font-semibold text-[#F5FAFA]">Secondary:</span> {ex.secondaryMuscle}
+                          <span className="font-semibold text-[#292524]">Secondary:</span> {ex.secondaryMuscle}
                         </p>
                       )}
                       <p>
-                        <span className="font-semibold text-[#F5FAFA]">Equipment:</span> {ex.equipment || 'No Equipment'}
+                        <span className="font-semibold text-[#292524]">Equipment:</span> {ex.equipment || 'No Equipment'}
                       </p>
                     </div>
 
                     {ex.description && (
-                      <p className="mt-2 text-xs text-[#9AAEAE] line-clamp-2 leading-relaxed">
+                      <p className="mt-2 text-xs text-[#57534E] line-clamp-2 leading-relaxed">
                         {ex.description}
                       </p>
                     )}
                   </div>
 
                   {/* Default Configuration Chips */}
-                  <div className="pt-3 border-t border-[#1B2728] flex items-center justify-between text-[11px] text-[#9AAEAE] bg-[#0E1415]/50 p-2.5 rounded-xl">
+                  <div className="pt-3 border-t border-[#F3E8E8] flex items-center justify-between text-[11px] text-[#57534E] bg-[#F3E8E8]/50 p-2.5 rounded-xl">
                     <span>
-                      <strong className="text-[#F5FAFA]">{ex.defaultSets}</strong> Sets
+                      <strong className="text-[#292524]">{ex.defaultSets}</strong> Sets
                     </span>
                     <span>•</span>
                     <span>
-                      <strong className="text-[#F5FAFA]">{ex.defaultRepetitions}</strong> Reps
+                      <strong className="text-[#292524]">{ex.defaultRepetitions}</strong> Reps
                     </span>
                     <span>•</span>
                     <span>
-                      <strong className="text-[#F5FAFA]">{ex.defaultDuration}s</strong> Work
+                      <strong className="text-[#292524]">{ex.defaultDuration}s</strong> Work
                     </span>
                     <span>•</span>
                     <span>
-                      <strong className="text-[#F5FAFA]">{ex.defaultRest}s</strong> Rest
+                      <strong className="text-[#292524]">{ex.defaultRest}s</strong> Rest
                     </span>
                   </div>
 
@@ -506,7 +506,7 @@ export const GymAdminExerciseLibrary: React.FC = () => {
                   <div className="pt-2 flex items-center justify-between gap-2">
                     <button
                       onClick={() => setPreviewExercise(ex)}
-                      className="px-3 py-1.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold font-bold text-xs rounded-lg transition-all flex items-center gap-1.5 shadow-sm active:scale-95"
+                      className="px-3 py-1.5 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold font-bold text-xs rounded-lg transition-all flex items-center gap-1.5 shadow-sm active:scale-95"
                       title="Preview animated video demonstration and instructions"
                     >
                       <Eye size={14} /> View Details
@@ -517,8 +517,8 @@ export const GymAdminExerciseLibrary: React.FC = () => {
                         onClick={() => handleToggleStatus(ex)}
                         className={`p-1.5 rounded-lg border transition-colors ${
                           ex.status === 'Active'
-                            ? 'text-[#2DD4BF] bg-[#1B2728] border-[#2A3A3A] hover:bg-[#1B2728]'
-                            : 'text-[#C1D0D0] bg-[#1B2728] border-[#2A3A3A] hover:bg-gray-200'
+                            ? 'text-[#B76E79] bg-[#F3E8E8] border-[#E7DADD] hover:bg-[#F3E8E8]'
+                            : 'text-[#292524] bg-[#F3E8E8] border-[#E7DADD] hover:bg-gray-200'
                         }`}
                         title={ex.status === 'Active' ? 'Deactivate Exercise' : 'Activate Exercise'}
                       >
@@ -527,7 +527,7 @@ export const GymAdminExerciseLibrary: React.FC = () => {
 
                       <button
                         onClick={() => handleOpenEdit(ex)}
-                        className="p-1.5 text-[#2DD4BF] bg-[#2DD4BF]/10 hover:bg-[#2DD4BF]/20 rounded-lg transition-colors"
+                        className="p-1.5 text-[#B76E79] bg-[#B76E79]/10 hover:bg-[#B76E79]/20 rounded-lg transition-colors"
                         title="Edit Exercise"
                       >
                         <Edit2 size={16} />
@@ -552,18 +552,18 @@ export const GymAdminExerciseLibrary: React.FC = () => {
       {/* Add / Edit Exercise Modal */}
       {isAddModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-[#141D1E] rounded-3xl max-w-3xl w-full max-h-[92vh] overflow-y-auto custom-scrollbar shadow-2xl border border-[#2A3A3A] animate-in fade-in zoom-in-95 duration-150 flex flex-col">
+          <div className="bg-[#FFFFFF] rounded-3xl max-w-3xl w-full max-h-[92vh] overflow-y-auto custom-scrollbar shadow-2xl border border-[#E7DADD] animate-in fade-in zoom-in-95 duration-150 flex flex-col">
             {/* Modal Header */}
-            <div className="p-6 border-b border-[#2A3A3A] flex items-center justify-between sticky top-0 bg-[#141D1E]/95 backdrop-blur z-20">
+            <div className="p-6 border-b border-[#E7DADD] flex items-center justify-between sticky top-0 bg-[#FFFFFF]/95 backdrop-blur z-20">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-[#2DD4BF]/10 text-[#2DD4BF] rounded-xl flex items-center justify-center">
+                <div className="w-10 h-10 bg-[#B76E79]/10 text-[#B76E79] rounded-xl flex items-center justify-center">
                   <Dumbbell size={20} />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-[#F5FAFA]">
+                  <h2 className="text-xl font-bold text-[#292524]">
                     {editingExercise ? 'Edit Exercise' : 'Add New Exercise'}
                   </h2>
-                  <p className="text-xs text-[#9AAEAE]">
+                  <p className="text-xs text-[#57534E]">
                     {editingExercise ? 'Update form, instructions, or demo video' : 'Add an exercise to your gym library for trainers and members'}
                   </p>
                 </div>
@@ -571,7 +571,7 @@ export const GymAdminExerciseLibrary: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setIsAddModalOpen(false)}
-                className="text-[#9AAEAE] hover:text-[#FFFFFF] p-2 hover:bg-[#0E1415] rounded-full transition-colors"
+                className="text-[#57534E] hover:text-[#FFFFFF] p-2 hover:bg-[#F3E8E8] rounded-full transition-colors"
               >
                 <X size={20} />
               </button>
@@ -582,7 +582,7 @@ export const GymAdminExerciseLibrary: React.FC = () => {
               {/* Row 1: Name & Category */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-[#F5FAFA] uppercase tracking-wider mb-1.5">
+                  <label className="block text-xs font-bold text-[#292524] uppercase tracking-wider mb-1.5">
                     Exercise Name *
                   </label>
                   <input
@@ -591,18 +591,18 @@ export const GymAdminExerciseLibrary: React.FC = () => {
                     placeholder="e.g. Barbell Squats, Push-ups"
                     value={form.name}
                     onChange={e => setForm({ ...form, name: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#2A3A3A] text-sm text-[#F5FAFA] focus:border-[#2DD4BF] outline-none"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#E7DADD] text-sm text-[#292524] focus:border-[#B76E79] outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-[#F5FAFA] uppercase tracking-wider mb-1.5">
+                  <label className="block text-xs font-bold text-[#292524] uppercase tracking-wider mb-1.5">
                     Category *
                   </label>
                   <select
                     value={form.category}
                     onChange={e => setForm({ ...form, category: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#2A3A3A] text-sm text-[#F5FAFA] focus:border-[#2DD4BF] outline-none bg-[#141D1E] cursor-pointer"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#E7DADD] text-sm text-[#292524] focus:border-[#B76E79] outline-none bg-[#FFFFFF] cursor-pointer"
                   >
                     {CATEGORIES.filter(c => c !== 'All').map(c => (
                       <option key={c} value={c}>{c}</option>
@@ -614,7 +614,7 @@ export const GymAdminExerciseLibrary: React.FC = () => {
               {/* Row 2: Target Muscle & Secondary Muscle */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-[#F5FAFA] uppercase tracking-wider mb-1.5">
+                  <label className="block text-xs font-bold text-[#292524] uppercase tracking-wider mb-1.5">
                     Target Muscle *
                   </label>
                   <input
@@ -623,12 +623,12 @@ export const GymAdminExerciseLibrary: React.FC = () => {
                     placeholder="e.g. Quadriceps, Glutes, Pectorals"
                     value={form.targetMuscle}
                     onChange={e => setForm({ ...form, targetMuscle: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#2A3A3A] text-sm text-[#F5FAFA] focus:border-[#2DD4BF] outline-none"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#E7DADD] text-sm text-[#292524] focus:border-[#B76E79] outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-[#F5FAFA] uppercase tracking-wider mb-1.5">
+                  <label className="block text-xs font-bold text-[#292524] uppercase tracking-wider mb-1.5">
                     Secondary Muscle
                   </label>
                   <input
@@ -636,7 +636,7 @@ export const GymAdminExerciseLibrary: React.FC = () => {
                     placeholder="e.g. Hamstrings, Core, Triceps"
                     value={form.secondaryMuscle}
                     onChange={e => setForm({ ...form, secondaryMuscle: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#2A3A3A] text-sm text-[#F5FAFA] focus:border-[#2DD4BF] outline-none"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#E7DADD] text-sm text-[#292524] focus:border-[#B76E79] outline-none"
                   />
                 </div>
               </div>
@@ -644,13 +644,13 @@ export const GymAdminExerciseLibrary: React.FC = () => {
               {/* Row 3: Difficulty, Equipment & Status */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-[#F5FAFA] uppercase tracking-wider mb-1.5">
+                  <label className="block text-xs font-bold text-[#292524] uppercase tracking-wider mb-1.5">
                     Difficulty Level
                   </label>
                   <select
                     value={form.difficulty}
                     onChange={e => setForm({ ...form, difficulty: e.target.value as any })}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#2A3A3A] text-sm text-[#F5FAFA] focus:border-[#2DD4BF] outline-none bg-[#141D1E] cursor-pointer"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#E7DADD] text-sm text-[#292524] focus:border-[#B76E79] outline-none bg-[#FFFFFF] cursor-pointer"
                   >
                     <option value="Beginner">Beginner</option>
                     <option value="Intermediate">Intermediate</option>
@@ -659,7 +659,7 @@ export const GymAdminExerciseLibrary: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-[#F5FAFA] uppercase tracking-wider mb-1.5">
+                  <label className="block text-xs font-bold text-[#292524] uppercase tracking-wider mb-1.5">
                     Equipment Required
                   </label>
                   <input
@@ -667,18 +667,18 @@ export const GymAdminExerciseLibrary: React.FC = () => {
                     placeholder="e.g. Barbell, Dumbbells, Bodyweight"
                     value={form.equipment}
                     onChange={e => setForm({ ...form, equipment: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#2A3A3A] text-sm text-[#F5FAFA] focus:border-[#2DD4BF] outline-none"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#E7DADD] text-sm text-[#292524] focus:border-[#B76E79] outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-[#F5FAFA] uppercase tracking-wider mb-1.5">
+                  <label className="block text-xs font-bold text-[#292524] uppercase tracking-wider mb-1.5">
                     Status
                   </label>
                   <select
                     value={form.status}
                     onChange={e => setForm({ ...form, status: e.target.value as any })}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#2A3A3A] text-sm text-[#F5FAFA] focus:border-[#2DD4BF] outline-none bg-[#141D1E] cursor-pointer"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#E7DADD] text-sm text-[#292524] focus:border-[#B76E79] outline-none bg-[#FFFFFF] cursor-pointer"
                   >
                     <option value="Active">Active</option>
                     <option value="Inactive">Inactive</option>
@@ -687,53 +687,53 @@ export const GymAdminExerciseLibrary: React.FC = () => {
               </div>
 
               {/* Row 4: Default Sets, Reps, Duration, Rest Time */}
-              <div className="bg-[#0E1415]/70 p-4 rounded-2xl border border-[#2A3A3A] space-y-3">
-                <p className="text-xs font-bold text-[#2DD4BF] uppercase tracking-wider">
+              <div className="bg-[#F3E8E8]/70 p-4 rounded-2xl border border-[#E7DADD] space-y-3">
+                <p className="text-xs font-bold text-[#B76E79] uppercase tracking-wider">
                   Default Workout Metrics
                 </p>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div>
-                    <label className="block text-xs font-semibold text-[#9AAEAE] mb-1">Sets</label>
+                    <label className="block text-xs font-semibold text-[#57534E] mb-1">Sets</label>
                     <input
                       type="number"
                       min={1}
                       max={20}
                       value={form.defaultSets}
                       onChange={e => setForm({ ...form, defaultSets: Number(e.target.value) })}
-                      className="w-full px-3 py-2 rounded-lg border border-[#2A3A3A] text-sm bg-[#141D1E] text-[#F5FAFA]"
+                      className="w-full px-3 py-2 rounded-lg border border-[#E7DADD] text-sm bg-[#FFFFFF] text-[#292524]"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-[#9AAEAE] mb-1">Reps</label>
+                    <label className="block text-xs font-semibold text-[#57534E] mb-1">Reps</label>
                     <input
                       type="number"
                       min={1}
                       max={100}
                       value={form.defaultRepetitions}
                       onChange={e => setForm({ ...form, defaultRepetitions: Number(e.target.value) })}
-                      className="w-full px-3 py-2 rounded-lg border border-[#2A3A3A] text-sm bg-[#141D1E] text-[#F5FAFA]"
+                      className="w-full px-3 py-2 rounded-lg border border-[#E7DADD] text-sm bg-[#FFFFFF] text-[#292524]"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-[#9AAEAE] mb-1">Duration (sec)</label>
+                    <label className="block text-xs font-semibold text-[#57534E] mb-1">Duration (sec)</label>
                     <input
                       type="number"
                       min={5}
                       max={600}
                       value={form.defaultDuration}
                       onChange={e => setForm({ ...form, defaultDuration: Number(e.target.value) })}
-                      className="w-full px-3 py-2 rounded-lg border border-[#2A3A3A] text-sm bg-[#141D1E] text-[#F5FAFA]"
+                      className="w-full px-3 py-2 rounded-lg border border-[#E7DADD] text-sm bg-[#FFFFFF] text-[#292524]"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-[#9AAEAE] mb-1">Rest Time (sec)</label>
+                    <label className="block text-xs font-semibold text-[#57534E] mb-1">Rest Time (sec)</label>
                     <input
                       type="number"
                       min={0}
                       max={300}
                       value={form.defaultRest}
                       onChange={e => setForm({ ...form, defaultRest: Number(e.target.value) })}
-                      className="w-full px-3 py-2 rounded-lg border border-[#2A3A3A] text-sm bg-[#141D1E] text-[#F5FAFA]"
+                      className="w-full px-3 py-2 rounded-lg border border-[#E7DADD] text-sm bg-[#FFFFFF] text-[#292524]"
                     />
                   </div>
                 </div>
@@ -742,7 +742,7 @@ export const GymAdminExerciseLibrary: React.FC = () => {
               {/* Instructions & Description */}
               <div className="space-y-4">
                 <div>
-                  <label className="block text-xs font-bold text-[#F5FAFA] uppercase tracking-wider mb-1.5">
+                  <label className="block text-xs font-bold text-[#292524] uppercase tracking-wider mb-1.5">
                     Exercise Description
                   </label>
                   <textarea
@@ -750,12 +750,12 @@ export const GymAdminExerciseLibrary: React.FC = () => {
                     placeholder="Brief description of the exercise and primary benefits..."
                     value={form.description}
                     onChange={e => setForm({ ...form, description: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#2A3A3A] text-sm text-[#F5FAFA] focus:border-[#2DD4BF] outline-none resize-none"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#E7DADD] text-sm text-[#292524] focus:border-[#B76E79] outline-none resize-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-[#F5FAFA] uppercase tracking-wider mb-1.5">
+                  <label className="block text-xs font-bold text-[#292524] uppercase tracking-wider mb-1.5">
                     Proper Form Instructions (Step-by-Step)
                   </label>
                   <textarea
@@ -763,12 +763,12 @@ export const GymAdminExerciseLibrary: React.FC = () => {
                     placeholder="1. Starting position...&#10;2. Knee and foot alignment...&#10;3. Lowering and breathing...&#10;4. Return to start..."
                     value={form.instructions}
                     onChange={e => setForm({ ...form, instructions: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#2A3A3A] text-sm text-[#F5FAFA] focus:border-[#2DD4BF] outline-none"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#E7DADD] text-sm text-[#292524] focus:border-[#B76E79] outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-[#F5FAFA] uppercase tracking-wider mb-1.5">
+                  <label className="block text-xs font-bold text-[#292524] uppercase tracking-wider mb-1.5">
                     Safety Instructions & Common Mistakes
                   </label>
                   <textarea
@@ -776,25 +776,25 @@ export const GymAdminExerciseLibrary: React.FC = () => {
                     placeholder="e.g. Do not round lower back; avoid letting knees cave inwards; keep core tight..."
                     value={form.safetyInstructions}
                     onChange={e => setForm({ ...form, safetyInstructions: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#2A3A3A] text-sm text-[#F5FAFA] focus:border-[#2DD4BF] outline-none resize-none"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#E7DADD] text-sm text-[#292524] focus:border-[#B76E79] outline-none resize-none"
                   />
                 </div>
               </div>
 
               {/* Video / Animation Upload Section */}
-              <div className="bg-[#0E1415] p-5 rounded-2xl border border-[#2A3A3A] space-y-4">
+              <div className="bg-[#F3E8E8] p-5 rounded-2xl border border-[#E7DADD] space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h4 className="font-bold text-sm text-[#F5FAFA] flex items-center gap-2">
-                      <Video size={18} className="text-[#2DD4BF]" />
+                    <h4 className="font-bold text-sm text-[#292524] flex items-center gap-2">
+                      <Video size={18} className="text-[#B76E79]" />
                       Exercise Animation / Video Demonstration
                     </h4>
-                    <p className="text-xs text-[#9AAEAE]">
+                    <p className="text-xs text-[#57534E]">
                       Upload once. Reusable by trainers and customers in workout plans. Supports MP4, WebM, GIF.
                     </p>
                   </div>
                   {form.videoUrl && (
-                    <span className="text-xs font-bold text-[#2DD4BF] bg-[#1B2728] px-2 py-0.5 rounded">
+                    <span className="text-xs font-bold text-[#B76E79] bg-[#F3E8E8] px-2 py-0.5 rounded">
                       Video Attached
                     </span>
                   )}
@@ -803,7 +803,7 @@ export const GymAdminExerciseLibrary: React.FC = () => {
                 {/* Upload or URL options */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* File Upload Button */}
-                  <div className="border-2 border-dashed border-[#2A3A3A] rounded-xl p-4 text-center hover:border-[#2DD4BF] transition-colors bg-[#141D1E]">
+                  <div className="border-2 border-dashed border-[#E7DADD] rounded-xl p-4 text-center hover:border-[#B76E79] transition-colors bg-[#FFFFFF]">
                     <input
                       type="file"
                       id="videoUpload"
@@ -813,17 +813,17 @@ export const GymAdminExerciseLibrary: React.FC = () => {
                       className="hidden"
                     />
                     <label htmlFor="videoUpload" className="cursor-pointer block">
-                      <Upload size={24} className="mx-auto text-[#2DD4BF] mb-1.5" />
-                      <span className="text-xs font-bold text-[#2DD4BF] block">
+                      <Upload size={24} className="mx-auto text-[#B76E79] mb-1.5" />
+                      <span className="text-xs font-bold text-[#B76E79] block">
                         {uploadingMedia ? 'Uploading video...' : 'Upload Video / Animation File'}
                       </span>
-                      <span className="text-[10px] text-[#9AAEAE]">MP4, WebM, or GIF (max 100MB)</span>
+                      <span className="text-[10px] text-[#57534E]">MP4, WebM, or GIF (max 100MB)</span>
                     </label>
                   </div>
 
                   {/* Direct Video URL input */}
                   <div className="flex flex-col justify-center">
-                    <label className="text-xs font-semibold text-[#9AAEAE] mb-1">
+                    <label className="text-xs font-semibold text-[#57534E] mb-1">
                       Or Paste Video / Animation URL:
                     </label>
                     <input
@@ -831,7 +831,7 @@ export const GymAdminExerciseLibrary: React.FC = () => {
                       placeholder="https://example.com/squat-animation.mp4"
                       value={form.videoUrl}
                       onChange={e => setForm({ ...form, videoUrl: e.target.value })}
-                      className="px-3 py-2 rounded-xl border border-[#2A3A3A] text-xs bg-[#141D1E] text-[#F5FAFA] outline-none"
+                      className="px-3 py-2 rounded-xl border border-[#E7DADD] text-xs bg-[#FFFFFF] text-[#292524] outline-none"
                     />
                   </div>
                 </div>
@@ -839,7 +839,7 @@ export const GymAdminExerciseLibrary: React.FC = () => {
                 {/* Live Preview in Modal */}
                 {form.videoUrl && (
                   <div className="mt-3">
-                    <p className="text-xs font-bold text-[#F5FAFA] mb-1">Player Preview:</p>
+                    <p className="text-xs font-bold text-[#292524] mb-1">Player Preview:</p>
                     <div className="max-w-md mx-auto">
                       <ExerciseVideoPlayer
                         videoUrl={form.videoUrl}
@@ -854,18 +854,18 @@ export const GymAdminExerciseLibrary: React.FC = () => {
               </div>
 
               {/* Action Buttons */}
-              <div className="pt-4 border-t border-[#2A3A3A] flex items-center justify-end gap-3">
+              <div className="pt-4 border-t border-[#E7DADD] flex items-center justify-end gap-3">
                 <button
                   type="button"
                   onClick={() => setIsAddModalOpen(false)}
-                  className="px-6 py-2.5 rounded-xl border border-[#2A3A3A] text-sm font-bold text-[#9AAEAE] hover:bg-[#0E1415] transition-colors"
+                  className="px-6 py-2.5 rounded-xl border border-[#E7DADD] text-sm font-bold text-[#57534E] hover:bg-[#F3E8E8] transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={formSubmitting || uploadingMedia}
-                  className="px-8 py-2.5 bg-[#2DD4BF] text-[#06201D] font-bold font-bold rounded-xl hover:bg-[#5EEAD4] transition-colors shadow-lg shadow-[#2DD4BF]/20 text-sm disabled:opacity-50"
+                  className="px-8 py-2.5 bg-[#B76E79] text-white font-bold font-bold rounded-xl hover:bg-[#9F5965] transition-colors shadow-lg shadow-[#B76E79]/20 text-sm disabled:opacity-50"
                 >
                   {formSubmitting ? 'Saving...' : editingExercise ? 'Update Exercise' : 'Save Exercise'}
                 </button>
@@ -878,17 +878,17 @@ export const GymAdminExerciseLibrary: React.FC = () => {
       {/* Full Video & Details Preview Modal */}
       {previewExercise && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-          <div className="bg-[#141D1E] rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto custom-scrollbar shadow-2xl border border-[#2A3A3A] animate-in zoom-in-95 duration-150">
-            <div className="p-5 border-b border-[#2A3A3A] flex items-center justify-between sticky top-0 bg-[#141D1E]/95 backdrop-blur z-20">
+          <div className="bg-[#FFFFFF] rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto custom-scrollbar shadow-2xl border border-[#E7DADD] animate-in zoom-in-95 duration-150">
+            <div className="p-5 border-b border-[#E7DADD] flex items-center justify-between sticky top-0 bg-[#FFFFFF]/95 backdrop-blur z-20">
               <div>
-                <h3 className="font-bold text-lg text-[#F5FAFA]">{previewExercise.name}</h3>
-                <span className="text-xs text-[#2DD4BF] font-semibold">
+                <h3 className="font-bold text-lg text-[#292524]">{previewExercise.name}</h3>
+                <span className="text-xs text-[#B76E79] font-semibold">
                   {previewExercise.category} • {previewExercise.difficulty}
                 </span>
               </div>
               <button
                 onClick={() => setPreviewExercise(null)}
-                className="text-[#9AAEAE] hover:text-[#FFFFFF] p-2 hover:bg-[#0E1415] rounded-full transition-colors"
+                className="text-[#57534E] hover:text-[#FFFFFF] p-2 hover:bg-[#F3E8E8] rounded-full transition-colors"
               >
                 <X size={20} />
               </button>
@@ -909,38 +909,38 @@ export const GymAdminExerciseLibrary: React.FC = () => {
               />
 
               {/* Details */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 bg-[#0E1415] p-4 rounded-xl text-center text-xs">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 bg-[#F3E8E8] p-4 rounded-xl text-center text-xs">
                 <div>
-                  <span className="text-[#9AAEAE] block">Default Sets</span>
-                  <strong className="text-sm text-[#F5FAFA]">{previewExercise.defaultSets}</strong>
+                  <span className="text-[#57534E] block">Default Sets</span>
+                  <strong className="text-sm text-[#292524]">{previewExercise.defaultSets}</strong>
                 </div>
                 <div>
-                  <span className="text-[#9AAEAE] block">Default Reps</span>
-                  <strong className="text-sm text-[#F5FAFA]">{previewExercise.defaultRepetitions}</strong>
+                  <span className="text-[#57534E] block">Default Reps</span>
+                  <strong className="text-sm text-[#292524]">{previewExercise.defaultRepetitions}</strong>
                 </div>
                 <div>
-                  <span className="text-[#9AAEAE] block">Duration</span>
-                  <strong className="text-sm text-[#F5FAFA]">{previewExercise.defaultDuration}s</strong>
+                  <span className="text-[#57534E] block">Duration</span>
+                  <strong className="text-sm text-[#292524]">{previewExercise.defaultDuration}s</strong>
                 </div>
                 <div>
-                  <span className="text-[#9AAEAE] block">Rest Time</span>
-                  <strong className="text-sm text-[#F5FAFA]">{previewExercise.defaultRest}s</strong>
+                  <span className="text-[#57534E] block">Rest Time</span>
+                  <strong className="text-sm text-[#292524]">{previewExercise.defaultRest}s</strong>
                 </div>
               </div>
 
               {previewExercise.description && (
                 <div>
-                  <h4 className="text-xs font-bold text-[#9AAEAE] uppercase tracking-wider mb-1">Description</h4>
-                  <p className="text-sm text-[#F5FAFA] leading-relaxed">{previewExercise.description}</p>
+                  <h4 className="text-xs font-bold text-[#57534E] uppercase tracking-wider mb-1">Description</h4>
+                  <p className="text-sm text-[#292524] leading-relaxed">{previewExercise.description}</p>
                 </div>
               )}
 
               {previewExercise.instructions && (
                 <div>
-                  <h4 className="text-xs font-bold text-[#9AAEAE] uppercase tracking-wider mb-1">
+                  <h4 className="text-xs font-bold text-[#57534E] uppercase tracking-wider mb-1">
                     Proper Form Instructions
                   </h4>
-                  <div className="text-sm text-[#F5FAFA] whitespace-pre-line bg-[#0E1415] p-4 rounded-xl border border-[#2A3A3A] leading-relaxed">
+                  <div className="text-sm text-[#292524] whitespace-pre-line bg-[#F3E8E8] p-4 rounded-xl border border-[#E7DADD] leading-relaxed">
                     {previewExercise.instructions}
                   </div>
                 </div>
@@ -962,18 +962,18 @@ export const GymAdminExerciseLibrary: React.FC = () => {
       {/* Delete Confirmation Modal */}
       {deleteConfirmId && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-          <div className="bg-[#141D1E] rounded-2xl max-w-md w-full p-6 shadow-2xl border border-[#2A3A3A] text-center space-y-4">
+          <div className="bg-[#FFFFFF] rounded-2xl max-w-md w-full p-6 shadow-2xl border border-[#E7DADD] text-center space-y-4">
             <div className="w-12 h-12 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto">
               <Trash2 size={24} />
             </div>
-            <h3 className="text-lg font-bold text-[#F5FAFA]">Delete this Exercise?</h3>
-            <p className="text-xs text-[#9AAEAE]">
+            <h3 className="text-lg font-bold text-[#292524]">Delete this Exercise?</h3>
+            <p className="text-xs text-[#57534E]">
               Are you sure you want to remove this exercise from your gym library? This action cannot be undone.
             </p>
             <div className="flex items-center justify-center gap-3 pt-2">
               <button
                 onClick={() => setDeleteConfirmId(null)}
-                className="px-5 py-2 rounded-xl border border-[#2A3A3A] text-xs font-bold text-[#9AAEAE] hover:bg-[#0E1415]"
+                className="px-5 py-2 rounded-xl border border-[#E7DADD] text-xs font-bold text-[#57534E] hover:bg-[#F3E8E8]"
               >
                 Cancel
               </button>

@@ -277,9 +277,9 @@ export default function AwardsRecognitionSection() {
   return (
     <div className="space-y-6">
       {/* Sub Header & Actions */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-[#141D1E] p-4 rounded-2xl border border-[#2A3A3A] shadow-md">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-[#FFFFFF] p-4 rounded-2xl border border-[#E7DADD] shadow-md">
         <div className="flex items-center gap-2">
-          <div className="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-[#2DD4BF] text-[#06201D] font-bold shadow-sm flex items-center gap-2">
+          <div className="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-[#B76E79] text-white font-bold shadow-sm flex items-center gap-2">
             <Trophy className="w-4 h-4" />
             Awards & Recognition ({awards.length})
           </div>
@@ -287,7 +287,7 @@ export default function AwardsRecognitionSection() {
 
         <button
           onClick={openCreateModal}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#2DD4BF] text-[#06201D] font-bold hover:bg-[#5EEAD4] text-xs sm:text-sm font-bold shadow-md shadow-[#2DD4BF]/25 transition cursor-pointer"
+          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#B76E79] text-white font-bold hover:bg-[#9F5965] text-xs sm:text-sm font-bold shadow-md shadow-[#B76E79]/20 transition cursor-pointer"
         >
           <Plus className="w-4 h-4" />
           Create New Award
@@ -296,7 +296,7 @@ export default function AwardsRecognitionSection() {
 
       {message && (
         <div className={`p-4 rounded-xl flex items-center justify-between border ${
-          message.type === 'success' ? 'bg-[#0E1415]/40 border-[#2A3A3A] text-[#2DD4BF]' : 'bg-red-950/40 border-red-800 text-red-300'
+          message.type === 'success' ? 'bg-[#F3E8E8]/40 border-[#E7DADD] text-[#B76E79]' : 'bg-red-950/40 border-red-800 text-red-300'
         }`}>
           <span className="text-xs sm:text-sm font-semibold">{message.text}</span>
           <button onClick={() => setMessage(null)} className="cursor-pointer">
@@ -306,25 +306,25 @@ export default function AwardsRecognitionSection() {
       )}
 
       {/* Filter Bar */}
-      <div className="bg-[#141D1E] p-4 rounded-2xl border border-[#2A3A3A] shadow-md flex flex-col md:flex-row justify-between items-center gap-3">
+      <div className="bg-[#FFFFFF] p-4 rounded-2xl border border-[#E7DADD] shadow-md flex flex-col md:flex-row justify-between items-center gap-3">
         <div className="relative w-full md:w-80">
-          <Search className="w-4 h-4 absolute left-3 top-3 text-[#9AAEAE]" />
+          <Search className="w-4 h-4 absolute left-3 top-3 text-[#57534E]" />
           <input
             type="text"
             placeholder="Search awards, category, or winner..."
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 rounded-xl text-sm bg-[#080B0C] border border-[#2A3A3A] text-[#FFFFFF] placeholder-[#9AAEAE] focus:outline-none focus:border-[#2DD4BF]"
+            className="w-full pl-9 pr-4 py-2 rounded-xl text-sm bg-[#FFFFFF] border border-[#E7DADD] text-[#FFFFFF] placeholder-[#57534E] focus:outline-none focus:border-[#B76E79]"
           />
         </div>
 
         <div className="flex flex-wrap items-center gap-2.5 w-full md:w-auto">
           <div className="flex items-center gap-1.5">
-            <span className="text-xs font-bold text-[#9AAEAE]">AUDIENCE:</span>
+            <span className="text-xs font-bold text-[#57534E]">AUDIENCE:</span>
             <select
               value={recipientFilter}
               onChange={e => setRecipientFilter(e.target.value)}
-              className="px-3 py-1.5 rounded-xl text-xs font-semibold border border-[#2A3A3A] bg-[#080B0C] text-[#FFFFFF] focus:outline-none focus:border-[#2DD4BF]"
+              className="px-3 py-1.5 rounded-xl text-xs font-semibold border border-[#E7DADD] bg-[#FFFFFF] text-[#FFFFFF] focus:outline-none focus:border-[#B76E79]"
             >
               <option value="ALL">All Recipients</option>
               <option value="Customer">Customers</option>
@@ -333,11 +333,11 @@ export default function AwardsRecognitionSection() {
           </div>
 
           <div className="flex items-center gap-1.5">
-            <span className="text-xs font-bold text-[#9AAEAE]">PERIOD:</span>
+            <span className="text-xs font-bold text-[#57534E]">PERIOD:</span>
             <select
               value={periodFilter}
               onChange={e => setPeriodFilter(e.target.value)}
-              className="px-3 py-1.5 rounded-xl text-xs font-semibold border border-[#2A3A3A] bg-[#080B0C] text-[#FFFFFF] focus:outline-none focus:border-[#2DD4BF]"
+              className="px-3 py-1.5 rounded-xl text-xs font-semibold border border-[#E7DADD] bg-[#FFFFFF] text-[#FFFFFF] focus:outline-none focus:border-[#B76E79]"
             >
               <option value="ALL">All Periods</option>
               <option value="Daily">Daily (Per Day)</option>
@@ -355,20 +355,20 @@ export default function AwardsRecognitionSection() {
       {subTab === 'awards' && (
         <div className="space-y-4">
           {loading ? (
-            <div className="text-center py-16 bg-[#141D1E] rounded-2xl border border-[#2A3A3A]">
-              <Trophy className="w-8 h-8 animate-bounce mx-auto text-[#2DD4BF] mb-2" />
-              <p className="text-sm font-semibold text-[#9AAEAE]">Loading Awards & Recognition...</p>
+            <div className="text-center py-16 bg-[#FFFFFF] rounded-2xl border border-[#E7DADD]">
+              <Trophy className="w-8 h-8 animate-bounce mx-auto text-[#B76E79] mb-2" />
+              <p className="text-sm font-semibold text-[#57534E]">Loading Awards & Recognition...</p>
             </div>
           ) : filteredAwards.length === 0 ? (
-            <div className="text-center py-16 bg-[#141D1E] rounded-2xl border border-[#2A3A3A]">
-              <Trophy className="w-12 h-12 mx-auto text-[#9AAEAE]/40 mb-3" />
+            <div className="text-center py-16 bg-[#FFFFFF] rounded-2xl border border-[#E7DADD]">
+              <Trophy className="w-12 h-12 mx-auto text-[#57534E]/40 mb-3" />
               <h3 className="text-base font-bold text-[#FFFFFF]">No Awards Configured</h3>
-              <p className="text-xs text-[#9AAEAE] mt-1 max-w-md mx-auto">
+              <p className="text-xs text-[#57534E] mt-1 max-w-md mx-auto">
                 Create awards like "Fitness Champion", "Consistency Award", or "Trainer of the Month" and evaluate winners automatically using verified gym records.
               </p>
               <button
                 onClick={openCreateModal}
-                className="mt-4 px-4 py-2 rounded-xl text-white bg-[#2DD4BF] hover:bg-[#5EEAD4] text-xs font-bold transition cursor-pointer shadow-md shadow-[#2DD4BF]/25"
+                className="mt-4 px-4 py-2 rounded-xl text-white bg-[#B76E79] hover:bg-[#9F5965] text-xs font-bold transition cursor-pointer shadow-md shadow-[#B76E79]/20"
               >
                 Create Award
               </button>
@@ -382,13 +382,13 @@ export default function AwardsRecognitionSection() {
                 return (
                   <div
                     key={award._id}
-                    className="bg-[#141D1E] rounded-2xl border border-[#2A3A3A] p-5 shadow-md flex flex-col justify-between hover:border-[#2DD4BF]/40 transition"
+                    className="bg-[#FFFFFF] rounded-2xl border border-[#E7DADD] p-5 shadow-md flex flex-col justify-between hover:border-[#B76E79]/40 transition"
                   >
                     <div className="space-y-3.5">
                       {/* Top Badges */}
                       <div className="flex justify-between items-center">
                         <span className={`text-[11px] px-2.5 py-0.5 rounded-full font-bold flex items-center gap-1 border ${
-                          award.recipientType === 'Customer' ? 'bg-[#0E1415] text-[#2DD4BF] border-[#2A3A3A]' : 'bg-[#0E1415] text-purple-300 border-[#2A3A3A]'
+                          award.recipientType === 'Customer' ? 'bg-[#F3E8E8] text-[#B76E79] border-[#E7DADD]' : 'bg-[#F3E8E8] text-purple-300 border-[#E7DADD]'
                         }`}>
                           {award.recipientType === 'Customer' ? <Users className="w-3 h-3" /> : <Dumbbell className="w-3 h-3" />}
                           {award.recipientType} Award
@@ -396,10 +396,10 @@ export default function AwardsRecognitionSection() {
 
                         <span className={`text-[11px] px-2.5 py-0.5 rounded-full font-bold border ${
                           award.status === 'Published'
-                            ? 'bg-[#0E1415]/60 text-[#2DD4BF] border-[#2A3A3A]'
+                            ? 'bg-[#F3E8E8]/60 text-[#B76E79] border-[#E7DADD]'
                             : award.status === 'Under Review'
                             ? 'bg-amber-950/60 text-amber-300 border-amber-800'
-                            : 'bg-[#0E1415] text-[#9AAEAE] border-[#2A3A3A]'
+                            : 'bg-[#F3E8E8] text-[#57534E] border-[#E7DADD]'
                         }`}>
                           {award.status}
                         </span>
@@ -408,32 +408,32 @@ export default function AwardsRecognitionSection() {
                       {/* Header */}
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="p-2 rounded-xl bg-[#0E1415] text-[#2DD4BF] border border-[#2A3A3A]">
+                          <span className="p-2 rounded-xl bg-[#F3E8E8] text-[#B76E79] border border-[#E7DADD]">
                             <Trophy className="w-5 h-5" />
                           </span>
                           <div>
                             <h3 className="font-extrabold text-base text-[#FFFFFF] leading-tight">{award.title}</h3>
-                            <span className="text-xs text-[#9AAEAE] block">{award.category} • {award.awardPeriod}</span>
+                            <span className="text-xs text-[#57534E] block">{award.category} • {award.awardPeriod}</span>
                           </div>
                         </div>
-                        <p className="text-xs text-[#9AAEAE] mt-2 line-clamp-2">{award.description}</p>
+                        <p className="text-xs text-[#57534E] mt-2 line-clamp-2">{award.description}</p>
                       </div>
 
                       {/* Criteria & Prize */}
-                      <div className="p-3 rounded-xl bg-[#0E1415] border border-[#2A3A3A] text-xs space-y-1">
+                      <div className="p-3 rounded-xl bg-[#F3E8E8] border border-[#E7DADD] text-xs space-y-1">
                         <div className="flex justify-between">
-                          <span className="text-[#9AAEAE]">Evaluation Metric:</span>
-                          <span className="font-bold text-[#2DD4BF] capitalize">{award.criteriaMetric?.replace('_', ' ')}</span>
+                          <span className="text-[#57534E]">Evaluation Metric:</span>
+                          <span className="font-bold text-[#B76E79] capitalize">{award.criteriaMetric?.replace('_', ' ')}</span>
                         </div>
                         {award.prizeBonusAmount > 0 && (
                           <div className="flex justify-between">
-                            <span className="text-[#9AAEAE]">Cash Prize / Bonus:</span>
-                            <span className="font-bold text-[#2DD4BF]">₹{award.prizeBonusAmount}</span>
+                            <span className="text-[#57534E]">Cash Prize / Bonus:</span>
+                            <span className="font-bold text-[#B76E79]">₹{award.prizeBonusAmount}</span>
                           </div>
                         )}
                         {award.certificateId && (
                           <div className="flex justify-between">
-                            <span className="text-[#9AAEAE]">Certificate ID:</span>
+                            <span className="text-[#57534E]">Certificate ID:</span>
                             <span className="font-mono font-bold text-[#FFFFFF]">{award.certificateId}</span>
                           </div>
                         )}
@@ -441,32 +441,32 @@ export default function AwardsRecognitionSection() {
 
                       {/* Winner Showcase Box */}
                       {hasWinner ? (
-                        <div className="p-3 rounded-xl border border-[#2A3A3A]/80 bg-[#0E1415]/30 space-y-1">
+                        <div className="p-3 rounded-xl border border-[#E7DADD]/80 bg-[#F3E8E8]/30 space-y-1">
                           <span className="text-[10px] font-black uppercase tracking-wider text-emerald-400 block">
                             🏆 Confirmed Winner
                           </span>
                           <div className="font-bold text-sm text-[#FFFFFF]">
                             {award.winnerName || `${award.winnerUserId?.firstName || ''} ${award.winnerUserId?.lastName || ''}`}
                           </div>
-                          <div className="text-[11px] text-[#9AAEAE]">
+                          <div className="text-[11px] text-[#57534E]">
                             {award.winnerMetricAchieved || 'Top Criteria Achieved'}
                           </div>
                         </div>
                       ) : (
-                        <div className="p-3 rounded-xl border border-dashed border-[#2A3A3A] bg-[#0E1415] text-center">
-                          <span className="text-xs text-[#9AAEAE] font-medium">No winner confirmed yet</span>
+                        <div className="p-3 rounded-xl border border-dashed border-[#E7DADD] bg-[#F3E8E8] text-center">
+                          <span className="text-xs text-[#57534E] font-medium">No winner confirmed yet</span>
                         </div>
                       )}
                     </div>
 
                     {/* Action Buttons */}
-                    <div className="pt-4 border-t border-[#2A3A3A] mt-4 flex flex-wrap gap-2 justify-between items-center">
+                    <div className="pt-4 border-t border-[#E7DADD] mt-4 flex flex-wrap gap-2 justify-between items-center">
                       {!isPublished ? (
                         <>
                           <div className="flex items-center gap-2">
                             <button
                               onClick={() => openCandidateEvaluation(award)}
-                              className="px-3 py-1.5 rounded-lg text-xs font-bold text-[#FFFFFF] bg-[#0E1415] hover:bg-[#1B2728] border border-[#2A3A3A] hover:border-[#2DD4BF] transition cursor-pointer flex items-center gap-1.5"
+                              className="px-3 py-1.5 rounded-lg text-xs font-bold text-[#FFFFFF] bg-[#F3E8E8] hover:bg-[#F3E8E8] border border-[#E7DADD] hover:border-[#B76E79] transition cursor-pointer flex items-center gap-1.5"
                             >
                               <Users className="w-3.5 h-3.5" />
                               {hasWinner ? 'Change Winner' : 'Evaluate Candidates'}
@@ -475,7 +475,7 @@ export default function AwardsRecognitionSection() {
                             {hasWinner && (
                               <button
                                 onClick={() => setAwardToPublish(award)}
-                                className="px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-[#2DD4BF] hover:bg-[#5EEAD4] transition cursor-pointer flex items-center gap-1.5 shadow-sm shadow-[#2DD4BF]/20"
+                                className="px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-[#B76E79] hover:bg-[#9F5965] transition cursor-pointer flex items-center gap-1.5 shadow-sm shadow-[#B76E79]/20"
                               >
                                 <Send className="w-3.5 h-3.5" />
                                 Publish Award
@@ -484,17 +484,17 @@ export default function AwardsRecognitionSection() {
 
                             <button
                               onClick={() => openEditModal(award)}
-                              className="px-3 py-1.5 rounded-lg text-xs font-bold text-[#FFFFFF] bg-[#0E1415] hover:bg-[#1B2728] border border-[#2A3A3A] hover:border-[#2DD4BF] transition cursor-pointer flex items-center gap-1.5"
+                              className="px-3 py-1.5 rounded-lg text-xs font-bold text-[#FFFFFF] bg-[#F3E8E8] hover:bg-[#F3E8E8] border border-[#E7DADD] hover:border-[#B76E79] transition cursor-pointer flex items-center gap-1.5"
                               title="Edit Award Details"
                             >
-                              <Edit3 className="w-3.5 h-3.5 text-[#2DD4BF]" />
+                              <Edit3 className="w-3.5 h-3.5 text-[#B76E79]" />
                               Edit
                             </button>
                           </div>
 
                           <button
                             onClick={() => handleDeleteAward(award._id)}
-                            className="p-1.5 text-[#9AAEAE] hover:text-rose-400 transition cursor-pointer ml-auto"
+                            className="p-1.5 text-[#57534E] hover:text-rose-400 transition cursor-pointer ml-auto"
                             title="Delete Award"
                           >
                             <Trash2 className="w-4 h-4" />
@@ -504,22 +504,22 @@ export default function AwardsRecognitionSection() {
                         <div className="flex items-center gap-2 w-full">
                           <button
                             onClick={() => openEditModal(award)}
-                            className="px-3.5 py-2 rounded-xl text-xs font-bold text-[#FFFFFF] bg-[#0E1415] hover:bg-[#1B2728] border border-[#2A3A3A] hover:border-[#2DD4BF] transition cursor-pointer flex items-center justify-center gap-1.5 shrink-0"
+                            className="px-3.5 py-2 rounded-xl text-xs font-bold text-[#FFFFFF] bg-[#F3E8E8] hover:bg-[#F3E8E8] border border-[#E7DADD] hover:border-[#B76E79] transition cursor-pointer flex items-center justify-center gap-1.5 shrink-0"
                             title="Edit Award Details"
                           >
-                            <Edit3 className="w-3.5 h-3.5 text-[#2DD4BF]" />
+                            <Edit3 className="w-3.5 h-3.5 text-[#B76E79]" />
                             Edit
                           </button>
                           <button
                             onClick={() => handleDownloadCertificate(award)}
-                            className="flex-1 px-3 py-2 rounded-xl text-xs font-bold text-white bg-[#2DD4BF] hover:bg-[#5EEAD4] transition cursor-pointer flex items-center justify-center gap-1.5 shadow-sm shadow-[#2DD4BF]/25"
+                            className="flex-1 px-3 py-2 rounded-xl text-xs font-bold text-white bg-[#B76E79] hover:bg-[#9F5965] transition cursor-pointer flex items-center justify-center gap-1.5 shadow-sm shadow-[#B76E79]/20"
                           >
                             <Download className="w-3.5 h-3.5" />
                             Download Official Certificate PDF
                           </button>
                           <button
                             onClick={() => handleDeleteAward(award._id)}
-                            className="p-2 text-[#9AAEAE] hover:text-rose-400 transition cursor-pointer shrink-0"
+                            className="p-2 text-[#57534E] hover:text-rose-400 transition cursor-pointer shrink-0"
                             title="Delete Award"
                           >
                             <Trash2 className="w-4 h-4" />
@@ -540,15 +540,15 @@ export default function AwardsRecognitionSection() {
       {/* MODAL 1: CREATE / EDIT AWARD */}
       {isCreateModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-xs">
-          <div className="bg-[#141D1E] rounded-2xl max-w-xl w-full p-6 shadow-2xl max-h-[90vh] overflow-y-auto space-y-4 border border-[#2A3A3A] text-[#FFFFFF]">
-            <div className="flex justify-between items-center border-b border-[#2A3A3A] pb-3">
+          <div className="bg-[#FFFFFF] rounded-2xl max-w-xl w-full p-6 shadow-2xl max-h-[90vh] overflow-y-auto space-y-4 border border-[#E7DADD] text-[#FFFFFF]">
+            <div className="flex justify-between items-center border-b border-[#E7DADD] pb-3">
               <div className="flex items-center gap-2">
-                <Trophy className="w-6 h-6 text-[#2DD4BF]" />
+                <Trophy className="w-6 h-6 text-[#B76E79]" />
                 <h2 className="text-lg font-black text-[#FFFFFF]">
                   {editingAwardId ? 'Edit Awards & Recognition' : 'Create Awards & Recognition'}
                 </h2>
               </div>
-              <button onClick={() => { setIsCreateModalOpen(false); setEditingAwardId(null); }} className="cursor-pointer text-[#9AAEAE] hover:text-[#FFFFFF]">
+              <button onClick={() => { setIsCreateModalOpen(false); setEditingAwardId(null); }} className="cursor-pointer text-[#57534E] hover:text-[#FFFFFF]">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -556,7 +556,7 @@ export default function AwardsRecognitionSection() {
             <form onSubmit={handleSaveAward} className="space-y-4 text-xs sm:text-sm">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-bold text-[#9AAEAE] mb-1">Recipient Audience *</label>
+                  <label className="block font-bold text-[#57534E] mb-1">Recipient Audience *</label>
                   <select
                     value={awardFormData.recipientType}
                     onChange={e => {
@@ -568,7 +568,7 @@ export default function AwardsRecognitionSection() {
                         criteriaMetric: rec === 'Customer' ? 'workout_completions' : 'completed_sessions'
                       });
                     }}
-                    className="w-full px-3 py-2 rounded-xl border border-[#2A3A3A] bg-[#080B0C] text-[#FFFFFF] font-semibold focus:outline-none focus:border-[#2DD4BF]"
+                    className="w-full px-3 py-2 rounded-xl border border-[#E7DADD] bg-[#FFFFFF] text-[#FFFFFF] font-semibold focus:outline-none focus:border-[#B76E79]"
                   >
                     <option value="Customer">Customers Only</option>
                     <option value="Trainer">Trainers Only</option>
@@ -576,11 +576,11 @@ export default function AwardsRecognitionSection() {
                 </div>
 
                 <div>
-                  <label className="block font-bold text-[#9AAEAE] mb-1">Award Category *</label>
+                  <label className="block font-bold text-[#57534E] mb-1">Award Category *</label>
                   <select
                     value={awardFormData.category}
                     onChange={e => setAwardFormData({ ...awardFormData, category: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl border border-[#2A3A3A] bg-[#080B0C] text-[#FFFFFF] font-semibold focus:outline-none focus:border-[#2DD4BF]"
+                    className="w-full px-3 py-2 rounded-xl border border-[#E7DADD] bg-[#FFFFFF] text-[#FFFFFF] font-semibold focus:outline-none focus:border-[#B76E79]"
                   >
                     {awardFormData.recipientType === 'Customer' ? (
                       <>
@@ -606,36 +606,36 @@ export default function AwardsRecognitionSection() {
               </div>
 
               <div>
-                <label className="block font-bold text-[#9AAEAE] mb-1">Award Title *</label>
+                <label className="block font-bold text-[#57534E] mb-1">Award Title *</label>
                 <input
                   type="text"
                   required
                   placeholder={awardFormData.recipientType === 'Customer' ? 'e.g. October Fitness Champion of the Month' : 'e.g. Coach of the Quarter Award'}
                   value={awardFormData.title}
                   onChange={e => setAwardFormData({ ...awardFormData, title: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl border border-[#2A3A3A] bg-[#080B0C] text-[#FFFFFF] placeholder-[#9AAEAE]/60 text-sm focus:outline-none focus:border-[#2DD4BF]"
+                  className="w-full px-3 py-2 rounded-xl border border-[#E7DADD] bg-[#FFFFFF] text-[#FFFFFF] placeholder-[#57534E]/60 text-sm focus:outline-none focus:border-[#B76E79]"
                 />
               </div>
 
               <div>
-                <label className="block font-bold text-[#9AAEAE] mb-1">Description *</label>
+                <label className="block font-bold text-[#57534E] mb-1">Description *</label>
                 <textarea
                   required
                   rows={2}
                   placeholder="Detail award significance and honors..."
                   value={awardFormData.description}
                   onChange={e => setAwardFormData({ ...awardFormData, description: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl border border-[#2A3A3A] bg-[#080B0C] text-[#FFFFFF] placeholder-[#9AAEAE]/60 text-sm focus:outline-none focus:border-[#2DD4BF]"
+                  className="w-full px-3 py-2 rounded-xl border border-[#E7DADD] bg-[#FFFFFF] text-[#FFFFFF] placeholder-[#57534E]/60 text-sm focus:outline-none focus:border-[#B76E79]"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-bold text-[#9AAEAE] mb-1">Award Period *</label>
+                  <label className="block font-bold text-[#57534E] mb-1">Award Period *</label>
                   <select
                     value={awardFormData.awardPeriod}
                     onChange={e => setAwardFormData({ ...awardFormData, awardPeriod: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl border border-[#2A3A3A] bg-[#080B0C] text-[#FFFFFF] font-semibold focus:outline-none focus:border-[#2DD4BF]"
+                    className="w-full px-3 py-2 rounded-xl border border-[#E7DADD] bg-[#FFFFFF] text-[#FFFFFF] font-semibold focus:outline-none focus:border-[#B76E79]"
                   >
                     <option value="Daily">Daily (Per Day)</option>
                     <option value="Weekly">Weekly</option>
@@ -647,11 +647,11 @@ export default function AwardsRecognitionSection() {
                 </div>
 
                 <div>
-                  <label className="block font-bold text-[#9AAEAE] mb-1">Evaluation Metric *</label>
+                  <label className="block font-bold text-[#57534E] mb-1">Evaluation Metric *</label>
                   <select
                     value={awardFormData.criteriaMetric}
                     onChange={e => setAwardFormData({ ...awardFormData, criteriaMetric: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl border border-[#2A3A3A] bg-[#080B0C] text-[#FFFFFF] font-semibold focus:outline-none focus:border-[#2DD4BF]"
+                    className="w-full px-3 py-2 rounded-xl border border-[#E7DADD] bg-[#FFFFFF] text-[#FFFFFF] font-semibold focus:outline-none focus:border-[#B76E79]"
                   >
                     {awardFormData.recipientType === 'Customer' ? (
                       <>
@@ -672,22 +672,22 @@ export default function AwardsRecognitionSection() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-bold text-[#9AAEAE] mb-1">Optional Bonus / Prize (₹)</label>
+                  <label className="block font-bold text-[#57534E] mb-1">Optional Bonus / Prize (₹)</label>
                   <input
                     type="number"
                     min={0}
                     value={awardFormData.prizeBonusAmount}
                     onChange={e => setAwardFormData({ ...awardFormData, prizeBonusAmount: Number(e.target.value) })}
-                    className="w-full px-3 py-2 rounded-xl border border-[#2A3A3A] bg-[#080B0C] text-[#FFFFFF] text-sm focus:outline-none focus:border-[#2DD4BF]"
+                    className="w-full px-3 py-2 rounded-xl border border-[#E7DADD] bg-[#FFFFFF] text-[#FFFFFF] text-sm focus:outline-none focus:border-[#B76E79]"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-bold text-[#9AAEAE] mb-1">Winner Selection Method</label>
+                  <label className="block font-bold text-[#57534E] mb-1">Winner Selection Method</label>
                   <select
                     value={awardFormData.winnerSelectionMethod}
                     onChange={e => setAwardFormData({ ...awardFormData, winnerSelectionMethod: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl border border-[#2A3A3A] bg-[#080B0C] text-[#FFFFFF] font-semibold focus:outline-none focus:border-[#2DD4BF]"
+                    className="w-full px-3 py-2 rounded-xl border border-[#E7DADD] bg-[#FFFFFF] text-[#FFFFFF] font-semibold focus:outline-none focus:border-[#B76E79]"
                   >
                     <option value="OWNER_CONFIRMATION">Gym Owner Review & Confirmation</option>
                     <option value="AUTOMATIC_TOP_PERFORMER">Automatic Top Performer Nomination</option>
@@ -695,18 +695,18 @@ export default function AwardsRecognitionSection() {
                 </div>
               </div>
 
-              <div className="pt-3 border-t border-[#2A3A3A] flex justify-end gap-2">
+              <div className="pt-3 border-t border-[#E7DADD] flex justify-end gap-2">
                 <button
                   type="button"
                   onClick={() => { setIsCreateModalOpen(false); setEditingAwardId(null); }}
-                  className="px-4 py-2 rounded-xl border border-[#2A3A3A] font-bold text-[#9AAEAE] hover:bg-[#0E1415] hover:text-[#FFFFFF] transition cursor-pointer"
+                  className="px-4 py-2 rounded-xl border border-[#E7DADD] font-bold text-[#57534E] hover:bg-[#F3E8E8] hover:text-[#FFFFFF] transition cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={creating}
-                  className="px-5 py-2 rounded-xl font-bold text-white bg-[#2DD4BF] hover:bg-[#5EEAD4] transition cursor-pointer shadow-md shadow-[#2DD4BF]/25 disabled:opacity-50"
+                  className="px-5 py-2 rounded-xl font-bold text-white bg-[#B76E79] hover:bg-[#9F5965] transition cursor-pointer shadow-md shadow-[#B76E79]/20 disabled:opacity-50"
                 >
                   {creating ? 'Saving...' : editingAwardId ? 'Update Award Changes' : 'Create Award'}
                 </button>
@@ -719,34 +719,34 @@ export default function AwardsRecognitionSection() {
       {/* MODAL 2: CANDIDATE EVALUATION & WINNER CONFIRMATION */}
       {selectedAwardForCandidates && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-xs">
-          <div className="bg-[#141D1E] rounded-2xl max-w-2xl w-full p-6 shadow-2xl max-h-[90vh] overflow-y-auto space-y-4 border border-[#2A3A3A] text-[#FFFFFF]">
-            <div className="flex justify-between items-center border-b border-[#2A3A3A] pb-3">
+          <div className="bg-[#FFFFFF] rounded-2xl max-w-2xl w-full p-6 shadow-2xl max-h-[90vh] overflow-y-auto space-y-4 border border-[#E7DADD] text-[#FFFFFF]">
+            <div className="flex justify-between items-center border-b border-[#E7DADD] pb-3">
               <div>
                 <h2 className="text-lg font-black text-[#FFFFFF] flex items-center gap-2">
-                  <Trophy className="w-5 h-5 text-[#2DD4BF]" />
+                  <Trophy className="w-5 h-5 text-[#B76E79]" />
                   Evaluate Candidates for: {selectedAwardForCandidates.title}
                 </h2>
-                <p className="text-xs text-[#9AAEAE] mt-0.5">
+                <p className="text-xs text-[#57534E] mt-0.5">
                   Calculated directly from verified gym database records.
                 </p>
               </div>
-              <button onClick={() => setSelectedAwardForCandidates(null)} className="cursor-pointer text-[#9AAEAE] hover:text-[#FFFFFF]">
+              <button onClick={() => setSelectedAwardForCandidates(null)} className="cursor-pointer text-[#57534E] hover:text-[#FFFFFF]">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {loadingCandidates ? (
               <div className="text-center py-12">
-                <Activity className="w-8 h-8 animate-spin mx-auto text-[#2DD4BF] mb-2" />
-                <p className="text-xs font-semibold text-[#9AAEAE]">Retrieving real-time performance records...</p>
+                <Activity className="w-8 h-8 animate-spin mx-auto text-[#B76E79] mb-2" />
+                <p className="text-xs font-semibold text-[#57534E]">Retrieving real-time performance records...</p>
               </div>
             ) : candidatesList.length === 0 ? (
-              <div className="text-center py-10 text-[#9AAEAE] text-xs">
+              <div className="text-center py-10 text-[#57534E] text-xs">
                 No eligible candidates found for this criteria metric.
               </div>
             ) : (
               <div className="space-y-3">
-                <p className="text-xs font-bold text-[#9AAEAE]">
+                <p className="text-xs font-bold text-[#57534E]">
                   Select the winner candidate to confirm:
                 </p>
 
@@ -763,28 +763,28 @@ export default function AwardsRecognitionSection() {
                         }}
                         className={`p-3.5 rounded-xl border flex items-center justify-between transition cursor-pointer ${
                           isSelected
-                            ? 'border-[#2DD4BF] bg-[#2DD4BF]/10 ring-1 ring-[#2DD4BF]'
-                            : 'border-[#2A3A3A] hover:border-[#2DD4BF]/40 bg-[#0E1415]'
+                            ? 'border-[#B76E79] bg-[#B76E79]/10 ring-1 ring-[#B76E79]'
+                            : 'border-[#E7DADD] hover:border-[#B76E79]/40 bg-[#F3E8E8]'
                         }`}
                       >
                         <div className="flex items-center gap-3">
                           <div className={`w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs ${
-                            index === 0 ? 'bg-[#2DD4BF] text-[#0E1415]' : 'bg-[#141D1E] text-[#9AAEAE]'
+                            index === 0 ? 'bg-[#B76E79] text-[#F3E8E8]' : 'bg-[#FFFFFF] text-[#57534E]'
                           }`}>
                             #{index + 1}
                           </div>
 
                           <div>
                             <div className="font-extrabold text-sm text-[#FFFFFF]">{cand.name}</div>
-                            <div className="text-xs text-[#9AAEAE]">{cand.email}</div>
+                            <div className="text-xs text-[#57534E]">{cand.email}</div>
                           </div>
                         </div>
 
                         <div className="text-right">
-                          <span className="text-xs font-extrabold text-[#2DD4BF] block">
+                          <span className="text-xs font-extrabold text-[#B76E79] block">
                             {cand.metricDescription}
                           </span>
-                          <span className="text-[10px] text-[#9AAEAE]">
+                          <span className="text-[10px] text-[#57534E]">
                             Score: {cand.primaryScore}
                           </span>
                         </div>
@@ -795,11 +795,11 @@ export default function AwardsRecognitionSection() {
               </div>
             )}
 
-            <div className="pt-3 border-t border-[#2A3A3A] flex justify-end gap-2">
+            <div className="pt-3 border-t border-[#E7DADD] flex justify-end gap-2">
               <button
                 type="button"
                 onClick={() => setSelectedAwardForCandidates(null)}
-                className="px-4 py-2 rounded-xl border border-[#2A3A3A] font-bold text-[#9AAEAE] hover:bg-[#0E1415] hover:text-[#FFFFFF] transition cursor-pointer"
+                className="px-4 py-2 rounded-xl border border-[#E7DADD] font-bold text-[#57534E] hover:bg-[#F3E8E8] hover:text-[#FFFFFF] transition cursor-pointer"
               >
                 Cancel
               </button>
@@ -807,7 +807,7 @@ export default function AwardsRecognitionSection() {
                 type="button"
                 onClick={handleConfirmWinner}
                 disabled={confirmingWinner || !selectedWinnerId}
-                className="px-5 py-2 rounded-xl font-bold text-white bg-[#2DD4BF] hover:bg-[#5EEAD4] transition cursor-pointer disabled:opacity-50 shadow-md shadow-[#2DD4BF]/25"
+                className="px-5 py-2 rounded-xl font-bold text-white bg-[#B76E79] hover:bg-[#9F5965] transition cursor-pointer disabled:opacity-50 shadow-md shadow-[#B76E79]/20"
               >
                 {confirmingWinner ? 'Confirming...' : 'Confirm Winner'}
               </button>
@@ -819,41 +819,41 @@ export default function AwardsRecognitionSection() {
       {/* MODAL 3: PUBLISH AWARD CONFIRMATION */}
       {awardToPublish && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-xs">
-          <div className="bg-[#141D1E] rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 border border-[#2A3A3A] text-[#FFFFFF]">
-            <div className="flex items-center gap-3 text-[#2DD4BF]">
-              <div className="p-3 rounded-2xl bg-[#0E1415] border border-[#2A3A3A]">
-                <Send className="w-6 h-6 text-[#2DD4BF]" />
+          <div className="bg-[#FFFFFF] rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 border border-[#E7DADD] text-[#FFFFFF]">
+            <div className="flex items-center gap-3 text-[#B76E79]">
+              <div className="p-3 rounded-2xl bg-[#F3E8E8] border border-[#E7DADD]">
+                <Send className="w-6 h-6 text-[#B76E79]" />
               </div>
               <div>
                 <h2 className="text-base font-extrabold text-[#FFFFFF]">Publish Official Award</h2>
-                <p className="text-xs text-[#9AAEAE]">Issue Certificate & Hall of Fame Feature</p>
+                <p className="text-xs text-[#57534E]">Issue Certificate & Hall of Fame Feature</p>
               </div>
             </div>
 
-            <div className="p-4 rounded-xl bg-[#0E1415] border border-[#2A3A3A] text-xs space-y-2">
+            <div className="p-4 rounded-xl bg-[#F3E8E8] border border-[#E7DADD] text-xs space-y-2">
               <div className="flex justify-between">
-                <span className="text-[#9AAEAE]">Award:</span>
+                <span className="text-[#57534E]">Award:</span>
                 <span className="font-bold text-[#FFFFFF]">{awardToPublish.title}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[#9AAEAE]">Confirmed Winner:</span>
-                <span className="font-bold text-[#2DD4BF]">{awardToPublish.winnerName}</span>
+                <span className="text-[#57534E]">Confirmed Winner:</span>
+                <span className="font-bold text-[#B76E79]">{awardToPublish.winnerName}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[#9AAEAE]">Achievement Record:</span>
-                <span className="font-semibold text-[#2DD4BF]">{awardToPublish.winnerMetricAchieved}</span>
+                <span className="text-[#57534E]">Achievement Record:</span>
+                <span className="font-semibold text-[#B76E79]">{awardToPublish.winnerMetricAchieved}</span>
               </div>
             </div>
 
-            <p className="text-xs text-[#9AAEAE]">
+            <p className="text-xs text-[#57534E]">
               Publishing will generate an official unique Certificate ID, send an instant in-app notification to the winner, and publish them to the Hall of Fame.
             </p>
 
-            <div className="pt-2 flex justify-end gap-2 border-t border-[#2A3A3A]">
+            <div className="pt-2 flex justify-end gap-2 border-t border-[#E7DADD]">
               <button
                 type="button"
                 onClick={() => setAwardToPublish(null)}
-                className="px-4 py-2 rounded-xl border border-[#2A3A3A] font-bold text-[#9AAEAE] hover:bg-[#0E1415] hover:text-[#FFFFFF] transition cursor-pointer"
+                className="px-4 py-2 rounded-xl border border-[#E7DADD] font-bold text-[#57534E] hover:bg-[#F3E8E8] hover:text-[#FFFFFF] transition cursor-pointer"
               >
                 Cancel
               </button>
@@ -861,7 +861,7 @@ export default function AwardsRecognitionSection() {
                 type="button"
                 onClick={handlePublishAward}
                 disabled={publishing}
-                className="px-5 py-2 rounded-xl font-bold text-white bg-[#2DD4BF] hover:bg-[#5EEAD4] transition cursor-pointer shadow-md shadow-[#2DD4BF]/25"
+                className="px-5 py-2 rounded-xl font-bold text-white bg-[#B76E79] hover:bg-[#9F5965] transition cursor-pointer shadow-md shadow-[#B76E79]/20"
               >
                 {publishing ? 'Publishing...' : 'Confirm & Publish'}
               </button>

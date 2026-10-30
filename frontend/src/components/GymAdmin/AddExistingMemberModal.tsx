@@ -33,18 +33,18 @@ export const AddExistingMemberModal: React.FC<Props> = ({ onClose, onSubmit, pla
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm overflow-y-auto">
-      <div className="bg-[#FFFFFF] rounded-2xl max-w-3xl w-full shadow-2xl border border-[#2A3A3A] overflow-hidden my-auto max-h-[85vh] flex flex-col">
-        <div className="p-6 border-b border-[#2A3A3A] flex justify-between items-center bg-[#0E1415] shrink-0">
+      <div className="bg-[#FFFFFF] rounded-2xl max-w-3xl w-full shadow-2xl border border-[#E7DADD] overflow-hidden my-auto max-h-[85vh] flex flex-col">
+        <div className="p-6 border-b border-[#E7DADD] flex justify-between items-center bg-[#F3E8E8] shrink-0">
           <div className="flex items-center space-x-3">
-            <div className="p-2 bg-[#2DD4BF]/10 text-[#2DD4BF] rounded-lg">
+            <div className="p-2 bg-[#B76E79]/10 text-[#B76E79] rounded-lg">
               <UserCheck size={24} />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-[#F5FAFA]">Add Existing Customer</h2>
-              <p className="text-sm text-[#9AAEAE] mt-1">Import a member who is already part of your physical gym.</p>
+              <h2 className="text-xl font-bold text-[#292524]">Add Existing Customer</h2>
+              <p className="text-sm text-[#57534E] mt-1">Import a member who is already part of your physical gym.</p>
             </div>
           </div>
-          <button onClick={onClose} className="text-[#9AAEAE] hover:text-[#FFFFFF] transition-colors p-2 rounded-lg hover:bg-[#1B2728]">
+          <button onClick={onClose} className="text-[#57534E] hover:text-[#FFFFFF] transition-colors p-2 rounded-lg hover:bg-[#F3E8E8]">
             <X size={24} />
           </button>
         </div>
@@ -54,69 +54,69 @@ export const AddExistingMemberModal: React.FC<Props> = ({ onClose, onSubmit, pla
           
           {/* Personal Info */}
           <div>
-            <h3 className="text-sm font-bold text-[#2DD4BF] uppercase tracking-wider mb-4 border-b border-[#2A3A3A] pb-2">Personal Information</h3>
+            <h3 className="text-sm font-bold text-[#B76E79] uppercase tracking-wider mb-4 border-b border-[#E7DADD] pb-2">Personal Information</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-bold text-[#9AAEAE] mb-1">Full Name *</label>
-                <input required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full bg-[#0E1415] border border-[#2A3A3A] rounded-xl px-4 py-2.5 outline-none focus:border-[#2DD4BF] focus:bg-[#FFFFFF]" placeholder="e.g. John Doe" />
+                <label className="block text-sm font-bold text-[#57534E] mb-1">Full Name *</label>
+                <input required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full bg-[#F3E8E8] border border-[#E7DADD] rounded-xl px-4 py-2.5 outline-none focus:border-[#B76E79] focus:bg-[#FFFFFF]" placeholder="e.g. John Doe" />
               </div>
               <div>
-                <label className="block text-sm font-bold text-[#9AAEAE] mb-1">Email Address *</label>
-                <input required type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full bg-[#0E1415] border border-[#2A3A3A] rounded-xl px-4 py-2.5 outline-none focus:border-[#2DD4BF] focus:bg-[#FFFFFF] invalid:[&:not(:placeholder-shown):not(:focus)]:border-red-500" placeholder="john@example.com" />
+                <label className="block text-sm font-bold text-[#57534E] mb-1">Email Address *</label>
+                <input required type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full bg-[#F3E8E8] border border-[#E7DADD] rounded-xl px-4 py-2.5 outline-none focus:border-[#B76E79] focus:bg-[#FFFFFF] invalid:[&:not(:placeholder-shown):not(:focus)]:border-red-500" placeholder="john@example.com" />
               </div>
               <div>
-                <label className="block text-sm font-bold text-[#9AAEAE] mb-1">Phone Number *</label>
+                <label className="block text-sm font-bold text-[#57534E] mb-1">Phone Number *</label>
                 <input required type="tel" value={formData.phone} onChange={e => {
                   const val = e.target.value.replace(/\D/g, '');
                   if (val.length <= 10) setFormData({...formData, phone: val});
-                }} minLength={10} maxLength={10} pattern="\d{10}" title="Please enter exactly 10 digits" className="w-full bg-[#0E1415] border border-[#2A3A3A] rounded-xl px-4 py-2.5 outline-none focus:border-[#2DD4BF] focus:bg-[#FFFFFF] invalid:[&:not(:placeholder-shown):not(:focus)]:border-red-500" placeholder="10-digit number" />
+                }} minLength={10} maxLength={10} pattern="\d{10}" title="Please enter exactly 10 digits" className="w-full bg-[#F3E8E8] border border-[#E7DADD] rounded-xl px-4 py-2.5 outline-none focus:border-[#B76E79] focus:bg-[#FFFFFF] invalid:[&:not(:placeholder-shown):not(:focus)]:border-red-500" placeholder="10-digit number" />
               </div>
               <div>
-                <label className="block text-sm font-bold text-[#9AAEAE] mb-1">Gender</label>
-                <select value={formData.gender} onChange={e => setFormData({...formData, gender: e.target.value})} className="w-full bg-[#0E1415] border border-[#2A3A3A] rounded-xl px-4 py-2.5 outline-none focus:border-[#2DD4BF] focus:bg-[#FFFFFF]">
+                <label className="block text-sm font-bold text-[#57534E] mb-1">Gender</label>
+                <select value={formData.gender} onChange={e => setFormData({...formData, gender: e.target.value})} className="w-full bg-[#F3E8E8] border border-[#E7DADD] rounded-xl px-4 py-2.5 outline-none focus:border-[#B76E79] focus:bg-[#FFFFFF]">
                   <option value="Male">Male</option>
                   <option value="Female">Female</option>
                   <option value="Other">Other</option>
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-bold text-[#9AAEAE] mb-1">Date of Birth</label>
-                <input type="date" value={formData.dob} onChange={e => setFormData({...formData, dob: e.target.value})} className="w-full bg-[#0E1415] border border-[#2A3A3A] rounded-xl px-4 py-2.5 outline-none focus:border-[#2DD4BF] focus:bg-[#FFFFFF]" />
+                <label className="block text-sm font-bold text-[#57534E] mb-1">Date of Birth</label>
+                <input type="date" value={formData.dob} onChange={e => setFormData({...formData, dob: e.target.value})} className="w-full bg-[#F3E8E8] border border-[#E7DADD] rounded-xl px-4 py-2.5 outline-none focus:border-[#B76E79] focus:bg-[#FFFFFF]" />
               </div>
             </div>
           </div>
 
           {/* Membership Details */}
           <div>
-            <h3 className="text-sm font-bold text-[#2DD4BF] uppercase tracking-wider mb-4 border-b border-[#2A3A3A] pb-2">Membership Details</h3>
+            <h3 className="text-sm font-bold text-[#B76E79] uppercase tracking-wider mb-4 border-b border-[#E7DADD] pb-2">Membership Details</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-bold text-[#9AAEAE] mb-1">Membership Plan *</label>
-                <select required value={formData.plan} onChange={e => setFormData({...formData, plan: e.target.value})} className="w-full bg-[#0E1415] border border-[#2A3A3A] rounded-xl px-4 py-2.5 outline-none focus:border-[#2DD4BF] focus:bg-[#FFFFFF]">
+                <label className="block text-sm font-bold text-[#57534E] mb-1">Membership Plan *</label>
+                <select required value={formData.plan} onChange={e => setFormData({...formData, plan: e.target.value})} className="w-full bg-[#F3E8E8] border border-[#E7DADD] rounded-xl px-4 py-2.5 outline-none focus:border-[#B76E79] focus:bg-[#FFFFFF]">
                   {plans.map(p => (
                     <option key={p.id || p.name} value={p.name}>{p.name}</option>
                   ))}
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-bold text-[#9AAEAE] mb-1">Status</label>
-                <select value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})} className="w-full bg-[#0E1415] border border-[#2A3A3A] rounded-xl px-4 py-2.5 outline-none focus:border-[#2DD4BF] focus:bg-[#FFFFFF]">
+                <label className="block text-sm font-bold text-[#57534E] mb-1">Status</label>
+                <select value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})} className="w-full bg-[#F3E8E8] border border-[#E7DADD] rounded-xl px-4 py-2.5 outline-none focus:border-[#B76E79] focus:bg-[#FFFFFF]">
                   <option value="Active">Active</option>
                   <option value="Pending">Pending</option>
                   <option value="Inactive">Inactive</option>
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-bold text-[#9AAEAE] mb-1">Membership Start Date *</label>
-                <input required type="date" value={formData.startDate} onChange={e => setFormData({...formData, startDate: e.target.value})} className="w-full bg-[#0E1415] border border-[#2A3A3A] rounded-xl px-4 py-2.5 outline-none focus:border-[#2DD4BF] focus:bg-[#FFFFFF]" />
+                <label className="block text-sm font-bold text-[#57534E] mb-1">Membership Start Date *</label>
+                <input required type="date" value={formData.startDate} onChange={e => setFormData({...formData, startDate: e.target.value})} className="w-full bg-[#F3E8E8] border border-[#E7DADD] rounded-xl px-4 py-2.5 outline-none focus:border-[#B76E79] focus:bg-[#FFFFFF]" />
               </div>
               <div>
-                <label className="block text-sm font-bold text-[#9AAEAE] mb-1">Membership End Date (Optional)</label>
-                <input type="date" value={formData.endDate} onChange={e => setFormData({...formData, endDate: e.target.value})} className="w-full bg-[#0E1415] border border-[#2A3A3A] rounded-xl px-4 py-2.5 outline-none focus:border-[#2DD4BF] focus:bg-[#FFFFFF]" />
+                <label className="block text-sm font-bold text-[#57534E] mb-1">Membership End Date (Optional)</label>
+                <input type="date" value={formData.endDate} onChange={e => setFormData({...formData, endDate: e.target.value})} className="w-full bg-[#F3E8E8] border border-[#E7DADD] rounded-xl px-4 py-2.5 outline-none focus:border-[#B76E79] focus:bg-[#FFFFFF]" />
               </div>
               <div className="md:col-span-2">
-                <label className="block text-sm font-bold text-[#9AAEAE] mb-1">Assigned Trainer (Optional)</label>
-                <select value={formData.assignedTrainer} onChange={e => setFormData({...formData, assignedTrainer: e.target.value})} className="w-full bg-[#0E1415] border border-[#2A3A3A] rounded-xl px-4 py-2.5 outline-none focus:border-[#2DD4BF] focus:bg-[#FFFFFF]">
+                <label className="block text-sm font-bold text-[#57534E] mb-1">Assigned Trainer (Optional)</label>
+                <select value={formData.assignedTrainer} onChange={e => setFormData({...formData, assignedTrainer: e.target.value})} className="w-full bg-[#F3E8E8] border border-[#E7DADD] rounded-xl px-4 py-2.5 outline-none focus:border-[#B76E79] focus:bg-[#FFFFFF]">
                   <option value="">No Trainer Assigned</option>
                   <option value="trainer1">Mike Johnson</option>
                   <option value="trainer2">Sarah Williams</option>
@@ -127,46 +127,46 @@ export const AddExistingMemberModal: React.FC<Props> = ({ onClose, onSubmit, pla
 
           {/* Emergency Contact */}
           <div>
-            <h3 className="text-sm font-bold text-[#2DD4BF] uppercase tracking-wider mb-4 border-b border-[#2A3A3A] pb-2">Emergency Contact</h3>
+            <h3 className="text-sm font-bold text-[#B76E79] uppercase tracking-wider mb-4 border-b border-[#E7DADD] pb-2">Emergency Contact</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label className="block text-sm font-bold text-[#9AAEAE] mb-1">Contact Name</label>
-                <input value={formData.emergencyName} onChange={e => setFormData({...formData, emergencyName: e.target.value})} className="w-full bg-[#0E1415] border border-[#2A3A3A] rounded-xl px-4 py-2.5 outline-none focus:border-[#2DD4BF] focus:bg-[#FFFFFF]" placeholder="Name" />
+                <label className="block text-sm font-bold text-[#57534E] mb-1">Contact Name</label>
+                <input value={formData.emergencyName} onChange={e => setFormData({...formData, emergencyName: e.target.value})} className="w-full bg-[#F3E8E8] border border-[#E7DADD] rounded-xl px-4 py-2.5 outline-none focus:border-[#B76E79] focus:bg-[#FFFFFF]" placeholder="Name" />
               </div>
               <div>
-                <label className="block text-sm font-bold text-[#9AAEAE] mb-1">Contact Phone</label>
+                <label className="block text-sm font-bold text-[#57534E] mb-1">Contact Phone</label>
                 <input type="tel" value={formData.emergencyPhone} onChange={e => {
                   const val = e.target.value.replace(/\D/g, '');
                   if (val.length <= 10) setFormData({...formData, emergencyPhone: val});
-                }} minLength={10} maxLength={10} pattern="\d{10}" title="Please enter exactly 10 digits" className="w-full bg-[#0E1415] border border-[#2A3A3A] rounded-xl px-4 py-2.5 outline-none focus:border-[#2DD4BF] focus:bg-[#FFFFFF] invalid:[&:not(:placeholder-shown):not(:focus)]:border-red-500" placeholder="10-digit number" />
+                }} minLength={10} maxLength={10} pattern="\d{10}" title="Please enter exactly 10 digits" className="w-full bg-[#F3E8E8] border border-[#E7DADD] rounded-xl px-4 py-2.5 outline-none focus:border-[#B76E79] focus:bg-[#FFFFFF] invalid:[&:not(:placeholder-shown):not(:focus)]:border-red-500" placeholder="10-digit number" />
               </div>
               <div>
-                <label className="block text-sm font-bold text-[#9AAEAE] mb-1">Relationship</label>
-                <input value={formData.emergencyRelation} onChange={e => setFormData({...formData, emergencyRelation: e.target.value})} className="w-full bg-[#0E1415] border border-[#2A3A3A] rounded-xl px-4 py-2.5 outline-none focus:border-[#2DD4BF] focus:bg-[#FFFFFF]" placeholder="e.g. Spouse" />
+                <label className="block text-sm font-bold text-[#57534E] mb-1">Relationship</label>
+                <input value={formData.emergencyRelation} onChange={e => setFormData({...formData, emergencyRelation: e.target.value})} className="w-full bg-[#F3E8E8] border border-[#E7DADD] rounded-xl px-4 py-2.5 outline-none focus:border-[#B76E79] focus:bg-[#FFFFFF]" placeholder="e.g. Spouse" />
               </div>
             </div>
           </div>
 
           {/* Account Setup */}
           <div>
-            <h3 className="text-sm font-bold text-[#2DD4BF] uppercase tracking-wider mb-4 border-b border-[#2A3A3A] pb-2">Account Setup</h3>
+            <h3 className="text-sm font-bold text-[#B76E79] uppercase tracking-wider mb-4 border-b border-[#E7DADD] pb-2">Account Setup</h3>
             <div className="flex flex-col space-y-3">
               <label className="flex items-center space-x-3 cursor-pointer">
-                <input type="checkbox" checked={formData.createLogin} onChange={e => setFormData({...formData, createLogin: e.target.checked})} className="w-5 h-5 text-[#2DD4BF] rounded focus:ring-[#2DD4BF]" />
-                <span className="text-[#F5FAFA] font-medium">Create Member Login Account</span>
+                <input type="checkbox" checked={formData.createLogin} onChange={e => setFormData({...formData, createLogin: e.target.checked})} className="w-5 h-5 text-[#B76E79] rounded focus:ring-[#B76E79]" />
+                <span className="text-[#292524] font-medium">Create Member Login Account</span>
               </label>
               <label className="flex items-center space-x-3 cursor-pointer">
-                <input type="checkbox" checked={formData.sendEmail} onChange={e => setFormData({...formData, sendEmail: e.target.checked})} className="w-5 h-5 text-[#2DD4BF] rounded focus:ring-[#2DD4BF]" />
-                <span className="text-[#F5FAFA] font-medium">Send Welcome Email & Invitation</span>
+                <input type="checkbox" checked={formData.sendEmail} onChange={e => setFormData({...formData, sendEmail: e.target.checked})} className="w-5 h-5 text-[#B76E79] rounded focus:ring-[#B76E79]" />
+                <span className="text-[#292524] font-medium">Send Welcome Email & Invitation</span>
               </label>
             </div>
           </div>
 
           </div>
 
-          <div className="flex justify-end space-x-3 p-5 border-t border-[#2A3A3A] bg-[#0E1415] shrink-0">
-            <button type="button" onClick={onClose} className="px-6 py-2.5 text-[#9AAEAE] font-bold hover:bg-[#1B2728] rounded-xl transition-colors">Cancel</button>
-            <button type="submit" className="px-8 py-2.5 bg-[#2DD4BF] text-[#06201D] font-bold rounded-xl font-bold hover:bg-[#2DD4BF]/90 transition-colors shadow-lg shadow-[#2DD4BF]/20 flex items-center gap-2">
+          <div className="flex justify-end space-x-3 p-5 border-t border-[#E7DADD] bg-[#F3E8E8] shrink-0">
+            <button type="button" onClick={onClose} className="px-6 py-2.5 text-[#57534E] font-bold hover:bg-[#F3E8E8] rounded-xl transition-colors">Cancel</button>
+            <button type="submit" className="px-8 py-2.5 bg-[#B76E79] text-white font-bold rounded-xl font-bold hover:bg-[#B76E79]/90 transition-colors shadow-lg shadow-[#B76E79]/20 flex items-center gap-2">
               <Save size={18} /> Import Existing Member
             </button>
           </div>

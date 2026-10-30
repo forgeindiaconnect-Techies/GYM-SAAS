@@ -8,13 +8,13 @@ import {
 import api from '../../utils/api';
 
 const BADGE_CONFIG: Record<string, { icon: any; accent: string; bg: string }> = {
-  'Weight Loss':       { icon: Target,    accent: '#C43D35', bg: 'rgba(248, 113, 113,0.1)'   },
-  'Muscle Gain':       { icon: Dumbbell,  accent: '#2DD4BF', bg: 'rgba(22,125,120,0.1)'  },
-  'Strength':          { icon: Zap,       accent: '#2DD4BF', bg: 'rgba(45, 212, 191,0.1)'  },
-  'General Fitness':   { icon: Activity,  accent: '#34D399', bg: 'rgba(52, 211, 153,0.1)'   },
-  'Bodybuilding':      { icon: Crown,     accent: '#5EEAD4', bg: 'rgba(234,88,12,0.12)'  },
-  'Yoga':              { icon: Leaf,      accent: '#34D399', bg: 'rgba(16,185,129,0.1)'  },
-  'CrossFit':          { icon: TrendingUp,accent: '#D99A27', bg: 'rgba(251, 191, 36,0.1)'  },
+  'Weight Loss':       { icon: Target,    accent: '#B91C1C', bg: 'rgba(248, 113, 113,0.1)'   },
+  'Muscle Gain':       { icon: Dumbbell,  accent: '#B76E79', bg: 'rgba(183,110,121,0.1)'  },
+  'Strength':          { icon: Zap,       accent: '#B76E79', bg: 'rgba(183,110,121,0.1)'  },
+  'General Fitness':   { icon: Activity,  accent: '#15803D', bg: 'rgba(52, 211, 153,0.1)'   },
+  'Bodybuilding':      { icon: Crown,     accent: '#9F5965', bg: 'rgba(234,88,12,0.12)'  },
+  'Yoga':              { icon: Leaf,      accent: '#15803D', bg: 'rgba(16,185,129,0.1)'  },
+  'CrossFit':          { icon: TrendingUp,accent: '#B45309', bg: 'rgba(251, 191, 36,0.1)'  },
   'Personal Training': { icon: Users,     accent: '#8B5CF6', bg: 'rgba(139,92,246,0.1)'  },
   'Online Coaching':   { icon: Cpu,       accent: '#0EA5E9', bg: 'rgba(14,165,233,0.1)'  },
 };
@@ -106,19 +106,19 @@ const MemberGymProfile = () => {
   }, []);
 
   if (isLoading) {
-    return <div className="flex justify-center py-20 text-[#9AAEAE]">Loading gym details...</div>;
+    return <div className="flex justify-center py-20 text-[#57534E]">Loading gym details...</div>;
   }
 
   if (error) {
     return (
-      <div className="bg-[#1B2728]/10 border border-[#1B2728]/30 text-[#2DD4BF] p-4 rounded-xl text-sm max-w-3xl mx-auto">
+      <div className="bg-[#F3E8E8]/10 border border-[#F3E8E8]/30 text-[#B76E79] p-4 rounded-xl text-sm max-w-3xl mx-auto">
         {error}
       </div>
     );
   }
 
   if (!gym) {
-    return <div className="text-center py-20 text-[#9AAEAE]">You are not assigned to any specific gym yet.</div>;
+    return <div className="text-center py-20 text-[#57534E]">You are not assigned to any specific gym yet.</div>;
   }
 
   // Combine services and facilities, removing duplicates
@@ -132,30 +132,30 @@ const MemberGymProfile = () => {
   return (
     <div className="max-w-6xl mx-auto space-y-6 md:space-y-8 animate-fade-in pb-12">
       {/* Header Section */}
-      <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-xs">
+      <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-xs">
         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-left">
-          <div className="w-24 h-24 sm:w-28 sm:h-28 bg-[#0E1415] border border-[#2A3A3A] rounded-2xl flex items-center justify-center overflow-hidden shrink-0 shadow-xs">
+          <div className="w-24 h-24 sm:w-28 sm:h-28 bg-[#F3E8E8] border border-[#E7DADD] rounded-2xl flex items-center justify-center overflow-hidden shrink-0 shadow-xs">
             {gym.logo ? (
               <img src={gym.logo} alt={gym.name} className="w-full h-full object-contain p-2" />
             ) : (
-              <Building2 className="text-[#9AAEAE]" size={42} />
+              <Building2 className="text-[#57534E]" size={42} />
             )}
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
-                <h1 className="text-2xl sm:text-3xl font-black text-[#F5FAFA] tracking-tight">{gym.name}</h1>
+                <h1 className="text-2xl sm:text-3xl font-black text-[#292524] tracking-tight">{gym.name}</h1>
                 <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5 mt-2.5">
-                  <span className="bg-red-50 text-[#C43D35] px-3 py-1 rounded-full font-bold text-xs tracking-wide uppercase border border-red-100">
+                  <span className="bg-red-50 text-[#B91C1C] px-3 py-1 rounded-full font-bold text-xs tracking-wide uppercase border border-red-100">
                     {gym.gymType || 'Commercial'}
                   </span>
                   {gym.trainingMode && (
-                    <span className="bg-[#1B2728] text-[#2DD4BF] px-3 py-1 rounded-full font-bold text-xs tracking-wide uppercase border border-[#2A3A3A]">
+                    <span className="bg-[#F3E8E8] text-[#B76E79] px-3 py-1 rounded-full font-bold text-xs tracking-wide uppercase border border-[#E7DADD]">
                       {gym.trainingMode === 'both' ? 'Online & Offline' : gym.trainingMode}
                     </span>
                   )}
                   {gym.establishedYear && (
-                    <span className="text-[#9AAEAE] text-xs font-semibold flex items-center gap-1 bg-[#0E1415] px-2.5 py-1 rounded-full border border-[#2A3A3A]">
+                    <span className="text-[#57534E] text-xs font-semibold flex items-center gap-1 bg-[#F3E8E8] px-2.5 py-1 rounded-full border border-[#E7DADD]">
                       <Calendar size={13} /> Est. {gym.establishedYear}
                     </span>
                   )}
@@ -171,7 +171,7 @@ const MemberGymProfile = () => {
                   href={memberMapUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 text-xs font-bold text-[#2DD4BF] bg-[#2DD4BF]/10 hover:bg-[#2DD4BF] hover:text-[#06201D] font-bold border border-[#2DD4BF]/30 px-3.5 py-2 rounded-xl transition-all self-center sm:self-start shadow-2xs"
+                  className="flex items-center gap-1.5 text-xs font-bold text-[#B76E79] bg-[#B76E79]/10 hover:bg-[#B76E79] hover:text-[#FFFFFF] font-bold border border-[#B76E79]/30 px-3.5 py-2 rounded-xl transition-all self-center sm:self-start shadow-2xs"
                   title="Click to open location in Google Maps"
                 >
                   <MapPin size={14} />
@@ -188,7 +188,7 @@ const MemberGymProfile = () => {
       {gym.images && gym.images.length > 0 && (
         <div>
           {gym.images.length === 1 && (
-            <div className="rounded-2xl md:rounded-3xl overflow-hidden border border-[#2A3A3A] shadow-xs h-64 sm:h-80 md:h-96">
+            <div className="rounded-2xl md:rounded-3xl overflow-hidden border border-[#E7DADD] shadow-xs h-64 sm:h-80 md:h-96">
               <img 
                 src={gym.images[0]} 
                 alt={`${gym.name} gallery`} 
@@ -202,7 +202,7 @@ const MemberGymProfile = () => {
               {gym.images.map((img: string, idx: number) => (
                 <div 
                   key={idx} 
-                  className="rounded-2xl md:rounded-3xl overflow-hidden border border-[#2A3A3A] shadow-xs h-64 md:h-80"
+                  className="rounded-2xl md:rounded-3xl overflow-hidden border border-[#E7DADD] shadow-xs h-64 md:h-80"
                 >
                   <img 
                     src={img} 
@@ -219,7 +219,7 @@ const MemberGymProfile = () => {
               {gym.images.map((img: string, idx: number) => (
                 <div 
                   key={idx} 
-                  className="rounded-2xl overflow-hidden border border-[#2A3A3A] shadow-xs h-64 md:h-72"
+                  className="rounded-2xl overflow-hidden border border-[#E7DADD] shadow-xs h-64 md:h-72"
                 >
                   <img 
                     src={img} 
@@ -236,7 +236,7 @@ const MemberGymProfile = () => {
               {gym.images.slice(0, 4).map((img: string, idx: number) => (
                 <div 
                   key={idx} 
-                  className="rounded-2xl overflow-hidden border border-[#2A3A3A] shadow-xs h-48 md:h-60"
+                  className="rounded-2xl overflow-hidden border border-[#E7DADD] shadow-xs h-48 md:h-60"
                 >
                   <img 
                     src={img} 
@@ -254,25 +254,25 @@ const MemberGymProfile = () => {
         <div className="lg:col-span-2 space-y-6 md:space-y-8">
           {/* About */}
           {gym.description && (
-            <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-xs">
-              <h2 className="text-xl font-bold mb-4 flex items-center gap-2 text-[#F5FAFA]">
-                <Building2 className="text-[#2DD4BF]" size={20} />
+            <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-xs">
+              <h2 className="text-xl font-bold mb-4 flex items-center gap-2 text-[#292524]">
+                <Building2 className="text-[#B76E79]" size={20} />
                 About the Gym
               </h2>
-              <p className="text-[#9AAEAE] leading-relaxed whitespace-pre-wrap text-sm md:text-base">{gym.description}</p>
+              <p className="text-[#57534E] leading-relaxed whitespace-pre-wrap text-sm md:text-base">{gym.description}</p>
             </div>
           )}
 
           {/* Amenities & Services */}
           {allAmenities.length > 0 && (
-            <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-xs">
-              <h2 className="text-xl font-bold mb-5 flex items-center gap-2 text-[#F5FAFA]">
-                <CheckCircle2 className="text-[#2DD4BF]" size={20} />
+            <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-xs">
+              <h2 className="text-xl font-bold mb-5 flex items-center gap-2 text-[#292524]">
+                <CheckCircle2 className="text-[#B76E79]" size={20} />
                 Amenities & Services
               </h2>
               <div className="flex flex-wrap gap-2.5">
                 {allAmenities.map((amenity, idx) => (
-                  <span key={idx} className="bg-[#0E1415] border border-[#2A3A3A] text-[#9AAEAE] px-3.5 py-1.5 rounded-xl text-sm font-medium">
+                  <span key={idx} className="bg-[#F3E8E8] border border-[#E7DADD] text-[#57534E] px-3.5 py-1.5 rounded-xl text-sm font-medium">
                     {amenity}
                   </span>
                 ))}
@@ -284,20 +284,20 @@ const MemberGymProfile = () => {
           {(gym.equipment?.length > 0 || gym.acDetails) && (
             <div className="grid sm:grid-cols-2 gap-6">
               {gym.equipment?.length > 0 && (
-                <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl md:rounded-3xl p-6 shadow-xs">
-                  <h2 className="text-lg font-bold mb-4 flex items-center gap-2 text-[#F5FAFA]">
-                    <Dumbbell className="text-[#2DD4BF]" size={18} />
+                <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl md:rounded-3xl p-6 shadow-xs">
+                  <h2 className="text-lg font-bold mb-4 flex items-center gap-2 text-[#292524]">
+                    <Dumbbell className="text-[#B76E79]" size={18} />
                     Equipment
                   </h2>
                   <ul className="space-y-2.5">
                     {gym.equipment.slice(0, 5).map((eq: any, idx: number) => (
                       <li key={idx} className="flex justify-between items-center text-sm py-1 border-b border-gray-50 last:border-0">
-                        <span className="text-[#9AAEAE] font-medium">{eq.name}</span>
-                        <span className="bg-[#1B2728] text-[#F5FAFA] px-2 py-0.5 rounded-md font-semibold text-xs">{eq.quantity}</span>
+                        <span className="text-[#57534E] font-medium">{eq.name}</span>
+                        <span className="bg-[#F3E8E8] text-[#292524] px-2 py-0.5 rounded-md font-semibold text-xs">{eq.quantity}</span>
                       </li>
                     ))}
                     {gym.equipment.length > 5 && (
-                      <li className="text-sm text-[#2DD4BF] font-semibold pt-2 text-center">
+                      <li className="text-sm text-[#B76E79] font-semibold pt-2 text-center">
                         + {gym.equipment.length - 5} more
                       </li>
                     )}
@@ -306,16 +306,16 @@ const MemberGymProfile = () => {
               )}
               
               {gym.acDetails && (
-                <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl md:rounded-3xl p-6 shadow-xs h-fit">
-                  <h2 className="text-lg font-bold mb-4 flex items-center gap-2 text-[#F5FAFA]">
-                    <Wind className="text-[#2DD4BF]" size={18} />
+                <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl md:rounded-3xl p-6 shadow-xs h-fit">
+                  <h2 className="text-lg font-bold mb-4 flex items-center gap-2 text-[#292524]">
+                    <Wind className="text-[#B76E79]" size={18} />
                     AC Details
                   </h2>
-                  <p className="text-[#9AAEAE] font-medium mb-3">{gym.acDetails.type}</p>
+                  <p className="text-[#57534E] font-medium mb-3">{gym.acDetails.type}</p>
                   {gym.acDetails.areas?.length > 0 && (
                     <div className="flex flex-wrap gap-2">
                       {gym.acDetails.areas.map((area: string, idx: number) => (
-                        <span key={idx} className="text-xs bg-[#1B2728] text-[#2DD4BF] border border-[#2A3A3A] px-2.5 py-1 rounded-md font-medium">
+                        <span key={idx} className="text-xs bg-[#F3E8E8] text-[#B76E79] border border-[#E7DADD] px-2.5 py-1 rounded-md font-medium">
                           {area}
                         </span>
                       ))}
@@ -327,14 +327,14 @@ const MemberGymProfile = () => {
           )}
 
           {/* Available Package Plans */}
-          <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-xs">
-            <h2 className="text-xl font-bold mb-6 flex items-center gap-2 text-[#F5FAFA]">
-              <Calendar className="text-[#2DD4BF]" size={20} />
+          <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-xs">
+            <h2 className="text-xl font-bold mb-6 flex items-center gap-2 text-[#292524]">
+              <Calendar className="text-[#B76E79]" size={20} />
               Available Plans
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {(packages.length > 0 ? packages : defaultPackages).map((pkg: any) => {
-                const badge = BADGE_CONFIG[pkg.fitnessGoal] || BADGE_CONFIG['General Fitness'] || { icon: Dumbbell, accent: '#2DD4BF', bg: 'rgba(22,125,120,0.1)' };
+                const badge = BADGE_CONFIG[pkg.fitnessGoal] || BADGE_CONFIG['General Fitness'] || { icon: Dumbbell, accent: '#B76E79', bg: 'rgba(183,110,121,0.1)' };
                 const Icon = badge.icon;
                 const price = pkg.monthlyPrice ?? pkg.price ?? 0;
                 const duration = pkg.duration || '1 Month';
@@ -347,14 +347,14 @@ const MemberGymProfile = () => {
                   <div
                     key={pkg._id}
                     onClick={() => setSelectedPlanId(pkg._id)}
-                    className={`bg-[#141D1E] rounded-2xl p-6 relative flex flex-col justify-between transition-all duration-200 cursor-pointer border-2 ${
+                    className={`bg-[#FFFFFF] rounded-2xl p-6 relative flex flex-col justify-between transition-all duration-200 cursor-pointer border-2 ${
                       isSelected
-                        ? 'border-[#2DD4BF] shadow-md shadow-teal-900/10'
-                        : 'border-[#2A3A3A] hover:border-[#2DD4BF]/50 shadow-2xs'
+                        ? 'border-[#B76E79] shadow-md shadow-[#B76E79]/15'
+                        : 'border-[#E7DADD] hover:border-[#B76E79]/50 shadow-2xs'
                     }`}
                   >
                     {pkg.isPopular && (
-                      <div className="absolute top-0 right-6 -translate-y-1/2 bg-[#2DD4BF] text-[#06201D] font-bold px-3 py-1 rounded-full text-[10px] font-black shadow-lg uppercase tracking-wider">
+                      <div className="absolute top-0 right-6 -translate-y-1/2 bg-[#B76E79] text-white font-bold px-3 py-1 rounded-full text-[10px] font-black shadow-lg uppercase tracking-wider">
                         POPULAR
                       </div>
                     )}
@@ -376,33 +376,33 @@ const MemberGymProfile = () => {
                         </span>
                       </div>
 
-                      <h3 className="text-xl font-bold text-[#F5FAFA] mb-1.5 leading-snug">{pkg.name}</h3>
+                      <h3 className="text-xl font-bold text-[#292524] mb-1.5 leading-snug">{pkg.name}</h3>
                       {pkg.description && (
-                        <p className="text-xs text-[#9AAEAE] mb-3 line-clamp-2 leading-relaxed">{pkg.description}</p>
+                        <p className="text-xs text-[#57534E] mb-3 line-clamp-2 leading-relaxed">{pkg.description}</p>
                       )}
 
                       <div className="flex items-baseline mb-3">
-                        <span className="text-3xl font-extrabold text-[#F5FAFA]">₹{price}</span>
-                        <span className="text-xs font-semibold text-[#9AAEAE] ml-1.5">/ {duration.toLowerCase().includes('month') ? 'month' : duration}</span>
+                        <span className="text-3xl font-extrabold text-[#292524]">₹{price}</span>
+                        <span className="text-xs font-semibold text-[#57534E] ml-1.5">/ {duration.toLowerCase().includes('month') ? 'month' : duration}</span>
                       </div>
 
                       {/* Training type and duration pills */}
                       <div className="flex flex-wrap items-center gap-2 mb-4">
-                        <span className="px-2.5 py-0.5 rounded-lg text-xs font-bold bg-[#1B2728] text-[#F5FAFA]">
+                        <span className="px-2.5 py-0.5 rounded-lg text-xs font-bold bg-[#F3E8E8] text-[#292524]">
                           {pkg.trainingType || 'Offline'}
                         </span>
-                        <span className="px-2.5 py-0.5 rounded-lg text-xs font-bold bg-[#1B2728] text-[#F5FAFA]">
+                        <span className="px-2.5 py-0.5 rounded-lg text-xs font-bold bg-[#F3E8E8] text-[#292524]">
                           {duration}
                         </span>
                       </div>
 
                       {/* Features list */}
-                      <div className="border-t border-[#2A3A3A] pt-3 mb-6">
-                        <p className="text-xs font-bold text-[#F5FAFA] uppercase tracking-wider mb-2.5">FEATURES INCLUDED:</p>
+                      <div className="border-t border-[#E7DADD] pt-3 mb-6">
+                        <p className="text-xs font-bold text-[#292524] uppercase tracking-wider mb-2.5">FEATURES INCLUDED:</p>
                         <ul className="space-y-2">
                           {featuresList.map((f: string, i: number) => (
-                            <li key={i} className="flex items-start text-xs text-[#9AAEAE] leading-snug">
-                              <CheckCircle2 size={14} className="text-[#2DD4BF] mr-2 shrink-0 mt-0.5" />
+                            <li key={i} className="flex items-start text-xs text-[#57534E] leading-snug">
+                              <CheckCircle2 size={14} className="text-[#B76E79] mr-2 shrink-0 mt-0.5" />
                               <span>{f.trim()}</span>
                             </li>
                           ))}
@@ -444,38 +444,38 @@ const MemberGymProfile = () => {
         {/* Sidebar Info */}
         <div className="space-y-6">
           {/* Contact Info */}
-          <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl md:rounded-3xl p-6 shadow-xs">
-            <h2 className="text-lg font-bold mb-5 flex items-center gap-2 text-[#F5FAFA]">
-              <Phone className="text-[#2DD4BF]" size={18} />
+          <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl md:rounded-3xl p-6 shadow-xs">
+            <h2 className="text-lg font-bold mb-5 flex items-center gap-2 text-[#292524]">
+              <Phone className="text-[#B76E79]" size={18} />
               Contact Info
             </h2>
             <div className="space-y-4">
               <div className="flex items-start gap-3">
-                <div className="w-9 h-9 rounded-xl bg-[#0E1415] border border-[#2A3A3A] flex items-center justify-center text-[#9AAEAE] shrink-0">
+                <div className="w-9 h-9 rounded-xl bg-[#F3E8E8] border border-[#E7DADD] flex items-center justify-center text-[#57534E] shrink-0">
                   <Mail size={16} />
                 </div>
                 <div>
-                  <p className="text-xs text-[#9AAEAE] uppercase tracking-wider font-semibold mb-0.5">Email</p>
-                  <p className="text-[#F5FAFA] text-sm font-medium break-all">{gym.email || 'N/A'}</p>
+                  <p className="text-xs text-[#57534E] uppercase tracking-wider font-semibold mb-0.5">Email</p>
+                  <p className="text-[#292524] text-sm font-medium break-all">{gym.email || 'N/A'}</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <div className="w-9 h-9 rounded-xl bg-[#0E1415] border border-[#2A3A3A] flex items-center justify-center text-[#9AAEAE] shrink-0">
+                <div className="w-9 h-9 rounded-xl bg-[#F3E8E8] border border-[#E7DADD] flex items-center justify-center text-[#57534E] shrink-0">
                   <Phone size={16} />
                 </div>
                 <div>
-                  <p className="text-xs text-[#9AAEAE] uppercase tracking-wider font-semibold mb-0.5">Phone</p>
-                  <p className="text-[#F5FAFA] text-sm font-medium">{gym.phone || 'N/A'}</p>
+                  <p className="text-xs text-[#57534E] uppercase tracking-wider font-semibold mb-0.5">Phone</p>
+                  <p className="text-[#292524] text-sm font-medium">{gym.phone || 'N/A'}</p>
                 </div>
               </div>
               {gym.website && (
                 <div className="flex items-start gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-[#0E1415] border border-[#2A3A3A] flex items-center justify-center text-[#9AAEAE] shrink-0">
+                  <div className="w-9 h-9 rounded-xl bg-[#F3E8E8] border border-[#E7DADD] flex items-center justify-center text-[#57534E] shrink-0">
                     <Globe size={16} />
                   </div>
                   <div>
-                    <p className="text-xs text-[#9AAEAE] uppercase tracking-wider font-semibold mb-0.5">Website</p>
-                    <a href={gym.website} target="_blank" rel="noopener noreferrer" className="text-[#2DD4BF] hover:underline text-sm font-medium break-all">
+                    <p className="text-xs text-[#57534E] uppercase tracking-wider font-semibold mb-0.5">Website</p>
+                    <a href={gym.website} target="_blank" rel="noopener noreferrer" className="text-[#B76E79] hover:underline text-sm font-medium break-all">
                       {gym.website.replace(/^https?:\/\//, '')}
                     </a>
                   </div>
@@ -485,18 +485,18 @@ const MemberGymProfile = () => {
           </div>
 
           {/* Location Info */}
-          <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl md:rounded-3xl p-6 shadow-xs">
-            <h2 className="text-lg font-bold mb-5 flex items-center gap-2 text-[#F5FAFA]">
-              <MapPin className="text-[#2DD4BF]" size={18} />
+          <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl md:rounded-3xl p-6 shadow-xs">
+            <h2 className="text-lg font-bold mb-5 flex items-center gap-2 text-[#292524]">
+              <MapPin className="text-[#B76E79]" size={18} />
               Location Details
             </h2>
             <div className="flex items-start gap-3">
-              <div className="w-9 h-9 rounded-xl bg-[#0E1415] border border-[#2A3A3A] flex items-center justify-center text-[#9AAEAE] shrink-0">
+              <div className="w-9 h-9 rounded-xl bg-[#F3E8E8] border border-[#E7DADD] flex items-center justify-center text-[#57534E] shrink-0">
                 <MapPin size={16} />
               </div>
               <div className="flex-1">
-                <p className="text-xs text-[#9AAEAE] uppercase tracking-wider font-semibold mb-0.5">Address</p>
-                <p className="text-[#F5FAFA] text-sm font-medium leading-relaxed mb-3">
+                <p className="text-xs text-[#57534E] uppercase tracking-wider font-semibold mb-0.5">Address</p>
+                <p className="text-[#292524] text-sm font-medium leading-relaxed mb-3">
                   {gym.location?.address && <>{gym.location.address}<br /></>}
                   {gym.location?.area && <>{gym.location.area}<br /></>}
                   {gym.location?.city}, {gym.location?.state} {gym.location?.pinCode}
@@ -505,7 +505,7 @@ const MemberGymProfile = () => {
                   href={memberMapUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-[#2DD4BF] text-[#06201D] font-bold hover:bg-[#5EEAD4] rounded-xl text-xs font-bold transition-all shadow-xs"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-[#B76E79] text-white font-bold hover:bg-[#9F5965] rounded-xl text-xs font-bold transition-all shadow-xs"
                 >
                   <Navigation size={13} /> View Map & Directions <ExternalLink size={12} />
                 </a>

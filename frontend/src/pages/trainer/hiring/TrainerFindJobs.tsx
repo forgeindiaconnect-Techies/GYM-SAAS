@@ -242,8 +242,8 @@ export default function TrainerFindJobs() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-            <Search className="w-7 h-7 text-[#2DD4BF]" />
+          <h1 className="text-2xl font-bold text-[#292524] flex items-center gap-2">
+            <Search className="w-7 h-7 text-[#B76E79]" />
             Trainers Careers
           </h1>
           <p className="text-sm text-slate-400 mt-1">
@@ -253,14 +253,14 @@ export default function TrainerFindJobs() {
         <div className="flex items-center gap-3">
           <Link
             to="/trainer/applications"
-            className="px-4 py-2 bg-[#141D1E] hover:bg-[#1B2728] text-slate-300 rounded-xl border border-[#2A3A3A] text-sm flex items-center gap-2"
+            className="px-4 py-2 bg-[#FFFFFF] hover:bg-[#F3E8E8] text-slate-300 rounded-xl border border-[#E7DADD] text-sm flex items-center gap-2"
           >
-            <Briefcase className="w-4 h-4 text-[#2DD4BF]" />
+            <Briefcase className="w-4 h-4 text-[#B76E79]" />
             My Applications ({appliedJobs.length})
           </Link>
           <Link
             to="/trainer/job-offers"
-            className="px-4 py-2 bg-[#2DD4BF]/10 hover:bg-[#2DD4BF]/20 text-[#2DD4BF] border border-[#2DD4BF]/30 rounded-xl text-sm font-semibold"
+            className="px-4 py-2 bg-[#B76E79]/10 hover:bg-[#B76E79]/20 text-[#B76E79] border border-[#B76E79]/30 rounded-xl text-sm font-semibold"
           >
             Job Offers
           </Link>
@@ -268,7 +268,7 @@ export default function TrainerFindJobs() {
       </div>
 
       {/* Filter / Search Bar */}
-      <div className="bg-[#0E1415] p-4 rounded-2xl border border-[#2A3A3A] flex flex-col md:flex-row gap-4 items-center justify-between">
+      <div className="bg-[#F3E8E8] p-4 rounded-2xl border border-[#E7DADD] flex flex-col md:flex-row gap-4 items-center justify-between">
         <div className="relative flex-1 w-full">
           <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
@@ -277,7 +277,7 @@ export default function TrainerFindJobs() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && fetchJobs()}
-            className="w-full pl-10 pr-4 py-2 bg-[#141D1E] border border-[#2A3A3A] rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-[#2DD4BF]"
+            className="w-full pl-10 pr-4 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-[#B76E79]"
           />
         </div>
 
@@ -287,13 +287,13 @@ export default function TrainerFindJobs() {
             placeholder="Location filter..."
             value={locationFilter}
             onChange={(e) => setLocationFilter(e.target.value)}
-            className="px-3 py-2 bg-[#141D1E] border border-[#2A3A3A] rounded-xl text-slate-300 text-sm focus:outline-none focus:border-[#2DD4BF] w-36"
+            className="px-3 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-slate-300 text-sm focus:outline-none focus:border-[#B76E79] w-36"
           />
 
           <select
             value={employmentFilter}
             onChange={(e) => setEmploymentFilter(e.target.value)}
-            className="px-3 py-2 bg-[#141D1E] border border-[#2A3A3A] rounded-xl text-slate-300 text-sm focus:outline-none focus:border-[#2DD4BF]"
+            className="px-3 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-slate-300 text-sm focus:outline-none focus:border-[#B76E79]"
           >
             <option value="">All Employment</option>
             <option value="Full-time">Full-time</option>
@@ -305,14 +305,14 @@ export default function TrainerFindJobs() {
 
       {/* Jobs Grid */}
       {loading ? (
-        <div className="p-12 text-center text-slate-400 bg-[#0E1415] rounded-2xl border border-[#2A3A3A]">
-          <div className="inline-block animate-spin w-8 h-8 border-4 border-[#2DD4BF] border-t-transparent rounded-full mb-3" />
+        <div className="p-12 text-center text-slate-400 bg-[#F3E8E8] rounded-2xl border border-[#E7DADD]">
+          <div className="inline-block animate-spin w-8 h-8 border-4 border-[#B76E79] border-t-transparent rounded-full mb-3" />
           <p>Discovering gym vacancies...</p>
         </div>
       ) : filteredJobs.length === 0 ? (
-        <div className="p-12 text-center bg-[#0E1415] rounded-2xl border border-[#2A3A3A]">
+        <div className="p-12 text-center bg-[#F3E8E8] rounded-2xl border border-[#E7DADD]">
           <Briefcase className="w-12 h-12 text-slate-600 mx-auto mb-3" />
-          <h3 className="text-lg font-semibold text-white mb-1">No vacancies found</h3>
+          <h3 className="text-lg font-semibold text-[#292524] mb-1">No vacancies found</h3>
           <p className="text-sm text-slate-400 max-w-md mx-auto">
             Try adjusting your search keywords or filter settings.
           </p>
@@ -327,21 +327,21 @@ export default function TrainerFindJobs() {
             return (
               <div
                 key={job._id}
-                className="bg-[#0E1415] border border-[#2A3A3A] hover:border-[#2DD4BF]/50 rounded-2xl p-5 transition-all flex flex-col justify-between space-y-4 shadow-lg group"
+                className="bg-[#F3E8E8] border border-[#E7DADD] hover:border-[#B76E79]/50 rounded-2xl p-5 transition-all flex flex-col justify-between space-y-4 shadow-lg group"
               >
                 <div>
                   <div className="flex items-start justify-between gap-2 mb-2">
                     <div>
-                      <span className="text-xs text-[#2DD4BF] font-semibold flex items-center gap-1">
+                      <span className="text-xs text-[#B76E79] font-semibold flex items-center gap-1">
                         <Building2 className="w-3 h-3" />
                         {job.gymName}
                       </span>
-                      <h3 className="text-lg font-bold text-white group-hover:text-[#2DD4BF] transition-colors mt-0.5">
+                      <h3 className="text-lg font-bold text-[#292524] group-hover:text-[#B76E79] transition-colors mt-0.5">
                         {job.title}
                       </h3>
                     </div>
                     <div className="flex flex-col items-end gap-1">
-                      <span className="text-[11px] bg-[#141D1E] text-slate-300 px-2 py-0.5 rounded-full border border-[#2A3A3A] whitespace-nowrap">
+                      <span className="text-[11px] bg-[#FFFFFF] text-slate-300 px-2 py-0.5 rounded-full border border-[#E7DADD] whitespace-nowrap">
                         {job.employmentType}
                       </span>
                       {isOver && (
@@ -358,7 +358,7 @@ export default function TrainerFindJobs() {
                       <span className="truncate">{job.location}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <DollarSign className="w-3.5 h-3.5 text-[#2DD4BF] shrink-0" />
+                      <DollarSign className="w-3.5 h-3.5 text-[#B76E79] shrink-0" />
                       <span className="text-white font-semibold font-mono">
                         {job.salaryMin
                           ? `₹${job.salaryMin.toLocaleString()} - ₹${job.salaryMax?.toLocaleString()} / ${job.salaryType}`
@@ -379,7 +379,7 @@ export default function TrainerFindJobs() {
                     )}
                   </div>
 
-                  <p className="text-xs text-slate-300 line-clamp-2 leading-relaxed bg-[#141D1E] p-2.5 rounded-xl border border-[#2A3A3A]">
+                  <p className="text-xs text-slate-300 line-clamp-2 leading-relaxed bg-[#FFFFFF] p-2.5 rounded-xl border border-[#E7DADD]">
                     {job.description}
                   </p>
 
@@ -387,7 +387,7 @@ export default function TrainerFindJobs() {
                     {job.expertise?.slice(0, 3).map((exp, i) => (
                       <span
                         key={i}
-                        className="text-[10px] bg-[#1B2728] text-slate-300 px-2 py-0.5 rounded border border-[#2A3A3A]"
+                        className="text-[10px] bg-[#F3E8E8] text-slate-300 px-2 py-0.5 rounded border border-[#E7DADD]"
                       >
                         {exp}
                       </span>
@@ -400,10 +400,10 @@ export default function TrainerFindJobs() {
                   </div>
                 </div>
 
-                <div className="pt-3 border-t border-[#2A3A3A] flex items-center justify-between gap-2">
+                <div className="pt-3 border-t border-[#E7DADD] flex items-center justify-between gap-2">
                   <button
                     onClick={() => setSelectedJob(job)}
-                    className="px-3 py-2 bg-[#141D1E] hover:bg-[#1B2728] text-slate-300 hover:text-white rounded-xl text-xs font-medium border border-[#2A3A3A] transition-all"
+                    className="px-3 py-2 bg-[#FFFFFF] hover:bg-[#F3E8E8] text-slate-300 hover:text-white rounded-xl text-xs font-medium border border-[#E7DADD] transition-all"
                   >
                     View Details
                   </button>
@@ -421,7 +421,7 @@ export default function TrainerFindJobs() {
                   ) : (
                     <button
                       onClick={() => openApplyModal(job)}
-                      className="px-4 py-2 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-black font-semibold rounded-xl text-xs transition-all flex items-center gap-1.5 shadow-md shadow-[#2DD4BF]/20"
+                      className="px-4 py-2 bg-[#B76E79] hover:bg-[#9F5965] text-white font-semibold rounded-xl text-xs transition-all flex items-center gap-1.5 shadow-md shadow-[#B76E79]/20"
                     >
                       <Sparkles className="w-3.5 h-3.5" />
                       Apply Now
@@ -437,20 +437,20 @@ export default function TrainerFindJobs() {
       {/* Job Details Modal */}
       {selectedJob && !showApplyModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-[#0E1415] border border-[#2A3A3A] rounded-2xl max-w-2xl w-full p-6 text-white space-y-5 max-h-[90vh] overflow-y-auto shadow-2xl">
+          <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-2xl max-w-2xl w-full p-6 text-white space-y-5 max-h-[90vh] overflow-y-auto shadow-2xl">
             {/* Modal Header */}
-            <div className="flex items-start justify-between border-b border-[#2A3A3A] pb-4">
+            <div className="flex items-start justify-between border-b border-[#E7DADD] pb-4">
               <div>
-                <span className="text-xs text-[#2DD4BF] font-semibold flex items-center gap-1.5">
+                <span className="text-xs text-[#B76E79] font-semibold flex items-center gap-1.5">
                   <Building2 className="w-3.5 h-3.5" />
                   {selectedJob.gymName}
                 </span>
-                <h2 className="text-2xl font-bold text-white mt-1">{selectedJob.title}</h2>
+                <h2 className="text-2xl font-bold text-[#292524] mt-1">{selectedJob.title}</h2>
                 <div className="flex flex-wrap items-center gap-2 mt-2">
-                  <span className="text-[11px] bg-[#141D1E] text-slate-300 px-2.5 py-0.5 rounded-full border border-[#2A3A3A] font-medium">
+                  <span className="text-[11px] bg-[#FFFFFF] text-slate-300 px-2.5 py-0.5 rounded-full border border-[#E7DADD] font-medium">
                     {selectedJob.employmentType}
                   </span>
-                  <span className="text-[11px] bg-[#141D1E] text-[#2DD4BF] px-2.5 py-0.5 rounded-full border border-[#2A3A3A] font-medium">
+                  <span className="text-[11px] bg-[#FFFFFF] text-[#B76E79] px-2.5 py-0.5 rounded-full border border-[#E7DADD] font-medium">
                     {selectedJob.vacanciesCount || 1} {Number(selectedJob.vacanciesCount) > 1 ? 'Openings' : 'Opening'}
                   </span>
                   {selectedJob.isSalaryNegotiable && (
@@ -467,7 +467,7 @@ export default function TrainerFindJobs() {
               </div>
               <button
                 onClick={() => setSelectedJob(null)}
-                className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-[#141D1E]"
+                className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-[#FFFFFF]"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -475,16 +475,16 @@ export default function TrainerFindJobs() {
 
             {/* Comprehensive Job Details Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-              <div className="bg-[#141D1E] p-3 rounded-xl border border-[#2A3A3A] flex items-center gap-2.5">
-                <MapPin className="w-4 h-4 text-[#2DD4BF] shrink-0" />
+              <div className="bg-[#FFFFFF] p-3 rounded-xl border border-[#E7DADD] flex items-center gap-2.5">
+                <MapPin className="w-4 h-4 text-[#B76E79] shrink-0" />
                 <div>
                   <span className="text-[10px] text-slate-500 block uppercase font-bold">Location</span>
                   <span className="text-slate-200 font-medium">{selectedJob.location || 'On-site'}</span>
                 </div>
               </div>
 
-              <div className="bg-[#141D1E] p-3 rounded-xl border border-[#2A3A3A] flex items-center gap-2.5">
-                <DollarSign className="w-4 h-4 text-[#2DD4BF] shrink-0" />
+              <div className="bg-[#FFFFFF] p-3 rounded-xl border border-[#E7DADD] flex items-center gap-2.5">
+                <DollarSign className="w-4 h-4 text-[#B76E79] shrink-0" />
                 <div>
                   <span className="text-[10px] text-slate-500 block uppercase font-bold">Salary / Compensation</span>
                   <span className="text-white font-mono font-bold">
@@ -495,8 +495,8 @@ export default function TrainerFindJobs() {
                 </div>
               </div>
 
-              <div className="bg-[#141D1E] p-3 rounded-xl border border-[#2A3A3A] flex items-center gap-2.5">
-                <Clock className="w-4 h-4 text-[#2DD4BF] shrink-0" />
+              <div className="bg-[#FFFFFF] p-3 rounded-xl border border-[#E7DADD] flex items-center gap-2.5">
+                <Clock className="w-4 h-4 text-[#B76E79] shrink-0" />
                 <div>
                   <span className="text-[10px] text-slate-500 block uppercase font-bold">Required Experience</span>
                   <span className="text-slate-200 font-medium">
@@ -505,8 +505,8 @@ export default function TrainerFindJobs() {
                 </div>
               </div>
 
-              <div className="bg-[#141D1E] p-3 rounded-xl border border-[#2A3A3A] flex items-center gap-2.5">
-                <Calendar className="w-4 h-4 text-[#2DD4BF] shrink-0" />
+              <div className="bg-[#FFFFFF] p-3 rounded-xl border border-[#E7DADD] flex items-center gap-2.5">
+                <Calendar className="w-4 h-4 text-[#B76E79] shrink-0" />
                 <div>
                   <span className="text-[10px] text-slate-500 block uppercase font-bold">Application Deadline</span>
                   {selectedJob.applicationDeadline || (selectedJob as any).deadline ? (
@@ -521,8 +521,8 @@ export default function TrainerFindJobs() {
               </div>
 
               {selectedJob.workingHours && (
-                <div className="bg-[#141D1E] p-3 rounded-xl border border-[#2A3A3A] flex items-center gap-2.5 sm:col-span-2">
-                  <Clock className="w-4 h-4 text-[#2DD4BF] shrink-0" />
+                <div className="bg-[#FFFFFF] p-3 rounded-xl border border-[#E7DADD] flex items-center gap-2.5 sm:col-span-2">
+                  <Clock className="w-4 h-4 text-[#B76E79] shrink-0" />
                   <div>
                     <span className="text-[10px] text-slate-500 block uppercase font-bold">Shift & Working Hours</span>
                     <span className="text-slate-200 font-medium">{selectedJob.workingHours}</span>
@@ -533,10 +533,10 @@ export default function TrainerFindJobs() {
 
             {/* Job Description */}
             <div>
-              <h4 className="text-xs uppercase font-semibold text-[#2DD4BF] mb-2">
+              <h4 className="text-xs uppercase font-semibold text-[#B76E79] mb-2">
                 Job Overview & Description
               </h4>
-              <p className="text-sm text-slate-300 leading-relaxed bg-[#141D1E] p-4 rounded-xl border border-[#2A3A3A] whitespace-pre-line">
+              <p className="text-sm text-slate-300 leading-relaxed bg-[#FFFFFF] p-4 rounded-xl border border-[#E7DADD] whitespace-pre-line">
                 {selectedJob.description || 'No detailed description provided.'}
               </p>
             </div>
@@ -544,14 +544,14 @@ export default function TrainerFindJobs() {
             {/* Specializations / Expertise */}
             {selectedJob.expertise && selectedJob.expertise.length > 0 && (
               <div>
-                <h4 className="text-xs uppercase font-semibold text-[#2DD4BF] mb-2">
+                <h4 className="text-xs uppercase font-semibold text-[#B76E79] mb-2">
                   Required Specializations & Skills
                 </h4>
-                <div className="flex flex-wrap gap-1.5 bg-[#141D1E] p-3.5 rounded-xl border border-[#2A3A3A]">
+                <div className="flex flex-wrap gap-1.5 bg-[#FFFFFF] p-3.5 rounded-xl border border-[#E7DADD]">
                   {selectedJob.expertise.map((exp: string, idx: number) => (
                     <span
                       key={idx}
-                      className="text-xs bg-[#1B2728] text-slate-200 px-3 py-1 rounded-lg border border-[#2A3A3A]"
+                      className="text-xs bg-[#F3E8E8] text-slate-200 px-3 py-1 rounded-lg border border-[#E7DADD]"
                     >
                       {exp}
                     </span>
@@ -563,10 +563,10 @@ export default function TrainerFindJobs() {
             {/* Key Responsibilities */}
             {Boolean(selectedJob.responsibilities) && (
               <div>
-                <h4 className="text-xs uppercase font-semibold text-[#2DD4BF] mb-2">
+                <h4 className="text-xs uppercase font-semibold text-[#B76E79] mb-2">
                   Key Responsibilities
                 </h4>
-                <div className="bg-[#141D1E] p-4 rounded-xl border border-[#2A3A3A]">
+                <div className="bg-[#FFFFFF] p-4 rounded-xl border border-[#E7DADD]">
                   {renderListOrText(selectedJob.responsibilities)}
                 </div>
               </div>
@@ -576,7 +576,7 @@ export default function TrainerFindJobs() {
             {(Boolean(selectedJob.qualifications) || Boolean(selectedJob.certifications)) && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {Boolean(selectedJob.qualifications) && (
-                  <div className="bg-[#141D1E] p-4 rounded-xl border border-[#2A3A3A]">
+                  <div className="bg-[#FFFFFF] p-4 rounded-xl border border-[#E7DADD]">
                     <h4 className="text-xs uppercase font-semibold text-slate-400 mb-2">
                       Qualifications
                     </h4>
@@ -585,7 +585,7 @@ export default function TrainerFindJobs() {
                 )}
 
                 {Boolean(selectedJob.certifications) && (
-                  <div className="bg-[#141D1E] p-4 rounded-xl border border-[#2A3A3A]">
+                  <div className="bg-[#FFFFFF] p-4 rounded-xl border border-[#E7DADD]">
                     <h4 className="text-xs uppercase font-semibold text-slate-400 mb-2">
                       Certifications
                     </h4>
@@ -604,14 +604,14 @@ export default function TrainerFindJobs() {
             )}
 
             {/* Footer Buttons */}
-            <div className="pt-4 border-t border-[#2A3A3A] flex items-center justify-between">
+            <div className="pt-4 border-t border-[#E7DADD] flex items-center justify-between">
               <span className="text-xs text-slate-400">
                 {selectedJob.vacanciesCount || 1} {Number(selectedJob.vacanciesCount) > 1 ? 'openings available' : 'opening available'}
               </span>
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setSelectedJob(null)}
-                  className="px-4 py-2 bg-[#141D1E] hover:bg-[#1B2728] text-slate-300 rounded-xl text-xs font-medium border border-[#2A3A3A]"
+                  className="px-4 py-2 bg-[#FFFFFF] hover:bg-[#F3E8E8] text-slate-300 rounded-xl text-xs font-medium border border-[#E7DADD]"
                 >
                   Close
                 </button>
@@ -628,7 +628,7 @@ export default function TrainerFindJobs() {
                 ) : (
                   <button
                     onClick={() => openApplyModal(selectedJob)}
-                    className="px-5 py-2 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-black font-semibold rounded-xl text-xs transition-all flex items-center gap-1.5 shadow-md shadow-[#2DD4BF]/20"
+                    className="px-5 py-2 bg-[#B76E79] hover:bg-[#9F5965] text-white font-semibold rounded-xl text-xs transition-all flex items-center gap-1.5 shadow-md shadow-[#B76E79]/20"
                   >
                     <Sparkles className="w-3.5 h-3.5" />
                     Apply for this Job
@@ -643,15 +643,15 @@ export default function TrainerFindJobs() {
       {/* Trainer Application Submission Modal */}
       {showApplyModal && selectedJob && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-[#0E1415] border border-[#2A3A3A] rounded-2xl max-w-2xl w-full p-6 text-white space-y-5 max-h-[92vh] overflow-y-auto shadow-2xl">
-            <div className="flex items-start justify-between border-b border-[#2A3A3A] pb-3">
+          <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-2xl max-w-2xl w-full p-6 text-white space-y-5 max-h-[92vh] overflow-y-auto shadow-2xl">
+            <div className="flex items-start justify-between border-b border-[#E7DADD] pb-3">
               <div>
-                <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-[#2DD4BF]" />
+                <h3 className="text-lg font-bold text-[#292524] flex items-center gap-2">
+                  <Sparkles className="w-5 h-5 text-[#B76E79]" />
                   Apply for {selectedJob.title}
                 </h3>
                 <p className="text-xs text-slate-400 mt-0.5">
-                  Gym: <span className="text-[#2DD4BF] font-semibold">{selectedJob.gymName}</span> •{' '}
+                  Gym: <span className="text-[#B76E79] font-semibold">{selectedJob.gymName}</span> •{' '}
                   {selectedJob.location}
                 </p>
               </div>
@@ -673,7 +673,7 @@ export default function TrainerFindJobs() {
                     required
                     value={form.fullName}
                     onChange={(e) => setForm({ ...form, fullName: e.target.value })}
-                    className="w-full px-3 py-2 bg-[#141D1E] border border-[#2A3A3A] rounded-xl text-white focus:outline-none focus:border-[#2DD4BF]"
+                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-white focus:outline-none focus:border-[#B76E79]"
                   />
                 </div>
                 <div>
@@ -683,7 +683,7 @@ export default function TrainerFindJobs() {
                     required
                     value={form.email}
                     onChange={(e) => setForm({ ...form, email: e.target.value })}
-                    className="w-full px-3 py-2 bg-[#141D1E] border border-[#2A3A3A] rounded-xl text-white focus:outline-none focus:border-[#2DD4BF]"
+                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-white focus:outline-none focus:border-[#B76E79]"
                   />
                 </div>
                 <div>
@@ -693,7 +693,7 @@ export default function TrainerFindJobs() {
                     required
                     value={form.phone}
                     onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                    className="w-full px-3 py-2 bg-[#141D1E] border border-[#2A3A3A] rounded-xl text-white focus:outline-none focus:border-[#2DD4BF]"
+                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-white focus:outline-none focus:border-[#B76E79]"
                   />
                 </div>
               </div>
@@ -708,7 +708,7 @@ export default function TrainerFindJobs() {
                     required
                     value={form.yearsOfExperience}
                     onChange={(e) => setForm({ ...form, yearsOfExperience: e.target.value })}
-                    className="w-full px-3 py-2 bg-[#141D1E] border border-[#2A3A3A] rounded-xl text-white focus:outline-none focus:border-[#2DD4BF]"
+                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-white focus:outline-none focus:border-[#B76E79]"
                   />
                 </div>
                 <div>
@@ -718,7 +718,7 @@ export default function TrainerFindJobs() {
                     placeholder="e.g. ₹40,000 / month"
                     value={form.expectedSalary}
                     onChange={(e) => setForm({ ...form, expectedSalary: e.target.value })}
-                    className="w-full px-3 py-2 bg-[#141D1E] border border-[#2A3A3A] rounded-xl text-white focus:outline-none focus:border-[#2DD4BF]"
+                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-white focus:outline-none focus:border-[#B76E79]"
                   />
                 </div>
                 <div>
@@ -726,7 +726,7 @@ export default function TrainerFindJobs() {
                   <select
                     value={form.availability}
                     onChange={(e) => setForm({ ...form, availability: e.target.value })}
-                    className="w-full px-3 py-2 bg-[#141D1E] border border-[#2A3A3A] rounded-xl text-white focus:outline-none focus:border-[#2DD4BF]"
+                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-white focus:outline-none focus:border-[#B76E79]"
                   >
                     <option value="Immediate">Immediate Joining</option>
                     <option value="15 Days">Within 15 Days</option>
@@ -746,7 +746,7 @@ export default function TrainerFindJobs() {
                     placeholder="e.g. Strength Training, Crossfit, Functional Fitness"
                     value={form.expertise}
                     onChange={(e) => setForm({ ...form, expertise: e.target.value })}
-                    className="w-full px-3 py-2 bg-[#141D1E] border border-[#2A3A3A] rounded-xl text-white focus:outline-none focus:border-[#2DD4BF]"
+                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-white focus:outline-none focus:border-[#B76E79]"
                   />
                 </div>
                 <div>
@@ -758,7 +758,7 @@ export default function TrainerFindJobs() {
                     placeholder="e.g. ACE CPT, CPR/AED, ISSA"
                     value={form.certifications}
                     onChange={(e) => setForm({ ...form, certifications: e.target.value })}
-                    className="w-full px-3 py-2 bg-[#141D1E] border border-[#2A3A3A] rounded-xl text-white focus:outline-none focus:border-[#2DD4BF]"
+                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-white focus:outline-none focus:border-[#B76E79]"
                   />
                 </div>
               </div>
@@ -773,14 +773,14 @@ export default function TrainerFindJobs() {
                   placeholder="e.g. B.P.Ed, Sports Nutrition Diploma"
                   value={form.qualifications}
                   onChange={(e) => setForm({ ...form, qualifications: e.target.value })}
-                  className="w-full px-3 py-2 bg-[#141D1E] border border-[#2A3A3A] rounded-xl text-white focus:outline-none focus:border-[#2DD4BF]"
+                  className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-white focus:outline-none focus:border-[#B76E79]"
                 />
               </div>
 
               {/* Resume File Upload */}
-              <div className="bg-[#141D1E] p-4 rounded-xl border border-dashed border-[#2DD4BF]/40">
+              <div className="bg-[#FFFFFF] p-4 rounded-xl border border-dashed border-[#B76E79]/40">
                 <label className="text-white font-semibold block mb-1 flex items-center gap-2">
-                  <Upload className="w-4 h-4 text-[#2DD4BF]" />
+                  <Upload className="w-4 h-4 text-[#B76E79]" />
                   Upload Resume / CV (PDF, DOC, DOCX up to 10MB) *
                 </label>
                 <input
@@ -792,10 +792,10 @@ export default function TrainerFindJobs() {
                       setResumeFile(e.target.files[0]);
                     }
                   }}
-                  className="w-full text-slate-400 text-xs file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-[#2DD4BF] file:text-black hover:file:bg-[#5EEAD4] cursor-pointer"
+                  className="w-full text-slate-400 text-xs file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-[#B76E79] file:text-black hover:file:bg-[#9F5965] cursor-pointer"
                 />
                 {resumeFile && (
-                  <p className="text-[#2DD4BF] text-[11px] mt-1 font-medium">
+                  <p className="text-[#B76E79] text-[11px] mt-1 font-medium">
                     Selected: {resumeFile.name} ({(resumeFile.size / 1024).toFixed(1)} KB)
                   </p>
                 )}
@@ -810,22 +810,22 @@ export default function TrainerFindJobs() {
                   rows={3}
                   value={form.coverLetter}
                   onChange={(e) => setForm({ ...form, coverLetter: e.target.value })}
-                  className="w-full px-3 py-2 bg-[#141D1E] border border-[#2A3A3A] rounded-xl text-white focus:outline-none focus:border-[#2DD4BF] resize-none"
+                  className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-white focus:outline-none focus:border-[#B76E79] resize-none"
                 />
               </div>
 
-              <div className="pt-3 border-t border-[#2A3A3A] flex items-center justify-end gap-2">
+              <div className="pt-3 border-t border-[#E7DADD] flex items-center justify-end gap-2">
                 <button
                   type="button"
                   onClick={() => setShowApplyModal(false)}
-                  className="px-4 py-2 bg-[#141D1E] hover:bg-[#1B2728] text-slate-300 rounded-xl"
+                  className="px-4 py-2 bg-[#FFFFFF] hover:bg-[#F3E8E8] text-slate-300 rounded-xl"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="px-5 py-2 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-black font-semibold rounded-xl flex items-center gap-1.5 shadow-md shadow-[#2DD4BF]/20"
+                  className="px-5 py-2 bg-[#B76E79] hover:bg-[#9F5965] text-white font-semibold rounded-xl flex items-center gap-1.5 shadow-md shadow-[#B76E79]/20"
                 >
                   {submitting ? 'Submitting Application...' : 'Confirm & Submit Application'}
                 </button>

@@ -6,22 +6,22 @@ import TrainerFinancialsTabs from '../../components/Trainer/TrainerFinancialsTab
 
 const cycleBadge = (cycle: string) => {
   const map: Record<string, string> = {
-    'Per Session': 'bg-[#1B2728] text-[#2DD4BF] border border-[#2A3A3A]',
-    'Weekly': 'bg-[#1B2728] text-[#2DD4BF] border border-[#2A3A3A]',
-    'Monthly': 'bg-[#1B2728] text-[#2DD4BF] border border-[#2A3A3A]',
-    'Custom': 'bg-[#1B2728] text-[#2DD4BF] border border-[#2A3A3A]',
+    'Per Session': 'bg-[#F3E8E8] text-[#B76E79] border border-[#E7DADD]',
+    'Weekly': 'bg-[#F3E8E8] text-[#B76E79] border border-[#E7DADD]',
+    'Monthly': 'bg-[#F3E8E8] text-[#B76E79] border border-[#E7DADD]',
+    'Custom': 'bg-[#F3E8E8] text-[#B76E79] border border-[#E7DADD]',
   };
-  return map[cycle] || 'bg-[#1B2728] text-[#C1D0D0] border border-[#2A3A3A]';
+  return map[cycle] || 'bg-[#F3E8E8] text-[#292524] border border-[#E7DADD]';
 };
 
 const statusBadge = (status: string) => {
   const map: Record<string, string> = {
-    'Active': 'bg-[#1B2728] text-[#2DD4BF] border border-[#2A3A3A]',
+    'Active': 'bg-[#F3E8E8] text-[#B76E79] border border-[#E7DADD]',
     'Pending': 'bg-amber-950/40 text-amber-400 border border-amber-800/50',
     'Rejected': 'bg-red-950/40 text-red-400 border border-red-800/50',
-    'Inactive': 'bg-[#0E1415] text-[#9AAEAE] border border-[#2A3A3A]',
+    'Inactive': 'bg-[#F3E8E8] text-[#57534E] border border-[#E7DADD]',
   };
-  return map[status] || 'bg-[#1B2728] text-[#C1D0D0] border border-[#2A3A3A]';
+  return map[status] || 'bg-[#F3E8E8] text-[#292524] border border-[#E7DADD]';
 };
 
 const TrainerMyAssignedFee = () => {
@@ -45,7 +45,7 @@ const TrainerMyAssignedFee = () => {
     fetchFees();
   }, []);
 
-  if (loading) return <div className="p-8 text-center text-[#9AAEAE]">Loading fee details...</div>;
+  if (loading) return <div className="p-8 text-center text-[#57534E]">Loading fee details...</div>;
 
   const activeFee = fees.find(f => f.status === 'Active');
 
@@ -78,12 +78,12 @@ const TrainerMyAssignedFee = () => {
       <TrainerFinancialsTabs />
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-[#F5FAFA]">My Assigned Fee</h1>
-          <p className="text-sm text-[#9AAEAE]">View the payment configurations set by your Gym Owner.</p>
+          <h1 className="text-2xl font-bold text-[#292524]">My Assigned Fee</h1>
+          <p className="text-sm text-[#57534E]">View the payment configurations set by your Gym Owner.</p>
         </div>
         <Link
           to="/trainer/payments-received"
-          className="flex items-center gap-2 px-4 py-2.5 bg-[#2DD4BF] text-[#06201D] font-bold text-sm font-bold rounded-xl hover:bg-[#5EEAD4] transition-colors shadow-sm"
+          className="flex items-center gap-2 px-4 py-2.5 bg-[#B76E79] text-white font-bold text-sm font-bold rounded-xl hover:bg-[#9F5965] transition-colors shadow-sm"
         >
           <Clock size={16} />
           View Payments Received
@@ -104,9 +104,9 @@ const TrainerMyAssignedFee = () => {
         <>
           {/* Active Configuration */}
           {activeFee ? (
-            <div className="bg-[#141D1E] rounded-xl shadow-sm border border-[#2A3A3A] overflow-hidden">
-              <div className="p-6 border-b border-[#2A3A3A] bg-[#0E1415] flex items-center justify-between">
-                <h2 className="text-lg font-bold text-[#F5FAFA] flex items-center gap-2">
+            <div className="bg-[#FFFFFF] rounded-xl shadow-sm border border-[#E7DADD] overflow-hidden">
+              <div className="p-6 border-b border-[#E7DADD] bg-[#F3E8E8] flex items-center justify-between">
+                <h2 className="text-lg font-bold text-[#292524] flex items-center gap-2">
                   <CheckCircle className="w-5 h-5 text-green-500" /> Active Configuration
                 </h2>
                 <span className={`px-2.5 py-1 text-xs font-semibold rounded-lg ${cycleBadge(activeFee.billingCycle)}`}>
@@ -116,33 +116,33 @@ const TrainerMyAssignedFee = () => {
 
               <div className="p-6 grid grid-cols-2 md:grid-cols-5 gap-6">
                 <div>
-                  <p className="text-sm font-medium text-[#9AAEAE]">Net Payable Amount</p>
-                  <p className="text-2xl font-black text-[#2DD4BF] flex items-center mt-1">
-                    <IndianRupee className="w-5 h-5 mr-0.5 text-[#2DD4BF]" />
+                  <p className="text-sm font-medium text-[#57534E]">Net Payable Amount</p>
+                  <p className="text-2xl font-black text-[#B76E79] flex items-center mt-1">
+                    <IndianRupee className="w-5 h-5 mr-0.5 text-[#B76E79]" />
                     {getNetPayable(activeFee).toLocaleString('en-IN')}
                   </p>
-                  <span className="text-[11px] text-[#9AAEAE]">Exact disbursement</span>
+                  <span className="text-[11px] text-[#57534E]">Exact disbursement</span>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-[#9AAEAE]">Base Fee</p>
-                  <p className="text-xl font-bold text-[#F5FAFA] mt-1">
+                  <p className="text-sm font-medium text-[#57534E]">Base Fee</p>
+                  <p className="text-xl font-bold text-[#292524] mt-1">
                     ₹{Number(activeFee.feeAmount).toLocaleString('en-IN')}
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-[#9AAEAE]">Training Type</p>
-                  <p className="text-[#F5FAFA] font-medium mt-1">{activeFee.trainingType}</p>
+                  <p className="text-sm font-medium text-[#57534E]">Training Type</p>
+                  <p className="text-[#292524] font-medium mt-1">{activeFee.trainingType}</p>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-[#9AAEAE]">Effective From</p>
-                  <p className="text-[#F5FAFA] mt-1">{new Date(activeFee.effectiveFrom).toLocaleDateString()}</p>
+                  <p className="text-sm font-medium text-[#57534E]">Effective From</p>
+                  <p className="text-[#292524] mt-1">{new Date(activeFee.effectiveFrom).toLocaleDateString()}</p>
                 </div>
               </div>
 
               {activeFee.notes && (
-                <div className="px-6 pb-6 border-t border-[#2A3A3A] pt-4">
-                  <p className="text-sm font-medium text-[#9AAEAE]">Notes from Owner</p>
-                  <p className="text-sm text-[#C1D0D0] bg-[#0E1415] p-3 rounded-lg mt-1 italic border border-[#2A3A3A]">
+                <div className="px-6 pb-6 border-t border-[#E7DADD] pt-4">
+                  <p className="text-sm font-medium text-[#57534E]">Notes from Owner</p>
+                  <p className="text-sm text-[#292524] bg-[#F3E8E8] p-3 rounded-lg mt-1 italic border border-[#E7DADD]">
                     "{activeFee.notes}"
                   </p>
                 </div>
@@ -157,48 +157,48 @@ const TrainerMyAssignedFee = () => {
           )}
 
           {/* Full Fee History */}
-          <div className="bg-[#141D1E] rounded-xl shadow-sm border border-[#2A3A3A] overflow-hidden">
-            <div className="p-6 border-b border-[#2A3A3A] bg-[#0E1415] flex items-center justify-between">
-              <h2 className="text-lg font-bold text-[#F5FAFA] flex items-center gap-2">
-                <History className="w-5 h-5 text-[#9AAEAE]" /> All Assigned Fees
+          <div className="bg-[#FFFFFF] rounded-xl shadow-sm border border-[#E7DADD] overflow-hidden">
+            <div className="p-6 border-b border-[#E7DADD] bg-[#F3E8E8] flex items-center justify-between">
+              <h2 className="text-lg font-bold text-[#292524] flex items-center gap-2">
+                <History className="w-5 h-5 text-[#57534E]" /> All Assigned Fees
               </h2>
-              <span className="text-xs font-semibold text-[#9AAEAE]">{fees.length} record{fees.length !== 1 ? 's' : ''}</span>
+              <span className="text-xs font-semibold text-[#57534E]">{fees.length} record{fees.length !== 1 ? 's' : ''}</span>
             </div>
 
-            <div className="divide-y divide-[#2A3A3A]">
+            <div className="divide-y divide-[#E7DADD]">
               {sortedFees.map((f, index) => (
                 <div
                   key={f._id}
                   className={`p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 transition-colors ${
-                    f.status === 'Active' ? 'bg-[#141D1E] hover:bg-[#1B2728]' : 'bg-[#0E1415] hover:bg-[#141D1E]'
+                    f.status === 'Active' ? 'bg-[#FFFFFF] hover:bg-[#F3E8E8]' : 'bg-[#F3E8E8] hover:bg-[#FFFFFF]'
                   }`}
                 >
                   <div className="flex items-center gap-4">
                     {/* Order Number */}
                     <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${
-                      f.status === 'Active' ? 'bg-[#2DD4BF] text-[#06201D]' :
-                      f.status === 'Pending' ? 'bg-amber-500 text-[#06201D]' :
-                      'bg-[#1B2728] text-[#9AAEAE]'
+                      f.status === 'Active' ? 'bg-[#B76E79] text-white' :
+                      f.status === 'Pending' ? 'bg-amber-500 text-[#FFFFFF]' :
+                      'bg-[#F3E8E8] text-[#57534E]'
                     }`}>
                       {index + 1}
                     </div>
 
                     {/* Icon */}
                     <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${
-                      f.status === 'Active' ? 'bg-[#2DD4BF]/10 border border-[#2DD4BF]/20' : 'bg-[#0E1415] border border-[#2A3A3A]'
+                      f.status === 'Active' ? 'bg-[#B76E79]/10 border border-[#B76E79]/20' : 'bg-[#F3E8E8] border border-[#E7DADD]'
                     }`}>
-                      <IndianRupee className={`w-5 h-5 ${f.status === 'Active' ? 'text-[#2DD4BF]' : 'text-[#9AAEAE]'}`} />
+                      <IndianRupee className={`w-5 h-5 ${f.status === 'Active' ? 'text-[#B76E79]' : 'text-[#57534E]'}`} />
                     </div>
 
                     {/* Info */}
                     <div>
                       <div className="flex items-center gap-2">
-                        <p className="text-sm font-semibold text-[#2DD4BF]">{f.trainingType}</p>
+                        <p className="text-sm font-semibold text-[#B76E79]">{f.trainingType}</p>
                         {f.status === 'Active' && (
-                          <span className="text-[10px] font-bold text-[#2DD4BF] bg-[#2DD4BF]/10 border border-[#2DD4BF]/30 px-2 py-0.5 rounded-full uppercase tracking-wide">Current</span>
+                          <span className="text-[10px] font-bold text-[#B76E79] bg-[#B76E79]/10 border border-[#B76E79]/30 px-2 py-0.5 rounded-full uppercase tracking-wide">Current</span>
                         )}
                       </div>
-                      <p className="text-xs text-[#9AAEAE] mt-0.5">
+                      <p className="text-xs text-[#57534E] mt-0.5">
                         {new Date(f.effectiveFrom).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
                         {f.effectiveUntil && ` – ${new Date(f.effectiveUntil).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}`}
                       </p>
@@ -207,10 +207,10 @@ const TrainerMyAssignedFee = () => {
 
                   <div className="flex items-center gap-2 ml-auto flex-wrap justify-end">
                     <div className="text-right">
-                      <span className="text-base font-black text-[#2DD4BF] block">
+                      <span className="text-base font-black text-[#B76E79] block">
                         ₹{getNetPayable(f).toLocaleString('en-IN')}
                       </span>
-                      <span className="text-[11px] text-[#9AAEAE] font-medium block">
+                      <span className="text-[11px] text-[#57534E] font-medium block">
                           Net Payable
                         </span>
                     </div>
@@ -222,7 +222,7 @@ const TrainerMyAssignedFee = () => {
                     </span>
                     <button
                       onClick={() => setSelectedFee(f)}
-                      className="px-3.5 py-1.5 text-xs font-semibold bg-[#0E1415] border border-[#2A3A3A] text-[#2DD4BF] hover:bg-[#2DD4BF] hover:text-[#06201D] font-bold rounded-xl transition-all whitespace-nowrap shadow-xs cursor-pointer"
+                      className="px-3.5 py-1.5 text-xs font-semibold bg-[#F3E8E8] border border-[#E7DADD] text-[#B76E79] hover:bg-[#B76E79] hover:text-[#FFFFFF] font-bold rounded-xl transition-all whitespace-nowrap shadow-xs cursor-pointer"
                     >
                       View Details
                     </button>
@@ -237,25 +237,25 @@ const TrainerMyAssignedFee = () => {
       {/* Fee Details Modal */}
       {selectedFee && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-[#141D1E] rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden my-auto max-h-[85vh] flex flex-col border border-[#2A3A3A]">
-            <div className="flex items-center justify-between p-4 sm:p-5 border-b border-[#2A3A3A] bg-[#0E1415] shrink-0">
-              <h3 className="font-bold text-[#F5FAFA] text-base">Assigned Fee Details</h3>
+          <div className="bg-[#FFFFFF] rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden my-auto max-h-[85vh] flex flex-col border border-[#E7DADD]">
+            <div className="flex items-center justify-between p-4 sm:p-5 border-b border-[#E7DADD] bg-[#F3E8E8] shrink-0">
+              <h3 className="font-bold text-[#292524] text-base">Assigned Fee Details</h3>
               <button
                 onClick={() => setSelectedFee(null)}
-                className="text-[#9AAEAE] hover:text-[#FFFFFF] p-1.5 rounded-lg hover:bg-slate-200 transition-colors"
+                className="text-[#57534E] hover:text-[#FFFFFF] p-1.5 rounded-lg hover:bg-slate-200 transition-colors"
               >
                 <XCircle size={20} />
               </button>
             </div>
 
             <div className="p-5 sm:p-6 space-y-4 overflow-y-auto flex-1 custom-scrollbar">
-              <div className="bg-[#1B2728] p-4 rounded-xl border border-[#2A3A3A]">
+              <div className="bg-[#F3E8E8] p-4 rounded-xl border border-[#E7DADD]">
                 <div className="flex justify-between items-center">
-                  <span className="text-[#2DD4BF] text-sm font-semibold">Exact Net Payable</span>
-                  <span className="text-2xl font-black text-[#2DD4BF]">₹{getNetPayable(selectedFee).toLocaleString('en-IN')}</span>
+                  <span className="text-[#B76E79] text-sm font-semibold">Exact Net Payable</span>
+                  <span className="text-2xl font-black text-[#B76E79]">₹{getNetPayable(selectedFee).toLocaleString('en-IN')}</span>
                 </div>
                 {selectedFee.commissionValue !== undefined && Number(selectedFee.commissionValue) > 0 && (
-                  <div className="mt-2 pt-2 border-t border-[#2A3A3A]/60 flex justify-between text-xs text-[#2DD4BF] font-medium">
+                  <div className="mt-2 pt-2 border-t border-[#E7DADD]/60 flex justify-between text-xs text-[#B76E79] font-medium">
                     <span>Base Fee: ₹{Number(selectedFee.feeAmount).toLocaleString('en-IN')}</span>
                     <span>
                       Commission: {selectedFee.commissionType === 'Percentage' ? `${selectedFee.commissionValue}%` : `₹${selectedFee.commissionValue}`} (−₹{(Number(selectedFee.feeAmount) - getNetPayable(selectedFee)).toLocaleString('en-IN')})
@@ -265,22 +265,22 @@ const TrainerMyAssignedFee = () => {
               </div>
 
               {/* Contiguous details grid touching one by one */}
-              <div className="border border-[#2A3A3A] rounded-xl overflow-hidden divide-y divide-[#2A3A3A] bg-[#141D1E] shadow-sm">
-                <div className="grid grid-cols-2 divide-x divide-[#2A3A3A]">
-                  <div className="p-3 bg-[#141D1E]">
-                    <p className="text-[#9AAEAE] text-[11px] font-bold uppercase tracking-wider mb-0.5">Training Type</p>
-                    <p className="font-semibold text-sm text-[#F5FAFA]">{selectedFee.trainingType || '-'}</p>
+              <div className="border border-[#E7DADD] rounded-xl overflow-hidden divide-y divide-[#E7DADD] bg-[#FFFFFF] shadow-sm">
+                <div className="grid grid-cols-2 divide-x divide-[#E7DADD]">
+                  <div className="p-3 bg-[#FFFFFF]">
+                    <p className="text-[#57534E] text-[11px] font-bold uppercase tracking-wider mb-0.5">Training Type</p>
+                    <p className="font-semibold text-sm text-[#292524]">{selectedFee.trainingType || '-'}</p>
                   </div>
-                  <div className="p-3 bg-[#141D1E]">
-                    <p className="text-[#9AAEAE] text-[11px] font-bold uppercase tracking-wider mb-0.5">Billing Cycle</p>
-                    <p className="font-semibold text-sm text-[#F5FAFA]">{selectedFee.billingCycle || '-'}</p>
+                  <div className="p-3 bg-[#FFFFFF]">
+                    <p className="text-[#57534E] text-[11px] font-bold uppercase tracking-wider mb-0.5">Billing Cycle</p>
+                    <p className="font-semibold text-sm text-[#292524]">{selectedFee.billingCycle || '-'}</p>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 divide-x divide-[#2A3A3A]">
-                  <div className="p-3 bg-[#141D1E]">
-                    <p className="text-[#9AAEAE] text-[11px] font-bold uppercase tracking-wider mb-0.5">Commission</p>
-                    <p className="font-semibold text-sm text-[#F5FAFA]">
+                <div className="grid grid-cols-2 divide-x divide-[#E7DADD]">
+                  <div className="p-3 bg-[#FFFFFF]">
+                    <p className="text-[#57534E] text-[11px] font-bold uppercase tracking-wider mb-0.5">Commission</p>
+                    <p className="font-semibold text-sm text-[#292524]">
                       {selectedFee.commissionValue !== undefined && Number(selectedFee.commissionValue) > 0
                         ? selectedFee.commissionType === 'Percentage'
                           ? `${selectedFee.commissionValue}%`
@@ -288,31 +288,31 @@ const TrainerMyAssignedFee = () => {
                         : 'No Commission'}
                     </p>
                   </div>
-                  <div className="p-3 bg-[#141D1E]">
-                    <p className="text-[#9AAEAE] text-[11px] font-bold uppercase tracking-wider mb-0.5">Commission Type</p>
-                    <p className="font-semibold text-sm text-[#F5FAFA]">{selectedFee.commissionType || 'Percentage'}</p>
+                  <div className="p-3 bg-[#FFFFFF]">
+                    <p className="text-[#57534E] text-[11px] font-bold uppercase tracking-wider mb-0.5">Commission Type</p>
+                    <p className="font-semibold text-sm text-[#292524]">{selectedFee.commissionType || 'Percentage'}</p>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 divide-x divide-[#2A3A3A]">
-                  <div className="p-3 bg-[#141D1E]">
-                    <p className="text-[#9AAEAE] text-[11px] font-bold uppercase tracking-wider mb-0.5">Status</p>
+                <div className="grid grid-cols-2 divide-x divide-[#E7DADD]">
+                  <div className="p-3 bg-[#FFFFFF]">
+                    <p className="text-[#57534E] text-[11px] font-bold uppercase tracking-wider mb-0.5">Status</p>
                     <span className={`inline-flex px-2 py-0.5 rounded-lg text-xs font-semibold ${statusBadge(selectedFee.status)}`}>
                       {selectedFee.status}
                     </span>
                   </div>
-                  <div className="p-3 bg-[#141D1E]">
-                    <p className="text-[#9AAEAE] text-[11px] font-bold uppercase tracking-wider mb-0.5">Effective From</p>
-                    <p className="font-semibold text-sm text-[#F5FAFA]">
+                  <div className="p-3 bg-[#FFFFFF]">
+                    <p className="text-[#57534E] text-[11px] font-bold uppercase tracking-wider mb-0.5">Effective From</p>
+                    <p className="font-semibold text-sm text-[#292524]">
                       {selectedFee.effectiveFrom ? new Date(selectedFee.effectiveFrom).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '-'}
                     </p>
                   </div>
                 </div>
 
                 {selectedFee.effectiveUntil && (
-                  <div className="p-3 bg-[#141D1E]">
-                    <p className="text-[#9AAEAE] text-[11px] font-bold uppercase tracking-wider mb-0.5">Effective Until</p>
-                    <p className="font-semibold text-sm text-[#F5FAFA]">
+                  <div className="p-3 bg-[#FFFFFF]">
+                    <p className="text-[#57534E] text-[11px] font-bold uppercase tracking-wider mb-0.5">Effective Until</p>
+                    <p className="font-semibold text-sm text-[#292524]">
                       {new Date(selectedFee.effectiveUntil).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
                     </p>
                   </div>
@@ -320,17 +320,17 @@ const TrainerMyAssignedFee = () => {
               </div>
 
               {selectedFee.notes && (
-                <div className="p-3.5 bg-[#0E1415] border border-[#2A3A3A] rounded-xl">
-                  <p className="text-[#9AAEAE] text-xs font-semibold mb-1">Notes from Gym Owner</p>
-                  <p className="text-xs text-[#C1D0D0] italic">{selectedFee.notes}</p>
+                <div className="p-3.5 bg-[#F3E8E8] border border-[#E7DADD] rounded-xl">
+                  <p className="text-[#57534E] text-xs font-semibold mb-1">Notes from Gym Owner</p>
+                  <p className="text-xs text-[#292524] italic">{selectedFee.notes}</p>
                 </div>
               )}
             </div>
 
-            <div className="p-4 border-t border-[#2A3A3A] bg-[#0E1415] flex justify-end shrink-0">
+            <div className="p-4 border-t border-[#E7DADD] bg-[#F3E8E8] flex justify-end shrink-0">
               <button
                 onClick={() => setSelectedFee(null)}
-                className="px-5 py-2 bg-[#2DD4BF] text-[#06201D] font-bold rounded-xl text-xs font-bold hover:bg-[#2DD4BF]/90 transition-colors shadow-sm"
+                className="px-5 py-2 bg-[#B76E79] text-white font-bold rounded-xl text-xs font-bold hover:bg-[#B76E79]/90 transition-colors shadow-sm"
               >
                 Close
               </button>

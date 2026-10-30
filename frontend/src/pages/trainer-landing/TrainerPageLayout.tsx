@@ -45,27 +45,27 @@ export const TrainerPageLayout: React.FC<TrainerPageLayoutProps> = ({ children }
   };
 
   return (
-    <div className="min-h-screen bg-[#080B0C] text-[#F5FAFA] flex flex-col font-sans selection:bg-[#2DD4BF] selection:text-[#06201D]">
+    <div className="min-h-screen bg-[#FFFFFF] text-[#292524] flex flex-col font-sans selection:bg-[#B76E79] selection:text-[#FFFFFF]">
       {/* Header Navigation */}
       <header
         className={`sticky top-0 z-50 w-full transition-all duration-200 border-b ${
           scrolled
-            ? 'bg-[#080B0C]/95 backdrop-blur-md border-[#2A3A3A] shadow-xl'
-            : 'bg-[#080B0C] border-[#2A3A3A]/60'
+            ? 'bg-[#FFFFFF]/95 backdrop-blur-md border-[#E7DADD] shadow-xl'
+            : 'bg-[#FFFFFF] border-[#E7DADD]/60'
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
           {/* Logo */}
           <div className="flex items-center gap-3 shrink-0">
             <Link to="/" className="flex items-center gap-2.5 group">
-              <div className="w-10 h-10 bg-gradient-to-br from-[#2DD4BF] to-[#5EEAD4] rounded-xl flex items-center justify-center shadow-lg shadow-teal-500/10 group-hover:scale-105 transition-transform">
-                <Activity className="text-[#06201D]" size={22} strokeWidth={2.5} />
+              <div className="w-10 h-10 bg-gradient-to-br from-[#B76E79] to-[#9F5965] rounded-xl flex items-center justify-center shadow-lg shadow-[#B76E79]/15 group-hover:scale-105 transition-transform">
+                <Activity className="text-[#FFFFFF]" size={22} strokeWidth={2.5} />
               </div>
               <div>
-                <span className="text-xl sm:text-2xl font-bold tracking-tight text-[#F5FAFA] group-hover:text-[#2DD4BF] transition-colors">
+                <span className="text-xl sm:text-2xl font-bold tracking-tight text-[#292524] group-hover:text-[#B76E79] transition-colors">
                   Gymora
                 </span>
-                <span className="hidden md:inline-block ml-2 px-2 py-0.5 rounded text-[10px] font-bold bg-[#2DD4BF]/10 text-[#2DD4BF] uppercase tracking-wider border border-[#2DD4BF]/25">
+                <span className="hidden md:inline-block ml-2 px-2 py-0.5 rounded text-[10px] font-bold bg-[#B76E79]/10 text-[#B76E79] uppercase tracking-wider border border-[#B76E79]/25">
                   Trainer Network
                 </span>
               </div>
@@ -76,14 +76,14 @@ export const TrainerPageLayout: React.FC<TrainerPageLayoutProps> = ({ children }
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             <Link
               to="/"
-              className="px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#06201D] bg-[#2DD4BF] hover:bg-[#5EEAD4] transition-all shadow-md shadow-teal-500/20 flex items-center gap-1.5 shrink-0 whitespace-nowrap"
+              className="px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#FFFFFF] bg-[#B76E79] hover:bg-[#9F5965] transition-all shadow-md shadow-[#B76E79]/20 flex items-center gap-1.5 shrink-0 whitespace-nowrap"
             >
               <ArrowLeft size={16} />
               <span>Back</span>
             </Link>
             <Link
               to="/login?portal=trainer"
-              className="px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#06201D] bg-[#2DD4BF] hover:bg-[#5EEAD4] transition-all shadow-md shadow-teal-500/20 flex items-center gap-1.5 shrink-0 whitespace-nowrap"
+              className="px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#FFFFFF] bg-[#B76E79] hover:bg-[#9F5965] transition-all shadow-md shadow-[#B76E79]/20 flex items-center gap-1.5 shrink-0 whitespace-nowrap"
             >
               <span>Login</span>
             </Link>
@@ -95,28 +95,28 @@ export const TrainerPageLayout: React.FC<TrainerPageLayoutProps> = ({ children }
       <main className="flex-1">{children}</main>
 
       {/* Professional 4-Column Footer */}
-      <footer className="border-t border-[#2A3A3A] bg-[#0E1415] pt-16 pb-12 mt-auto">
+      <footer className="border-t border-[#E7DADD] bg-[#F3E8E8] pt-16 pb-12 mt-auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-8 mb-12">
             {/* Brand Information */}
             <div className="lg:col-span-1">
               <Link to="/trainers" className="flex items-center gap-2.5 mb-4 group">
-                <div className="w-9 h-9 bg-gradient-to-br from-[#2DD4BF] to-[#5EEAD4] rounded-xl flex items-center justify-center shadow-lg shadow-teal-500/10">
-                  <Activity className="text-[#06201D]" size={20} strokeWidth={2.5} />
+                <div className="w-9 h-9 bg-gradient-to-br from-[#B76E79] to-[#9F5965] rounded-xl flex items-center justify-center shadow-lg shadow-[#B76E79]/15">
+                  <Activity className="text-[#FFFFFF]" size={20} strokeWidth={2.5} />
                 </div>
-                <span className="text-xl font-bold tracking-tight text-[#F5FAFA] group-hover:text-[#2DD4BF] transition-colors">
+                <span className="text-xl font-bold tracking-tight text-[#292524] group-hover:text-[#B76E79] transition-colors">
                   Gymora
                 </span>
               </Link>
-              <p className="text-xs text-[#9AAEAE] leading-relaxed mb-4">
+              <p className="text-xs text-[#57534E] leading-relaxed mb-4">
                 The premier career network and management platform for verified fitness professionals, certified personal trainers, and high-performance gyms.
               </p>
-              <div className="flex items-center gap-3 text-[#9AAEAE]">
+              <div className="flex items-center gap-3 text-[#57534E]">
                 <a
                   href="https://instagram.com"
                   target="_blank"
                   rel="noreferrer"
-                  className="w-8 h-8 rounded-lg bg-[#141D1E] border border-[#2A3A3A] flex items-center justify-center hover:text-[#2DD4BF] hover:border-[#2DD4BF]/40 transition-colors"
+                  className="w-8 h-8 rounded-lg bg-[#FFFFFF] border border-[#E7DADD] flex items-center justify-center hover:text-[#B76E79] hover:border-[#B76E79]/40 transition-colors"
                   aria-label="Instagram"
                 >
                   <FaInstagram size={14} />
@@ -125,7 +125,7 @@ export const TrainerPageLayout: React.FC<TrainerPageLayoutProps> = ({ children }
                   href="https://twitter.com"
                   target="_blank"
                   rel="noreferrer"
-                  className="w-8 h-8 rounded-lg bg-[#141D1E] border border-[#2A3A3A] flex items-center justify-center hover:text-[#2DD4BF] hover:border-[#2DD4BF]/40 transition-colors"
+                  className="w-8 h-8 rounded-lg bg-[#FFFFFF] border border-[#E7DADD] flex items-center justify-center hover:text-[#B76E79] hover:border-[#B76E79]/40 transition-colors"
                   aria-label="Twitter"
                 >
                   <FaTwitter size={14} />
@@ -134,7 +134,7 @@ export const TrainerPageLayout: React.FC<TrainerPageLayoutProps> = ({ children }
                   href="https://youtube.com"
                   target="_blank"
                   rel="noreferrer"
-                  className="w-8 h-8 rounded-lg bg-[#141D1E] border border-[#2A3A3A] flex items-center justify-center hover:text-[#2DD4BF] hover:border-[#2DD4BF]/40 transition-colors"
+                  className="w-8 h-8 rounded-lg bg-[#FFFFFF] border border-[#E7DADD] flex items-center justify-center hover:text-[#B76E79] hover:border-[#B76E79]/40 transition-colors"
                   aria-label="YouTube"
                 >
                   <FaYoutube size={14} />
@@ -143,7 +143,7 @@ export const TrainerPageLayout: React.FC<TrainerPageLayoutProps> = ({ children }
                   href="https://linkedin.com"
                   target="_blank"
                   rel="noreferrer"
-                  className="w-8 h-8 rounded-lg bg-[#141D1E] border border-[#2A3A3A] flex items-center justify-center hover:text-[#2DD4BF] hover:border-[#2DD4BF]/40 transition-colors"
+                  className="w-8 h-8 rounded-lg bg-[#FFFFFF] border border-[#E7DADD] flex items-center justify-center hover:text-[#B76E79] hover:border-[#B76E79]/40 transition-colors"
                   aria-label="LinkedIn"
                 >
                   <FaLinkedin size={14} />
@@ -153,28 +153,28 @@ export const TrainerPageLayout: React.FC<TrainerPageLayoutProps> = ({ children }
 
             {/* Column 1 — About */}
             <div>
-              <h3 className="text-xs font-bold text-[#F5FAFA] uppercase tracking-wider mb-4 flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#2DD4BF]"></span>
+              <h3 className="text-xs font-bold text-[#292524] uppercase tracking-wider mb-4 flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#B76E79]"></span>
                 About
               </h3>
-              <ul className="space-y-2.5 text-xs text-[#9AAEAE]">
+              <ul className="space-y-2.5 text-xs text-[#57534E]">
                 <li>
-                  <Link to="/trainers/about" className="hover:text-[#2DD4BF] transition-colors block">
+                  <Link to="/trainers/about" className="hover:text-[#B76E79] transition-colors block">
                     About Us
                   </Link>
                 </li>
                 <li>
-                  <Link to="/trainers/how-it-works" className="hover:text-[#2DD4BF] transition-colors block">
+                  <Link to="/trainers/how-it-works" className="hover:text-[#B76E79] transition-colors block">
                     How It Works
                   </Link>
                 </li>
                 <li>
-                  <Link to="/trainers/benefits" className="hover:text-[#2DD4BF] transition-colors block">
+                  <Link to="/trainers/benefits" className="hover:text-[#B76E79] transition-colors block">
                     Trainer Benefits
                   </Link>
                 </li>
                 <li>
-                  <Link to="/trainers/contact" className="hover:text-[#2DD4BF] transition-colors block">
+                  <Link to="/trainers/contact" className="hover:text-[#B76E79] transition-colors block">
                     Contact Us
                   </Link>
                 </li>
@@ -183,24 +183,19 @@ export const TrainerPageLayout: React.FC<TrainerPageLayoutProps> = ({ children }
 
             {/* Column 2 — Opportunities */}
             <div>
-              <h3 className="text-xs font-bold text-[#F5FAFA] uppercase tracking-wider mb-4 flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#2DD4BF]"></span>
+              <h3 className="text-xs font-bold text-[#292524] uppercase tracking-wider mb-4 flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#B76E79]"></span>
                 Opportunities
               </h3>
-              <ul className="space-y-2.5 text-xs text-[#9AAEAE]">
+              <ul className="space-y-2.5 text-xs text-[#57534E]">
                 <li>
-                  <Link to="/careers" className="hover:text-[#2DD4BF] transition-colors block">
+                  <Link to="/careers" className="hover:text-[#B76E79] transition-colors block">
                     Explore Opportunities
                   </Link>
                 </li>
                 <li>
-                  <Link to="/login?portal=trainer" className="hover:text-[#2DD4BF] transition-colors block">
+                  <Link to="/login?portal=trainer" className="hover:text-[#B76E79] transition-colors block">
                     Trainer Login
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/trainers/directory" className="hover:text-[#2DD4BF] transition-colors block">
-                    Trainer Directory
                   </Link>
                 </li>
               </ul>
@@ -208,29 +203,24 @@ export const TrainerPageLayout: React.FC<TrainerPageLayoutProps> = ({ children }
 
             {/* Column 3 — Resources */}
             <div>
-              <h3 className="text-xs font-bold text-[#F5FAFA] uppercase tracking-wider mb-4 flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#2DD4BF]"></span>
+              <h3 className="text-xs font-bold text-[#292524] uppercase tracking-wider mb-4 flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#B76E79]"></span>
                 Resources
               </h3>
-              <ul className="space-y-2.5 text-xs text-[#9AAEAE]">
+              <ul className="space-y-2.5 text-xs text-[#57534E]">
                 <li>
-                  <Link to="/trainers/faqs" className="hover:text-[#2DD4BF] transition-colors block">
+                  <Link to="/trainers/faqs" className="hover:text-[#B76E79] transition-colors block">
                     FAQs
                   </Link>
                 </li>
                 <li>
-                  <Link to="/trainers/guidelines" className="hover:text-[#2DD4BF] transition-colors block">
+                  <Link to="/trainers/guidelines" className="hover:text-[#B76E79] transition-colors block">
                     Trainer Guidelines
                   </Link>
                 </li>
                 <li>
-                  <Link to="/trainers/support" className="hover:text-[#2DD4BF] transition-colors block">
+                  <Link to="/trainers/support" className="hover:text-[#B76E79] transition-colors block">
                     Help & Support
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/portal/customer" className="hover:text-[#2DD4BF] transition-colors block">
-                    Customer Portal
                   </Link>
                 </li>
               </ul>
@@ -238,28 +228,28 @@ export const TrainerPageLayout: React.FC<TrainerPageLayoutProps> = ({ children }
 
             {/* Column 4 — Legal */}
             <div>
-              <h3 className="text-xs font-bold text-[#F5FAFA] uppercase tracking-wider mb-4 flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#2DD4BF]"></span>
+              <h3 className="text-xs font-bold text-[#292524] uppercase tracking-wider mb-4 flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#B76E79]"></span>
                 Legal
               </h3>
-              <ul className="space-y-2.5 text-xs text-[#9AAEAE]">
+              <ul className="space-y-2.5 text-xs text-[#57534E]">
                 <li>
-                  <Link to="/trainers/terms" className="hover:text-[#2DD4BF] transition-colors block">
+                  <Link to="/trainers/terms" className="hover:text-[#B76E79] transition-colors block">
                     Terms & Conditions
                   </Link>
                 </li>
                 <li>
-                  <Link to="/trainers/privacy" className="hover:text-[#2DD4BF] transition-colors block">
+                  <Link to="/trainers/privacy" className="hover:text-[#B76E79] transition-colors block">
                     Privacy Policy
                   </Link>
                 </li>
                 <li>
-                  <Link to="/trainers/cookies" className="hover:text-[#2DD4BF] transition-colors block">
+                  <Link to="/trainers/cookies" className="hover:text-[#B76E79] transition-colors block">
                     Cookie Policy
                   </Link>
                 </li>
                 <li>
-                  <Link to="/trainers/refund-policy" className="hover:text-[#2DD4BF] transition-colors block">
+                  <Link to="/trainers/refund-policy" className="hover:text-[#B76E79] transition-colors block">
                     Refund & Cancellation Policy
                   </Link>
                 </li>
@@ -268,17 +258,17 @@ export const TrainerPageLayout: React.FC<TrainerPageLayoutProps> = ({ children }
           </div>
 
           {/* Bottom Bar */}
-          <div className="pt-8 border-t border-[#2A3A3A] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#9AAEAE]">
+          <div className="pt-8 border-t border-[#E7DADD] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#57534E]">
             <div className="flex flex-wrap items-center gap-3">
               <span>© {new Date().getFullYear()} Gymora Platform. All rights reserved.</span>
               <span className="hidden sm:inline">•</span>
-              <span className="text-[#2DD4BF]">Dedicated Trainer Ecosystem</span>
+              <span className="text-[#B76E79]">Dedicated Trainer Ecosystem</span>
             </div>
 
             <div className="flex items-center gap-4">
               <Link
                 to="/"
-                className="hover:text-[#2DD4BF] transition-colors flex items-center gap-1 font-medium"
+                className="hover:text-[#B76E79] transition-colors flex items-center gap-1 font-medium"
               >
                 <span>Back</span>
                 <ChevronRight size={13} />
@@ -286,7 +276,7 @@ export const TrainerPageLayout: React.FC<TrainerPageLayoutProps> = ({ children }
 
               <button
                 onClick={scrollToTop}
-                className="w-8 h-8 rounded-lg bg-[#141D1E] border border-[#2A3A3A] hover:border-[#2DD4BF] text-[#9AAEAE] hover:text-[#2DD4BF] flex items-center justify-center transition-all cursor-pointer"
+                className="w-8 h-8 rounded-lg bg-[#FFFFFF] border border-[#E7DADD] hover:border-[#B76E79] text-[#57534E] hover:text-[#B76E79] flex items-center justify-center transition-all cursor-pointer"
                 title="Scroll to Top"
                 aria-label="Scroll to top"
               >

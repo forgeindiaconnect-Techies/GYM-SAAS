@@ -17,13 +17,13 @@ export const AddMemberSelectorModal: React.FC<Props> = ({ onClose, onSelectNew }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-      <div className="bg-[#FFFFFF] rounded-2xl max-w-lg w-full shadow-2xl border border-[#2A3A3A] overflow-hidden">
-        <div className="p-6 border-b border-[#2A3A3A] flex justify-between items-center bg-[#0E1415]">
+      <div className="bg-[#FFFFFF] rounded-2xl max-w-lg w-full shadow-2xl border border-[#E7DADD] overflow-hidden">
+        <div className="p-6 border-b border-[#E7DADD] flex justify-between items-center bg-[#F3E8E8]">
           <div>
-            <h2 className="text-xl font-bold text-[#F5FAFA]">Add Member</h2>
-            <p className="text-sm text-[#9AAEAE] mt-1">Select the type of member you want to add.</p>
+            <h2 className="text-xl font-bold text-[#292524]">Add Member</h2>
+            <p className="text-sm text-[#57534E] mt-1">Select the type of member you want to add.</p>
           </div>
-          <button onClick={onClose} className="text-[#9AAEAE] hover:text-[#FFFFFF] transition-colors p-2 rounded-lg hover:bg-[#1B2728]">
+          <button onClick={onClose} className="text-[#57534E] hover:text-[#FFFFFF] transition-colors p-2 rounded-lg hover:bg-[#F3E8E8]">
             <X size={24} />
           </button>
         </div>
@@ -31,27 +31,27 @@ export const AddMemberSelectorModal: React.FC<Props> = ({ onClose, onSelectNew }
 
           <button 
             onClick={onSelectNew}
-            className="w-full text-left p-5 rounded-xl border-2 border-[#1B2728] hover:border-[#2DD4BF] hover:bg-[#0E1415] transition-all group flex items-start space-x-4"
+            className="w-full text-left p-5 rounded-xl border-2 border-[#F3E8E8] hover:border-[#B76E79] hover:bg-[#F3E8E8] transition-all group flex items-start space-x-4"
           >
-            <div className="p-3 bg-[#1B2728] group-hover:bg-[#2DD4BF]/20 rounded-lg shrink-0 transition-colors">
-              <UserPlus size={26} className="text-[#9AAEAE] group-hover:text-[#2DD4BF] transition-colors" />
+            <div className="p-3 bg-[#F3E8E8] group-hover:bg-[#B76E79]/20 rounded-lg shrink-0 transition-colors">
+              <UserPlus size={26} className="text-[#57534E] group-hover:text-[#B76E79] transition-colors" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-[#F5FAFA] group-hover:text-[#2DD4BF] transition-colors">New Customer</h3>
-              <p className="text-sm text-[#9AAEAE] mt-0.5">A new person joining this gym for the first time. Go through the full registration and account creation flow.</p>
+              <h3 className="text-base font-bold text-[#292524] group-hover:text-[#B76E79] transition-colors">New Customer</h3>
+              <p className="text-sm text-[#57534E] mt-0.5">A new person joining this gym for the first time. Go through the full registration and account creation flow.</p>
             </div>
           </button>
 
           <button 
             onClick={handleBulkImport}
-            className="w-full text-left p-5 rounded-xl border-2 border-[#1B2728] hover:border-[#2DD4BF] hover:bg-[#0E1415] transition-all group flex items-start space-x-4"
+            className="w-full text-left p-5 rounded-xl border-2 border-[#F3E8E8] hover:border-[#B76E79] hover:bg-[#F3E8E8] transition-all group flex items-start space-x-4"
           >
-            <div className="p-3 bg-[#1B2728] group-hover:bg-[#2DD4BF]/20 rounded-lg shrink-0 transition-colors">
-              <FileSpreadsheet size={26} className="text-[#9AAEAE] group-hover:text-[#2DD4BF] transition-colors" />
+            <div className="p-3 bg-[#F3E8E8] group-hover:bg-[#B76E79]/20 rounded-lg shrink-0 transition-colors">
+              <FileSpreadsheet size={26} className="text-[#57534E] group-hover:text-[#B76E79] transition-colors" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-[#F5FAFA] group-hover:text-[#2DD4BF] transition-colors">Bulk Import (Excel / CSV)</h3>
-              <p className="text-sm text-[#9AAEAE] mt-0.5">Import multiple existing customers at once from an Excel or CSV file. Supports up to 5,000 rows with full validation and duplicate detection.</p>
+              <h3 className="text-base font-bold text-[#292524] group-hover:text-[#B76E79] transition-colors">Bulk Import (Excel / CSV)</h3>
+              <p className="text-sm text-[#57534E] mt-0.5">Import multiple existing customers at once from an Excel or CSV file. Supports up to 5,000 rows with full validation and duplicate detection.</p>
             </div>
           </button>
 

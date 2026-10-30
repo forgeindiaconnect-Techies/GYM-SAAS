@@ -191,19 +191,19 @@ const GymAdminVideoBookings = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-3xl font-black text-[#F5FAFA] tracking-tight">Video Bookings</h1>
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#2DD4BF]/10 text-[#2DD4BF]">
+            <h1 className="text-3xl font-black text-[#292524] tracking-tight">Video Bookings</h1>
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#B76E79]/10 text-[#B76E79]">
               1-on-1 Virtual Consultations
             </span>
           </div>
-          <p className="text-[#9AAEAE] mt-1 text-sm">
+          <p className="text-[#57534E] mt-1 text-sm">
             Manage scheduled 1-on-1 video calls, remote trainer consultations, and virtual personal workouts.
           </p>
         </div>
         <div className="flex items-center gap-3">
           <button
             onClick={() => setShowBookModal(true)}
-            className="px-4 py-2.5 bg-[#2DD4BF] hover:bg-[#2DD4BF] text-[#06201D] font-bold font-bold rounded-xl text-sm transition-all shadow-md flex items-center gap-2"
+            className="px-4 py-2.5 bg-[#B76E79] hover:bg-[#B76E79] text-white font-bold font-bold rounded-xl text-sm transition-all shadow-md flex items-center gap-2"
           >
             <Plus size={18} /> Book Video Session
           </button>
@@ -212,61 +212,61 @@ const GymAdminVideoBookings = () => {
 
       {/* Summary Stat Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-5 shadow-sm">
+        <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-5 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-[#9AAEAE] uppercase tracking-wider">Total Video Calls</span>
-            <div className="w-9 h-9 rounded-xl bg-[#1B2728] text-[#2DD4BF] flex items-center justify-center">
+            <span className="text-xs font-bold text-[#57534E] uppercase tracking-wider">Total Video Calls</span>
+            <div className="w-9 h-9 rounded-xl bg-[#F3E8E8] text-[#B76E79] flex items-center justify-center">
               <Video size={18} />
             </div>
           </div>
-          <h3 className="text-2xl font-black text-[#F5FAFA] mt-2">{totalCalls}</h3>
-          <p className="text-xs text-[#9AAEAE] mt-0.5">All 1-on-1 appointments</p>
+          <h3 className="text-2xl font-black text-[#292524] mt-2">{totalCalls}</h3>
+          <p className="text-xs text-[#57534E] mt-0.5">All 1-on-1 appointments</p>
         </div>
 
-        <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-5 shadow-sm">
+        <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-5 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-[#9AAEAE] uppercase tracking-wider">Scheduled Today</span>
+            <span className="text-xs font-bold text-[#57534E] uppercase tracking-wider">Scheduled Today</span>
             <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
               <Calendar size={18} />
             </div>
           </div>
-          <h3 className="text-2xl font-black text-[#F5FAFA] mt-2">{todayCalls}</h3>
+          <h3 className="text-2xl font-black text-[#292524] mt-2">{todayCalls}</h3>
           <p className="text-xs text-amber-600 font-medium mt-0.5">Calls on today's roster</p>
         </div>
 
-        <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-5 shadow-sm">
+        <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-5 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-[#9AAEAE] uppercase tracking-wider">Upcoming Calls</span>
-            <div className="w-9 h-9 rounded-xl bg-[#1B2728] text-[#2DD4BF] flex items-center justify-center">
+            <span className="text-xs font-bold text-[#57534E] uppercase tracking-wider">Upcoming Calls</span>
+            <div className="w-9 h-9 rounded-xl bg-[#F3E8E8] text-[#B76E79] flex items-center justify-center">
               <Clock size={18} />
             </div>
           </div>
-          <h3 className="text-2xl font-black text-[#F5FAFA] mt-2">{upcomingCalls}</h3>
-          <p className="text-xs text-[#2DD4BF] font-medium mt-0.5">Awaiting start time</p>
+          <h3 className="text-2xl font-black text-[#292524] mt-2">{upcomingCalls}</h3>
+          <p className="text-xs text-[#B76E79] font-medium mt-0.5">Awaiting start time</p>
         </div>
 
-        <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-5 shadow-sm">
+        <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-5 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-[#9AAEAE] uppercase tracking-wider">Completed Sessions</span>
-            <div className="w-9 h-9 rounded-xl bg-[#0E1415] text-[#2DD4BF] flex items-center justify-center">
+            <span className="text-xs font-bold text-[#57534E] uppercase tracking-wider">Completed Sessions</span>
+            <div className="w-9 h-9 rounded-xl bg-[#F3E8E8] text-[#B76E79] flex items-center justify-center">
               <CheckCircle2 size={18} />
             </div>
           </div>
-          <h3 className="text-2xl font-black text-[#F5FAFA] mt-2">{completedCalls}</h3>
-          <p className="text-xs text-[#9AAEAE] mt-0.5">Successful consultations</p>
+          <h3 className="text-2xl font-black text-[#292524] mt-2">{completedCalls}</h3>
+          <p className="text-xs text-[#57534E] mt-0.5">Successful consultations</p>
         </div>
       </div>
 
       {/* Filters & Search */}
       <div className="flex flex-col md:flex-row gap-4 justify-between items-stretch md:items-center">
         <div className="relative flex-1">
-          <Search className="absolute left-3.5 top-3.5 text-[#9AAEAE]" size={18} />
+          <Search className="absolute left-3.5 top-3.5 text-[#57534E]" size={18} />
           <input
             type="text"
             placeholder="Search by member, trainer, or booking ID..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 bg-[#141D1E] border border-[#2A3A3A] rounded-xl text-sm text-[#F5FAFA] focus:border-[#2DD4BF] outline-none transition-colors"
+            className="w-full pl-10 pr-4 py-2.5 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-sm text-[#292524] focus:border-[#B76E79] outline-none transition-colors"
           />
         </div>
         <div className="flex items-center gap-2 overflow-x-auto pb-1">
@@ -276,8 +276,8 @@ const GymAdminVideoBookings = () => {
               onClick={() => setStatusFilter(tab)}
               className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
                 statusFilter === tab
-                  ? 'bg-[#2DD4BF] text-white shadow-sm'
-                  : 'bg-[#141D1E] border border-[#2A3A3A] text-[#9AAEAE] hover:bg-[#0E1415]'
+                  ? 'bg-[#B76E79] text-white shadow-sm'
+                  : 'bg-[#FFFFFF] border border-[#E7DADD] text-[#57534E] hover:bg-[#F3E8E8]'
               }`}
             >
               {tab}
@@ -287,10 +287,10 @@ const GymAdminVideoBookings = () => {
       </div>
 
       {/* Bookings Table */}
-      <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl overflow-hidden shadow-sm">
+      <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl overflow-hidden shadow-sm">
         <div className="overflow-x-auto custom-scrollbar">
-          <table className="w-full text-left text-sm text-[#9AAEAE] whitespace-nowrap">
-            <thead className="bg-[#0E1415] border-b border-[#2A3A3A] text-[#F5FAFA]">
+          <table className="w-full text-left text-sm text-[#57534E] whitespace-nowrap">
+            <thead className="bg-[#F3E8E8] border-b border-[#E7DADD] text-[#292524]">
               <tr>
                 <th className="px-6 py-4 font-semibold">Booking ID</th>
                 <th className="px-6 py-4 font-semibold">Member</th>
@@ -302,42 +302,42 @@ const GymAdminVideoBookings = () => {
                 <th className="px-6 py-4 font-semibold text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#2A3A3A]">
+            <tbody className="divide-y divide-[#E7DADD]">
               {loading ? (
                 <tr>
                   <td colSpan={8} className="px-6 py-12 text-center">
-                    <div className="w-8 h-8 border-4 border-[#2DD4BF] border-t-transparent rounded-full animate-spin mx-auto mb-2" />
-                    <span className="text-xs text-[#9AAEAE]">Loading video bookings...</span>
+                    <div className="w-8 h-8 border-4 border-[#B76E79] border-t-transparent rounded-full animate-spin mx-auto mb-2" />
+                    <span className="text-xs text-[#57534E]">Loading video bookings...</span>
                   </td>
                 </tr>
               ) : filteredBookings.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="px-6 py-12 text-center text-[#9AAEAE]">
-                    <div className="w-10 h-10 rounded-full bg-[#1B2728] flex items-center justify-center text-[#9AAEAE] mx-auto mb-2">
+                  <td colSpan={8} className="px-6 py-12 text-center text-[#57534E]">
+                    <div className="w-10 h-10 rounded-full bg-[#F3E8E8] flex items-center justify-center text-[#57534E] mx-auto mb-2">
                       <Video size={20} />
                     </div>
-                    <p className="font-semibold text-[#F5FAFA]">No video bookings found</p>
-                    <p className="text-xs text-[#9AAEAE] mt-0.5">Click "Book Video Session" to schedule a consultation.</p>
+                    <p className="font-semibold text-[#292524]">No video bookings found</p>
+                    <p className="text-xs text-[#57534E] mt-0.5">Click "Book Video Session" to schedule a consultation.</p>
                   </td>
                 </tr>
               ) : (
                 filteredBookings.map((b) => {
                   const isCompleted = b.status === 'Completed';
                   return (
-                    <tr key={b._id} className="hover:bg-[#0E1415] transition-colors">
-                      <td className="px-6 py-4 font-mono font-bold text-[#2DD4BF]">
+                    <tr key={b._id} className="hover:bg-[#F3E8E8] transition-colors">
+                      <td className="px-6 py-4 font-mono font-bold text-[#B76E79]">
                         {b.bookingId}
                       </td>
 
                       <td className="px-6 py-4">
                         <div className="flex items-center space-x-3">
-                          <div className="w-9 h-9 rounded-full bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center font-bold text-xs shrink-0">
+                          <div className="w-9 h-9 rounded-full bg-[#B76E79]/10 text-[#B76E79] flex items-center justify-center font-bold text-xs shrink-0">
                             {b.memberName.charAt(0)}
                           </div>
                           <div>
-                            <p className="font-bold text-[#F5FAFA] text-sm">{b.memberName}</p>
+                            <p className="font-bold text-[#292524] text-sm">{b.memberName}</p>
                             {b.memberEmail && (
-                              <p className="text-[11px] text-[#9AAEAE] flex items-center gap-1">
+                              <p className="text-[11px] text-[#57534E] flex items-center gap-1">
                                 <Mail size={10} /> {b.memberEmail}
                               </p>
                             )}
@@ -347,24 +347,24 @@ const GymAdminVideoBookings = () => {
 
                       <td className="px-6 py-4">
                         <div className="space-y-0.5">
-                          <p className="font-bold text-[#F5FAFA] text-sm">{b.trainerName}</p>
-                          <p className="text-[11px] text-[#9AAEAE]">{b.trainerSpecialization}</p>
+                          <p className="font-bold text-[#292524] text-sm">{b.trainerName}</p>
+                          <p className="text-[11px] text-[#57534E]">{b.trainerSpecialization}</p>
                         </div>
                       </td>
 
                       <td className="px-6 py-4">
-                        <span className="px-2.5 py-1 rounded-lg text-xs font-bold bg-[#0E1415] text-[#2DD4BF] inline-block">
+                        <span className="px-2.5 py-1 rounded-lg text-xs font-bold bg-[#F3E8E8] text-[#B76E79] inline-block">
                           {b.sessionType}
                         </span>
                       </td>
 
                       <td className="px-6 py-4">
                         <div className="space-y-0.5 text-xs">
-                          <p className="flex items-center text-[#F5FAFA] font-semibold">
-                            <Calendar size={12} className="mr-1.5 text-[#2DD4BF]" /> {b.date}
+                          <p className="flex items-center text-[#292524] font-semibold">
+                            <Calendar size={12} className="mr-1.5 text-[#B76E79]" /> {b.date}
                           </p>
-                          <p className="flex items-center text-[#9AAEAE]">
-                            <Clock size={12} className="mr-1.5 text-[#9AAEAE]" /> {b.startTime} ({b.duration}m)
+                          <p className="flex items-center text-[#57534E]">
+                            <Clock size={12} className="mr-1.5 text-[#57534E]" /> {b.startTime} ({b.duration}m)
                           </p>
                         </div>
                       </td>
@@ -374,17 +374,17 @@ const GymAdminVideoBookings = () => {
                           <span
                             className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider block text-center w-max ${
                               isCompleted
-                                ? 'bg-[#1B2728] text-[#C1D0D0]'
+                                ? 'bg-[#F3E8E8] text-[#292524]'
                                 : b.status === 'Cancelled'
                                 ? 'bg-red-100 text-red-600'
-                                : 'bg-[#1B2728] text-[#2DD4BF] border border-[#2A3A3A]'
+                                : 'bg-[#F3E8E8] text-[#B76E79] border border-[#E7DADD]'
                             }`}
                           >
                             {b.status}
                           </span>
-                          <span className="text-[10px] text-[#9AAEAE] font-semibold block text-center">
+                          <span className="text-[10px] text-[#57534E] font-semibold block text-center">
                             {b.paymentStatus === 'Paid' ? (
-                              <span className="text-[#2DD4BF] font-bold">PAID · ₹{b.fee}</span>
+                              <span className="text-[#B76E79] font-bold">PAID · ₹{b.fee}</span>
                             ) : (
                               <span className="text-amber-600 font-bold">Free Trial</span>
                             )}
@@ -394,16 +394,16 @@ const GymAdminVideoBookings = () => {
 
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-1.5">
-                          <span className="font-mono text-xs text-[#C1D0D0] bg-[#1B2728] px-2 py-1 rounded-md">
+                          <span className="font-mono text-xs text-[#292524] bg-[#F3E8E8] px-2 py-1 rounded-md">
                             {b.meetingId}
                           </span>
                           <button
                             onClick={() => handleCopyLink(b.meetingLink, b._id)}
-                            className="p-1 hover:bg-[#1B2728] rounded text-[#9AAEAE] hover:text-[#C1D0D0]"
+                            className="p-1 hover:bg-[#F3E8E8] rounded text-[#57534E] hover:text-[#292524]"
                             title="Copy Meeting URL"
                           >
                             {copiedId === b._id ? (
-                              <CheckCircle2 size={14} className="text-[#2DD4BF]" />
+                              <CheckCircle2 size={14} className="text-[#B76E79]" />
                             ) : (
                               <Copy size={14} />
                             )}
@@ -417,7 +417,7 @@ const GymAdminVideoBookings = () => {
                             href={b.meetingLink}
                             target="_blank"
                             rel="noreferrer"
-                            className="px-3 py-1.5 bg-[#2DD4BF] hover:bg-[#2DD4BF] text-[#06201D] font-bold rounded-lg text-xs font-bold transition-all shadow-sm inline-flex items-center gap-1"
+                            className="px-3 py-1.5 bg-[#B76E79] hover:bg-[#B76E79] text-white font-bold rounded-lg text-xs font-bold transition-all shadow-sm inline-flex items-center gap-1"
                           >
                             <Video size={13} /> Join Call
                           </a>
@@ -435,35 +435,35 @@ const GymAdminVideoBookings = () => {
       {/* Book Video Consultation Modal */}
       {showBookModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-[#141D1E] rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl relative border border-[#2A3A3A] animate-in zoom-in-95 duration-200">
+          <div className="bg-[#FFFFFF] rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl relative border border-[#E7DADD] animate-in zoom-in-95 duration-200">
             <button
               onClick={() => setShowBookModal(false)}
-              className="absolute top-5 right-5 text-[#9AAEAE] hover:text-[#C1D0D0] p-1 rounded-full hover:bg-[#1B2728]"
+              className="absolute top-5 right-5 text-[#57534E] hover:text-[#292524] p-1 rounded-full hover:bg-[#F3E8E8]"
             >
               <X size={20} />
             </button>
 
             <div className="flex items-center gap-3 mb-5">
-              <div className="w-10 h-10 rounded-xl bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl bg-[#B76E79]/10 text-[#B76E79] flex items-center justify-center">
                 <Video size={22} />
               </div>
               <div>
-                <h2 className="text-xl font-black text-[#F5FAFA]">Book 1-on-1 Video Session</h2>
-                <p className="text-xs text-[#9AAEAE]">Schedule a virtual appointment for a member</p>
+                <h2 className="text-xl font-black text-[#292524]">Book 1-on-1 Video Session</h2>
+                <p className="text-xs text-[#57534E]">Schedule a virtual appointment for a member</p>
               </div>
             </div>
 
             <form onSubmit={handleBookSession} className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-[#9AAEAE] uppercase tracking-wider mb-1">
+                  <label className="block text-xs font-bold text-[#57534E] uppercase tracking-wider mb-1">
                     Select Member *
                   </label>
                   <select
                     required
                     value={selectedMemberId}
                     onChange={(e) => setSelectedMemberId(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-[#0E1415] border border-[#2A3A3A] rounded-xl text-sm focus:border-[#2DD4BF] outline-none"
+                    className="w-full px-3.5 py-2.5 bg-[#F3E8E8] border border-[#E7DADD] rounded-xl text-sm focus:border-[#B76E79] outline-none"
                   >
                     <option value="">Select Member</option>
                     {members.map((m: any) => (
@@ -476,14 +476,14 @@ const GymAdminVideoBookings = () => {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-[#9AAEAE] uppercase tracking-wider mb-1">
+                  <label className="block text-xs font-bold text-[#57534E] uppercase tracking-wider mb-1">
                     Assigned Trainer *
                   </label>
                   <select
                     required
                     value={selectedTrainerId}
                     onChange={(e) => setSelectedTrainerId(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-[#0E1415] border border-[#2A3A3A] rounded-xl text-sm focus:border-[#2DD4BF] outline-none"
+                    className="w-full px-3.5 py-2.5 bg-[#F3E8E8] border border-[#E7DADD] rounded-xl text-sm focus:border-[#B76E79] outline-none"
                   >
                     <option value="">Select Trainer</option>
                     {trainers.map((t: any) => (
@@ -497,13 +497,13 @@ const GymAdminVideoBookings = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#9AAEAE] uppercase tracking-wider mb-1">
+                <label className="block text-xs font-bold text-[#57534E] uppercase tracking-wider mb-1">
                   Consultation Type
                 </label>
                 <select
                   value={sessionType}
                   onChange={(e) => setSessionType(e.target.value as any)}
-                  className="w-full px-3.5 py-2.5 bg-[#0E1415] border border-[#2A3A3A] rounded-xl text-sm focus:border-[#2DD4BF] outline-none"
+                  className="w-full px-3.5 py-2.5 bg-[#F3E8E8] border border-[#E7DADD] rounded-xl text-sm focus:border-[#B76E79] outline-none"
                 >
                   <option value="1-on-1 Virtual Training">1-on-1 Virtual Personal Training</option>
                   <option value="Nutrition Consultation">Diet & Nutrition Consultation</option>
@@ -514,7 +514,7 @@ const GymAdminVideoBookings = () => {
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-[#9AAEAE] uppercase tracking-wider mb-1">
+                  <label className="block text-xs font-bold text-[#57534E] uppercase tracking-wider mb-1">
                     Date *
                   </label>
                   <input
@@ -522,12 +522,12 @@ const GymAdminVideoBookings = () => {
                     required
                     value={bookDate}
                     onChange={(e) => setBookDate(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-[#0E1415] border border-[#2A3A3A] rounded-xl text-sm focus:border-[#2DD4BF] outline-none"
+                    className="w-full px-3.5 py-2.5 bg-[#F3E8E8] border border-[#E7DADD] rounded-xl text-sm focus:border-[#B76E79] outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-[#9AAEAE] uppercase tracking-wider mb-1">
+                  <label className="block text-xs font-bold text-[#57534E] uppercase tracking-wider mb-1">
                     Time *
                   </label>
                   <input
@@ -535,18 +535,18 @@ const GymAdminVideoBookings = () => {
                     required
                     value={bookTime}
                     onChange={(e) => setBookTime(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-[#0E1415] border border-[#2A3A3A] rounded-xl text-sm focus:border-[#2DD4BF] outline-none"
+                    className="w-full px-3.5 py-2.5 bg-[#F3E8E8] border border-[#E7DADD] rounded-xl text-sm focus:border-[#B76E79] outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-[#9AAEAE] uppercase tracking-wider mb-1">
+                  <label className="block text-xs font-bold text-[#57534E] uppercase tracking-wider mb-1">
                     Duration (mins)
                   </label>
                   <select
                     value={bookDuration}
                     onChange={(e) => setBookDuration(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-[#0E1415] border border-[#2A3A3A] rounded-xl text-sm focus:border-[#2DD4BF] outline-none"
+                    className="w-full px-3.5 py-2.5 bg-[#F3E8E8] border border-[#E7DADD] rounded-xl text-sm focus:border-[#B76E79] outline-none"
                   >
                     <option value="30">30 Mins</option>
                     <option value="45">45 Mins</option>
@@ -557,7 +557,7 @@ const GymAdminVideoBookings = () => {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-[#9AAEAE] uppercase tracking-wider mb-1">
+                  <label className="block text-xs font-bold text-[#57534E] uppercase tracking-wider mb-1">
                     Session Fee (₹)
                   </label>
                   <input
@@ -566,12 +566,12 @@ const GymAdminVideoBookings = () => {
                     placeholder="0 for Free Trial / Included"
                     value={bookFee}
                     onChange={(e) => setBookFee(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-[#0E1415] border border-[#2A3A3A] rounded-xl text-sm focus:border-[#2DD4BF] outline-none"
+                    className="w-full px-3.5 py-2.5 bg-[#F3E8E8] border border-[#E7DADD] rounded-xl text-sm focus:border-[#B76E79] outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-[#9AAEAE] uppercase tracking-wider mb-1">
+                  <label className="block text-xs font-bold text-[#57534E] uppercase tracking-wider mb-1">
                     Custom Meeting URL (Optional)
                   </label>
                   <input
@@ -579,23 +579,23 @@ const GymAdminVideoBookings = () => {
                     placeholder="Auto-generated if empty"
                     value={bookCustomLink}
                     onChange={(e) => setBookCustomLink(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-[#0E1415] border border-[#2A3A3A] rounded-xl text-sm focus:border-[#2DD4BF] outline-none"
+                    className="w-full px-3.5 py-2.5 bg-[#F3E8E8] border border-[#E7DADD] rounded-xl text-sm focus:border-[#B76E79] outline-none"
                   />
                 </div>
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#2A3A3A]">
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#E7DADD]">
                 <button
                   type="button"
                   onClick={() => setShowBookModal(false)}
-                  className="px-5 py-2.5 rounded-xl border border-[#2A3A3A] text-sm font-bold text-[#9AAEAE] hover:bg-[#0E1415]"
+                  className="px-5 py-2.5 rounded-xl border border-[#E7DADD] text-sm font-bold text-[#57534E] hover:bg-[#F3E8E8]"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="px-6 py-2.5 bg-[#2DD4BF] hover:bg-[#2DD4BF] text-[#06201D] font-bold text-sm font-bold rounded-xl transition-all shadow-md flex items-center gap-2"
+                  className="px-6 py-2.5 bg-[#B76E79] hover:bg-[#B76E79] text-white font-bold text-sm font-bold rounded-xl transition-all shadow-md flex items-center gap-2"
                 >
                   <Plus size={16} /> Confirm Booking
                 </button>

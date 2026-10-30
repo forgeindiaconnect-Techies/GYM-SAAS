@@ -84,26 +84,26 @@ const TrainerAssignedUsers = () => {
     <div className="max-w-6xl mx-auto space-y-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#F5FAFA]">Assigned Users</h1>
-          <p className="text-[#9AAEAE]">
+          <h1 className="text-3xl font-bold text-[#292524]">Assigned Users</h1>
+          <p className="text-[#57534E]">
             {searchTerm.trim()
               ? `Showing ${filteredClients.length} of ${clients.length} active clients`
               : `Manage your ${clients.length} active clients`}
           </p>
         </div>
         <div className="relative w-full md:w-72">
-          <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9AAEAE]" />
+          <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#57534E]" />
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search clients..."
-            className="w-full bg-[#101819] border border-[#2A3A3A] rounded-xl pl-10 pr-10 py-2 text-sm focus:outline-none focus:border-[#2DD4BF] transition-colors text-[#F5FAFA] placeholder:text-[#9AAEAE]"
+            className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl pl-10 pr-10 py-2 text-sm focus:outline-none focus:border-[#B76E79] transition-colors text-[#292524] placeholder:text-[#57534E]"
           />
           {searchTerm && (
             <button
               onClick={() => setSearchTerm('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9AAEAE] hover:text-[#FFFFFF]"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#57534E] hover:text-[#FFFFFF]"
               title="Clear search"
             >
               <X size={16} />
@@ -113,18 +113,18 @@ const TrainerAssignedUsers = () => {
       </div>
 
       {loading ? (
-        <div className="text-center py-12 text-[#9AAEAE]">Loading clients...</div>
+        <div className="text-center py-12 text-[#57534E]">Loading clients...</div>
       ) : filteredClients.length === 0 ? (
-        <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-12 text-center">
-          <Users size={48} className="mx-auto text-[#9AAEAE] mb-3" />
-          <h3 className="text-lg font-bold text-[#F5FAFA]">No clients found</h3>
-          <p className="text-sm text-[#9AAEAE] mt-1">
+        <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-12 text-center">
+          <Users size={48} className="mx-auto text-[#57534E] mb-3" />
+          <h3 className="text-lg font-bold text-[#292524]">No clients found</h3>
+          <p className="text-sm text-[#57534E] mt-1">
             {searchTerm ? `No active clients matching "${searchTerm}".` : 'You have no assigned clients yet.'}
           </p>
           {searchTerm && (
             <button
               onClick={() => setSearchTerm('')}
-              className="mt-4 px-4 py-2 bg-[#2DD4BF] text-[#06201D] font-bold font-medium text-sm rounded-xl hover:bg-[#5EEAD4] transition-colors"
+              className="mt-4 px-4 py-2 bg-[#B76E79] text-white font-bold font-medium text-sm rounded-xl hover:bg-[#9F5965] transition-colors"
             >
               Clear Search
             </button>
@@ -135,11 +135,11 @@ const TrainerAssignedUsers = () => {
           {filteredClients.map((client) => (
             <div
               key={client.id}
-              className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-5 hover:border-[#2DD4BF]/40 transition-all flex flex-col relative shadow-lg"
+              className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-5 hover:border-[#B76E79]/40 transition-all flex flex-col relative shadow-lg"
             >
               <div className="flex justify-between items-start mb-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-[#0E1415] rounded-full flex items-center justify-center font-bold text-[#2DD4BF] border border-[#2A3A3A] overflow-hidden">
+                  <div className="w-12 h-12 bg-[#F3E8E8] rounded-full flex items-center justify-center font-bold text-[#B76E79] border border-[#E7DADD] overflow-hidden">
                     {client.profilePhoto ? (
                       <img src={client.profilePhoto} alt={client.name} className="w-full h-full object-cover" />
                     ) : (
@@ -147,12 +147,12 @@ const TrainerAssignedUsers = () => {
                     )}
                   </div>
                   <div>
-                    <h3 className="font-bold text-[#F5FAFA] leading-tight">{client.name}</h3>
+                    <h3 className="font-bold text-[#292524] leading-tight">{client.name}</h3>
                     <span
                       className={`text-xs px-2 py-0.5 rounded-full inline-block mt-1 font-medium ${
                         client.status === 'Active'
                           ? 'bg-green-100 text-green-700'
-                          : 'bg-[#1B2728] text-[#C1D0D0]'
+                          : 'bg-[#F3E8E8] text-[#292524]'
                       }`}
                     >
                       {client.status}
@@ -162,21 +162,21 @@ const TrainerAssignedUsers = () => {
                 <div className="relative">
                   <button 
                     onClick={() => setOpenMenu(openMenu === client.id ? null : client.id)}
-                    className="text-[#9AAEAE] hover:text-[#FFFFFF] transition-colors"
+                    className="text-[#57534E] hover:text-[#FFFFFF] transition-colors"
                   >
                     <MoreVertical size={18} />
                   </button>
                   {openMenu === client.id && (
-                    <div className="absolute right-0 mt-2 w-48 bg-[#141D1E] border border-[#2A3A3A] rounded-xl shadow-lg overflow-hidden z-10">
+                    <div className="absolute right-0 mt-2 w-48 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl shadow-lg overflow-hidden z-10">
                       <button 
                         onClick={() => { navigate('/trainer/session-bookings'); setOpenMenu(null); }}
-                        className="w-full text-left px-4 py-3 text-sm text-[#F5FAFA] hover:bg-[#0E1415] transition-colors"
+                        className="w-full text-left px-4 py-3 text-sm text-[#292524] hover:bg-[#F3E8E8] transition-colors"
                       >
                         View Sessions
                       </button>
                       <button 
                         onClick={() => { alert('Assign Workout Plan feature coming soon!'); setOpenMenu(null); }}
-                        className="w-full text-left px-4 py-3 text-sm text-[#F5FAFA] hover:bg-[#0E1415] transition-colors border-t border-[#2A3A3A]"
+                        className="w-full text-left px-4 py-3 text-sm text-[#292524] hover:bg-[#F3E8E8] transition-colors border-t border-[#E7DADD]"
                       >
                         Assign Workout Plan
                       </button>
@@ -187,25 +187,25 @@ const TrainerAssignedUsers = () => {
 
               <div className="space-y-3 mb-6 flex-1">
                 <div className="flex justify-between items-center text-sm">
-                  <span className="text-[#9AAEAE]">Goal:</span>
-                  <span className="font-medium text-[#F5FAFA]">{client.goal}</span>
+                  <span className="text-[#57534E]">Goal:</span>
+                  <span className="font-medium text-[#292524]">{client.goal}</span>
                 </div>
                 <div className="flex justify-between items-center text-sm">
-                  <span className="text-[#9AAEAE]">Next Session:</span>
-                  <span className="font-medium text-[#2DD4BF]">{client.nextSession}</span>
+                  <span className="text-[#57534E]">Next Session:</span>
+                  <span className="font-medium text-[#B76E79]">{client.nextSession}</span>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3 mt-auto pt-4 border-t border-[#2A3A3A]">
+              <div className="grid grid-cols-2 gap-3 mt-auto pt-4 border-t border-[#E7DADD]">
                 <button
                   onClick={() => navigate(`/trainer/member-progress?userId=${client.id}`)}
-                  className="flex items-center justify-center gap-2 py-2 bg-[#0E1415] text-[#F5FAFA] text-sm font-semibold rounded-xl border border-[#2A3A3A] hover:bg-[#1B2728] transition-colors"
+                  className="flex items-center justify-center gap-2 py-2 bg-[#F3E8E8] text-[#292524] text-sm font-semibold rounded-xl border border-[#E7DADD] hover:bg-[#F3E8E8] transition-colors"
                 >
                   <Activity size={16} /> Progress
                 </button>
                 <button
                   onClick={() => navigate(`/trainer/messages?userId=${client.id}`)}
-                  className="flex items-center justify-center gap-2 py-2 bg-[#1B2728] text-[#F5FAFA] text-sm font-semibold rounded-xl hover:bg-[#2A3A3A] transition-colors"
+                  className="flex items-center justify-center gap-2 py-2 bg-[#F3E8E8] text-[#292524] text-sm font-semibold rounded-xl hover:bg-[#E7DADD] transition-colors"
                 >
                   <MessageSquare size={16} /> Chat
                 </button>

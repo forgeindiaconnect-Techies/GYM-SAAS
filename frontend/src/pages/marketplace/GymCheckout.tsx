@@ -271,24 +271,24 @@ const GymCheckout = () => {
   if (paymentSuccess) {
     const mem = paymentSuccess.membership || {};
     return (
-      <div className="min-h-screen bg-[#080B0C] text-white pt-24 pb-16 px-4 flex items-center justify-center">
-        <div className="max-w-xl w-full bg-[#141D1E] border border-[#2A3A3A] rounded-3xl p-8 sm:p-10 shadow-2xl text-center space-y-6 relative overflow-hidden">
+      <div className="min-h-screen bg-[#FFFFFF] text-white pt-24 pb-16 px-4 flex items-center justify-center">
+        <div className="max-w-xl w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-3xl p-8 sm:p-10 shadow-2xl text-center space-y-6 relative overflow-hidden">
           {/* Subtle Ambient Glow */}
-          <div className="absolute top-0 right-1/4 w-48 h-48 bg-[#2DD4BF]/10 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute bottom-0 left-1/4 w-48 h-48 bg-[#2DD4BF]/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute top-0 right-1/4 w-48 h-48 bg-[#B76E79]/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute bottom-0 left-1/4 w-48 h-48 bg-[#B76E79]/10 rounded-full blur-3xl pointer-events-none" />
 
-          <div className="w-20 h-20 bg-[#2DD4BF]/10 text-emerald-400 border border-[#2A3A3A]/30 rounded-full flex items-center justify-center mx-auto shadow-inner relative z-10">
+          <div className="w-20 h-20 bg-[#B76E79]/10 text-emerald-400 border border-[#E7DADD]/30 rounded-full flex items-center justify-center mx-auto shadow-inner relative z-10">
             <CheckCircle2 size={44} />
           </div>
 
           <div className="relative z-10">
-            <span className="text-xs font-bold uppercase tracking-wider text-[#2DD4BF] bg-[#2DD4BF]/10 px-3.5 py-1.5 rounded-full border border-[#2DD4BF]/20 inline-flex items-center gap-1.5">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#B76E79] bg-[#B76E79]/10 px-3.5 py-1.5 rounded-full border border-[#B76E79]/20 inline-flex items-center gap-1.5">
               <Sparkles size={12} /> {isFreeTrial ? 'Trial Activated' : 'Payment Verified & Active'}
             </span>
-            <h1 className="text-3xl font-extrabold text-white mt-4 tracking-tight">
+            <h1 className="text-3xl font-extrabold text-[#292524] mt-4 tracking-tight">
               {isFreeTrial ? 'Welcome to Your Free Trial!' : 'Membership Confirmed!'}
             </h1>
-            <p className="text-[#9AAEAE] text-sm mt-2 max-w-md mx-auto">
+            <p className="text-[#57534E] text-sm mt-2 max-w-md mx-auto">
               {isFreeTrial
                 ? `You now have 1 week of full complimentary access to ${paymentSuccess.gymName}.`
                 : `Your ${paymentSuccess.planName} package at ${paymentSuccess.gymName} is now active.`}
@@ -296,49 +296,49 @@ const GymCheckout = () => {
           </div>
 
           {/* Email Confirmation Notice Banner */}
-          <div className="bg-[#0E1415] border border-[#2A3A3A] rounded-2xl p-4 text-left flex items-start gap-3 relative z-10">
-            <div className="w-9 h-9 rounded-xl bg-[#2DD4BF]/15 text-[#2DD4BF] flex items-center justify-center shrink-0 mt-0.5">
+          <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-2xl p-4 text-left flex items-start gap-3 relative z-10">
+            <div className="w-9 h-9 rounded-xl bg-[#B76E79]/15 text-[#B76E79] flex items-center justify-center shrink-0 mt-0.5">
               <Mail size={18} />
             </div>
             <div>
               <p className="text-sm font-semibold text-white">Confirmation Email Dispatched</p>
-              <p className="text-xs text-[#9AAEAE] mt-0.5 leading-relaxed">
-                A verified payment receipt with your membership ID, included features snapshot, and validity details has been sent to <span className="text-[#2DD4BF] font-medium">{user?.email || 'your registered email'}</span>.
+              <p className="text-xs text-[#57534E] mt-0.5 leading-relaxed">
+                A verified payment receipt with your membership ID, included features snapshot, and validity details has been sent to <span className="text-[#B76E79] font-medium">{user?.email || 'your registered email'}</span>.
               </p>
             </div>
           </div>
 
           {/* Membership & Payment Details Card */}
-          <div className="bg-[#0E1415] border border-[#2A3A3A] rounded-2xl p-5 text-left space-y-3 text-sm relative z-10">
+          <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-2xl p-5 text-left space-y-3 text-sm relative z-10">
             {mem.membershipId && (
-              <div className="flex justify-between items-center pb-2.5 border-b border-[#2A3A3A]">
-                <span className="text-[#9AAEAE] text-xs flex items-center gap-1.5">
-                  <Receipt size={13} className="text-[#2DD4BF]" /> Membership ID:
+              <div className="flex justify-between items-center pb-2.5 border-b border-[#E7DADD]">
+                <span className="text-[#57534E] text-xs flex items-center gap-1.5">
+                  <Receipt size={13} className="text-[#B76E79]" /> Membership ID:
                 </span>
-                <span className="font-mono text-xs font-bold text-[#2DD4BF] bg-[#2DD4BF]/10 px-2.5 py-1 rounded-md border border-[#2DD4BF]/20">
+                <span className="font-mono text-xs font-bold text-[#B76E79] bg-[#B76E79]/10 px-2.5 py-1 rounded-md border border-[#B76E79]/20">
                   {mem.membershipId}
                 </span>
               </div>
             )}
             <div className="flex justify-between">
-              <span className="text-[#9AAEAE]">Gym Name:</span>
+              <span className="text-[#57534E]">Gym Name:</span>
               <span className="font-semibold text-white">{paymentSuccess.gymName}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-[#9AAEAE]">Purchased Package:</span>
-              <span className="font-bold text-[#2DD4BF]">{paymentSuccess.planName}</span>
+              <span className="text-[#57534E]">Purchased Package:</span>
+              <span className="font-bold text-[#B76E79]">{paymentSuccess.planName}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-[#9AAEAE]">Validity Duration:</span>
+              <span className="text-[#57534E]">Validity Duration:</span>
               <span className="font-medium text-white">{paymentSuccess.duration}</span>
             </div>
-            <div className="flex justify-between border-t border-[#2A3A3A] pt-3">
-              <span className="text-[#9AAEAE]">Total Paid:</span>
+            <div className="flex justify-between border-t border-[#E7DADD] pt-3">
+              <span className="text-[#57534E]">Total Paid:</span>
               <span className="font-black text-lg text-emerald-400">
                 {isFreeTrial ? '₹0 (Free Trial)' : `₹${paymentSuccess.amount.toLocaleString('en-IN')}`}
               </span>
             </div>
-            <div className="flex justify-between text-xs text-[#9AAEAE]">
+            <div className="flex justify-between text-xs text-[#57534E]">
               <span>Payment Mode:</span>
               <span className="font-medium text-gray-200">{paymentSuccess.paymentMethod}</span>
             </div>
@@ -347,14 +347,14 @@ const GymCheckout = () => {
           <div className="flex flex-col sm:flex-row gap-3 relative z-10">
             <button
               onClick={() => navigate('/member/subscription')}
-              className="flex-1 py-3.5 bg-[#2DD4BF] hover:bg-[#3651D4] text-[#06201D] font-bold font-bold rounded-xl transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer"
+              className="flex-1 py-3.5 bg-[#B76E79] hover:bg-[#3651D4] text-[#FFFFFF] font-bold font-bold rounded-xl transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer"
             >
               <span>View My Membership</span>
               <ExternalLink size={16} />
             </button>
             <button
               onClick={() => navigate('/member/dashboard')}
-              className="py-3.5 px-6 bg-[#141D1E] hover:bg-[#1B2728] border border-[#2A3A3A] text-gray-300 font-semibold rounded-xl transition-all cursor-pointer"
+              className="py-3.5 px-6 bg-[#FFFFFF] hover:bg-[#F3E8E8] border border-[#E7DADD] text-gray-300 font-semibold rounded-xl transition-all cursor-pointer"
             >
               Dashboard
             </button>
@@ -365,10 +365,10 @@ const GymCheckout = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#080B0C] text-white pt-24 pb-16 px-4 relative overflow-hidden">
+    <div className="min-h-screen bg-[#FFFFFF] text-white pt-24 pb-16 px-4 relative overflow-hidden">
       {/* Background Glow Accents */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#2DD4BF]/5 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[#2DD4BF]/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#B76E79]/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[#B76E79]/5 rounded-full blur-3xl pointer-events-none" />
 
       <div className="relative z-10 max-w-5xl mx-auto flex flex-col lg:flex-row gap-8">
         
@@ -376,33 +376,33 @@ const GymCheckout = () => {
         <div className="flex-1 space-y-6">
           <button
             onClick={() => navigate(-1)}
-            className="text-[#9AAEAE] hover:text-white flex items-center gap-2 text-sm font-medium transition-colors mb-2 cursor-pointer"
+            className="text-[#57534E] hover:text-white flex items-center gap-2 text-sm font-medium transition-colors mb-2 cursor-pointer"
           >
             <ArrowLeft size={16} /> Back to Gym Details
           </button>
           
-          <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6">
-            <div className="border-b border-[#2A3A3A] pb-4 flex items-center justify-between">
+          <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6">
+            <div className="border-b border-[#E7DADD] pb-4 flex items-center justify-between">
               <div>
-                <h2 className="text-2xl font-bold text-white">Checkout</h2>
-                <p className="text-xs text-[#9AAEAE] mt-0.5">
+                <h2 className="text-2xl font-bold text-[#292524]">Checkout</h2>
+                <p className="text-xs text-[#57534E] mt-0.5">
                   {isFreeTrial ? 'Activate your complimentary 1-week free trial' : `Complete payment to activate ${plan.name}`}
                 </p>
               </div>
-              <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${isFreeTrial ? 'bg-[#2DD4BF]/15 text-[#2DD4BF] border border-[#2DD4BF]/30' : 'bg-[#2DD4BF]/15 text-[#2DD4BF] border border-[#2DD4BF]/30'}`}>
+              <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${isFreeTrial ? 'bg-[#B76E79]/15 text-[#B76E79] border border-[#B76E79]/30' : 'bg-[#B76E79]/15 text-[#B76E79] border border-[#B76E79]/30'}`}>
                 {isFreeTrial ? 'Free Trial' : `${plan.name} Plan`}
               </span>
             </div>
 
             {/* Free Trial Banner / Explanation */}
             {isFreeTrial ? (
-              <div className="text-center py-6 px-4 bg-[#0E1415] border border-[#2A3A3A] rounded-2xl space-y-4">
-                <div className="w-16 h-16 bg-[#2DD4BF]/15 text-[#2DD4BF] border border-[#2DD4BF]/30 rounded-2xl flex items-center justify-center mx-auto">
+              <div className="text-center py-6 px-4 bg-[#F3E8E8] border border-[#E7DADD] rounded-2xl space-y-4">
+                <div className="w-16 h-16 bg-[#B76E79]/15 text-[#B76E79] border border-[#B76E79]/30 rounded-2xl flex items-center justify-center mx-auto">
                   <Sparkles size={32} />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-white">1-Week Free Trial Access</h3>
-                  <p className="text-sm text-[#9AAEAE] max-w-md mx-auto mt-2 leading-relaxed">
+                  <h3 className="text-xl font-bold text-[#292524]">1-Week Free Trial Access</h3>
+                  <p className="text-sm text-[#57534E] max-w-md mx-auto mt-2 leading-relaxed">
                     Enjoy 7 days of full gym access with zero upfront payment. You can upgrade to a regular membership at any time.
                   </p>
                 </div>
@@ -411,8 +411,8 @@ const GymCheckout = () => {
               /* Paid Plan Payment Methods */
               <div className="space-y-6">
                 <div>
-                  <h3 className="text-base font-bold text-white mb-3 flex items-center gap-2">
-                    <CreditCard size={18} className="text-[#2DD4BF]" /> Select Payment Method
+                  <h3 className="text-base font-bold text-[#292524] mb-3 flex items-center gap-2">
+                    <CreditCard size={18} className="text-[#B76E79]" /> Select Payment Method
                   </h3>
                   <div className="grid sm:grid-cols-2 gap-3">
                     {PAYMENT_METHODS.map((method) => {
@@ -425,16 +425,16 @@ const GymCheckout = () => {
                           onClick={() => setPaymentMethod(method.id as any)}
                           className={`p-4 rounded-2xl border text-left transition-all flex items-start gap-3.5 cursor-pointer ${
                             isSelected
-                              ? 'border-[#2DD4BF] bg-[#2DD4BF]/10 ring-1 ring-[#2DD4BF]'
-                              : 'border-[#2A3A3A] bg-[#0E1415] hover:border-[#2DD4BF]/50 hover:bg-[#1a1a1a]'
+                              ? 'border-[#B76E79] bg-[#B76E79]/10 ring-1 ring-[#B76E79]'
+                              : 'border-[#E7DADD] bg-[#F3E8E8] hover:border-[#B76E79]/50 hover:bg-[#FFFFFF]'
                           }`}
                         >
-                          <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${isSelected ? 'bg-[#2DD4BF] text-white' : 'bg-[#1B2728] text-[#9AAEAE]'}`}>
+                          <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${isSelected ? 'bg-[#B76E79] text-white' : 'bg-[#F3E8E8] text-[#57534E]'}`}>
                             <Icon size={18} />
                           </div>
                           <div className="min-w-0">
-                            <p className={`font-bold text-sm leading-tight ${isSelected ? 'text-[#2DD4BF]' : 'text-white'}`}>{method.label}</p>
-                            <p className="text-[11px] text-[#9AAEAE] mt-0.5 leading-snug">{method.desc}</p>
+                            <p className={`font-bold text-sm leading-tight ${isSelected ? 'text-[#B76E79]' : 'text-white'}`}>{method.label}</p>
+                            <p className="text-[11px] text-[#57534E] mt-0.5 leading-snug">{method.desc}</p>
                           </div>
                         </button>
                       );
@@ -444,79 +444,79 @@ const GymCheckout = () => {
 
                 {/* Sub-form based on selected payment method */}
                 {paymentMethod === 'UPI' && (
-                  <div className="p-5 bg-[#0E1415] border border-[#2A3A3A] rounded-2xl space-y-4">
+                  <div className="p-5 bg-[#F3E8E8] border border-[#E7DADD] rounded-2xl space-y-4">
                     <div className="flex flex-col sm:flex-row items-center gap-5">
-                      <div className="bg-[#141D1E] p-3 rounded-2xl border border-[#2A3A3A] shadow-sm shrink-0">
+                      <div className="bg-[#FFFFFF] p-3 rounded-2xl border border-[#E7DADD] shadow-sm shrink-0">
                         <QRCode
                           value={`upi://pay?pa=aigym@icici&pn=${encodeURIComponent(gym.name)}&am=${total}&cu=INR`}
                           size={110}
                         />
                       </div>
                       <div className="space-y-2 text-center sm:text-left flex-1">
-                        <p className="text-xs font-bold uppercase tracking-wider text-[#2DD4BF]">Scan QR Code</p>
-                        <p className="text-xs text-[#9AAEAE]">Scan with Google Pay, PhonePe, Paytm, or BHIM to pay instantly.</p>
-                        <div className="text-xs font-mono bg-[#141D1E] px-3 py-1.5 rounded-lg border border-[#2A3A3A] inline-block font-bold text-gray-200">
-                          UPI ID: <span className="text-[#2DD4BF]">aigym@icici</span>
+                        <p className="text-xs font-bold uppercase tracking-wider text-[#B76E79]">Scan QR Code</p>
+                        <p className="text-xs text-[#57534E]">Scan with Google Pay, PhonePe, Paytm, or BHIM to pay instantly.</p>
+                        <div className="text-xs font-mono bg-[#FFFFFF] px-3 py-1.5 rounded-lg border border-[#E7DADD] inline-block font-bold text-gray-200">
+                          UPI ID: <span className="text-[#B76E79]">aigym@icici</span>
                         </div>
                       </div>
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-[#9AAEAE] mb-1">Or Enter Your UPI ID</label>
+                      <label className="block text-xs font-semibold text-[#57534E] mb-1">Or Enter Your UPI ID</label>
                       <input
                         type="text"
                         value={upiId}
                         onChange={(e) => setUpiId(e.target.value)}
                         placeholder="yourname@okhdfcbank"
-                        className="w-full bg-[#141D1E] border border-[#2A3A3A] rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-gray-500 outline-none focus:border-[#2DD4BF]"
+                        className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-gray-500 outline-none focus:border-[#B76E79]"
                       />
                     </div>
                   </div>
                 )}
 
                 {paymentMethod === 'Card' && (
-                  <div className="p-5 bg-[#0E1415] border border-[#2A3A3A] rounded-2xl space-y-3">
+                  <div className="p-5 bg-[#F3E8E8] border border-[#E7DADD] rounded-2xl space-y-3">
                     <div>
-                      <label className="block text-xs font-semibold text-[#9AAEAE] mb-1">Cardholder Name</label>
+                      <label className="block text-xs font-semibold text-[#57534E] mb-1">Cardholder Name</label>
                       <input
                         type="text"
                         value={cardDetails.name}
                         onChange={(e) => setCardDetails({ ...cardDetails, name: e.target.value })}
                         placeholder="Name on card"
-                        className="w-full bg-[#141D1E] border border-[#2A3A3A] rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-gray-500 outline-none focus:border-[#2DD4BF]"
+                        className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-gray-500 outline-none focus:border-[#B76E79]"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-[#9AAEAE] mb-1">Card Number</label>
+                      <label className="block text-xs font-semibold text-[#57534E] mb-1">Card Number</label>
                       <input
                         type="text"
                         value={cardDetails.number}
                         onChange={(e) => setCardDetails({ ...cardDetails, number: e.target.value })}
                         placeholder="4532 •••• •••• 8901"
                         maxLength={19}
-                        className="w-full bg-[#141D1E] border border-[#2A3A3A] rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-gray-500 outline-none focus:border-[#2DD4BF] font-mono"
+                        className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-gray-500 outline-none focus:border-[#B76E79] font-mono"
                       />
                     </div>
                     <div className="grid grid-cols-2 gap-3">
                       <div>
-                        <label className="block text-xs font-semibold text-[#9AAEAE] mb-1">Expiry Date</label>
+                        <label className="block text-xs font-semibold text-[#57534E] mb-1">Expiry Date</label>
                         <input
                           type="text"
                           value={cardDetails.expiry}
                           onChange={(e) => setCardDetails({ ...cardDetails, expiry: e.target.value })}
                           placeholder="MM/YY"
                           maxLength={5}
-                          className="w-full bg-[#141D1E] border border-[#2A3A3A] rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-gray-500 outline-none focus:border-[#2DD4BF]"
+                          className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-gray-500 outline-none focus:border-[#B76E79]"
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-semibold text-[#9AAEAE] mb-1">CVV</label>
+                        <label className="block text-xs font-semibold text-[#57534E] mb-1">CVV</label>
                         <input
                           type="password"
                           value={cardDetails.cvv}
                           onChange={(e) => setCardDetails({ ...cardDetails, cvv: e.target.value })}
                           placeholder="•••"
                           maxLength={4}
-                          className="w-full bg-[#141D1E] border border-[#2A3A3A] rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-gray-500 outline-none focus:border-[#2DD4BF]"
+                          className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-gray-500 outline-none focus:border-[#B76E79]"
                         />
                       </div>
                     </div>
@@ -524,12 +524,12 @@ const GymCheckout = () => {
                 )}
 
                 {paymentMethod === 'Net Banking' && (
-                  <div className="p-5 bg-[#0E1415] border border-[#2A3A3A] rounded-2xl space-y-3">
-                    <label className="block text-xs font-semibold text-[#9AAEAE] mb-1">Select Bank</label>
+                  <div className="p-5 bg-[#F3E8E8] border border-[#E7DADD] rounded-2xl space-y-3">
+                    <label className="block text-xs font-semibold text-[#57534E] mb-1">Select Bank</label>
                     <select
                       value={bankName}
                       onChange={(e) => setBankName(e.target.value)}
-                      className="w-full bg-[#141D1E] border border-[#2A3A3A] rounded-xl px-3.5 py-2.5 text-sm text-white outline-none focus:border-[#2DD4BF]"
+                      className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl px-3.5 py-2.5 text-sm text-white outline-none focus:border-[#B76E79]"
                     >
                       <option value="HDFC Bank">HDFC Bank</option>
                       <option value="State Bank of India">State Bank of India (SBI)</option>
@@ -542,7 +542,7 @@ const GymCheckout = () => {
                 )}
 
                 {paymentMethod === 'Cash at Gym' && (
-                  <div className="p-4 bg-[#2DD4BF]/10 border border-[#2DD4BF]/30 rounded-2xl text-xs text-[#2DD4BF] space-y-1">
+                  <div className="p-4 bg-[#B76E79]/10 border border-[#B76E79]/30 rounded-2xl text-xs text-[#B76E79] space-y-1">
                     <p className="font-bold">Pay At Gym Counter</p>
                     <p className="text-gray-300">Your membership package will be pre-registered. You can pay via Cash, POS card machine, or UPI at the front desk upon arrival.</p>
                   </div>
@@ -555,8 +555,8 @@ const GymCheckout = () => {
               onClick={handleCheckout}
               className={`w-full py-4 rounded-2xl font-bold text-base flex items-center justify-center space-x-2 transition-all shadow-lg ${
                 isProcessing
-                  ? 'bg-gray-800 text-[#9AAEAE] cursor-not-allowed'
-                  : 'bg-[#2DD4BF] text-white hover:bg-[#3651D4] cursor-pointer'
+                  ? 'bg-gray-800 text-[#57534E] cursor-not-allowed'
+                  : 'bg-[#B76E79] text-white hover:bg-[#3651D4] cursor-pointer'
               }`}
             >
               {isProcessing ? (
@@ -574,32 +574,32 @@ const GymCheckout = () => {
 
         {/* Right Column - Order Summary */}
         <div className="lg:w-1/3">
-          <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-3xl p-6 h-fit sticky top-24 shadow-2xl space-y-6">
-            <h3 className="text-lg font-bold text-white border-b border-[#2A3A3A] pb-3 flex items-center gap-2">
-              <FileText className="text-[#2DD4BF]" size={19} />
+          <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-3xl p-6 h-fit sticky top-24 shadow-2xl space-y-6">
+            <h3 className="text-lg font-bold text-[#292524] border-b border-[#E7DADD] pb-3 flex items-center gap-2">
+              <FileText className="text-[#B76E79]" size={19} />
               Order Summary
             </h3>
             
             <div className="space-y-3.5 text-sm">
               <div className="flex items-start gap-3">
-                <Building2 size={18} className="text-[#2DD4BF] shrink-0 mt-0.5" />
+                <Building2 size={18} className="text-[#B76E79] shrink-0 mt-0.5" />
                 <div>
                   <p className="font-bold text-white truncate">{gym.name || 'Selected Gym'}</p>
-                  <p className="text-xs text-[#9AAEAE]">{branch?.branchName ? `${branch.branchName} • ` : ''}{gym.location?.city || 'India'}</p>
+                  <p className="text-xs text-[#57534E]">{branch?.branchName ? `${branch.branchName} • ` : ''}{gym.location?.city || 'India'}</p>
                 </div>
               </div>
               
-              <div className="w-full h-px bg-[#2A3A3A]"></div>
+              <div className="w-full h-px bg-[#E7DADD]"></div>
               
-              <div className="bg-[#0E1415] p-3.5 rounded-2xl border border-[#2A3A3A] space-y-1">
+              <div className="bg-[#F3E8E8] p-3.5 rounded-2xl border border-[#E7DADD] space-y-1">
                 <div className="flex items-center justify-between">
                   <span className="font-bold text-sm text-white">{plan.name}</span>
-                  <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-[#2DD4BF]/15 text-[#2DD4BF] border border-[#2DD4BF]/20">
+                  <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-[#B76E79]/15 text-[#B76E79] border border-[#B76E79]/20">
                     {plan.duration || (isFreeTrial ? '1 Week' : '1 Month')}
                   </span>
                 </div>
                 {plan.features && (
-                  <p className="text-[11px] text-[#9AAEAE] line-clamp-2 mt-1">
+                  <p className="text-[11px] text-[#57534E] line-clamp-2 mt-1">
                     {Array.isArray(plan.features) ? plan.features.join(' • ') : plan.features}
                   </p>
                 )}
@@ -608,11 +608,11 @@ const GymCheckout = () => {
 
             {/* Referral Code Coupon Input */}
             {!isFreeTrial && (
-              <div className="p-3.5 bg-[#0E1415] rounded-2xl border border-[#2A3A3A] space-y-2.5">
+              <div className="p-3.5 bg-[#F3E8E8] rounded-2xl border border-[#E7DADD] space-y-2.5">
                 <div className="flex items-center justify-between text-xs font-bold text-white">
-                  <span className="flex items-center gap-1.5"><Gift size={14} className="text-[#2DD4BF]" /> Referral Code</span>
+                  <span className="flex items-center gap-1.5"><Gift size={14} className="text-[#B76E79]" /> Referral Code</span>
                   {appliedReferral && (
-                    <span className="text-[10px] text-emerald-400 bg-[#2DD4BF]/10 px-2 py-0.5 rounded-full font-bold border border-[#2A3A3A]/20">Applied</span>
+                    <span className="text-[10px] text-emerald-400 bg-[#B76E79]/10 px-2 py-0.5 rounded-full font-bold border border-[#E7DADD]/20">Applied</span>
                   )}
                 </div>
 
@@ -625,13 +625,13 @@ const GymCheckout = () => {
                       setRefError('');
                     }}
                     placeholder="Enter referral code"
-                    className="w-full bg-[#141D1E] border border-[#2A3A3A] rounded-xl px-3 py-1.5 text-xs text-white uppercase font-mono outline-none focus:border-[#2DD4BF]"
+                    className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl px-3 py-1.5 text-xs text-white uppercase font-mono outline-none focus:border-[#B76E79]"
                   />
                   <button
                     type="button"
                     disabled={!referralCodeInput || refChecking}
                     onClick={() => handleApplyReferral()}
-                    className="px-3.5 py-1.5 bg-[#2DD4BF] hover:bg-[#3651D4] disabled:bg-gray-800 disabled:text-[#9AAEAE] text-[#06201D] font-bold text-xs font-bold rounded-xl transition-all whitespace-nowrap cursor-pointer"
+                    className="px-3.5 py-1.5 bg-[#B76E79] hover:bg-[#3651D4] disabled:bg-gray-800 disabled:text-[#57534E] text-[#FFFFFF] font-bold text-xs font-bold rounded-xl transition-all whitespace-nowrap cursor-pointer"
                   >
                     {refChecking ? '...' : 'Apply'}
                   </button>
@@ -652,28 +652,28 @@ const GymCheckout = () => {
 
             {/* Referral Points Redemption Input */}
             {!isFreeTrial && rewardSettings?.enableMembershipDiscount !== false && userPointsBalance > 0 && (
-              <div className="p-3.5 bg-[#0E1415] rounded-2xl border border-[#2A3A3A] space-y-2.5">
+              <div className="p-3.5 bg-[#F3E8E8] rounded-2xl border border-[#E7DADD] space-y-2.5">
                 <div className="flex items-center justify-between">
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input
                       type="checkbox"
                       checked={usePoints}
                       onChange={(e) => setUsePoints(e.target.checked)}
-                      className="w-4 h-4 rounded text-[#2DD4BF] bg-[#141D1E] border-[#2A3A3A] focus:ring-0 cursor-pointer"
+                      className="w-4 h-4 rounded text-[#B76E79] bg-[#FFFFFF] border-[#E7DADD] focus:ring-0 cursor-pointer"
                     />
                     <span className="text-xs font-bold text-white flex items-center gap-1.5">
-                      <Coins size={14} className="text-[#2DD4BF]" />
+                      <Coins size={14} className="text-[#B76E79]" />
                       Redeem Referral Points
                     </span>
                   </label>
-                  <span className="text-[11px] font-bold text-[#2DD4BF]">
+                  <span className="text-[11px] font-bold text-[#B76E79]">
                     {userPointsBalance} pts available
                   </span>
                 </div>
 
                 {usePoints && (
-                  <div className="space-y-2 pt-2 border-t border-[#2A3A3A]/60">
-                    <div className="flex items-center justify-between text-[11px] text-[#9AAEAE]">
+                  <div className="space-y-2 pt-2 border-t border-[#E7DADD]/60">
+                    <div className="flex items-center justify-between text-[11px] text-[#57534E]">
                       <span>Points to Redeem:</span>
                       <span className="font-bold text-white">{pointsToRedeem} pts</span>
                     </div>
@@ -684,10 +684,10 @@ const GymCheckout = () => {
                       step={10}
                       value={pointsToRedeem}
                       onChange={(e) => setPointsToRedeem(Number(e.target.value))}
-                      className="w-full h-1.5 bg-[#2A3A3A] rounded-lg appearance-none cursor-pointer accent-[#2DD4BF]"
+                      className="w-full h-1.5 bg-[#E7DADD] rounded-lg appearance-none cursor-pointer accent-[#B76E79]"
                     />
                     <div className="flex items-center justify-between text-[11px]">
-                      <span className="text-[#9AAEAE]">
+                      <span className="text-[#57534E]">
                         Conversion: {convUnit} pts = ₹{rupeeUnit}
                       </span>
                       <span className="text-emerald-400 font-bold flex items-center gap-1">
@@ -699,9 +699,9 @@ const GymCheckout = () => {
               </div>
             )}
 
-            <div className="border-t border-[#2A3A3A] pt-4 space-y-2.5 text-sm">
+            <div className="border-t border-[#E7DADD] pt-4 space-y-2.5 text-sm">
               <div className="flex justify-between text-xs">
-                <span className="text-[#9AAEAE]">Package Price</span>
+                <span className="text-[#57534E]">Package Price</span>
                 <span className="text-white font-medium">
                   {isFreeTrial ? '₹0' : `₹${numPrice.toLocaleString('en-IN')}`}
                 </span>
@@ -720,16 +720,16 @@ const GymCheckout = () => {
               )}
               {!isFreeTrial && (
                 <div className="flex justify-between text-xs">
-                  <span className="text-[#9AAEAE]">Taxes (18% GST)</span>
+                  <span className="text-[#57534E]">Taxes (18% GST)</span>
                   <span className="text-white font-medium">₹{tax.toLocaleString('en-IN')}</span>
                 </div>
               )}
             </div>
 
-            <div className="border-t border-dashed border-[#2A3A3A] pt-4 flex justify-between items-end">
+            <div className="border-t border-dashed border-[#E7DADD] pt-4 flex justify-between items-end">
               <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-[#9AAEAE]">Total Payable</span>
-                {isFreeTrial && <p className="text-[11px] text-[#2DD4BF] font-semibold">No Payment Required</p>}
+                <span className="text-xs font-bold uppercase tracking-wider text-[#57534E]">Total Payable</span>
+                {isFreeTrial && <p className="text-[11px] text-[#B76E79] font-semibold">No Payment Required</p>}
               </div>
               <div className="text-right">
                 <div className="text-2xl font-black text-white">
@@ -738,7 +738,7 @@ const GymCheckout = () => {
               </div>
             </div>
             
-            <div className="mt-4 flex items-start gap-2 text-[11px] text-[#9AAEAE] bg-[#0E1415] p-3 rounded-xl border border-[#2A3A3A]">
+            <div className="mt-4 flex items-start gap-2 text-[11px] text-[#57534E] bg-[#F3E8E8] p-3 rounded-xl border border-[#E7DADD]">
               <ShieldCheck size={14} className="shrink-0 text-emerald-400 mt-0.5" />
               <p>Safe & Encrypted checkout. Instant membership activation with automated confirmation email.</p>
             </div>

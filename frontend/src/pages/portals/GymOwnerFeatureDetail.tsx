@@ -80,7 +80,7 @@ const FEATURE_CONFIGS: Record<string, FeatureConfig> = {
     subtitle: 'Streamline onboarding, contract renewals, status tracking, and automated retention alerts across all membership tiers.',
     tagline: 'MEMBER OPS & DIRECTORY',
     icon: Users,
-    accentColor: '#2DD4BF',
+    accentColor: '#B76E79',
     liveRoute: '/admin/members',
     liveLabel: 'Launch Member Management',
     kpis: [
@@ -179,7 +179,7 @@ const FEATURE_CONFIGS: Record<string, FeatureConfig> = {
     subtitle: 'Manage fitness staff schedules, assign personal training clients, monitor performance ratings, and automate commission payroll.',
     tagline: 'STAFF & COACHING ROSTER',
     icon: Dumbbell,
-    accentColor: '#2DD4BF',
+    accentColor: '#B76E79',
     liveRoute: '/admin/trainers',
     liveLabel: 'Open Trainer Rosters',
     kpis: [
@@ -278,7 +278,7 @@ const FEATURE_CONFIGS: Record<string, FeatureConfig> = {
     subtitle: 'Track member and staff check-ins with dynamic QR codes, monitor gym floor capacity, and prevent unauthorized access.',
     tagline: 'ACCESS CONTROL & OCCUPANCY',
     icon: CalendarCheck,
-    accentColor: '#2DD4BF',
+    accentColor: '#B76E79',
     liveRoute: '/admin/attendance',
     liveLabel: 'Open Attendance Logs',
     kpis: [
@@ -377,7 +377,7 @@ const FEATURE_CONFIGS: Record<string, FeatureConfig> = {
     subtitle: 'Sell supplements, merchandise, and gym beverages. Track inventory reorder points and record offline cash/card sales.',
     tagline: 'GYM STORE & MERCHANDISE',
     icon: ShoppingBag,
-    accentColor: '#2DD4BF',
+    accentColor: '#B76E79',
     liveRoute: '/admin/store',
     liveLabel: 'Open Store Dashboard',
     kpis: [
@@ -476,7 +476,7 @@ const FEATURE_CONFIGS: Record<string, FeatureConfig> = {
     subtitle: 'Comprehensive financial dashboards, profit-loss statements, tax breakdowns, and automated audited reports.',
     tagline: 'FINANCIAL INTELLIGENCE',
     icon: TrendingUp,
-    accentColor: '#2DD4BF',
+    accentColor: '#B76E79',
     liveRoute: '/admin/revenue-analytics',
     liveLabel: 'View Revenue Analytics',
     kpis: [
@@ -575,7 +575,7 @@ const FEATURE_CONFIGS: Record<string, FeatureConfig> = {
     subtitle: 'Engage members with automated workout milestones, club leaderboards, and organic viral referral rewards.',
     tagline: 'GAMIFICATION & VIRAL GROWTH',
     icon: Gift,
-    accentColor: '#2DD4BF',
+    accentColor: '#B76E79',
     liveRoute: '/admin/rewards-performance',
     liveLabel: 'Manage Rewards Engine',
     kpis: [
@@ -778,30 +778,30 @@ export default function GymOwnerFeatureDetail() {
   };
 
   return (
-    <div className="min-h-screen bg-[#080B0C] text-[#F5FAFA] selection:bg-[#2DD4BF] selection:text-black">
+    <div className="min-h-screen bg-[#FFFFFF] text-[#292524] selection:bg-[#B76E79] selection:text-black">
       {/* Top Navigation */}
-      <nav className="border-b border-[#2A3A3A] bg-[#0E1415]/90 backdrop-blur-md sticky top-0 z-40">
+      <nav className="border-b border-[#E7DADD] bg-[#F3E8E8]/90 backdrop-blur-md sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <Link
               to="/portal/gym-owner"
               className="flex items-center space-x-2 text-slate-400 hover:text-white transition-colors group mr-4"
             >
-              <div className="w-8 h-8 rounded-lg bg-[#141D1E] border border-[#2A3A3A] flex items-center justify-center group-hover:border-[#2DD4BF]/50">
-                <ArrowLeft size={16} className="text-[#2DD4BF]" />
+              <div className="w-8 h-8 rounded-lg bg-[#FFFFFF] border border-[#E7DADD] flex items-center justify-center group-hover:border-[#B76E79]/50">
+                <ArrowLeft size={16} className="text-[#B76E79]" />
               </div>
               <span className="text-xs font-semibold hidden sm:inline">Back to Gym Owner</span>
             </Link>
 
-            <div className="h-5 w-px bg-[#2A3A3A] hidden sm:block" />
+            <div className="h-5 w-px bg-[#E7DADD] hidden sm:block" />
 
             <div className="flex items-center space-x-2">
-              <div className="w-9 h-9 bg-[#2DD4BF] rounded-xl flex items-center justify-center shadow-lg shadow-[#2DD4BF]/20">
+              <div className="w-9 h-9 bg-[#B76E79] rounded-xl flex items-center justify-center shadow-lg shadow-[#B76E79]/20">
                 <Activity className="text-black" size={20} />
               </div>
               <div>
                 <span className="text-base font-bold text-white block leading-tight">Gymora</span>
-                <span className="text-[10px] text-[#2DD4BF] font-semibold uppercase tracking-wider block">
+                <span className="text-[10px] text-[#B76E79] font-semibold uppercase tracking-wider block">
                   Gym Owner Ecosystem
                 </span>
               </div>
@@ -811,7 +811,7 @@ export default function GymOwnerFeatureDetail() {
           <div className="flex items-center space-x-3">
             <Link
               to="/portal/gym-owner"
-              className="px-4 py-2 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-black font-bold rounded-xl text-xs sm:text-sm transition-all shadow-md shadow-[#2DD4BF]/25 flex items-center gap-2"
+              className="px-4 py-2 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold rounded-xl text-xs sm:text-sm transition-all shadow-md shadow-[#B76E79]/20 flex items-center gap-2"
             >
               <span>Portal Overview</span>
               <ChevronRight size={14} />
@@ -821,7 +821,7 @@ export default function GymOwnerFeatureDetail() {
       </nav>
 
       {/* Module Switcher Tabs */}
-      <div className="border-b border-[#2A3A3A] bg-[#0E1415] overflow-x-auto">
+      <div className="border-b border-[#E7DADD] bg-[#F3E8E8] overflow-x-auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center space-x-1 py-2">
           {allModules.map((mod) => {
             const Icon = mod.icon;
@@ -832,11 +832,11 @@ export default function GymOwnerFeatureDetail() {
                 onClick={() => navigate(`/portal/gym-owner/${mod.id}`)}
                 className={`px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 whitespace-nowrap transition-all ${
                   isActive
-                    ? 'bg-[#2DD4BF] text-black shadow-md shadow-[#2DD4BF]/20 font-bold'
-                    : 'text-slate-400 hover:text-white hover:bg-[#141D1E]'
+                    ? 'bg-[#B76E79] text-white shadow-md shadow-[#B76E79]/20 font-bold'
+                    : 'text-slate-400 hover:text-white hover:bg-[#FFFFFF]'
                 }`}
               >
-                <Icon size={14} className={isActive ? 'text-black' : 'text-[#2DD4BF]'} />
+                <Icon size={14} className={isActive ? 'text-black' : 'text-[#B76E79]'} />
                 <span>{mod.label}</span>
               </button>
             );
@@ -845,12 +845,12 @@ export default function GymOwnerFeatureDetail() {
       </div>
 
       {/* Hero Section */}
-      <header className="relative py-16 px-4 sm:px-6 lg:px-8 border-b border-[#2A3A3A] bg-gradient-to-b from-[#0E1415] via-[#080B0C] to-[#080B0C] overflow-hidden">
-        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#2DD4BF_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none" />
+      <header className="relative py-16 px-4 sm:px-6 lg:px-8 border-b border-[#E7DADD] bg-gradient-to-b from-[#F3E8E8] via-[#FFFFFF] to-[#FFFFFF] overflow-hidden">
+        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#B76E79_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none" />
 
         <div className="max-w-5xl mx-auto relative z-10 space-y-6">
           <div className="flex items-center gap-2">
-            <span className="px-3 py-1 rounded-full bg-[#2DD4BF]/10 text-[#2DD4BF] border border-[#2DD4BF]/30 text-xs font-bold uppercase tracking-wider flex items-center gap-1.5">
+            <span className="px-3 py-1 rounded-full bg-[#B76E79]/10 text-[#B76E79] border border-[#B76E79]/30 text-xs font-bold uppercase tracking-wider flex items-center gap-1.5">
               <config.icon size={14} />
               {config.tagline}
             </span>
@@ -858,7 +858,7 @@ export default function GymOwnerFeatureDetail() {
             <span className="text-xs text-slate-400">Gym Owner Enterprise Module</span>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight leading-tight">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#292524] tracking-tight leading-tight">
             {config.title}
           </h1>
 
@@ -871,13 +871,13 @@ export default function GymOwnerFeatureDetail() {
             {config.kpis.map((kpi, idx) => (
               <div
                 key={idx}
-                className="bg-[#141D1E] border border-[#2A3A3A] p-4 rounded-2xl flex flex-col justify-between"
+                className="bg-[#FFFFFF] border border-[#E7DADD] p-4 rounded-2xl flex flex-col justify-between"
               >
                 <span className="text-xs text-slate-400 font-medium">{kpi.label}</span>
                 <div className="my-1">
                   <span className="text-2xl font-black text-white font-mono">{kpi.value}</span>
                 </div>
-                <span className="text-[11px] font-semibold text-[#2DD4BF] flex items-center gap-1">
+                <span className="text-[11px] font-semibold text-[#B76E79] flex items-center gap-1">
                   <Sparkles size={11} /> {kpi.change}
                 </span>
               </div>
@@ -891,10 +891,10 @@ export default function GymOwnerFeatureDetail() {
         {/* SECTION 1: VISUAL FLOWCHART */}
         <section className="space-y-8">
           <div className="max-w-3xl">
-            <span className="text-xs font-bold uppercase tracking-widest text-[#2DD4BF] block mb-2">
+            <span className="text-xs font-bold uppercase tracking-widest text-[#B76E79] block mb-2">
               SYSTEM ARCHITECTURE & PROCESS FLOW
             </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#292524]">
               {config.flowchartTitle}
             </h2>
             <p className="text-sm text-slate-400 mt-2">
@@ -903,22 +903,22 @@ export default function GymOwnerFeatureDetail() {
           </div>
 
           {/* Flowchart Diagram Card Container */}
-          <div className="bg-[#0E1415] border border-[#2A3A3A] rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
+          <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative">
               {config.flowSteps.map((step, idx) => (
                 <div
                   key={idx}
-                  className="bg-[#141D1E] border border-[#2A3A3A] hover:border-[#2DD4BF]/50 rounded-2xl p-5 transition-all flex flex-col justify-between space-y-4 relative group"
+                  className="bg-[#FFFFFF] border border-[#E7DADD] hover:border-[#B76E79]/50 rounded-2xl p-5 transition-all flex flex-col justify-between space-y-4 relative group"
                 >
                   {/* Step Header */}
                   <div>
                     <div className="flex items-center justify-between mb-3">
-                      <span className="text-2xl font-black font-mono text-[#2DD4BF]/40 group-hover:text-[#2DD4BF] transition-colors">
+                      <span className="text-2xl font-black font-mono text-[#B76E79]/40 group-hover:text-[#B76E79] transition-colors">
                         {step.step}
                       </span>
                       <div className="flex items-center gap-2">
                         {step.badge && (
-                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#1B2728] text-slate-300 border border-[#2A3A3A]">
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#F3E8E8] text-slate-300 border border-[#E7DADD]">
                             {step.badge}
                           </span>
                         )}
@@ -927,7 +927,7 @@ export default function GymOwnerFeatureDetail() {
                             step.actor === 'Gym Owner'
                               ? 'bg-purple-500/10 text-purple-300 border border-purple-500/30'
                               : step.actor === 'System AI'
-                              ? 'bg-[#2DD4BF]/10 text-[#2DD4BF] border border-[#2DD4BF]/30'
+                              ? 'bg-[#B76E79]/10 text-[#B76E79] border border-[#B76E79]/30'
                               : step.actor === 'Trainer'
                               ? 'bg-amber-500/10 text-amber-300 border border-amber-500/30'
                               : 'bg-blue-500/10 text-blue-300 border border-blue-500/30'
@@ -938,7 +938,7 @@ export default function GymOwnerFeatureDetail() {
                       </div>
                     </div>
 
-                    <h3 className="text-base font-bold text-white mb-2 group-hover:text-[#2DD4BF] transition-colors">
+                    <h3 className="text-base font-bold text-[#292524] mb-2 group-hover:text-[#B76E79] transition-colors">
                       {step.title}
                     </h3>
 
@@ -948,7 +948,7 @@ export default function GymOwnerFeatureDetail() {
                   </div>
 
                   {/* Step Output Footer */}
-                  <div className="pt-3 border-t border-[#2A3A3A] flex items-center justify-between text-[11px]">
+                  <div className="pt-3 border-t border-[#E7DADD] flex items-center justify-between text-[11px]">
                     <span className="text-slate-500">Output:</span>
                     <span className="font-semibold text-slate-200 truncate max-w-[180px]">
                       {step.output}
@@ -959,14 +959,14 @@ export default function GymOwnerFeatureDetail() {
             </div>
 
             {/* Connecting Legend */}
-            <div className="mt-8 pt-6 border-t border-[#2A3A3A] flex flex-wrap items-center justify-between gap-4 text-xs text-slate-400">
+            <div className="mt-8 pt-6 border-t border-[#E7DADD] flex flex-wrap items-center justify-between gap-4 text-xs text-slate-400">
               <div className="flex flex-wrap items-center gap-4">
                 <span className="font-semibold text-white">Flow Actors:</span>
                 <span className="flex items-center gap-1.5">
                   <span className="w-2.5 h-2.5 rounded-full bg-purple-400" /> Gym Owner Manual Trigger
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#2DD4BF]" /> System AI & Background Cron
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#B76E79]" /> System AI & Background Cron
                 </span>
                 <span className="flex items-center gap-1.5">
                   <span className="w-2.5 h-2.5 rounded-full bg-blue-400" /> Member Interaction
@@ -975,7 +975,7 @@ export default function GymOwnerFeatureDetail() {
                   <span className="w-2.5 h-2.5 rounded-full bg-amber-400" /> Trainer Floor Action
                 </span>
               </div>
-              <div className="flex items-center gap-2 text-[#2DD4BF]">
+              <div className="flex items-center gap-2 text-[#B76E79]">
                 <Zap size={14} />
                 <span className="font-semibold">Fully automated cloud state transitions</span>
               </div>
@@ -989,10 +989,10 @@ export default function GymOwnerFeatureDetail() {
           <section className="space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
-                <span className="text-xs font-bold text-[#2DD4BF] uppercase tracking-wider block mb-1">
+                <span className="text-xs font-bold text-[#B76E79] uppercase tracking-wider block mb-1">
                   LIVE DIRECTORY & RETENTION WORKSPACE
                 </span>
-                <h3 className="text-2xl font-bold text-white">Active Member Roster & Expiry Alerts</h3>
+                <h3 className="text-2xl font-bold text-[#292524]">Active Member Roster & Expiry Alerts</h3>
                 <p className="text-xs text-slate-400 mt-0.5">
                   Monitor contract renewal deadlines, trigger automated WhatsApp notifications, and process plan renewals
                 </p>
@@ -1006,17 +1006,17 @@ export default function GymOwnerFeatureDetail() {
                     placeholder="Search member..."
                     value={memberSearch}
                     onChange={(e) => setMemberSearch(e.target.value)}
-                    className="bg-[#0E1415] border border-[#2A3A3A] rounded-xl pl-8 pr-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#2DD4BF]"
+                    className="bg-[#F3E8E8] border border-[#E7DADD] rounded-xl pl-8 pr-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#B76E79]"
                   />
                 </div>
-                <div className="flex items-center gap-1 bg-[#0E1415] p-1 rounded-xl border border-[#2A3A3A]">
+                <div className="flex items-center gap-1 bg-[#F3E8E8] p-1 rounded-xl border border-[#E7DADD]">
                   {['All', 'Active', 'Expiring Soon', 'Expired'].map((filter) => (
                     <button
                       key={filter}
                       onClick={() => setMemberFilter(filter)}
                       className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${
                         memberFilter === filter
-                          ? 'bg-[#2DD4BF] text-black shadow-md shadow-[#2DD4BF]/20'
+                          ? 'bg-[#B76E79] text-white shadow-md shadow-[#B76E79]/20'
                           : 'text-slate-400 hover:text-white'
                       }`}
                     >
@@ -1027,10 +1027,10 @@ export default function GymOwnerFeatureDetail() {
               </div>
             </div>
 
-            <div className="bg-[#0E1415] border border-[#2A3A3A] rounded-3xl p-6 shadow-xl space-y-4">
+            <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-3xl p-6 shadow-xl space-y-4">
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-[#141D1E] text-slate-400 uppercase text-[10px] font-bold border-b border-[#2A3A3A]">
+                  <thead className="bg-[#FFFFFF] text-slate-400 uppercase text-[10px] font-bold border-b border-[#E7DADD]">
                     <tr>
                       <th className="px-5 py-3.5">Member Name</th>
                       <th className="px-5 py-3.5">Contact Phone</th>
@@ -1041,14 +1041,14 @@ export default function GymOwnerFeatureDetail() {
                       <th className="px-5 py-3.5 text-right">Retention Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#2A3A3A]">
+                  <tbody className="divide-y divide-[#E7DADD]">
                     {membersList
                       .filter(m => memberFilter === 'All' || m.status === memberFilter)
                       .filter(m => m.name.toLowerCase().includes(memberSearch.toLowerCase()))
                       .map((member) => (
-                        <tr key={member.id} className="hover:bg-[#141D1E]/40 transition-colors">
+                        <tr key={member.id} className="hover:bg-[#FFFFFF]/40 transition-colors">
                           <td className="px-5 py-3.5 font-bold text-white flex items-center gap-2">
-                            <div className="w-7 h-7 rounded-full bg-[#1B2728] border border-[#2A3A3A] flex items-center justify-center text-[#2DD4BF] text-xs font-bold">
+                            <div className="w-7 h-7 rounded-full bg-[#F3E8E8] border border-[#E7DADD] flex items-center justify-center text-[#B76E79] text-xs font-bold">
                               {member.name.charAt(0)}
                             </div>
                             {member.name}
@@ -1078,7 +1078,7 @@ export default function GymOwnerFeatureDetail() {
                                   className={`px-2.5 py-1 text-[11px] font-bold rounded-lg border transition-all flex items-center gap-1 ${
                                     member.alerted
                                       ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
-                                      : 'bg-[#141D1E] hover:bg-[#2A3A3A] text-slate-300 border-[#2A3A3A]'
+                                      : 'bg-[#FFFFFF] hover:bg-[#E7DADD] text-slate-300 border-[#E7DADD]'
                                   }`}
                                 >
                                   <Send size={11} /> {member.alerted ? 'Alert Sent' : 'WhatsApp Notice'}
@@ -1086,7 +1086,7 @@ export default function GymOwnerFeatureDetail() {
                               )}
                               <button
                                 onClick={() => handleRenewMember(member.id)}
-                                className="px-3 py-1 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-black font-bold text-[11px] rounded-lg transition-colors"
+                                className="px-3 py-1 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold text-[11px] rounded-lg transition-colors"
                               >
                                 Renew Plan
                               </button>
@@ -1106,17 +1106,17 @@ export default function GymOwnerFeatureDetail() {
           <section className="space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
-                <span className="text-xs font-bold text-[#2DD4BF] uppercase tracking-wider block mb-1">
+                <span className="text-xs font-bold text-[#B76E79] uppercase tracking-wider block mb-1">
                   COACHING ROSTER & COMMISSION ENGINE
                 </span>
-                <h3 className="text-2xl font-bold text-white">Staff Rosters, Capacity & Split Payouts</h3>
+                <h3 className="text-2xl font-bold text-[#292524]">Staff Rosters, Capacity & Split Payouts</h3>
                 <p className="text-xs text-slate-400 mt-0.5">
                   Track client load per trainer, manage session hourly rates, and calculate commission splits
                 </p>
               </div>
 
-              <div className="flex items-center gap-3 bg-[#0E1415] border border-[#2A3A3A] px-4 py-2 rounded-2xl">
-                <Dumbbell size={18} className="text-[#2DD4BF]" />
+              <div className="flex items-center gap-3 bg-[#F3E8E8] border border-[#E7DADD] px-4 py-2 rounded-2xl">
+                <Dumbbell size={18} className="text-[#B76E79]" />
                 <div>
                   <span className="text-[10px] text-slate-400 block font-bold uppercase">Roster Capacity</span>
                   <span className="text-sm font-black text-white">79 / 90 Clients Filled (88%)</span>
@@ -1124,10 +1124,10 @@ export default function GymOwnerFeatureDetail() {
               </div>
             </div>
 
-            <div className="bg-[#0E1415] border border-[#2A3A3A] rounded-3xl p-6 shadow-xl space-y-4">
+            <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-3xl p-6 shadow-xl space-y-4">
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-[#141D1E] text-slate-400 uppercase text-[10px] font-bold border-b border-[#2A3A3A]">
+                  <thead className="bg-[#FFFFFF] text-slate-400 uppercase text-[10px] font-bold border-b border-[#E7DADD]">
                     <tr>
                       <th className="px-5 py-3.5">Trainer Name</th>
                       <th className="px-5 py-3.5">Specialization</th>
@@ -1138,11 +1138,11 @@ export default function GymOwnerFeatureDetail() {
                       <th className="px-5 py-3.5 text-right">Roster Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#2A3A3A]">
+                  <tbody className="divide-y divide-[#E7DADD]">
                     {trainersList.map((trainer) => (
-                      <tr key={trainer.id} className="hover:bg-[#141D1E]/40 transition-colors">
+                      <tr key={trainer.id} className="hover:bg-[#FFFFFF]/40 transition-colors">
                         <td className="px-5 py-3.5 font-bold text-white flex items-center gap-2">
-                          <div className="w-7 h-7 rounded-full bg-[#1B2728] border border-[#2A3A3A] flex items-center justify-center text-[#2DD4BF] text-xs font-bold">
+                          <div className="w-7 h-7 rounded-full bg-[#F3E8E8] border border-[#E7DADD] flex items-center justify-center text-[#B76E79] text-xs font-bold">
                             {trainer.name.charAt(0)}
                           </div>
                           {trainer.name}
@@ -1152,7 +1152,7 @@ export default function GymOwnerFeatureDetail() {
                           {trainer.clients} / {trainer.maxClients} Clients
                         </td>
                         <td className="px-5 py-3.5">
-                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#2DD4BF]/10 text-[#2DD4BF] border border-[#2DD4BF]/20">
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#B76E79]/10 text-[#B76E79] border border-[#B76E79]/20">
                             {trainer.split}
                           </span>
                         </td>
@@ -1163,7 +1163,7 @@ export default function GymOwnerFeatureDetail() {
                         <td className="px-5 py-3.5 text-right">
                           <button
                             onClick={() => handleAssignClient(trainer.id)}
-                            className="px-3 py-1 bg-[#141D1E] hover:bg-[#2DD4BF] hover:text-black text-[#2DD4BF] border border-[#2A3A3A] font-bold text-[11px] rounded-lg transition-colors"
+                            className="px-3 py-1 bg-[#FFFFFF] hover:bg-[#B76E79] hover:text-black text-[#B76E79] border border-[#E7DADD] font-bold text-[11px] rounded-lg transition-colors"
                           >
                             + Assign Client
                           </button>
@@ -1182,27 +1182,27 @@ export default function GymOwnerFeatureDetail() {
           <section className="space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
-                <span className="text-xs font-bold text-[#2DD4BF] uppercase tracking-wider block mb-1">
+                <span className="text-xs font-bold text-[#B76E79] uppercase tracking-wider block mb-1">
                   ACCESS CONTROL TELEMETRY
                 </span>
-                <h3 className="text-2xl font-bold text-white">Contactless QR Turnstile & Live Check-in Stream</h3>
+                <h3 className="text-2xl font-bold text-[#292524]">Contactless QR Turnstile & Live Check-in Stream</h3>
                 <p className="text-xs text-slate-400 mt-0.5">
                   Verify gate punch-ins, monitor peak gym hours, and test instant entry validation
                 </p>
               </div>
 
               {/* Checkin simulator */}
-              <div className="flex items-center gap-2 bg-[#0E1415] border border-[#2A3A3A] p-1.5 rounded-2xl">
+              <div className="flex items-center gap-2 bg-[#F3E8E8] border border-[#E7DADD] p-1.5 rounded-2xl">
                 <input
                   type="text"
                   placeholder="Enter member name..."
                   value={punchMemberName}
                   onChange={(e) => setPunchMemberName(e.target.value)}
-                  className="bg-[#141D1E] border border-[#2A3A3A] rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-[#2DD4BF]"
+                  className="bg-[#FFFFFF] border border-[#E7DADD] rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-[#B76E79]"
                 />
                 <button
                   onClick={handlePunchIn}
-                  className="px-3 py-1.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-black font-bold text-xs rounded-xl transition-all shadow-md shadow-[#2DD4BF]/20 flex items-center gap-1.5"
+                  className="px-3 py-1.5 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold text-xs rounded-xl transition-all shadow-md shadow-[#B76E79]/20 flex items-center gap-1.5"
                 >
                   <QrCode size={13} />
                   <span>Simulate QR Punch</span>
@@ -1210,15 +1210,15 @@ export default function GymOwnerFeatureDetail() {
               </div>
             </div>
 
-            <div className="bg-[#0E1415] border border-[#2A3A3A] rounded-3xl p-6 shadow-xl space-y-4">
-              <h4 className="text-base font-bold text-white flex items-center gap-2">
-                <CalendarCheck size={16} className="text-[#2DD4BF]" />
+            <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-3xl p-6 shadow-xl space-y-4">
+              <h4 className="text-base font-bold text-[#292524] flex items-center gap-2">
+                <CalendarCheck size={16} className="text-[#B76E79]" />
                 <span>Today's Real-Time Access Log Stream ({attendanceLogs.length} Entries)</span>
               </h4>
 
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-[#141D1E] text-slate-400 uppercase text-[10px] font-bold border-b border-[#2A3A3A]">
+                  <thead className="bg-[#FFFFFF] text-slate-400 uppercase text-[10px] font-bold border-b border-[#E7DADD]">
                     <tr>
                       <th className="px-5 py-3.5">Member Name</th>
                       <th className="px-5 py-3.5">Check-in Timestamp</th>
@@ -1227,14 +1227,14 @@ export default function GymOwnerFeatureDetail() {
                       <th className="px-5 py-3.5 text-right">Access Validation</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#2A3A3A]">
+                  <tbody className="divide-y divide-[#E7DADD]">
                     {attendanceLogs.map((log) => (
-                      <tr key={log.id} className="hover:bg-[#141D1E]/40 transition-colors">
+                      <tr key={log.id} className="hover:bg-[#FFFFFF]/40 transition-colors">
                         <td className="px-5 py-3.5 font-bold text-white flex items-center gap-2">
                           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                           {log.name}
                         </td>
-                        <td className="px-5 py-3.5 font-mono text-[#2DD4BF]">{log.time}</td>
+                        <td className="px-5 py-3.5 font-mono text-[#B76E79]">{log.time}</td>
                         <td className="px-5 py-3.5 text-slate-300">{log.gate}</td>
                         <td className="px-5 py-3.5 text-slate-400">{log.plan}</td>
                         <td className="px-5 py-3.5 text-right">
@@ -1256,28 +1256,28 @@ export default function GymOwnerFeatureDetail() {
           <section className="space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
-                <span className="text-xs font-bold text-[#2DD4BF] uppercase tracking-wider block mb-1">
+                <span className="text-xs font-bold text-[#B76E79] uppercase tracking-wider block mb-1">
                   SUPPLEMENT & MERCHANDISE DESK
                 </span>
-                <h3 className="text-2xl font-bold text-white">POS Inventory Counter & Stock Alerts</h3>
+                <h3 className="text-2xl font-bold text-[#292524]">POS Inventory Counter & Stock Alerts</h3>
                 <p className="text-xs text-slate-400 mt-0.5">
                   Manage supplement shelf inventory, trigger quick barcode sales, and monitor low stock warnings
                 </p>
               </div>
 
-              <div className="flex items-center gap-3 bg-[#0E1415] border border-[#2A3A3A] px-4 py-2 rounded-2xl">
-                <ShoppingBag size={18} className="text-[#2DD4BF]" />
+              <div className="flex items-center gap-3 bg-[#F3E8E8] border border-[#E7DADD] px-4 py-2 rounded-2xl">
+                <ShoppingBag size={18} className="text-[#B76E79]" />
                 <div>
                   <span className="text-[10px] text-slate-400 block font-bold uppercase">Quick Register Cart</span>
-                  <span className="text-sm font-black text-[#2DD4BF] font-mono">₹{posBillTotal.toLocaleString()} Total</span>
+                  <span className="text-sm font-black text-[#B76E79] font-mono">₹{posBillTotal.toLocaleString()} Total</span>
                 </div>
               </div>
             </div>
 
-            <div className="bg-[#0E1415] border border-[#2A3A3A] rounded-3xl p-6 shadow-xl space-y-4">
+            <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-3xl p-6 shadow-xl space-y-4">
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-[#141D1E] text-slate-400 uppercase text-[10px] font-bold border-b border-[#2A3A3A]">
+                  <thead className="bg-[#FFFFFF] text-slate-400 uppercase text-[10px] font-bold border-b border-[#E7DADD]">
                     <tr>
                       <th className="px-5 py-3.5">Product Title</th>
                       <th className="px-5 py-3.5">Category</th>
@@ -1287,9 +1287,9 @@ export default function GymOwnerFeatureDetail() {
                       <th className="px-5 py-3.5 text-right">POS Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#2A3A3A]">
+                  <tbody className="divide-y divide-[#E7DADD]">
                     {storeProducts.map((prod) => (
-                      <tr key={prod.id} className="hover:bg-[#141D1E]/40 transition-colors">
+                      <tr key={prod.id} className="hover:bg-[#FFFFFF]/40 transition-colors">
                         <td className="px-5 py-3.5 font-bold text-white">{prod.name}</td>
                         <td className="px-5 py-3.5 text-slate-400">{prod.category}</td>
                         <td className="px-5 py-3.5 font-mono font-bold text-slate-200">₹{prod.price.toLocaleString()}</td>
@@ -1309,13 +1309,13 @@ export default function GymOwnerFeatureDetail() {
                           <div className="flex items-center justify-end gap-2">
                             <button
                               onClick={() => handleRestockProduct(prod.id)}
-                              className="px-2.5 py-1 bg-[#141D1E] hover:bg-[#2A3A3A] text-slate-300 border border-[#2A3A3A] text-[11px] font-bold rounded-lg transition-colors"
+                              className="px-2.5 py-1 bg-[#FFFFFF] hover:bg-[#E7DADD] text-slate-300 border border-[#E7DADD] text-[11px] font-bold rounded-lg transition-colors"
                             >
                               + Restock 10
                             </button>
                             <button
                               onClick={() => handleAddProductToPOS(prod.price)}
-                              className="px-3 py-1 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-black font-bold text-[11px] rounded-lg transition-colors"
+                              className="px-3 py-1 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold text-[11px] rounded-lg transition-colors"
                             >
                               Sell Unit
                             </button>
@@ -1335,10 +1335,10 @@ export default function GymOwnerFeatureDetail() {
           <section className="space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
-                <span className="text-xs font-bold text-[#2DD4BF] uppercase tracking-wider block mb-1">
+                <span className="text-xs font-bold text-[#B76E79] uppercase tracking-wider block mb-1">
                   FINANCIAL PERFORMANCE & P&L
                 </span>
-                <h3 className="text-2xl font-bold text-white">Revenue Splits & Cashflow Forecasting</h3>
+                <h3 className="text-2xl font-bold text-[#292524]">Revenue Splits & Cashflow Forecasting</h3>
                 <p className="text-xs text-slate-400 mt-0.5">
                   Macro financial breakdown of membership fees, PT allocations, and retail store profits
                 </p>
@@ -1350,22 +1350,22 @@ export default function GymOwnerFeatureDetail() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-              <div className="bg-[#0E1415] border border-[#2A3A3A] rounded-2xl p-4">
+              <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-2xl p-4">
                 <span className="text-xs text-slate-400 font-bold block">Monthly Gross Collections</span>
                 <span className="text-2xl font-black text-white font-mono">₹4,85,000</span>
                 <span className="text-[10px] text-emerald-400 block mt-1">₹38,000 higher than target</span>
               </div>
-              <div className="bg-[#0E1415] border border-[#2A3A3A] rounded-2xl p-4">
+              <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-2xl p-4">
                 <span className="text-xs text-slate-400 font-bold block">Membership Dues (65%)</span>
-                <span className="text-2xl font-black text-[#2DD4BF] font-mono">₹3,15,000</span>
+                <span className="text-2xl font-black text-[#B76E79] font-mono">₹3,15,000</span>
                 <span className="text-[10px] text-slate-400 block mt-1">142 Active subscriptions</span>
               </div>
-              <div className="bg-[#0E1415] border border-[#2A3A3A] rounded-2xl p-4">
+              <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-2xl p-4">
                 <span className="text-xs text-slate-400 font-bold block">Personal Training (26%)</span>
                 <span className="text-2xl font-black text-amber-400 font-mono">₹1,25,000</span>
                 <span className="text-[10px] text-slate-400 block mt-1">79 Clients on PT packages</span>
               </div>
-              <div className="bg-[#0E1415] border border-[#2A3A3A] rounded-2xl p-4">
+              <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-2xl p-4">
                 <span className="text-xs text-slate-400 font-bold block">Net Operating Margin</span>
                 <span className="text-2xl font-black text-emerald-400 font-mono">44.2%</span>
                 <span className="text-[10px] text-slate-400 block mt-1">₹2,14,000 net profit after rent</span>
@@ -1379,36 +1379,36 @@ export default function GymOwnerFeatureDetail() {
           <section className="space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
-                <span className="text-xs font-bold text-[#2DD4BF] uppercase tracking-wider block mb-1">
+                <span className="text-xs font-bold text-[#B76E79] uppercase tracking-wider block mb-1">
                   GAMIFICATION & LOYALTY ENGINE
                 </span>
-                <h3 className="text-2xl font-bold text-white">Referral Code Engine & Voucher Store</h3>
+                <h3 className="text-2xl font-bold text-[#292524]">Referral Code Engine & Voucher Store</h3>
                 <p className="text-xs text-slate-400 mt-0.5">
                   Generate personalized member referral codes, monitor point balances, and distribute rewards
                 </p>
               </div>
 
               {/* Code generator input */}
-              <div className="flex items-center gap-2 bg-[#0E1415] border border-[#2A3A3A] p-1.5 rounded-2xl">
+              <div className="flex items-center gap-2 bg-[#F3E8E8] border border-[#E7DADD] p-1.5 rounded-2xl">
                 <input
                   type="text"
                   placeholder="Member name..."
                   value={referralMember}
                   onChange={(e) => setReferralMember(e.target.value)}
-                  className="bg-[#141D1E] border border-[#2A3A3A] rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-[#2DD4BF]"
+                  className="bg-[#FFFFFF] border border-[#E7DADD] rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-[#B76E79]"
                 />
                 <button
                   onClick={handleGenerateCode}
-                  className="px-3 py-1.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-black font-bold text-xs rounded-xl transition-all shadow-md shadow-[#2DD4BF]/20 flex items-center gap-1"
+                  className="px-3 py-1.5 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold text-xs rounded-xl transition-all shadow-md shadow-[#B76E79]/20 flex items-center gap-1"
                 >
                   <Sparkles size={12} /> Generate Code
                 </button>
               </div>
             </div>
 
-            <div className="bg-[#0E1415] border border-[#2A3A3A] rounded-2xl p-4 flex items-center justify-between">
+            <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-2xl p-4 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center font-bold">
+                <div className="w-10 h-10 rounded-xl bg-[#B76E79]/10 text-[#B76E79] flex items-center justify-center font-bold">
                   %
                 </div>
                 <div>
@@ -1419,15 +1419,15 @@ export default function GymOwnerFeatureDetail() {
               <span className="text-xs text-slate-400">Share with {referralMember} for 500 bonus coins per friend signup</span>
             </div>
 
-            <div className="bg-[#0E1415] border border-[#2A3A3A] rounded-3xl p-6 shadow-xl space-y-4">
-              <h4 className="text-base font-bold text-white flex items-center gap-2">
-                <Gift size={16} className="text-[#2DD4BF]" />
+            <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-3xl p-6 shadow-xl space-y-4">
+              <h4 className="text-base font-bold text-[#292524] flex items-center gap-2">
+                <Gift size={16} className="text-[#B76E79]" />
                 <span>Rewards Store & Redeemable Member Bounties</span>
               </h4>
 
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-[#141D1E] text-slate-400 uppercase text-[10px] font-bold border-b border-[#2A3A3A]">
+                  <thead className="bg-[#FFFFFF] text-slate-400 uppercase text-[10px] font-bold border-b border-[#E7DADD]">
                     <tr>
                       <th className="px-5 py-3.5">Reward Title</th>
                       <th className="px-5 py-3.5">Gymora Points Required</th>
@@ -1436,17 +1436,17 @@ export default function GymOwnerFeatureDetail() {
                       <th className="px-5 py-3.5 text-right">Distribute Voucher</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#2A3A3A]">
+                  <tbody className="divide-y divide-[#E7DADD]">
                     {vouchersList.map((voucher) => (
-                      <tr key={voucher.id} className="hover:bg-[#141D1E]/40 transition-colors">
+                      <tr key={voucher.id} className="hover:bg-[#FFFFFF]/40 transition-colors">
                         <td className="px-5 py-3.5 font-bold text-white">{voucher.title}</td>
-                        <td className="px-5 py-3.5 font-mono font-bold text-[#2DD4BF]">{voucher.points} Coins</td>
+                        <td className="px-5 py-3.5 font-mono font-bold text-[#B76E79]">{voucher.points} Coins</td>
                         <td className="px-5 py-3.5 text-slate-300 font-mono">{voucher.stock} Vouchers Left</td>
                         <td className="px-5 py-3.5 text-slate-400 font-mono">{voucher.redeemed} Redeemed</td>
                         <td className="px-5 py-3.5 text-right">
                           <button
                             onClick={() => handleRedeemVoucher(voucher.id)}
-                            className="px-3 py-1 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-black font-bold text-[11px] rounded-lg transition-colors"
+                            className="px-3 py-1 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold text-[11px] rounded-lg transition-colors"
                           >
                             Award to Member
                           </button>
@@ -1463,10 +1463,10 @@ export default function GymOwnerFeatureDetail() {
         {/* SECTION 2: CORE CAPABILITIES GRID */}
         <section className="space-y-8">
           <div>
-            <span className="text-xs font-bold uppercase tracking-widest text-[#2DD4BF] block mb-2">
+            <span className="text-xs font-bold uppercase tracking-widest text-[#B76E79] block mb-2">
               ENTERPRISE CAPABILITIES
             </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#292524]">
               Built for Modern Gym Owners & Multi-Branch Operators
             </h2>
           </div>
@@ -1475,27 +1475,27 @@ export default function GymOwnerFeatureDetail() {
             {config.capabilities.map((cap, idx) => (
               <div
                 key={idx}
-                className="bg-[#0E1415] border border-[#2A3A3A] hover:border-[#2DD4BF]/40 rounded-3xl p-6 transition-all space-y-4 shadow-xl"
+                className="bg-[#F3E8E8] border border-[#E7DADD] hover:border-[#B76E79]/40 rounded-3xl p-6 transition-all space-y-4 shadow-xl"
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-[#2DD4BF]/10 text-[#2DD4BF] border border-[#2DD4BF]/20 uppercase tracking-wider">
+                  <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-[#B76E79]/10 text-[#B76E79] border border-[#B76E79]/20 uppercase tracking-wider">
                     {cap.highlightTag}
                   </span>
-                  <div className="w-8 h-8 rounded-lg bg-[#141D1E] text-[#2DD4BF] flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-lg bg-[#FFFFFF] text-[#B76E79] flex items-center justify-center">
                     <CheckCircle2 size={18} />
                   </div>
                 </div>
 
-                <h3 className="text-xl font-bold text-white">{cap.title}</h3>
+                <h3 className="text-xl font-bold text-[#292524]">{cap.title}</h3>
 
                 <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
                   {cap.description}
                 </p>
 
-                <div className="space-y-2 pt-2 border-t border-[#2A3A3A]">
+                <div className="space-y-2 pt-2 border-t border-[#E7DADD]">
                   {cap.points.map((pt, i) => (
                     <div key={i} className="flex items-center gap-2 text-xs text-slate-400">
-                      <div className="w-1.5 h-1.5 rounded-full bg-[#2DD4BF]" />
+                      <div className="w-1.5 h-1.5 rounded-full bg-[#B76E79]" />
                       <span>{pt}</span>
                     </div>
                   ))}
@@ -1506,13 +1506,13 @@ export default function GymOwnerFeatureDetail() {
         </section>
 
         {/* SECTION 3: GYM OWNER BEST PRACTICES */}
-        <section className="bg-[#0E1415] border border-[#2A3A3A] rounded-3xl p-8 space-y-6">
+        <section className="bg-[#F3E8E8] border border-[#E7DADD] rounded-3xl p-8 space-y-6">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-[#B76E79]/10 text-[#B76E79] flex items-center justify-center">
               <ShieldCheck size={22} />
             </div>
             <div>
-              <h3 className="text-xl font-bold text-white">Operational Best Practices</h3>
+              <h3 className="text-xl font-bold text-[#292524]">Operational Best Practices</h3>
               <p className="text-xs text-slate-400">Recommended workflows used by high-revenue gym operators</p>
             </div>
           </div>
@@ -1521,9 +1521,9 @@ export default function GymOwnerFeatureDetail() {
             {config.bestPractices.map((bp, idx) => (
               <div
                 key={idx}
-                className="bg-[#141D1E] p-4 rounded-2xl border border-[#2A3A3A] text-xs text-slate-300 leading-relaxed flex items-start gap-3"
+                className="bg-[#FFFFFF] p-4 rounded-2xl border border-[#E7DADD] text-xs text-slate-300 leading-relaxed flex items-start gap-3"
               >
-                <span className="text-[#2DD4BF] font-bold text-sm shrink-0">0{idx + 1}.</span>
+                <span className="text-[#B76E79] font-bold text-sm shrink-0">0{idx + 1}.</span>
                 <span>{bp}</span>
               </div>
             ))}
@@ -1531,12 +1531,12 @@ export default function GymOwnerFeatureDetail() {
         </section>
 
         {/* SECTION 4: MODULE EXPLORER & WORKSPACE DIRECTORY */}
-        <section className="bg-gradient-to-r from-[#0E1415] via-[#141D1E] to-[#0E1415] border border-[#2DD4BF]/30 rounded-3xl p-8 sm:p-10 text-center relative overflow-hidden shadow-2xl">
+        <section className="bg-gradient-to-r from-[#F3E8E8] via-[#FFFFFF] to-[#F3E8E8] border border-[#B76E79]/30 rounded-3xl p-8 sm:p-10 text-center relative overflow-hidden shadow-2xl">
           <div className="max-w-3xl mx-auto space-y-6 relative z-10">
-            <span className="px-3 py-1 rounded-full bg-[#2DD4BF]/15 text-[#2DD4BF] border border-[#2DD4BF]/30 text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1.5">
+            <span className="px-3 py-1 rounded-full bg-[#B76E79]/15 text-[#B76E79] border border-[#B76E79]/30 text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1.5">
               <Sparkles size={13} /> Gym Owner Operational Suite
             </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#292524] tracking-tight">
               Explore All 6 Gym Owner Modules & Live Flowcharts
             </h2>
             <p className="text-xs sm:text-sm text-slate-300 max-w-xl mx-auto leading-relaxed">
@@ -1553,8 +1553,8 @@ export default function GymOwnerFeatureDetail() {
                     to={`/portal/gym-owner/${mod.id}`}
                     className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
                       isActive
-                        ? 'bg-[#2DD4BF] text-black shadow-lg shadow-[#2DD4BF]/20'
-                        : 'bg-[#141D1E] text-slate-300 hover:text-white border border-[#2A3A3A] hover:border-[#2DD4BF]/40'
+                        ? 'bg-[#B76E79] text-white shadow-lg shadow-[#B76E79]/20'
+                        : 'bg-[#FFFFFF] text-slate-300 hover:text-white border border-[#E7DADD] hover:border-[#B76E79]/40'
                     }`}
                   >
                     <Icon size={14} />
@@ -1564,10 +1564,10 @@ export default function GymOwnerFeatureDetail() {
               })}
             </div>
 
-            <div className="pt-4 border-t border-[#2A3A3A] flex justify-center">
+            <div className="pt-4 border-t border-[#E7DADD] flex justify-center">
               <Link
                 to="/portal/gym-owner"
-                className="px-6 py-2.5 bg-[#141D1E] hover:bg-[#1B2728] text-[#2DD4BF] font-semibold rounded-xl text-xs border border-[#2A3A3A] hover:border-[#2DD4BF]/40 transition-all flex items-center gap-2"
+                className="px-6 py-2.5 bg-[#FFFFFF] hover:bg-[#F3E8E8] text-[#B76E79] font-semibold rounded-xl text-xs border border-[#E7DADD] hover:border-[#B76E79]/40 transition-all flex items-center gap-2"
               >
                 <ArrowLeft size={14} />
                 <span>Return to Gym Owner Overview</span>

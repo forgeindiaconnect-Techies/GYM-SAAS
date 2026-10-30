@@ -9,8 +9,8 @@ import TrainerNavigationTabs from '../../components/GymAdmin/TrainerNavigationTa
 const UPI_APPS = [
   { name: 'Google Pay', handle: 'okaxis', color: 'from-blue-500 to-emerald-500' },
   { name: 'PhonePe', handle: 'ybl', color: 'from-purple-600 to-indigo-600' },
-  { name: 'Paytm', handle: 'paytm', color: 'from-sky-500 to-[#5EEAD4]' },
-  { name: 'BHIM / UPI', handle: 'upi', color: 'from-[#2DD4BF] to-[#5EEAD4]' },
+  { name: 'Paytm', handle: 'paytm', color: 'from-sky-500 to-[#9F5965]' },
+  { name: 'BHIM / UPI', handle: 'upi', color: 'from-[#B76E79] to-[#9F5965]' },
 ];
 
 const defaultForm = {
@@ -193,8 +193,8 @@ const GymAdminTrainerPayments = () => {
       <TrainerNavigationTabs />
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-[#F5FAFA]">Trainer Payments</h1>
-          <p className="text-sm text-[#9AAEAE]">Log new payments and process pending trainer dues.</p>
+          <h1 className="text-2xl font-bold text-[#292524]">Trainer Payments</h1>
+          <p className="text-sm text-[#57534E]">Log new payments and process pending trainer dues.</p>
         </div>
       </div>
 
@@ -207,16 +207,16 @@ const GymAdminTrainerPayments = () => {
         </div>
       )}
 
-      <div className="bg-[#141D1E] rounded-2xl shadow-sm border border-[#2A3A3A] overflow-hidden">
-        <div className="p-4 border-b border-[#2A3A3A] bg-[#0E1415]/50 flex gap-4">
+      <div className="bg-[#FFFFFF] rounded-2xl shadow-sm border border-[#E7DADD] overflow-hidden">
+        <div className="p-4 border-b border-[#E7DADD] bg-[#F3E8E8]/50 flex gap-4">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#9AAEAE]" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#57534E]" />
             <input
               type="text"
               placeholder="Search trainers by name..."
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-[#2A3A3A] rounded-xl focus:border-[#2DD4BF] outline-none text-sm"
+              className="w-full pl-10 pr-4 py-2 border border-[#E7DADD] rounded-xl focus:border-[#B76E79] outline-none text-sm"
             />
           </div>
         </div>
@@ -224,55 +224,55 @@ const GymAdminTrainerPayments = () => {
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-[#0E1415] border-b border-[#2A3A3A]">
-                <th className="p-4 text-xs font-bold text-[#9AAEAE] uppercase tracking-wider">Trainer</th>
-                <th className="p-4 text-xs font-bold text-[#9AAEAE] uppercase tracking-wider">Training Type</th>
-                <th className="p-4 text-xs font-bold text-[#9AAEAE] uppercase tracking-wider">Fee Amount</th>
-                <th className="p-4 text-xs font-bold text-[#9AAEAE] uppercase tracking-wider text-right">Actions</th>
+              <tr className="bg-[#F3E8E8] border-b border-[#E7DADD]">
+                <th className="p-4 text-xs font-bold text-[#57534E] uppercase tracking-wider">Trainer</th>
+                <th className="p-4 text-xs font-bold text-[#57534E] uppercase tracking-wider">Training Type</th>
+                <th className="p-4 text-xs font-bold text-[#57534E] uppercase tracking-wider">Fee Amount</th>
+                <th className="p-4 text-xs font-bold text-[#57534E] uppercase tracking-wider text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
               {loading ? (
                 <tr>
-                  <td colSpan={4} className="p-8 text-center text-[#9AAEAE]">Loading active fees...</td>
+                  <td colSpan={4} className="p-8 text-center text-[#57534E]">Loading active fees...</td>
                 </tr>
               ) : filteredFees.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="p-8 text-center text-[#9AAEAE]">No active fees found. Configure fees first.</td>
+                  <td colSpan={4} className="p-8 text-center text-[#57534E]">No active fees found. Configure fees first.</td>
                 </tr>
               ) : (
                 filteredFees.map(fee => {
                   return (
-                    <tr key={fee._id} className="hover:bg-[#0E1415] transition-colors">
+                    <tr key={fee._id} className="hover:bg-[#F3E8E8] transition-colors">
                       <td className="p-4">
                         <div className="flex items-center gap-3">
                           {fee.trainerId?.profilePhoto ? (
                             <img src={fee.trainerId.profilePhoto} alt="Trainer" className="w-10 h-10 rounded-full object-cover border" />
                           ) : (
-                            <div className="w-10 h-10 rounded-full bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center font-bold text-sm">
+                            <div className="w-10 h-10 rounded-full bg-[#B76E79]/10 text-[#B76E79] flex items-center justify-center font-bold text-sm">
                               {fee.trainerId?.name?.charAt(0) || 'T'}
                             </div>
                           )}
                           <div>
-                            <p className="font-bold text-[#F5FAFA]">{fee.trainerId?.name}</p>
-                            <p className="text-xs text-[#9AAEAE]">{fee.trainerId?.email}</p>
+                            <p className="font-bold text-[#292524]">{fee.trainerId?.name}</p>
+                            <p className="text-xs text-[#57534E]">{fee.trainerId?.email}</p>
                           </div>
                         </div>
                       </td>
-                      <td className="p-4 text-sm text-[#C1D0D0] font-medium">
+                      <td className="p-4 text-sm text-[#292524] font-medium">
                         {fee.trainingType}
                       </td>
                       <td className="p-4">
-                        <span className="font-bold text-[#F5FAFA] flex items-center">
-                          <IndianRupee className="w-4 h-4 mr-0.5 text-[#9AAEAE]" />
+                        <span className="font-bold text-[#292524] flex items-center">
+                          <IndianRupee className="w-4 h-4 mr-0.5 text-[#57534E]" />
                           {Number(fee.feeAmount || 0).toLocaleString('en-IN')}
-                          <span className="text-[#9AAEAE] font-normal text-xs ml-1.5">/ {fee.billingCycle}</span>
+                          <span className="text-[#57534E] font-normal text-xs ml-1.5">/ {fee.billingCycle}</span>
                         </span>
                       </td>
                       <td className="p-4 text-right">
                         <button
                           onClick={() => handleMakePayment(fee)}
-                          className="inline-flex items-center gap-2 px-4 py-2 bg-[#2DD4BF] text-[#06201D] font-bold rounded-xl hover:bg-[#5EEAD4] font-bold text-xs shadow-md shadow-[#2DD4BF]/15 transition-all"
+                          className="inline-flex items-center gap-2 px-4 py-2 bg-[#B76E79] text-white font-bold rounded-xl hover:bg-[#9F5965] font-bold text-xs shadow-md shadow-[#B76E79]/15 transition-all"
                         >
                           <CreditCard className="w-4 h-4" /> Process Payment
                         </button>
@@ -289,19 +289,19 @@ const GymAdminTrainerPayments = () => {
       {/* Process Trainer Payment Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-start justify-center p-4 bg-black/60 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-[#141D1E] rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden border border-[#2A3A3A] mt-8 mb-8 flex flex-col max-h-[90vh]">
+          <div className="bg-[#FFFFFF] rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden border border-[#E7DADD] mt-8 mb-8 flex flex-col max-h-[90vh]">
             
             {/* Modal Header */}
-            <div className="p-6 border-b border-[#2A3A3A] flex justify-between items-center bg-[#0E1415] shrink-0">
+            <div className="p-6 border-b border-[#E7DADD] flex justify-between items-center bg-[#F3E8E8] shrink-0">
               <div>
-                <h2 className="text-xl font-bold text-[#F5FAFA]">Process Trainer Payment</h2>
-                <p className="text-xs text-[#9AAEAE] mt-0.5">
+                <h2 className="text-xl font-bold text-[#292524]">Process Trainer Payment</h2>
+                <p className="text-xs text-[#57534E] mt-0.5">
                   Confirm and record fee disbursement to trainer
                 </p>
               </div>
               <button 
                 onClick={() => setShowModal(false)}
-                className="p-1.5 text-[#9AAEAE] hover:text-[#C1D0D0] hover:bg-[#1B2728] rounded-lg transition-colors"
+                className="p-1.5 text-[#57534E] hover:text-[#292524] hover:bg-[#F3E8E8] rounded-lg transition-colors"
               >
                 <X size={20} />
               </button>
@@ -310,27 +310,27 @@ const GymAdminTrainerPayments = () => {
             <form onSubmit={handleSubmit} className="p-6 space-y-5 overflow-y-auto flex-1 custom-scrollbar">
               
               {/* Trainer Summary Badge */}
-              <div className="p-4 bg-gradient-to-r from-[#0E1415] to-[#FFFFFF] border border-[#2A3A3A] rounded-xl flex items-center justify-between">
+              <div className="p-4 bg-gradient-to-r from-[#F3E8E8] to-[#FFFFFF] border border-[#E7DADD] rounded-xl flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-full bg-[#2DD4BF] text-[#06201D] font-bold flex items-center justify-center font-bold text-base shadow-sm">
+                  <div className="w-11 h-11 rounded-full bg-[#B76E79] text-white font-bold flex items-center justify-center font-bold text-base shadow-sm">
                     {selectedFee?.trainerId?.name?.[0]?.toUpperCase() || 'T'}
                   </div>
                   <div>
-                    <h3 className="font-bold text-[#F5FAFA] text-base leading-tight">
+                    <h3 className="font-bold text-[#292524] text-base leading-tight">
                       {selectedFee?.trainerId?.name || 'Trainer'}
                     </h3>
-                    <p className="text-xs text-[#9AAEAE]">{selectedFee?.trainerId?.email}</p>
-                    <span className="inline-block mt-1 text-[11px] font-semibold text-[#2DD4BF] bg-[#2DD4BF]/10 px-2 py-0.5 rounded-full">
+                    <p className="text-xs text-[#57534E]">{selectedFee?.trainerId?.email}</p>
+                    <span className="inline-block mt-1 text-[11px] font-semibold text-[#B76E79] bg-[#B76E79]/10 px-2 py-0.5 rounded-full">
                       {selectedFee?.trainingType || 'Offline Training'}
                     </span>
                   </div>
                 </div>
                 <div className="text-right">
-                  <span className="text-xs text-[#9AAEAE] font-semibold block">Due Amount</span>
-                  <span className="text-2xl font-black text-[#2DD4BF] tracking-tight">
+                  <span className="text-xs text-[#57534E] font-semibold block">Due Amount</span>
+                  <span className="text-2xl font-black text-[#B76E79] tracking-tight">
                     ₹{Number(selectedFee?.feeAmount || 0).toLocaleString('en-IN')}
                   </span>
-                  <span className="text-xs text-[#9AAEAE] block font-medium">/ {selectedFee?.billingCycle || 'Monthly'}</span>
+                  <span className="text-xs text-[#57534E] block font-medium">/ {selectedFee?.billingCycle || 'Monthly'}</span>
                 </div>
               </div>
 
@@ -338,25 +338,25 @@ const GymAdminTrainerPayments = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
-                    <label className="block text-xs font-bold text-[#9AAEAE] uppercase tracking-wider">
+                    <label className="block text-xs font-bold text-[#57534E] uppercase tracking-wider">
                       Amount to Pay *
                     </label>
                   </div>
                   <div className="relative">
-                    <IndianRupee className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AAEAE]" />
+                    <IndianRupee className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#57534E]" />
                     <input
                       type="number"
                       required
                       min="1"
                       value={form.amount}
                       onChange={e => setForm({ ...form, amount: e.target.value })}
-                      className="w-full pl-9 pr-3 py-2.5 border border-[#2A3A3A] rounded-xl text-base font-bold text-[#F5FAFA] outline-none focus:border-[#2DD4BF] focus:ring-1 focus:ring-[#2DD4BF]/20"
+                      className="w-full pl-9 pr-3 py-2.5 border border-[#E7DADD] rounded-xl text-base font-bold text-[#292524] outline-none focus:border-[#B76E79] focus:ring-1 focus:ring-[#B76E79]/20"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-[#9AAEAE] uppercase tracking-wider mb-1.5">
+                  <label className="block text-xs font-bold text-[#57534E] uppercase tracking-wider mb-1.5">
                     Payment Date *
                   </label>
                   <input
@@ -364,14 +364,14 @@ const GymAdminTrainerPayments = () => {
                     required
                     value={form.paymentDate}
                     onChange={e => setForm({ ...form, paymentDate: e.target.value })}
-                    className="w-full px-3 py-2.5 border border-[#2A3A3A] rounded-xl text-sm font-semibold outline-none focus:border-[#2DD4BF] focus:ring-1 focus:ring-[#2DD4BF]/20"
+                    className="w-full px-3 py-2.5 border border-[#E7DADD] rounded-xl text-sm font-semibold outline-none focus:border-[#B76E79] focus:ring-1 focus:ring-[#B76E79]/20"
                   />
                 </div>
               </div>
 
               {/* Payment Method Selector Tabs */}
               <div>
-                <label className="block text-xs font-bold text-[#9AAEAE] uppercase tracking-wider mb-2">
+                <label className="block text-xs font-bold text-[#57534E] uppercase tracking-wider mb-2">
                   Select Payment Method *
                 </label>
                 <div className="grid grid-cols-3 gap-3">
@@ -382,8 +382,8 @@ const GymAdminTrainerPayments = () => {
                     onClick={() => setForm({ ...form, paymentMethod: 'Bank Transfer' })}
                     className={`flex flex-col items-center justify-center p-3.5 rounded-xl border-2 transition-all ${
                       form.paymentMethod === 'Bank Transfer'
-                        ? 'border-[#2DD4BF] bg-[#2DD4BF]/5 text-[#2DD4BF] font-bold shadow-sm'
-                        : 'border-[#2A3A3A] bg-[#141D1E] text-[#C1D0D0] hover:border-[#2A3A3A]'
+                        ? 'border-[#B76E79] bg-[#B76E79]/5 text-[#B76E79] font-bold shadow-sm'
+                        : 'border-[#E7DADD] bg-[#FFFFFF] text-[#292524] hover:border-[#E7DADD]'
                     }`}
                   >
                     <Building2 className="w-5 h-5 mb-1" />
@@ -396,8 +396,8 @@ const GymAdminTrainerPayments = () => {
                     onClick={() => setForm({ ...form, paymentMethod: 'UPI' })}
                     className={`flex flex-col items-center justify-center p-3.5 rounded-xl border-2 transition-all ${
                       form.paymentMethod === 'UPI'
-                        ? 'border-[#2DD4BF] bg-[#2DD4BF]/5 text-[#2DD4BF] font-bold shadow-sm'
-                        : 'border-[#2A3A3A] bg-[#141D1E] text-[#C1D0D0] hover:border-[#2A3A3A]'
+                        ? 'border-[#B76E79] bg-[#B76E79]/5 text-[#B76E79] font-bold shadow-sm'
+                        : 'border-[#E7DADD] bg-[#FFFFFF] text-[#292524] hover:border-[#E7DADD]'
                     }`}
                   >
                     <Smartphone className="w-5 h-5 mb-1" />
@@ -410,8 +410,8 @@ const GymAdminTrainerPayments = () => {
                     onClick={() => setForm({ ...form, paymentMethod: 'Cash' })}
                     className={`flex flex-col items-center justify-center p-3.5 rounded-xl border-2 transition-all ${
                       form.paymentMethod === 'Cash'
-                        ? 'border-[#2DD4BF] bg-[#2DD4BF]/5 text-[#2DD4BF] font-bold shadow-sm'
-                        : 'border-[#2A3A3A] bg-[#141D1E] text-[#C1D0D0] hover:border-[#2A3A3A]'
+                        ? 'border-[#B76E79] bg-[#B76E79]/5 text-[#B76E79] font-bold shadow-sm'
+                        : 'border-[#E7DADD] bg-[#FFFFFF] text-[#292524] hover:border-[#E7DADD]'
                     }`}
                   >
                     <Banknote className="w-5 h-5 mb-1" />
@@ -422,19 +422,19 @@ const GymAdminTrainerPayments = () => {
 
               {/* -------------------- BANK TRANSFER DETAILS -------------------- */}
               {form.paymentMethod === 'Bank Transfer' && (
-                <div className="p-4 bg-[#1B2728] border border-[#2A3A3A]/80 rounded-2xl space-y-4">
-                  <div className="flex items-center justify-between border-b border-[#2A3A3A]/60 pb-2">
-                    <div className="flex items-center gap-2 text-[#2DD4BF]">
-                      <Building2 className="w-4 h-4 text-[#2DD4BF]" />
+                <div className="p-4 bg-[#F3E8E8] border border-[#E7DADD]/80 rounded-2xl space-y-4">
+                  <div className="flex items-center justify-between border-b border-[#E7DADD]/60 pb-2">
+                    <div className="flex items-center gap-2 text-[#B76E79]">
+                      <Building2 className="w-4 h-4 text-[#B76E79]" />
                       <h4 className="font-bold text-sm">Trainer Bank Account Details</h4>
                     </div>
                     {form.accountNumber && (
                       <button
                         type="button"
                         onClick={() => copyToClipboard(`A/C: ${form.accountNumber}, IFSC: ${form.ifscCode}, Name: ${form.accountHolder}`, 'bankAll')}
-                        className="text-xs font-semibold text-[#2DD4BF] hover:text-[#2DD4BF] flex items-center gap-1"
+                        className="text-xs font-semibold text-[#B76E79] hover:text-[#B76E79] flex items-center gap-1"
                       >
-                        {copiedKey === 'bankAll' ? <Check size={12} className="text-[#2DD4BF]" /> : <Copy size={12} />}
+                        {copiedKey === 'bankAll' ? <Check size={12} className="text-[#B76E79]" /> : <Copy size={12} />}
                         {copiedKey === 'bankAll' ? 'Copied Details' : 'Copy All'}
                       </button>
                     )}
@@ -442,32 +442,32 @@ const GymAdminTrainerPayments = () => {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-xs font-bold text-[#C1D0D0] mb-1">Account Holder Name *</label>
+                      <label className="block text-xs font-bold text-[#292524] mb-1">Account Holder Name *</label>
                       <input
                         type="text"
                         value={form.accountHolder}
                         onChange={e => setForm({ ...form, accountHolder: e.target.value })}
                         placeholder="Trainer full name as per bank"
-                        className="w-full px-3 py-2 bg-[#141D1E] border border-[#2A3A3A] rounded-lg text-sm outline-none focus:border-[#2DD4BF]"
+                        className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-lg text-sm outline-none focus:border-[#B76E79]"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-xs font-bold text-[#C1D0D0] mb-1">Bank Name</label>
+                      <label className="block text-xs font-bold text-[#292524] mb-1">Bank Name</label>
                       <input
                         type="text"
                         value={form.bankName}
                         onChange={e => setForm({ ...form, bankName: e.target.value })}
                         placeholder="e.g. HDFC Bank, SBI, ICICI"
-                        className="w-full px-3 py-2 bg-[#141D1E] border border-[#2A3A3A] rounded-lg text-sm outline-none focus:border-[#2DD4BF]"
+                        className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-lg text-sm outline-none focus:border-[#B76E79]"
                       />
                     </div>
 
                     <div>
                       <div className="flex items-center justify-between mb-1">
-                        <label className="block text-xs font-bold text-[#C1D0D0]">Account Number *</label>
+                        <label className="block text-xs font-bold text-[#292524]">Account Number *</label>
                         {form.accountNumber && (
-                          <span className={`text-[11px] font-semibold ${form.accountNumber.length >= 9 ? 'text-[#2DD4BF]' : 'text-amber-600'}`}>
+                          <span className={`text-[11px] font-semibold ${form.accountNumber.length >= 9 ? 'text-[#B76E79]' : 'text-amber-600'}`}>
                             {form.accountNumber.length}/18 digits {form.accountNumber.length >= 9 ? '✓' : '(min 9)'}
                           </span>
                         )}
@@ -480,20 +480,20 @@ const GymAdminTrainerPayments = () => {
                           value={form.accountNumber}
                           onChange={e => setForm({ ...form, accountNumber: e.target.value.replace(/\D/g, '').slice(0, 18) })}
                           placeholder="e.g. 50100428765432 (9–18 digits)"
-                          className={`w-full px-3 py-2 bg-[#141D1E] border rounded-lg text-sm font-mono outline-none pr-11 transition-all ${
+                          className={`w-full px-3 py-2 bg-[#FFFFFF] border rounded-lg text-sm font-mono outline-none pr-11 transition-all ${
                             form.accountNumber && form.accountNumber.length < 9
                               ? 'border-amber-400 focus:border-amber-500 focus:ring-1 focus:ring-amber-200'
-                              : 'border-[#2A3A3A] focus:border-[#2DD4BF] focus:ring-1 focus:ring-blue-200'
+                              : 'border-[#E7DADD] focus:border-[#B76E79] focus:ring-1 focus:ring-blue-200'
                           }`}
                         />
                         {form.accountNumber && (
                           <button
                             type="button"
                             onClick={() => copyToClipboard(form.accountNumber, 'acc')}
-                            className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-[#9AAEAE] hover:text-[#2DD4BF] rounded transition-colors"
+                            className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-[#57534E] hover:text-[#B76E79] rounded transition-colors"
                             title="Copy Account Number"
                           >
-                            {copiedKey === 'acc' ? <Check size={14} className="text-[#2DD4BF]" /> : <Copy size={14} />}
+                            {copiedKey === 'acc' ? <Check size={14} className="text-[#B76E79]" /> : <Copy size={14} />}
                           </button>
                         )}
                       </div>
@@ -504,9 +504,9 @@ const GymAdminTrainerPayments = () => {
 
                     <div>
                       <div className="flex items-center justify-between mb-1">
-                        <label className="block text-xs font-bold text-[#C1D0D0]">IFSC Code *</label>
+                        <label className="block text-xs font-bold text-[#292524]">IFSC Code *</label>
                         {form.ifscCode && (
-                          <span className={`text-[11px] font-semibold ${form.ifscCode.length === 11 ? 'text-[#2DD4BF]' : 'text-amber-600'}`}>
+                          <span className={`text-[11px] font-semibold ${form.ifscCode.length === 11 ? 'text-[#B76E79]' : 'text-amber-600'}`}>
                             {form.ifscCode.length}/11 {form.ifscCode.length === 11 ? '✓' : ''}
                           </span>
                         )}
@@ -518,16 +518,16 @@ const GymAdminTrainerPayments = () => {
                           value={form.ifscCode}
                           onChange={e => setForm({ ...form, ifscCode: e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 11) })}
                           placeholder="e.g. HDFC0001234"
-                          className="w-full px-3 py-2 bg-[#141D1E] border border-[#2A3A3A] rounded-lg text-sm font-mono uppercase outline-none focus:border-[#2DD4BF] focus:ring-1 focus:ring-blue-200 pr-11 transition-all"
+                          className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-lg text-sm font-mono uppercase outline-none focus:border-[#B76E79] focus:ring-1 focus:ring-blue-200 pr-11 transition-all"
                         />
                         {form.ifscCode && (
                           <button
                             type="button"
                             onClick={() => copyToClipboard(form.ifscCode, 'ifsc')}
-                            className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-[#9AAEAE] hover:text-[#2DD4BF] rounded transition-colors"
+                            className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-[#57534E] hover:text-[#B76E79] rounded transition-colors"
                             title="Copy IFSC Code"
                           >
-                            {copiedKey === 'ifsc' ? <Check size={14} className="text-[#2DD4BF]" /> : <Copy size={14} />}
+                            {copiedKey === 'ifsc' ? <Check size={14} className="text-[#B76E79]" /> : <Copy size={14} />}
                           </button>
                         )}
                       </div>
@@ -538,8 +538,8 @@ const GymAdminTrainerPayments = () => {
                   </div>
 
                   {/* Bank Transaction ID / UTR Input */}
-                  <div className="pt-2 border-t border-[#2A3A3A]/60">
-                    <label className="block text-xs font-bold text-[#2DD4BF] uppercase tracking-wider mb-1">
+                  <div className="pt-2 border-t border-[#E7DADD]/60">
+                    <label className="block text-xs font-bold text-[#B76E79] uppercase tracking-wider mb-1">
                       Bank UTR / Transaction Reference ID *
                     </label>
                     <input
@@ -549,9 +549,9 @@ const GymAdminTrainerPayments = () => {
                       maxLength={22}
                       onChange={e => setForm({ ...form, transactionId: e.target.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase() })}
                       placeholder="e.g. UTR202609298877 or IMPS987654"
-                      className="w-full px-3 py-2.5 bg-[#141D1E] border-2 border-[#2A3A3A] rounded-xl text-sm font-mono font-semibold outline-none focus:border-[#2A3A3A] text-[#2DD4BF] placeholder:text-[#9AAEAE]"
+                      className="w-full px-3 py-2.5 bg-[#FFFFFF] border-2 border-[#E7DADD] rounded-xl text-sm font-mono font-semibold outline-none focus:border-[#E7DADD] text-[#B76E79] placeholder:text-[#57534E]"
                     />
-                    <p className="text-[11px] text-[#2DD4BF] mt-1">
+                    <p className="text-[11px] text-[#B76E79] mt-1">
                       Enter the UTR or reference number from your Netbanking/NEFT/IMPS transfer confirmation. (max 22 characters)
                     </p>
                   </div>
@@ -560,16 +560,16 @@ const GymAdminTrainerPayments = () => {
 
               {/* -------------------- UPI DETAILS -------------------- */}
               {form.paymentMethod === 'UPI' && (
-                <div className="p-4 bg-[#1B2728]/60 border border-[#2A3A3A] rounded-2xl space-y-4">
-                  <div className="flex items-center justify-between border-b border-[#2A3A3A]/70 pb-2">
-                    <div className="flex items-center gap-2 text-[#2DD4BF]">
-                      <Smartphone className="w-4 h-4 text-[#2DD4BF]" />
+                <div className="p-4 bg-[#F3E8E8]/60 border border-[#E7DADD] rounded-2xl space-y-4">
+                  <div className="flex items-center justify-between border-b border-[#E7DADD]/70 pb-2">
+                    <div className="flex items-center gap-2 text-[#B76E79]">
+                      <Smartphone className="w-4 h-4 text-[#B76E79]" />
                       <h4 className="font-bold text-sm">UPI Payment (GPay, PhonePe, Paytm)</h4>
                     </div>
                     <button
                       type="button"
                       onClick={() => setShowQr(!showQr)}
-                      className="px-3 py-1 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold rounded-lg text-xs font-bold flex items-center gap-1.5 transition-colors shadow-sm"
+                      className="px-3 py-1 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold rounded-lg text-xs font-bold flex items-center gap-1.5 transition-colors shadow-sm"
                     >
                       <QrCode size={13} />
                       {showQr ? 'Hide QR Code' : 'Scan UPI QR Code'}
@@ -578,7 +578,7 @@ const GymAdminTrainerPayments = () => {
 
                   {/* Quick UPI App Selector Pills */}
                   <div>
-                    <label className="block text-xs font-bold text-[#2DD4BF] mb-1.5">Quick Select UPI App:</label>
+                    <label className="block text-xs font-bold text-[#B76E79] mb-1.5">Quick Select UPI App:</label>
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                       {UPI_APPS.map(app => (
                         <button
@@ -587,11 +587,11 @@ const GymAdminTrainerPayments = () => {
                           onClick={() => handleSelectUpiApp(app)}
                           className={`px-3 py-2 rounded-xl text-xs font-bold transition-all border flex items-center justify-center gap-1.5 ${
                             form.upiApp === app.name
-                              ? 'bg-[#2DD4BF] text-white border-[#2DD4BF] shadow-sm'
-                              : 'bg-[#141D1E] text-[#C1D0D0] border-[#2A3A3A] hover:bg-[#1B2728]/50'
+                              ? 'bg-[#B76E79] text-white border-[#B76E79] shadow-sm'
+                              : 'bg-[#FFFFFF] text-[#292524] border-[#E7DADD] hover:bg-[#F3E8E8]/50'
                           }`}
                         >
-                          <span className="w-2 h-2 rounded-full bg-[#2DD4BF] inline-block" />
+                          <span className="w-2 h-2 rounded-full bg-[#B76E79] inline-block" />
                           {app.name}
                         </button>
                       ))}
@@ -600,22 +600,22 @@ const GymAdminTrainerPayments = () => {
 
                   {/* UPI ID / VPA Row */}
                   <div>
-                    <label className="block text-xs font-bold text-[#C1D0D0] mb-1">Trainer UPI ID / VPA *</label>
+                    <label className="block text-xs font-bold text-[#292524] mb-1">Trainer UPI ID / VPA *</label>
                     <div className="flex gap-2">
                       <input
                         type="text"
                         value={form.upiId}
                         onChange={e => setForm({ ...form, upiId: e.target.value.trim() })}
                         placeholder="e.g. 9876543210@paytm or trainer@okaxis"
-                        className="w-full px-3 py-2 bg-[#141D1E] border border-[#2A3A3A] rounded-xl text-sm font-mono font-semibold outline-none focus:border-[#2A3A3A]"
+                        className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-sm font-mono font-semibold outline-none focus:border-[#E7DADD]"
                       />
                       <button
                         type="button"
                         onClick={() => copyToClipboard(form.upiId, 'upiId')}
-                        className="px-3.5 py-2 bg-[#141D1E] border border-[#2A3A3A] hover:bg-[#1B2728] text-[#2DD4BF] rounded-xl text-xs font-bold flex items-center gap-1 shrink-0 transition-colors"
+                        className="px-3.5 py-2 bg-[#FFFFFF] border border-[#E7DADD] hover:bg-[#F3E8E8] text-[#B76E79] rounded-xl text-xs font-bold flex items-center gap-1 shrink-0 transition-colors"
                         title="Copy UPI ID"
                       >
-                        {copiedKey === 'upiId' ? <Check size={14} className="text-[#2DD4BF]" /> : <Copy size={14} />}
+                        {copiedKey === 'upiId' ? <Check size={14} className="text-[#B76E79]" /> : <Copy size={14} />}
                         {copiedKey === 'upiId' ? 'Copied' : 'Copy'}
                       </button>
                     </div>
@@ -623,8 +623,8 @@ const GymAdminTrainerPayments = () => {
 
                   {/* QR Code Scanner Display */}
                   {showQr && (
-                    <div className="p-4 bg-[#141D1E] border-2 border-dashed border-[#2A3A3A] rounded-2xl flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
-                      <div className="p-2 bg-[#141D1E] rounded-xl shadow-md border border-[#2A3A3A] shrink-0">
+                    <div className="p-4 bg-[#FFFFFF] border-2 border-dashed border-[#E7DADD] rounded-2xl flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
+                      <div className="p-2 bg-[#FFFFFF] rounded-xl shadow-md border border-[#E7DADD] shrink-0">
                         <img
                           src={upiQrUrl}
                           alt="UPI QR Code"
@@ -633,13 +633,13 @@ const GymAdminTrainerPayments = () => {
                       </div>
                       <div className="space-y-1.5 flex-1">
                         <div className="flex items-center gap-1.5 justify-center sm:justify-start">
-                          <span className="w-2 h-2 rounded-full bg-[#2DD4BF] animate-pulse" />
-                          <h5 className="font-bold text-sm text-[#F5FAFA]">Scan with Any UPI App</h5>
+                          <span className="w-2 h-2 rounded-full bg-[#B76E79] animate-pulse" />
+                          <h5 className="font-bold text-sm text-[#292524]">Scan with Any UPI App</h5>
                         </div>
-                        <p className="text-xs text-[#C1D0D0] leading-relaxed">
+                        <p className="text-xs text-[#292524] leading-relaxed">
                           Scan using <b>Google Pay</b>, <b>PhonePe</b>, <b>Paytm</b>, or <b>BHIM</b> to transfer <b>₹{Number(form.amount).toLocaleString('en-IN')}</b> directly to <b>{form.upiName || selectedFee?.trainerId?.name}</b>.
                         </p>
-                        <p className="text-[11px] text-[#9AAEAE] font-mono bg-[#0E1415] p-1.5 rounded-lg border border-[#2A3A3A] inline-block">
+                        <p className="text-[11px] text-[#57534E] font-mono bg-[#F3E8E8] p-1.5 rounded-lg border border-[#E7DADD] inline-block">
                           UPI VPA: {form.upiId}
                         </p>
                       </div>
@@ -647,8 +647,8 @@ const GymAdminTrainerPayments = () => {
                   )}
 
                   {/* UPI Reference Number / Transaction ID */}
-                  <div className="pt-2 border-t border-[#2A3A3A]/70">
-                    <label className="block text-xs font-bold text-[#2DD4BF] uppercase tracking-wider mb-1">
+                  <div className="pt-2 border-t border-[#E7DADD]/70">
+                    <label className="block text-xs font-bold text-[#B76E79] uppercase tracking-wider mb-1">
                       UPI Reference / Transaction ID (UTR) *
                     </label>
                     <input
@@ -658,9 +658,9 @@ const GymAdminTrainerPayments = () => {
                       maxLength={12}
                       onChange={e => setForm({ ...form, transactionId: e.target.value.replace(/[^0-9]/g, '') })}
                       placeholder="e.g. 427212345678 (12-digit UTR)"
-                      className="w-full px-3 py-2.5 bg-[#141D1E] border-2 border-[#2A3A3A] rounded-xl text-sm font-mono font-semibold outline-none focus:border-[#2A3A3A] text-[#2DD4BF] placeholder:text-[#9AAEAE]"
+                      className="w-full px-3 py-2.5 bg-[#FFFFFF] border-2 border-[#E7DADD] rounded-xl text-sm font-mono font-semibold outline-none focus:border-[#E7DADD] text-[#B76E79] placeholder:text-[#57534E]"
                     />
-                    <p className="text-[11px] text-[#2DD4BF] mt-1">
+                    <p className="text-[11px] text-[#B76E79] mt-1">
                       Enter the 12-digit UPI Transaction / UTR number from your Google Pay, PhonePe, or Paytm receipt. ({12 - form.transactionId.length} digits remaining)
                     </p>
                   </div>
@@ -677,24 +677,24 @@ const GymAdminTrainerPayments = () => {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-xs font-bold text-[#C1D0D0] mb-1">Handed Over To *</label>
+                      <label className="block text-xs font-bold text-[#292524] mb-1">Handed Over To *</label>
                       <input
                         type="text"
                         value={form.handedOverTo}
                         onChange={e => setForm({ ...form, handedOverTo: e.target.value })}
                         placeholder="Trainer name"
-                        className="w-full px-3 py-2 bg-[#141D1E] border border-amber-200 rounded-lg text-sm outline-none focus:border-amber-500"
+                        className="w-full px-3 py-2 bg-[#FFFFFF] border border-amber-200 rounded-lg text-sm outline-none focus:border-amber-500"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-xs font-bold text-[#C1D0D0] mb-1">Cash Receipt / Voucher No.</label>
+                      <label className="block text-xs font-bold text-[#292524] mb-1">Cash Receipt / Voucher No.</label>
                       <input
                         type="text"
                         value={form.transactionId}
                         onChange={e => setForm({ ...form, transactionId: e.target.value })}
                         placeholder="e.g. CASH-SEP-2026 (Optional)"
-                        className="w-full px-3 py-2 bg-[#141D1E] border border-amber-200 rounded-lg text-sm outline-none focus:border-amber-500"
+                        className="w-full px-3 py-2 bg-[#FFFFFF] border border-amber-200 rounded-lg text-sm outline-none focus:border-amber-500"
                       />
                     </div>
                   </div>
@@ -703,31 +703,31 @@ const GymAdminTrainerPayments = () => {
 
               {/* Notes */}
               <div>
-                <label className="block text-xs font-bold text-[#9AAEAE] uppercase tracking-wider mb-1.5">
+                <label className="block text-xs font-bold text-[#57534E] uppercase tracking-wider mb-1.5">
                   Payment Notes / Remarks (Optional)
                 </label>
                 <textarea
                   value={form.notes}
                   onChange={e => setForm({ ...form, notes: e.target.value })}
-                  className="w-full px-3.5 py-2.5 border border-[#2A3A3A] rounded-xl text-sm outline-none focus:border-[#2DD4BF] focus:ring-1 focus:ring-[#2DD4BF]/20"
+                  className="w-full px-3.5 py-2.5 border border-[#E7DADD] rounded-xl text-sm outline-none focus:border-[#B76E79] focus:ring-1 focus:ring-[#B76E79]/20"
                   rows={2}
                   placeholder="e.g. Monthly trainer retainer fee for September 2026"
                 />
               </div>
 
               {/* Modal Footer Buttons */}
-              <div className="pt-3 border-t border-[#2A3A3A] flex justify-end gap-3 bg-[#0E1415] -mx-6 -mb-6 p-4">
+              <div className="pt-3 border-t border-[#E7DADD] flex justify-end gap-3 bg-[#F3E8E8] -mx-6 -mb-6 p-4">
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="px-5 py-2.5 text-[#C1D0D0] font-bold hover:bg-gray-200/70 rounded-xl transition-colors text-sm"
+                  className="px-5 py-2.5 text-[#292524] font-bold hover:bg-gray-200/70 rounded-xl transition-colors text-sm"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="px-7 py-2.5 bg-[#2DD4BF] text-[#06201D] font-bold font-bold rounded-xl hover:bg-[#5EEAD4] transition-colors disabled:opacity-50 text-sm shadow-lg shadow-[#2DD4BF]/20 flex items-center gap-2"
+                  className="px-7 py-2.5 bg-[#B76E79] text-white font-bold font-bold rounded-xl hover:bg-[#9F5965] transition-colors disabled:opacity-50 text-sm shadow-lg shadow-[#B76E79]/20 flex items-center gap-2"
                 >
                   {saving ? (
                     <>

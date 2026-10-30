@@ -137,23 +137,23 @@ const MemberAttendance = () => {
   return (
     <div className="max-w-5xl mx-auto space-y-6">
       {/* Header Banner */}
-      <div className="bg-gradient-to-r from-[#2DD4BF] via-[#2DD4BF] to-[#2DD4BF] rounded-3xl p-6 md:p-8 text-[#06201D] font-bold shadow-xl relative overflow-hidden">
+      <div className="bg-gradient-to-r from-[#B76E79] via-[#B76E79] to-[#B76E79] rounded-3xl p-6 md:p-8 text-[#FFFFFF] font-bold shadow-xl relative overflow-hidden">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#141D1E]/15 backdrop-blur-md rounded-full text-xs font-semibold text-[#06201D]">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#FFFFFF]/15 backdrop-blur-md rounded-full text-xs font-semibold text-[#FFFFFF]">
               <CalendarCheck size={13} />
               Session Attendance & Consistency
             </span>
-            <h1 className="text-2xl md:text-3xl font-bold text-[#06201D]">Attendance Record</h1>
-            <p className="text-[#06201D]/80 text-sm max-w-lg">
+            <h1 className="text-2xl md:text-3xl font-bold text-[#FFFFFF]">Attendance Record</h1>
+            <p className="text-[#FFFFFF]/80 text-sm max-w-lg">
               Track your live online session check-ins, punctuality, and self-learning workout completions over time.
             </p>
           </div>
 
-          <div className="bg-[#141D1E]/10 backdrop-blur-md border border-black/10 rounded-2xl p-5 text-center shrink-0 min-w-[200px]">
-            <p className="text-xs font-bold uppercase tracking-wider text-[#06201D]">Overall Attendance</p>
-            <p className="text-3xl font-black mt-1 text-[#06201D]">{attendanceScore}%</p>
-            <p className="text-xs text-[#06201D]/70 mt-1">
+          <div className="bg-[#FFFFFF]/10 backdrop-blur-md border border-black/10 rounded-2xl p-5 text-center shrink-0 min-w-[200px]">
+            <p className="text-xs font-bold uppercase tracking-wider text-[#FFFFFF]">Overall Attendance</p>
+            <p className="text-3xl font-black mt-1 text-[#FFFFFF]">{attendanceScore}%</p>
+            <p className="text-xs text-[#FFFFFF]/70 mt-1">
               {attendedCount + selfLearningCount} of {totalSessions} completed
             </p>
           </div>
@@ -165,12 +165,12 @@ const MemberAttendance = () => {
         <div
           className={`p-4 rounded-2xl border text-xs font-bold flex items-center justify-between transition-all ${
             feedbackMsg.type === 'success'
-              ? 'bg-[#1B2728] border-[#2A3A3A] text-[#2DD4BF]'
+              ? 'bg-[#F3E8E8] border-[#E7DADD] text-[#B76E79]'
               : 'bg-rose-50 border-rose-300 text-rose-900'
           }`}
         >
           <div className="flex items-center gap-2">
-            <CheckCircle2 size={16} className={feedbackMsg.type === 'success' ? 'text-[#2DD4BF]' : 'text-rose-600'} />
+            <CheckCircle2 size={16} className={feedbackMsg.type === 'success' ? 'text-[#B76E79]' : 'text-rose-600'} />
             <span>{feedbackMsg.text}</span>
           </div>
           <button
@@ -185,21 +185,21 @@ const MemberAttendance = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-4 shadow-sm text-center">
-          <p className="text-xs text-[#9AAEAE] font-medium uppercase tracking-wider">
+        <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-4 shadow-sm text-center">
+          <p className="text-xs text-[#57534E] font-medium uppercase tracking-wider">
             {selectedDate ? 'Booked on Date' : 'Total Booked'}
           </p>
-          <p className="text-2xl font-bold text-[#F5FAFA] mt-1">{totalSessions}</p>
+          <p className="text-2xl font-bold text-[#292524] mt-1">{totalSessions}</p>
         </div>
-        <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-4 shadow-sm text-center">
+        <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-4 shadow-sm text-center">
           <p className="text-xs text-emerald-400 font-medium uppercase tracking-wider">Attended Live</p>
           <p className="text-2xl font-bold text-emerald-400 mt-1">{attendedCount}</p>
         </div>
-        <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-4 shadow-sm text-center">
-          <p className="text-xs text-[#2DD4BF] font-medium uppercase tracking-wider">Self-Learning</p>
-          <p className="text-2xl font-bold text-[#2DD4BF] mt-1">{selfLearningCount}</p>
+        <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-4 shadow-sm text-center">
+          <p className="text-xs text-[#B76E79] font-medium uppercase tracking-wider">Self-Learning</p>
+          <p className="text-2xl font-bold text-[#B76E79] mt-1">{selfLearningCount}</p>
         </div>
-        <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-4 shadow-sm text-center">
+        <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-4 shadow-sm text-center">
           <p className="text-xs text-rose-400 font-medium uppercase tracking-wider">Missed / Absent</p>
           <p className="text-2xl font-bold text-rose-400 mt-1">{missedCount}</p>
         </div>
@@ -207,22 +207,22 @@ const MemberAttendance = () => {
 
       {/* Quick Active Check-In & Check-Out Action Bar */}
       {ongoingSession && (
-        <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-3xl p-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-fade-in">
+        <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-3xl p-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-fade-in">
           <div className="flex items-center gap-3.5">
-            <div className="w-12 h-12 rounded-2xl bg-[#2DD4BF] text-[#06201D] font-bold flex items-center justify-center font-bold shadow-md shadow-emerald-900/10 shrink-0">
+            <div className="w-12 h-12 rounded-2xl bg-[#B76E79] text-white font-bold flex items-center justify-center font-bold shadow-md shadow-emerald-900/10 shrink-0">
               <Activity size={24} className="animate-pulse" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#2DD4BF] animate-ping" />
-                <span className="text-xs font-black uppercase text-[#2DD4BF] tracking-wider">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#B76E79] animate-ping" />
+                <span className="text-xs font-black uppercase text-[#B76E79] tracking-wider">
                   Live Active Session Check-In
                 </span>
               </div>
-              <h3 className="font-extrabold text-[#F5FAFA] text-base mt-0.5">
+              <h3 className="font-extrabold text-[#292524] text-base mt-0.5">
                 {ongoingSession.trainerId?.name || 'Personal Training Session'} ({ongoingSession.mode})
               </h3>
-              <p className="text-xs text-[#2DD4BF] mt-0.5">
+              <p className="text-xs text-[#B76E79] mt-0.5">
                 Checked in at{' '}
                 <strong>
                   {new Date(ongoingSession.checkInTime!).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -236,7 +236,7 @@ const MemberAttendance = () => {
             type="button"
             onClick={() => handleCheckOut(ongoingSession._id)}
             disabled={actionLoading === ongoingSession._id + '-checkout'}
-            className="px-5 py-2.5 bg-gradient-to-r from-[#2DD4BF] to-[#5EEAD4] hover:opacity-95 text-[#06201D] font-bold font-extrabold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-2 shrink-0 cursor-pointer disabled:opacity-50"
+            className="px-5 py-2.5 bg-gradient-to-r from-[#B76E79] to-[#9F5965] hover:opacity-95 text-[#FFFFFF] font-bold font-extrabold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-2 shrink-0 cursor-pointer disabled:opacity-50"
           >
             {actionLoading === ongoingSession._id + '-checkout' ? (
               <Loader2 size={15} className="animate-spin" />
@@ -249,19 +249,19 @@ const MemberAttendance = () => {
       )}
 
       {!ongoingSession && nextEligibleSession && (
-        <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-3xl p-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-3xl p-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3.5">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#2DD4BF] to-[#5EEAD4] text-[#06201D] font-bold flex items-center justify-center font-bold shadow-md shadow-teal-900/10 shrink-0">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#B76E79] to-[#9F5965] text-[#FFFFFF] font-bold flex items-center justify-center font-bold shadow-md shadow-[#B76E79]/15 shrink-0">
               <LogIn size={22} />
             </div>
             <div>
-              <span className="text-[11px] font-extrabold uppercase text-[#2DD4BF] tracking-wider block">
+              <span className="text-[11px] font-extrabold uppercase text-[#B76E79] tracking-wider block">
                 Scheduled Training Session
               </span>
-              <h3 className="font-extrabold text-[#F5FAFA] text-base mt-0.5">
+              <h3 className="font-extrabold text-[#292524] text-base mt-0.5">
                 {nextEligibleSession.trainerId?.name || 'Assigned Trainer'} ({nextEligibleSession.mode})
               </h3>
-              <p className="text-xs text-[#9AAEAE] mt-0.5">
+              <p className="text-xs text-[#57534E] mt-0.5">
                 {nextEligibleSession.date} &bull; {nextEligibleSession.startTime} - {nextEligibleSession.endTime}
               </p>
             </div>
@@ -271,7 +271,7 @@ const MemberAttendance = () => {
             type="button"
             onClick={() => handleCheckIn(nextEligibleSession._id)}
             disabled={actionLoading === nextEligibleSession._id + '-checkin'}
-            className="px-5 py-2.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold font-extrabold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-2 shrink-0 cursor-pointer disabled:opacity-50"
+            className="px-5 py-2.5 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold font-extrabold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-2 shrink-0 cursor-pointer disabled:opacity-50"
           >
             {actionLoading === nextEligibleSession._id + '-checkin' ? (
               <Loader2 size={15} className="animate-spin" />
@@ -284,20 +284,20 @@ const MemberAttendance = () => {
       )}
 
       {/* Attendance Log Table */}
-      <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl overflow-hidden shadow-sm">
+      <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl overflow-hidden shadow-sm">
         {/* Table Header & Calendar Date Picker */}
-        <div className="p-4 border-b border-[#2A3A3A] flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#0E1415]">
+        <div className="p-4 border-b border-[#E7DADD] flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#F3E8E8]">
           <div>
-            <h2 className="text-sm font-bold text-[#F5FAFA] flex items-center gap-2">
-              <CalendarCheck size={16} className="text-[#2DD4BF]" />
+            <h2 className="text-sm font-bold text-[#292524] flex items-center gap-2">
+              <CalendarCheck size={16} className="text-[#B76E79]" />
               <span>Session Attendance History</span>
             </h2>
             {selectedDate ? (
-              <p className="text-[11px] text-[#2DD4BF] mt-0.5 font-medium">
+              <p className="text-[11px] text-[#B76E79] mt-0.5 font-medium">
                 Viewing date: {formatDateDisplay(selectedDate)}
               </p>
             ) : (
-              <p className="text-[11px] text-[#9AAEAE] mt-0.5">
+              <p className="text-[11px] text-[#57534E] mt-0.5">
                 Showing all session check-ins
               </p>
             )}
@@ -314,8 +314,8 @@ const MemberAttendance = () => {
               }}
               className={`px-3 py-1.5 text-xs font-bold rounded-xl border transition-all cursor-pointer ${
                 selectedDate === new Date().toISOString().split('T')[0]
-                  ? 'bg-[#2DD4BF] text-[#06201D] border-[#2DD4BF] shadow-xs'
-                  : 'bg-[#141D1E] text-[#9AAEAE] border-[#2A3A3A] hover:text-[#FFFFFF] hover:border-[#2DD4BF]'
+                  ? 'bg-[#B76E79] text-white border-[#B76E79] shadow-xs'
+                  : 'bg-[#FFFFFF] text-[#57534E] border-[#E7DADD] hover:text-[#FFFFFF] hover:border-[#B76E79]'
               }`}
             >
               Today
@@ -323,13 +323,13 @@ const MemberAttendance = () => {
 
             {/* Calendar Date Input */}
             <div className="relative inline-flex items-center">
-              <Calendar size={14} className="absolute left-3 text-[#2DD4BF] pointer-events-none" />
+              <Calendar size={14} className="absolute left-3 text-[#B76E79] pointer-events-none" />
               <input
                 ref={dateInputRef}
                 type="date"
                 value={selectedDate}
                 onChange={(e) => setSelectedDate(e.target.value)}
-                className="bg-[#141D1E] border border-[#2A3A3A] hover:border-[#2DD4BF] focus:border-[#2DD4BF] text-[#F5FAFA] font-bold text-xs rounded-xl pl-9 pr-3 py-1.5 outline-none cursor-pointer shadow-xs transition-colors [color-scheme:dark]"
+                className="bg-[#FFFFFF] border border-[#E7DADD] hover:border-[#B76E79] focus:border-[#B76E79] text-[#292524] font-bold text-xs rounded-xl pl-9 pr-3 py-1.5 outline-none cursor-pointer shadow-xs transition-colors [color-scheme:dark]"
                 title="Select any date to check attendance"
               />
             </div>
@@ -339,7 +339,7 @@ const MemberAttendance = () => {
               <button
                 type="button"
                 onClick={() => setSelectedDate('')}
-                className="px-3 py-1.5 text-xs font-semibold text-[#9AAEAE] hover:text-[#2DD4BF] bg-[#141D1E] border border-[#2A3A3A] hover:border-[#2DD4BF] rounded-xl transition cursor-pointer"
+                className="px-3 py-1.5 text-xs font-semibold text-[#57534E] hover:text-[#B76E79] bg-[#FFFFFF] border border-[#E7DADD] hover:border-[#B76E79] rounded-xl transition cursor-pointer"
                 title="Show all attendance history"
               >
                 Show All
@@ -350,35 +350,35 @@ const MemberAttendance = () => {
 
         {loading ? (
           <div className="flex items-center justify-center py-20">
-            <Loader2 className="animate-spin text-[#2DD4BF]" size={32} />
+            <Loader2 className="animate-spin text-[#B76E79]" size={32} />
           </div>
         ) : displayedSessions.length === 0 ? (
-          <div className="p-12 text-center text-[#9AAEAE] space-y-3">
+          <div className="p-12 text-center text-[#57534E] space-y-3">
             {selectedDate ? (
               <>
-                <CalendarX size={38} className="mx-auto text-[#9AAEAE]/50" />
-                <p className="font-semibold text-sm text-[#F5FAFA]">
+                <CalendarX size={38} className="mx-auto text-[#57534E]/50" />
+                <p className="font-semibold text-sm text-[#292524]">
                   No attendance record found for {formatDateDisplay(selectedDate)}
                 </p>
-                <p className="text-xs text-[#9AAEAE]">
+                <p className="text-xs text-[#57534E]">
                   Status: Absent (no attendance or check-in recorded on this date).
                 </p>
                 <button
                   type="button"
                   onClick={() => setSelectedDate('')}
-                  className="inline-block mt-2 px-4 py-2 bg-[#1B2728] border border-[#2A3A3A] hover:border-[#2DD4BF] text-[#2DD4BF] font-bold rounded-xl text-xs transition cursor-pointer"
+                  className="inline-block mt-2 px-4 py-2 bg-[#F3E8E8] border border-[#E7DADD] hover:border-[#B76E79] text-[#B76E79] font-bold rounded-xl text-xs transition cursor-pointer"
                 >
                   Show All Attendance History
                 </button>
               </>
             ) : (
               <>
-                <CalendarCheck size={36} className="mx-auto text-[#9AAEAE]" />
+                <CalendarCheck size={36} className="mx-auto text-[#57534E]" />
                 <p className="font-semibold text-sm">No session attendance records found yet.</p>
-                <p className="text-xs text-[#9AAEAE]">Book and attend your first online trainer session to view check-in history.</p>
+                <p className="text-xs text-[#57534E]">Book and attend your first online trainer session to view check-in history.</p>
                 <Link
                   to="/member/find-trainers"
-                  className="inline-block mt-2 px-4 py-2 bg-[#2DD4BF] text-[#06201D] font-bold rounded-xl text-xs font-bold hover:bg-[#5EEAD4] transition"
+                  className="inline-block mt-2 px-4 py-2 bg-[#B76E79] text-white font-bold rounded-xl text-xs font-bold hover:bg-[#9F5965] transition"
                 >
                   Book Trainer Session
                 </Link>
@@ -386,7 +386,7 @@ const MemberAttendance = () => {
             )}
           </div>
         ) : (
-          <div className="divide-y divide-[#2A3A3A]">
+          <div className="divide-y divide-[#E7DADD]">
             {displayedSessions.map((session) => {
               const status = session.attendanceStatus || (session.status === 'Completed' ? 'Present' : session.status);
               const checkedIn = Boolean(session.checkInTime);
@@ -397,17 +397,17 @@ const MemberAttendance = () => {
               return (
                 <div
                   key={session._id}
-                  className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-[#0E1415] transition"
+                  className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-[#F3E8E8] transition"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center font-bold text-sm shrink-0">
+                    <div className="w-10 h-10 rounded-full bg-[#B76E79]/10 text-[#B76E79] flex items-center justify-center font-bold text-sm shrink-0">
                       {session.mode === 'Online' ? <Video size={18} /> : <Dumbbell size={18} />}
                     </div>
                     <div>
-                      <p className="font-bold text-sm text-[#F5FAFA]">
+                      <p className="font-bold text-sm text-[#292524]">
                         {session.trainerId?.name || 'Assigned Trainer'}
                       </p>
-                      <p className="text-xs text-[#9AAEAE] mt-0.5">
+                      <p className="text-xs text-[#57534E] mt-0.5">
                         {session.date} &bull; {session.startTime} - {session.endTime} ({session.mode})
                       </p>
                     </div>
@@ -415,15 +415,15 @@ const MemberAttendance = () => {
 
                   <div className="flex items-center gap-2.5 flex-wrap">
                     {session.checkInTime && (
-                      <span className="text-xs font-bold text-[#2DD4BF] bg-[#1B2728] border border-[#2A3A3A] px-2.5 py-1 rounded-lg flex items-center gap-1.5">
-                        <LogIn size={12} className="text-[#2DD4BF]" />
+                      <span className="text-xs font-bold text-[#B76E79] bg-[#F3E8E8] border border-[#E7DADD] px-2.5 py-1 rounded-lg flex items-center gap-1.5">
+                        <LogIn size={12} className="text-[#B76E79]" />
                         <span>In: {new Date(session.checkInTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                       </span>
                     )}
 
                     {session.checkOutTime && (
-                      <span className="text-xs font-bold text-[#2DD4BF] bg-[#1B2728] border border-[#2A3A3A] px-2.5 py-1 rounded-lg flex items-center gap-1.5">
-                        <LogOut size={12} className="text-[#2DD4BF]" />
+                      <span className="text-xs font-bold text-[#B76E79] bg-[#F3E8E8] border border-[#E7DADD] px-2.5 py-1 rounded-lg flex items-center gap-1.5">
+                        <LogOut size={12} className="text-[#B76E79]" />
                         <span>Out: {new Date(session.checkOutTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                       </span>
                     )}
@@ -434,7 +434,7 @@ const MemberAttendance = () => {
                         type="button"
                         onClick={() => handleCheckIn(session._id)}
                         disabled={isCheckingIn}
-                        className="px-3 py-1.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-xs disabled:opacity-50 cursor-pointer"
+                        className="px-3 py-1.5 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-xs disabled:opacity-50 cursor-pointer"
                       >
                         {isCheckingIn ? <Loader2 size={13} className="animate-spin" /> : <LogIn size={13} />}
                         <span>Check In</span>
@@ -447,7 +447,7 @@ const MemberAttendance = () => {
                         type="button"
                         onClick={() => handleCheckOut(session._id)}
                         disabled={isCheckingOut}
-                        className="px-3 py-1.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-xs disabled:opacity-50 cursor-pointer"
+                        className="px-3 py-1.5 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-xs disabled:opacity-50 cursor-pointer"
                       >
                         {isCheckingOut ? <Loader2 size={13} className="animate-spin" /> : <LogOut size={13} />}
                         <span>Check Out</span>
@@ -457,14 +457,14 @@ const MemberAttendance = () => {
                     <span
                       className={`text-xs font-extrabold px-3 py-1 rounded-full border ${
                         status === 'Present' || status === 'Completed'
-                          ? 'bg-[#1B2728] text-[#2DD4BF] border-[#2A3A3A]'
+                          ? 'bg-[#F3E8E8] text-[#B76E79] border-[#E7DADD]'
                           : status === 'Self-Learning'
-                          ? 'bg-[#1B2728] text-[#2DD4BF] border-[#2A3A3A]'
+                          ? 'bg-[#F3E8E8] text-[#B76E79] border-[#E7DADD]'
                           : status === 'Late'
                           ? 'bg-amber-950/40 text-amber-400 border-amber-800/40'
                           : status === 'Absent'
                           ? 'bg-rose-950/40 text-rose-400 border-rose-800/40'
-                          : 'bg-[#1B2728] text-[#C1D0D0] border-[#2A3A3A]'
+                          : 'bg-[#F3E8E8] text-[#292524] border-[#E7DADD]'
                       }`}
                     >
                       {status}

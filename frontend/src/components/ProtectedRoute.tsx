@@ -13,8 +13,8 @@ const ProtectedRoute = ({ children, allowedRoles, requireSubscription }: Protect
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#0E1415] flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-[#2DD4BF] border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-[#F3E8E8] flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-[#B76E79] border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }

@@ -30,90 +30,90 @@ const SuperAdminGymStore = () => {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#F5FAFA] tracking-tight">Gym Stores</h1>
-          <p className="text-[#9AAEAE] mt-1">Monitor Gym Store usage and revenue across all gyms.</p>
+          <h1 className="text-3xl font-bold text-[#292524] tracking-tight">Gym Stores</h1>
+          <p className="text-[#57534E] mt-1">Monitor Gym Store usage and revenue across all gyms.</p>
         </div>
-        <select value={gymFilter} onChange={(e) => setGymFilter(e.target.value)} className="bg-[#0E1415] border border-[#2A3A3A] rounded-xl px-3 py-2 text-sm text-[#F5FAFA] focus:border-[#2DD4BF] outline-none">
+        <select value={gymFilter} onChange={(e) => setGymFilter(e.target.value)} className="bg-[#F3E8E8] border border-[#E7DADD] rounded-xl px-3 py-2 text-sm text-[#292524] focus:border-[#B76E79] outline-none">
           <option value="all">All Gyms</option>
           {gyms.map((g) => <option key={g.gymId} value={g.gymId}>{g.gymName}</option>)}
         </select>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-        <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-5">
-          <p className="text-xs font-bold text-[#9AAEAE] uppercase tracking-wider">Gyms with Store</p>
-          <h3 className="text-2xl font-black text-[#F5FAFA]">{enabledGyms.length} <span className="text-sm font-bold text-[#9AAEAE]">/ {gyms.length}</span></h3>
+        <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-5">
+          <p className="text-xs font-bold text-[#57534E] uppercase tracking-wider">Gyms with Store</p>
+          <h3 className="text-2xl font-black text-[#292524]">{enabledGyms.length} <span className="text-sm font-bold text-[#57534E]">/ {gyms.length}</span></h3>
         </div>
-        <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-5">
-          <p className="text-xs font-bold text-[#9AAEAE] uppercase tracking-wider">Store Revenue</p>
-          <h3 className="text-2xl font-black text-[#2DD4BF]">₹{totalRevenue.toLocaleString('en-IN')}</h3>
+        <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-5">
+          <p className="text-xs font-bold text-[#57534E] uppercase tracking-wider">Store Revenue</p>
+          <h3 className="text-2xl font-black text-[#B76E79]">₹{totalRevenue.toLocaleString('en-IN')}</h3>
         </div>
-        <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-5">
-          <p className="text-xs font-bold text-[#9AAEAE] uppercase tracking-wider">Total Orders</p>
-          <h3 className="text-2xl font-black text-[#F5FAFA]">{totalOrders}</h3>
+        <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-5">
+          <p className="text-xs font-bold text-[#57534E] uppercase tracking-wider">Total Orders</p>
+          <h3 className="text-2xl font-black text-[#292524]">{totalOrders}</h3>
         </div>
-        <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-5">
-          <p className="text-xs font-bold text-[#9AAEAE] uppercase tracking-wider">Total Products</p>
-          <h3 className="text-2xl font-black text-[#F5FAFA]">{totalProducts}</h3>
+        <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-5">
+          <p className="text-xs font-bold text-[#57534E] uppercase tracking-wider">Total Products</p>
+          <h3 className="text-2xl font-black text-[#292524]">{totalProducts}</h3>
         </div>
       </div>
 
       {loading ? (
-        <div className="flex justify-center py-24"><Loader2 className="animate-spin text-[#2DD4BF]" size={40} /></div>
+        <div className="flex justify-center py-24"><Loader2 className="animate-spin text-[#B76E79]" size={40} /></div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {gyms.map((g) => {
             const st = g.stats || {};
             return (
-              <div key={g.gymId} className={`bg-[#141D1E] border rounded-2xl overflow-hidden ${g.storeEntitlement?.enabled ? 'border-[#2A3A3A]' : 'border-[#2A3A3A] opacity-90'}`}>
-                <div className="p-5 border-b border-[#2A3A3A] flex items-center justify-between">
+              <div key={g.gymId} className={`bg-[#FFFFFF] border rounded-2xl overflow-hidden ${g.storeEntitlement?.enabled ? 'border-[#E7DADD]' : 'border-[#E7DADD] opacity-90'}`}>
+                <div className="p-5 border-b border-[#E7DADD] flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${g.storeEntitlement?.enabled ? 'bg-[#2DD4BF]/10 text-[#2DD4BF]' : 'bg-[#1B2728] text-[#9AAEAE]'}`}>
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${g.storeEntitlement?.enabled ? 'bg-[#B76E79]/10 text-[#B76E79]' : 'bg-[#F3E8E8] text-[#57534E]'}`}>
                       <Store size={20} />
                     </div>
                     <div>
-                      <h3 className="font-bold text-[#F5FAFA]">{g.gymName}</h3>
-                      <p className="text-xs text-[#9AAEAE]">Gym status: {g.gymStatus}</p>
+                      <h3 className="font-bold text-[#292524]">{g.gymName}</h3>
+                      <p className="text-xs text-[#57534E]">Gym status: {g.gymStatus}</p>
                     </div>
                   </div>
                   {g.storeEntitlement?.enabled ? (
-                    <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-[#1B2728]/10 text-[#2DD4BF]">Premium · Active</span>
+                    <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-[#F3E8E8]/10 text-[#B76E79]">Premium · Active</span>
                   ) : (
-                    <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-[#1B2728] text-[#9AAEAE]">
+                    <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-[#F3E8E8] text-[#57534E]">
                       {g.storeEntitlement?.plan || 'No plan'} · {g.storeEntitlement?.status || '—'}
                     </span>
                   )}
                 </div>
                 <div className="p-5 grid grid-cols-2 sm:grid-cols-4 gap-3">
-                  <div className="bg-[#0E1415] rounded-xl p-3 text-center">
-                    <IndianRupee className="mx-auto text-[#2DD4BF] mb-1" size={18} />
-                    <p className="text-lg font-black text-[#F5FAFA]">₹{st.totalRevenue?.toLocaleString('en-IN') || 0}</p>
-                    <p className="text-[10px] font-bold text-[#9AAEAE] uppercase">Revenue</p>
+                  <div className="bg-[#F3E8E8] rounded-xl p-3 text-center">
+                    <IndianRupee className="mx-auto text-[#B76E79] mb-1" size={18} />
+                    <p className="text-lg font-black text-[#292524]">₹{st.totalRevenue?.toLocaleString('en-IN') || 0}</p>
+                    <p className="text-[10px] font-bold text-[#57534E] uppercase">Revenue</p>
                   </div>
-                  <div className="bg-[#0E1415] rounded-xl p-3 text-center">
-                    <ShoppingBag className="mx-auto text-[#5EEAD4] mb-1" size={18} />
-                    <p className="text-lg font-black text-[#F5FAFA]">{st.totalOrders || 0}</p>
-                    <p className="text-[10px] font-bold text-[#9AAEAE] uppercase">Orders</p>
+                  <div className="bg-[#F3E8E8] rounded-xl p-3 text-center">
+                    <ShoppingBag className="mx-auto text-[#9F5965] mb-1" size={18} />
+                    <p className="text-lg font-black text-[#292524]">{st.totalOrders || 0}</p>
+                    <p className="text-[10px] font-bold text-[#57534E] uppercase">Orders</p>
                   </div>
-                  <div className="bg-[#0E1415] rounded-xl p-3 text-center">
-                    <Package className="mx-auto text-[#2DD4BF] mb-1" size={18} />
-                    <p className="text-lg font-black text-[#F5FAFA]">{st.totalProducts || 0}</p>
-                    <p className="text-[10px] font-bold text-[#9AAEAE] uppercase">Products</p>
+                  <div className="bg-[#F3E8E8] rounded-xl p-3 text-center">
+                    <Package className="mx-auto text-[#B76E79] mb-1" size={18} />
+                    <p className="text-lg font-black text-[#292524]">{st.totalProducts || 0}</p>
+                    <p className="text-[10px] font-bold text-[#57534E] uppercase">Products</p>
                   </div>
-                  <div className="bg-[#0E1415] rounded-xl p-3 text-center">
-                    <TrendingUp className="mx-auto text-[#5EEAD4] mb-1" size={18} />
-                    <p className="text-lg font-black text-[#F5FAFA]">{st.completedOrders || 0}</p>
-                    <p className="text-[10px] font-bold text-[#9AAEAE] uppercase">Completed</p>
+                  <div className="bg-[#F3E8E8] rounded-xl p-3 text-center">
+                    <TrendingUp className="mx-auto text-[#9F5965] mb-1" size={18} />
+                    <p className="text-lg font-black text-[#292524]">{st.completedOrders || 0}</p>
+                    <p className="text-[10px] font-bold text-[#57534E] uppercase">Completed</p>
                   </div>
                 </div>
                 {(g.recentOrders || []).length > 0 && (
                   <div className="px-5 pb-5">
-                    <p className="text-xs font-bold text-[#9AAEAE] uppercase mb-2">Recent Orders</p>
+                    <p className="text-xs font-bold text-[#57534E] uppercase mb-2">Recent Orders</p>
                     <div className="space-y-1.5">
                       {(g.recentOrders as any[]).map((o) => (
-                        <div key={o._id} className="flex items-center justify-between text-sm bg-[#0E1415] rounded-lg px-3 py-2">
-                          <span className="font-semibold text-[#F5FAFA]">{o.orderNumber}</span>
-                          <span className="text-xs text-[#9AAEAE]">{o.status} · ₹{o.total}</span>
+                        <div key={o._id} className="flex items-center justify-between text-sm bg-[#F3E8E8] rounded-lg px-3 py-2">
+                          <span className="font-semibold text-[#292524]">{o.orderNumber}</span>
+                          <span className="text-xs text-[#57534E]">{o.status} · ₹{o.total}</span>
                         </div>
                       ))}
                     </div>
@@ -127,7 +127,7 @@ const SuperAdminGymStore = () => {
               </div>
             );
           })}
-          {gyms.length === 0 && <div className="col-span-2 text-center py-16 text-[#9AAEAE]">No gyms found.</div>}
+          {gyms.length === 0 && <div className="col-span-2 text-center py-16 text-[#57534E]">No gyms found.</div>}
         </div>
       )}
     </div>

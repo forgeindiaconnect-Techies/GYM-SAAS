@@ -28,9 +28,9 @@ const Step4Facilities: React.FC<StepProps> = ({ form, set, errors }) => {
 
   return (
     <div className="space-y-6">
-      <div className="border-b border-[#2A3A3A] pb-2">
-        <h2 className="text-lg font-bold text-[#F5FAFA]">Gym Facilities</h2>
-        <p className="text-sm text-[#9AAEAE]">Select all the amenities available at your gym.</p>
+      <div className="border-b border-[#E7DADD] pb-2">
+        <h2 className="text-lg font-bold text-[#292524]">Gym Facilities</h2>
+        <p className="text-sm text-[#57534E]">Select all the amenities available at your gym.</p>
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -43,12 +43,12 @@ const Step4Facilities: React.FC<StepProps> = ({ form, set, errors }) => {
               onClick={() => toggleFacility(facility)}
               className={`flex items-center space-x-2.5 p-3 rounded-xl border text-left transition-all cursor-pointer ${
                 isSelected 
-                  ? 'bg-[#2DD4BF]/15 border-[#2DD4BF] text-[#F5FAFA] shadow-xs' 
-                  : 'bg-[#101819] border-[#2A3A3A] text-[#C1D0D0] hover:border-[#2DD4BF]/60 hover:text-[#F5FAFA]'
+                  ? 'bg-[#B76E79]/15 border-[#B76E79] text-[#292524] shadow-xs' 
+                  : 'bg-[#FFFFFF] border-[#E7DADD] text-[#292524] hover:border-[#B76E79]/60 hover:text-[#292524]'
               }`}
             >
-              <div className={`w-5 h-5 rounded flex items-center justify-center shrink-0 border ${isSelected ? 'bg-[#2DD4BF] border-[#2DD4BF]' : 'border-[#2A3A3A] bg-[#141D1E]'}`}>
-                {isSelected && <Check size={14} className="text-[#06201D]" />}
+              <div className={`w-5 h-5 rounded flex items-center justify-center shrink-0 border ${isSelected ? 'bg-[#B76E79] border-[#B76E79]' : 'border-[#E7DADD] bg-[#FFFFFF]'}`}>
+                {isSelected && <Check size={14} className="text-[#FFFFFF]" />}
               </div>
               <span className="text-xs font-semibold leading-tight">{facility}</span>
             </button>

@@ -129,8 +129,8 @@ export default function TrainerMyApplications() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-            <Briefcase className="w-7 h-7 text-[#2DD4BF]" />
+          <h1 className="text-2xl font-bold text-[#292524] flex items-center gap-2">
+            <Briefcase className="w-7 h-7 text-[#B76E79]" />
             My Job Applications
           </h1>
           <p className="text-sm text-slate-400 mt-1">
@@ -140,13 +140,13 @@ export default function TrainerMyApplications() {
         <div className="flex items-center gap-3">
           <Link
             to="/trainer/jobs"
-            className="px-4 py-2 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-black font-semibold rounded-xl text-sm transition-all shadow-md shadow-teal-500/20"
+            className="px-4 py-2 bg-[#B76E79] hover:bg-[#9F5965] text-white font-semibold rounded-xl text-sm transition-all shadow-md shadow-[#B76E79]/20"
           >
             Explore Open Vacancies
           </Link>
           <Link
             to="/trainer/job-offers"
-            className="px-4 py-2 bg-[#141D1E] hover:bg-[#1B2728] text-slate-300 rounded-xl border border-[#2A3A3A] text-sm"
+            className="px-4 py-2 bg-[#FFFFFF] hover:bg-[#F3E8E8] text-slate-300 rounded-xl border border-[#E7DADD] text-sm"
           >
             View Job Offers
           </Link>
@@ -154,7 +154,7 @@ export default function TrainerMyApplications() {
       </div>
 
       {/* Search Bar */}
-      <div className="bg-[#0E1415] p-4 rounded-2xl border border-[#2A3A3A]">
+      <div className="bg-[#F3E8E8] p-4 rounded-2xl border border-[#E7DADD]">
         <div className="relative">
           <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
@@ -162,27 +162,27 @@ export default function TrainerMyApplications() {
             placeholder="Search applications by position, gym name, or status..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-[#141D1E] border border-[#2A3A3A] rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-[#2DD4BF]"
+            className="w-full pl-10 pr-4 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-[#B76E79]"
           />
         </div>
       </div>
 
       {/* Applications List */}
       {loading ? (
-        <div className="p-12 text-center text-slate-400 bg-[#0E1415] rounded-2xl border border-[#2A3A3A]">
-          <div className="inline-block animate-spin w-8 h-8 border-4 border-[#2DD4BF] border-t-transparent rounded-full mb-3" />
+        <div className="p-12 text-center text-slate-400 bg-[#F3E8E8] rounded-2xl border border-[#E7DADD]">
+          <div className="inline-block animate-spin w-8 h-8 border-4 border-[#B76E79] border-t-transparent rounded-full mb-3" />
           <p>Loading your job applications...</p>
         </div>
       ) : filtered.length === 0 ? (
-        <div className="p-12 text-center bg-[#0E1415] rounded-2xl border border-[#2A3A3A]">
+        <div className="p-12 text-center bg-[#F3E8E8] rounded-2xl border border-[#E7DADD]">
           <Briefcase className="w-12 h-12 text-slate-600 mx-auto mb-3" />
-          <h3 className="text-lg font-semibold text-white mb-1">No applications submitted yet</h3>
+          <h3 className="text-lg font-semibold text-[#292524] mb-1">No applications submitted yet</h3>
           <p className="text-sm text-slate-400 max-w-md mx-auto mb-4">
             Discover verified gym coach openings matching your fitness credentials and apply now.
           </p>
           <Link
             to="/trainer/jobs"
-            className="px-4 py-2 bg-[#2DD4BF] text-black font-semibold rounded-xl text-xs inline-block shadow-md shadow-teal-500/20"
+            className="px-4 py-2 bg-[#B76E79] text-white font-semibold rounded-xl text-xs inline-block shadow-md shadow-[#B76E79]/20"
           >
             Browse Vacancies
           </Link>
@@ -197,11 +197,11 @@ export default function TrainerMyApplications() {
             return (
               <div
                 key={app._id}
-                className="bg-[#0E1415] border border-[#2A3A3A] rounded-2xl p-5 hover:border-[#2DD4BF]/40 transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-lg"
+                className="bg-[#F3E8E8] border border-[#E7DADD] rounded-2xl p-5 hover:border-[#B76E79]/40 transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-lg"
               >
                 <div className="space-y-2 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
-                    <h3 className="text-base font-bold text-white">{job?.title || 'Fitness Coach'}</h3>
+                    <h3 className="text-base font-bold text-[#292524]">{job?.title || 'Fitness Coach'}</h3>
                     <span
                       className={`text-xs px-2.5 py-0.5 rounded-full border font-bold ${getStatusBadge(
                         app.status
@@ -213,7 +213,7 @@ export default function TrainerMyApplications() {
 
                   <div className="flex flex-wrap items-center gap-4 text-xs text-slate-400">
                     <span className="flex items-center gap-1.5 text-white font-medium">
-                      <Building2 className="w-3.5 h-3.5 text-[#2DD4BF]" />
+                      <Building2 className="w-3.5 h-3.5 text-[#B76E79]" />
                       {job?.gymName || app.gymId?.name || 'Verified Gym'}
                     </span>
                     <span className="flex items-center gap-1.5">
@@ -232,7 +232,7 @@ export default function TrainerMyApplications() {
                         href={`http://localhost:5600${app.resumeUrl}`}
                         target="_blank"
                         rel="noreferrer"
-                        className="text-xs text-[#2DD4BF] hover:text-[#5EEAD4] flex items-center gap-1 font-medium"
+                        className="text-xs text-[#B76E79] hover:text-[#9F5965] flex items-center gap-1 font-medium"
                       >
                         <FileText className="w-3.5 h-3.5" />
                         Submitted Resume <ExternalLink className="w-3 h-3" />
@@ -243,7 +243,7 @@ export default function TrainerMyApplications() {
                       onClick={() => setSelectedApp(app)}
                       className="text-xs text-slate-400 hover:text-white flex items-center gap-1 font-medium"
                     >
-                      <Eye className="w-3.5 h-3.5 text-[#2DD4BF]" />
+                      <Eye className="w-3.5 h-3.5 text-[#B76E79]" />
                       View Application Details
                     </button>
                   </div>
@@ -264,7 +264,7 @@ export default function TrainerMyApplications() {
                   {(app.status === 'Selected' || app.status === 'Offer Accepted') && (
                     <Link
                       to="/trainer/job-offers"
-                      className="px-3.5 py-1.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-black font-semibold rounded-xl text-xs"
+                      className="px-3.5 py-1.5 bg-[#B76E79] hover:bg-[#9F5965] text-white font-semibold rounded-xl text-xs"
                     >
                       Review Offer
                     </Link>
@@ -273,7 +273,7 @@ export default function TrainerMyApplications() {
                   <button
                     type="button"
                     onClick={() => setSelectedApp(app)}
-                    className="px-3 py-1.5 bg-[#141D1E] hover:bg-[#1B2728] text-slate-300 hover:text-white border border-[#2A3A3A] rounded-xl text-xs flex items-center gap-1"
+                    className="px-3 py-1.5 bg-[#FFFFFF] hover:bg-[#F3E8E8] text-slate-300 hover:text-white border border-[#E7DADD] rounded-xl text-xs flex items-center gap-1"
                   >
                     <Eye size={13} />
                     Details
@@ -283,7 +283,7 @@ export default function TrainerMyApplications() {
                     <button
                       disabled={actionLoading}
                       onClick={() => handleWithdraw(app._id)}
-                      className="px-3 py-1.5 bg-[#141D1E] hover:bg-rose-500/10 text-slate-400 hover:text-rose-400 border border-[#2A3A3A] hover:border-rose-500/30 rounded-xl text-xs transition-all flex items-center gap-1"
+                      className="px-3 py-1.5 bg-[#FFFFFF] hover:bg-rose-500/10 text-slate-400 hover:text-rose-400 border border-[#E7DADD] hover:border-rose-500/30 rounded-xl text-xs transition-all flex items-center gap-1"
                     >
                       <RotateCcw className="w-3 h-3" />
                       Withdraw
@@ -299,13 +299,13 @@ export default function TrainerMyApplications() {
       {/* VIEW APPLICATION DETAILS MODAL */}
       {selectedApp && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#0E1415] border border-[#2A3A3A] rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 space-y-6 shadow-2xl">
-            <div className="flex items-start justify-between pb-4 border-b border-[#2A3A3A]">
+          <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 space-y-6 shadow-2xl">
+            <div className="flex items-start justify-between pb-4 border-b border-[#E7DADD]">
               <div>
-                <span className="text-[10px] uppercase font-bold text-[#2DD4BF] tracking-wider block">
+                <span className="text-[10px] uppercase font-bold text-[#B76E79] tracking-wider block">
                   Application Details
                 </span>
-                <h2 className="text-xl font-bold text-white mt-0.5">
+                <h2 className="text-xl font-bold text-[#292524] mt-0.5">
                   {selectedApp.jobId?.title || 'Fitness Coach'}
                 </h2>
                 <p className="text-xs text-slate-400">
@@ -314,14 +314,14 @@ export default function TrainerMyApplications() {
               </div>
               <button
                 onClick={() => setSelectedApp(null)}
-                className="p-2 rounded-xl bg-[#141D1E] text-slate-400 hover:text-white border border-[#2A3A3A]"
+                className="p-2 rounded-xl bg-[#FFFFFF] text-slate-400 hover:text-white border border-[#E7DADD]"
               >
                 <X size={18} />
               </button>
             </div>
 
             {/* Current Status Banner */}
-            <div className="p-4 rounded-2xl bg-[#141D1E] border border-[#2A3A3A] flex items-center justify-between">
+            <div className="p-4 rounded-2xl bg-[#FFFFFF] border border-[#E7DADD] flex items-center justify-between">
               <div>
                 <span className="text-xs text-slate-400 block">Application Status</span>
                 <span className={`inline-block mt-1 text-xs px-3 py-1 rounded-full border font-bold ${getStatusBadge(selectedApp.status)}`}>
@@ -338,35 +338,35 @@ export default function TrainerMyApplications() {
 
             {/* Candidate & Application Fields */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-              <div className="p-3.5 rounded-xl bg-[#141D1E] border border-[#2A3A3A] space-y-1">
+              <div className="p-3.5 rounded-xl bg-[#FFFFFF] border border-[#E7DADD] space-y-1">
                 <span className="text-slate-500 font-semibold uppercase text-[10px]">Candidate Name</span>
                 <p className="font-bold text-white">{selectedApp.name}</p>
               </div>
 
-              <div className="p-3.5 rounded-xl bg-[#141D1E] border border-[#2A3A3A] space-y-1">
+              <div className="p-3.5 rounded-xl bg-[#FFFFFF] border border-[#E7DADD] space-y-1">
                 <span className="text-slate-500 font-semibold uppercase text-[10px]">Contact Info</span>
                 <p className="text-slate-300">{selectedApp.email} · {selectedApp.phone}</p>
               </div>
 
-              <div className="p-3.5 rounded-xl bg-[#141D1E] border border-[#2A3A3A] space-y-1">
+              <div className="p-3.5 rounded-xl bg-[#FFFFFF] border border-[#E7DADD] space-y-1">
                 <span className="text-slate-500 font-semibold uppercase text-[10px]">Work Experience</span>
                 <p className="font-bold text-white">{selectedApp.workExperience || '1-2 Years'}</p>
               </div>
 
-              <div className="p-3.5 rounded-xl bg-[#141D1E] border border-[#2A3A3A] space-y-1">
+              <div className="p-3.5 rounded-xl bg-[#FFFFFF] border border-[#E7DADD] space-y-1">
                 <span className="text-slate-500 font-semibold uppercase text-[10px]">Availability</span>
                 <p className="font-bold text-white">{selectedApp.availability || 'Immediately'}</p>
               </div>
 
               {selectedApp.expectedSalary && (
-                <div className="p-3.5 rounded-xl bg-[#141D1E] border border-[#2A3A3A] space-y-1">
+                <div className="p-3.5 rounded-xl bg-[#FFFFFF] border border-[#E7DADD] space-y-1">
                   <span className="text-slate-500 font-semibold uppercase text-[10px]">Expected Salary</span>
-                  <p className="font-bold text-[#2DD4BF]">₹{selectedApp.expectedSalary}</p>
+                  <p className="font-bold text-[#B76E79]">₹{selectedApp.expectedSalary}</p>
                 </div>
               )}
 
               {selectedApp.preferredLocation && (
-                <div className="p-3.5 rounded-xl bg-[#141D1E] border border-[#2A3A3A] space-y-1">
+                <div className="p-3.5 rounded-xl bg-[#FFFFFF] border border-[#E7DADD] space-y-1">
                   <span className="text-slate-500 font-semibold uppercase text-[10px]">Preferred Location</span>
                   <p className="font-bold text-white">{selectedApp.preferredLocation}</p>
                 </div>
@@ -375,7 +375,7 @@ export default function TrainerMyApplications() {
 
             {/* Qualifications & Certifications */}
             {(selectedApp.qualifications || selectedApp.certifications) && (
-              <div className="space-y-3 p-4 rounded-2xl bg-[#141D1E] border border-[#2A3A3A] text-xs">
+              <div className="space-y-3 p-4 rounded-2xl bg-[#FFFFFF] border border-[#E7DADD] text-xs">
                 {selectedApp.qualifications && (
                   <div>
                     <span className="text-slate-500 font-semibold uppercase text-[10px] block">Qualifications</span>
@@ -393,9 +393,9 @@ export default function TrainerMyApplications() {
 
             {/* Resume Document Link */}
             {selectedApp.resumeUrl && (
-              <div className="p-4 rounded-2xl bg-[#141D1E] border border-[#2DD4BF]/30 flex items-center justify-between text-xs">
+              <div className="p-4 rounded-2xl bg-[#FFFFFF] border border-[#B76E79]/30 flex items-center justify-between text-xs">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-lg bg-[#2DD4BF]/10 text-[#2DD4BF] flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-lg bg-[#B76E79]/10 text-[#B76E79] flex items-center justify-center">
                     <FileText size={18} />
                   </div>
                   <div>
@@ -408,7 +408,7 @@ export default function TrainerMyApplications() {
                   href={`http://localhost:5600${selectedApp.resumeUrl}`}
                   target="_blank"
                   rel="noreferrer"
-                  className="px-4 py-2 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-black font-bold rounded-xl text-xs flex items-center gap-1.5 transition-all shadow-md shadow-teal-500/10"
+                  className="px-4 py-2 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold rounded-xl text-xs flex items-center gap-1.5 transition-all shadow-md shadow-[#B76E79]/15"
                 >
                   <span>Open Resume</span>
                   <ExternalLink size={13} />
@@ -420,7 +420,7 @@ export default function TrainerMyApplications() {
               <button
                 type="button"
                 onClick={() => setSelectedApp(null)}
-                className="px-5 py-2.5 bg-[#141D1E] hover:bg-[#1B2728] border border-[#2A3A3A] text-white rounded-xl text-xs font-semibold cursor-pointer"
+                className="px-5 py-2.5 bg-[#FFFFFF] hover:bg-[#F3E8E8] border border-[#E7DADD] text-white rounded-xl text-xs font-semibold cursor-pointer"
               >
                 Close Details
               </button>

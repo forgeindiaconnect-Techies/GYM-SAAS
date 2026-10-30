@@ -6,39 +6,39 @@ const AdminSettings = () => {
       <div className="flex justify-between items-end mb-8">
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-3">
-            <Settings className="text-[#2DD4BF]" size={32} />
+            <Settings className="text-[#B76E79]" size={32} />
             Platform Settings
           </h1>
-          <p className="text-[#9AAEAE] mt-2">Global application variables and integrations.</p>
+          <p className="text-[#57534E] mt-2">Global application variables and integrations.</p>
         </div>
-        <button className="px-6 py-2 bg-[#2DD4BF] text-[#06201D] font-bold rounded-xl font-bold hover:bg-[#5EEAD4] transition-colors">
+        <button className="px-6 py-2 bg-[#B76E79] text-white font-bold rounded-xl font-bold hover:bg-[#9F5965] transition-colors">
           Manage Platform Settings
         </button>
       </div>
       
       
-      <div className="bg-[#FFFFFF] border border-[#2A3A3A] rounded-2xl p-6 max-w-2xl">
+      <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-6 max-w-2xl">
         <div className="space-y-6">
-          <div className="flex justify-between items-center pb-4 border-b border-[#2A3A3A]">
+          <div className="flex justify-between items-center pb-4 border-b border-[#E7DADD]">
             <div>
               <p className="font-bold">Maintenance Mode</p>
-              <p className="text-sm text-[#9AAEAE]">Take platform offline for updates</p>
+              <p className="text-sm text-[#57534E]">Take platform offline for updates</p>
             </div>
-            <div className="w-12 h-6 bg-[#1B2728] rounded-full relative cursor-pointer"><div className="absolute left-1 top-1 w-4 h-4 bg-[#9AAEAE] rounded-full"></div></div>
+            <div className="w-12 h-6 bg-[#F3E8E8] rounded-full relative cursor-pointer"><div className="absolute left-1 top-1 w-4 h-4 bg-[#57534E] rounded-full"></div></div>
           </div>
-          <div className="flex justify-between items-center pb-4 border-b border-[#2A3A3A]">
+          <div className="flex justify-between items-center pb-4 border-b border-[#E7DADD]">
             <div>
               <p className="font-bold">Stripe Webhooks</p>
               <p className="text-sm text-green-500">Connected</p>
             </div>
-            <button className="text-sm text-[#9AAEAE] hover:text-[#FFFFFF]">Refresh Keys</button>
+            <button className="text-sm text-[#57534E] hover:text-[#FFFFFF]">Refresh Keys</button>
           </div>
-          <div className="flex justify-between items-center pb-4 border-b border-[#2A3A3A]">
+          <div className="flex justify-between items-center pb-4 border-b border-[#E7DADD]">
             <div>
               <p className="font-bold">OpenAI Integration</p>
               <p className="text-sm text-green-500">Connected (GPT-4 Active)</p>
             </div>
-            <button className="text-sm text-[#9AAEAE] hover:text-[#FFFFFF]">Configure</button>
+            <button className="text-sm text-[#57534E] hover:text-[#FFFFFF]">Configure</button>
           </div>
         </div>
       </div>

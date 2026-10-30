@@ -28,47 +28,47 @@ const CancellationRefundPolicy = () => {
   }) => (
     <section className="mb-10">
       <div className="flex items-center gap-3 mb-4">
-        <div className="w-9 h-9 bg-[#2DD4BF]/10 rounded-xl flex items-center justify-center text-[#2DD4BF] shrink-0">
+        <div className="w-9 h-9 bg-[#B76E79]/10 rounded-xl flex items-center justify-center text-[#B76E79] shrink-0">
           <Icon size={18} />
         </div>
-        <h2 className="text-lg font-bold text-[#F5FAFA]">{title}</h2>
+        <h2 className="text-lg font-bold text-[#292524]">{title}</h2>
       </div>
       <div className="pl-12">{children}</div>
     </section>
   );
 
   const P = ({ children }: { children: React.ReactNode }) => (
-    <p className="text-sm text-[#9AAEAE] leading-relaxed mb-3">{children}</p>
+    <p className="text-sm text-[#57534E] leading-relaxed mb-3">{children}</p>
   );
 
   const Li = ({ children }: { children: React.ReactNode }) => (
-    <li className="flex items-start gap-2 text-sm text-[#9AAEAE] leading-relaxed mb-2">
-      <CheckCircle size={14} className="text-[#2DD4BF] shrink-0 mt-0.5" />
+    <li className="flex items-start gap-2 text-sm text-[#57534E] leading-relaxed mb-2">
+      <CheckCircle size={14} className="text-[#B76E79] shrink-0 mt-0.5" />
       <span>{children}</span>
     </li>
   );
 
   const Note = ({ children }: { children: React.ReactNode }) => (
-    <div className="flex items-start gap-3 p-4 bg-[#141D1E] border border-[#2DD4BF]/20 rounded-xl mb-4">
-      <AlertCircle size={16} className="text-[#2DD4BF] shrink-0 mt-0.5" />
-      <p className="text-sm text-[#9AAEAE] leading-relaxed">{children}</p>
+    <div className="flex items-start gap-3 p-4 bg-[#FFFFFF] border border-[#B76E79]/20 rounded-xl mb-4">
+      <AlertCircle size={16} className="text-[#B76E79] shrink-0 mt-0.5" />
+      <p className="text-sm text-[#57534E] leading-relaxed">{children}</p>
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-[#0E1415] text-[#F5FAFA] selection:bg-[#2DD4BF] selection:text-[#F5FAFA]">
+    <div className="min-h-screen bg-[#F3E8E8] text-[#292524] selection:bg-[#B76E79] selection:text-[#292524]">
       {/* Nav */}
-      <nav className="border-b border-[#2A3A3A] bg-[#0E1415]/90 backdrop-blur-md sticky top-0 z-50">
+      <nav className="border-b border-[#E7DADD] bg-[#F3E8E8]/90 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-gradient-to-br from-[#2DD4BF] to-[#5EEAD4] rounded-lg flex items-center justify-center">
-              <Activity className="text-[#06201D]" size={16} strokeWidth={2.5} />
+            <div className="w-8 h-8 bg-gradient-to-br from-[#B76E79] to-[#9F5965] rounded-lg flex items-center justify-center">
+              <Activity className="text-[#FFFFFF]" size={16} strokeWidth={2.5} />
             </div>
-            <span className="text-lg font-black tracking-tight text-[#F5FAFA]">Gymora</span>
+            <span className="text-lg font-black tracking-tight text-[#292524]">Gymora</span>
           </div>
           <button
             onClick={handleBack}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold text-xs sm:text-sm rounded-full transition-all shadow-md cursor-pointer"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold text-xs sm:text-sm rounded-full transition-all shadow-md cursor-pointer"
           >
             <ArrowLeft size={14} />
             <span>{returnLabel}</span>
@@ -77,18 +77,18 @@ const CancellationRefundPolicy = () => {
       </nav>
 
       {/* Header */}
-      <div className="bg-gradient-to-b from-[#141D1E] to-[#0E1415] border-b border-[#2A3A3A]">
+      <div className="bg-gradient-to-b from-[#FFFFFF] to-[#F3E8E8] border-b border-[#E7DADD]">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-center">
-          <div className="w-14 h-14 bg-[#2DD4BF]/10 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-[#2DD4BF]/20">
-            <RefreshCw size={28} className="text-[#2DD4BF]" />
+          <div className="w-14 h-14 bg-[#B76E79]/10 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-[#B76E79]/20">
+            <RefreshCw size={28} className="text-[#B76E79]" />
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-[#F5FAFA] mb-2">
+          <h1 className="text-2xl sm:text-3xl font-black text-[#292524] mb-2">
             Cancellation &amp; Refund Policy
           </h1>
-          <p className="text-sm text-[#9AAEAE] max-w-xl mx-auto">
+          <p className="text-sm text-[#57534E] max-w-xl mx-auto">
             This policy explains your cancellation rights, refund eligibility, and the process for requesting a refund on Gymora.
           </p>
-          <p className="text-xs text-[#4A5A5A] mt-3">
+          <p className="text-xs text-[#E7DADD] mt-3">
             Last updated: October 2026 &nbsp;·&nbsp; Draft — subject to final review before publication
           </p>
         </div>
@@ -241,8 +241,8 @@ const CancellationRefundPolicy = () => {
               'If no direct action is available, submit a support request via Help & Support with your transaction reference number.',
               'Our team will review your request and respond within 2 to 3 business days.',
             ].map((step, i) => (
-              <li key={i} className="flex items-start gap-3 text-sm text-[#9AAEAE] leading-relaxed">
-                <span className="w-6 h-6 rounded-full bg-[#2DD4BF]/20 text-[#2DD4BF] text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
+              <li key={i} className="flex items-start gap-3 text-sm text-[#57534E] leading-relaxed">
+                <span className="w-6 h-6 rounded-full bg-[#B76E79]/20 text-[#B76E79] text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
                   {i + 1}
                 </span>
                 <span>{step}</span>
@@ -272,15 +272,15 @@ const CancellationRefundPolicy = () => {
         </Section>
 
         {/* Back */}
-        <div className="mt-12 pt-8 border-t border-[#2A3A3A] flex items-center justify-between">
+        <div className="mt-12 pt-8 border-t border-[#E7DADD] flex items-center justify-between">
           <button
             onClick={handleBack}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold text-sm transition-all cursor-pointer"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold text-sm transition-all cursor-pointer"
           >
             <ArrowLeft size={16} />
             {returnLabel}
           </button>
-          <p className="text-xs text-[#4A5A5A]">© 2026 Gymora. All rights reserved.</p>
+          <p className="text-xs text-[#E7DADD]">© 2026 Gymora. All rights reserved.</p>
         </div>
       </div>
     </div>

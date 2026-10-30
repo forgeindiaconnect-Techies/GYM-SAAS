@@ -87,7 +87,7 @@ export const AudioMessagePlayer: React.FC<AudioMessagePlayerProps> = ({ src, dur
   if (hasError) {
     return (
       <div className={`flex items-center gap-2 p-2 rounded-xl text-xs ${
-        isMine ? 'bg-[#2DD4BF]/40 text-white' : 'bg-red-50 text-red-600'
+        isMine ? 'bg-[#B76E79]/40 text-white' : 'bg-red-50 text-red-600'
       }`}>
         <AlertCircle size={14} />
         <span>Audio could not be loaded</span>
@@ -98,7 +98,7 @@ export const AudioMessagePlayer: React.FC<AudioMessagePlayerProps> = ({ src, dur
 
   return (
     <div className={`flex items-center gap-3 py-1.5 px-1 min-w-[220px] sm:min-w-[260px] select-none ${
-      isMine ? 'text-white' : 'text-[#F5FAFA]'
+      isMine ? 'text-white' : 'text-[#292524]'
     }`}>
       <audio ref={audioRef} src={src} preload="metadata" />
 
@@ -108,8 +108,8 @@ export const AudioMessagePlayer: React.FC<AudioMessagePlayerProps> = ({ src, dur
         onClick={togglePlay}
         className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 shadow-xs transition-transform active:scale-95 cursor-pointer ${
           isMine 
-            ? 'bg-[#141D1E] text-[#2DD4BF] hover:bg-[#141D1E]/90' 
-            : 'bg-[#2DD4BF] text-white hover:bg-[#5EEAD4]'
+            ? 'bg-[#FFFFFF] text-[#B76E79] hover:bg-[#FFFFFF]/90' 
+            : 'bg-[#B76E79] text-white hover:bg-[#9F5965]'
         }`}
         title={isPlaying ? 'Pause' : 'Play'}
       >
@@ -122,7 +122,7 @@ export const AudioMessagePlayer: React.FC<AudioMessagePlayerProps> = ({ src, dur
           {/* Custom Track */}
           <div className="absolute inset-x-0 h-1.5 rounded-full overflow-hidden bg-black/15">
             <div 
-              className={`h-full transition-all duration-100 ${isMine ? 'bg-[#141D1E]' : 'bg-[#2DD4BF]'}`}
+              className={`h-full transition-all duration-100 ${isMine ? 'bg-[#FFFFFF]' : 'bg-[#B76E79]'}`}
               style={{ width: `${progressPercent}%` }}
             />
           </div>

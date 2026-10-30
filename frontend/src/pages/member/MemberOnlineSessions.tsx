@@ -10,14 +10,14 @@ import {
 
 const statusConfig: Record<string, { label: string; color: string; bg: string; border: string }> = {
   Pending:        { label: 'Pending',       color: 'text-yellow-700', bg: 'bg-yellow-50',  border: 'border-yellow-200' },
-  'Awaiting Payment': { label: 'Awaiting Payment', color: 'text-[#2DD4BF]', bg: 'bg-[#1B2728]', border: 'border-[#2A3A3A]' },
-  Confirmed:      { label: 'Confirmed',     color: 'text-[#2DD4BF]',   bg: 'bg-[#1B2728]',    border: 'border-[#2A3A3A]' },
+  'Awaiting Payment': { label: 'Awaiting Payment', color: 'text-[#B76E79]', bg: 'bg-[#F3E8E8]', border: 'border-[#E7DADD]' },
+  Confirmed:      { label: 'Confirmed',     color: 'text-[#B76E79]',   bg: 'bg-[#F3E8E8]',    border: 'border-[#E7DADD]' },
   Upcoming:       { label: 'Upcoming',      color: 'text-indigo-700', bg: 'bg-indigo-50',  border: 'border-indigo-200' },
   'In Progress':  { label: 'Live Now',      color: 'text-green-700',  bg: 'bg-green-50',   border: 'border-green-200' },
-  Completed:      { label: 'Completed',     color: 'text-[#C1D0D0]',   bg: 'bg-[#1B2728]',   border: 'border-[#2A3A3A]' },
+  Completed:      { label: 'Completed',     color: 'text-[#292524]',   bg: 'bg-[#F3E8E8]',   border: 'border-[#E7DADD]' },
   Cancelled:      { label: 'Cancelled',     color: 'text-red-700',    bg: 'bg-red-50',     border: 'border-red-200' },
-  'Reschedule Requested': { label: 'Reschedule Req.', color: 'text-[#2DD4BF]', bg: 'bg-[#0E1415]', border: 'border-[#2A3A3A]' },
-  Rescheduled:    { label: 'Rescheduled',   color: 'text-[#2DD4BF]',   bg: 'bg-[#1B2728]',    border: 'border-[#2A3A3A]' },
+  'Reschedule Requested': { label: 'Reschedule Req.', color: 'text-[#B76E79]', bg: 'bg-[#F3E8E8]', border: 'border-[#E7DADD]' },
+  Rescheduled:    { label: 'Rescheduled',   color: 'text-[#B76E79]',   bg: 'bg-[#F3E8E8]',    border: 'border-[#E7DADD]' },
 };
 
 const MemberOnlineSessions = () => {
@@ -107,7 +107,7 @@ const MemberOnlineSessions = () => {
 
   if (loading) return (
     <div className="flex items-center justify-center py-32">
-      <Loader2 className="animate-spin text-[#2DD4BF]" size={40} />
+      <Loader2 className="animate-spin text-[#B76E79]" size={40} />
     </div>
   );
 
@@ -117,17 +117,17 @@ const MemberOnlineSessions = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
-          <div className="w-11 h-11 bg-gradient-to-br from-[#2DD4BF] to-[#5EEAD4] rounded-xl flex items-center justify-center shadow-lg">
+          <div className="w-11 h-11 bg-gradient-to-br from-[#B76E79] to-[#9F5965] rounded-xl flex items-center justify-center shadow-lg">
             <Video size={22} className="text-white" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-[#F5FAFA]">Online Sessions</h1>
-            <p className="text-sm text-[#9AAEAE]">Join, check-in and manage your online training sessions</p>
+            <h1 className="text-2xl font-bold text-[#292524]">Online Sessions</h1>
+            <p className="text-sm text-[#57534E]">Join, check-in and manage your online training sessions</p>
           </div>
         </div>
         <button
           onClick={() => navigate('/member/find-trainers')}
-          className="flex items-center space-x-2 px-4 py-2 bg-[#2DD4BF] text-[#06201D] font-bold rounded-xl font-semibold text-sm hover:bg-[#5EEAD4] transition-colors shadow"
+          className="flex items-center space-x-2 px-4 py-2 bg-[#B76E79] text-white font-bold rounded-xl font-semibold text-sm hover:bg-[#9F5965] transition-colors shadow"
         >
           <span>Book Session</span>
           <ChevronRight size={16} />
@@ -138,7 +138,7 @@ const MemberOnlineSessions = () => {
       {liveSessions.length > 0 && (
         <div className="bg-gradient-to-r from-green-600 to-emerald-500 rounded-2xl p-5 text-white shadow-lg flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <div className="w-12 h-12 bg-[#141D1E]/20 rounded-xl flex items-center justify-center animate-pulse">
+            <div className="w-12 h-12 bg-[#FFFFFF]/20 rounded-xl flex items-center justify-center animate-pulse">
               <Wifi size={24} className="text-white" />
             </div>
             <div>
@@ -148,7 +148,7 @@ const MemberOnlineSessions = () => {
           </div>
           <button
             onClick={() => handleJoinMeeting(liveSessions[0])}
-            className="bg-[#141D1E] text-green-700 font-bold px-6 py-3 rounded-xl hover:bg-green-50 transition-colors shadow flex items-center space-x-2"
+            className="bg-[#FFFFFF] text-green-700 font-bold px-6 py-3 rounded-xl hover:bg-green-50 transition-colors shadow flex items-center space-x-2"
           >
             <Play size={18} />
             <span>Join Now</span>
@@ -158,17 +158,17 @@ const MemberOnlineSessions = () => {
 
       {/* Sessions List */}
       {allSessions.length === 0 ? (
-        <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-12 text-center">
-          <div className="w-16 h-16 bg-[#0E1415] rounded-full flex items-center justify-center mx-auto mb-4">
-            <Calendar size={28} className="text-[#9AAEAE]" />
+        <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-12 text-center">
+          <div className="w-16 h-16 bg-[#F3E8E8] rounded-full flex items-center justify-center mx-auto mb-4">
+            <Calendar size={28} className="text-[#57534E]" />
           </div>
-          <h3 className="text-lg font-bold text-[#F5FAFA] mb-2">No Online Sessions</h3>
-          <p className="text-[#9AAEAE] text-sm mb-5">
+          <h3 className="text-lg font-bold text-[#292524] mb-2">No Online Sessions</h3>
+          <p className="text-[#57534E] text-sm mb-5">
             Book an online trainer to get started with live video training sessions.
           </p>
           <button
             onClick={() => navigate('/member/find-trainers')}
-            className="px-6 py-2.5 bg-[#2DD4BF] text-[#06201D] font-bold rounded-xl font-semibold text-sm hover:bg-[#5EEAD4] transition-colors"
+            className="px-6 py-2.5 bg-[#B76E79] text-white font-bold rounded-xl font-semibold text-sm hover:bg-[#9F5965] transition-colors"
           >
             Find Trainers
           </button>
@@ -185,16 +185,16 @@ const MemberOnlineSessions = () => {
             const alreadyRated = !!session.customerRating;
 
             return (
-              <div key={session._id} className={`bg-[#141D1E] border rounded-2xl p-5 shadow-sm ${isLive ? 'border-green-400 shadow-teal-900/10' : 'border-[#2A3A3A]'}`}>
+              <div key={session._id} className={`bg-[#FFFFFF] border rounded-2xl p-5 shadow-sm ${isLive ? 'border-green-400 shadow-[#B76E79]/15' : 'border-[#E7DADD]'}`}>
                 <div className="flex items-start justify-between flex-wrap gap-3">
                   {/* Trainer info */}
                   <div className="flex items-center space-x-3">
-                    <div className="w-11 h-11 bg-gradient-to-br from-[#2DD4BF] to-[#5EEAD4] rounded-full flex items-center justify-center text-[#06201D] font-bold font-bold text-sm shadow">
+                    <div className="w-11 h-11 bg-gradient-to-br from-[#B76E79] to-[#9F5965] rounded-full flex items-center justify-center text-[#FFFFFF] font-bold font-bold text-sm shadow">
                       {trainer?.name?.[0] || <User size={18} />}
                     </div>
                     <div>
-                      <p className="font-semibold text-[#F5FAFA]">{trainer?.name || 'Trainer'}</p>
-                      <p className="text-xs text-[#9AAEAE]">{trainer?.specialization || 'Fitness Trainer'}</p>
+                      <p className="font-semibold text-[#292524]">{trainer?.name || 'Trainer'}</p>
+                      <p className="text-xs text-[#57534E]">{trainer?.specialization || 'Fitness Trainer'}</p>
                     </div>
                   </div>
                   {/* Status badge */}
@@ -205,16 +205,16 @@ const MemberOnlineSessions = () => {
 
                 {/* Session Details */}
                 <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-3">
-                  <div className="flex items-center space-x-2 text-sm text-[#9AAEAE]">
-                    <Calendar size={14} className="text-[#2DD4BF]" />
+                  <div className="flex items-center space-x-2 text-sm text-[#57534E]">
+                    <Calendar size={14} className="text-[#B76E79]" />
                     <span>{session.date}</span>
                   </div>
-                  <div className="flex items-center space-x-2 text-sm text-[#9AAEAE]">
-                    <Clock size={14} className="text-[#2DD4BF]" />
+                  <div className="flex items-center space-x-2 text-sm text-[#57534E]">
+                    <Clock size={14} className="text-[#B76E79]" />
                     <span>{session.startTime} – {session.endTime}</span>
                   </div>
-                  <div className="flex items-center space-x-2 text-sm text-[#9AAEAE]">
-                    <Video size={14} className="text-[#2DD4BF]" />
+                  <div className="flex items-center space-x-2 text-sm text-[#57534E]">
+                    <Video size={14} className="text-[#B76E79]" />
                     <span>{session.duration} min</span>
                   </div>
                   {session.attendanceStatus && (
@@ -222,7 +222,7 @@ const MemberOnlineSessions = () => {
                       session.attendanceStatus === 'Present' ? 'bg-green-50 text-green-700' :
                       session.attendanceStatus === 'Absent' ? 'bg-red-50 text-red-700' :
                       session.attendanceStatus === 'Late' ? 'bg-yellow-50 text-yellow-700' :
-                      'bg-[#1B2728] text-[#2DD4BF]'
+                      'bg-[#F3E8E8] text-[#B76E79]'
                     }`}>
                       <span>{session.attendanceStatus}</span>
                     </div>
@@ -231,21 +231,21 @@ const MemberOnlineSessions = () => {
 
                 {/* Check-in / Checkout timeline for attended sessions */}
                 {(checkedIn || checkedOut) && (
-                  <div className="mt-4 flex items-center space-x-4 text-xs text-[#9AAEAE] bg-[#0E1415] rounded-xl p-3">
+                  <div className="mt-4 flex items-center space-x-4 text-xs text-[#57534E] bg-[#F3E8E8] rounded-xl p-3">
                     <div className="flex items-center space-x-1.5">
                       <LogIn size={13} className="text-green-600" />
-                      <span>Check-in: <strong className="text-[#F5FAFA]">{session.checkInTime ? new Date(session.checkInTime).toLocaleTimeString() : '—'}</strong></span>
+                      <span>Check-in: <strong className="text-[#292524]">{session.checkInTime ? new Date(session.checkInTime).toLocaleTimeString() : '—'}</strong></span>
                     </div>
                     {checkedOut && (
                       <div className="flex items-center space-x-1.5">
-                        <LogOut size={13} className="text-[#2DD4BF]" />
-                        <span>Check-out: <strong className="text-[#F5FAFA]">{new Date(session.checkOutTime).toLocaleTimeString()}</strong></span>
+                        <LogOut size={13} className="text-[#B76E79]" />
+                        <span>Check-out: <strong className="text-[#292524]">{new Date(session.checkOutTime).toLocaleTimeString()}</strong></span>
                       </div>
                     )}
                     {session.actualDuration && (
                       <div className="flex items-center space-x-1.5">
-                        <Clock size={13} className="text-[#2DD4BF]" />
-                        <span>Duration: <strong className="text-[#F5FAFA]">{session.actualDuration} min</strong></span>
+                        <Clock size={13} className="text-[#B76E79]" />
+                        <span>Duration: <strong className="text-[#292524]">{session.actualDuration} min</strong></span>
                       </div>
                     )}
                   </div>
@@ -253,13 +253,13 @@ const MemberOnlineSessions = () => {
 
                 {/* Session Notes (if trainer submitted) */}
                 {session.sessionNotes?.exercisesCompleted && (
-                  <div className="mt-3 bg-[#1B2728] border border-[#2A3A3A] rounded-xl p-3 text-sm">
-                    <p className="font-semibold text-[#2DD4BF] mb-1 flex items-center space-x-1.5">
+                  <div className="mt-3 bg-[#F3E8E8] border border-[#E7DADD] rounded-xl p-3 text-sm">
+                    <p className="font-semibold text-[#B76E79] mb-1 flex items-center space-x-1.5">
                       <Info size={14} /><span>Trainer Notes</span>
                     </p>
-                    <p className="text-[#2DD4BF]">{session.sessionNotes.exercisesCompleted}</p>
+                    <p className="text-[#B76E79]">{session.sessionNotes.exercisesCompleted}</p>
                     {session.sessionNotes.nextSessionFocus && (
-                      <p className="text-[#2DD4BF] mt-1 text-xs">Next focus: {session.sessionNotes.nextSessionFocus}</p>
+                      <p className="text-[#B76E79] mt-1 text-xs">Next focus: {session.sessionNotes.nextSessionFocus}</p>
                     )}
                   </div>
                 )}
@@ -289,7 +289,7 @@ const MemberOnlineSessions = () => {
                       <button
                         onClick={() => handleCheckOut(session._id)}
                         disabled={actionLoading === session._id + '-checkout'}
-                        className="flex items-center space-x-2 px-4 py-2 bg-[#141D1E] border border-[#2A3A3A] text-[#9AAEAE] rounded-xl font-semibold text-sm hover:bg-[#0E1415] transition-colors disabled:opacity-50"
+                        className="flex items-center space-x-2 px-4 py-2 bg-[#FFFFFF] border border-[#E7DADD] text-[#57534E] rounded-xl font-semibold text-sm hover:bg-[#F3E8E8] transition-colors disabled:opacity-50"
                       >
                         {actionLoading === session._id + '-checkout' ? <Loader2 size={14} className="animate-spin" /> : <LogOut size={14} />}
                         <span>Check Out</span>
@@ -301,7 +301,7 @@ const MemberOnlineSessions = () => {
                   {missed && (
                     <button
                       onClick={() => setMissedModal(session)}
-                      className="flex items-center space-x-2 px-4 py-2 bg-[#1B2728] border border-[#2A3A3A] text-[#2DD4BF] rounded-xl font-semibold text-sm hover:bg-[#1B2728] transition-colors"
+                      className="flex items-center space-x-2 px-4 py-2 bg-[#F3E8E8] border border-[#E7DADD] text-[#B76E79] rounded-xl font-semibold text-sm hover:bg-[#F3E8E8] transition-colors"
                     >
                       <AlertTriangle size={14} />
                       <span>Missed Session — Options</span>
@@ -329,7 +329,7 @@ const MemberOnlineSessions = () => {
                   {(session.status === 'Confirmed' || session.status === 'Upcoming') && (
                     <button
                       onClick={() => navigate('/member/trainer-review')}
-                      className="flex items-center space-x-2 px-4 py-2 bg-[#141D1E] border border-[#2A3A3A] text-[#9AAEAE] rounded-xl font-semibold text-sm hover:bg-[#0E1415] transition-colors"
+                      className="flex items-center space-x-2 px-4 py-2 bg-[#FFFFFF] border border-[#E7DADD] text-[#57534E] rounded-xl font-semibold text-sm hover:bg-[#F3E8E8] transition-colors"
                     >
                       <BookOpen size={14} />
                       <span>View Plan</span>
@@ -345,46 +345,46 @@ const MemberOnlineSessions = () => {
       {/* Missed Session Modal */}
       {missedModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-[#141D1E] rounded-2xl max-w-md w-full p-6 shadow-2xl">
+          <div className="bg-[#FFFFFF] rounded-2xl max-w-md w-full p-6 shadow-2xl">
             <div className="flex items-center space-x-3 mb-4">
-              <div className="w-10 h-10 bg-[#1B2728] rounded-xl flex items-center justify-center">
-                <AlertTriangle size={20} className="text-[#2DD4BF]" />
+              <div className="w-10 h-10 bg-[#F3E8E8] rounded-xl flex items-center justify-center">
+                <AlertTriangle size={20} className="text-[#B76E79]" />
               </div>
               <div>
-                <h3 className="text-lg font-bold text-[#F5FAFA]">Missed Session</h3>
-                <p className="text-sm text-[#9AAEAE]">What would you like to do?</p>
+                <h3 className="text-lg font-bold text-[#292524]">Missed Session</h3>
+                <p className="text-sm text-[#57534E]">What would you like to do?</p>
               </div>
             </div>
-            <p className="text-sm text-[#9AAEAE] mb-5 bg-[#1B2728] border border-[#2A3A3A] rounded-xl p-3">
+            <p className="text-sm text-[#57534E] mb-5 bg-[#F3E8E8] border border-[#E7DADD] rounded-xl p-3">
               Your session on <strong>{missedModal.date}</strong> at <strong>{missedModal.startTime}</strong> was missed. Choose an option below.
             </p>
             <div className="grid grid-cols-1 gap-3">
               <button
                 onClick={() => { navigate('/member/bookings'); setMissedModal(null); }}
-                className="flex items-center space-x-3 p-4 border-2 border-[#2A3A3A] bg-[#1B2728] rounded-xl hover:border-[#2DD4BF] transition-colors text-left"
+                className="flex items-center space-x-3 p-4 border-2 border-[#E7DADD] bg-[#F3E8E8] rounded-xl hover:border-[#B76E79] transition-colors text-left"
               >
-                <div className="w-10 h-10 bg-[#2DD4BF] rounded-xl flex items-center justify-center shrink-0">
+                <div className="w-10 h-10 bg-[#B76E79] rounded-xl flex items-center justify-center shrink-0">
                   <RefreshCw size={18} className="text-white" />
                 </div>
                 <div>
-                  <p className="font-bold text-[#2DD4BF]">Reschedule Session</p>
-                  <p className="text-xs text-[#2DD4BF]">Pick another available slot with your trainer</p>
+                  <p className="font-bold text-[#B76E79]">Reschedule Session</p>
+                  <p className="text-xs text-[#B76E79]">Pick another available slot with your trainer</p>
                 </div>
               </button>
               <button
                 onClick={() => { navigate('/member/workout-videos'); setMissedModal(null); }}
-                className="flex items-center space-x-3 p-4 border-2 border-[#2A3A3A] bg-[#1B2728] rounded-xl hover:border-[#2DD4BF] transition-colors text-left"
+                className="flex items-center space-x-3 p-4 border-2 border-[#E7DADD] bg-[#F3E8E8] rounded-xl hover:border-[#B76E79] transition-colors text-left"
               >
-                <div className="w-10 h-10 bg-[#2DD4BF] rounded-xl flex items-center justify-center shrink-0">
+                <div className="w-10 h-10 bg-[#B76E79] rounded-xl flex items-center justify-center shrink-0">
                   <BookOpen size={18} className="text-white" />
                 </div>
                 <div>
-                  <p className="font-bold text-[#2DD4BF]">Self-Learning Videos</p>
-                  <p className="text-xs text-[#2DD4BF]">Watch trainer-assigned workout videos</p>
+                  <p className="font-bold text-[#B76E79]">Self-Learning Videos</p>
+                  <p className="text-xs text-[#B76E79]">Watch trainer-assigned workout videos</p>
                 </div>
               </button>
             </div>
-            <button onClick={() => setMissedModal(null)} className="mt-4 w-full py-2.5 text-sm text-[#9AAEAE] hover:text-[#FFFFFF] transition-colors">
+            <button onClick={() => setMissedModal(null)} className="mt-4 w-full py-2.5 text-sm text-[#57534E] hover:text-[#FFFFFF] transition-colors">
               Cancel
             </button>
           </div>
@@ -394,14 +394,14 @@ const MemberOnlineSessions = () => {
       {/* Rating Modal */}
       {ratingModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-[#141D1E] rounded-2xl max-w-md w-full p-6 shadow-2xl">
-            <h3 className="text-xl font-bold text-[#F5FAFA] mb-1">Rate Your Session</h3>
-            <p className="text-sm text-[#9AAEAE] mb-5">How was your session with <strong>{ratingModal.trainerId?.name || 'your trainer'}</strong>?</p>
+          <div className="bg-[#FFFFFF] rounded-2xl max-w-md w-full p-6 shadow-2xl">
+            <h3 className="text-xl font-bold text-[#292524] mb-1">Rate Your Session</h3>
+            <p className="text-sm text-[#57534E] mb-5">How was your session with <strong>{ratingModal.trainerId?.name || 'your trainer'}</strong>?</p>
             {/* Star rating */}
             <div className="flex items-center justify-center space-x-2 mb-5">
               {[1,2,3,4,5].map(n => (
                 <button key={n} onClick={() => setRating(n)} className="transition-transform hover:scale-110">
-                  <Star size={36} className={n <= rating ? 'fill-yellow-400 text-yellow-400' : 'text-[#9AAEAE]'} />
+                  <Star size={36} className={n <= rating ? 'fill-yellow-400 text-yellow-400' : 'text-[#57534E]'} />
                 </button>
               ))}
             </div>
@@ -410,16 +410,16 @@ const MemberOnlineSessions = () => {
               onChange={e => setReview(e.target.value)}
               placeholder="Write a review (optional)..."
               rows={3}
-              className="w-full border border-[#2A3A3A] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#2DD4BF]/30 resize-none mb-4"
+              className="w-full border border-[#E7DADD] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#B76E79]/30 resize-none mb-4"
             />
             <div className="flex gap-3">
-              <button onClick={() => setRatingModal(null)} className="flex-1 py-2.5 border border-[#2A3A3A] rounded-xl text-[#9AAEAE] font-semibold text-sm hover:bg-[#0E1415] transition-colors">
+              <button onClick={() => setRatingModal(null)} className="flex-1 py-2.5 border border-[#E7DADD] rounded-xl text-[#57534E] font-semibold text-sm hover:bg-[#F3E8E8] transition-colors">
                 Skip
               </button>
               <button
                 onClick={handleRateSession}
                 disabled={ratingSubmitting}
-                className="flex-1 py-2.5 bg-[#2DD4BF] text-[#06201D] font-bold rounded-xl font-semibold text-sm hover:bg-[#5EEAD4] transition-colors disabled:opacity-50 flex items-center justify-center"
+                className="flex-1 py-2.5 bg-[#B76E79] text-white font-bold rounded-xl font-semibold text-sm hover:bg-[#9F5965] transition-colors disabled:opacity-50 flex items-center justify-center"
               >
                 {ratingSubmitting ? <Loader2 size={16} className="animate-spin" /> : 'Submit Rating'}
               </button>

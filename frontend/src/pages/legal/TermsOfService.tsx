@@ -54,22 +54,22 @@ const TermsOfService = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0E1415] text-[#F5FAFA] selection:bg-[#2DD4BF] selection:text-[#F5FAFA]">
+    <div className="min-h-screen bg-[#F3E8E8] text-[#292524] selection:bg-[#B76E79] selection:text-[#292524]">
       {/* Nav */}
-      <nav className="border-b border-[#2A3A3A] bg-[#0E1415]/90 backdrop-blur-md sticky top-0 z-50">
+      <nav className="border-b border-[#E7DADD] bg-[#F3E8E8]/90 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           <Link to="/" className="flex items-center space-x-2.5 group">
-            <div className="w-10 h-10 bg-gradient-to-br from-[#2DD4BF] to-[#5EEAD4] rounded-xl flex items-center justify-center shadow-lg shadow-teal-500/20 group-hover:scale-105 transition-transform">
-              <Activity className="text-[#06201D]" size={22} strokeWidth={2.5} />
+            <div className="w-10 h-10 bg-gradient-to-br from-[#B76E79] to-[#9F5965] rounded-xl flex items-center justify-center shadow-lg shadow-[#B76E79]/20 group-hover:scale-105 transition-transform">
+              <Activity className="text-[#FFFFFF]" size={22} strokeWidth={2.5} />
             </div>
-            <span className="text-2xl font-black tracking-tight text-[#F5FAFA]">Gymora</span>
-            <span className="ml-2 text-xs font-semibold bg-[#2DD4BF]/10 text-[#2DD4BF] border border-[#2DD4BF]/30 px-2.5 py-0.5 rounded-full hidden sm:inline-flex">
+            <span className="text-2xl font-black tracking-tight text-[#292524]">Gymora</span>
+            <span className="ml-2 text-xs font-semibold bg-[#B76E79]/10 text-[#B76E79] border border-[#B76E79]/30 px-2.5 py-0.5 rounded-full hidden sm:inline-flex">
               {isSuperAdmin ? 'Super Admin Portal' : 'Customer Fitness Portal'}
             </span>
           </Link>
           <button
             onClick={handleBack}
-            className="flex items-center gap-1.5 px-4 py-2 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold text-xs sm:text-sm rounded-xl transition-all shadow-md shadow-teal-500/20 cursor-pointer"
+            className="flex items-center gap-1.5 px-4 py-2 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold text-xs sm:text-sm rounded-xl transition-all shadow-md shadow-[#B76E79]/20 cursor-pointer"
           >
             <ArrowLeft size={16} /> <span>{returnLabel}</span>
           </button>
@@ -77,25 +77,25 @@ const TermsOfService = () => {
       </nav>
 
       {/* Hero */}
-      <div className="border-b border-[#2A3A3A] bg-[#080B0C] py-14 px-4">
+      <div className="border-b border-[#E7DADD] bg-[#FFFFFF] py-14 px-4">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 bg-[#2DD4BF]/10 border border-[#2DD4BF]/30 rounded-xl flex items-center justify-center">
-              <FileText size={20} className="text-[#2DD4BF]" />
+            <div className="w-10 h-10 bg-[#B76E79]/10 border border-[#B76E79]/30 rounded-xl flex items-center justify-center">
+              <FileText size={20} className="text-[#B76E79]" />
             </div>
-            <span className="text-[#2DD4BF] text-xs sm:text-sm font-bold uppercase tracking-wider">
+            <span className="text-[#B76E79] text-xs sm:text-sm font-bold uppercase tracking-wider">
               {isSuperAdmin ? 'Confidential — Restricted Access' : 'Member Service Agreement & Guidelines'}
             </span>
           </div>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-3 text-white">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-3 text-[#292524]">
             {isSuperAdmin ? 'Super Admin Terms & Conditions' : 'Customer Terms & Conditions'}
           </h1>
-          <p className="text-[#9AAEAE] text-base sm:text-lg">
+          <p className="text-[#57534E] text-base sm:text-lg">
             {isSuperAdmin
               ? 'Super Admin Portal — Gymora Platform Administration'
               : 'Platform usage rules, account responsibilities, gym check-in conditions, and trainer session policies.'}
           </p>
-          <p className="text-[#6A7F7F] text-xs sm:text-sm mt-3">
+          <p className="text-[#57534E] text-xs sm:text-sm mt-3">
             Last updated: October 2026 &nbsp;·&nbsp; Applies to: {isSuperAdmin ? 'Authorized Super Administrators only' : 'All Registered Gymora Members & Portal Visitors'}
           </p>
         </div>
@@ -105,35 +105,35 @@ const TermsOfService = () => {
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {isSuperAdmin ? (
           /* Super Admin View */
-          <div className="space-y-12 text-[#9AAEAE] leading-relaxed">
+          <div className="space-y-12 text-[#57534E] leading-relaxed">
             <section>
               <p className="text-base">
                 These Terms &amp; Conditions govern the access and use of the
-                <span className="text-[#F5FAFA] font-semibold"> Gymora Super Admin Portal</span> by authorized platform administrators.
+                <span className="text-[#292524] font-semibold"> Gymora Super Admin Portal</span> by authorized platform administrators.
               </p>
             </section>
             <section>
-              <h2 className="text-2xl font-semibold text-[#F5FAFA] mb-4">1. Authorized Access Only</h2>
+              <h2 className="text-2xl font-semibold text-[#292524] mb-4">1. Authorized Access Only</h2>
               <p>Access is restricted strictly to accounts with the SUPER_ADMIN role.</p>
             </section>
           </div>
         ) : (
           /* Customer / Member Terms View */
-          <div className="space-y-12 text-[#9AAEAE] leading-relaxed">
+          <div className="space-y-12 text-[#57534E] leading-relaxed">
             {/* Intro Banner */}
-            <section className="p-6 rounded-2xl bg-[#141D1E] border border-[#2A3A3A]">
+            <section className="p-6 rounded-2xl bg-[#FFFFFF] border border-[#E7DADD]">
               <p className="text-base text-[#CBD5E1] leading-relaxed">
-                Welcome to <span className="text-[#2DD4BF] font-bold">Gymora</span>! These Terms &amp; Conditions govern your registration, fitness dashboard access, digital gym check-in privileges, personal training bookings, and store purchases made through our customer portal and partner fitness facilities.
+                Welcome to <span className="text-[#B76E79] font-bold">Gymora</span>! These Terms &amp; Conditions govern your registration, fitness dashboard access, digital gym check-in privileges, personal training bookings, and store purchases made through our customer portal and partner fitness facilities.
               </p>
             </section>
 
             {/* 1. Eligibility & Accounts */}
             <section>
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-8 h-8 rounded-lg bg-[#2DD4BF]/10 flex items-center justify-center text-[#2DD4BF]">
+                <div className="w-8 h-8 rounded-lg bg-[#B76E79]/10 flex items-center justify-center text-[#B76E79]">
                   <ShieldCheck size={18} />
                 </div>
-                <h2 className="text-2xl font-bold text-[#F5FAFA]">1. Eligibility &amp; Account Responsibilities</h2>
+                <h2 className="text-2xl font-bold text-[#292524]">1. Eligibility &amp; Account Responsibilities</h2>
               </div>
               <ul className="list-disc pl-6 space-y-2.5">
                 <li><strong className="text-white">Minimum Age:</strong> You must be at least 16 years of age (or have explicit parental/guardian consent) to register for an account and access partner gym facilities.</li>
@@ -146,35 +146,35 @@ const TermsOfService = () => {
             {/* 2. Partner Gym Etiquette & Rules */}
             <section>
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-8 h-8 rounded-lg bg-[#2DD4BF]/10 flex items-center justify-center text-[#2DD4BF]">
+                <div className="w-8 h-8 rounded-lg bg-[#B76E79]/10 flex items-center justify-center text-[#B76E79]">
                   <Dumbbell size={18} />
                 </div>
-                <h2 className="text-2xl font-bold text-[#F5FAFA]">2. Gym Facility Etiquette &amp; Safety Regulations</h2>
+                <h2 className="text-2xl font-bold text-[#292524]">2. Gym Facility Etiquette &amp; Safety Regulations</h2>
               </div>
               <p className="mb-4">When training at any Gymora partner facility, you agree to adhere to the standard code of conduct:</p>
               <div className="space-y-3 pl-2">
-                <div className="p-4 rounded-xl bg-[#0E1415] border border-[#2A3A3A]">
-                  <h3 className="font-bold text-[#F5FAFA] text-sm mb-1 flex items-center gap-2">
-                    <CheckCircle2 size={16} className="text-[#2DD4BF]" />
+                <div className="p-4 rounded-xl bg-[#F3E8E8] border border-[#E7DADD]">
+                  <h3 className="font-bold text-[#292524] text-sm mb-1 flex items-center gap-2">
+                    <CheckCircle2 size={16} className="text-[#B76E79]" />
                     Equipment Etiquette
                   </h3>
-                  <p className="text-xs text-[#9AAEAE]">Always re-rack dumbbells and weight plates after use, wipe down benches and cardio equipment with provided sanitizers, and avoid dropping weights unnecessarily.</p>
+                  <p className="text-xs text-[#57534E]">Always re-rack dumbbells and weight plates after use, wipe down benches and cardio equipment with provided sanitizers, and avoid dropping weights unnecessarily.</p>
                 </div>
 
-                <div className="p-4 rounded-xl bg-[#0E1415] border border-[#2A3A3A]">
-                  <h3 className="font-bold text-[#F5FAFA] text-sm mb-1 flex items-center gap-2">
-                    <CheckCircle2 size={16} className="text-[#2DD4BF]" />
+                <div className="p-4 rounded-xl bg-[#F3E8E8] border border-[#E7DADD]">
+                  <h3 className="font-bold text-[#292524] text-sm mb-1 flex items-center gap-2">
+                    <CheckCircle2 size={16} className="text-[#B76E79]" />
                     Respectful Community Environment
                   </h3>
-                  <p className="text-xs text-[#9AAEAE]">Zero tolerance for harassment, aggressive behavior, unconsented filming of other gym members, or discriminatory conduct. Gym management reserves the right to immediately remove any individual violating safety standards.</p>
+                  <p className="text-xs text-[#57534E]">Zero tolerance for harassment, aggressive behavior, unconsented filming of other gym members, or discriminatory conduct. Gym management reserves the right to immediately remove any individual violating safety standards.</p>
                 </div>
 
-                <div className="p-4 rounded-xl bg-[#0E1415] border border-[#2A3A3A]">
-                  <h3 className="font-bold text-[#F5FAFA] text-sm mb-1 flex items-center gap-2">
-                    <CheckCircle2 size={16} className="text-[#2DD4BF]" />
+                <div className="p-4 rounded-xl bg-[#F3E8E8] border border-[#E7DADD]">
+                  <h3 className="font-bold text-[#292524] text-sm mb-1 flex items-center gap-2">
+                    <CheckCircle2 size={16} className="text-[#B76E79]" />
                     Appropriate Gym Attire
                   </h3>
-                  <p className="text-xs text-[#9AAEAE]">Proper athletic footwear (running shoes, lifting shoes) and workout clothing are mandatory at all times on the training floor. Training barefoot or in open-toed footwear is prohibited for safety reasons.</p>
+                  <p className="text-xs text-[#57534E]">Proper athletic footwear (running shoes, lifting shoes) and workout clothing are mandatory at all times on the training floor. Training barefoot or in open-toed footwear is prohibited for safety reasons.</p>
                 </div>
               </div>
             </section>
@@ -182,10 +182,10 @@ const TermsOfService = () => {
             {/* 3. Trainer Sessions & Booking Policies */}
             <section>
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-8 h-8 rounded-lg bg-[#2DD4BF]/10 flex items-center justify-center text-[#2DD4BF]">
+                <div className="w-8 h-8 rounded-lg bg-[#B76E79]/10 flex items-center justify-center text-[#B76E79]">
                   <Award size={18} />
                 </div>
-                <h2 className="text-2xl font-bold text-[#F5FAFA]">3. Trainer Bookings &amp; Session Cancellation Policy</h2>
+                <h2 className="text-2xl font-bold text-[#292524]">3. Trainer Bookings &amp; Session Cancellation Policy</h2>
               </div>
               <ul className="list-disc pl-6 space-y-2.5">
                 <li><strong className="text-white">Authorized Scheduling:</strong> All 1-on-1 personal coaching sessions must be booked through the Gymora portal to guarantee facility insurance coverage.</li>
@@ -199,10 +199,10 @@ const TermsOfService = () => {
             {/* 4. Subscriptions & Payments */}
             <section>
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-8 h-8 rounded-lg bg-[#2DD4BF]/10 flex items-center justify-center text-[#2DD4BF]">
+                <div className="w-8 h-8 rounded-lg bg-[#B76E79]/10 flex items-center justify-center text-[#B76E79]">
                   <CreditCard size={18} />
                 </div>
-                <h2 className="text-2xl font-bold text-[#F5FAFA]">4. Membership Subscriptions, Fees &amp; Renewals</h2>
+                <h2 className="text-2xl font-bold text-[#292524]">4. Membership Subscriptions, Fees &amp; Renewals</h2>
               </div>
               <ul className="list-disc pl-6 space-y-2.5">
                 <li><strong className="text-white">Advance Payments:</strong> Membership packages (monthly, quarterly, annual) must be paid in advance via our secure payment gateway (UPI, Credit/Debit cards, Net Banking).</li>
@@ -213,17 +213,17 @@ const TermsOfService = () => {
             </section>
 
             {/* 5. Health & Physical Activity Disclaimer */}
-            <section className="p-6 rounded-2xl bg-[#0E1415] border border-amber-500/30">
+            <section className="p-6 rounded-2xl bg-[#F3E8E8] border border-amber-500/30">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-400">
                   <AlertTriangle size={18} />
                 </div>
-                <h2 className="text-xl font-bold text-[#F5FAFA]">5. Health &amp; Physical Activity Disclaimer</h2>
+                <h2 className="text-xl font-bold text-[#292524]">5. Health &amp; Physical Activity Disclaimer</h2>
               </div>
               <p className="text-sm text-[#CBD5E1] leading-relaxed mb-3">
                 Physical exercise, weight lifting, cardiovascular conditioning, and nutritional modifications involve inherent risks of physical strain or injury.
               </p>
-              <ul className="text-xs text-[#9AAEAE] space-y-2 pl-4 list-disc">
+              <ul className="text-xs text-[#57534E] space-y-2 pl-4 list-disc">
                 <li>You affirm that you are in adequate physical health to participate in strenuous exercise routines.</li>
                 <li>AI recommendations and workout split templates are informational guidelines and do not replace personalized medical advice from a physician.</li>
                 <li>You voluntarily assume all risks typically associated with physical exercise at partner gym premises.</li>
@@ -233,10 +233,10 @@ const TermsOfService = () => {
             {/* 6. Gym Store & Merchandise Orders */}
             <section>
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-8 h-8 rounded-lg bg-[#2DD4BF]/10 flex items-center justify-center text-[#2DD4BF]">
+                <div className="w-8 h-8 rounded-lg bg-[#B76E79]/10 flex items-center justify-center text-[#B76E79]">
                   <Scale size={18} />
                 </div>
-                <h2 className="text-2xl font-bold text-[#F5FAFA]">6. Gym Store Orders &amp; Product Returns</h2>
+                <h2 className="text-2xl font-bold text-[#292524]">6. Gym Store Orders &amp; Product Returns</h2>
               </div>
               <ul className="list-disc pl-6 space-y-2.5">
                 <li><strong className="text-white">Fulfillment &amp; Counter Pickup:</strong> Supplements and merchandise ordered through the portal are fulfilled on-site at your gym's official inventory desk using your digital pickup PIN.</li>
@@ -248,31 +248,31 @@ const TermsOfService = () => {
             {/* 7. Suspension & Termination */}
             <section>
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-8 h-8 rounded-lg bg-[#2DD4BF]/10 flex items-center justify-center text-[#2DD4BF]">
+                <div className="w-8 h-8 rounded-lg bg-[#B76E79]/10 flex items-center justify-center text-[#B76E79]">
                   <HelpCircle size={18} />
                 </div>
-                <h2 className="text-2xl font-bold text-[#F5FAFA]">7. Account Suspension &amp; Support Inquiries</h2>
+                <h2 className="text-2xl font-bold text-[#292524]">7. Account Suspension &amp; Support Inquiries</h2>
               </div>
               <p className="mb-4">
                 Gymora reserves the right to temporarily suspend or terminate accounts that engage in fraudulent payment activities, share turnstile QR credentials with non-members, or repeatedly violate gym safety policies.
               </p>
               <p className="text-sm">
                 If you have questions about these customer terms or need assistance with your membership, please visit our{' '}
-                <span className="text-[#2DD4BF] font-semibold">Help &amp; Support</span> desk in the Customer Portal or email{' '}
-                <a href="mailto:support@gymora.com" className="text-[#2DD4BF] font-semibold hover:underline">support@gymora.com</a>.
+                <span className="text-[#B76E79] font-semibold">Help &amp; Support</span> desk in the Customer Portal or email{' '}
+                <a href="mailto:support@gymora.com" className="text-[#B76E79] font-semibold hover:underline">support@gymora.com</a>.
               </p>
             </section>
           </div>
         )}
 
         {/* Footer Back */}
-        <div className="mt-16 pt-8 border-t border-[#2A3A3A] flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-[#6A7F7F] text-xs sm:text-sm text-center sm:text-left">
+        <div className="mt-16 pt-8 border-t border-[#E7DADD] flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-[#57534E] text-xs sm:text-sm text-center sm:text-left">
             © 2026 Gymora. Fair terms, transparent rules, and dedicated member protection.
           </p>
           <button
             onClick={handleBack}
-            className="flex items-center gap-2 px-5 py-2.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] text-xs sm:text-sm font-bold rounded-xl transition-all shadow-md"
+            className="flex items-center gap-2 px-5 py-2.5 bg-[#B76E79] hover:bg-[#9F5965] text-white text-xs sm:text-sm font-bold rounded-xl transition-all shadow-md"
           >
             <ArrowLeft size={16} />
             <span>{returnLabel}</span>

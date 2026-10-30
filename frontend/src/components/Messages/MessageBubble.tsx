@@ -70,21 +70,21 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
       <div className={`flex gap-2.5 max-w-[85%] sm:max-w-[75%] ${isMine ? 'ml-auto flex-row-reverse' : ''}`}>
         {/* Avatar */}
         <div className={`w-8 h-8 rounded-full flex shrink-0 items-center justify-center font-bold text-xs ${
-          isMine ? 'bg-[#2DD4BF] text-white shadow-xs' : 'bg-[#1B2728] text-[#F5FAFA]'
+          isMine ? 'bg-[#B76E79] text-white shadow-xs' : 'bg-[#F3E8E8] text-[#292524]'
         }`}>
           {avatarChar}
         </div>
 
         {/* Bubble Container */}
         <div className={`flex flex-col ${isMine ? 'items-end' : 'items-start'} max-w-full overflow-hidden`}>
-          <span className="text-[11px] font-bold text-[#9AAEAE] mb-1 px-1">
+          <span className="text-[11px] font-bold text-[#57534E] mb-1 px-1">
             {senderLabel}
           </span>
 
           <div className={`p-3.5 rounded-2xl text-sm shadow-xs transition-all ${
             isMine
-              ? 'bg-[#2DD4BF] text-white rounded-tr-none'
-              : 'bg-[#141D1E] border border-[#2A3A3A] text-[#F5FAFA] rounded-tl-none'
+              ? 'bg-[#B76E79] text-white rounded-tr-none'
+              : 'bg-[#FFFFFF] border border-[#E7DADD] text-[#292524] rounded-tl-none'
           }`}>
             {/* 1. Voice Message Player */}
             {isVoice && voiceAttachment && (
@@ -141,13 +141,13 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
                       key={i}
                       className={`flex items-center justify-between gap-3 p-3 rounded-xl border transition-all ${
                         isMine
-                          ? 'bg-[#2DD4BF]/40 border-[#2A3A3A]/40 text-white'
-                          : 'bg-[#0E1415] border-[#2A3A3A] text-[#F5FAFA]'
+                          ? 'bg-[#B76E79]/40 border-[#E7DADD]/40 text-white'
+                          : 'bg-[#F3E8E8] border-[#E7DADD] text-[#292524]'
                       }`}
                     >
                       <div className="flex items-center gap-2.5 overflow-hidden">
                         <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${
-                          isMine ? 'bg-[#141D1E]/20 text-white' : 'bg-[#1B2728] text-[#2DD4BF]'
+                          isMine ? 'bg-[#FFFFFF]/20 text-white' : 'bg-[#F3E8E8] text-[#B76E79]'
                         }`}>
                           <FileText size={20} />
                         </div>
@@ -170,8 +170,8 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
                         download={att.fileName}
                         className={`p-2 rounded-lg transition-transform active:scale-95 shrink-0 flex items-center justify-center ${
                           isMine
-                            ? 'bg-[#141D1E] text-[#2DD4BF] hover:bg-[#141D1E]/90'
-                            : 'bg-[#2DD4BF] text-white hover:bg-[#5EEAD4]'
+                            ? 'bg-[#FFFFFF] text-[#B76E79] hover:bg-[#FFFFFF]/90'
+                            : 'bg-[#B76E79] text-white hover:bg-[#9F5965]'
                         }`}
                         title="Download or view file"
                       >
@@ -191,7 +191,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
             )}
 
             {/* 4. Timestamp */}
-            <span className={`text-[10px] block mt-1 ${isMine ? 'text-white/80 text-right' : 'text-[#9AAEAE]'}`}>
+            <span className={`text-[10px] block mt-1 ${isMine ? 'text-white/80 text-right' : 'text-[#57534E]'}`}>
               {timeFormatted}
             </span>
           </div>
@@ -208,7 +208,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
             <button
               type="button"
               onClick={() => setLightboxUrl(null)}
-              className="absolute -top-10 right-0 p-2 text-white/80 hover:text-white bg-[#141D1E]/10 rounded-full transition-colors"
+              className="absolute -top-10 right-0 p-2 text-white/80 hover:text-white bg-[#FFFFFF]/10 rounded-full transition-colors"
               title="Close image"
             >
               <X size={20} />
@@ -223,7 +223,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
               target="_blank"
               rel="noreferrer"
               download
-              className="mt-3 px-4 py-2 bg-[#2DD4BF] text-[#06201D] font-bold rounded-xl text-xs font-bold hover:bg-[#5EEAD4] transition-colors flex items-center gap-1.5"
+              className="mt-3 px-4 py-2 bg-[#B76E79] text-white font-bold rounded-xl text-xs font-bold hover:bg-[#9F5965] transition-colors flex items-center gap-1.5"
             >
               <ExternalLink size={14} /> Open Full Resolution
             </a>

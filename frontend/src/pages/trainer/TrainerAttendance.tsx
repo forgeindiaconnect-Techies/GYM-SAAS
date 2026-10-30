@@ -111,18 +111,18 @@ const TrainerAttendance = () => {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-[#F5FAFA] flex items-center gap-2">
-            <CalendarCheck className="text-[#2DD4BF]" size={28} />
+          <h1 className="text-2xl md:text-3xl font-bold text-[#292524] flex items-center gap-2">
+            <CalendarCheck className="text-[#B76E79]" size={28} />
             Client Session Attendance
           </h1>
-          <p className="text-sm text-[#9AAEAE]">
+          <p className="text-sm text-[#57534E]">
             Track member attendance, check-in timestamps, and self-learning excuses across online & offline sessions.
           </p>
         </div>
         <div className="flex items-center gap-2 shrink-0">
           <button
             onClick={() => handleDownloadAttendanceReport('excel')}
-            className="flex items-center gap-1.5 px-3.5 py-2 bg-[#0E1415] border border-[#2A3A3A] hover:bg-[#2DD4BF] hover:text-[#06201D] font-bold hover:border-[#2DD4BF] text-[#F5FAFA] font-semibold text-xs sm:text-sm rounded-xl transition-all shadow-xs shrink-0"
+            className="flex items-center gap-1.5 px-3.5 py-2 bg-[#F3E8E8] border border-[#E7DADD] hover:bg-[#B76E79] hover:text-[#FFFFFF] font-bold hover:border-[#B76E79] text-[#292524] font-semibold text-xs sm:text-sm rounded-xl transition-all shadow-xs shrink-0"
             title="Download Excel Attendance Report"
           >
             <Download size={16} />
@@ -130,7 +130,7 @@ const TrainerAttendance = () => {
           </button>
           <button
             onClick={() => handleDownloadAttendanceReport('pdf')}
-            className="flex items-center gap-1.5 px-3.5 py-2 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#06201D] font-bold font-semibold text-xs sm:text-sm rounded-xl transition-colors shadow-xs shrink-0"
+            className="flex items-center gap-1.5 px-3.5 py-2 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold font-semibold text-xs sm:text-sm rounded-xl transition-colors shadow-xs shrink-0"
             title="Download PDF Attendance Report"
           >
             <Download size={16} />
@@ -141,40 +141,40 @@ const TrainerAttendance = () => {
 
       {/* Metrics Row */}
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-        <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-3.5 shadow-sm text-center">
-          <p className="text-[11px] text-[#9AAEAE] font-medium uppercase tracking-wider">Scheduled</p>
-          <p className="text-2xl font-bold text-[#F5FAFA] mt-0.5">{totalCount}</p>
+        <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-3.5 shadow-sm text-center">
+          <p className="text-[11px] text-[#57534E] font-medium uppercase tracking-wider">Scheduled</p>
+          <p className="text-2xl font-bold text-[#292524] mt-0.5">{totalCount}</p>
         </div>
-        <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-3.5 shadow-sm text-center">
+        <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-3.5 shadow-sm text-center">
           <p className="text-[11px] text-green-700 font-medium uppercase tracking-wider">Present</p>
           <p className="text-2xl font-bold text-green-700 mt-0.5">{presentCount}</p>
         </div>
-        <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-3.5 shadow-sm text-center">
-          <p className="text-[11px] text-[#2DD4BF] font-medium uppercase tracking-wider">Self-Learning</p>
-          <p className="text-2xl font-bold text-[#2DD4BF] mt-0.5">{selfLearningCount}</p>
+        <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-3.5 shadow-sm text-center">
+          <p className="text-[11px] text-[#B76E79] font-medium uppercase tracking-wider">Self-Learning</p>
+          <p className="text-2xl font-bold text-[#B76E79] mt-0.5">{selfLearningCount}</p>
         </div>
-        <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-3.5 shadow-sm text-center">
+        <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-3.5 shadow-sm text-center">
           <p className="text-[11px] text-rose-700 font-medium uppercase tracking-wider">Absent</p>
           <p className="text-2xl font-bold text-rose-700 mt-0.5">{absentCount}</p>
         </div>
-        <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-3.5 shadow-sm text-center">
-          <p className="text-[11px] text-[#2DD4BF] font-medium uppercase tracking-wider">Attendance %</p>
-          <p className="text-2xl font-bold text-[#2DD4BF] mt-0.5">{attendanceRate}%</p>
+        <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-3.5 shadow-sm text-center">
+          <p className="text-[11px] text-[#B76E79] font-medium uppercase tracking-wider">Attendance %</p>
+          <p className="text-2xl font-bold text-[#B76E79] mt-0.5">{attendanceRate}%</p>
         </div>
       </div>
 
       {/* Filters Bar */}
-      <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-4 flex flex-col md:flex-row gap-3 justify-between items-center shadow-sm">
+      <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-4 flex flex-col md:flex-row gap-3 justify-between items-center shadow-sm">
         <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
           {/* Search */}
           <div className="relative w-full sm:w-56">
-            <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9AAEAE]" />
+            <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#57534E]" />
             <input
               type="text"
               placeholder="Search member..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-8 pr-3 py-1.5 bg-[#0E1415] rounded-xl text-xs outline-none focus:bg-[#141D1E] focus:border-[#2DD4BF] border border-transparent"
+              className="w-full pl-8 pr-3 py-1.5 bg-[#F3E8E8] rounded-xl text-xs outline-none focus:bg-[#FFFFFF] focus:border-[#B76E79] border border-transparent"
             />
           </div>
 
@@ -183,7 +183,7 @@ const TrainerAttendance = () => {
             <button
               onClick={() => setSelectedDate('')}
               className={`text-xs px-3 py-1.5 rounded-xl font-bold transition ${
-                !selectedDate ? 'bg-[#2DD4BF] text-white shadow-sm' : 'bg-[#0E1415] text-[#9AAEAE] hover:bg-gray-200'
+                !selectedDate ? 'bg-[#B76E79] text-white shadow-sm' : 'bg-[#F3E8E8] text-[#57534E] hover:bg-gray-200'
               }`}
             >
               All Dates
@@ -191,7 +191,7 @@ const TrainerAttendance = () => {
             <button
               onClick={() => setSelectedDate(todayStr)}
               className={`text-xs px-3 py-1.5 rounded-xl font-bold transition ${
-                selectedDate === todayStr ? 'bg-[#2DD4BF] text-white shadow-sm' : 'bg-[#0E1415] text-[#9AAEAE] hover:bg-gray-200'
+                selectedDate === todayStr ? 'bg-[#B76E79] text-white shadow-sm' : 'bg-[#F3E8E8] text-[#57534E] hover:bg-gray-200'
               }`}
             >
               Today
@@ -199,13 +199,13 @@ const TrainerAttendance = () => {
           </div>
 
           {/* Date Picker */}
-          <div className="flex items-center gap-2 bg-[#0E1415] px-3 py-1.5 rounded-xl border border-transparent focus-within:border-[#2DD4BF]">
-            <Calendar size={15} className="text-[#9AAEAE]" />
+          <div className="flex items-center gap-2 bg-[#F3E8E8] px-3 py-1.5 rounded-xl border border-transparent focus-within:border-[#B76E79]">
+            <Calendar size={15} className="text-[#57534E]" />
             <input
               type="date"
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
-              className="bg-transparent text-xs font-semibold text-[#F5FAFA] outline-none"
+              className="bg-transparent text-xs font-semibold text-[#292524] outline-none"
             />
           </div>
         </div>
@@ -218,8 +218,8 @@ const TrainerAttendance = () => {
               onClick={() => setStatusFilter(status)}
               className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
                 statusFilter === status
-                  ? 'bg-[#2DD4BF] text-white shadow-sm'
-                  : 'bg-[#0E1415] text-[#9AAEAE] hover:text-[#FFFFFF]'
+                  ? 'bg-[#B76E79] text-white shadow-sm'
+                  : 'bg-[#F3E8E8] text-[#57534E] hover:text-[#FFFFFF]'
               }`}
             >
               {status}
@@ -229,14 +229,14 @@ const TrainerAttendance = () => {
       </div>
 
       {/* Attendance Roster Table */}
-      <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl overflow-hidden shadow-sm">
-        <div className="p-4 border-b border-[#2A3A3A] flex justify-between items-center bg-[#0E1415]">
-          <h2 className="text-sm font-bold text-[#F5FAFA]">
+      <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl overflow-hidden shadow-sm">
+        <div className="p-4 border-b border-[#E7DADD] flex justify-between items-center bg-[#F3E8E8]">
+          <h2 className="text-sm font-bold text-[#292524]">
             Roster {selectedDate ? `for ${selectedDate}` : '(All Dates)'} ({filteredSessions.length} session{filteredSessions.length === 1 ? '' : 's'})
           </h2>
           <button
             onClick={fetchAttendance}
-            className="text-xs text-[#2DD4BF] font-bold hover:underline"
+            className="text-xs text-[#B76E79] font-bold hover:underline"
           >
             Refresh Roster
           </button>
@@ -244,11 +244,11 @@ const TrainerAttendance = () => {
 
         {loading ? (
           <div className="flex items-center justify-center py-20">
-            <Loader2 className="animate-spin text-[#2DD4BF]" size={32} />
+            <Loader2 className="animate-spin text-[#B76E79]" size={32} />
           </div>
         ) : filteredSessions.length === 0 ? (
-          <div className="p-12 text-center text-[#9AAEAE] space-y-3">
-            <CalendarCheck size={36} className="mx-auto text-[#9AAEAE]" />
+          <div className="p-12 text-center text-[#57534E] space-y-3">
+            <CalendarCheck size={36} className="mx-auto text-[#57534E]" />
             <p className="font-semibold text-sm">
               {selectedDate
                 ? `No scheduled sessions found for ${selectedDate}.`
@@ -256,12 +256,12 @@ const TrainerAttendance = () => {
             </p>
             {sessions.length > 0 && selectedDate && (
               <div className="space-y-2 pt-1">
-                <p className="text-xs text-[#9AAEAE]">
+                <p className="text-xs text-[#57534E]">
                   You have {sessions.length} session{sessions.length === 1 ? '' : 's'} recorded across all dates.
                 </p>
                 <button
                   onClick={() => setSelectedDate('')}
-                  className="px-4 py-2 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-[#F5FAFA] rounded-xl text-xs font-bold transition shadow-sm"
+                  className="px-4 py-2 bg-[#B76E79] hover:bg-[#9F5965] text-[#292524] rounded-xl text-xs font-bold transition shadow-sm"
                 >
                   View All Sessions ({sessions.length})
                 </button>
@@ -269,17 +269,17 @@ const TrainerAttendance = () => {
             )}
           </div>
         ) : (
-          <div className="divide-y divide-[#2A3A3A]">
+          <div className="divide-y divide-[#E7DADD]">
             {filteredSessions.map((session) => {
               const currentStatus = session.attendanceStatus || (session.status === 'Completed' ? 'Present' : 'Pending');
               return (
                 <div
                   key={session._id}
-                  className="p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-[#0E1415] transition-colors"
+                  className="p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-[#F3E8E8] transition-colors"
                 >
                   {/* Member Profile & Session Time */}
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-10 h-10 rounded-full bg-[#2DD4BF] text-[#06201D] font-bold flex items-center justify-center font-bold text-sm shrink-0 overflow-hidden">
+                    <div className="w-10 h-10 rounded-full bg-[#B76E79] text-white font-bold flex items-center justify-center font-bold text-sm shrink-0 overflow-hidden">
                       {session.customerId?.profilePhoto ? (
                         <img src={session.customerId.profilePhoto} alt="profile" className="w-full h-full object-cover" />
                       ) : (
@@ -288,7 +288,7 @@ const TrainerAttendance = () => {
                     </div>
                     <div className="min-w-0">
                       <div className="flex items-center gap-2">
-                        <p className="font-bold text-sm text-[#F5FAFA] truncate">
+                        <p className="font-bold text-sm text-[#292524] truncate">
                           {session.customerId
                             ? `${session.customerId.firstName} ${session.customerId.lastName}`
                             : 'Client'}
@@ -296,20 +296,20 @@ const TrainerAttendance = () => {
                         <span
                           className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
                             session.mode === 'Online'
-                              ? 'bg-[#1B2728] text-[#2DD4BF]'
-                              : 'bg-[#1B2728] text-[#2DD4BF]'
+                              ? 'bg-[#F3E8E8] text-[#B76E79]'
+                              : 'bg-[#F3E8E8] text-[#B76E79]'
                           }`}
                         >
                           {session.mode}
                         </span>
                         {session.bookingId && (
-                          <span className="text-[10px] font-mono font-bold text-[#9AAEAE] bg-[#1B2728] px-1.5 py-0.5 rounded">
+                          <span className="text-[10px] font-mono font-bold text-[#57534E] bg-[#F3E8E8] px-1.5 py-0.5 rounded">
                             {session.bookingId}
                           </span>
                         )}
                       </div>
-                      <p className="text-xs text-[#9AAEAE] flex flex-wrap items-center gap-2 mt-0.5">
-                        <span className="font-semibold text-[#F5FAFA]">{session.date}</span>
+                      <p className="text-xs text-[#57534E] flex flex-wrap items-center gap-2 mt-0.5">
+                        <span className="font-semibold text-[#292524]">{session.date}</span>
                         <span>•</span>
                         <span>{session.startTime} - {session.endTime}</span>
                         {session.checkInTime && (
@@ -318,7 +318,7 @@ const TrainerAttendance = () => {
                           </span>
                         )}
                         {session.checkOutTime && (
-                          <span className="text-[#2DD4BF] font-semibold bg-[#0E1415] px-2 py-0.5 rounded-md">
+                          <span className="text-[#B76E79] font-semibold bg-[#F3E8E8] px-2 py-0.5 rounded-md">
                             Check-out: {new Date(session.checkOutTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                           </span>
                         )}
@@ -331,19 +331,19 @@ const TrainerAttendance = () => {
                     <span
                       className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 ${
                         currentStatus === 'Present'
-                          ? 'bg-[#1B2728] text-[#2DD4BF] border border-[#2A3A3A]'
+                          ? 'bg-[#F3E8E8] text-[#B76E79] border border-[#E7DADD]'
                           : currentStatus === 'Late'
                           ? 'bg-amber-100 text-amber-800 border border-amber-300'
                           : currentStatus === 'Self-Learning'
-                          ? 'bg-[#1B2728] text-[#2DD4BF] border border-[#2A3A3A]'
+                          ? 'bg-[#F3E8E8] text-[#B76E79] border border-[#E7DADD]'
                           : currentStatus === 'Absent'
                           ? 'bg-rose-100 text-rose-800 border border-rose-300'
-                          : 'bg-[#1B2728] text-[#C1D0D0] border border-[#2A3A3A]'
+                          : 'bg-[#F3E8E8] text-[#292524] border border-[#E7DADD]'
                       }`}
                     >
-                      {currentStatus === 'Present' && <CheckCircle size={14} className="text-[#2DD4BF]" />}
+                      {currentStatus === 'Present' && <CheckCircle size={14} className="text-[#B76E79]" />}
                       {currentStatus === 'Late' && <Clock size={14} className="text-amber-700" />}
-                      {currentStatus === 'Self-Learning' && <Dumbbell size={14} className="text-[#2DD4BF]" />}
+                      {currentStatus === 'Self-Learning' && <Dumbbell size={14} className="text-[#B76E79]" />}
                       {currentStatus === 'Absent' && <XCircle size={14} className="text-rose-700" />}
                       <span>{currentStatus}</span>
                     </span>

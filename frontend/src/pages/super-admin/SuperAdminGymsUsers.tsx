@@ -3,24 +3,24 @@
 const SuperAdminGymsUsers = () => {
   return (
     <div className="max-w-6xl mx-auto space-y-6">
-      <div className="flex justify-between items-end mb-8 border-b border-[#2A3A3A] pb-6">
+      <div className="flex justify-between items-end mb-8 border-b border-[#E7DADD] pb-6">
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-3">
-            <Building2 className="text-[#2DD4BF]" size={32} />
+            <Building2 className="text-[#B76E79]" size={32} />
             Gym Users
           </h1>
-          <p className="text-[#9AAEAE] mt-2 font-mono text-sm">Directory of users mapped to specific gyms.</p>
+          <p className="text-[#57534E] mt-2 font-mono text-sm">Directory of users mapped to specific gyms.</p>
         </div>
       </div>
       
       
-      <div className="bg-[#FFFFFF] border border-[#2A3A3A] rounded-2xl p-6">
-        <p className="text-[#9AAEAE] mb-4 text-sm font-mono">Showing users for: All Active Gyms</p>
+      <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-6">
+        <p className="text-[#57534E] mb-4 text-sm font-mono">Showing users for: All Active Gyms</p>
         <div className="space-y-2">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="p-3 bg-[#FFFFFF] border border-[#2A3A3A] rounded-lg flex justify-between">
-              <span className="text-[#F5FAFA]">Member #{8200 + i}</span>
-              <span className="text-[#9AAEAE] text-sm">Iron Paradise 1</span>
+            <div key={i} className="p-3 bg-[#FFFFFF] border border-[#E7DADD] rounded-lg flex justify-between">
+              <span className="text-[#292524]">Member #{8200 + i}</span>
+              <span className="text-[#57534E] text-sm">Iron Paradise 1</span>
             </div>
           ))}
         </div>

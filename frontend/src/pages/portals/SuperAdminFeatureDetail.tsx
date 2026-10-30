@@ -489,30 +489,30 @@ export default function SuperAdminFeatureDetail() {
   const currentFlow = FLOWCHARTS[activeKey] || FLOWCHARTS.subscriptions;
 
   return (
-    <div className="min-h-screen bg-[#080B0C] text-[#F5FAFA] selection:bg-[#2DD4BF] selection:text-black">
+    <div className="min-h-screen bg-[#FFFFFF] text-[#292524] selection:bg-[#B76E79] selection:text-black">
       {/* Top Navbar */}
-      <nav className="border-b border-[#2A3A3A] bg-[#0E1415]/95 backdrop-blur-md sticky top-0 z-40">
+      <nav className="border-b border-[#E7DADD] bg-[#F3E8E8]/95 backdrop-blur-md sticky top-0 z-40">
         <div className="max-w-[1600px] w-full mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <Link
               to="/portal/super-admin"
               className="flex items-center space-x-2 text-slate-400 hover:text-white transition-colors group mr-4"
             >
-              <div className="w-8 h-8 rounded-lg bg-[#141D1E] border border-[#2A3A3A] flex items-center justify-center group-hover:border-[#2DD4BF]/50">
-                <ArrowLeft size={16} className="text-[#2DD4BF]" />
+              <div className="w-8 h-8 rounded-lg bg-[#FFFFFF] border border-[#E7DADD] flex items-center justify-center group-hover:border-[#B76E79]/50">
+                <ArrowLeft size={16} className="text-[#B76E79]" />
               </div>
               <span className="text-xs font-semibold hidden sm:inline">Back to Super Admin</span>
             </Link>
 
-            <div className="h-5 w-px bg-[#2A3A3A] hidden sm:block" />
+            <div className="h-5 w-px bg-[#E7DADD] hidden sm:block" />
 
             <div className="flex items-center space-x-2">
-              <div className="w-9 h-9 bg-[#2DD4BF] rounded-xl flex items-center justify-center shadow-lg shadow-[#2DD4BF]/20">
+              <div className="w-9 h-9 bg-[#B76E79] rounded-xl flex items-center justify-center shadow-lg shadow-[#B76E79]/20">
                 <ShieldCheck className="text-black" size={20} />
               </div>
               <div>
                 <span className="text-base font-bold text-white block leading-tight">Gymora</span>
-                <span className="text-[10px] text-[#2DD4BF] font-semibold uppercase tracking-wider block">
+                <span className="text-[10px] text-[#B76E79] font-semibold uppercase tracking-wider block">
                   Super Admin Governance Suite
                 </span>
               </div>
@@ -520,7 +520,7 @@ export default function SuperAdminFeatureDetail() {
           </div>
 
           <div className="flex items-center space-x-3">
-            <span className="text-xs font-semibold px-3 py-1.5 rounded-xl bg-[#141D1E] border border-[#2A3A3A] text-slate-300 flex items-center gap-2">
+            <span className="text-xs font-semibold px-3 py-1.5 rounded-xl bg-[#FFFFFF] border border-[#E7DADD] text-slate-300 flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               Live Governance Engine
             </span>
@@ -529,7 +529,7 @@ export default function SuperAdminFeatureDetail() {
       </nav>
 
       {/* Module Switcher Tabs */}
-      <div className="border-b border-[#2A3A3A] bg-[#0E1415] overflow-x-auto">
+      <div className="border-b border-[#E7DADD] bg-[#F3E8E8] overflow-x-auto">
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center space-x-2 py-2.5">
           {allModules.map((mod) => {
             const Icon = mod.icon;
@@ -540,11 +540,11 @@ export default function SuperAdminFeatureDetail() {
                 onClick={() => navigate(`/portal/super-admin/${mod.id}`)}
                 className={`px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 whitespace-nowrap transition-all ${
                   isActive
-                    ? 'bg-[#2DD4BF] text-black shadow-md shadow-[#2DD4BF]/20 font-bold'
-                    : 'text-slate-400 hover:text-white hover:bg-[#141D1E]'
+                    ? 'bg-[#B76E79] text-white shadow-md shadow-[#B76E79]/20 font-bold'
+                    : 'text-slate-400 hover:text-white hover:bg-[#FFFFFF]'
                 }`}
               >
-                <Icon size={14} className={isActive ? 'text-black' : 'text-[#2DD4BF]'} />
+                <Icon size={14} className={isActive ? 'text-black' : 'text-[#B76E79]'} />
                 <span>{mod.label}</span>
               </button>
             );
@@ -558,13 +558,13 @@ export default function SuperAdminFeatureDetail() {
         {/* SECTION 1: TOP FLOW CHART ARCHITECTURE (Hidden on Gym Onboarding & Verification) */}
         {/* ========================================================================= */}
         {activeKey !== 'approvals' && (
-          <section className="bg-[#0E1415] border border-[#2A3A3A] rounded-3xl p-6 sm:p-8 shadow-xl space-y-6">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#2A3A3A] pb-5">
+          <section className="bg-[#F3E8E8] border border-[#E7DADD] rounded-3xl p-6 sm:p-8 shadow-xl space-y-6">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#E7DADD] pb-5">
             <div>
-              <span className="text-xs font-bold uppercase tracking-widest text-[#2DD4BF] flex items-center gap-1.5 mb-1">
+              <span className="text-xs font-bold uppercase tracking-widest text-[#B76E79] flex items-center gap-1.5 mb-1">
                 <Sparkles size={13} /> {allModules.find(m => m.id === activeKey)?.label.toUpperCase()} ARCHITECTURE
               </span>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-[#292524]">
                 {currentFlow.title}
               </h2>
               <p className="text-xs sm:text-sm text-slate-400 mt-1">
@@ -572,7 +572,7 @@ export default function SuperAdminFeatureDetail() {
               </p>
             </div>
 
-            <div className="flex items-center gap-2 text-xs text-[#2DD4BF] bg-[#141D1E] px-3.5 py-2 rounded-xl border border-[#2A3A3A] shrink-0 self-start md:self-auto">
+            <div className="flex items-center gap-2 text-xs text-[#B76E79] bg-[#FFFFFF] px-3.5 py-2 rounded-xl border border-[#E7DADD] shrink-0 self-start md:self-auto">
               <Zap size={14} />
               <span className="font-semibold">Interactive Process Flow</span>
             </div>
@@ -583,16 +583,16 @@ export default function SuperAdminFeatureDetail() {
             {currentFlow.steps.map((step, idx) => (
               <div
                 key={idx}
-                className="bg-[#141D1E] border border-[#2A3A3A] hover:border-[#2DD4BF]/50 rounded-2xl p-5 transition-all flex flex-col justify-between space-y-4 relative group"
+                className="bg-[#FFFFFF] border border-[#E7DADD] hover:border-[#B76E79]/50 rounded-2xl p-5 transition-all flex flex-col justify-between space-y-4 relative group"
               >
                 <div>
                   <div className="flex items-center justify-between mb-2.5">
-                    <span className="text-2xl font-black font-mono text-[#2DD4BF]/40 group-hover:text-[#2DD4BF] transition-colors">
+                    <span className="text-2xl font-black font-mono text-[#B76E79]/40 group-hover:text-[#B76E79] transition-colors">
                       {step.step}
                     </span>
                     <div className="flex items-center gap-2">
                       {step.badge && (
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#1B2728] text-slate-300 border border-[#2A3A3A]">
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#F3E8E8] text-slate-300 border border-[#E7DADD]">
                           {step.badge}
                         </span>
                       )}
@@ -601,7 +601,7 @@ export default function SuperAdminFeatureDetail() {
                           step.actor === 'Super Admin'
                             ? 'bg-purple-500/10 text-purple-300 border border-purple-500/30'
                             : step.actor === 'Platform AI'
-                            ? 'bg-[#2DD4BF]/10 text-[#2DD4BF] border border-[#2DD4BF]/30'
+                            ? 'bg-[#B76E79]/10 text-[#B76E79] border border-[#B76E79]/30'
                             : step.actor === 'Banking Gateway'
                             ? 'bg-emerald-500/10 text-emerald-300 border border-emerald-500/30'
                             : 'bg-blue-500/10 text-blue-300 border border-blue-500/30'
@@ -612,7 +612,7 @@ export default function SuperAdminFeatureDetail() {
                     </div>
                   </div>
 
-                  <h3 className="text-base font-bold text-white mb-1.5 group-hover:text-[#2DD4BF] transition-colors">
+                  <h3 className="text-base font-bold text-[#292524] mb-1.5 group-hover:text-[#B76E79] transition-colors">
                     {step.title}
                   </h3>
 
@@ -621,7 +621,7 @@ export default function SuperAdminFeatureDetail() {
                   </p>
                 </div>
 
-                <div className="pt-3 border-t border-[#2A3A3A] flex items-center justify-between text-[11px]">
+                <div className="pt-3 border-t border-[#E7DADD] flex items-center justify-between text-[11px]">
                   <span className="text-slate-500">Output:</span>
                   <span className="font-semibold text-slate-200 truncate max-w-[190px]">
                     {step.output}
@@ -642,10 +642,10 @@ export default function SuperAdminFeatureDetail() {
           <section className="space-y-8">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
-                <span className="text-xs font-bold text-[#2DD4BF] uppercase tracking-wider block mb-1">
+                <span className="text-xs font-bold text-[#B76E79] uppercase tracking-wider block mb-1">
                   LIVE SUBSCRIPTION ENGINE
                 </span>
-                <h3 className="text-2xl font-bold text-white">SaaS Pricing Tiers & Active Subscribers</h3>
+                <h3 className="text-2xl font-bold text-[#292524]">SaaS Pricing Tiers & Active Subscribers</h3>
                 <p className="text-xs text-slate-400 mt-0.5">
                   Inspect pricing plans, manage recurring billing cycles, and review subscriber status across all gyms
                 </p>
@@ -653,7 +653,7 @@ export default function SuperAdminFeatureDetail() {
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => alert('New SaaS Plan Tier creation modal opened. Configure quota, pricing, and feature flags.')}
-                  className="px-4 py-2 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-black font-bold text-xs rounded-xl transition-all shadow-md shadow-[#2DD4BF]/20 flex items-center gap-1.5"
+                  className="px-4 py-2 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold text-xs rounded-xl transition-all shadow-md shadow-[#B76E79]/20 flex items-center gap-1.5"
                 >
                   <CreditCard size={14} />
                   <span>Create New SaaS Tier</span>
@@ -663,9 +663,9 @@ export default function SuperAdminFeatureDetail() {
 
             {/* SaaS Tiers Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-[#0E1415] border border-[#2A3A3A] hover:border-[#2DD4BF]/40 rounded-3xl p-6 transition-all space-y-4">
+              <div className="bg-[#F3E8E8] border border-[#E7DADD] hover:border-[#B76E79]/40 rounded-3xl p-6 transition-all space-y-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-[#141D1E] text-slate-300 border border-[#2A3A3A]">
+                  <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-[#FFFFFF] text-slate-300 border border-[#E7DADD]">
                     STARTER TIER
                   </span>
                   <span className="text-xs text-slate-400">142 Gyms Active</span>
@@ -676,26 +676,26 @@ export default function SuperAdminFeatureDetail() {
                   </div>
                   <p className="text-xs text-slate-400 mt-1">For single-location boutique gyms & studios</p>
                 </div>
-                <div className="space-y-2 text-xs text-slate-300 border-t border-[#2A3A3A] pt-3">
-                  <div className="flex items-center gap-2"><Check size={14} className="text-[#2DD4BF]" /> Up to 200 Members</div>
-                  <div className="flex items-center gap-2"><Check size={14} className="text-[#2DD4BF]" /> 1 Branch Included</div>
-                  <div className="flex items-center gap-2"><Check size={14} className="text-[#2DD4BF]" /> 2 Trainer Logins</div>
-                  <div className="flex items-center gap-2"><Check size={14} className="text-[#2DD4BF]" /> Dynamic QR Attendance</div>
+                <div className="space-y-2 text-xs text-slate-300 border-t border-[#E7DADD] pt-3">
+                  <div className="flex items-center gap-2"><Check size={14} className="text-[#B76E79]" /> Up to 200 Members</div>
+                  <div className="flex items-center gap-2"><Check size={14} className="text-[#B76E79]" /> 1 Branch Included</div>
+                  <div className="flex items-center gap-2"><Check size={14} className="text-[#B76E79]" /> 2 Trainer Logins</div>
+                  <div className="flex items-center gap-2"><Check size={14} className="text-[#B76E79]" /> Dynamic QR Attendance</div>
                 </div>
                 <button
                   onClick={() => alert('Editing Starter Plan parameters')}
-                  className="w-full py-2 bg-[#141D1E] hover:bg-[#1B2728] text-slate-300 text-xs font-semibold rounded-xl border border-[#2A3A3A] transition-colors"
+                  className="w-full py-2 bg-[#FFFFFF] hover:bg-[#F3E8E8] text-slate-300 text-xs font-semibold rounded-xl border border-[#E7DADD] transition-colors"
                 >
                   Edit Tier Parameters
                 </button>
               </div>
 
-              <div className="bg-[#0E1415] border-2 border-[#2DD4BF] rounded-3xl p-6 transition-all space-y-4 relative shadow-xl shadow-[#2DD4BF]/10">
+              <div className="bg-[#F3E8E8] border-2 border-[#B76E79] rounded-3xl p-6 transition-all space-y-4 relative shadow-xl shadow-[#B76E79]/10">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-[#2DD4BF] text-black">
+                  <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-[#B76E79] text-white">
                     MOST POPULAR
                   </span>
-                  <span className="text-xs text-[#2DD4BF] font-semibold">128 Gyms Active</span>
+                  <span className="text-xs text-[#B76E79] font-semibold">128 Gyms Active</span>
                 </div>
                 <div>
                   <div className="text-3xl font-black text-white font-mono">
@@ -703,22 +703,22 @@ export default function SuperAdminFeatureDetail() {
                   </div>
                   <p className="text-xs text-slate-400 mt-1">For growing fitness centers & CrossFit boxes</p>
                 </div>
-                <div className="space-y-2 text-xs text-slate-300 border-t border-[#2A3A3A] pt-3">
-                  <div className="flex items-center gap-2"><Check size={14} className="text-[#2DD4BF]" /> Up to 800 Members</div>
-                  <div className="flex items-center gap-2"><Check size={14} className="text-[#2DD4BF]" /> Up to 3 Branches</div>
-                  <div className="flex items-center gap-2"><Check size={14} className="text-[#2DD4BF]" /> 8 Trainer Logins & PT Splits</div>
-                  <div className="flex items-center gap-2"><Check size={14} className="text-[#2DD4BF]" /> Integrated POS Supplement Store</div>
-                  <div className="flex items-center gap-2"><Check size={14} className="text-[#2DD4BF]" /> WhatsApp Expiry Automation</div>
+                <div className="space-y-2 text-xs text-slate-300 border-t border-[#E7DADD] pt-3">
+                  <div className="flex items-center gap-2"><Check size={14} className="text-[#B76E79]" /> Up to 800 Members</div>
+                  <div className="flex items-center gap-2"><Check size={14} className="text-[#B76E79]" /> Up to 3 Branches</div>
+                  <div className="flex items-center gap-2"><Check size={14} className="text-[#B76E79]" /> 8 Trainer Logins & PT Splits</div>
+                  <div className="flex items-center gap-2"><Check size={14} className="text-[#B76E79]" /> Integrated POS Supplement Store</div>
+                  <div className="flex items-center gap-2"><Check size={14} className="text-[#B76E79]" /> WhatsApp Expiry Automation</div>
                 </div>
                 <button
                   onClick={() => alert('Editing Professional Plan parameters')}
-                  className="w-full py-2 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-black text-xs font-bold rounded-xl transition-colors"
+                  className="w-full py-2 bg-[#B76E79] hover:bg-[#9F5965] text-white text-xs font-bold rounded-xl transition-colors"
                 >
                   Edit Tier Parameters
                 </button>
               </div>
 
-              <div className="bg-[#0E1415] border border-[#2A3A3A] hover:border-[#2DD4BF]/40 rounded-3xl p-6 transition-all space-y-4">
+              <div className="bg-[#F3E8E8] border border-[#E7DADD] hover:border-[#B76E79]/40 rounded-3xl p-6 transition-all space-y-4">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">
                     ENTERPRISE TIER
@@ -731,16 +731,16 @@ export default function SuperAdminFeatureDetail() {
                   </div>
                   <p className="text-xs text-slate-400 mt-1">For large chains, luxury clubs & franchises</p>
                 </div>
-                <div className="space-y-2 text-xs text-slate-300 border-t border-[#2A3A3A] pt-3">
-                  <div className="flex items-center gap-2"><Check size={14} className="text-[#2DD4BF]" /> Unlimited Members</div>
-                  <div className="flex items-center gap-2"><Check size={14} className="text-[#2DD4BF]" /> Multi-Branch Franchise Hub</div>
-                  <div className="flex items-center gap-2"><Check size={14} className="text-[#2DD4BF]" /> Unlimited Trainer Seats</div>
-                  <div className="flex items-center gap-2"><Check size={14} className="text-[#2DD4BF]" /> Full AI Fitness Routine Engine</div>
-                  <div className="flex items-center gap-2"><Check size={14} className="text-[#2DD4BF]" /> Dedicated Account Executive & SLA</div>
+                <div className="space-y-2 text-xs text-slate-300 border-t border-[#E7DADD] pt-3">
+                  <div className="flex items-center gap-2"><Check size={14} className="text-[#B76E79]" /> Unlimited Members</div>
+                  <div className="flex items-center gap-2"><Check size={14} className="text-[#B76E79]" /> Multi-Branch Franchise Hub</div>
+                  <div className="flex items-center gap-2"><Check size={14} className="text-[#B76E79]" /> Unlimited Trainer Seats</div>
+                  <div className="flex items-center gap-2"><Check size={14} className="text-[#B76E79]" /> Full AI Fitness Routine Engine</div>
+                  <div className="flex items-center gap-2"><Check size={14} className="text-[#B76E79]" /> Dedicated Account Executive & SLA</div>
                 </div>
                 <button
                   onClick={() => alert('Editing Enterprise Plan parameters')}
-                  className="w-full py-2 bg-[#141D1E] hover:bg-[#1B2728] text-slate-300 text-xs font-semibold rounded-xl border border-[#2A3A3A] transition-colors"
+                  className="w-full py-2 bg-[#FFFFFF] hover:bg-[#F3E8E8] text-slate-300 text-xs font-semibold rounded-xl border border-[#E7DADD] transition-colors"
                 >
                   Edit Tier Parameters
                 </button>
@@ -748,7 +748,7 @@ export default function SuperAdminFeatureDetail() {
             </div>
 
             {/* Live Subscribers Table */}
-            <div className="bg-[#0E1415] border border-[#2A3A3A] rounded-3xl p-6 shadow-xl space-y-5">
+            <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-3xl p-6 shadow-xl space-y-5">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="relative flex-1 max-w-md">
                   <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
@@ -757,7 +757,7 @@ export default function SuperAdminFeatureDetail() {
                     placeholder="Search gyms, owners, plans..."
                     value={subSearch}
                     onChange={(e) => setSubSearch(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 bg-[#141D1E] border border-[#2A3A3A] rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#2DD4BF]"
+                    className="w-full pl-10 pr-4 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#B76E79]"
                   />
                 </div>
 
@@ -768,8 +768,8 @@ export default function SuperAdminFeatureDetail() {
                       onClick={() => setSubFilter(f)}
                       className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
                         subFilter === f
-                          ? 'bg-[#2DD4BF] text-black font-bold'
-                          : 'bg-[#141D1E] text-slate-400 hover:text-white'
+                          ? 'bg-[#B76E79] text-white font-bold'
+                          : 'bg-[#FFFFFF] text-slate-400 hover:text-white'
                       }`}
                     >
                       {f}
@@ -780,7 +780,7 @@ export default function SuperAdminFeatureDetail() {
 
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-[#141D1E] text-slate-400 uppercase text-[10px] font-bold border-b border-[#2A3A3A]">
+                  <thead className="bg-[#FFFFFF] text-slate-400 uppercase text-[10px] font-bold border-b border-[#E7DADD]">
                     <tr>
                       <th className="px-5 py-3.5">Gym Franchise</th>
                       <th className="px-5 py-3.5">Owner Contact</th>
@@ -792,7 +792,7 @@ export default function SuperAdminFeatureDetail() {
                       <th className="px-5 py-3.5 text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#2A3A3A]">
+                  <tbody className="divide-y divide-[#E7DADD]">
                     {subscribers
                       .filter(s => {
                         const matchText = s.gymName.toLowerCase().includes(subSearch.toLowerCase()) || s.owner.toLowerCase().includes(subSearch.toLowerCase());
@@ -800,19 +800,19 @@ export default function SuperAdminFeatureDetail() {
                         return matchText && matchFilter;
                       })
                       .map((sub) => (
-                        <tr key={sub.id} className="hover:bg-[#141D1E]/40 transition-colors">
+                        <tr key={sub.id} className="hover:bg-[#FFFFFF]/40 transition-colors">
                           <td className="px-5 py-3.5 font-bold text-white flex items-center gap-2">
-                            <Building2 size={14} className="text-[#2DD4BF]" />
+                            <Building2 size={14} className="text-[#B76E79]" />
                             {sub.gymName}
                           </td>
                           <td className="px-5 py-3.5 text-slate-300">{sub.owner}</td>
                           <td className="px-5 py-3.5">
-                            <span className="px-2 py-0.5 rounded-md bg-[#1B2728] text-slate-300 font-semibold border border-[#2A3A3A]">
+                            <span className="px-2 py-0.5 rounded-md bg-[#F3E8E8] text-slate-300 font-semibold border border-[#E7DADD]">
                               {sub.plan}
                             </span>
                           </td>
                           <td className="px-5 py-3.5 text-slate-400">{sub.cycle}</td>
-                          <td className="px-5 py-3.5 font-mono font-bold text-[#2DD4BF]">
+                          <td className="px-5 py-3.5 font-mono font-bold text-[#B76E79]">
                             ₹{sub.mrr.toLocaleString()}
                           </td>
                           <td className="px-5 py-3.5 text-slate-400">{sub.nextBilling}</td>
@@ -830,7 +830,7 @@ export default function SuperAdminFeatureDetail() {
                           <td className="px-5 py-3.5 text-right">
                             <button
                               onClick={() => alert(`Generated B2B GST tax invoice for ${sub.gymName}. Downloading PDF...`)}
-                              className="px-2.5 py-1 bg-[#141D1E] hover:bg-[#1B2728] border border-[#2A3A3A] rounded-lg text-slate-300 hover:text-white transition-colors"
+                              className="px-2.5 py-1 bg-[#FFFFFF] hover:bg-[#F3E8E8] border border-[#E7DADD] rounded-lg text-slate-300 hover:text-white transition-colors"
                             >
                               Invoice
                             </button>
@@ -848,13 +848,13 @@ export default function SuperAdminFeatureDetail() {
         {activeKey === 'approvals' && (
           <section className="space-y-8">
             {/* Header Banner */}
-            <div className="bg-[#0E1415] border border-[#2A3A3A] rounded-3xl p-6 sm:p-8 shadow-xl">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#2A3A3A] pb-6 mb-6">
+            <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-3xl p-6 sm:p-8 shadow-xl">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#E7DADD] pb-6 mb-6">
                 <div>
-                  <span className="text-xs font-bold text-[#2DD4BF] uppercase tracking-widest flex items-center gap-1.5 mb-1.5">
+                  <span className="text-xs font-bold text-[#B76E79] uppercase tracking-widest flex items-center gap-1.5 mb-1.5">
                     <Building2 size={14} /> PLATFORM ONBOARDING &amp; GOVERNANCE
                   </span>
-                  <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
+                  <h2 className="text-2xl sm:text-3xl font-extrabold text-[#292524]">
                     Gym Onboarding, Document Audit &amp; License Issuance
                   </h2>
                   <p className="text-xs sm:text-sm text-slate-400 mt-1 max-w-3xl leading-relaxed">
@@ -871,7 +871,7 @@ export default function SuperAdminFeatureDetail() {
 
               {/* 4 Metric Summary Cards */}
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-4">
+                <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-4">
                   <div className="flex items-center justify-between text-slate-400 text-xs mb-1">
                     <span>Pending Review</span>
                     <Clock size={14} className="text-amber-400" />
@@ -882,7 +882,7 @@ export default function SuperAdminFeatureDetail() {
                   <p className="text-[11px] text-slate-500 mt-0.5">Awaiting compliance audit</p>
                 </div>
 
-                <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-4">
+                <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-4">
                   <div className="flex items-center justify-between text-slate-400 text-xs mb-1">
                     <span>Approved &amp; Active</span>
                     <CheckCircle2 size={14} className="text-emerald-400" />
@@ -893,7 +893,7 @@ export default function SuperAdminFeatureDetail() {
                   <p className="text-[11px] text-slate-500 mt-0.5">Live platform franchises</p>
                 </div>
 
-                <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-4">
+                <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-4">
                   <div className="flex items-center justify-between text-slate-400 text-xs mb-1">
                     <span>Rejected / Incomplete</span>
                     <AlertTriangle size={14} className="text-rose-400" />
@@ -904,36 +904,36 @@ export default function SuperAdminFeatureDetail() {
                   <p className="text-[11px] text-slate-500 mt-0.5">Correction notices dispatched</p>
                 </div>
 
-                <div className="bg-[#141D1E] border border-[#2A3A3A] rounded-2xl p-4">
+                <div className="bg-[#FFFFFF] border border-[#E7DADD] rounded-2xl p-4">
                   <div className="flex items-center justify-between text-slate-400 text-xs mb-1">
                     <span>SLA Turnaround</span>
-                    <Zap size={14} className="text-[#2DD4BF]" />
+                    <Zap size={14} className="text-[#B76E79]" />
                   </div>
-                  <div className="text-2xl font-black text-[#2DD4BF] font-mono">&lt; 24 Hours</div>
+                  <div className="text-2xl font-black text-[#B76E79] font-mono">&lt; 24 Hours</div>
                   <p className="text-[11px] text-slate-500 mt-0.5">Average verification time</p>
                 </div>
               </div>
             </div>
 
             {/* Compliance Standards Guidance Box */}
-            <div className="bg-[#141D1E]/80 border border-[#2A3A3A] rounded-2xl p-5">
-              <h4 className="text-xs font-bold text-[#2DD4BF] uppercase tracking-wider mb-3 flex items-center gap-2">
+            <div className="bg-[#FFFFFF]/80 border border-[#E7DADD] rounded-2xl p-5">
+              <h4 className="text-xs font-bold text-[#B76E79] uppercase tracking-wider mb-3 flex items-center gap-2">
                 <ShieldCheck size={15} /> Mandatory Compliance &amp; Verification Standards for Onboarding
               </h4>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
-                <div className="bg-[#0E1415] p-3 rounded-xl border border-[#2A3A3A]">
+                <div className="bg-[#F3E8E8] p-3 rounded-xl border border-[#E7DADD]">
                   <p className="font-bold text-white mb-0.5">1. Municipal Trade License</p>
                   <p className="text-slate-400 text-[11px]">Valid Shop &amp; Establishment Act registration with local authority stamp.</p>
                 </div>
-                <div className="bg-[#0E1415] p-3 rounded-xl border border-[#2A3A3A]">
+                <div className="bg-[#F3E8E8] p-3 rounded-xl border border-[#E7DADD]">
                   <p className="font-bold text-white mb-0.5">2. Tax &amp; GSTIN Verification</p>
                   <p className="text-slate-400 text-[11px]">Active GSTIN number matching registered trade name &amp; banking account.</p>
                 </div>
-                <div className="bg-[#0E1415] p-3 rounded-xl border border-[#2A3A3A]">
+                <div className="bg-[#F3E8E8] p-3 rounded-xl border border-[#E7DADD]">
                   <p className="font-bold text-white mb-0.5">3. Fire Safety NOC</p>
                   <p className="text-slate-400 text-[11px]">Clearance for commercial occupancy, unobstructed fire exits &amp; extinguishers.</p>
                 </div>
-                <div className="bg-[#0E1415] p-3 rounded-xl border border-[#2A3A3A]">
+                <div className="bg-[#F3E8E8] p-3 rounded-xl border border-[#E7DADD]">
                   <p className="font-bold text-white mb-0.5">4. Equipment &amp; Biometrics</p>
                   <p className="text-slate-400 text-[11px]">Commercial grade machinery certification &amp; turnstile gate IoT compatibility.</p>
                 </div>
@@ -955,13 +955,13 @@ export default function SuperAdminFeatureDetail() {
                         onClick={() => setApprovalTab(tab)}
                         className={`px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all flex items-center gap-1.5 ${
                           approvalTab === tab
-                            ? 'bg-[#2DD4BF] text-black font-bold shadow-md shadow-[#2DD4BF]/20'
-                            : 'bg-[#141D1E] text-slate-400 hover:text-white border border-[#2A3A3A]'
+                            ? 'bg-[#B76E79] text-white font-bold shadow-md shadow-[#B76E79]/20'
+                            : 'bg-[#FFFFFF] text-slate-400 hover:text-white border border-[#E7DADD]'
                         }`}
                       >
                         <span>{tab === 'All' ? 'All Applications' : `${tab} Review`}</span>
                         <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
-                          approvalTab === tab ? 'bg-black/20 text-black' : 'bg-[#0E1415] text-[#2DD4BF]'
+                          approvalTab === tab ? 'bg-black/20 text-black' : 'bg-[#F3E8E8] text-[#B76E79]'
                         }`}>
                           {count}
                         </span>
@@ -978,7 +978,7 @@ export default function SuperAdminFeatureDetail() {
                     value={approvalSearch}
                     onChange={(e) => setApprovalSearch(e.target.value)}
                     placeholder="Search by gym, owner, or city..."
-                    className="w-full bg-[#141D1E] border border-[#2A3A3A] rounded-xl pl-9 pr-4 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#2DD4BF]"
+                    className="w-full bg-[#FFFFFF] border border-[#E7DADD] rounded-xl pl-9 pr-4 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#B76E79]"
                   />
                 </div>
               </div>
@@ -996,11 +996,11 @@ export default function SuperAdminFeatureDetail() {
                   .map((gym) => (
                     <div
                       key={gym.id}
-                      className="bg-[#0E1415] border border-[#2A3A3A] hover:border-[#2DD4BF]/50 rounded-3xl p-6 transition-all flex flex-col justify-between space-y-4 shadow-xl"
+                      className="bg-[#F3E8E8] border border-[#E7DADD] hover:border-[#B76E79]/50 rounded-3xl p-6 transition-all flex flex-col justify-between space-y-4 shadow-xl"
                     >
                       <div>
                         <div className="flex items-center justify-between mb-3">
-                          <span className="text-xs text-[#2DD4BF] font-semibold flex items-center gap-1">
+                          <span className="text-xs text-[#B76E79] font-semibold flex items-center gap-1">
                             <Building2 size={13} /> {gym.city}
                           </span>
                           <span
@@ -1016,7 +1016,7 @@ export default function SuperAdminFeatureDetail() {
                           </span>
                         </div>
 
-                        <h4 className="text-lg font-bold text-white mb-1">{gym.name}</h4>
+                        <h4 className="text-lg font-bold text-[#292524] mb-1">{gym.name}</h4>
                         <p className="text-xs text-slate-400">
                           Applicant: <strong className="text-slate-200">{gym.owner}</strong>
                         </p>
@@ -1025,7 +1025,7 @@ export default function SuperAdminFeatureDetail() {
                         </p>
 
                         {/* Facility Quick Specs */}
-                        <div className="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-[#2A3A3A] text-[11px] text-slate-400">
+                        <div className="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-[#E7DADD] text-[11px] text-slate-400">
                           <div>
                             <span className="text-slate-500 block text-[10px] uppercase font-bold">Floor Area</span>
                             <span className="font-semibold text-slate-200">{gym.area}</span>
@@ -1037,14 +1037,14 @@ export default function SuperAdminFeatureDetail() {
                         </div>
 
                         {/* Submitted Credentials */}
-                        <div className="mt-3 pt-3 border-t border-[#2A3A3A] space-y-1.5">
+                        <div className="mt-3 pt-3 border-t border-[#E7DADD] space-y-1.5">
                           <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block">
                             Submitted Legal Credentials:
                           </span>
                           <div className="flex flex-wrap gap-1.5">
                             {gym.docs.map((doc, i) => (
-                              <span key={i} className="text-[10px] px-2 py-0.5 bg-[#141D1E] border border-[#2A3A3A] rounded text-slate-300 flex items-center gap-1">
-                                <FileText size={10} className="text-[#2DD4BF]" />
+                              <span key={i} className="text-[10px] px-2 py-0.5 bg-[#FFFFFF] border border-[#E7DADD] rounded text-slate-300 flex items-center gap-1">
+                                <FileText size={10} className="text-[#B76E79]" />
                                 {doc}
                               </span>
                             ))}
@@ -1053,10 +1053,10 @@ export default function SuperAdminFeatureDetail() {
                       </div>
 
                       {/* Card Footer Actions */}
-                      <div className="pt-4 border-t border-[#2A3A3A] flex items-center justify-between gap-2">
+                      <div className="pt-4 border-t border-[#E7DADD] flex items-center justify-between gap-2">
                         <button
                           onClick={() => setSelectedGymApp(gym)}
-                          className="px-3.5 py-1.5 bg-[#141D1E] hover:bg-[#1B2728] border border-[#2A3A3A] hover:border-[#2DD4BF]/40 text-slate-300 hover:text-white text-xs font-semibold rounded-xl flex items-center gap-1.5 transition-colors"
+                          className="px-3.5 py-1.5 bg-[#FFFFFF] hover:bg-[#F3E8E8] border border-[#E7DADD] hover:border-[#B76E79]/40 text-slate-300 hover:text-white text-xs font-semibold rounded-xl flex items-center gap-1.5 transition-colors"
                         >
                           <Eye size={13} /> Inspect Dossier
                         </button>
@@ -1072,7 +1072,7 @@ export default function SuperAdminFeatureDetail() {
                             </button>
                             <button
                               onClick={() => handleApproveGym(gym.id)}
-                              className="px-3.5 py-1.5 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-black font-bold text-xs rounded-xl flex items-center gap-1 shadow-md shadow-[#2DD4BF]/20 transition-all"
+                              className="px-3.5 py-1.5 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold text-xs rounded-xl flex items-center gap-1 shadow-md shadow-[#B76E79]/20 transition-all"
                             >
                               <Check size={13} /> Approve &amp; License
                             </button>
@@ -1099,22 +1099,22 @@ export default function SuperAdminFeatureDetail() {
             {/* Detailed Inspect Dossier Modal */}
             {selectedGymApp && (
               <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-                <div className="bg-[#0E1415] border border-[#2A3A3A] rounded-3xl max-w-xl w-full p-6 text-white space-y-5 shadow-2xl max-h-[90vh] overflow-y-auto">
-                  <div className="flex items-center justify-between border-b border-[#2A3A3A] pb-3">
+                <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-3xl max-w-xl w-full p-6 text-white space-y-5 shadow-2xl max-h-[90vh] overflow-y-auto">
+                  <div className="flex items-center justify-between border-b border-[#E7DADD] pb-3">
                     <div>
                       <h4 className="font-bold text-lg flex items-center gap-2">
-                        <Building2 size={18} className="text-[#2DD4BF]" />
+                        <Building2 size={18} className="text-[#B76E79]" />
                         {selectedGymApp.name}
                       </h4>
                       <p className="text-xs text-slate-400 mt-0.5">License ID: {selectedGymApp.licenseId || 'GYM-LIC-PENDING'}</p>
                     </div>
-                    <button onClick={() => setSelectedGymApp(null)} className="p-1.5 rounded-lg bg-[#141D1E] text-slate-400 hover:text-white">
+                    <button onClick={() => setSelectedGymApp(null)} className="p-1.5 rounded-lg bg-[#FFFFFF] text-slate-400 hover:text-white">
                       <X size={16} />
                     </button>
                   </div>
 
                   <div className="space-y-4 text-xs text-slate-300">
-                    <div className="grid grid-cols-2 gap-3 bg-[#141D1E] p-3.5 rounded-xl border border-[#2A3A3A]">
+                    <div className="grid grid-cols-2 gap-3 bg-[#FFFFFF] p-3.5 rounded-xl border border-[#E7DADD]">
                       <div>
                         <span className="text-slate-500 block text-[10px] uppercase font-bold">Applicant / Owner</span>
                         <span className="font-bold text-white text-sm">{selectedGymApp.owner}</span>
@@ -1130,14 +1130,14 @@ export default function SuperAdminFeatureDetail() {
                     </div>
 
                     {/* Verified Documents Checklist */}
-                    <div className="bg-[#141D1E] p-4 rounded-xl border border-[#2A3A3A] space-y-2.5">
-                      <span className="font-bold text-[#2DD4BF] block uppercase tracking-wider text-[10px]">
+                    <div className="bg-[#FFFFFF] p-4 rounded-xl border border-[#E7DADD] space-y-2.5">
+                      <span className="font-bold text-[#B76E79] block uppercase tracking-wider text-[10px]">
                         Verification Documents Audit:
                       </span>
                       {selectedGymApp.docs.map((doc: string, idx: number) => (
-                        <div key={idx} className="flex items-center justify-between text-xs py-1.5 border-b border-[#2A3A3A] last:border-none">
+                        <div key={idx} className="flex items-center justify-between text-xs py-1.5 border-b border-[#E7DADD] last:border-none">
                           <span className="flex items-center gap-2">
-                            <FileText size={13} className="text-[#2DD4BF]" /> {doc}
+                            <FileText size={13} className="text-[#B76E79]" /> {doc}
                           </span>
                           <span className="text-emerald-400 font-semibold text-[11px] flex items-center gap-1 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
                             <Check size={11} /> Digitally Audited
@@ -1147,8 +1147,8 @@ export default function SuperAdminFeatureDetail() {
                     </div>
 
                     {/* Safety Inspection Checklist */}
-                    <div className="bg-[#141D1E] p-4 rounded-xl border border-[#2A3A3A] space-y-2">
-                      <span className="font-bold text-[#2DD4BF] block uppercase tracking-wider text-[10px]">
+                    <div className="bg-[#FFFFFF] p-4 rounded-xl border border-[#E7DADD] space-y-2">
+                      <span className="font-bold text-[#B76E79] block uppercase tracking-wider text-[10px]">
                         Facility Safety &amp; IoT Audit:
                       </span>
                       <div className="space-y-1.5 text-[11px]">
@@ -1172,7 +1172,7 @@ export default function SuperAdminFeatureDetail() {
                     </div>
                   </div>
 
-                  <div className="pt-4 border-t border-[#2A3A3A] flex justify-end gap-2 text-xs">
+                  <div className="pt-4 border-t border-[#E7DADD] flex justify-end gap-2 text-xs">
                     <button
                       onClick={() => handleRejectGym(selectedGymApp.id)}
                       className="px-4 py-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 rounded-xl font-semibold transition-colors"
@@ -1181,7 +1181,7 @@ export default function SuperAdminFeatureDetail() {
                     </button>
                     <button
                       onClick={() => handleApproveGym(selectedGymApp.id)}
-                      className="px-5 py-2 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-black font-bold rounded-xl shadow-lg shadow-[#2DD4BF]/20 transition-all"
+                      className="px-5 py-2 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold rounded-xl shadow-lg shadow-[#B76E79]/20 transition-all"
                     >
                       Approve &amp; Issue Franchise License
                     </button>
@@ -1196,30 +1196,30 @@ export default function SuperAdminFeatureDetail() {
         {activeKey === 'analytics' && (
           <section className="space-y-8">
             <div>
-              <span className="text-xs font-bold text-[#2DD4BF] uppercase tracking-wider block mb-1">
+              <span className="text-xs font-bold text-[#B76E79] uppercase tracking-wider block mb-1">
                 EXECUTIVE TELEMETRY
               </span>
-              <h3 className="text-2xl font-bold text-white">Platform GMV, Churn Radar & Geographic Density</h3>
+              <h3 className="text-2xl font-bold text-[#292524]">Platform GMV, Churn Radar & Geographic Density</h3>
             </div>
 
             {/* Top Counters */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-              <div className="bg-[#0E1415] border border-[#2A3A3A] p-5 rounded-2xl">
+              <div className="bg-[#F3E8E8] border border-[#E7DADD] p-5 rounded-2xl">
                 <span className="text-xs text-slate-400">Annualized Platform GMV</span>
                 <div className="text-3xl font-black text-white font-mono my-1">₹48.2M</div>
-                <span className="text-[11px] text-[#2DD4BF] font-semibold">+28.4% MoM platform run rate</span>
+                <span className="text-[11px] text-[#B76E79] font-semibold">+28.4% MoM platform run rate</span>
               </div>
-              <div className="bg-[#0E1415] border border-[#2A3A3A] p-5 rounded-2xl">
+              <div className="bg-[#F3E8E8] border border-[#E7DADD] p-5 rounded-2xl">
                 <span className="text-xs text-slate-400">Active Athletes Tracked</span>
                 <div className="text-3xl font-black text-white font-mono my-1">28,450</div>
                 <span className="text-[11px] text-emerald-400 font-semibold">1,240 new signups this week</span>
               </div>
-              <div className="bg-[#0E1415] border border-[#2A3A3A] p-5 rounded-2xl">
+              <div className="bg-[#F3E8E8] border border-[#E7DADD] p-5 rounded-2xl">
                 <span className="text-xs text-slate-400">Monthly Net Churn Rate</span>
                 <div className="text-3xl font-black text-white font-mono my-1">1.2%</div>
-                <span className="text-[11px] text-[#2DD4BF] font-semibold">-0.4% improvement via WhatsApp</span>
+                <span className="text-[11px] text-[#B76E79] font-semibold">-0.4% improvement via WhatsApp</span>
               </div>
-              <div className="bg-[#0E1415] border border-[#2A3A3A] p-5 rounded-2xl">
+              <div className="bg-[#F3E8E8] border border-[#E7DADD] p-5 rounded-2xl">
                 <span className="text-xs text-slate-400">Monthly Recurring Revenue</span>
                 <div className="text-3xl font-black text-white font-mono my-1">₹3.42M</div>
                 <span className="text-[11px] text-purple-400 font-semibold">108.6% Net Revenue Retention</span>
@@ -1228,9 +1228,9 @@ export default function SuperAdminFeatureDetail() {
 
             {/* City Distribution */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-[#0E1415] border border-[#2A3A3A] rounded-3xl p-6 space-y-4">
-                <h4 className="text-base font-bold text-white flex items-center gap-2">
-                  <BarChart3 size={16} className="text-[#2DD4BF]" /> Top Performing Metropolitan Hubs
+              <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-3xl p-6 space-y-4">
+                <h4 className="text-base font-bold text-[#292524] flex items-center gap-2">
+                  <BarChart3 size={16} className="text-[#B76E79]" /> Top Performing Metropolitan Hubs
                 </h4>
                 <div className="space-y-3 text-xs">
                   {[
@@ -1244,16 +1244,16 @@ export default function SuperAdminFeatureDetail() {
                         <span>{row.city}</span>
                         <span className="font-bold text-white">{row.share} ({row.count})</span>
                       </div>
-                      <div className="w-full h-2 bg-[#141D1E] rounded-full overflow-hidden">
-                        <div className={`h-full bg-[#2DD4BF] rounded-full ${row.width}`} />
+                      <div className="w-full h-2 bg-[#FFFFFF] rounded-full overflow-hidden">
+                        <div className={`h-full bg-[#B76E79] rounded-full ${row.width}`} />
                       </div>
                     </div>
                   ))}
                 </div>
               </div>
 
-              <div className="bg-[#0E1415] border border-[#2A3A3A] rounded-3xl p-6 space-y-4">
-                <h4 className="text-base font-bold text-white flex items-center gap-2">
+              <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-3xl p-6 space-y-4">
+                <h4 className="text-base font-bold text-[#292524] flex items-center gap-2">
                   <ShieldAlert size={16} className="text-amber-400" /> Churn Risk Radar (Proactive Interventions)
                 </h4>
                 <div className="space-y-2.5 text-xs">
@@ -1262,14 +1262,14 @@ export default function SuperAdminFeatureDetail() {
                     { gym: 'CityPulse Workout Bar', issue: 'Check-in velocity dropped 40%', action: 'Assign Success Manager' },
                     { gym: 'CrossFit Frontier', issue: 'Owner has not logged in for 10 days', action: 'Trigger Re-engagement' }
                   ].map((alertRow, i) => (
-                    <div key={i} className="bg-[#141D1E] p-3 rounded-xl border border-[#2A3A3A] flex items-center justify-between">
+                    <div key={i} className="bg-[#FFFFFF] p-3 rounded-xl border border-[#E7DADD] flex items-center justify-between">
                       <div>
                         <div className="font-bold text-white">{alertRow.gym}</div>
                         <div className="text-[11px] text-amber-400/90">{alertRow.issue}</div>
                       </div>
                       <button
                         onClick={() => alert(`Executed: ${alertRow.action} for ${alertRow.gym}`)}
-                        className="px-2.5 py-1 bg-[#1B2728] hover:bg-[#2DD4BF] text-slate-300 hover:text-black font-semibold text-[10px] rounded-lg transition-colors"
+                        className="px-2.5 py-1 bg-[#F3E8E8] hover:bg-[#B76E79] text-slate-300 hover:text-black font-semibold text-[10px] rounded-lg transition-colors"
                       >
                         {alertRow.action}
                       </button>
@@ -1286,17 +1286,17 @@ export default function SuperAdminFeatureDetail() {
           <section className="space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
-                <span className="text-xs font-bold text-[#2DD4BF] uppercase tracking-wider block mb-1">
+                <span className="text-xs font-bold text-[#B76E79] uppercase tracking-wider block mb-1">
                   GLOBAL IDENTITY GOVERNANCE
                 </span>
-                <h3 className="text-2xl font-bold text-white">Multi-Role User Directory & Access Management</h3>
+                <h3 className="text-2xl font-bold text-[#292524]">Multi-Role User Directory & Access Management</h3>
                 <p className="text-xs text-slate-400 mt-0.5">
                   Audit permissions, review activity history, and manage active/suspended states for owners, trainers, and athletes
                 </p>
               </div>
             </div>
 
-            <div className="bg-[#0E1415] border border-[#2A3A3A] rounded-3xl p-6 shadow-xl space-y-5">
+            <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-3xl p-6 shadow-xl space-y-5">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="relative flex-1 max-w-md">
                   <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
@@ -1305,7 +1305,7 @@ export default function SuperAdminFeatureDetail() {
                     placeholder="Search by name, email, or affiliated gym..."
                     value={userSearch}
                     onChange={(e) => setUserSearch(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 bg-[#141D1E] border border-[#2A3A3A] rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#2DD4BF]"
+                    className="w-full pl-10 pr-4 py-2 bg-[#FFFFFF] border border-[#E7DADD] rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#B76E79]"
                   />
                 </div>
 
@@ -1316,8 +1316,8 @@ export default function SuperAdminFeatureDetail() {
                       onClick={() => setUserRoleFilter(role)}
                       className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
                         userRoleFilter === role
-                          ? 'bg-[#2DD4BF] text-black font-bold'
-                          : 'bg-[#141D1E] text-slate-400 hover:text-white'
+                          ? 'bg-[#B76E79] text-white font-bold'
+                          : 'bg-[#FFFFFF] text-slate-400 hover:text-white'
                       }`}
                     >
                       {role}
@@ -1328,7 +1328,7 @@ export default function SuperAdminFeatureDetail() {
 
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-[#141D1E] text-slate-400 uppercase text-[10px] font-bold border-b border-[#2A3A3A]">
+                  <thead className="bg-[#FFFFFF] text-slate-400 uppercase text-[10px] font-bold border-b border-[#E7DADD]">
                     <tr>
                       <th className="px-5 py-3.5">User Profile</th>
                       <th className="px-5 py-3.5">Role Type</th>
@@ -1337,7 +1337,7 @@ export default function SuperAdminFeatureDetail() {
                       <th className="px-5 py-3.5 text-right">Governance Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#2A3A3A]">
+                  <tbody className="divide-y divide-[#E7DADD]">
                     {usersList
                       .filter(u => {
                         const matchText = u.name.toLowerCase().includes(userSearch.toLowerCase()) || u.email.toLowerCase().includes(userSearch.toLowerCase());
@@ -1345,13 +1345,13 @@ export default function SuperAdminFeatureDetail() {
                         return matchText && matchRole;
                       })
                       .map((user) => (
-                        <tr key={user.id} className="hover:bg-[#141D1E]/40 transition-colors">
+                        <tr key={user.id} className="hover:bg-[#FFFFFF]/40 transition-colors">
                           <td className="px-5 py-3.5">
                             <div className="font-bold text-white">{user.name}</div>
                             <div className="text-[11px] text-slate-400">{user.email}</div>
                           </td>
                           <td className="px-5 py-3.5">
-                            <span className="px-2 py-0.5 rounded-md bg-[#1B2728] text-slate-300 font-mono text-[10px] border border-[#2A3A3A]">
+                            <span className="px-2 py-0.5 rounded-md bg-[#F3E8E8] text-slate-300 font-mono text-[10px] border border-[#E7DADD]">
                               {user.role}
                             </span>
                           </td>
@@ -1392,19 +1392,19 @@ export default function SuperAdminFeatureDetail() {
         {activeKey === 'security' && (
           <section className="space-y-8">
             <div>
-              <span className="text-xs font-bold text-[#2DD4BF] uppercase tracking-wider block mb-1">
+              <span className="text-xs font-bold text-[#B76E79] uppercase tracking-wider block mb-1">
                 ZERO-TRUST PROTOCOLS
               </span>
-              <h3 className="text-2xl font-bold text-white">Platform Security & Multi-Tenant Isolation Controls</h3>
+              <h3 className="text-2xl font-bold text-[#292524]">Platform Security & Multi-Tenant Isolation Controls</h3>
               <p className="text-xs text-slate-400 mt-0.5">
                 Toggle encryption flags, rate limits, and inspect immutable audit trail logs
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-[#0E1415] border border-[#2A3A3A] rounded-3xl p-6 space-y-4">
-                <h4 className="text-base font-bold text-white flex items-center gap-2">
-                  <Lock size={16} className="text-[#2DD4BF]" /> Platform Isolation & Encryption Settings
+              <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-3xl p-6 space-y-4">
+                <h4 className="text-base font-bold text-[#292524] flex items-center gap-2">
+                  <Lock size={16} className="text-[#B76E79]" /> Platform Isolation & Encryption Settings
                 </h4>
 
                 <div className="space-y-3 text-xs">
@@ -1414,7 +1414,7 @@ export default function SuperAdminFeatureDetail() {
                     { key: 'aesEncryption', title: 'AES-256 Field Level Encryption', desc: 'Encrypt customer phone, banking, and medical data at rest' },
                     { key: 'rateLimitingShield', title: 'Edge Rate Limiting & Threat Shield', desc: 'Throttle abnormal burst requests to prevent credential stuffing' }
                   ].map((item: any) => (
-                    <div key={item.key} className="bg-[#141D1E] p-3 rounded-xl border border-[#2A3A3A] flex items-center justify-between">
+                    <div key={item.key} className="bg-[#FFFFFF] p-3 rounded-xl border border-[#E7DADD] flex items-center justify-between">
                       <div>
                         <div className="font-bold text-white">{item.title}</div>
                         <div className="text-[11px] text-slate-400">{item.desc}</div>
@@ -1424,7 +1424,7 @@ export default function SuperAdminFeatureDetail() {
                           setSecuritySettings(prev => ({ ...prev, [item.key]: !prev[item.key as keyof typeof prev] }));
                           alert(`Toggled ${item.title}`);
                         }}
-                        className="text-[#2DD4BF]"
+                        className="text-[#B76E79]"
                       >
                         {securitySettings[item.key as keyof typeof securitySettings] ? <ToggleRight size={28} /> : <ToggleLeft size={28} className="text-slate-600" />}
                       </button>
@@ -1433,8 +1433,8 @@ export default function SuperAdminFeatureDetail() {
                 </div>
               </div>
 
-              <div className="bg-[#0E1415] border border-[#2A3A3A] rounded-3xl p-6 space-y-4">
-                <h4 className="text-base font-bold text-white flex items-center gap-2">
+              <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-3xl p-6 space-y-4">
+                <h4 className="text-base font-bold text-[#292524] flex items-center gap-2">
                   <ShieldCheck size={16} className="text-emerald-400" /> Immutable Security Audit Trail Ledger
                 </h4>
 
@@ -1445,12 +1445,12 @@ export default function SuperAdminFeatureDetail() {
                     { action: 'Updated SaaS Professional Tier Pricing', target: 'Plan: Pro (₹4,999)', ip: '14.139.12.90', time: 'Yesterday' },
                     { action: 'Generated Audited Platform Tax Balance Sheet', target: 'Q3 Tax Ledger', ip: '14.139.12.90', time: '2 days ago' }
                   ].map((log, i) => (
-                    <div key={i} className="bg-[#141D1E] p-3 rounded-xl border border-[#2A3A3A]">
+                    <div key={i} className="bg-[#FFFFFF] p-3 rounded-xl border border-[#E7DADD]">
                       <div className="flex items-center justify-between text-slate-300">
                         <span className="font-bold text-white">{log.action}</span>
                         <span className="text-[10px] text-slate-500">{log.time}</span>
                       </div>
-                      <div className="text-[11px] text-[#2DD4BF] mt-0.5">{log.target}</div>
+                      <div className="text-[11px] text-[#B76E79] mt-0.5">{log.target}</div>
                       <div className="text-[10px] text-slate-500 font-mono mt-1">IP: {log.ip}</div>
                     </div>
                   ))}
@@ -1465,24 +1465,24 @@ export default function SuperAdminFeatureDetail() {
           <section className="space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
-                <span className="text-xs font-bold text-[#2DD4BF] uppercase tracking-wider block mb-1">
+                <span className="text-xs font-bold text-[#B76E79] uppercase tracking-wider block mb-1">
                   MARKETPLACE SETTLEMENTS & CLOUD HEALTH
                 </span>
-                <h3 className="text-2xl font-bold text-white">Marketplace Payouts & Cloud Telemetry</h3>
+                <h3 className="text-2xl font-bold text-[#292524]">Marketplace Payouts & Cloud Telemetry</h3>
                 <p className="text-xs text-slate-400 mt-0.5">
                   Batch process marketplace revenue payouts to gym bank accounts and monitor cloud microservices
                 </p>
               </div>
             </div>
 
-            <div className="bg-[#0E1415] border border-[#2A3A3A] rounded-3xl p-6 shadow-xl space-y-4">
-              <h4 className="text-base font-bold text-white flex items-center gap-2">
-                <Server size={16} className="text-[#2DD4BF]" /> Pending & Completed Bank Payouts
+            <div className="bg-[#F3E8E8] border border-[#E7DADD] rounded-3xl p-6 shadow-xl space-y-4">
+              <h4 className="text-base font-bold text-[#292524] flex items-center gap-2">
+                <Server size={16} className="text-[#B76E79]" /> Pending & Completed Bank Payouts
               </h4>
 
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-[#141D1E] text-slate-400 uppercase text-[10px] font-bold border-b border-[#2A3A3A]">
+                  <thead className="bg-[#FFFFFF] text-slate-400 uppercase text-[10px] font-bold border-b border-[#E7DADD]">
                     <tr>
                       <th className="px-5 py-3.5">Gym Franchise</th>
                       <th className="px-5 py-3.5">Net Payout Amount</th>
@@ -1493,11 +1493,11 @@ export default function SuperAdminFeatureDetail() {
                       <th className="px-5 py-3.5 text-right">Dispatch Action</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#2A3A3A]">
+                  <tbody className="divide-y divide-[#E7DADD]">
                     {payoutsList.map((payout) => (
-                      <tr key={payout.id} className="hover:bg-[#141D1E]/40 transition-colors">
+                      <tr key={payout.id} className="hover:bg-[#FFFFFF]/40 transition-colors">
                         <td className="px-5 py-3.5 font-bold text-white">{payout.gym}</td>
-                        <td className="px-5 py-3.5 font-mono font-bold text-[#2DD4BF]">
+                        <td className="px-5 py-3.5 font-mono font-bold text-[#B76E79]">
                           ₹{payout.amount.toLocaleString()}
                         </td>
                         <td className="px-5 py-3.5 text-slate-300">{payout.bank}</td>
@@ -1518,7 +1518,7 @@ export default function SuperAdminFeatureDetail() {
                           {payout.status === 'Ready' ? (
                             <button
                               onClick={() => handleDispatchPayout(payout.id)}
-                              className="px-3 py-1 bg-[#2DD4BF] hover:bg-[#5EEAD4] text-black font-bold text-xs rounded-lg transition-colors"
+                              className="px-3 py-1 bg-[#B76E79] hover:bg-[#9F5965] text-white font-bold text-xs rounded-lg transition-colors"
                             >
                               Dispatch Payout
                             </button>
