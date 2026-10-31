@@ -1022,8 +1022,14 @@ const GymAdminReferrals: React.FC = () => {
                 </div>
                 <div>
                   <span className="text-[10px] uppercase font-bold text-[#64748B]">Referred Friend</span>
-                  <p className="font-bold text-[#111827]">{selectedReferral.referredId?.firstName} {selectedReferral.referredId?.lastName}</p>
-                  <p className="text-[11px] text-[#64748B]">{selectedReferral.referredId?.email}</p>
+                  <p className="font-bold text-[#111827]">
+                    {selectedReferral.referredId?.firstName
+                      ? `${selectedReferral.referredId.firstName} ${selectedReferral.referredId.lastName || ''}`
+                      : (selectedReferral as any).inviteeName || 'Friend Invited (Pending Signup)'}
+                  </p>
+                  <p className="text-[11px] text-[#64748B]">
+                    {selectedReferral.referredId?.email || (selectedReferral as any).inviteeEmail || 'Awaiting member registration'}
+                  </p>
                 </div>
               </div>
 

@@ -234,11 +234,14 @@ export const TrainerLandingPage: React.FC = () => {
 
             {/* Right Container: Trainer Hero Image */}
             <div className="lg:col-span-5 relative">
-              <div className="relative rounded-3xl overflow-hidden border border-[#E2E8F0] shadow-2xl shadow-black bg-[#FFFFFF] group">
+              {/* Subtle warm orange backdrop glow */}
+              <div className="absolute -inset-2 bg-gradient-to-r from-orange-500/20 via-amber-500/15 to-orange-600/20 rounded-3xl blur-xl opacity-75 pointer-events-none" />
+              <div className="relative rounded-3xl overflow-hidden border-2 border-[#FFEDD5] shadow-2xl bg-[#FFFFFF]">
                 <img
                   src="/trainer-hero.jpg"
                   alt="Build Your Fitness Career"
-                  className="w-full h-[380px] sm:h-[480px] object-cover object-center block group-hover:scale-105 transition-transform duration-700"
+                  draggable={false}
+                  className="w-full h-[380px] sm:h-[480px] object-cover object-center block select-none pointer-events-none"
                 />
               </div>
             </div>
@@ -306,13 +309,15 @@ export const TrainerLandingPage: React.FC = () => {
 
             {/* Right Side: Showcase Image */}
             <div className="lg:col-span-5 relative">
-              <div className="relative rounded-3xl overflow-hidden border border-[#E2E8F0] shadow-2xl shadow-black bg-[#FFFFFF] group">
+              <div className="absolute -inset-2 bg-gradient-to-r from-orange-500/20 via-amber-500/15 to-orange-600/20 rounded-3xl blur-xl opacity-75 pointer-events-none" />
+              <div className="relative rounded-3xl overflow-hidden border-2 border-[#FFEDD5] shadow-2xl bg-[#FFFFFF]">
                 <img
                   src={trainerImg5}
                   alt="Empowering Fitness Trainers"
                   loading="lazy"
                   decoding="async"
-                  className="w-full h-[400px] sm:h-[500px] object-cover object-center block group-hover:scale-105 transition-transform duration-700 select-none pointer-events-none"
+                  draggable={false}
+                  className="w-full h-[400px] sm:h-[500px] object-cover object-center block select-none pointer-events-none"
                 />
               </div>
             </div>
@@ -375,7 +380,8 @@ export const TrainerLandingPage: React.FC = () => {
                         alt={item.title}
                         loading="lazy"
                         decoding="async"
-                        className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                        draggable={false}
+                        className="w-full h-full object-cover object-center select-none pointer-events-none"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-[#F8FAFC] via-[#F8FAFC]/20 to-transparent" />
 
@@ -555,11 +561,13 @@ export const TrainerLandingPage: React.FC = () => {
 
               {/* Right Side: Benefits Image */}
               <div className="lg:col-span-5 relative">
-                <div className="relative rounded-3xl overflow-hidden border border-[#E2E8F0] shadow-2xl shadow-black bg-[#FFFFFF] group">
+                <div className="absolute -inset-2 bg-gradient-to-r from-orange-500/20 via-amber-500/15 to-orange-600/20 rounded-3xl blur-xl opacity-75 pointer-events-none" />
+                <div className="relative rounded-3xl overflow-hidden border-2 border-[#FFEDD5] shadow-2xl bg-[#FFFFFF]">
                   <img
                     src="/trainer-benefit.jpg"
                     alt="Trainer Benefits & Client Coaching"
-                    className="w-full h-[360px] sm:h-[460px] object-cover object-center block group-hover:scale-105 transition-transform duration-700"
+                    draggable={false}
+                    className="w-full h-[360px] sm:h-[460px] object-cover object-center block select-none pointer-events-none"
                   />
                 </div>
               </div>
@@ -631,11 +639,13 @@ export const TrainerLandingPage: React.FC = () => {
 
               {/* Right Side: Responsibilities Image */}
               <div className="lg:col-span-5 relative">
-                <div className="relative rounded-3xl overflow-hidden border border-[#E2E8F0] shadow-2xl shadow-black bg-[#FFFFFF] group">
+                <div className="absolute -inset-2 bg-gradient-to-r from-orange-500/20 via-amber-500/15 to-orange-600/20 rounded-3xl blur-xl opacity-75 pointer-events-none" />
+                <div className="relative rounded-3xl overflow-hidden border-2 border-[#FFEDD5] shadow-2xl bg-[#FFFFFF]">
                   <img
                     src="/trainer-responsibility.jpg"
                     alt="Trainer Responsibilities & Proper Exercise Guidance"
-                    className="w-full h-[360px] sm:h-[460px] object-cover object-center block group-hover:scale-105 transition-transform duration-700"
+                    draggable={false}
+                    className="w-full h-[360px] sm:h-[460px] object-cover object-center block select-none pointer-events-none"
                   />
                 </div>
               </div>

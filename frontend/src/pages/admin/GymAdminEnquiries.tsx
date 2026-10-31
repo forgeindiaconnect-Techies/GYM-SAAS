@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { Search, Phone, Mail, Calendar, Loader2, MessageSquare, ArrowRight, UserPlus, CheckCircle, Download, Clock } from 'lucide-react';
 import api from '../../utils/api';
@@ -172,7 +172,7 @@ export const GymAdminEnquiries = () => {
                       <div className="text-sm text-[#64748B]">{enq.enquiryId}</div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="text-sm text-[#111827] flex items-center gap-1"><Phone size={12}/> {enq.mobileNumber}</div>
+                      <div className="text-sm text-[#111827] flex items-center gap-1"><Phone size={12}/> {enq.mobileNumber || (enq as any).phone || (enq as any).mobile || 'N/A'}</div>
                       <div className="text-sm text-[#64748B] flex items-center gap-1 mt-1"><Mail size={12}/> {enq.email}</div>
                     </td>
                     <td className="px-6 py-4">
@@ -245,7 +245,9 @@ export const GymAdminEnquiries = () => {
                       </div>
                       <div className="p-3.5 bg-[#FFFFFF] flex flex-col justify-center">
                         <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1">Mobile</span>
-                        <span className="font-semibold text-sm text-[#111827]">{selectedEnquiry.mobileNumber}</span>
+                        <span className="font-semibold text-sm text-[#111827]">
+                          {selectedEnquiry.mobileNumber?.trim() || (selectedEnquiry as any).phone?.trim() || (selectedEnquiry as any).mobile?.trim() || 'Not Provided'}
+                        </span>
                       </div>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E2E8F0]">
@@ -254,19 +256,13 @@ export const GymAdminEnquiries = () => {
                         <span className="font-semibold text-sm text-[#111827] break-all">{selectedEnquiry.email}</span>
                       </div>
                       <div className="p-3.5 bg-[#FFFFFF] flex flex-col justify-center">
-                        <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1">City</span>
-                        <span className="font-semibold text-sm text-[#111827]">{selectedEnquiry.city || '—'}</span>
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E2E8F0]">
-                      <div className="p-3.5 bg-[#FFFFFF] flex flex-col justify-center">
                         <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1">Preferred Contact</span>
                         <span className="font-semibold text-sm text-[#EA580C]">{selectedEnquiry.preferredContactMethod || 'Any'}</span>
                       </div>
-                      <div className="p-3.5 bg-[#FFFFFF] flex flex-col justify-center">
-                        <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1">Enquiry Type</span>
-                        <span className="font-semibold text-sm text-[#111827]">{selectedEnquiry.enquiryType || 'General'}</span>
-                      </div>
+                    </div>
+                    <div className="p-3.5 bg-[#FFFFFF] flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1">Enquiry Type</span>
+                      <span className="font-semibold text-sm text-[#111827]">{selectedEnquiry.enquiryType || 'General'}</span>
                     </div>
                   </div>
                 </div>

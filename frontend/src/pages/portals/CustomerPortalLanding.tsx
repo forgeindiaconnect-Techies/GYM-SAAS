@@ -57,7 +57,6 @@ const CustomerPortalLanding = () => {
   const [featureSlideIndex, setFeatureSlideIndex] = useState(0);
   const [activeCoachingCard, setActiveCoachingCard] = useState(0);
   const [activeTransformationIndex, setActiveTransformationIndex] = useState(0);
-  const [isTransformationPaused, setIsTransformationPaused] = useState(false);
 
   useEffect(() => {
     if (location.state && (location.state as any).openTour) {
@@ -145,7 +144,7 @@ const CustomerPortalLanding = () => {
       title: 'Smart AI Workout Engine',
       desc: 'Generate tailored weekly exercise programs based on your body type, fitness level, goals, available gym equipment, and past injuries.',
       tags: ['Custom Splits', 'Video Demos', 'Rest Timers'],
-      img: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&q=80',
+      img: 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800&q=80',
       alt: 'Smart AI Workout Engine',
     },
     {
@@ -154,7 +153,7 @@ const CustomerPortalLanding = () => {
       title: 'Customized Diet & Nutrition',
       desc: 'Macro-balanced daily meal plans with vegetarian, vegan, and protein-rich preferences crafted to fuel your workouts and fat loss.',
       tags: ['Calorie Budgets', 'Veg / Non-Veg', 'Hydration Log'],
-      img: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=800&q=80',
+      img: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=800&q=80',
       alt: 'Customized Diet & Nutrition',
     },
     {
@@ -163,7 +162,7 @@ const CustomerPortalLanding = () => {
       title: 'Certified Personal Coaches',
       desc: 'Discover elite trainers at your gym, book online or in-person 1-on-1 training slots, and receive professional form corrections.',
       tags: ['1-on-1 Slots', 'Form Reviews', 'Direct Chat'],
-      img: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&q=80',
+      img: 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=800&q=80',
       alt: 'Certified Personal Coaches',
     },
     {
@@ -181,7 +180,7 @@ const CustomerPortalLanding = () => {
       title: 'Fitness Challenges & Rewards',
       desc: 'Join gym-wide endurance challenges, earn badges, unlock membership fee discounts, and redeem store vouchers for protein and merchandise.',
       tags: ['Weekly Quests', 'Store Discounts', 'Leaderboards'],
-      img: 'https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=800&q=80',
+      img: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=800&q=80',
       alt: 'Fitness Challenges & Rewards',
     },
     {
@@ -190,18 +189,10 @@ const CustomerPortalLanding = () => {
       title: 'Gym Marketplace & Memberships',
       desc: 'Explore nearby verified fitness clubs, compare day-passes and annual plans, and pay securely via integrated digital payment gateways.',
       tags: ['Verified Clubs', 'Day Passes', 'Instant QR Entry'],
-      img: 'https://images.unsplash.com/photo-1540497077202-7c8a3999166f?w=800&q=80',
+      img: 'https://images.unsplash.com/photo-1570829460005-c840387bb1ca?w=800&q=80',
       alt: 'Gym Marketplace & Memberships',
     },
   ];
-
-  useEffect(() => {
-    if (isTransformationPaused) return;
-    const interval = setInterval(() => {
-      setActiveTransformationIndex((prev) => (prev + 1) % transformationFeatures.length);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, [isTransformationPaused, transformationFeatures.length]);
 
   const coachingCards = [
     {
@@ -209,7 +200,7 @@ const CustomerPortalLanding = () => {
       icon: Dumbbell,
       title: 'Book Certified Trainers',
       desc: 'Browse trainer specializations, read real reviews, and schedule in-gym personal training or online form correction sessions.',
-      img: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=700&q=80',
+      img: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=700&q=80',
       alt: '1-on-1 Personal Trainer Coaching',
     },
     {
@@ -217,7 +208,7 @@ const CustomerPortalLanding = () => {
       icon: MapPin,
       title: 'Verified Gym Marketplace',
       desc: 'Discover partner gyms, compare amenities (steam bath, Olympic barbells, pools), and purchase flexible passes with instant QR check-in.',
-      img: 'https://images.unsplash.com/photo-1540497077202-7c8a3999166f?w=700&q=80',
+      img: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=700&q=80',
       alt: 'Multi-Gym Verified Network',
     },
     {
@@ -225,7 +216,7 @@ const CustomerPortalLanding = () => {
       icon: Trophy,
       title: 'Streaks & Reward Badges',
       desc: 'Earn points for consecutive workout days, unlock discount coupons on gym store supplements, and claim your place on the leaderboard.',
-      img: 'https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=700&q=80',
+      img: 'https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?w=700&q=80',
       alt: 'Fitness Streaks & Achievements',
     },
   ];
@@ -233,15 +224,15 @@ const CustomerPortalLanding = () => {
   return (
     <div className="min-h-screen bg-[#FFFFFF] text-[#111827] selection:bg-[#C2410C] selection:text-[#FFFFFF] font-sans">
       {/* Top Navigation */}
-      <nav className="border-b border-[#E2E8F0] bg-[#FFFFFF]/95 backdrop-blur-md sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      <nav className="border-b border-[#E2E8F0] bg-[#FFFFFF]/95 backdrop-blur-md sticky top-0 z-50 pt-safe">
+        <div className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
           {/* Logo & Portal Badge */}
-          <div className="flex items-center space-x-3">
-            <Link to="/" className="flex items-center space-x-2.5 group">
-              <div className="w-10 h-10 bg-gradient-to-br from-[#EA580C] to-[#C2410C] rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/15">
-                <Activity className="text-[#FFFFFF]" size={22} strokeWidth={2.5} />
+          <div className="flex items-center space-x-2 sm:space-x-3 shrink-0">
+            <Link to="/" className="flex items-center space-x-2 sm:space-x-2.5 group">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 bg-gradient-to-br from-[#EA580C] to-[#C2410C] rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/15 shrink-0">
+                <Activity className="text-[#FFFFFF]" size={20} strokeWidth={2.5} />
               </div>
-              <span className="text-2xl font-black tracking-tight text-[#111827] group-hover:text-[#EA580C] transition-colors">
+              <span className="text-xl sm:text-2xl font-black tracking-tight text-[#111827] group-hover:text-[#EA580C] transition-colors">
                 Gymora
               </span>
             </Link>
@@ -251,20 +242,20 @@ const CustomerPortalLanding = () => {
           </div>
 
           {/* Action Links */}
-          <div className="flex items-center gap-2.5 sm:gap-3">
+          <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
             <Link
               to="/"
-              className="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#FFFFFF] bg-[#C2410C] hover:bg-[#9A3412] transition-all shadow-md shadow-orange-500/15 flex items-center gap-1.5"
+              className="px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold text-[#FFFFFF] bg-[#C2410C] hover:bg-[#9A3412] transition-all shadow-md shadow-orange-500/15 flex items-center gap-1 shrink-0"
             >
-              <ArrowLeft size={16} />
+              <ArrowLeft size={14} className="sm:w-4 sm:h-4" />
               <span>Back</span>
             </Link>
             <button
               type="button"
               onClick={() => setIsFeaturesOpen(true)}
-              className="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#FFFFFF] bg-[#C2410C] hover:bg-[#9A3412] transition-all shadow-md shadow-orange-500/15 flex items-center gap-1.5 cursor-pointer"
+              className="px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold text-[#FFFFFF] bg-[#C2410C] hover:bg-[#9A3412] transition-all shadow-md shadow-orange-500/15 flex items-center gap-1 cursor-pointer shrink-0"
             >
-              <Sparkles size={14} className="text-[#FFFFFF]" />
+              <Sparkles size={13} className="sm:w-3.5 sm:h-3.5 text-[#FFFFFF]" />
               <span>Features</span>
             </button>
             <Link
@@ -277,10 +268,10 @@ const CustomerPortalLanding = () => {
             </Link>
             <Link
               to="/login?portal=customer"
-              className="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#FFFFFF] bg-[#C2410C] hover:bg-[#9A3412] transition-all shadow-md shadow-orange-500/15 flex items-center gap-1.5"
+              className="px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold text-[#FFFFFF] bg-[#C2410C] hover:bg-[#9A3412] transition-all shadow-md shadow-orange-500/15 flex items-center gap-1 shrink-0"
             >
-              <User size={14} className="text-[#FFFFFF]" />
-              <span>Customer Login</span>
+              <User size={13} className="sm:w-3.5 sm:h-3.5 text-[#FFFFFF]" />
+              <span><span className="hidden sm:inline">Customer </span>Login</span>
             </Link>
           </div>
         </div>
@@ -317,11 +308,14 @@ const CustomerPortalLanding = () => {
 
           {/* Right Hero Image Container: Customer Fitness */}
           <div className="lg:col-span-5 relative">
-            <div className="relative rounded-3xl overflow-hidden border border-[#E2E8F0] shadow-2xl shadow-black bg-[#FFFFFF] group">
+            {/* Subtle warm orange backdrop glow */}
+            <div className="absolute -inset-2 bg-gradient-to-r from-orange-500/20 via-amber-500/15 to-orange-600/20 rounded-3xl blur-xl opacity-75 pointer-events-none" />
+            <div className="relative rounded-3xl overflow-hidden border-2 border-[#FFEDD5] shadow-2xl bg-[#FFFFFF]">
               <img
                 src="/customer-hero.jpg"
                 alt="AI Workouts & Elite Trainers"
-                className="w-full h-[360px] sm:h-[460px] object-cover object-center block group-hover:scale-105 transition-transform duration-700"
+                draggable={false}
+                className="w-full h-[360px] sm:h-[460px] object-cover object-center block select-none pointer-events-none"
               />
             </div>
           </div>
@@ -590,40 +584,33 @@ const CustomerPortalLanding = () => {
             </div>
           </div>
 
-          {/* Active Item Showcase with alternating left/right layout */}
-          <div
-            onMouseEnter={() => setIsTransformationPaused(true)}
-            onMouseLeave={() => setIsTransformationPaused(false)}
-            className="relative"
-          >
+          {/* Active Item Showcase with consistent, properly arranged layout */}
+          <div className="relative">
             {transformationFeatures.map((feat, idx) => {
               const Icon = feat.icon;
               const isActive = activeTransformationIndex === idx;
-              const isImageLeft = idx % 2 === 0;
 
               return (
                 <div
                   key={idx}
-                  className={`transition-all duration-500 ${
-                    isActive ? 'block opacity-100' : 'hidden opacity-0'
-                  }`}
+                  className={isActive ? 'block' : 'hidden'}
                 >
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center bg-[#FFFFFF] border border-[#E2E8F0] rounded-3xl p-6 sm:p-10 shadow-2xl">
-                    {/* Image Block */}
-                    <div className={`relative ${isImageLeft ? 'lg:order-1' : 'lg:order-2'}`}>
-                      <div className="relative rounded-2xl overflow-hidden border border-[#E2E8F0] shadow-xl bg-[#F8FAFC] group">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-14 items-center bg-[#FFFFFF] border border-[#E2E8F0] rounded-3xl p-6 sm:p-10 shadow-xl">
+                    {/* Image Block - Consistently arranged on the left */}
+                    <div className="relative order-1">
+                      <div className="relative rounded-2xl overflow-hidden border border-[#E2E8F0] shadow-md bg-[#F8FAFC]">
                         <img
                           src={feat.img}
                           alt={feat.alt}
                           loading="eager"
-                          className="w-full h-[280px] sm:h-[380px] object-cover block select-none pointer-events-none group-hover:scale-105 transition-transform duration-700"
+                          draggable={false}
+                          className="w-full h-[280px] sm:h-[380px] object-cover block select-none pointer-events-none"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-[#F8FAFC]/70 via-transparent to-transparent pointer-events-none" />
                       </div>
                     </div>
 
-                    {/* Content Block */}
-                    <div className={`${isImageLeft ? 'lg:order-2' : 'lg:order-1'}`}>
+                    {/* Content Block - Consistently arranged on the right */}
+                    <div className="order-2">
                       <h3 className="text-2xl sm:text-3xl font-black text-[#111827] tracking-tight mb-4 leading-snug">
                         {feat.title}
                       </h3>
@@ -671,7 +658,7 @@ const CustomerPortalLanding = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-end mb-12">
             <div>
-              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-[#FFFFFF]">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-[#111827]">
                 Discover Premium <span className="text-[#EA580C]">Gyms</span>
               </h2>
               <p className="text-[#64748B] max-w-xl">
@@ -701,14 +688,14 @@ const CustomerPortalLanding = () => {
               ].map((gym, idx) => (
                 <div key={idx} className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl overflow-hidden group cursor-pointer hover:border-[#FFEDD5] transition-colors">
                   <div className="h-48 overflow-hidden relative">
-                    <img src={gym.image} alt={gym.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                    <img src={gym.image} alt={gym.name} draggable={false} className="w-full h-full object-cover select-none pointer-events-none" />
                     <div className="absolute top-4 right-4 bg-black/75 backdrop-blur-md px-2 py-1 rounded-lg flex items-center space-x-1 border border-[#E2E8F0]">
                       <Star size={14} className="text-[#EA580C]" fill="currentColor" />
                       <span className="text-xs font-bold text-white">{gym.rating}</span>
                     </div>
                   </div>
                   <div className="p-6">
-                    <h3 className="text-xl font-bold mb-1 text-[#FFFFFF]">{gym.name}</h3>
+                    <h3 className="text-xl font-bold mb-1 text-[#111827]">{gym.name}</h3>
                     <div className="flex items-center space-x-1 text-[#64748B] text-sm mb-4">
                       <MapPin size={14} className="text-[#EA580C]" />
                       <span>{gym.location}</span>
@@ -732,7 +719,7 @@ const CustomerPortalLanding = () => {
                 >
                   <div className="h-48 overflow-hidden relative">
                     {gym.logo ? (
-                      <img src={gym.logo} alt={gym.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                      <img src={gym.logo} alt={gym.name} draggable={false} className="w-full h-full object-cover select-none pointer-events-none" />
                     ) : (
                       <div className="w-full h-full bg-gradient-to-br from-[#F8FAFC] to-[#F8FAFC] flex items-center justify-center">
                         <Activity size={48} className="text-[#EA580C]" />
@@ -749,7 +736,7 @@ const CustomerPortalLanding = () => {
                     )}
                   </div>
                   <div className="p-6">
-                    <h3 className="text-xl font-bold mb-1 text-[#FFFFFF] group-hover:text-[#EA580C] transition-colors">{gym.name}</h3>
+                    <h3 className="text-xl font-bold mb-1 text-[#111827] group-hover:text-[#EA580C] transition-colors">{gym.name}</h3>
                     <div className="flex items-start space-x-1.5 text-[#64748B] text-sm mb-4">
                       <MapPin size={15} className="text-[#EA580C] shrink-0 mt-0.5" />
                       <div className="line-clamp-2 text-xs font-medium text-[#64748B]">

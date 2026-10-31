@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getDb, updateItem, deleteItem, addItem } from '../../utils/mockDb';
 import api from '../../utils/api';
@@ -360,7 +360,7 @@ const SuperAdminInvitations = () => {
         </div>
         <button
           onClick={() => navigate('/super-admin/gyms/add')}
-          className="flex items-center space-x-2 px-4 py-2.5 bg-[#C2410C] text-white font-bold rounded-xl font-bold text-sm hover:bg-[#FFF7ED] transition-colors shadow-sm self-start sm:self-auto"
+          className="flex items-center space-x-2 px-4 py-2.5 bg-[#EA580C] hover:bg-[#C2410C] active:bg-[#9A3412] text-white font-bold rounded-xl text-sm transition-colors shadow-md shadow-orange-500/20 cursor-pointer self-start sm:self-auto"
         >
           <PlusCircle size={16} />
           <span>Send New Invitation</span>
@@ -705,7 +705,7 @@ const SuperAdminInvitations = () => {
                   />
                   <button
                     onClick={() => handleCopyLink(viewInvite.link || `${window.location.origin}/register/gym-owner?invite=${viewInvite.id}&email=${encodeURIComponent(viewInvite.email)}`)}
-                    className="px-3 py-1.5 bg-[#C2410C] text-white font-bold hover:bg-[#FFF7ED] rounded-lg text-xs font-bold flex items-center gap-1 transition-colors"
+                    className="px-3 py-1.5 bg-[#EA580C] hover:bg-[#C2410C] active:bg-[#9A3412] text-white font-bold rounded-lg text-xs font-bold flex items-center gap-1 transition-colors cursor-pointer"
                   >
                     <Copy size={13} />
                     <span>Copy</span>

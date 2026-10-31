@@ -68,9 +68,9 @@ const LimitBar = ({ label, icon: Icon, used, max, color }: any) => {
       <div className="flex items-center justify-between text-sm">
         <div className="flex items-center space-x-2">
           <Icon size={14} className={color} />
-          <span className="text-[#64748B] text-xs">{label}</span>
+          <span className="text-[#64748B] text-xs font-semibold">{label}</span>
         </div>
-        <span className={`text-xs font-bold ${isFull ? 'text-[#B91C1C]' : 'text-[#FFFFFF]'}`}>
+        <span className={`text-xs font-black ${isFull ? 'text-[#B91C1C]' : 'text-[#111827]'}`}>
           {isUnlimited ? `${used} / ∞` : `${used} / ${max}`}
         </span>
       </div>
@@ -384,7 +384,7 @@ const GymAdminSubscription = () => {
   const targetPrice = isAnnual ? targetPlanPricing.priceAnnual : targetPlanPricing.priceMonthly;
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 bg-[#FFFFFF] text-[#FFFFFF] min-h-screen">
+    <div className="space-y-8 max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 bg-[#FFFFFF] text-[#111827] min-h-screen">
       
       {/* Page Title & Status Subtitle */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E2E8F0] pb-6">
@@ -393,19 +393,19 @@ const GymAdminSubscription = () => {
             <Crown size={14} className="text-[#EA580C]" />
             Gym Owner License Management
           </div>
-          <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-[#FFFFFF]">
+          <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-[#111827]">
             Subscription, Renewal & Upgrades
           </h1>
           <p className="text-[#64748B] text-sm mt-1">
-            Manage your AI Gym Management SaaS platform license, renewals, and features for <strong className="text-[#FFFFFF]">{user?.gymName || 'Your Gym'}</strong>.
+            Manage your AI Gym Management SaaS platform license, renewals, and features for <strong className="text-[#111827]">{user?.gymName || 'Your Gym'}</strong>.
           </p>
         </div>
 
         <button
           onClick={loadSubscriptionInfo}
-          className="self-start sm:self-auto px-4 py-2.5 bg-[#FFFFFF] hover:bg-[#FFF7ED] border border-[#E2E8F0] hover:border-[#FDBA74] text-[#FFFFFF] text-xs font-bold rounded-xl flex items-center gap-2 transition-colors cursor-pointer"
+          className="self-start sm:self-auto px-4 py-2.5 bg-[#FFFFFF] hover:bg-[#FFF7ED] border border-[#E2E8F0] hover:border-[#FDBA74] text-[#111827] hover:text-[#C2410C] text-xs font-bold rounded-xl flex items-center gap-2 transition-colors cursor-pointer"
         >
-          <RefreshCw size={14} />
+          <RefreshCw size={14} className="text-[#EA580C]" />
           Sync License
         </button>
       </div>
@@ -418,7 +418,7 @@ const GymAdminSubscription = () => {
               <CheckCircle size={22} className="text-[#15803D]" />
             </div>
             <div>
-              <h3 className="text-[#FFFFFF] font-bold text-sm">{paymentSuccess}</h3>
+              <h3 className="text-[#111827] font-bold text-sm">{paymentSuccess}</h3>
               <p className="text-[#EA580C] text-xs mt-0.5">
                 Your subscription status, expiry dates, and platform permissions have been updated in real-time.
               </p>
@@ -441,7 +441,7 @@ const GymAdminSubscription = () => {
               ? 'bg-red-50 border-red-800 text-red-200'
               : isExpiringSoon
               ? 'bg-amber-50 border-amber-800 text-amber-200'
-              : 'bg-[#FFFFFF] border-[#FFEDD5] text-[#FFFFFF]'
+              : 'bg-[#FFF7ED] border-[#FFEDD5] text-[#111827]'
           }`}
         >
           <div className="flex items-center gap-3">
@@ -450,7 +450,7 @@ const GymAdminSubscription = () => {
               className={isExpired ? 'text-[#B91C1C] shrink-0' : isExpiringSoon ? 'text-[#B45309] shrink-0' : 'text-[#EA580C] shrink-0'}
             />
             <div>
-              <h3 className="font-bold text-sm text-[#FFFFFF]">
+              <h3 className="font-bold text-sm text-[#111827]">
                 {isExpired
                   ? 'Your Subscription Plan Has Expired!'
                   : isExpiringSoon
@@ -468,7 +468,7 @@ const GymAdminSubscription = () => {
           <div className="flex items-center gap-2 shrink-0 w-full sm:w-auto">
             <button
               onClick={() => handlePlanAction(currentPlanKey, 'RENEWAL')}
-              className="flex-1 sm:flex-none px-5 py-2.5 bg-[#C2410C] hover:bg-[#9A3412] text-[#FFFFFF] rounded-xl font-extrabold text-xs flex items-center justify-center gap-1.5 transition-all shadow-md shadow-orange-500/15 cursor-pointer"
+              className="flex-1 sm:flex-none px-5 py-2.5 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold rounded-xl font-extrabold text-xs flex items-center justify-center gap-1.5 transition-all shadow-md shadow-orange-500/15 cursor-pointer"
             >
               <RefreshCw size={14} />
               Renew {currentPlan.name} Plan
@@ -519,7 +519,7 @@ const GymAdminSubscription = () => {
           <div className="flex items-center gap-3 flex-wrap">
             <button
               onClick={() => handlePlanAction(currentPlanKey, 'RENEWAL')}
-              className="px-5 py-3 bg-[#C2410C] hover:bg-[#9A3412] text-[#FFFFFF] rounded-xl text-xs font-extrabold flex items-center gap-2 transition-all shadow-md shadow-orange-500/15 cursor-pointer"
+              className="px-5 py-3 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold rounded-xl text-xs font-extrabold flex items-center gap-2 transition-all shadow-md shadow-orange-500/15 cursor-pointer"
             >
               <RefreshCw size={15} />
               Renew Plan
@@ -527,10 +527,10 @@ const GymAdminSubscription = () => {
 
             <button
               onClick={() => document.getElementById('available-plans-section')?.scrollIntoView({ behavior: 'smooth' })}
-              className="px-4 py-3 bg-[#F8FAFC] hover:bg-[#FFF7ED] border border-[#E2E8F0] hover:border-[#FDBA74] text-[#FFFFFF] rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer"
+              className="px-4 py-3 bg-[#FFF7ED] hover:bg-[#FFEDD5] border-2 border-[#FFEDD5] hover:border-[#FDBA74] text-[#C2410C] font-extrabold rounded-xl text-xs flex items-center gap-1.5 transition-all cursor-pointer shadow-xs"
             >
               <ArrowUpCircle size={15} className="text-[#EA580C]" />
-              Upgrade Plan
+              <span>Upgrade Plan</span>
             </button>
 
             {paymentHistory.length > 0 && (
@@ -548,31 +548,31 @@ const GymAdminSubscription = () => {
 
         {/* 4 Details Metric Cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 pt-6">
-          <div className="bg-[#F8FAFC] rounded-2xl p-4 border border-[#E2E8F0]">
+          <div className="bg-[#F8FAFC] rounded-2xl p-4 border border-[#E2E8F0] shadow-xs">
             <p className="text-[#64748B] text-[10px] uppercase tracking-wider font-extrabold">Billing Cycle</p>
-            <p className="text-[#FFFFFF] font-extrabold text-sm sm:text-base mt-1 flex items-center gap-1.5">
+            <p className="text-[#0F172A] font-black text-sm sm:text-base mt-1 flex items-center gap-1.5">
               <Clock size={15} className="text-[#EA580C]" />
-              {billingCycleDisplay}
+              <span>{billingCycleDisplay}</span>
             </p>
           </div>
 
-          <div className="bg-[#F8FAFC] rounded-2xl p-4 border border-[#E2E8F0]">
+          <div className="bg-[#F8FAFC] rounded-2xl p-4 border border-[#E2E8F0] shadow-xs">
             <p className="text-[#64748B] text-[10px] uppercase tracking-wider font-extrabold">Subscription Started</p>
-            <p className="text-[#FFFFFF] font-extrabold text-sm sm:text-base mt-1 flex items-center gap-1.5">
+            <p className="text-[#0F172A] font-black text-sm sm:text-base mt-1 flex items-center gap-1.5">
               <Calendar size={15} className="text-[#EA580C]" />
-              {startDateFormatted}
+              <span>{startDateFormatted}</span>
             </p>
           </div>
 
-          <div className="bg-[#F8FAFC] rounded-2xl p-4 border border-[#E2E8F0]">
+          <div className="bg-[#F8FAFC] rounded-2xl p-4 border border-[#E2E8F0] shadow-xs">
             <p className="text-[#64748B] text-[10px] uppercase tracking-wider font-extrabold">Expiry / Renewal Date</p>
-            <p className="text-[#FFFFFF] font-extrabold text-sm sm:text-base mt-1 flex items-center gap-1.5">
+            <p className="text-[#0F172A] font-black text-sm sm:text-base mt-1 flex items-center gap-1.5">
               <Calendar size={15} className={isExpired ? 'text-[#B91C1C]' : isExpiringSoon ? 'text-[#B45309]' : 'text-[#15803D]'} />
-              {renewalDateFormatted}
+              <span>{renewalDateFormatted}</span>
             </p>
           </div>
 
-          <div className="bg-[#F8FAFC] rounded-2xl p-4 border border-[#E2E8F0]">
+          <div className="bg-[#F8FAFC] rounded-2xl p-4 border border-[#E2E8F0] shadow-xs">
             <p className="text-[#64748B] text-[10px] uppercase tracking-wider font-extrabold">Remaining Time</p>
             <p className={`font-black text-sm sm:text-base mt-1 ${isExpired ? 'text-[#B91C1C]' : isExpiringSoon ? 'text-[#B45309]' : 'text-[#EA580C]'}`}>
               {isExpired ? '0 Days (Expired)' : `${remainingDays} Days Left`}
@@ -605,11 +605,11 @@ const GymAdminSubscription = () => {
           <div className="inline-flex items-center space-x-2 bg-[#FFF7ED] border border-[#FFEDD5] rounded-full px-4 py-1.5 text-[#EA580C] text-xs font-bold uppercase tracking-widest mb-5">
             <span>SaaS Platform Pricing for Gyms</span>
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-[#FFFFFF]">Power Your Gym. Choose Your Plan.</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-[#111827]">Power Your Gym. Choose Your Plan.</h2>
           <p className="text-[#64748B] mb-8 max-w-xl mx-auto">All plans give your gym access to the Gymora platform. Scale as your gym grows.</p>
 
           <div className="flex items-center justify-center gap-4 flex-wrap">
-            <span className={`text-sm font-semibold transition-colors ${!isAnnual ? 'text-[#FFFFFF]' : 'text-[#64748B]'}`}>Monthly</span>
+            <span className={`text-sm font-semibold transition-colors ${!isAnnual ? 'text-[#111827]' : 'text-[#64748B]'}`}>Monthly</span>
             <button
               type="button"
               onClick={() => setIsAnnual(!isAnnual)}
@@ -619,7 +619,7 @@ const GymAdminSubscription = () => {
               <span className={`inline-block h-6 w-6 transform rounded-full bg-[#FFFFFF] shadow-md transition-transform duration-300 ${isAnnual ? 'translate-x-9' : 'translate-x-1'}`} />
             </button>
             <div className="flex items-center gap-2">
-              <span className={`text-sm font-semibold transition-colors ${isAnnual ? 'text-[#FFFFFF]' : 'text-[#64748B]'}`}>Annual</span>
+              <span className={`text-sm font-semibold transition-colors ${isAnnual ? 'text-[#111827]' : 'text-[#64748B]'}`}>Annual</span>
               {isAnnual ? (
                 <span className="inline-flex items-center gap-1 bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5] text-xs px-3 py-1 rounded-full font-bold">🎁 2 months FREE — Save up to 25%</span>
               ) : (
@@ -760,7 +760,7 @@ const GymAdminSubscription = () => {
       <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-3xl p-6 sm:p-8 shadow-xl space-y-5">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-[#E2E8F0] pb-4">
           <div>
-            <h2 className="text-lg font-bold text-[#FFFFFF] flex items-center gap-2">
+            <h2 className="text-lg font-bold text-[#111827] flex items-center gap-2">
               <IndianRupee size={20} className="text-[#EA580C]" />
               <span>Subscription & Renewal Payment History</span>
             </h2>
@@ -797,24 +797,24 @@ const GymAdminSubscription = () => {
                 <tr key={inv.id || idx} className="hover:bg-[#FFF7ED] transition-colors">
                   <td className="py-3.5 px-3 font-bold text-[#EA580C] text-center">{idx + 1}</td>
                   <td className="py-3.5 px-3">
-                    <span className="font-mono font-bold text-[#FFFFFF]">{inv.id}</span>
+                    <span className="font-mono font-bold text-[#111827]">{inv.id || `INV-${String(idx + 1).padStart(5, '0')}`}</span>
                     {inv.isCurrent && (
-                      <span className="ml-2 text-[10px] bg-[#FFF7ED] border border-[#FFEDD5] text-[#FFFFFF] px-2 py-0.5 rounded-full font-extrabold">
+                      <span className="ml-2 text-[10px] bg-emerald-50 border border-emerald-200 text-emerald-700 px-2 py-0.5 rounded-full font-extrabold">
                         Active
                       </span>
                     )}
                   </td>
-                  <td className="py-3.5 px-3 text-[#64748B]">{inv.date}</td>
-                  <td className="py-3.5 px-3 font-semibold text-[#FFFFFF]">{inv.plan}</td>
+                  <td className="py-3.5 px-3 text-[#64748B] font-medium">{inv.date}</td>
+                  <td className="py-3.5 px-3 font-semibold text-[#111827]">{inv.plan}</td>
                   <td className="py-3.5 px-3 text-[#64748B]">
                     {formatPaymentDate(inv.startDate)} — {formatPaymentDate(inv.endDate)}
                   </td>
-                  <td className="py-3.5 px-3 font-extrabold text-[#FFFFFF]">{inv.amount}</td>
+                  <td className="py-3.5 px-3 font-extrabold text-[#111827]">{inv.amount}</td>
                   <td className="py-3.5 px-3">
                     <span className={`px-2.5 py-0.5 rounded-full font-extrabold text-[11px] ${
                       inv.status === 'Paid' || inv.status === 'Active'
-                        ? 'bg-[#FFF7ED] text-[#15803D] border border-[#E2E8F0]/50'
-                        : 'bg-amber-50 text-[#B45309] border border-amber-700/50'
+                        ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                        : 'bg-amber-50 text-amber-800 border border-amber-200'
                     }`}>
                       {inv.status}
                     </span>
@@ -822,9 +822,9 @@ const GymAdminSubscription = () => {
                   <td className="py-3.5 px-3 text-right">
                     <button
                       onClick={() => handleDownloadInvoice(inv)}
-                      className="px-3 py-1 bg-[#F8FAFC] hover:bg-[#FFF7ED] border border-[#E2E8F0] text-[#FFFFFF] hover:text-[#EA580C] rounded-lg text-xs font-bold inline-flex items-center gap-1 transition-colors cursor-pointer"
+                      className="px-3 py-1 bg-[#FFFFFF] hover:bg-[#FFF7ED] border border-[#CBD5E1] hover:border-[#EA580C] text-[#111827] hover:text-[#EA580C] rounded-lg text-xs font-bold inline-flex items-center gap-1 transition-colors cursor-pointer shadow-xs"
                     >
-                      <Download size={13} />
+                      <Download size={13} className="text-[#EA580C]" />
                       PDF
                     </button>
                   </td>
@@ -847,7 +847,7 @@ const GymAdminSubscription = () => {
                   <Crown size={24} />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-[#FFFFFF]">
+                  <h3 className="text-lg font-bold text-[#111827]">
                     {actionType === 'RENEWAL' ? 'Confirm Plan Renewal' : `Confirm Upgrade to ${targetPlanObj.name}`}
                   </h3>
                   <p className="text-xs text-[#64748B]">
@@ -865,7 +865,7 @@ const GymAdminSubscription = () => {
 
             {/* Error banner if any */}
             {paymentError && (
-              <div className="p-3 bg-red-50 border border-red-800 rounded-xl text-xs text-red-300 flex items-center gap-2">
+              <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-xs text-red-700 flex items-center gap-2">
                 <AlertCircle size={15} className="shrink-0 text-[#B91C1C]" />
                 <span>{paymentError}</span>
               </div>
@@ -875,20 +875,20 @@ const GymAdminSubscription = () => {
             <div className="p-4 bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl space-y-3 text-xs">
               <div className="flex justify-between items-center text-[#64748B]">
                 <span>Selected Plan:</span>
-                <span className="font-extrabold text-[#FFFFFF]">{targetPlanObj.name}</span>
+                <span className="font-extrabold text-[#111827]">{targetPlanObj.name}</span>
               </div>
               <div className="flex justify-between items-center text-[#64748B]">
                 <span>Billing Period:</span>
-                <span className="font-extrabold text-[#FFFFFF]">{isAnnual ? 'Annual (12 Months)' : 'Monthly (1 Month)'}</span>
+                <span className="font-extrabold text-[#111827]">{isAnnual ? 'Annual (12 Months)' : 'Monthly (1 Month)'}</span>
               </div>
               <div className="flex justify-between items-center text-[#64748B]">
                 <span>Effective Start Date:</span>
-                <span className="font-extrabold text-[#FFFFFF]">
+                <span className="font-extrabold text-[#111827]">
                   {actionType === 'RENEWAL' && !isExpired ? `${renewalDateFormatted} (Continuously extended)` : 'Immediate'}
                 </span>
               </div>
               <div className="flex justify-between items-center border-t border-[#E2E8F0] pt-2 text-sm font-bold">
-                <span className="text-[#FFFFFF]">Total Payable Amount:</span>
+                <span className="text-[#111827]">Total Payable Amount:</span>
                 <span className="text-xl font-black text-[#EA580C]">₹{targetPrice.toLocaleString('en-IN')}</span>
               </div>
             </div>
@@ -924,7 +924,7 @@ const GymAdminSubscription = () => {
                     value={cardNumber}
                     onChange={(e) => setCardNumber(e.target.value)}
                     maxLength={19}
-                    className="w-full px-3.5 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] focus:border-[#FDBA74] rounded-xl text-xs text-[#FFFFFF] focus:outline-none"
+                    className="w-full px-3.5 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] focus:border-[#FDBA74] rounded-xl text-xs text-[#111827] placeholder:text-[#64748B] focus:outline-none"
                   />
                   <div className="grid grid-cols-2 gap-2">
                     <input
@@ -933,7 +933,7 @@ const GymAdminSubscription = () => {
                       value={cardExpiry}
                       onChange={(e) => setCardExpiry(e.target.value)}
                       maxLength={5}
-                      className="w-full px-3.5 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] focus:border-[#FDBA74] rounded-xl text-xs text-[#FFFFFF] focus:outline-none"
+                      className="w-full px-3.5 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] focus:border-[#FDBA74] rounded-xl text-xs text-[#111827] placeholder:text-[#64748B] focus:outline-none"
                     />
                     <input
                       type="password"
@@ -941,7 +941,7 @@ const GymAdminSubscription = () => {
                       value={cardCvv}
                       onChange={(e) => setCardCvv(e.target.value)}
                       maxLength={3}
-                      className="w-full px-3.5 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] focus:border-[#FDBA74] rounded-xl text-xs text-[#FFFFFF] focus:outline-none"
+                      className="w-full px-3.5 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] focus:border-[#FDBA74] rounded-xl text-xs text-[#111827] placeholder:text-[#64748B] focus:outline-none"
                     />
                   </div>
                   <input
@@ -949,7 +949,7 @@ const GymAdminSubscription = () => {
                     placeholder="Cardholder Full Name"
                     value={cardHolder}
                     onChange={(e) => setCardHolder(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] focus:border-[#FDBA74] rounded-xl text-xs text-[#FFFFFF] focus:outline-none"
+                    className="w-full px-3.5 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] focus:border-[#FDBA74] rounded-xl text-xs text-[#111827] placeholder:text-[#64748B] focus:outline-none"
                   />
                 </div>
               )}
@@ -968,7 +968,7 @@ const GymAdminSubscription = () => {
                 type="button"
                 onClick={handlePaymentSubmit}
                 disabled={loading !== null}
-                className="w-2/3 py-3 bg-[#C2410C] hover:bg-[#9A3412] disabled:opacity-50 text-[#FFFFFF] font-bold rounded-xl text-xs font-extrabold flex items-center justify-center gap-2 transition-all shadow-md shadow-orange-500/15 cursor-pointer"
+                className="w-2/3 py-3 bg-[#C2410C] hover:bg-[#9A3412] disabled:opacity-50 text-white font-bold rounded-xl text-xs font-extrabold flex items-center justify-center gap-2 transition-all shadow-md shadow-orange-500/15 cursor-pointer"
               >
                 {loading ? (
                   <>

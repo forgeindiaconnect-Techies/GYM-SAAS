@@ -9,7 +9,7 @@ import {
   TrendingUp, Bell, MessageSquare,
   Activity, Building2, Menu, LogOut, Clock,
   ShoppingBag, FileText, Star, Lock, Sparkles, Trophy, Award, Gift,
-  CheckCircle, AlertCircle, Coins
+  CheckCircle, AlertCircle, Coins, X
 } from 'lucide-react';
 
 const MemberLayout = () => {
@@ -231,16 +231,26 @@ const MemberLayout = () => {
     <>
       {/* Logo */}
       <div className="p-5 border-b border-[#E2E8F0]">
-        <Link to="/" className="flex items-center space-x-2.5" onClick={() => setSidebarOpen(false)}>
-          <div className="w-9 h-9 bg-[#C2410C] text-white font-bold rounded-xl flex items-center justify-center shadow-md shadow-orange-500/20 shrink-0">
-            <Activity className="text-white" size={20} />
-          </div>
-          <span className="text-xl font-bold tracking-tight text-[#111827] truncate max-w-[160px]" title={gym?.name || 'Gymora'}>
-            {gym?.name || 'Gymora'}
-          </span>
-        </Link>
+        <div className="flex items-center justify-between">
+          <Link to="/" className="flex items-center space-x-2.5" onClick={() => setSidebarOpen(false)}>
+            <div className="w-9 h-9 bg-[#C2410C] text-white font-bold rounded-xl flex items-center justify-center shadow-md shadow-orange-500/20 shrink-0">
+              <Activity className="text-white" size={20} />
+            </div>
+            <span className="text-xl font-bold tracking-tight text-[#111827] truncate max-w-[150px]" title={gym?.name || 'Gymora'}>
+              {gym?.name || 'Gymora'}
+            </span>
+          </Link>
+          <button
+            type="button"
+            onClick={() => setSidebarOpen(false)}
+            className="lg:hidden w-8 h-8 flex items-center justify-center bg-[#F8FAFC] border border-[#E2E8F0] text-[#64748B] hover:text-[#EA580C] rounded-lg hover:bg-[#FFF7ED] active:bg-[#FFEDD5] transition-colors shrink-0 cursor-pointer"
+            aria-label="Close menu"
+          >
+            <X size={18} />
+          </button>
+        </div>
         <div className="mt-4 flex items-center space-x-3">
-          <div className="w-10 h-10 bg-[#FFF7ED] border border-[#FFEDD5] rounded-full flex items-center justify-center text-[#C2410C] font-bold text-base shadow-xs">
+          <div className="w-10 h-10 bg-[#FFF7ED] border border-[#FFEDD5] rounded-full flex items-center justify-center text-[#C2410C] font-bold text-base shadow-xs shrink-0">
             {user?.firstName?.[0] || 'U'}
           </div>
           <div className="flex-1 overflow-hidden">
@@ -379,27 +389,27 @@ const MemberLayout = () => {
       {/* Main Content */}
       <main className="flex-1 flex flex-col h-full overflow-hidden relative min-w-0 bg-[#FFFFFF]">
         {/* Header */}
-        <header className="h-16 border-b border-[#E2E8F0] flex items-center px-4 md:px-8 justify-between bg-[#FFFFFF] z-10 sticky top-0 shrink-0 text-[#111827]">
-          <div className="flex items-center space-x-3">
+        <header className="h-16 pt-safe border-b border-[#E2E8F0] flex items-center px-3 sm:px-6 md:px-8 justify-between bg-[#FFFFFF] z-10 sticky top-0 shrink-0 text-[#111827]">
+          <div className="flex items-center space-x-2 sm:space-x-3">
             <button
-              className="lg:hidden text-[#64748B] hover:text-[#EA580C] transition-colors p-1 rounded-lg hover:bg-[#F8FAFC]"
+              className="lg:hidden w-10 h-10 flex items-center justify-center text-[#64748B] hover:text-[#EA580C] transition-colors rounded-xl hover:bg-[#FFF7ED] cursor-pointer shrink-0"
               onClick={() => setSidebarOpen(true)}
               aria-label="Open menu"
             >
               <Menu size={22} />
             </button>
             {currentNav && <currentNav.icon size={20} className="text-[#EA580C] hidden sm:block" />}
-            <h2 className="text-base md:text-lg font-bold tracking-tight text-[#111827]">
+            <h2 className="text-sm sm:text-base md:text-lg font-bold tracking-tight text-[#111827] truncate max-w-[200px] sm:max-w-none">
               {currentNav?.label || 'Customer Dashboard'}
             </h2>
           </div>
 
-          <div className="flex items-center space-x-3 md:space-x-5">
+          <div className="flex items-center space-x-2 sm:space-x-3 md:space-x-5">
             {!isExpired && (
               <div className="relative" ref={notifRef}>
                 <button
                   onClick={() => setNotifOpen(!notifOpen)}
-                  className="relative text-[#64748B] hover:text-[#EA580C] transition-colors p-1.5 rounded-xl hover:bg-[#F8FAFC] cursor-pointer"
+                  className="relative text-[#64748B] hover:text-[#EA580C] transition-colors p-2 rounded-xl hover:bg-[#FFF7ED] cursor-pointer"
                   title="Notifications"
                 >
                   <Bell size={20} />
@@ -412,7 +422,7 @@ const MemberLayout = () => {
 
                 {/* Notifications Dropdown */}
                 {notifOpen && (
-                  <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl shadow-xl z-50 overflow-hidden animate-fadeIn">
+                  <div className="absolute right-0 mt-2 w-[calc(100vw-2rem)] sm:w-96 max-w-sm bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl shadow-xl z-50 overflow-hidden animate-fadeIn">
                     <div className="p-3.5 border-b border-[#E2E8F0] bg-[#F8FAFC] flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <h3 className="font-bold text-[#111827] text-sm">Notifications</h3>
@@ -422,14 +432,25 @@ const MemberLayout = () => {
                           </span>
                         )}
                       </div>
-                      {unreadCount > 0 && (
+                      <div className="flex items-center gap-2">
+                        {unreadCount > 0 && (
+                          <button
+                            onClick={markAllAsRead}
+                            className="text-[11px] font-semibold text-[#EA580C] hover:underline cursor-pointer"
+                          >
+                            Mark all read
+                          </button>
+                        )}
                         <button
-                          onClick={markAllAsRead}
-                          className="text-[11px] font-semibold text-[#EA580C] hover:underline cursor-pointer"
+                          type="button"
+                          onClick={() => setNotifOpen(false)}
+                          className="w-7 h-7 rounded-full bg-[#FFFFFF] border border-[#E2E8F0] text-[#64748B] hover:text-[#EA580C] hover:bg-[#FFF7ED] active:bg-[#FFEDD5] flex items-center justify-center cursor-pointer transition-colors shrink-0"
+                          title="Close notifications"
+                          aria-label="Close notifications"
                         >
-                          Mark all read
+                          <X size={14} />
                         </button>
-                      )}
+                      </div>
                     </div>
 
                     <div className="divide-y divide-[#E2E8F0] max-h-72 overflow-y-auto">
@@ -524,7 +545,7 @@ const MemberLayout = () => {
           </div>
         )}
 
-        <div className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
+        <div className="flex-1 overflow-y-auto p-3.5 sm:p-5 md:p-6 lg:p-8 pb-24 sm:pb-20">
           <Outlet />
         </div>
 

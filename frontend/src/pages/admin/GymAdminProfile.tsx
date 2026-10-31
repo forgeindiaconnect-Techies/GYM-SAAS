@@ -169,7 +169,7 @@ const GymAdminProfile = () => {
             <MapPin size={16} /> Location Settings
           </Link>
           {!isEditing && (
-            <button onClick={() => setIsEditing(true)} className="flex items-center gap-2 px-4 py-2.5 bg-[#F8FAFC] border border-[#E2E8F0] text-white font-bold rounded-xl hover:bg-[#FFF7ED] hover:border-[#FDBA74] transition-all shadow-sm text-sm cursor-pointer">
+            <button onClick={() => setIsEditing(true)} className="flex items-center gap-2 px-4 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] text-[#111827] font-bold rounded-xl hover:bg-[#FFF7ED] hover:text-[#C2410C] hover:border-[#FDBA74] transition-all shadow-sm text-sm cursor-pointer">
               <Edit2 size={16} className="text-[#EA580C]" /> Edit Profile
             </button>
           )}

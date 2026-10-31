@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Search, Loader2, Eye, X, MapPin, Truck, PackageCheck, CheckCircle2, XCircle } from 'lucide-react';
 import api from '../../../utils/api';
 
@@ -290,26 +290,26 @@ const GymStoreOrders = () => {
                           const dotColor = isCancelStatus
                             ? 'bg-red-500 shadow-[0_0_0_4px_rgba(220,38,38,0.15)]'
                             : isLastReached
-                            ? 'bg-[#C2410C] shadow-[0_0_0_4px_rgba(22,74,74,0.15)]'
+                            ? 'bg-[#C2410C] shadow-[0_0_0_4px_rgba(194,65,12,0.2)]'
                             : isReached
-                            ? 'bg-[#F8FAFC]'
-                            : 'bg-[#E2E8F0]';
+                            ? 'bg-emerald-600 shadow-[0_0_0_4px_rgba(16,185,129,0.15)]'
+                            : 'bg-[#94A3B8]';
 
                           const cardBg = isReached
                             ? isCancelStatus
                               ? 'bg-red-50 border-red-200'
                               : isLastReached
-                              ? 'bg-[#F8FAFC] border-[#F8FAFC]'
-                              : 'bg-[#F8FAFC] border-[#E2E8F0]'
-                            : 'bg-[#F8FAFC] border-[#E2E8F0] opacity-50';
+                              ? 'bg-[#FFF7ED] border-[#FDBA74] shadow-xs'
+                              : 'bg-[#FFFFFF] border-[#E2E8F0] shadow-xs'
+                            : 'bg-[#F8FAFC] border-[#CBD5E1]';
 
                           const labelColor = isCancelStatus
                             ? 'text-red-600'
                             : isLastReached
-                            ? 'text-[#EA580C]'
+                            ? 'text-[#C2410C]'
                             : isReached
-                            ? 'text-[#64748B]'
-                            : 'text-[#64748B]';
+                            ? 'text-[#111827]'
+                            : 'text-[#1E293B]';
 
                           return (
                             <div key={i} className="relative flex items-center justify-between gap-2">
@@ -319,12 +319,12 @@ const GymStoreOrders = () => {
                                   <div className={`rounded-xl border p-3 text-right ${cardBg}`}>
                                     <p className={`font-bold text-sm ${labelColor}`}>{h.status}</p>
                                     {isReached ? (
-                                      <p className="text-[11px] text-[#64748B] mt-0.5 leading-snug">
+                                      <p className="text-[11px] text-[#475569] mt-0.5 leading-snug">
                                         {new Date(h.at).toLocaleString()}
                                         {h.note && h.note !== h.status ? <><br /><span className="italic">{h.note}</span></> : ''}
                                       </p>
                                     ) : (
-                                      <p className="text-[11px] text-[#64748B] mt-0.5">Upcoming step</p>
+                                      <p className="text-[11px] text-[#475569] font-medium mt-0.5">Upcoming step</p>
                                     )}
                                   </div>
                                 ) : <div />}
@@ -338,7 +338,7 @@ const GymStoreOrders = () => {
                                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                                     </svg>
                                   ) : (
-                                    <div className="w-2 h-2 rounded-full bg-[#FFFFFF]/60" />
+                                    <div className="w-2 h-2 rounded-full bg-white" />
                                   )}
                                 </div>
                               </div>
@@ -349,12 +349,12 @@ const GymStoreOrders = () => {
                                   <div className={`rounded-xl border p-3 ${cardBg}`}>
                                     <p className={`font-bold text-sm ${labelColor}`}>{h.status}</p>
                                     {isReached ? (
-                                      <p className="text-[11px] text-[#64748B] mt-0.5 leading-snug">
+                                      <p className="text-[11px] text-[#475569] mt-0.5 leading-snug">
                                         {new Date(h.at).toLocaleString()}
                                         {h.note && h.note !== h.status ? <><br /><span className="italic">{h.note}</span></> : ''}
                                       </p>
                                     ) : (
-                                      <p className="text-[11px] text-[#64748B] mt-0.5">Upcoming step</p>
+                                      <p className="text-[11px] text-[#475569] font-medium mt-0.5">Upcoming step</p>
                                     )}
                                   </div>
                                 ) : <div />}
@@ -425,13 +425,13 @@ const GymStoreOrders = () => {
                         <div>
                           <p className={`font-bold ${
                             isLastReached 
-                              ? (selected.status === 'Cancelled' || selected.status === 'Refunded' ? 'text-red-600' : 'text-[#EA580C]') 
-                              : isReached ? 'text-[#64748B]' : 'text-[#64748B]'
+                              ? (selected.status === 'Cancelled' || selected.status === 'Refunded' ? 'text-red-600' : 'text-[#C2410C]') 
+                              : isReached ? 'text-[#111827]' : 'text-[#334155]'
                           }`}>{h.status}</p>
                           {isReached ? (
-                            <p className="text-xs text-[#64748B] mt-0.5">{new Date(h.at).toLocaleString()}{h.note && h.note !== h.status ? ` — ${h.note}` : ''}</p>
+                            <p className="text-xs text-[#475569] mt-0.5">{new Date(h.at).toLocaleString()}{h.note && h.note !== h.status ? ` — ${h.note}` : ''}</p>
                           ) : (
-                            <p className="text-xs text-[#64748B] mt-0.5">Upcoming step</p>
+                            <p className="text-xs text-[#475569] font-medium mt-0.5">Upcoming step</p>
                           )}
                         </div>
                       </div>

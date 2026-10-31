@@ -1,23 +1,28 @@
-import { Mail, Phone, MapPin, Edit3, X, Save } from 'lucide-react';
+import { Mail, Phone, MapPin, Edit3, X, Save, Camera } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import api from '../../utils/api';
 
 const MemberProfile = ({ hideEdit = false }: { hideEdit?: boolean }) => {
-  const { user: authUser } = useAuth();
+  const { user: authUser, updateUser } = useAuth();
   const [user, setUser] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [profilePhoto, setProfilePhoto] = useState<string>('');
 
   // Edit State
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState<any>({});
   const [isSaving, setIsSaving] = useState(false);
 
+  // Fallback to authUser if full profile fetch fails
+  const displayUser = user || authUser;
+
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const response = await api.get('/auth/me');
-        if (response.data.success) {
+        if (response.data?.success && response.data?.user) {
           setUser(response.data.user);
         }
       } catch (error) {
@@ -29,12 +34,43 @@ const MemberProfile = ({ hideEdit = false }: { hideEdit?: boolean }) => {
     fetchProfile();
   }, []);
 
-  if (isLoading) {
+  useEffect(() => {
+    const saved = displayUser?.profilePhoto || (displayUser ? localStorage.getItem(`user_avatar_${displayUser?.id || displayUser?._id}`) : '');
+    if (saved) setProfilePhoto(saved);
+  }, [displayUser]);
+
+  if (isLoading && !displayUser) {
     return <div className="flex items-center justify-center h-full p-12 text-[#64748B]">Loading profile...</div>;
   }
 
-  // Fallback to authUser if full profile fetch fails
-  const displayUser = user || authUser;
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      alert('Please upload a valid image file (PNG, JPG, JPEG)');
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Image size should be less than 5MB');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = async () => {
+      const base64 = reader.result as string;
+      setProfilePhoto(base64);
+      const uid = displayUser?.id || displayUser?._id;
+      if (uid) {
+        localStorage.setItem(`user_avatar_${uid}`, base64);
+        try {
+          await api.put(`/users/${uid}`, { profilePhoto: base64 });
+        } catch (err) {
+          console.warn('Could not persist avatar to server:', err);
+        }
+      }
+      updateUser({ profilePhoto: base64 });
+    };
+    reader.readAsDataURL(file);
+  };
 
   const handleEditClick = () => {
     setFormData({
@@ -74,8 +110,40 @@ const MemberProfile = ({ hideEdit = false }: { hideEdit?: boolean }) => {
       <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-5 sm:p-8 relative overflow-hidden shadow-xl">
         <div className="absolute top-0 right-0 w-64 h-64 bg-[#FFF7ED] rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
         <div className="flex flex-col sm:flex-row items-center sm:items-start md:items-center gap-5 sm:gap-6 relative z-10 text-center sm:text-left">
-          <div className="w-20 h-20 sm:w-24 sm:h-24 bg-[#F8FAFC] rounded-full border-2 border-[#FDBA74] flex items-center justify-center text-[#EA580C] text-2xl sm:text-3xl font-bold shadow-[0_0_15px_rgba(183,110,121,0.2)] shrink-0">
-            {displayUser?.firstName?.[0] || 'U'}
+          {/* Avatar with Edit Photo Option */}
+          <div className="relative group shrink-0">
+            <input
+              type="file"
+              ref={fileInputRef}
+              accept="image/*"
+              className="hidden"
+              onChange={handlePhotoUpload}
+            />
+            <div
+              onClick={() => fileInputRef.current?.click()}
+              className="w-20 h-20 sm:w-24 sm:h-24 bg-[#F8FAFC] rounded-full border-2 border-[#FDBA74] overflow-hidden flex items-center justify-center text-[#EA580C] text-2xl sm:text-3xl font-bold shadow-[0_0_15px_rgba(183,110,121,0.2)] cursor-pointer relative"
+              title="Click to upload profile photo"
+            >
+              {profilePhoto ? (
+                <img src={profilePhoto} alt="Profile" className="w-full h-full object-cover" />
+              ) : (
+                <span>{displayUser?.firstName?.[0] || 'U'}</span>
+              )}
+              {/* Hover overlay */}
+              <div className="absolute inset-0 bg-black/45 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white text-[10px] font-bold">
+                <Camera size={18} />
+                <span>Edit</span>
+              </div>
+            </div>
+            {/* Camera Edit Badge Button */}
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              title="Upload new image"
+              className="absolute bottom-0 right-0 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#EA580C] hover:bg-[#C2410C] active:bg-[#9A3412] text-white flex items-center justify-center shadow-md border-2 border-white transition-all cursor-pointer"
+            >
+              <Camera size={13} />
+            </button>
           </div>
           <div className="flex-1 min-w-0">
             <h1 className="text-2xl sm:text-3xl font-bold text-[#111827] mb-1 truncate">{displayUser?.firstName || 'User'} {displayUser?.lastName || ''}</h1>

@@ -48,7 +48,7 @@ export const TrainerPageLayout: React.FC<TrainerPageLayoutProps> = ({ children }
     <div className="min-h-screen bg-[#FFFFFF] text-[#111827] flex flex-col font-sans selection:bg-[#C2410C] selection:text-[#FFFFFF]">
       {/* Header Navigation */}
       <header
-        className={`sticky top-0 z-50 w-full transition-all duration-200 border-b ${
+        className={`sticky top-0 z-50 w-full transition-all duration-200 border-b pt-safe ${
           scrolled
             ? 'bg-[#FFFFFF]/95 backdrop-blur-md border-[#E2E8F0] shadow-xl'
             : 'bg-[#FFFFFF] border-[#E2E8F0]/60'

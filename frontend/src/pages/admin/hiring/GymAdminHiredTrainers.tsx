@@ -166,27 +166,27 @@ export default function GymAdminHiredTrainers() {
 
       {/* Summary KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <div className="bg-[#F8FAFC] border border-[#E2E8F0] p-4 rounded-xl">
-          <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">
+        <div className="bg-[#FFFFFF] border border-[#E2E8F0] p-4 rounded-xl shadow-sm">
+          <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider block">
             Total Confirmed Hires
           </span>
-          <span className="text-2xl font-bold mt-1 text-white font-mono block">
+          <span className="text-2xl font-bold mt-1 text-[#111827] font-mono block">
             {hiredList.length}
           </span>
         </div>
-        <div className="bg-[#F8FAFC] border border-[#E2E8F0] p-4 rounded-xl">
-          <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">
+        <div className="bg-[#FFFFFF] border border-[#E2E8F0] p-4 rounded-xl shadow-sm">
+          <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider block">
             Direct Hiring Method
           </span>
           <span className="text-2xl font-bold mt-1 text-[#EA580C] font-mono block">
             {hiredList.filter((h) => h.sourceType === 'DIRECT_HIRE').length}
           </span>
         </div>
-        <div className="bg-[#F8FAFC] border border-[#E2E8F0] p-4 rounded-xl">
-          <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">
+        <div className="bg-[#FFFFFF] border border-[#E2E8F0] p-4 rounded-xl shadow-sm">
+          <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider block">
             Job Vacancy Placements
           </span>
-          <span className="text-2xl font-bold mt-1 text-teal-300 font-mono block">
+          <span className="text-2xl font-bold mt-1 text-teal-700 font-mono block">
             {hiredList.filter((h) => h.sourceType === 'JOB_OFFER').length}
           </span>
         </div>
@@ -201,7 +201,7 @@ export default function GymAdminHiredTrainers() {
             placeholder="Search by trainer or role..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-[#FDBA74]"
+            className="w-full pl-10 pr-4 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-[#111827] placeholder-slate-400 text-sm focus:outline-none focus:border-[#FDBA74]"
           />
         </div>
 
@@ -260,7 +260,7 @@ export default function GymAdminHiredTrainers() {
             </Link>
             <Link
               to="/admin/hiring/applications"
-              className="px-4 py-2 bg-[#FFFFFF] hover:bg-[#FFF7ED] text-slate-300 border border-[#E2E8F0] rounded-xl text-xs font-semibold transition-all"
+              className="px-4 py-2 bg-[#FFFFFF] hover:bg-[#FFF7ED] text-[#111827] border border-[#E2E8F0] rounded-xl text-xs font-semibold transition-all"
             >
               Review Applications
             </Link>
@@ -272,12 +272,12 @@ export default function GymAdminHiredTrainers() {
             return (
               <div
                 key={item.id}
-                className="bg-[#F8FAFC] border border-teal-500/30 rounded-2xl p-5 hover:border-[#FDBA74] transition-all flex flex-col justify-between space-y-4 shadow-lg shadow-black/30"
+                className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-5 hover:border-[#FDBA74] transition-all flex flex-col justify-between space-y-4 shadow-sm"
               >
                 <div>
                   <div className="flex items-start justify-between gap-2 mb-3">
                     <div className="flex items-center gap-3">
-                      <div className="w-11 h-11 rounded-xl bg-[#FFFFFF] border border-[#E2E8F0] flex items-center justify-center text-base font-bold text-[#EA580C] overflow-hidden shrink-0">
+                      <div className="w-11 h-11 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] flex items-center justify-center text-base font-bold text-[#EA580C] overflow-hidden shrink-0">
                         {item.trainerPhoto ? (
                           <img
                             src={item.trainerPhoto}
@@ -302,17 +302,17 @@ export default function GymAdminHiredTrainers() {
                     <span
                       className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${
                         item.sourceType === 'DIRECT_HIRE'
-                          ? 'bg-purple-500/15 text-purple-300 border border-purple-500/30'
-                          : 'bg-teal-500/15 text-teal-300 border border-teal-500/30'
+                          ? 'bg-purple-50 text-purple-700 border border-purple-200'
+                          : 'bg-teal-50 text-teal-700 border border-teal-200'
                       }`}
                     >
                       {item.sourceType === 'DIRECT_HIRE' ? 'Direct Hire' : 'Vacancy Offer'}
                     </span>
                   </div>
 
-                  <div className="space-y-2 text-xs text-slate-400 bg-[#FFFFFF] p-3.5 rounded-xl border border-[#E2E8F0] mt-3">
+                  <div className="space-y-2 text-xs text-[#475569] bg-[#F8FAFC] p-3.5 rounded-xl border border-[#E2E8F0] mt-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-slate-500">Confirmed Salary:</span>
+                      <span className="text-[#64748B]">Confirmed Salary:</span>
                       <span className="font-bold text-[#EA580C] font-mono">
                         ₹{item.confirmedSalary?.toLocaleString()} / {item.salaryPeriod || 'month'}
                       </span>
@@ -320,21 +320,21 @@ export default function GymAdminHiredTrainers() {
 
                     {item.personalTrainingFee ? (
                       <div className="flex items-center justify-between">
-                        <span className="text-slate-500">PT Session Fee:</span>
-                        <span className="font-bold text-teal-300 font-mono">
+                        <span className="text-[#64748B]">PT Session Fee:</span>
+                        <span className="font-bold text-teal-700 font-mono">
                           ₹{item.personalTrainingFee.toLocaleString()} / session
                         </span>
                       </div>
                     ) : null}
 
                     <div className="flex items-center justify-between">
-                      <span className="text-slate-500">Employment Type:</span>
-                      <span className="text-white font-medium">{item.employmentType}</span>
+                      <span className="text-[#64748B]">Employment Type:</span>
+                      <span className="text-[#111827] font-semibold">{item.employmentType}</span>
                     </div>
 
                     <div className="flex items-center justify-between">
-                      <span className="text-slate-500">Joining Date:</span>
-                      <span className="text-white font-medium">
+                      <span className="text-[#64748B]">Joining Date:</span>
+                      <span className="text-[#111827] font-semibold">
                         {item.joiningDate
                           ? new Date(item.joiningDate).toLocaleDateString()
                           : 'Immediate'}
@@ -342,7 +342,7 @@ export default function GymAdminHiredTrainers() {
                     </div>
                   </div>
 
-                  <div className="mt-3 text-xs text-slate-400 space-y-1">
+                  <div className="mt-3 text-xs text-[#475569] space-y-1">
                     {item.trainerEmail && (
                       <div className="flex items-center gap-1.5">
                         <Mail className="w-3.5 h-3.5 text-slate-500 shrink-0" />
@@ -358,7 +358,7 @@ export default function GymAdminHiredTrainers() {
                   </div>
 
                   {item.notes && (
-                    <div className="mt-3 text-[11px] text-slate-400 bg-[#F8FAFC] p-2.5 rounded-lg border border-[#E2E8F0]">
+                    <div className="mt-3 text-[11px] text-[#475569] bg-[#F8FAFC] p-2.5 rounded-lg border border-[#E2E8F0]">
                       <span className="text-slate-500 uppercase font-semibold text-[10px] block mb-0.5">
                         Agreed Terms
                       </span>
@@ -370,7 +370,7 @@ export default function GymAdminHiredTrainers() {
                 <div className="pt-3 border-t border-[#E2E8F0]">
                   <Link
                     to="/admin/trainers"
-                    className="w-full py-2 bg-[#FFFFFF] hover:bg-[#FFF7ED] text-slate-200 hover:text-[#C2410C] text-xs font-semibold rounded-xl border border-[#E2E8F0] flex items-center justify-center gap-1.5 transition-all"
+                    className="w-full py-2 bg-[#FFFFFF] hover:bg-[#FFF7ED] text-[#111827] hover:text-[#C2410C] text-xs font-semibold rounded-xl border border-[#E2E8F0] flex items-center justify-center gap-1.5 transition-all"
                   >
                     Manage in Gym Trainer Roster
                     <ExternalLink className="w-3.5 h-3.5 text-[#EA580C]" />

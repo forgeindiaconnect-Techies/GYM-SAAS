@@ -1512,7 +1512,7 @@ export default function GymAdminRewardsPerformance() {
                 placeholder="Search voucher code, user name..."
                 value={rewardSearch}
                 onChange={e => setRewardSearch(e.target.value)}
-                className="w-full pl-9 pr-4 py-2.5 rounded-xl text-xs sm:text-sm bg-[#FFFFFF] border border-[#E2E8F0] text-[#FFFFFF] placeholder-[#737373] focus:border-[#FDBA74] focus:outline-none transition-colors"
+                className="w-full pl-9 pr-4 py-2.5 rounded-xl text-xs sm:text-sm bg-[#FFFFFF] border border-[#E2E8F0] text-[#111827] placeholder-[#64748B] focus:border-[#FDBA74] focus:outline-none transition-colors"
               />
             </div>
 
@@ -1521,7 +1521,7 @@ export default function GymAdminRewardsPerformance() {
               <select
                 value={claimStatusFilter}
                 onChange={e => setClaimStatusFilter(e.target.value)}
-                className="px-3.5 py-2 rounded-xl text-xs font-bold border border-[#E2E8F0] bg-[#FFFFFF] text-[#FFFFFF] focus:border-[#FDBA74] focus:outline-none cursor-pointer"
+                className="px-3.5 py-2 rounded-xl text-xs font-bold border border-[#E2E8F0] bg-[#FFFFFF] text-[#111827] focus:border-[#FDBA74] focus:outline-none cursor-pointer"
               >
                 <option value="ALL">All Statuses</option>
                 <option value="Pending">Pending Approval</option>
@@ -1561,21 +1561,21 @@ export default function GymAdminRewardsPerformance() {
                       const hasBonus = c.financialPayoutStatus !== 'Not Applicable';
 
                       return (
-                        <tr key={c._id} className="hover:bg-[#FFFFFF] transition-colors">
+                        <tr key={c._id} className="hover:bg-[#F8FAFC] transition-colors">
                           <td className="py-3.5 px-4">
-                            <div className="font-bold text-[#F5F5F5]">
+                            <div className="font-bold text-[#111827]">
                               {c.userId?.firstName || 'User'} {c.userId?.lastName || ''}
                             </div>
                             <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold inline-block mt-0.5 ${
-                              isTrainer ? 'bg-purple-950/60 text-purple-400 border border-purple-800/40' : 'bg-[#FFF7ED] text-[#15803D] border border-[#E2E8F0]/40'
+                              isTrainer ? 'bg-purple-50 text-purple-700 border border-purple-200' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                             }`}>
                               {isTrainer ? 'Trainer' : 'Customer'}
                             </span>
                           </td>
 
                           <td className="py-3.5 px-4">
-                            <div className="font-semibold text-[#F5F5F5]">{c.rewardId?.title || 'Reward'}</div>
-                            <span className="text-[11px] text-[#A6A6A6]">{c.rewardId?.category}</span>
+                            <div className="font-semibold text-[#111827]">{c.rewardId?.title || 'Reward'}</div>
+                            <span className="text-[11px] text-[#64748B]">{c.rewardId?.category}</span>
                           </td>
 
                           <td className="py-3.5 px-4">
@@ -1596,18 +1596,18 @@ export default function GymAdminRewardsPerformance() {
                             <span
                               className={`px-2.5 py-1 rounded-full text-[11px] font-extrabold ${
                                 c.claimStatus === 'Approved'
-                                  ? 'bg-[#FFF7ED] text-[#15803D] border border-[#E2E8F0]/50'
+                                  ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                                   : c.claimStatus === 'Pending'
-                                  ? 'bg-amber-50 text-[#B45309] border border-amber-800/50'
+                                  ? 'bg-amber-50 text-amber-800 border border-amber-200'
                                   : c.claimStatus === 'Redeemed'
-                                  ? 'bg-sky-950/60 text-sky-400 border border-sky-800/50'
-                                  : 'bg-red-50 text-[#B91C1C] border border-red-800/50'
+                                  ? 'bg-sky-50 text-sky-700 border border-sky-200'
+                                  : 'bg-red-50 text-red-700 border border-red-200'
                               }`}
                             >
                               {c.claimStatus}
                             </span>
                             {c.rejectionReason && (
-                              <span className="block text-[11px] text-[#B91C1C] mt-1 max-w-[150px] truncate" title={c.rejectionReason}>
+                              <span className="block text-[11px] text-red-600 mt-1 max-w-[150px] truncate" title={c.rejectionReason}>
                                 {c.rejectionReason}
                               </span>
                             )}
@@ -1619,14 +1619,14 @@ export default function GymAdminRewardsPerformance() {
                                 <span
                                   className={`px-2.5 py-1 rounded-full text-[11px] font-extrabold ${
                                     c.financialPayoutStatus === 'Paid'
-                                      ? 'bg-[#FFF7ED] text-[#15803D] border border-[#E2E8F0]/50'
-                                      : 'bg-amber-50 text-[#B45309] border border-amber-800/50'
+                                      ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                                      : 'bg-amber-50 text-amber-800 border border-amber-200'
                                   }`}
                                 >
                                   {c.financialPayoutStatus === 'Paid' ? 'Paid' : 'Pending Payment'}
                                 </span>
                                 {c.financialPayoutReference && (
-                                  <span className="block text-[10px] text-[#A6A6A6] font-mono mt-0.5">
+                                  <span className="block text-[10px] text-[#64748B] font-mono mt-0.5">
                                     Ref: {c.financialPayoutReference}
                                   </span>
                                 )}
@@ -1648,7 +1648,7 @@ export default function GymAdminRewardsPerformance() {
                                   </button>
                                   <button
                                     onClick={() => openClaimAction(c, 'REJECT')}
-                                    className="px-2.5 py-1 rounded-lg text-xs font-bold bg-red-50 border border-red-800 text-red-300 hover:bg-red-900/60 transition-colors cursor-pointer"
+                                    className="px-2.5 py-1 rounded-lg text-xs font-bold bg-red-50 border border-red-200 text-red-700 hover:bg-red-100 transition-colors cursor-pointer"
                                   >
                                     Reject
                                   </button>
@@ -1658,7 +1658,7 @@ export default function GymAdminRewardsPerformance() {
                               {c.claimStatus === 'Approved' && (
                                 <button
                                   onClick={() => openClaimAction(c, 'REDEEM')}
-                                  className="px-2.5 py-1 rounded-lg text-xs font-bold bg-sky-950/60 border border-sky-800 text-sky-300 hover:bg-sky-900/60 transition-colors cursor-pointer"
+                                  className="px-2.5 py-1 rounded-lg text-xs font-bold bg-sky-50 border border-sky-200 text-sky-700 hover:bg-sky-100 transition-colors cursor-pointer"
                                 >
                                   Mark Redeemed
                                 </button>
@@ -1671,6 +1671,10 @@ export default function GymAdminRewardsPerformance() {
                                 >
                                   Record Payout
                                 </button>
+                              )}
+
+                              {c.claimStatus !== 'Pending' && c.claimStatus !== 'Approved' && !(hasBonus && c.financialPayoutStatus === 'Pending') && (
+                                <span className="text-[#64748B] text-xs font-medium">—</span>
                               )}
                             </div>
                           </td>

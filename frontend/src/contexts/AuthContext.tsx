@@ -19,6 +19,7 @@ export interface AuthUser {
   subscriptionExpiryDate?: string;
   phone?: string;
   mobile?: string;
+  profilePhoto?: string;
   isActive?: boolean;
   rejectionReason?: string;
   suspensionReason?: string;

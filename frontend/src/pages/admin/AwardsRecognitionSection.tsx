@@ -314,7 +314,7 @@ export default function AwardsRecognitionSection() {
             placeholder="Search awards, category, or winner..."
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 rounded-xl text-sm bg-[#FFFFFF] border border-[#E2E8F0] text-[#FFFFFF] placeholder-[#94A3B8] focus:outline-none focus:border-[#FDBA74]"
+            className="w-full pl-9 pr-4 py-2 rounded-xl text-sm bg-[#FFFFFF] border border-[#E2E8F0] text-[#111827] placeholder-[#64748B] focus:outline-none focus:border-[#FDBA74]"
           />
         </div>
 
@@ -324,7 +324,7 @@ export default function AwardsRecognitionSection() {
             <select
               value={recipientFilter}
               onChange={e => setRecipientFilter(e.target.value)}
-              className="px-3 py-1.5 rounded-xl text-xs font-semibold border border-[#E2E8F0] bg-[#FFFFFF] text-[#FFFFFF] focus:outline-none focus:border-[#FDBA74]"
+              className="px-3 py-1.5 rounded-xl text-xs font-semibold border border-[#E2E8F0] bg-[#FFFFFF] text-[#111827] focus:outline-none focus:border-[#FDBA74] cursor-pointer"
             >
               <option value="ALL">All Recipients</option>
               <option value="Customer">Customers</option>
@@ -337,7 +337,7 @@ export default function AwardsRecognitionSection() {
             <select
               value={periodFilter}
               onChange={e => setPeriodFilter(e.target.value)}
-              className="px-3 py-1.5 rounded-xl text-xs font-semibold border border-[#E2E8F0] bg-[#FFFFFF] text-[#FFFFFF] focus:outline-none focus:border-[#FDBA74]"
+              className="px-3 py-1.5 rounded-xl text-xs font-semibold border border-[#E2E8F0] bg-[#FFFFFF] text-[#111827] focus:outline-none focus:border-[#FDBA74] cursor-pointer"
             >
               <option value="ALL">All Periods</option>
               <option value="Daily">Daily (Per Day)</option>
@@ -412,7 +412,7 @@ export default function AwardsRecognitionSection() {
                             <Trophy className="w-5 h-5" />
                           </span>
                           <div>
-                            <h3 className="font-extrabold text-base text-[#FFFFFF] leading-tight">{award.title}</h3>
+                            <h3 className="font-extrabold text-base text-[#111827] leading-tight">{award.title}</h3>
                             <span className="text-xs text-[#64748B] block">{award.category} • {award.awardPeriod}</span>
                           </div>
                         </div>
@@ -434,18 +434,18 @@ export default function AwardsRecognitionSection() {
                         {award.certificateId && (
                           <div className="flex justify-between">
                             <span className="text-[#64748B]">Certificate ID:</span>
-                            <span className="font-mono font-bold text-[#FFFFFF]">{award.certificateId}</span>
+                            <span className="font-mono font-bold text-[#111827]">{award.certificateId}</span>
                           </div>
                         )}
                       </div>
 
                       {/* Winner Showcase Box */}
                       {hasWinner ? (
-                        <div className="p-3 rounded-xl border border-[#E2E8F0]/80 bg-[#FFF7ED] space-y-1">
+                        <div className="p-3 rounded-xl border border-[#FFEDD5] bg-[#FFF7ED] space-y-1">
                           <span className="text-[10px] font-black uppercase tracking-wider text-[#15803D] block">
                             🏆 Confirmed Winner
                           </span>
-                          <div className="font-bold text-sm text-[#FFFFFF]">
+                          <div className="font-black text-sm text-[#111827]">
                             {award.winnerName || `${award.winnerUserId?.firstName || ''} ${award.winnerUserId?.lastName || ''}`}
                           </div>
                           <div className="text-[11px] text-[#64748B]">
@@ -540,11 +540,11 @@ export default function AwardsRecognitionSection() {
       {/* MODAL 1: CREATE / EDIT AWARD */}
       {isCreateModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-xs">
-          <div className="bg-[#FFFFFF] rounded-2xl max-w-xl w-full p-6 shadow-2xl max-h-[90vh] overflow-y-auto space-y-4 border border-[#E2E8F0] text-[#FFFFFF]">
+          <div className="bg-[#FFFFFF] rounded-2xl max-w-xl w-full p-6 shadow-2xl max-h-[90vh] overflow-y-auto space-y-4 border border-[#E2E8F0] text-[#111827]">
             <div className="flex justify-between items-center border-b border-[#E2E8F0] pb-3">
               <div className="flex items-center gap-2">
                 <Trophy className="w-6 h-6 text-[#EA580C]" />
-                <h2 className="text-lg font-black text-[#FFFFFF]">
+                <h2 className="text-lg font-black text-[#111827]">
                   {editingAwardId ? 'Edit Awards & Recognition' : 'Create Awards & Recognition'}
                 </h2>
               </div>
@@ -568,7 +568,7 @@ export default function AwardsRecognitionSection() {
                         criteriaMetric: rec === 'Customer' ? 'workout_completions' : 'completed_sessions'
                       });
                     }}
-                    className="w-full px-3 py-2 rounded-xl border border-[#E2E8F0] bg-[#FFFFFF] text-[#FFFFFF] font-semibold focus:outline-none focus:border-[#FDBA74]"
+                    className="w-full px-3 py-2 rounded-xl border border-[#E2E8F0] bg-[#FFFFFF] text-[#111827] font-semibold focus:outline-none focus:border-[#FDBA74]"
                   >
                     <option value="Customer">Customers Only</option>
                     <option value="Trainer">Trainers Only</option>
@@ -580,7 +580,7 @@ export default function AwardsRecognitionSection() {
                   <select
                     value={awardFormData.category}
                     onChange={e => setAwardFormData({ ...awardFormData, category: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl border border-[#E2E8F0] bg-[#FFFFFF] text-[#FFFFFF] font-semibold focus:outline-none focus:border-[#FDBA74]"
+                    className="w-full px-3 py-2 rounded-xl border border-[#E2E8F0] bg-[#FFFFFF] text-[#111827] font-semibold focus:outline-none focus:border-[#FDBA74]"
                   >
                     {awardFormData.recipientType === 'Customer' ? (
                       <>
@@ -613,7 +613,7 @@ export default function AwardsRecognitionSection() {
                   placeholder={awardFormData.recipientType === 'Customer' ? 'e.g. October Fitness Champion of the Month' : 'e.g. Coach of the Quarter Award'}
                   value={awardFormData.title}
                   onChange={e => setAwardFormData({ ...awardFormData, title: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl border border-[#E2E8F0] bg-[#FFFFFF] text-[#FFFFFF] placeholder-[#94A3B8]/60 text-sm focus:outline-none focus:border-[#FDBA74]"
+                  className="w-full px-3 py-2 rounded-xl border border-[#E2E8F0] bg-[#FFFFFF] text-[#111827] placeholder-[#64748B] text-sm focus:outline-none focus:border-[#FDBA74]"
                 />
               </div>
 
@@ -625,7 +625,7 @@ export default function AwardsRecognitionSection() {
                   placeholder="Detail award significance and honors..."
                   value={awardFormData.description}
                   onChange={e => setAwardFormData({ ...awardFormData, description: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl border border-[#E2E8F0] bg-[#FFFFFF] text-[#FFFFFF] placeholder-[#94A3B8]/60 text-sm focus:outline-none focus:border-[#FDBA74]"
+                  className="w-full px-3 py-2 rounded-xl border border-[#E2E8F0] bg-[#FFFFFF] text-[#111827] placeholder-[#64748B] text-sm focus:outline-none focus:border-[#FDBA74]"
                 />
               </div>
 
@@ -635,7 +635,7 @@ export default function AwardsRecognitionSection() {
                   <select
                     value={awardFormData.awardPeriod}
                     onChange={e => setAwardFormData({ ...awardFormData, awardPeriod: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl border border-[#E2E8F0] bg-[#FFFFFF] text-[#FFFFFF] font-semibold focus:outline-none focus:border-[#FDBA74]"
+                    className="w-full px-3 py-2 rounded-xl border border-[#E2E8F0] bg-[#FFFFFF] text-[#111827] font-semibold focus:outline-none focus:border-[#FDBA74]"
                   >
                     <option value="Daily">Daily (Per Day)</option>
                     <option value="Weekly">Weekly</option>
@@ -651,7 +651,7 @@ export default function AwardsRecognitionSection() {
                   <select
                     value={awardFormData.criteriaMetric}
                     onChange={e => setAwardFormData({ ...awardFormData, criteriaMetric: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl border border-[#E2E8F0] bg-[#FFFFFF] text-[#FFFFFF] font-semibold focus:outline-none focus:border-[#FDBA74]"
+                    className="w-full px-3 py-2 rounded-xl border border-[#E2E8F0] bg-[#FFFFFF] text-[#111827] font-semibold focus:outline-none focus:border-[#FDBA74]"
                   >
                     {awardFormData.recipientType === 'Customer' ? (
                       <>
@@ -678,7 +678,7 @@ export default function AwardsRecognitionSection() {
                     min={0}
                     value={awardFormData.prizeBonusAmount}
                     onChange={e => setAwardFormData({ ...awardFormData, prizeBonusAmount: Number(e.target.value) })}
-                    className="w-full px-3 py-2 rounded-xl border border-[#E2E8F0] bg-[#FFFFFF] text-[#FFFFFF] text-sm focus:outline-none focus:border-[#FDBA74]"
+                    className="w-full px-3 py-2 rounded-xl border border-[#E2E8F0] bg-[#FFFFFF] text-[#111827] text-sm focus:outline-none focus:border-[#FDBA74]"
                   />
                 </div>
 
@@ -687,7 +687,7 @@ export default function AwardsRecognitionSection() {
                   <select
                     value={awardFormData.winnerSelectionMethod}
                     onChange={e => setAwardFormData({ ...awardFormData, winnerSelectionMethod: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl border border-[#E2E8F0] bg-[#FFFFFF] text-[#FFFFFF] font-semibold focus:outline-none focus:border-[#FDBA74]"
+                    className="w-full px-3 py-2 rounded-xl border border-[#E2E8F0] bg-[#FFFFFF] text-[#111827] font-semibold focus:outline-none focus:border-[#FDBA74]"
                   >
                     <option value="OWNER_CONFIRMATION">Gym Owner Review & Confirmation</option>
                     <option value="AUTOMATIC_TOP_PERFORMER">Automatic Top Performer Nomination</option>
@@ -699,7 +699,7 @@ export default function AwardsRecognitionSection() {
                 <button
                   type="button"
                   onClick={() => { setIsCreateModalOpen(false); setEditingAwardId(null); }}
-                  className="px-4 py-2 rounded-xl border border-[#E2E8F0] font-bold text-[#64748B] hover:bg-[#FFF7ED] hover:text-[#FFFFFF] transition cursor-pointer"
+                  className="px-4 py-2 rounded-xl border border-[#E2E8F0] font-bold text-[#64748B] hover:bg-[#FFF7ED] hover:text-[#C2410C] transition cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -719,10 +719,10 @@ export default function AwardsRecognitionSection() {
       {/* MODAL 2: CANDIDATE EVALUATION & WINNER CONFIRMATION */}
       {selectedAwardForCandidates && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-xs">
-          <div className="bg-[#FFFFFF] rounded-2xl max-w-2xl w-full p-6 shadow-2xl max-h-[90vh] overflow-y-auto space-y-4 border border-[#E2E8F0] text-[#FFFFFF]">
+          <div className="bg-[#FFFFFF] rounded-2xl max-w-2xl w-full p-6 shadow-2xl max-h-[90vh] overflow-y-auto space-y-4 border border-[#E2E8F0] text-[#111827]">
             <div className="flex justify-between items-center border-b border-[#E2E8F0] pb-3">
               <div>
-                <h2 className="text-lg font-black text-[#FFFFFF] flex items-center gap-2">
+                <h2 className="text-lg font-black text-[#111827] flex items-center gap-2">
                   <Trophy className="w-5 h-5 text-[#EA580C]" />
                   Evaluate Candidates for: {selectedAwardForCandidates.title}
                 </h2>
@@ -775,7 +775,7 @@ export default function AwardsRecognitionSection() {
                           </div>
 
                           <div>
-                            <div className="font-extrabold text-sm text-[#FFFFFF]">{cand.name}</div>
+                            <div className="font-extrabold text-sm text-[#111827]">{cand.name}</div>
                             <div className="text-xs text-[#64748B]">{cand.email}</div>
                           </div>
                         </div>
@@ -799,7 +799,7 @@ export default function AwardsRecognitionSection() {
               <button
                 type="button"
                 onClick={() => setSelectedAwardForCandidates(null)}
-                className="px-4 py-2 rounded-xl border border-[#E2E8F0] font-bold text-[#64748B] hover:bg-[#FFF7ED] hover:text-[#FFFFFF] transition cursor-pointer"
+                className="px-4 py-2 rounded-xl border border-[#E2E8F0] font-bold text-[#64748B] hover:bg-[#FFF7ED] hover:text-[#C2410C] transition cursor-pointer"
               >
                 Cancel
               </button>
@@ -819,13 +819,13 @@ export default function AwardsRecognitionSection() {
       {/* MODAL 3: PUBLISH AWARD CONFIRMATION */}
       {awardToPublish && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-xs">
-          <div className="bg-[#FFFFFF] rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 border border-[#E2E8F0] text-[#FFFFFF]">
+          <div className="bg-[#FFFFFF] rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 border border-[#E2E8F0] text-[#111827]">
             <div className="flex items-center gap-3 text-[#EA580C]">
               <div className="p-3 rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0]">
                 <Send className="w-6 h-6 text-[#EA580C]" />
               </div>
               <div>
-                <h2 className="text-base font-extrabold text-[#FFFFFF]">Publish Official Award</h2>
+                <h2 className="text-base font-extrabold text-[#111827]">Publish Official Award</h2>
                 <p className="text-xs text-[#64748B]">Issue Certificate & Hall of Fame Feature</p>
               </div>
             </div>
@@ -833,7 +833,7 @@ export default function AwardsRecognitionSection() {
             <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] text-xs space-y-2">
               <div className="flex justify-between">
                 <span className="text-[#64748B]">Award:</span>
-                <span className="font-bold text-[#FFFFFF]">{awardToPublish.title}</span>
+                <span className="font-bold text-[#111827]">{awardToPublish.title}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-[#64748B]">Confirmed Winner:</span>
@@ -853,7 +853,7 @@ export default function AwardsRecognitionSection() {
               <button
                 type="button"
                 onClick={() => setAwardToPublish(null)}
-                className="px-4 py-2 rounded-xl border border-[#E2E8F0] font-bold text-[#64748B] hover:bg-[#FFF7ED] hover:text-[#FFFFFF] transition cursor-pointer"
+                className="px-4 py-2 rounded-xl border border-[#E2E8F0] font-bold text-[#64748B] hover:bg-[#FFF7ED] hover:text-[#C2410C] transition cursor-pointer"
               >
                 Cancel
               </button>

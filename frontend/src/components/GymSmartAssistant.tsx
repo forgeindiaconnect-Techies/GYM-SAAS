@@ -258,7 +258,7 @@ const GymSmartAssistant = () => {
             setIsOpen(true);
             setIsMinimized(false);
           }}
-          className="fixed bottom-2 right-4 sm:bottom-2.5 sm:right-6 z-40 bg-gradient-to-r from-[#EA580C] via-[#9A3412] to-[#EA580C] text-[#FFFFFF] font-bold py-2 px-3 sm:py-2.5 sm:px-4 rounded-full shadow-[0_4px_25px_rgba(183,110,121,0.45)] hover:scale-105 transition-all duration-300 flex items-center gap-2 border-2 border-[#FFEDD5] ring-4 ring-[#F97316]/25 group cursor-pointer"
+          className="fixed bottom-[calc(0.75rem+env(safe-area-inset-bottom,0px))] right-3.5 sm:bottom-4 sm:right-6 z-40 bg-gradient-to-r from-[#EA580C] via-[#9A3412] to-[#EA580C] text-[#FFFFFF] font-bold py-2.5 px-3.5 sm:py-2.5 sm:px-4 rounded-full shadow-[0_4px_25px_rgba(183,110,121,0.45)] hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-2 border-2 border-[#FFEDD5] ring-4 ring-[#F97316]/25 group cursor-pointer"
           title="Open Gym Smart Assistant"
         >
           <div className="relative">
@@ -271,10 +271,10 @@ const GymSmartAssistant = () => {
       {/* ── Smart Assistant Window / Drawer ── */}
       {isOpen && (
         <div
-          className={`fixed right-3 sm:right-6 z-50 bg-[#FFFFFF] rounded-3xl border border-[#E2E8F0] shadow-[0_20px_50px_rgba(0,0,0,0.85)] flex flex-col overflow-hidden transition-all duration-300 ${
+          className={`fixed left-2 right-2 sm:left-auto sm:right-6 z-50 bg-[#FFFFFF] rounded-2xl sm:rounded-3xl border border-[#E2E8F0] shadow-[0_20px_50px_rgba(0,0,0,0.85)] flex flex-col overflow-hidden transition-all duration-300 ${
             isMinimized
-              ? 'bottom-2 sm:bottom-2.5 w-72 sm:w-80 h-14'
-              : 'bottom-2 sm:bottom-4 w-[94vw] sm:w-[440px] h-[580px] max-h-[88vh]'
+              ? 'bottom-[calc(0.5rem+env(safe-area-inset-bottom,0px))] sm:bottom-2.5 sm:w-80 h-14'
+              : 'bottom-[calc(0.5rem+env(safe-area-inset-bottom,0px))] sm:bottom-4 sm:w-[440px] h-[560px] max-h-[82vh] sm:max-h-[88vh]'
           }`}
         >
           {/* Header Bar */}

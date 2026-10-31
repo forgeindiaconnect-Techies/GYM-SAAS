@@ -273,7 +273,13 @@ const TrainerNotifications: React.FC = () => {
                 })()}
                 <h3 className="font-bold text-[#111827] text-base">Notification Details</h3>
               </div>
-              <button onClick={() => setSelected(null)} className="p-1 rounded-lg hover:bg-[#FFFFFF]/10 text-zinc-400 hover:text-white transition cursor-pointer">
+              <button
+                type="button"
+                onClick={() => setSelected(null)}
+                className="w-8 h-8 rounded-full bg-[#F8FAFC] border border-[#E2E8F0] text-[#64748B] hover:text-[#EA580C] hover:bg-[#FFF7ED] active:bg-[#FFEDD5] flex items-center justify-center cursor-pointer transition-colors shrink-0"
+                aria-label="Close"
+                title="Close"
+              >
                 <X size={18} />
               </button>
             </div>

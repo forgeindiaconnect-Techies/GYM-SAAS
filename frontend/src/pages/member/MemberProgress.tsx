@@ -347,8 +347,8 @@ const MemberProgress: React.FC = () => {
                 onClick={() => setSelectedDay('all')}
                 className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer shrink-0 ${
                   selectedDay === 'all'
-                    ? 'bg-[#FFFFFF] text-white shadow-xs'
-                    : 'bg-[#F8FAFC] text-[#64748B] hover:bg-[#FFF7ED]'
+                    ? 'bg-[#C2410C] text-white shadow-xs scale-102 ring-2 ring-orange-300/60'
+                    : 'bg-[#F8FAFC] text-[#111827] hover:bg-[#FFF7ED]'
                 }`}
               >
                 All Days
@@ -766,8 +766,8 @@ const MemberProgress: React.FC = () => {
                 onClick={() => setSelectedDay('all')}
                 className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer shrink-0 ${
                   selectedDay === 'all'
-                    ? 'bg-[#FFFFFF] text-white shadow-xs'
-                    : 'bg-[#F8FAFC] text-[#64748B] hover:bg-[#FFF7ED]'
+                    ? 'bg-[#C2410C] text-white shadow-xs scale-102 ring-2 ring-orange-300/60'
+                    : 'bg-[#F8FAFC] text-[#111827] hover:bg-[#FFF7ED]'
                 }`}
               >
                 All Days

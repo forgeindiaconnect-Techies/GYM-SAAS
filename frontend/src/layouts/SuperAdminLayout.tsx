@@ -5,7 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 import GymSmartAssistant from '../components/GymSmartAssistant';
 import {
   LayoutDashboard, Building2, Send, User, LogOut,
-  CreditCard, ShieldCheck, Menu, PlusCircle, TrendingUp, Bell
+  CreditCard, ShieldCheck, Menu, PlusCircle, TrendingUp, Bell, X
 } from 'lucide-react';
 
 const SuperAdminLayout = () => {
@@ -51,17 +51,27 @@ const SuperAdminLayout = () => {
     <>
       {/* Logo */}
       <div className="p-5 border-b border-[#E2E8F0]">
-        <Link to="/" className="flex items-center space-x-2.5" onClick={() => setSidebarOpen(false)}>
-          <div className="w-9 h-9 bg-[#C2410C] text-white font-bold rounded-xl flex items-center justify-center shadow-md shadow-orange-500/20">
-            <ShieldCheck className="text-white" size={20} />
-          </div>
-          <div className="flex flex-col leading-tight">
-            <span className="text-sm font-bold tracking-tight text-[#111827]">SUPER</span>
-            <span className="text-sm font-bold tracking-tight text-[#EA580C]">ADMIN</span>
-          </div>
-        </Link>
+        <div className="flex items-center justify-between">
+          <Link to="/" className="flex items-center space-x-2.5" onClick={() => setSidebarOpen(false)}>
+            <div className="w-9 h-9 bg-[#C2410C] text-white font-bold rounded-xl flex items-center justify-center shadow-md shadow-orange-500/20 shrink-0">
+              <ShieldCheck className="text-white" size={20} />
+            </div>
+            <div className="flex flex-col leading-tight">
+              <span className="text-sm font-bold tracking-tight text-[#111827]">SUPER</span>
+              <span className="text-sm font-bold tracking-tight text-[#EA580C]">ADMIN</span>
+            </div>
+          </Link>
+          <button
+            type="button"
+            onClick={() => setSidebarOpen(false)}
+            className="lg:hidden w-8 h-8 flex items-center justify-center bg-[#F8FAFC] border border-[#E2E8F0] text-[#64748B] hover:text-[#EA580C] rounded-lg hover:bg-[#FFF7ED] active:bg-[#FFEDD5] transition-colors shrink-0 cursor-pointer"
+            aria-label="Close menu"
+          >
+            <X size={18} />
+          </button>
+        </div>
         <div className="mt-4 flex items-center space-x-3">
-          <div className="w-10 h-10 bg-[#FFF7ED] border border-[#FFEDD5] rounded-full flex items-center justify-center text-[#C2410C] font-bold text-base shadow-xs">
+          <div className="w-10 h-10 bg-[#FFF7ED] border border-[#FFEDD5] rounded-full flex items-center justify-center text-[#C2410C] font-bold text-base shadow-xs shrink-0">
             {user?.firstName?.[0] || 'S'}
           </div>
           <div className="flex-1 overflow-hidden">
@@ -150,25 +160,25 @@ const SuperAdminLayout = () => {
       {/* Main Content */}
       <main className="flex-1 flex flex-col h-full overflow-hidden relative min-w-0 bg-[#FFFFFF]">
         {/* Header */}
-        <header className="h-16 border-b border-[#E2E8F0] flex items-center px-4 md:px-8 justify-between bg-[#FFFFFF] z-10 sticky top-0 shrink-0 text-[#111827]">
-          <div className="flex items-center space-x-3">
+        <header className="h-16 pt-safe border-b border-[#E2E8F0] flex items-center px-3.5 sm:px-4 md:px-8 justify-between bg-[#FFFFFF] z-10 sticky top-0 shrink-0 text-[#111827]">
+          <div className="flex items-center space-x-2.5 sm:space-x-3 min-w-0">
             <button
-              className="lg:hidden text-[#64748B] hover:text-[#EA580C] transition-colors p-1 rounded-lg hover:bg-[#F8FAFC]"
+              className="lg:hidden text-[#64748B] hover:text-[#EA580C] transition-colors w-10 h-10 flex items-center justify-center rounded-lg hover:bg-[#F8FAFC] shrink-0"
               onClick={() => setSidebarOpen(true)}
               aria-label="Open menu"
             >
               <Menu size={22} />
             </button>
-            {currentNav && <currentNav.icon size={20} className="text-[#EA580C] hidden sm:block" />}
-            <h2 className="text-base md:text-lg font-bold tracking-tight text-[#111827]">
+            {currentNav && <currentNav.icon size={20} className="text-[#EA580C] hidden sm:block shrink-0" />}
+            <h2 className="text-base md:text-lg font-bold tracking-tight text-[#111827] truncate">
               {currentNav?.label || 'Super Admin Portal'}
             </h2>
           </div>
 
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-2.5 sm:space-x-3 shrink-0">
             <Link
               to="/super-admin/notifications"
-              className="text-[#64748B] hover:text-[#EA580C] p-2 rounded-xl hover:bg-[#FFF7ED] transition-colors relative"
+              className="text-[#64748B] hover:text-[#EA580C] w-10 h-10 flex items-center justify-center rounded-xl hover:bg-[#FFF7ED] transition-colors relative"
               title="Notifications"
             >
               <Bell size={20} />
@@ -185,7 +195,7 @@ const SuperAdminLayout = () => {
           </div>
         </header>
 
-        <div className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 bg-[#F8FAFC]">
+        <div className="flex-1 overflow-y-auto p-3.5 sm:p-5 md:p-6 lg:p-8 pb-24 sm:pb-20 bg-[#F8FAFC]">
           <Outlet />
         </div>
       </main>

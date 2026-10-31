@@ -1,17 +1,17 @@
+import dns from 'dns';
+try {
+  dns.setDefaultResultOrder?.('ipv4first');
+  dns.setServers(['8.8.8.8', '1.1.1.1', '8.8.4.4']);
+} catch (err) {
+  console.warn('[Database] DNS setServers notice:', err);
+}
+
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import net from 'net';
 import { spawn } from 'child_process';
 import fs from 'fs';
 import path from 'path';
-import dns from 'dns';
-
-// Ensure Windows Node.js can resolve MongoDB Atlas SRV records
-try {
-  dns.setServers(['8.8.8.8', '1.1.1.1']);
-} catch (err) {
-  console.warn('[Database] DNS setServers notice:', err);
-}
 
 dotenv.config();
 dotenv.config({ path: path.join(__dirname, '../.env') });
@@ -51,10 +51,11 @@ const tryStartLocalMongo = async (): Promise<boolean> => {
   const userProfile = process.env.USERPROFILE || 'C:\\Users\\renug';
   const possiblePaths = [
     process.env.MONGOD_PATH,
-    'C:\\Users\\renug\\mongodb_bin\\MongoDB\\Server\\8.2\\bin\\mongod.exe',
-    path.join(userProfile, 'mongodb_bin', 'MongoDB', 'Server', '8.2', 'bin', 'mongod.exe'),
+    'C:\\Program Files\\MongoDB\\Server\\8.2\\bin\\mongod.exe',
     'C:\\Program Files\\MongoDB\\Server\\8.0\\bin\\mongod.exe',
     'C:\\Program Files\\MongoDB\\Server\\7.0\\bin\\mongod.exe',
+    'C:\\Users\\renug\\mongodb_bin\\MongoDB\\Server\\8.2\\bin\\mongod.exe',
+    path.join(userProfile, 'mongodb_bin', 'MongoDB', 'Server', '8.2', 'bin', 'mongod.exe'),
   ].filter(Boolean) as string[];
 
   const mongodPath = possiblePaths.find((p) => fs.existsSync(p));

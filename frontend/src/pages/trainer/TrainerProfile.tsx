@@ -1,15 +1,17 @@
-import { useState, useEffect } from 'react';
-import { User, Mail, Phone, Edit3, Award, IndianRupee, Save, X, CheckCircle, Dumbbell, Calendar } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { User, Mail, Phone, Edit3, Award, IndianRupee, Save, X, CheckCircle, Dumbbell, Calendar, Camera } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import api from '../../utils/api';
 
 const TrainerProfile = () => {
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
   const [trainer, setTrainer] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [profilePhoto, setProfilePhoto] = useState<string>('');
 
   const [form, setForm] = useState({
     phone: '',
@@ -61,6 +63,45 @@ const TrainerProfile = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  useEffect(() => {
+    const saved = trainer?.profilePhoto || user?.profilePhoto || localStorage.getItem(`trainer_avatar_${user?.id || 'trainer'}`);
+    if (saved) setProfilePhoto(saved);
+  }, [trainer, user]);
+
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      alert('Please upload a valid image file (PNG, JPG, JPEG)');
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Image size should be less than 5MB');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = async () => {
+      const base64 = reader.result as string;
+      setProfilePhoto(base64);
+      const uid = user?.id;
+      if (uid) {
+        localStorage.setItem(`trainer_avatar_${uid}`, base64);
+        try {
+          await api.put(`/users/${uid}`, { profilePhoto: base64 });
+        } catch (err) {
+          console.warn('Could not persist avatar to server:', err);
+        }
+      }
+      try {
+        await api.put('/trainers/my-profile', { profilePhoto: base64 });
+      } catch (err) {
+        // ignore
+      }
+      updateUser({ profilePhoto: base64 });
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleSave = async () => {
@@ -153,9 +194,40 @@ const TrainerProfile = () => {
       <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-8 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-64 h-64 bg-[#FFF7ED] rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none" />
         <div className="flex flex-col md:flex-row items-start md:items-center gap-6 relative z-10">
-          {/* Avatar */}
-          <div className="w-24 h-24 bg-[#F8FAFC] rounded-full border-2 border-[#FDBA74] flex items-center justify-center text-[#EA580C] text-3xl font-bold shadow-[0_0_15px_rgba(183,110,121,0.25)] shrink-0">
-            {displayName.charAt(0).toUpperCase()}
+          {/* Avatar with Edit Photo Option */}
+          <div className="relative group shrink-0">
+            <input
+              type="file"
+              ref={fileInputRef}
+              accept="image/*"
+              className="hidden"
+              onChange={handlePhotoUpload}
+            />
+            <div
+              onClick={() => fileInputRef.current?.click()}
+              className="w-24 h-24 bg-[#F8FAFC] rounded-full border-2 border-[#FDBA74] overflow-hidden flex items-center justify-center text-[#EA580C] text-3xl font-bold shadow-[0_0_15px_rgba(183,110,121,0.25)] cursor-pointer relative"
+              title="Click to upload profile photo"
+            >
+              {profilePhoto ? (
+                <img src={profilePhoto} alt="Trainer Profile" className="w-full h-full object-cover" />
+              ) : (
+                <span>{displayName.charAt(0).toUpperCase()}</span>
+              )}
+              {/* Hover overlay */}
+              <div className="absolute inset-0 bg-black/45 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white text-[10px] font-bold">
+                <Camera size={18} />
+                <span>Edit</span>
+              </div>
+            </div>
+            {/* Camera Edit Badge Button */}
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              title="Upload new image"
+              className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-[#EA580C] hover:bg-[#C2410C] active:bg-[#9A3412] text-white flex items-center justify-center shadow-md border-2 border-white transition-all cursor-pointer"
+            >
+              <Camera size={14} />
+            </button>
           </div>
 
           {/* Info */}

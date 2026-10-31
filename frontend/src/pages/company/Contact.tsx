@@ -30,6 +30,7 @@ const Contact = () => {
     firstName: '',
     lastName: '',
     email: '',
+    phone: '',
     message: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -60,6 +61,7 @@ const Contact = () => {
         firstName: formData.firstName.trim(),
         lastName: formData.lastName.trim(),
         email: formData.email.trim(),
+        phone: formData.phone.trim(),
         message: formData.message.trim()
       });
 
@@ -69,6 +71,7 @@ const Contact = () => {
           firstName: '',
           lastName: '',
           email: '',
+          phone: '',
           message: ''
         });
       } else {
@@ -194,19 +197,34 @@ const Contact = () => {
                   </div>
                 </div>
 
-                <div>
-                  <label className="block text-sm text-[#64748B] mb-2 font-medium">
-                    Email Address <span className="text-[#EA580C]">*</span>
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    required
-                    value={formData.email}
-                    onChange={handleChange}
-                    className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-4 py-3 text-[#111827] focus:outline-none focus:border-[#FDBA74] transition-colors"
-                    placeholder="john@example.com"
-                  />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm text-[#64748B] mb-2 font-medium">
+                      Email Address <span className="text-[#EA580C]">*</span>
+                    </label>
+                    <input
+                      type="email"
+                      name="email"
+                      required
+                      value={formData.email}
+                      onChange={handleChange}
+                      className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-4 py-3 text-[#111827] focus:outline-none focus:border-[#FDBA74] transition-colors"
+                      placeholder="john@example.com"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm text-[#64748B] mb-2 font-medium">
+                      Mobile Number
+                    </label>
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-4 py-3 text-[#111827] focus:outline-none focus:border-[#FDBA74] transition-colors"
+                      placeholder="+91 98765 43210"
+                    />
+                  </div>
                 </div>
 
                 <div>

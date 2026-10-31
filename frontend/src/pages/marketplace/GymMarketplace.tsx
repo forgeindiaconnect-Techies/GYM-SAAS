@@ -131,7 +131,7 @@ const GymMarketplace = () => {
   };
 
   const buildYouTubeURL = (videoId: string, isMuted: boolean) =>
-    `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=${isMuted ? 1 : 0}&loop=1&playlist=${videoId}&controls=0&showinfo=0&rel=0&disablekb=1&modestbranding=1&iv_load_policy=3&start=5`;
+    `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=${isMuted ? 1 : 0}&loop=1&playlist=${videoId}&controls=0&showinfo=0&rel=0&disablekb=1&modestbranding=1&iv_load_policy=3&playsinline=1&vq=hd1080&start=5`;
 
   const scrollToGyms = () => {
     document.getElementById('gym-results')?.scrollIntoView({ behavior: 'smooth' });
@@ -146,12 +146,12 @@ const GymMarketplace = () => {
       <div className="relative w-full min-h-screen overflow-hidden flex flex-col justify-between">
 
         {/* Floating Top Header */}
-        <header className="absolute top-0 left-0 right-0 z-30 px-4 sm:px-8 py-5 flex items-center justify-between pointer-events-auto">
+        <header className="absolute top-0 left-0 right-0 z-30 px-4 sm:px-8 py-5 flex items-center justify-between pointer-events-auto bg-gradient-to-b from-black/70 via-black/25 to-transparent pt-safe">
           <Link to="/" className="flex items-center space-x-2.5 group">
             <div className="w-10 h-10 bg-gradient-to-br from-[#EA580C] to-[#C2410C] rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/15">
               <Activity className="text-[#FFFFFF]" size={22} strokeWidth={2.5} />
             </div>
-            <span className="text-2xl font-bold tracking-tight text-white group-hover:text-[#EA580C] transition-colors">Gymora</span>
+            <span className="text-2xl font-bold tracking-tight text-white group-hover:text-[#EA580C] transition-colors drop-shadow-md">Gymora</span>
           </Link>
 
           <div className="flex items-center gap-3">
@@ -165,8 +165,8 @@ const GymMarketplace = () => {
           </div>
         </header>
 
-        {/* YouTube Video Background */}
-        <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden bg-[#111]">
+        {/* YouTube Video Background with Enhanced Brightness & Clarity */}
+        <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden bg-[#0A0A0A]">
           <iframe
             ref={iframeRef}
             key={`${slideIdx}-${muted}`}
@@ -183,16 +183,17 @@ const GymMarketplace = () => {
               transform: 'translate(-50%, -50%)',
               border: 'none',
               pointerEvents: 'none',
+              filter: 'brightness(1.18) contrast(1.08) saturate(1.12)',
             }}
           />
         </div>
 
-        {/* Strong dark gradient overlays — ensures text is always readable */}
-        <div className="absolute inset-0 bg-black/65 z-[1]" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-[#F8FAFC] z-[1]" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-black/60 z-[1]" />
-        {/* Teal glow at center */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(183,110,121,0.08)_0%,_transparent_65%)] z-[1] pointer-events-none" />
+        {/* Soft, light overlays that preserve maximum video clarity and brightness */}
+        <div className="absolute inset-0 bg-black/20 z-[1]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-transparent to-[#F8FAFC]/95 z-[1]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/25 via-transparent to-black/25 z-[1]" />
+        {/* Subtle orange accent glow */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(234,88,12,0.06)_0%,_transparent_70%)] z-[1] pointer-events-none" />
 
         {/* Slide transition indicator dots — bottom left */}
         {HERO_SLIDES.length > 1 && (
@@ -210,7 +211,7 @@ const GymMarketplace = () => {
         {/* Volume Control */}
         <button
           onClick={toggleMute}
-          className="absolute bottom-10 right-8 z-20 p-3 rounded-full bg-[#FFFFFF]/40 backdrop-blur-md border border-white/20 text-[#111827] hover:bg-[#FFFFFF]/60 transition-all cursor-pointer"
+          className="absolute bottom-10 right-8 z-20 p-3 rounded-full bg-[#FFFFFF]/80 backdrop-blur-md border border-white/40 text-[#111827] hover:bg-white hover:text-[#EA580C] transition-all shadow-lg cursor-pointer"
           title={muted ? 'Unmute' : 'Mute'}
         >
           {muted ? <VolumeX size={18} /> : <Volume2 size={18} />}
@@ -222,56 +223,56 @@ const GymMarketplace = () => {
           {/* Slide label badge — comfortably spaced down */}
           <div
             key={`badge-${slideIdx}`}
-            className="inline-flex items-center gap-2 bg-[#FFF7ED] backdrop-blur-md border border-[#FFEDD5] text-[#EA580C] text-xs sm:text-sm font-bold px-5 py-2.5 rounded-full mb-6 tracking-widest uppercase shadow-lg shadow-orange-500/15"
+            className="inline-flex items-center gap-2 bg-[#FFFFFF]/90 backdrop-blur-md border border-white/80 text-[#C2410C] text-xs sm:text-sm font-extrabold px-5 py-2.5 rounded-full mb-6 tracking-widest uppercase shadow-xl"
             style={{ animation: 'fadeInUp 0.7s ease' }}
           >
             <Star size={14} className="fill-current text-[#EA580C]" />
             <span>{currentSlide.badge}</span>
           </div>
 
-          {/* Main Headline — changes with slide */}
+          {/* Main Headline — pure white with drop shadows over bright video */}
           <h1
             key={`title-${slideIdx}`}
-            className="text-4xl sm:text-6xl md:text-7xl font-extrabold text-white leading-[1.15] tracking-tight drop-shadow-2xl mb-4 max-w-4xl"
+            className="text-4xl sm:text-6xl md:text-7xl font-black !text-[#FFFFFF] leading-[1.15] tracking-tight drop-shadow-[0_4px_18px_rgba(0,0,0,0.9)] mb-4 max-w-4xl"
             style={{ animation: 'fadeInUp 0.8s ease' }}
           >
-            {currentSlide.title}
+            <span className="!text-[#FFFFFF] drop-shadow-[0_4px_18px_rgba(0,0,0,0.9)]">{currentSlide.title}</span>
             <br />
-            <span className="text-[#EA580C] relative inline-block">
+            <span className="text-[#FF7A1A] drop-shadow-[0_4px_18px_rgba(0,0,0,0.9)] relative inline-block font-black">
               {currentSlide.highlight}
-              <span className="absolute -bottom-2 left-0 right-0 h-1 bg-[#FFF7ED] rounded-full blur-sm" />
+              <span className="absolute -bottom-2 left-0 right-0 h-1 bg-[#FF7A1A]/90 rounded-full blur-xs" />
             </span>
           </h1>
 
-          {/* Subtitle — changes with slide */}
+          {/* Subtitle — crisp and readable with drop shadow */}
           <p
             key={`sub-${slideIdx}`}
-            className="text-white/90 text-sm sm:text-base md:text-lg max-w-2xl mb-8 leading-relaxed font-light"
+            className="!text-[#FFFFFF] drop-shadow-[0_2px_12px_rgba(0,0,0,0.95)] text-sm sm:text-base md:text-lg max-w-2xl mb-8 leading-relaxed font-semibold"
             style={{ animation: 'fadeInUp 0.9s ease' }}
           >
             {currentSlide.subtitle}
           </p>
 
-          {/* Search Bar */}
+          {/* Search Bar — solid white frosted card */}
           <form
             onSubmit={handleSearchSubmit}
             className="w-full max-w-3xl"
             style={{ animation: 'fadeInUp 1s ease' }}
           >
-            <div className="flex flex-col sm:flex-row gap-2 bg-[#FFFFFF]/40 backdrop-blur-xl border border-white/20 rounded-2xl p-2 shadow-2xl">
+            <div className="flex flex-col sm:flex-row gap-2 bg-[#FFFFFF]/95 backdrop-blur-xl border border-white rounded-2xl p-2 shadow-2xl">
               <div className="flex-1 relative">
-                <Search className="absolute left-4 top-3.5 text-white/60" size={20} />
+                <Search className="absolute left-4 top-3.5 text-[#64748B]" size={20} />
                 <input
                   type="text"
                   placeholder="Search gym, area, city or pincode..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-transparent pl-12 pr-4 py-3 text-white placeholder-white/60 outline-none text-base"
+                  className="w-full bg-transparent pl-12 pr-4 py-3 text-[#111827] placeholder-[#64748B] outline-none text-base font-medium"
                 />
               </div>
               <button
                 type="submit"
-                className="px-8 py-3 bg-[#C2410C] text-white font-extrabold rounded-xl hover:bg-[#9A3412] transition-all shadow-[0_4px_20px_rgba(183,110,121,0.3)] whitespace-nowrap text-sm tracking-wide cursor-pointer"
+                className="px-8 py-3 bg-[#C2410C] hover:bg-[#9A3412] text-white font-extrabold rounded-xl transition-all shadow-md shadow-orange-500/25 whitespace-nowrap text-sm tracking-wide cursor-pointer"
               >
                 Search
               </button>
@@ -283,7 +284,7 @@ const GymMarketplace = () => {
             <button
               onClick={handleUseLocation}
               disabled={locationLoading}
-              className="flex items-center gap-2 px-5 py-2.5 bg-[#FFFFFF]/40 backdrop-blur-md border border-white/20 text-white rounded-full hover:bg-[#FFFFFF]/60 transition-all text-sm font-medium disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
+              className="flex items-center gap-2 px-5 py-2.5 bg-[#FFFFFF]/90 hover:bg-[#FFFFFF] backdrop-blur-md border border-white text-[#111827] rounded-full transition-all text-sm font-semibold shadow-lg disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
             >
               {locationLoading ? (
                 <><Loader2 size={15} className="animate-spin text-[#EA580C]" /> Detecting location...</>
@@ -291,13 +292,13 @@ const GymMarketplace = () => {
                 <><Navigation size={15} className="text-[#EA580C]" /> Use My Location</>
               )}
             </button>
-            <div className="h-4 w-px bg-white/20" />
-            <div className="text-sm text-white/80">
-              <span className="text-white font-bold text-lg">{gyms.length > 0 ? `${gyms.length}+` : '—'}</span> Gyms Listed
+            <div className="h-4 w-px bg-white/40" />
+            <div className="text-sm !text-white drop-shadow-[0_1px_6px_rgba(0,0,0,0.9)] font-medium">
+              <span className="!text-white font-bold text-lg">{gyms.length > 0 ? `${gyms.length}+` : '—'}</span> Gyms Listed
             </div>
-            <div className="h-4 w-px bg-white/20" />
-            <div className="text-sm text-white/80">
-              <span className="text-white font-bold text-lg">100%</span> Verified
+            <div className="h-4 w-px bg-white/40" />
+            <div className="text-sm !text-white drop-shadow-[0_1px_6px_rgba(0,0,0,0.9)] font-medium">
+              <span className="!text-white font-bold text-lg">100%</span> Verified
             </div>
           </div>
         </div>

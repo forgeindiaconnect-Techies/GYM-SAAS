@@ -80,6 +80,9 @@ html {
   scroll-behavior: smooth;
   color-scheme: light;
   background-color: #FFFFFF !important;
+  overflow-x: hidden;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
@@ -90,12 +93,45 @@ body {
   -moz-osx-font-smoothing: grayscale;
   margin: 0;
   min-height: 100vh;
+  overflow-x: hidden;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 #root {
   background-color: #FFFFFF !important;
   color: #1F2937;
   min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Safe Area Insets for Mobile App Notches and Bottom Gesture Bar */
+.pt-safe {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.pl-safe {
+  padding-left: env(safe-area-inset-left, 0px);
+}
+.pr-safe {
+  padding-right: env(safe-area-inset-right, 0px);
+}
+
+/* Touch-friendly scrolling for scrollable containers */
+.overflow-x-auto,
+.overflow-y-auto {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Mobile input zoom prevention on iOS / WebView */
+@media screen and (max-width: 768px) {
+  input:not([type="checkbox"]):not([type="radio"]),
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
 }
 
 /* Headings */

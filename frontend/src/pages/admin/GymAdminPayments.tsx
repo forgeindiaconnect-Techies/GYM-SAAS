@@ -191,8 +191,8 @@ const GymAdminPayments = () => {
             onClick={() => setActiveTab(tab.id)}
             className={`py-3 transition-colors border-b-2 whitespace-nowrap cursor-pointer ${
               activeTab === tab.id
-                ? 'border-[#FDBA74] text-[#FFFFFF]'
-                : 'border-transparent text-[#64748B] hover:text-[#C2410C]'
+                ? 'border-[#EA580C] text-[#EA580C] font-extrabold'
+                : 'border-transparent text-[#64748B] hover:text-[#EA580C]'
             }`}
           >
             {tab.label}
@@ -225,21 +225,21 @@ const GymAdminPayments = () => {
                   placeholder="Search customer, membership ID, TRX..."
                   value={search}
                   onChange={e => setSearch(e.target.value)}
-                  className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl pl-9 pr-4 py-2 text-xs text-[#FFFFFF] placeholder-[#94A3B8] focus:border-[#FDBA74] outline-none"
+                  className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl pl-9 pr-4 py-2 text-xs text-[#111827] placeholder-[#64748B] focus:border-[#FDBA74] outline-none"
                 />
                 <Search className="absolute left-3 top-2.5 text-[#64748B]" size={15} />
               </div>
 
               <button
                 onClick={handleDownloadPDF}
-                className="px-3.5 py-2 bg-[#F8FAFC] border border-[#E2E8F0] text-white hover:border-[#FDBA74] font-bold rounded-xl transition-colors flex items-center gap-1.5 text-xs shrink-0 cursor-pointer shadow-xs"
+                className="px-3.5 py-2 bg-[#F8FAFC] border border-[#E2E8F0] text-[#111827] hover:border-[#FDBA74] font-bold rounded-xl transition-colors flex items-center gap-1.5 text-xs shrink-0 cursor-pointer shadow-xs"
               >
                 <Download size={14} className="text-[#EA580C]" /> PDF
               </button>
 
               <button
                 onClick={exportToCSV}
-                className="px-3.5 py-2 bg-[#F8FAFC] border border-[#E2E8F0] text-white hover:border-[#FDBA74] font-bold rounded-xl transition-colors flex items-center gap-1.5 text-xs shrink-0 cursor-pointer shadow-xs"
+                className="px-3.5 py-2 bg-[#F8FAFC] border border-[#E2E8F0] text-[#111827] hover:border-[#FDBA74] font-bold rounded-xl transition-colors flex items-center gap-1.5 text-xs shrink-0 cursor-pointer shadow-xs"
               >
                 <Download size={14} className="text-[#EA580C]" /> CSV
               </button>
@@ -280,7 +280,7 @@ const GymAdminPayments = () => {
                         </td>
 
                         <td className="px-5 py-4">
-                          <p className="font-bold text-white text-sm">
+                          <p className="font-bold text-[#111827] text-sm">
                             {trx.customerId?.firstName} {trx.customerId?.lastName}
                           </p>
                           <p className="text-[11px] text-[#64748B]">{trx.customerId?.email || 'No email'}</p>
@@ -288,7 +288,7 @@ const GymAdminPayments = () => {
 
                         <td className="px-5 py-4">
                           <div className="flex items-center gap-1.5 flex-wrap">
-                            <span className="font-bold text-white">{trx.planName}</span>
+                            <span className="font-bold text-[#111827]">{trx.planName}</span>
                             {isTrial && (
                               <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5]">
                                 Trial
@@ -301,7 +301,7 @@ const GymAdminPayments = () => {
                         </td>
 
                         <td className="px-5 py-4">
-                          <span className="font-bold text-white text-sm">
+                          <span className="font-bold text-[#111827] text-sm">
                             {isTrial ? '₹0' : `₹${Number(trx.amount || 0).toLocaleString('en-IN')}`}
                           </span>
                           <p className="text-[11px] text-[#64748B] mt-0.5">{trx.paymentMethod}</p>
@@ -310,10 +310,10 @@ const GymAdminPayments = () => {
                         <td className="px-5 py-4">
                           <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold border ${
                             emailStatus === 'Sent'
-                              ? 'bg-[#FFF7ED] text-[#15803D] border-[#E2E8F0]/40'
+                              ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
                               : emailStatus === 'Failed'
-                              ? 'bg-red-50 text-[#B91C1C] border-red-500/40'
-                              : 'bg-amber-50 text-amber-300 border-amber-500/40'
+                              ? 'bg-red-50 text-[#B91C1C] border-red-200'
+                              : 'bg-amber-50 text-amber-800 border-amber-300'
                           }`}>
                             <Mail size={11} />
                             {emailStatus === 'Sent' ? 'Email Sent' : emailStatus === 'Failed' ? 'Email Failed' : 'Pending'}
@@ -322,9 +322,9 @@ const GymAdminPayments = () => {
 
                         <td className="px-5 py-4">
                           <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold border ${
-                            trx.status === 'Approved' ? 'bg-[#FFF7ED] text-[#15803D] border-[#E2E8F0]/40' :
-                            trx.status === 'Rejected' ? 'bg-red-50 text-[#B91C1C] border-red-500/40' :
-                            'bg-amber-50 text-amber-300 border-amber-500/40'
+                            trx.status === 'Approved' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                            trx.status === 'Rejected' ? 'bg-red-50 text-[#B91C1C] border-red-200' :
+                            'bg-amber-50 text-amber-800 border-amber-300'
                           }`}>
                             {trx.status}
                           </span>
@@ -387,19 +387,19 @@ const GymAdminPayments = () => {
                   <div className="grid grid-cols-2 divide-x divide-[#E2E8F0]">
                     <div className="p-3.5">
                       <span className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider mb-1 block">Customer</span>
-                      <span className="font-bold text-sm text-white">{selectedTrx.customerId?.firstName} {selectedTrx.customerId?.lastName}</span>
+                      <span className="font-bold text-sm text-[#111827]">{selectedTrx.customerId?.firstName} {selectedTrx.customerId?.lastName}</span>
                       <span className="text-[11px] text-[#64748B] block">{selectedTrx.customerId?.email}</span>
                     </div>
                     <div className="p-3.5">
                       <span className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider mb-1 block">Payment Date</span>
-                      <span className="font-semibold text-white">{new Date(selectedTrx.paymentDate || selectedTrx.createdAt).toLocaleString('en-IN')}</span>
+                      <span className="font-semibold text-[#111827]">{new Date(selectedTrx.paymentDate || selectedTrx.createdAt).toLocaleString('en-IN')}</span>
                     </div>
                   </div>
 
                   <div className="grid grid-cols-2 divide-x divide-[#E2E8F0]">
                     <div className="p-3.5">
                       <span className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider mb-1 block">Plan Package</span>
-                      <span className="font-bold text-sm text-white">{selectedTrx.planName}</span>
+                      <span className="font-bold text-sm text-[#111827]">{selectedTrx.planName}</span>
                     </div>
                     <div className="p-3.5">
                       <span className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider mb-1 block">Amount Paid</span>
@@ -416,7 +416,7 @@ const GymAdminPayments = () => {
                     </div>
                     <div className="p-3.5">
                       <span className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider mb-1 block">Receipt Number</span>
-                      <span className="font-mono text-xs font-bold text-white">
+                      <span className="font-mono text-xs font-bold text-[#111827]">
                         {selectedTrx.receiptNumber || selectedTrx.membershipId?.receiptNumber || selectedTrx.orderId || 'REC-CURRENT'}
                       </span>
                     </div>
@@ -425,7 +425,7 @@ const GymAdminPayments = () => {
                   <div className="grid grid-cols-2 divide-x divide-[#E2E8F0]">
                     <div className="p-3.5">
                       <span className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider mb-1 block">Payment Method</span>
-                      <span className="font-semibold text-white">{selectedTrx.paymentMethod}</span>
+                      <span className="font-semibold text-[#111827]">{selectedTrx.paymentMethod}</span>
                     </div>
                     <div className="p-3.5">
                       <span className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider mb-1 block">Verification Status</span>
@@ -440,8 +440,8 @@ const GymAdminPayments = () => {
                       <div className="flex items-center gap-2">
                         <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${
                           selectedTrx.membershipId?.confirmationEmailStatus === 'Sent'
-                            ? 'bg-[#FFF7ED] text-[#15803D] border-[#E2E8F0]/40'
-                            : 'bg-amber-50 text-amber-300 border-amber-500/40'
+                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                            : 'bg-amber-50 text-amber-800 border-amber-300'
                         }`}>
                           {selectedTrx.membershipId?.confirmationEmailStatus || 'Pending'}
                         </span>
@@ -468,7 +468,7 @@ const GymAdminPayments = () => {
 
                   <div className="p-3.5">
                     <span className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider mb-1 block">Transaction ID / Reference</span>
-                    <span className="font-mono text-xs text-white break-all">{selectedTrx.transactionId || 'Not Provided'}</span>
+                    <span className="font-mono text-xs text-[#111827] break-all">{selectedTrx.transactionId || 'Not Provided'}</span>
                   </div>
 
                   {selectedTrx.paymentProofUrl && (
@@ -485,7 +485,7 @@ const GymAdminPayments = () => {
               <div className="mt-6 pt-4 border-t border-[#E2E8F0] flex justify-end">
                 <button 
                   onClick={() => setSelectedTrx(null)} 
-                  className="px-6 py-2.5 bg-[#F8FAFC] hover:bg-[#222] border border-[#E2E8F0] text-white font-bold rounded-xl text-xs transition-colors cursor-pointer"
+                  className="px-6 py-2.5 bg-[#FFFFFF] hover:bg-[#FFF7ED] border border-[#E2E8F0] text-[#111827] font-bold rounded-xl text-xs transition-colors cursor-pointer"
                 >
                   Close
                 </button>
@@ -505,7 +505,7 @@ const GymAdminPayments = () => {
                 onChange={(e) => setRejectionReasonInput(e.target.value)}
                 placeholder="e.g., Transaction reference not found in bank statement."
                 rows={4}
-                className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-3 text-white text-xs focus:border-red-500 outline-none resize-none mb-5"
+                className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl p-3 text-[#111827] text-xs focus:border-red-500 outline-none resize-none mb-5"
               ></textarea>
               <div className="flex gap-3">
                 <button 

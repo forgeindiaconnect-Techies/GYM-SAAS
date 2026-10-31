@@ -169,7 +169,7 @@ const SuperAdminNotifications: React.FC = () => {
           <button
             onClick={markAllAsRead}
             disabled={unreadCount === 0}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#F8FAFC] hover:bg-[#E2E8F0] text-xs font-bold text-white border border-[#E2E8F0] transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#F8FAFC] hover:bg-[#E2E8F0] text-xs font-bold text-[#111827] border-2 border-[#CBD5E1] transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer shadow-sm"
           >
             <CheckCheck size={14} className="text-[#EA580C]" />
             Mark all read
@@ -237,8 +237,8 @@ const SuperAdminNotifications: React.FC = () => {
         </div>
       ) : filteredNotifications.length === 0 ? (
         <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-3xl py-16 text-center shadow-xl">
-          <Bell size={40} className="mx-auto text-zinc-600 mb-3" />
-          <p className="text-white font-bold text-base">No notifications found</p>
+          <Bell size={40} className="mx-auto text-[#EA580C] mb-3" />
+          <p className="text-[#111827] font-bold text-base">No notifications found</p>
           <p className="text-[#64748B] text-xs mt-1">
             {filter === 'unread' ? "You're all caught up! No unread root notifications." : "System and tenant alerts will appear here."}
           </p>
@@ -267,7 +267,7 @@ const SuperAdminNotifications: React.FC = () => {
 
                 <div className="flex-1 min-w-0">
                   <div className="flex justify-between items-start mb-1 gap-3">
-                    <h4 className={clsx("text-sm sm:text-base truncate", isUnread ? 'font-bold text-white' : 'font-semibold text-zinc-300')}>
+                    <h4 className={clsx("text-sm sm:text-base truncate", isUnread ? 'font-bold text-[#111827]' : 'font-semibold text-[#475569]')}>
                       {notif.title}
                     </h4>
                     <span className="text-[11px] text-zinc-500 whitespace-nowrap shrink-0">
@@ -278,13 +278,6 @@ const SuperAdminNotifications: React.FC = () => {
                   <p className="text-xs sm:text-sm text-[#64748B] line-clamp-2 leading-relaxed">
                     {notif.message}
                   </p>
-
-                  {notif.link && (
-                    <div className="mt-2 inline-flex items-center gap-1 text-[11px] font-bold text-[#EA580C] hover:underline">
-                      <span>View details</span>
-                      <ExternalLink size={11} />
-                    </div>
-                  )}
                 </div>
 
                 <div className="flex items-center gap-2 shrink-0 self-center">
@@ -334,7 +327,13 @@ const SuperAdminNotifications: React.FC = () => {
                 })()}
                 <h3 className="font-bold text-[#111827] text-base">Notification Details</h3>
               </div>
-              <button onClick={() => setSelected(null)} className="p-1 rounded-lg hover:bg-[#FFFFFF]/10 text-zinc-400 hover:text-white transition cursor-pointer">
+              <button
+                type="button"
+                onClick={() => setSelected(null)}
+                className="w-8 h-8 rounded-full bg-[#F8FAFC] border border-[#E2E8F0] text-[#64748B] hover:text-[#EA580C] hover:bg-[#FFF7ED] active:bg-[#FFEDD5] flex items-center justify-center cursor-pointer transition-colors shrink-0"
+                aria-label="Close"
+                title="Close"
+              >
                 <X size={18} />
               </button>
             </div>
@@ -342,12 +341,12 @@ const SuperAdminNotifications: React.FC = () => {
             <div className="p-6 space-y-4">
               <div>
                 <p className="text-[10px] text-[#64748B] uppercase tracking-wider font-bold mb-1">Title</p>
-                <p className="font-bold text-white text-base">{selected.title}</p>
+                <p className="font-bold text-[#111827] text-base">{selected.title}</p>
               </div>
 
               <div>
                 <p className="text-[10px] text-[#64748B] uppercase tracking-wider font-bold mb-1">Message</p>
-                <p className="text-sm text-zinc-300 leading-relaxed bg-[#F8FAFC] p-3.5 rounded-2xl border border-[#E2E8F0]">
+                <p className="text-sm text-[#334155] leading-relaxed bg-[#F8FAFC] p-3.5 rounded-2xl border border-[#E2E8F0]">
                   {selected.message}
                 </p>
               </div>
@@ -361,27 +360,11 @@ const SuperAdminNotifications: React.FC = () => {
                 </div>
                 <div>
                   <p className="text-[10px] text-[#64748B] uppercase tracking-wider font-bold mb-1">Received</p>
-                  <span className="text-zinc-400">
+                  <span className="text-[#64748B] font-medium">
                     {selected.createdAt ? new Date(selected.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }) : '-'}
                   </span>
                 </div>
               </div>
-
-              {selected.link && (
-                <div className="pt-2">
-                  <button
-                    onClick={() => {
-                      const link = selected.link;
-                      setSelected(null);
-                      navigate(link);
-                    }}
-                    className="w-full py-2.5 rounded-xl bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold text-xs font-bold transition shadow-md shadow-orange-500/15 flex items-center justify-center gap-1.5 cursor-pointer"
-                  >
-                    <span>Go to Related Page</span>
-                    <ExternalLink size={13} />
-                  </button>
-                </div>
-              )}
             </div>
           </div>
         </div>

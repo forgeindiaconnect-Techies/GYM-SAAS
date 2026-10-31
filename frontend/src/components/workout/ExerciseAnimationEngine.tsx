@@ -1,4 +1,4 @@
-﻿import React, { useRef, useEffect, useState, useCallback } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { Play, Pause, RotateCcw, Zap, Activity, FastForward, Rewind, Eye, Compass } from 'lucide-react';
 
 interface ExerciseAnimationEngineProps {
@@ -807,22 +807,24 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
         drawDumbbell(centerX + 34, shoulderY + 40, 0);
       }
 
-      // Top HUD overlay inside canvas
-      ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.roundRect(12, 12, 220, 50, 10);
-      ctx.fill();
-      ctx.stroke();
+      // Top HUD overlay inside canvas (full preview mode only, hidden in compact cards)
+      if (!compact) {
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.roundRect(12, 12, 220, 50, 10);
+        ctx.fill();
+        ctx.stroke();
 
-      ctx.fillStyle = '#38BDF8';
-      ctx.font = 'bold 9px monospace';
-      ctx.fillText(`1-MIN AI FORM VIDEO • ${formatTime(currentVideoTime)} / ${formatTime(totalDuration)}`, 22, 28);
+        ctx.fillStyle = '#38BDF8';
+        ctx.font = 'bold 9px monospace';
+        ctx.fillText(`1-MIN AI FORM VIDEO • ${formatTime(currentVideoTime)} / ${formatTime(totalDuration)}`, 22, 28);
 
-      ctx.fillStyle = '#F8FAFC';
-      ctx.font = 'bold 12px sans-serif';
-      ctx.fillText(phaseLabel, 22, 48);
+        ctx.fillStyle = '#F8FAFC';
+        ctx.font = 'bold 12px sans-serif';
+        ctx.fillText(phaseLabel, 22, 48);
+      }
 
       if (running) {
         animFrameRef.current = requestAnimationFrame(render);

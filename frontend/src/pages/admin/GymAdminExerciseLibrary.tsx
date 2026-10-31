@@ -426,10 +426,10 @@ export const GymAdminExerciseLibrary: React.FC = () => {
                   {/* Status Tag */}
                   <div className="absolute top-3 left-3 z-20">
                     <span
-                      className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border shadow-sm ${
+                      className={`text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-md border shadow-sm backdrop-blur-sm ${
                         ex.status === 'Active'
-                          ? 'bg-[#C2410C] text-white border-[#E2E8F0]'
-                          : 'bg-gray-700 text-gray-200 border-gray-600'
+                          ? 'bg-[#C2410C] text-white border-white/20'
+                          : 'bg-gray-800 text-gray-200 border-gray-600'
                       }`}
                     >
                       {ex.status}

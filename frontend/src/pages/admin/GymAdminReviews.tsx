@@ -384,15 +384,15 @@ export default function GymAdminReviews() {
 
           {/* Star Filter Pills */}
           <div className="flex items-center gap-1.5 flex-wrap">
-            <span className="text-xs font-semibold text-[#64748B] mr-1 flex items-center gap-1">
-              <Filter className="w-3.5 h-3.5" /> Filter:
+            <span className="text-xs font-bold text-[#64748B] mr-1 flex items-center gap-1">
+              <Filter className="w-3.5 h-3.5 text-[#EA580C]" /> Filter:
             </span>
             <button
               onClick={() => setStarFilter('all')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border cursor-pointer ${
                 starFilter === 'all'
-                  ? 'bg-[#F8FAFC] text-white shadow-sm'
-                  : 'bg-[#F8FAFC] text-[#64748B] hover:bg-[#FFF7ED]'
+                  ? 'bg-[#C2410C] text-white border-[#C2410C] shadow-sm shadow-orange-500/15'
+                  : 'bg-[#FFFFFF] text-[#64748B] hover:text-[#C2410C] hover:bg-[#FFF7ED] border-[#E2E8F0]'
               }`}
             >
               All Stars
@@ -401,14 +401,14 @@ export default function GymAdminReviews() {
               <button
                 key={s}
                 onClick={() => setStarFilter(s)}
-                className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold transition-all border cursor-pointer ${
                   starFilter === s
-                    ? 'bg-[#C2410C] text-white shadow-sm shadow-orange-500/15'
-                    : 'bg-[#F8FAFC] text-[#64748B] hover:bg-[#FFF7ED]'
+                    ? 'bg-[#C2410C] text-white border-[#C2410C] shadow-sm shadow-orange-500/15'
+                    : 'bg-[#FFFFFF] text-[#64748B] hover:text-[#C2410C] hover:bg-[#FFF7ED] border-[#E2E8F0]'
                 }`}
               >
                 <span>{s}</span>
-                <Star className={`w-3 h-3 ${starFilter === s ? 'fill-white' : 'fill-amber-400 text-[#B45309]'}`} />
+                <Star className={`w-3 h-3 ${starFilter === s ? 'fill-white text-white' : 'fill-amber-400 text-[#B45309]'}`} />
               </button>
             ))}
           </div>
@@ -475,7 +475,7 @@ export default function GymAdminReviews() {
                   setSearchTerm('');
                   setStarFilter('all');
                 }}
-                className="mt-2 px-4 py-2 bg-[#F8FAFC] text-white rounded-xl text-xs font-bold hover:bg-[#FFF7ED] transition-all"
+                className="mt-2 px-4 py-2 bg-[#111827] text-white rounded-xl text-xs font-bold hover:bg-[#1F2937] transition-all cursor-pointer"
               >
                 Clear Filters
               </button>
@@ -576,7 +576,7 @@ export default function GymAdminReviews() {
                   setSearchTerm('');
                   setStarFilter('all');
                 }}
-                className="mt-2 px-4 py-2 bg-[#F8FAFC] text-white rounded-xl text-xs font-bold hover:bg-[#FFF7ED] transition-all"
+                className="mt-2 px-4 py-2 bg-[#111827] text-white rounded-xl text-xs font-bold hover:bg-[#1F2937] transition-all cursor-pointer"
               >
                 Clear Filters
               </button>

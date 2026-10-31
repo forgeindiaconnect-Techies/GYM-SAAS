@@ -321,10 +321,10 @@ const TrainerExerciseLibrary: React.FC = () => {
               <select
                 value={difficultyFilter}
                 onChange={(e) => setDifficultyFilter(e.target.value)}
-                className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-3 py-2 text-xs font-bold text-[#111827] outline-none shadow-xs"
+                className="bg-[#FFFFFF] border-2 border-[#CBD5E1] rounded-xl px-3 py-2 text-xs font-bold text-[#111827] focus:border-[#EA580C] outline-none shadow-xs cursor-pointer"
               >
                 {DIFFICULTIES.map(d => (
-                  <option key={d} value={d}>{d}</option>
+                  <option key={d} value={d} className="bg-[#FFFFFF] text-[#111827] font-semibold">{d}</option>
                 ))}
               </select>
             </div>
@@ -393,13 +393,13 @@ const TrainerExerciseLibrary: React.FC = () => {
                   />
 
                   <div className="absolute top-3 left-3 flex items-center gap-1.5 z-20">
-                    <span className="px-2 py-0.5 rounded-md text-[10px] font-extrabold uppercase tracking-wider bg-black/70 text-white backdrop-blur-sm border border-white/10">
+                    <span className="px-2 py-0.5 rounded-md text-[10px] font-extrabold uppercase tracking-wider bg-black/80 text-white backdrop-blur-sm border border-white/20">
                       {ex.category}
                     </span>
                     <span className={`px-2 py-0.5 rounded-md text-[10px] font-extrabold uppercase tracking-wider backdrop-blur-sm border ${
-                      ex.difficulty === 'Beginner' ? 'bg-[#FFF7ED] text-[#C2410C] border-[#FFEDD5]' :
-                      ex.difficulty === 'Intermediate' ? 'bg-amber-600/90 text-white border-amber-500' :
-                      'bg-rose-600/90 text-white border-rose-500'
+                      ex.difficulty === 'Beginner' ? 'bg-emerald-600 text-white border-emerald-500 shadow-xs' :
+                      ex.difficulty === 'Intermediate' ? 'bg-amber-600 text-white border-amber-500 shadow-xs' :
+                      'bg-rose-600 text-white border-rose-500 shadow-xs'
                     }`}>
                       {ex.difficulty}
                     </span>

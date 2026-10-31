@@ -144,7 +144,7 @@ const GymAdminNotifications: React.FC = () => {
           <button
             onClick={markAllAsRead}
             disabled={unreadCount === 0}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#F8FAFC] hover:bg-[#E2E8F0] text-xs font-bold text-white border border-[#E2E8F0] transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#FFFFFF] hover:bg-[#F8FAFC] text-xs font-bold text-[#111827] border-2 border-[#CBD5E1] hover:border-[#EA580C] transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer shadow-xs"
           >
             <CheckCheck size={14} className="text-[#EA580C]" />
             Mark all read
@@ -256,10 +256,10 @@ const GymAdminNotifications: React.FC = () => {
 
                 <div className="flex-1 min-w-0">
                   <div className="flex justify-between items-start mb-1 gap-3">
-                    <h4 className={clsx("text-sm sm:text-base truncate", isUnread ? 'font-bold text-white' : 'font-semibold text-zinc-300')}>
+                    <h4 className={clsx("text-sm sm:text-base truncate", isUnread ? 'font-bold text-[#111827]' : 'font-semibold text-[#475569]')}>
                       {notif.title}
                     </h4>
-                    <span className="text-[11px] text-zinc-500 whitespace-nowrap shrink-0">
+                    <span className="text-[11px] text-[#64748B] whitespace-nowrap shrink-0">
                       {notif.createdAt ? new Date(notif.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }) : ''}
                     </span>
                   </div>
@@ -267,20 +267,6 @@ const GymAdminNotifications: React.FC = () => {
                   <p className="text-xs sm:text-sm text-[#64748B] line-clamp-2 leading-relaxed">
                     {notif.message}
                   </p>
-
-                  {link && (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if (!notif.isRead) markAsRead(notif._id);
-                        navigate(link);
-                      }}
-                      className="mt-2 inline-flex items-center gap-1.5 text-[11px] font-bold text-[#EA580C] hover:text-[#5E7BFF] transition cursor-pointer"
-                    >
-                      <span>Go to related section</span>
-                      <ArrowRight size={12} />
-                    </button>
-                  )}
                 </div>
 
                 <div className="flex items-center gap-2 shrink-0 self-center">
@@ -334,8 +320,11 @@ const GymAdminNotifications: React.FC = () => {
                 </div>
               </div>
               <button
+                type="button"
                 onClick={() => setSelected(null)}
-                className="p-1.5 rounded-lg hover:bg-[#FFF7ED] text-[#64748B] hover:text-[#111827] transition cursor-pointer"
+                className="w-8 h-8 rounded-full bg-[#F8FAFC] border border-[#E2E8F0] text-[#64748B] hover:text-[#EA580C] hover:bg-[#FFF7ED] active:bg-[#FFEDD5] flex items-center justify-center cursor-pointer transition-colors shrink-0"
+                aria-label="Close"
+                title="Close"
               >
                 <X size={18} />
               </button>

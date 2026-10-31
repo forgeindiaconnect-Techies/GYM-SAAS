@@ -638,15 +638,6 @@ const GymAdminAttendance = () => {
             </span>
           </div>
 
-          {/* Refresh button */}
-          <button
-            onClick={loadAttendanceData}
-            title="Refresh attendance"
-            className="p-2.5 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl hover:bg-[#FFF7ED] hover:border-[#FDBA74] text-[#111827] transition-colors shadow-sm cursor-pointer"
-          >
-            <RefreshCw size={15} className={loading ? 'animate-spin text-[#EA580C]' : ''} />
-          </button>
-
           {/* Download PDF button */}
           <button
             onClick={handleDownloadPDF}
@@ -668,7 +659,7 @@ const GymAdminAttendance = () => {
           className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center space-x-2 cursor-pointer ${
             activeTab === 'CUSTOMERS'
               ? 'bg-[#C2410C] text-white shadow-md shadow-orange-500/15 scale-[1.02]'
-              : 'bg-[#FFFFFF] text-[#64748B] border border-[#E2E8F0] hover:bg-[#FFF7ED] hover:text-[#FFFFFF]'
+              : 'bg-[#FFFFFF] text-[#64748B] border border-[#E2E8F0] hover:bg-[#FFF7ED] hover:text-[#C2410C]'
           }`}
         >
           <Users size={16} />
@@ -690,7 +681,7 @@ const GymAdminAttendance = () => {
           className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center space-x-2 cursor-pointer ${
             activeTab === 'TRAINERS'
               ? 'bg-[#C2410C] text-white shadow-md shadow-orange-500/15 scale-[1.02]'
-              : 'bg-[#FFFFFF] text-[#64748B] border border-[#E2E8F0] hover:bg-[#FFF7ED] hover:text-[#FFFFFF]'
+              : 'bg-[#FFFFFF] text-[#64748B] border border-[#E2E8F0] hover:bg-[#FFF7ED] hover:text-[#C2410C]'
           }`}
         >
           <Dumbbell size={16} />
@@ -1069,26 +1060,26 @@ const GymAdminAttendance = () => {
                   {filteredTrainerRecords.length} Shifts
                 </span>
               </div>
-              <div className="flex-1 space-y-3 overflow-y-auto custom-scrollbar pr-1 max-h-[220px]">
+              <div className="flex-1 space-y-2.5 overflow-y-auto custom-scrollbar px-1 py-1 max-h-[240px]">
                 {filteredTrainerRecords.slice(0, 6).map((item) => (
                   <div
                     key={item.id}
-                    className="flex items-center justify-between p-3 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0] hover:border-[#FFEDD5] transition-colors"
+                    className="flex items-center justify-between gap-3 p-3 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0] hover:border-[#FFEDD5] transition-all"
                   >
-                    <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 rounded-full bg-[#C2410C] text-white font-bold flex items-center justify-center text-xs font-bold">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="w-9 h-9 rounded-full bg-[#C2410C] text-white font-bold flex items-center justify-center text-xs shrink-0 shadow-xs">
                         {item.trainerName.charAt(0)}
                       </div>
-                      <div>
-                        <p className="text-sm font-semibold text-[#111827]">{item.trainerName}</p>
-                        <p className="text-xs text-[#64748B] truncate max-w-[150px]">{item.dutyType}</p>
+                      <div className="min-w-0">
+                        <p className="text-sm font-semibold text-[#111827] truncate">{item.trainerName}</p>
+                        <p className="text-xs text-[#64748B] truncate">{item.dutyType}</p>
                       </div>
                     </div>
                     <span
-                      className={`text-xs font-bold px-2 py-0.5 rounded-full ${
+                      className={`text-xs font-bold px-2.5 py-1 rounded-full shrink-0 whitespace-nowrap border ${
                         item.checkOutTime === 'In Progress'
-                          ? 'bg-[#F8FAFC] text-[#EA580C]'
-                          : 'bg-emerald-500/20 text-[#15803D]'
+                          ? 'bg-[#FFF7ED] text-[#EA580C] border-[#FFEDD5]'
+                          : 'bg-emerald-50 text-emerald-700 border-emerald-200'
                       }`}
                     >
                       {item.checkOutTime === 'In Progress' ? 'On Duty' : 'Completed'}
@@ -1377,7 +1368,7 @@ const GymAdminAttendance = () => {
             <div className="flex items-center justify-end px-6 py-4 border-t border-[#E2E8F0] bg-[#F8FAFC]">
               <button
                 onClick={() => setSelectedRecord(null)}
-                className="px-5 py-2 rounded-xl bg-[#FFFFFF] hover:bg-[#FFF7ED] text-white text-xs font-bold transition-all shadow-sm cursor-pointer"
+                className="px-6 py-2.5 rounded-xl bg-[#111827] hover:bg-[#1F2937] text-white text-xs font-bold transition-all shadow-sm cursor-pointer"
               >
                 Close
               </button>

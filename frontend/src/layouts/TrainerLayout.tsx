@@ -9,7 +9,7 @@ import {
   MessageSquare, IndianRupee, Bell,
   Activity, Menu, LogOut, Bot,
   Dumbbell, Star, Video, CheckCircle2, Wrench, Gift, Award,
-  Search, Briefcase, Mail
+  Search, Briefcase, Mail, X
 } from 'lucide-react';
 
 const TrainerLayout = () => {
@@ -118,16 +118,26 @@ const TrainerLayout = () => {
     <>
       {/* Logo */}
       <div className="p-5 border-b border-[#E2E8F0]">
-        <Link to="/" className="flex items-center space-x-2.5" onClick={() => setSidebarOpen(false)}>
-          <div className="w-9 h-9 bg-[#C2410C] text-white font-bold rounded-xl flex items-center justify-center shadow-md shadow-orange-500/20 shrink-0">
-            <Activity className="text-white" size={20} />
-          </div>
-          <span className="text-xl font-bold tracking-tight text-[#111827] truncate max-w-[160px]" title={gym?.name || 'Gymora'}>
-            {gym?.name || 'Gymora'}
-          </span>
-        </Link>
+        <div className="flex items-center justify-between">
+          <Link to="/" className="flex items-center space-x-2.5" onClick={() => setSidebarOpen(false)}>
+            <div className="w-9 h-9 bg-[#C2410C] text-white font-bold rounded-xl flex items-center justify-center shadow-md shadow-orange-500/20 shrink-0">
+              <Activity className="text-white" size={20} />
+            </div>
+            <span className="text-xl font-bold tracking-tight text-[#111827] truncate max-w-[150px]" title={gym?.name || 'Gymora'}>
+              {gym?.name || 'Gymora'}
+            </span>
+          </Link>
+          <button
+            type="button"
+            onClick={() => setSidebarOpen(false)}
+            className="lg:hidden w-8 h-8 flex items-center justify-center bg-[#F8FAFC] border border-[#E2E8F0] text-[#64748B] hover:text-[#EA580C] rounded-lg hover:bg-[#FFF7ED] active:bg-[#FFEDD5] transition-colors shrink-0 cursor-pointer"
+            aria-label="Close menu"
+          >
+            <X size={18} />
+          </button>
+        </div>
         <div className="mt-4 flex items-center space-x-3">
-          <div className="w-10 h-10 bg-[#FFF7ED] border border-[#FFEDD5] rounded-full flex items-center justify-center text-[#C2410C] font-bold text-base shadow-xs">
+          <div className="w-10 h-10 bg-[#FFF7ED] border border-[#FFEDD5] rounded-full flex items-center justify-center text-[#C2410C] font-bold text-base shadow-xs shrink-0">
             {user?.firstName?.[0] || 'T'}
           </div>
           <div className="flex-1 overflow-hidden">
@@ -220,26 +230,26 @@ const TrainerLayout = () => {
       {/* Main Content */}
       <main className="flex-1 flex flex-col h-full overflow-hidden relative min-w-0 bg-[#FFFFFF]">
         {/* Header */}
-        <header className="h-16 border-b border-[#E2E8F0] flex items-center px-4 md:px-8 justify-between bg-[#FFFFFF] z-10 sticky top-0 shrink-0 text-[#111827]">
-          <div className="flex items-center space-x-3">
+        <header className="h-16 pt-safe border-b border-[#E2E8F0] flex items-center px-3.5 sm:px-4 md:px-8 justify-between bg-[#FFFFFF] z-10 sticky top-0 shrink-0 text-[#111827]">
+          <div className="flex items-center space-x-2.5 sm:space-x-3 min-w-0">
             <button
-              className="lg:hidden text-[#64748B] hover:text-[#EA580C] transition-colors p-1 rounded-lg hover:bg-[#F8FAFC]"
+              className="lg:hidden text-[#64748B] hover:text-[#EA580C] transition-colors w-10 h-10 flex items-center justify-center rounded-lg hover:bg-[#F8FAFC] shrink-0"
               onClick={() => setSidebarOpen(true)}
               aria-label="Open menu"
             >
               <Menu size={22} />
             </button>
-            {currentNav && <currentNav.icon size={20} className="text-[#EA580C] hidden sm:block" />}
-            <h2 className="text-base md:text-lg font-bold tracking-tight text-[#111827]">
+            {currentNav && <currentNav.icon size={20} className="text-[#EA580C] hidden sm:block shrink-0" />}
+            <h2 className="text-base md:text-lg font-bold tracking-tight text-[#111827] truncate">
               {currentNav?.label || 'Trainer Portal'}
             </h2>
           </div>
 
-          <div className="flex items-center space-x-3 md:space-x-5">
-            <Link to="/trainer/notifications" className="relative text-[#64748B] hover:text-[#EA580C] transition-colors p-1 block">
+          <div className="flex items-center space-x-2.5 sm:space-x-3 md:space-x-5 shrink-0">
+            <Link to="/trainer/notifications" className="relative text-[#64748B] hover:text-[#EA580C] transition-colors w-10 h-10 flex items-center justify-center rounded-lg hover:bg-[#F8FAFC]">
               <Bell size={20} />
               {unreadCount > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-[#C2410C] text-white font-bold text-[10px] rounded-full flex items-center justify-center shadow shadow-orange-500/30">
+                <span className="absolute 1 top-1 right-1 w-4 h-4 bg-[#C2410C] text-white font-bold text-[10px] rounded-full flex items-center justify-center shadow shadow-orange-500/30">
                   {unreadCount > 9 ? '9+' : unreadCount}
                 </span>
               )}
@@ -257,7 +267,7 @@ const TrainerLayout = () => {
           </div>
         </header>
 
-        <div className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
+        <div className="flex-1 overflow-y-auto p-3.5 sm:p-5 md:p-6 lg:p-8 pb-24 sm:pb-20">
           <Outlet />
         </div>
       </main>

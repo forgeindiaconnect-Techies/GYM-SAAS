@@ -415,15 +415,15 @@ const GymOwnerPortalLanding = () => {
   return (
     <div className="min-h-screen bg-[#FFFFFF] text-[#111827] selection:bg-[#C2410C] selection:text-[#FFFFFF] font-sans">
       {/* Top Navigation */}
-      <nav className="border-b border-[#E2E8F0] bg-[#FFFFFF]/95 backdrop-blur-md sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      <nav className="border-b border-[#E2E8F0] bg-[#FFFFFF]/95 backdrop-blur-md sticky top-0 z-50 pt-safe">
+        <div className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
           {/* Logo & Portal Badge */}
-          <div className="flex items-center space-x-3">
-            <Link to="/" className="flex items-center space-x-2.5 group">
-              <div className="w-10 h-10 bg-gradient-to-br from-[#EA580C] to-[#C2410C] rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/15">
-                <Activity className="text-[#FFFFFF]" size={22} strokeWidth={2.5} />
+          <div className="flex items-center space-x-2 sm:space-x-3 shrink-0">
+            <Link to="/" className="flex items-center space-x-2 sm:space-x-2.5 group">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 bg-gradient-to-br from-[#EA580C] to-[#C2410C] rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/15 shrink-0">
+                <Activity className="text-[#FFFFFF]" size={20} strokeWidth={2.5} />
               </div>
-              <span className="text-2xl font-black tracking-tight text-[#111827] group-hover:text-[#EA580C] transition-colors">
+              <span className="text-xl sm:text-2xl font-black tracking-tight text-[#111827] group-hover:text-[#EA580C] transition-colors">
                 Gymora
               </span>
             </Link>
@@ -433,21 +433,21 @@ const GymOwnerPortalLanding = () => {
           </div>
 
           {/* Action Links */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
             <Link
               to="/"
-              className="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#FFFFFF] bg-[#C2410C] hover:bg-[#9A3412] transition-all shadow-md shadow-orange-500/15 flex items-center gap-1.5"
+              className="px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold text-[#FFFFFF] bg-[#C2410C] hover:bg-[#9A3412] transition-all shadow-md shadow-orange-500/15 flex items-center gap-1 shrink-0"
             >
-              <ArrowLeft size={16} />
+              <ArrowLeft size={14} className="sm:w-4 sm:h-4" />
               <span>Back</span>
             </Link>
             <button
               type="button"
               onClick={() => { setTourStep(1); setIsTourOpen(true); }}
-              className="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#FFFFFF] bg-[#C2410C] hover:bg-[#9A3412] transition-all shadow-md shadow-orange-500/15 flex items-center gap-1.5 cursor-pointer"
+              className="px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold text-[#FFFFFF] bg-[#C2410C] hover:bg-[#9A3412] transition-all shadow-md shadow-orange-500/15 flex items-center gap-1 cursor-pointer shrink-0"
             >
-              <PlayCircle size={14} className="text-[#FFFFFF]" />
-              <span>Gym Owner Journey</span>
+              <PlayCircle size={13} className="sm:w-3.5 sm:h-3.5 text-[#FFFFFF]" />
+              <span><span className="hidden sm:inline">Gym Owner </span>Journey</span>
             </button>
             <a
               href="#pricing"
@@ -463,9 +463,9 @@ const GymOwnerPortalLanding = () => {
             </Link>
             <Link
               to="/login?portal=gym-owner"
-              className="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#FFFFFF] bg-[#C2410C] hover:bg-[#9A3412] transition-all shadow-md shadow-orange-500/15 flex items-center gap-1.5"
+              className="px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold text-[#FFFFFF] bg-[#C2410C] hover:bg-[#9A3412] transition-all shadow-md shadow-orange-500/15 flex items-center gap-1 shrink-0"
             >
-              <span>Gym Owner Login</span>
+              <span><span className="hidden sm:inline">Gym Owner </span>Login</span>
             </Link>
           </div>
         </div>
@@ -483,35 +483,21 @@ const GymOwnerPortalLanding = () => {
               <span className="text-[#EA580C]">Maximize Member Retention</span>
             </h1>
 
-            <p className="text-base sm:text-lg text-[#64748B] max-w-2xl mx-auto lg:mx-0 mb-8 leading-relaxed">
+            <p className="text-base sm:text-lg text-[#64748B] max-w-2xl mx-auto lg:mx-0 leading-relaxed">
               From multi-branch member tracking and trainer payroll to automated biometric attendance, inventory POS, and revenue analytics—manage everything seamlessly from one central hub.
             </p>
-
-            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
-              <Link
-                to="/login?portal=gym-owner"
-                className="w-full sm:w-auto px-7 py-3.5 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold rounded-xl transition-all flex items-center justify-center space-x-2 shadow-lg shadow-orange-500/15 hover:shadow-teal-500/30"
-              >
-                <span>Gym Owner Login</span>
-                <ChevronRight size={18} />
-              </Link>
-              <Link
-                to="/gym-owner-introduction"
-                className="w-full sm:w-auto px-7 py-3.5 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold rounded-xl transition-all flex items-center justify-center space-x-2 shadow-lg shadow-orange-500/15 hover:shadow-teal-500/30"
-              >
-                <Sparkles size={16} className="text-[#FFFFFF]" />
-                <span>Get Started &amp; Register Gym</span>
-              </Link>
-            </div>
           </div>
 
           {/* Right Image: Gym Owner Managing Operations */}
           <div className="lg:col-span-5 relative">
-            <div className="relative rounded-3xl overflow-hidden border border-[#E2E8F0] shadow-2xl shadow-orange-500/10 bg-[#FFFFFF] group">
+            {/* Subtle warm orange backdrop glow */}
+            <div className="absolute -inset-2 bg-gradient-to-r from-orange-500/20 via-amber-500/15 to-orange-600/20 rounded-3xl blur-xl opacity-75 pointer-events-none" />
+            <div className="relative rounded-3xl overflow-hidden border-2 border-[#FFEDD5] shadow-2xl bg-[#FFFFFF]">
               <img
                 src="/gym-owner-hero.jpg"
                 alt="Gym Owner Managing Operations"
-                className="w-full h-[360px] sm:h-[460px] object-cover object-center block group-hover:scale-105 transition-transform duration-700"
+                draggable={false}
+                className="w-full h-[360px] sm:h-[460px] object-cover object-center block select-none pointer-events-none"
                 loading="eager"
               />
             </div>
@@ -684,7 +670,8 @@ const GymOwnerPortalLanding = () => {
                         alt={feature.title}
                         loading="lazy"
                         decoding="async"
-                        className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
+                        draggable={false}
+                        className="w-full h-full object-cover object-center select-none pointer-events-none"
                         onError={(e) => {
                           e.currentTarget.src = gymLandingImg1;
                         }}

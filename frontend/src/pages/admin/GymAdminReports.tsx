@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { BarChart3, TrendingUp, Users, UserMinus, Download, Loader2, IndianRupee, Calendar } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -8,11 +8,11 @@ import api from '../../utils/api';
 const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const PLAN_COLORS = [
   'bg-[#C2410C]',
-  'bg-[#FFFFFF]',
-  'bg-[#F8FAFC]',
-  'bg-[#9A3412]',
-  'bg-[#64748B]',
-  'bg-[#E2E8F0]'
+  'bg-[#0284C7]',
+  'bg-[#16A34A]',
+  'bg-[#7C3AED]',
+  'bg-[#EA580C]',
+  'bg-[#D97706]'
 ];
 
 const GymAdminReports = () => {
@@ -75,6 +75,12 @@ const GymAdminReports = () => {
     return new Date(now.getFullYear(), 0, 1); // Start of current year
   }, [timeframe]);
 
+  const timeframeLabel = useMemo(() => {
+    if (timeframe === '1week') return 'Past 7 Days';
+    if (timeframe === '1month') return 'Past 30 Days';
+    return 'This Year';
+  }, [timeframe]);
+
   // Calculations
   const metrics = useMemo(() => {
     const totalMembers = members.length;
@@ -91,15 +97,32 @@ const GymAdminReports = () => {
       ? Number(((inactiveMembers / totalMembers) * 100).toFixed(1))
       : 0.0;
 
+    // Filter payments and store sales by cutoffDate for selected period
+    const periodPayments = payments.filter(p => {
+      const d = new Date(p.createdAt || p.date || p.paymentDate);
+      return !isNaN(d.getTime()) && d >= cutoffDate;
+    });
+
+    const periodStoreSales = storeSales.filter(s => {
+      const d = new Date(s.createdAt || s.date || s.orderDate);
+      return !isNaN(d.getTime()) && d >= cutoffDate;
+    });
+
     // Membership revenue (approved payments)
-    const membershipRevenue = payments
+    const periodMembershipRevenue = periodPayments
+      .filter(p => p.status === 'Approved' || p.status === 'APPROVED' || p.status === 'Paid')
+      .reduce((sum, p) => sum + (Number(p.amount) || 0), 0);
+
+    const totalMembershipRevenue = payments
       .filter(p => p.status === 'Approved' || p.status === 'APPROVED' || p.status === 'Paid')
       .reduce((sum, p) => sum + (Number(p.amount) || 0), 0);
 
     // Store sales revenue
-    const storeRevenue = storeSales.reduce((sum, s) => sum + (Number(s.totalAmount || s.total || 0)), 0);
+    const periodStoreRevenue = periodStoreSales.reduce((sum, s) => sum + (Number(s.totalAmount || s.total || 0)), 0);
+    const totalStoreRevenue = storeSales.reduce((sum, s) => sum + (Number(s.totalAmount || s.total || 0)), 0);
 
-    const totalRevenue = membershipRevenue + storeRevenue;
+    const periodTotalRevenue = periodMembershipRevenue + periodStoreRevenue;
+    const totalRevenue = totalMembershipRevenue + totalStoreRevenue;
 
     const avgLifetimeValue = totalMembers > 0
       ? Number((totalRevenue / totalMembers).toFixed(2))
@@ -112,8 +135,11 @@ const GymAdminReports = () => {
       newMembersInPeriod,
       retentionRate,
       churnRate,
-      membershipRevenue,
-      storeRevenue,
+      membershipRevenue: totalMembershipRevenue,
+      storeRevenue: totalStoreRevenue,
+      periodMembershipRevenue,
+      periodStoreRevenue,
+      periodTotalRevenue,
       totalRevenue,
       avgLifetimeValue
     };
@@ -250,17 +276,17 @@ const GymAdminReports = () => {
             <select
               value={timeframe}
               onChange={(e) => setTimeframe(e.target.value as any)}
-              className="px-4 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] text-[#111827] text-sm font-bold rounded-xl hover:border-[#FDBA74] transition-colors outline-none cursor-pointer appearance-none pr-8 shadow-xs"
+              className="px-4 py-2.5 bg-[#FFFFFF] border-2 border-[#CBD5E1] hover:border-[#EA580C] text-[#111827] text-sm font-extrabold rounded-xl transition-all outline-none cursor-pointer appearance-none pr-9 shadow-xs"
             >
-              <option value="1week">One Week</option>
-              <option value="1month">One Month</option>
-              <option value="1year">One Year</option>
+              <option value="1week" className="bg-white text-[#111827] font-semibold">One Week</option>
+              <option value="1month" className="bg-white text-[#111827] font-semibold">One Month</option>
+              <option value="1year" className="bg-white text-[#111827] font-semibold">One Year</option>
             </select>
-            <Calendar className="w-4 h-4 text-[#64748B] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <Calendar className="w-4 h-4 text-[#EA580C] absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
           </div>
           <button
             onClick={handleExportPDF}
-            className="px-4 py-2.5 bg-[#C2410C] text-white font-bold text-sm font-bold rounded-xl hover:bg-[#9A3412] transition-colors flex items-center gap-2 shadow-md shadow-orange-500/15 cursor-pointer"
+            className="px-4 py-2.5 bg-[#C2410C] text-white font-bold text-sm rounded-xl hover:bg-[#9A3412] transition-colors flex items-center gap-2 shadow-md shadow-orange-500/15 cursor-pointer"
           >
             <Download size={16} /> Export PDF
           </button>
@@ -274,10 +300,12 @@ const GymAdminReports = () => {
           <div className="w-12 h-12 bg-[#FFF7ED] text-[#EA580C] rounded-xl flex items-center justify-center mb-4">
             <Users size={24} />
           </div>
-          <p className="text-[#64748B] font-semibold text-xs uppercase tracking-wider mb-1">Total Members</p>
-          <h3 className="text-3xl font-black text-[#111827]">{metrics.totalMembers.toLocaleString('en-IN')}</h3>
+          <p className="text-[#64748B] font-semibold text-xs uppercase tracking-wider mb-1">
+            New Members ({timeframeLabel})
+          </p>
+          <h3 className="text-3xl font-black text-[#111827]">{metrics.newMembersInPeriod.toLocaleString('en-IN')}</h3>
           <p className="text-[#EA580C] text-xs font-bold mt-2 flex items-center gap-1">
-            <TrendingUp size={14} /> {metrics.activeMembers} Active · {metrics.inactiveMembers} Inactive
+            <TrendingUp size={14} /> Total: {metrics.totalMembers} ({metrics.activeMembers} Active · {metrics.inactiveMembers} Inactive)
           </p>
         </div>
 
@@ -305,15 +333,17 @@ const GymAdminReports = () => {
           </p>
         </div>
 
-        {/* Avg Lifetime Value */}
+        {/* Revenue in Period */}
         <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-6 hover:border-[#FFEDD5] transition-all shadow-xs">
           <div className="w-12 h-12 bg-[#FFF7ED] text-[#EA580C] rounded-xl flex items-center justify-center mb-4">
             <IndianRupee size={24} />
           </div>
-          <p className="text-[#64748B] font-semibold text-xs uppercase tracking-wider mb-1">Avg. Lifetime Value</p>
-          <h3 className="text-3xl font-black text-[#111827]">₹{metrics.avgLifetimeValue.toLocaleString('en-IN')}</h3>
+          <p className="text-[#64748B] font-semibold text-xs uppercase tracking-wider mb-1">
+            Revenue ({timeframeLabel})
+          </p>
+          <h3 className="text-3xl font-black text-[#111827]">₹{metrics.periodTotalRevenue.toLocaleString('en-IN')}</h3>
           <p className="text-[#EA580C] text-xs font-bold mt-2 flex items-center gap-1">
-            Total Revenue: ₹{metrics.totalRevenue.toLocaleString('en-IN')}
+            All-Time Revenue: ₹{metrics.totalRevenue.toLocaleString('en-IN')}
           </p>
         </div>
       </div>
@@ -326,8 +356,8 @@ const GymAdminReports = () => {
           <div>
             <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-3 mb-6">
               <h3 className="text-lg font-bold text-[#111827]">Membership Growth ({new Date().getFullYear()})</h3>
-              <span className="text-xs font-semibold text-[#64748B]">
-                {metrics.newMembersInPeriod} new in selected period
+              <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5]">
+                {metrics.newMembersInPeriod} new in {timeframeLabel}
               </span>
             </div>
 
@@ -335,7 +365,7 @@ const GymAdminReports = () => {
               {monthlyGrowth.map((item, idx) => (
                 <div key={idx} className="flex-1 flex flex-col items-center h-full justify-end group relative">
                   {/* Tooltip */}
-                  <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-[#FFFFFF] text-white text-xs px-2.5 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-20 shadow-md">
+                  <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-[#111827] text-white text-xs font-bold px-2.5 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-20 shadow-md">
                     {item.month}: {item.count} member(s)
                   </div>
                   
@@ -348,7 +378,7 @@ const GymAdminReports = () => {
                   />
                   
                   {/* Label */}
-                  <span className="text-[11px] font-semibold text-[#64748B] mt-2 block group-hover:text-[#FFFFFF]">
+                  <span className="text-[11px] font-semibold text-[#64748B] mt-2 block group-hover:text-[#EA580C] transition-colors">
                     {item.month}
                   </span>
                 </div>
@@ -395,8 +425,8 @@ const GymAdminReports = () => {
           </div>
 
           <div className="pt-4 mt-6 border-t border-[#E2E8F0] flex justify-between text-xs text-[#64748B]">
-            <span>Store Sales Revenue: <strong>₹{metrics.storeRevenue.toLocaleString('en-IN')}</strong></span>
-            <span>Membership Revenue: <strong>₹{metrics.membershipRevenue.toLocaleString('en-IN')}</strong></span>
+            <span>{timeframeLabel} Store Sales: <strong>₹{metrics.periodStoreRevenue.toLocaleString('en-IN')}</strong></span>
+            <span>{timeframeLabel} Membership Revenue: <strong>₹{metrics.periodMembershipRevenue.toLocaleString('en-IN')}</strong></span>
           </div>
         </div>
 

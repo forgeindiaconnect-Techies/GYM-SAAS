@@ -667,25 +667,25 @@ const GymAdminReferralRewardsManagement: React.FC = () => {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             <div className="bg-[#FFFFFF] p-5 rounded-2xl border border-[#E2E8F0] space-y-1">
               <span className="text-xs font-bold text-[#64748B] uppercase tracking-wider block">Total Members</span>
-              <span className="text-2xl font-black text-white">{customers.length}</span>
+              <span className="text-2xl font-black text-[#111827]">{customers.length}</span>
               <span className="text-[11px] text-[#EA580C] block">In your gym rewards system</span>
             </div>
 
             <div className="bg-[#FFFFFF] p-5 rounded-2xl border border-[#E2E8F0] space-y-1">
               <span className="text-xs font-bold text-[#64748B] uppercase tracking-wider block">Total Points Balance</span>
-              <span className="text-2xl font-black text-white">{totalGymPoints.toLocaleString('en-IN')} <span className="text-xs font-semibold text-[#EA580C]">pts</span></span>
+              <span className="text-2xl font-black text-[#111827]">{totalGymPoints.toLocaleString('en-IN')} <span className="text-xs font-semibold text-[#EA580C]">pts</span></span>
               <span className="text-[11px] text-[#15803D] block font-semibold">≈ ₹{totalValueInRupees.toLocaleString('en-IN')} value</span>
             </div>
 
             <div className="bg-[#FFFFFF] p-5 rounded-2xl border border-[#E2E8F0] space-y-1">
               <span className="text-xs font-bold text-[#64748B] uppercase tracking-wider block">Total Points Earned</span>
-              <span className="text-2xl font-black text-white">{totalGymEarned.toLocaleString('en-IN')}</span>
+              <span className="text-2xl font-black text-[#111827]">{totalGymEarned.toLocaleString('en-IN')}</span>
               <span className="text-[11px] text-[#64748B] block">Lifetime points generated</span>
             </div>
 
             <div className="bg-[#FFFFFF] p-5 rounded-2xl border border-[#E2E8F0] space-y-1">
               <span className="text-xs font-bold text-[#64748B] uppercase tracking-wider block">Total Points Redeemed</span>
-              <span className="text-2xl font-black text-white">{totalGymRedeemed.toLocaleString('en-IN')}</span>
+              <span className="text-2xl font-black text-[#111827]">{totalGymRedeemed.toLocaleString('en-IN')}</span>
               <span className="text-[11px] text-[#64748B] block">Membership & Store discounts</span>
             </div>
           </div>
@@ -700,7 +700,7 @@ const GymAdminReferralRewardsManagement: React.FC = () => {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && loadCustomers()}
                 placeholder="Search member name, email or phone..."
-                className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl pl-10 pr-4 py-2.5 text-xs text-white outline-none focus:border-[#FDBA74]"
+                className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl pl-10 pr-4 py-2.5 text-xs text-[#111827] placeholder:text-[#64748B] outline-none focus:border-[#FDBA74]"
               />
             </div>
 
@@ -748,22 +748,22 @@ const GymAdminReferralRewardsManagement: React.FC = () => {
                     customers.map((cust) => (
                       <tr key={cust._id} className="hover:bg-[#FFF7ED]/50 transition-colors">
                         <td className="p-4">
-                          <div className="font-bold text-white text-sm">{cust.name}</div>
+                          <div className="font-bold text-[#111827] text-sm">{cust.name}</div>
                           <div className="text-[#64748B] text-[11px]">{cust.email}</div>
                           {cust.mobile && <div className="text-[#EA580C] text-[10px]">{cust.mobile}</div>}
                         </td>
                         <td className="p-4">
-                          <div className="font-semibold text-white">{cust.membershipPlan}</div>
+                          <div className="font-semibold text-[#111827]">{cust.membershipPlan}</div>
                           <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold uppercase mt-1 ${
                             cust.membershipStatus === 'Active'
-                              ? 'bg-emerald-50 text-[#15803D] border border-emerald-800'
-                              : 'bg-zinc-800 text-zinc-400'
+                              ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                              : 'bg-zinc-100 text-zinc-600 border border-zinc-200'
                           }`}>
                             {cust.membershipStatus}
                           </span>
                         </td>
                         <td className="p-4">
-                          <div className="text-base font-black text-white">
+                          <div className="text-base font-black text-[#111827]">
                             {cust.pointsBalance.toLocaleString('en-IN')} <span className="text-xs font-semibold text-[#EA580C]">pts</span>
                           </div>
                           <div className="text-[11px] text-[#15803D] font-semibold">
@@ -774,7 +774,7 @@ const GymAdminReferralRewardsManagement: React.FC = () => {
                           {cust.totalEarned.toLocaleString('en-IN')} pts
                         </td>
                         <td className="p-4">
-                          <div className="font-semibold text-rose-300">
+                          <div className="font-bold text-rose-700">
                             {cust.totalRedeemed.toLocaleString('en-IN')} pts
                           </div>
                           <div className="text-[10px] text-[#64748B]">
@@ -782,7 +782,7 @@ const GymAdminReferralRewardsManagement: React.FC = () => {
                           </div>
                         </td>
                         <td className="p-4">
-                          <div className="font-bold text-white">
+                          <div className="font-bold text-[#111827]">
                             {cust.successfulReferrals} / {cust.totalReferrals}
                           </div>
                           <div className="text-[10px] text-[#EA580C]">successful / invited</div>
@@ -864,7 +864,7 @@ const GymAdminReferralRewardsManagement: React.FC = () => {
 
                   <div className="flex items-center justify-between border-t border-b border-[#E2E8F0]/60 py-2.5 text-xs">
                     <span className="text-[#64748B]">Points Required:</span>
-                    <span className="font-black text-white text-sm">{rw.requiredPoints} pts</span>
+                    <span className="font-black text-[#111827] text-sm">{rw.requiredPoints} pts</span>
                   </div>
 
                   <div className="flex items-center justify-between text-[11px] text-[#64748B]">
@@ -876,7 +876,7 @@ const GymAdminReferralRewardsManagement: React.FC = () => {
 
                   <div className="flex items-center justify-between text-[11px] text-[#64748B]">
                     <span>Total Claimed:</span>
-                    <span className="font-bold text-white">{rw.claimedCount} claims</span>
+                    <span className="font-bold text-[#111827]">{rw.claimedCount} claims</span>
                   </div>
                 </div>
               ))
@@ -916,24 +916,24 @@ const GymAdminReferralRewardsManagement: React.FC = () => {
                           {claim.claimCode}
                         </td>
                         <td className="p-3.5">
-                          <div className="font-bold text-white">{claim.userId ? `${claim.userId.firstName} ${claim.userId.lastName}` : 'Gym Member'}</div>
+                          <div className="font-bold text-[#111827]">{claim.userId ? `${claim.userId.firstName} ${claim.userId.lastName}` : 'Gym Member'}</div>
                           <div className="text-[10px] text-[#64748B]">{claim.userId?.email}</div>
                         </td>
-                        <td className="p-3.5 font-medium text-white">
+                        <td className="p-3.5 font-medium text-[#111827]">
                           {claim.rewardId?.title || 'Custom Reward'}
                         </td>
-                        <td className="p-3.5 font-bold text-white">
+                        <td className="p-3.5 font-bold text-[#111827]">
                           {claim.pointsDeducted} pts
                         </td>
                         <td className="p-3.5">
                           <span className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
                             claim.claimStatus === 'Approved'
-                              ? 'bg-emerald-50 text-[#15803D] border border-emerald-800'
+                              ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                               : claim.claimStatus === 'Pending'
-                              ? 'bg-amber-50 text-[#B45309] border border-amber-800'
+                              ? 'bg-amber-50 text-amber-800 border border-amber-200'
                               : claim.claimStatus === 'Redeemed'
-                              ? 'bg-blue-950/60 text-blue-400 border border-blue-800'
-                              : 'bg-red-50 text-[#B91C1C] border border-rose-800'
+                              ? 'bg-sky-50 text-sky-700 border border-sky-200'
+                              : 'bg-red-50 text-red-700 border border-red-200'
                           }`}>
                             {claim.claimStatus}
                           </span>

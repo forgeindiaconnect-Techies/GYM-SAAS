@@ -3,7 +3,7 @@ import {
   CreditCard, Zap, Star, Crown, Sparkles, CheckCircle, XCircle,
   Users, Dumbbell, Building2, UserCheck, Edit3, Eye, ToggleLeft,
   ToggleRight, Plus, Search, Calendar, IndianRupee, Clock, AlertCircle, Trash2,
-  FileText, Printer, Download
+  FileText, Printer, Download, X
 } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -254,9 +254,28 @@ const EditPlanModal = ({ plan, onClose, onSave }: { plan: any; onClose: () => vo
           </div>
         </div>
 
-        <div className="flex space-x-3 mt-8">
-          <button onClick={onClose} className="flex-1 py-3 bg-[#FFFFFF] text-[#111827] rounded-xl font-bold hover:bg-[#333] transition-colors text-sm">Cancel</button>
-          <button onClick={handleSave} className="flex-1 py-3 bg-[#F8FAFC] text-black rounded-xl font-bold hover:bg-[#9A3412] transition-colors text-sm">Save Changes</button>
+        <div className="flex flex-wrap items-center justify-end gap-3 mt-8 pt-4 border-t border-[#E2E8F0]">
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-5 py-2.5 bg-[#FFFFFF] hover:bg-[#F8FAFC] text-[#111827] border-2 border-[#CBD5E1] rounded-xl font-bold text-sm transition-all cursor-pointer shadow-sm"
+          >
+            Back
+          </button>
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-5 py-2.5 bg-[#FFFFFF] hover:bg-rose-50 hover:border-rose-300 text-rose-600 hover:text-rose-700 border-2 border-[#CBD5E1] rounded-xl font-bold text-sm transition-all cursor-pointer shadow-sm"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            onClick={handleSave}
+            className="px-6 py-2.5 bg-[#EA580C] hover:bg-[#C2410C] text-white rounded-xl font-bold text-sm transition-all shadow-md shadow-orange-500/20 cursor-pointer"
+          >
+            Save Changes
+          </button>
         </div>
       </div>
     </div>
@@ -267,68 +286,97 @@ const EditPlanModal = ({ plan, onClose, onSave }: { plan: any; onClose: () => vo
 const ViewPlanModal = ({ plan, onClose }: { plan: any; onClose: () => void }) => {
   const Icon = plan.icon;
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4 sm:p-6 overflow-y-auto">
-      <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-6 sm:p-8 max-w-lg w-full shadow-2xl max-h-[85vh] overflow-y-auto custom-scrollbar my-auto animate-in fade-in zoom-in-95 duration-150">
-        <div className="flex items-center justify-between mb-6">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-3 sm:p-6 overflow-y-auto">
+      <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl max-w-lg w-full shadow-2xl max-h-[92vh] sm:max-h-[90vh] flex flex-col my-auto animate-in fade-in zoom-in-95 duration-150 overflow-hidden">
+        {/* Header with Title and X Close Button */}
+        <div className="flex items-center justify-between p-4 sm:p-6 border-b border-[#E2E8F0] shrink-0 bg-[#FFFFFF]">
           <div className="flex items-center space-x-3">
-            <div className={`w-12 h-12 ${plan.iconBg} rounded-xl flex items-center justify-center`}>
-              <Icon size={22} className={plan.iconColor} />
+            <div className={`w-10 h-10 sm:w-12 sm:h-12 ${plan.iconBg} rounded-xl flex items-center justify-center shrink-0`}>
+              {Icon && <Icon size={20} className={plan.iconColor} />}
             </div>
             <div>
-              <h2 className="text-xl font-bold text-[#111827]">{plan.name} Plan</h2>
-              <p className="text-[#64748B] text-sm">{plan.tagline}</p>
+              <h2 className="text-lg sm:text-xl font-bold text-[#111827]">{plan.name} Plan</h2>
+              <p className="text-[#64748B] text-xs sm:text-sm">{plan.tagline}</p>
             </div>
           </div>
-          <span className="bg-green-500/10 text-green-400 border border-green-500/20 text-xs px-2.5 py-1 rounded-full font-bold">{plan.status}</span>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4 mb-6">
-          <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl p-4">
-            <p className="text-[#64748B] text-xs uppercase tracking-widest font-bold mb-1">Monthly Price</p>
-            <p className="text-[#111827] font-bold text-xl">₹{plan.priceMonthly.toLocaleString('en-IN')}</p>
-          </div>
-          <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl p-4">
-            <p className="text-[#64748B] text-xs uppercase tracking-widest font-bold mb-1">Annual Price</p>
-            <p className="text-[#111827] font-bold text-xl">₹{plan.priceAnnual.toLocaleString('en-IN')}</p>
+          <div className="flex items-center gap-2">
+            <span className="bg-green-500/10 text-green-700 border border-green-500/20 text-xs px-2.5 py-1 rounded-full font-bold">{plan.status}</span>
+            <button
+              onClick={onClose}
+              className="w-8 h-8 rounded-full bg-[#F8FAFC] hover:bg-[#FFF7ED] text-[#64748B] hover:text-[#EA580C] flex items-center justify-center transition-colors cursor-pointer border border-[#E2E8F0]"
+              title="Close modal"
+            >
+              <X size={18} />
+            </button>
           </div>
         </div>
 
-        <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl p-4 mb-6">
-          <p className="text-[#64748B] text-xs uppercase tracking-widest font-bold mb-3">Platform Limits</p>
-          <div className="grid grid-cols-2 gap-3 text-sm">
-            {[
-              { label: 'Members', value: plan.limits.members, icon: Users },
-              { label: 'Trainers', value: plan.limits.trainers, icon: Dumbbell },
-              { label: 'Staff', value: plan.limits.staff, icon: UserCheck },
-              { label: 'Branches', value: plan.limits.branches, icon: Building2 },
-            ].map(({ label, value, icon: LimitIcon }) => (
-              <div key={label} className="flex items-center space-x-2">
-                <LimitIcon size={14} className="text-[#EA580C]" />
-                <span className="text-[#64748B]">{label}:</span>
-                <span className="text-[#111827] font-bold">{value === -1 ? '∞' : value}</span>
-              </div>
-            ))}
+        {/* Scrollable Body */}
+        <div className="p-4 sm:p-6 overflow-y-auto custom-scrollbar flex-1 space-y-4 sm:space-y-6">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4">
+            <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-3 sm:p-4">
+              <p className="text-[#64748B] text-[10px] sm:text-xs uppercase tracking-widest font-bold mb-1">Monthly Price</p>
+              <p className="text-[#111827] font-black text-lg sm:text-xl">₹{plan.priceMonthly.toLocaleString('en-IN')}</p>
+            </div>
+            <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-3 sm:p-4">
+              <p className="text-[#64748B] text-[10px] sm:text-xs uppercase tracking-widest font-bold mb-1">Annual Price</p>
+              <p className="text-[#111827] font-black text-lg sm:text-xl">₹{plan.priceAnnual.toLocaleString('en-IN')}</p>
+            </div>
+          </div>
+
+          <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-4">
+            <p className="text-[#64748B] text-xs uppercase tracking-widest font-bold mb-3">Platform Limits</p>
+            <div className="grid grid-cols-2 gap-3 text-sm">
+              {[
+                { label: 'Members', value: plan.limits.members, icon: Users },
+                { label: 'Trainers', value: plan.limits.trainers, icon: Dumbbell },
+                { label: 'Staff', value: plan.limits.staff, icon: UserCheck },
+                { label: 'Branches', value: plan.limits.branches, icon: Building2 },
+              ].map(({ label, value, icon: LimitIcon }) => (
+                <div key={label} className="flex items-center space-x-2">
+                  <LimitIcon size={14} className="text-[#EA580C]" />
+                  <span className="text-[#64748B]">{label}:</span>
+                  <span className="text-[#111827] font-bold">{value === -1 ? '∞' : value}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <p className="text-[#111827] text-xs uppercase tracking-widest font-extrabold mb-3">Features Included</p>
+            <ul className="space-y-2.5">
+              {plan.features.map((f: any, i: number) => (
+                <li key={i} className={`flex items-center space-x-2.5 text-sm ${f.included ? 'text-[#111827] font-semibold' : 'text-[#94A3B8] line-through'}`}>
+                  {f.included ? <CheckCircle size={16} className="text-emerald-600 shrink-0" /> : <XCircle size={16} className="text-[#94A3B8] shrink-0" />}
+                  <span>{f.text}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="flex items-center justify-between bg-[#FFF7ED] border border-[#FFEDD5] rounded-xl p-4">
+            <span className="text-[#64748B] text-sm font-medium">Active Subscribers</span>
+            <span className="text-[#EA580C] font-bold text-xl">{plan.subscribedGyms} Gyms</span>
           </div>
         </div>
 
-        <div className="mb-6">
-          <p className="text-[#64748B] text-xs uppercase tracking-widest font-bold mb-3">Features</p>
-          <ul className="space-y-2">
-            {plan.features.map((f: any, i: number) => (
-              <li key={i} className={`flex items-center space-x-2 text-sm ${f.included ? 'text-[#C0C0C0]' : 'text-[#64748B]'}`}>
-                {f.included ? <CheckCircle size={14} className="text-green-400 shrink-0" /> : <XCircle size={14} className="text-[#64748B] shrink-0" />}
-                <span>{f.text}</span>
-              </li>
-            ))}
-          </ul>
+        {/* Sticky Footer with Back and Close */}
+        <div className="flex items-center gap-3 p-4 border-t border-[#E2E8F0] bg-[#FFFFFF] shrink-0">
+          <button
+            type="button"
+            onClick={onClose}
+            className="flex-1 py-2.5 bg-[#FFFFFF] hover:bg-[#F8FAFC] active:bg-[#E2E8F0] text-[#111827] border-2 border-[#CBD5E1] rounded-xl font-bold text-sm transition-all cursor-pointer shadow-sm text-center"
+          >
+            Back
+          </button>
+          <button
+            type="button"
+            onClick={onClose}
+            className="flex-1 py-2.5 bg-[#EA580C] hover:bg-[#C2410C] active:bg-[#9A3412] text-white rounded-xl font-bold transition-all text-sm shadow-md shadow-orange-500/20 cursor-pointer text-center"
+          >
+            Close
+          </button>
         </div>
-
-        <div className="flex items-center justify-between bg-[#FFF7ED] border border-[#F8FAFC]/20 rounded-xl p-4 mb-6">
-          <span className="text-[#64748B] text-sm">Active Subscribers</span>
-          <span className="text-[#EA580C] font-bold text-xl">{plan.subscribedGyms} Gyms</span>
-        </div>
-
-        <button onClick={onClose} className="w-full py-3 bg-[#FFFFFF] text-[#111827] rounded-xl font-bold hover:bg-[#333] transition-colors text-sm">Close</button>
       </div>
     </div>
   );
