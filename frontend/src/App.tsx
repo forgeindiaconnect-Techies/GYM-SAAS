@@ -1,7 +1,14 @@
 import { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { AuthProvider } from './contexts/AuthContext';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import {
+  resolveMemberRoute,
+  resolveTrainerRoute,
+  resolveAdminRoute,
+  resolveSuperAdminRoute,
+  resolveGlobalRoute
+} from './utils/smartUrlResolver';
 
 // Public
 import LandingPage from './pages/LandingPage';
@@ -232,6 +239,48 @@ function ScrollToTop() {
   return null;
 }
 
+function SmartTrainersRoute() {
+  const { user, isAuthenticated } = useAuth();
+  if (isAuthenticated && user?.role === 'MEMBER') {
+    return <Navigate to="/member/find-trainers" replace />;
+  }
+  if (isAuthenticated && user?.role === 'TRAINER') {
+    return <Navigate to="/trainer/dashboard" replace />;
+  }
+  return <TrainerLandingPage />;
+}
+
+function SmartMemberCatchAll() {
+  const location = useLocation();
+  const target = resolveMemberRoute(location.pathname);
+  return <Navigate to={target} replace />;
+}
+
+function SmartTrainerCatchAll() {
+  const location = useLocation();
+  const target = resolveTrainerRoute(location.pathname);
+  return <Navigate to={target} replace />;
+}
+
+function SmartAdminCatchAll() {
+  const location = useLocation();
+  const target = resolveAdminRoute(location.pathname);
+  return <Navigate to={target} replace />;
+}
+
+function SmartSuperAdminCatchAll() {
+  const location = useLocation();
+  const target = resolveSuperAdminRoute(location.pathname);
+  return <Navigate to={target} replace />;
+}
+
+function GlobalCatchAll() {
+  const location = useLocation();
+  const { user, isAuthenticated } = useAuth();
+  const target = resolveGlobalRoute(location.pathname, user, isAuthenticated);
+  return <Navigate to={target} replace />;
+}
+
 function App() {
   return (
     <AuthProvider>
@@ -273,7 +322,8 @@ function App() {
           <Route path="/careers" element={<Careers />} />
           <Route path="/jobs" element={<Careers />} />
           {/* Dedicated Trainer Landing & Subpages */}
-          <Route path="/trainers" element={<TrainerLandingPage />} />
+          <Route path="/trainers" element={<SmartTrainersRoute />} />
+          <Route path="/training" element={<Navigate to="/member/find-trainers" replace />} />
           <Route path="/trainers/directory" element={<TrainersDirectory />} />
           <Route path="/trainers/about" element={<TrainerAboutPage />} />
           <Route path="/trainers/how-it-works" element={<TrainerHowItWorksPage />} />
@@ -320,9 +370,13 @@ function App() {
             </ProtectedRoute>
           }>
             <Route path="dashboard" element={<MemberDashboard />} />
+            <Route path="dashboard/training" element={<Navigate to="/member/find-trainers" replace />} />
+            <Route path="dashboard/trainers" element={<Navigate to="/member/find-trainers" replace />} />
+            <Route path="dashboard/trainer" element={<Navigate to="/member/trainer" replace />} />
             <Route path="profile" element={<MemberProfile />} />
             <Route path="my-gym" element={<MemberGymProfile />} />
             <Route path="training" element={<MemberFindTrainers />} />
+            <Route path="trainers" element={<Navigate to="/member/find-trainers" replace />} />
             <Route path="find-trainers" element={<MemberFindTrainers />} />
             <Route path="trainer" element={<MemberMyTrainer />} />
             <Route path="book-session" element={<MemberBookSession />} />
@@ -359,6 +413,7 @@ function App() {
             <Route path="refer-earn" element={<MemberReferrals />} />
             <Route path="rewards" element={<MemberChallenges />} />
             <Route path="my-rewards" element={<MemberChallenges />} />
+            <Route path="*" element={<SmartMemberCatchAll />} />
           </Route>
 
           {/* Trainer Routes */}
@@ -367,6 +422,7 @@ function App() {
               <TrainerLayout />
             </ProtectedRoute>
           }>
+            <Route index element={<Navigate to="/trainer/dashboard" replace />} />
             <Route path="dashboard" element={<TrainerDashboard />} />
             <Route path="profile" element={<TrainerProfile />} />
             <Route path="members" element={<TrainerMembers />} />
@@ -403,6 +459,7 @@ function App() {
             <Route path="hiring-requests" element={<TrainerHiringRequests />} />
             <Route path="interviews" element={<TrainerInterviews />} />
             <Route path="job-offers" element={<TrainerJobOffers />} />
+            <Route path="*" element={<SmartTrainerCatchAll />} />
           </Route>
 
 {/* Manager Dashboard */}
@@ -482,6 +539,7 @@ function App() {
             <Route path="rewards" element={<GymAdminRewardsPerformance />} />
             <Route path="rewards-performance" element={<GymAdminRewardsPerformance />} />
             <Route path="referrals" element={<GymAdminReferrals />} />
+            <Route path="*" element={<SmartAdminCatchAll />} />
           </Route>
 
 {/* Super Admin Routes */}
@@ -508,10 +566,11 @@ function App() {
             <Route path="profile" element={<SuperAdminProfile />} />
             <Route path="settings" element={<SuperAdminSettings />} />
             <Route path="store" element={<SuperAdminGymStore />} />
+            <Route path="*" element={<SmartSuperAdminCatchAll />} />
           </Route>
 
-          {/* Catch-all */}
-          <Route path="*" element={<Navigate to="/" replace />} />
+          {/* Smart Global Catch-all */}
+          <Route path="*" element={<GlobalCatchAll />} />
         </Routes>
       </Router>
     </AuthProvider>
