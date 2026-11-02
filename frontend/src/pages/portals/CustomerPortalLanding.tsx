@@ -38,7 +38,8 @@ import {
   Play,
   PlayCircle,
   CheckCircle,
-  User
+  User,
+  Crown
 } from 'lucide-react';
 import api from '../../utils/api';
 import { FeaturePreview } from '../../components/Landing/FeaturePreview';
@@ -300,93 +301,204 @@ const CustomerPortalLanding = () => {
             loading="eager"
           />
 
-          {/* Interactive Clickable Hotspots */}
+          {/* 1. Top Navigation Bar — 100% Vector Sharp, Ultra-Clear Typography */}
+          <div
+            style={{ top: '2.50%', left: '2.44%', right: '2.44%', height: '7.20%' }}
+            className="absolute hidden sm:flex items-center justify-between z-20"
+          >
+            {/* Logo & Portal Badge */}
+            <div className="flex items-center gap-2.5">
+              <Link to="/" className="flex items-center gap-2 outline-none select-none">
+                <div className="w-[2.2vw] h-[2.2vw] min-w-[32px] min-h-[32px] bg-gradient-to-br from-[#EA580C] to-[#F97316] rounded-xl flex items-center justify-center shadow-md shadow-orange-600/30">
+                  <Activity className="w-[55%] h-[55%] text-white stroke-[2.8]" />
+                </div>
+                <span className="font-extrabold text-[clamp(18px,1.8vw,30px)] tracking-tight text-[#0F172A]">
+                  Gymora
+                </span>
+              </Link>
+              <div className="h-4 w-px bg-slate-300 mx-0.5" />
+              <span className="px-3 py-1 rounded-full text-[clamp(10px,0.85vw,13px)] font-bold bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5] tracking-wide shadow-xs">
+                Customer Fitness
+              </span>
+            </div>
 
-          {/* 1. Brand Logo (Top-Left) */}
-          <Link
-            to="/"
-            title="Gymora Home"
-            aria-label="Gymora Home"
-            style={{ left: '2.90%', top: '2.50%', width: '27.50%', height: '7.20%', WebkitTapHighlightColor: 'transparent' }}
-            className="absolute rounded-xl cursor-pointer hover:bg-black/5 transition-colors outline-none focus:outline-none focus:ring-0 select-none"
-          />
+            {/* Navigation Action Buttons */}
+            <div className="flex items-center gap-[0.65vw]">
+              <Link
+                to="/"
+                style={{ WebkitTapHighlightColor: 'transparent' }}
+                className="px-[1.2vw] py-[0.55vw] rounded-full bg-[#EA580C] hover:bg-[#D94806] text-white font-extrabold text-[clamp(11px,0.92vw,15px)] flex items-center gap-1.5 shadow-sm active:scale-95 transition-all outline-none"
+              >
+                <ArrowLeft className="w-[1vw] h-[1vw] min-w-[12px] min-h-[12px] stroke-[2.5]" />
+                <span>Back</span>
+              </Link>
 
-          {/* 2. Top-Right: Back Button */}
-          <Link
-            to="/"
-            title="Back to Home"
-            aria-label="Back to Home"
-            style={{ left: '49.60%', top: '2.50%', width: '9.00%', height: '7.20%', WebkitTapHighlightColor: 'transparent' }}
-            className="absolute rounded-full cursor-pointer hover:brightness-105 active:scale-95 transition-all outline-none focus:outline-none focus:ring-0 select-none"
-          />
+              <button
+                type="button"
+                onClick={() => setIsFeaturesOpen(true)}
+                style={{ WebkitTapHighlightColor: 'transparent' }}
+                className="px-[1.2vw] py-[0.55vw] rounded-full bg-[#EA580C] hover:bg-[#D94806] text-white font-extrabold text-[clamp(11px,0.92vw,15px)] flex items-center gap-1.5 shadow-sm active:scale-95 transition-all outline-none cursor-pointer"
+              >
+                <Sparkles className="w-[1vw] h-[1vw] min-w-[12px] min-h-[12px] stroke-[2.5]" />
+                <span>Features</span>
+              </button>
 
-          {/* 3. Top-Right: Features Button */}
-          <button
-            type="button"
-            onClick={() => setIsFeaturesOpen(true)}
-            title="Explore Features"
-            aria-label="Explore Features"
-            style={{ left: '59.20%', top: '2.50%', width: '10.90%', height: '7.20%', WebkitTapHighlightColor: 'transparent' }}
-            className="absolute rounded-full cursor-pointer hover:brightness-105 active:scale-95 transition-all outline-none focus:outline-none focus:ring-0 select-none"
-          />
+              <Link
+                to="/gyms"
+                state={{ from: '/portal/customer', fromLabel: 'Back to Customer' }}
+                style={{ WebkitTapHighlightColor: 'transparent' }}
+                className="px-[1.2vw] py-[0.55vw] rounded-full bg-[#EA580C] hover:bg-[#D94806] text-white font-extrabold text-[clamp(11px,0.92vw,15px)] flex items-center gap-1.5 shadow-sm active:scale-95 transition-all outline-none"
+              >
+                <Compass className="w-[1vw] h-[1vw] min-w-[12px] min-h-[12px] stroke-[2.5]" />
+                <span>Find Gyms</span>
+              </Link>
 
-          {/* 4. Top-Right: Find Gyms Button */}
-          <Link
-            to="/gyms"
-            state={{ from: '/portal/customer', fromLabel: 'Back to Customer' }}
-            title="Find Gyms"
-            aria-label="Find Gyms"
-            style={{ left: '71.00%', top: '2.50%', width: '11.60%', height: '7.20%', WebkitTapHighlightColor: 'transparent' }}
-            className="absolute rounded-full cursor-pointer hover:brightness-105 active:scale-95 transition-all outline-none focus:outline-none focus:ring-0 select-none"
-          />
+              <Link
+                to="/login?portal=customer"
+                style={{ WebkitTapHighlightColor: 'transparent' }}
+                className="px-[1.3vw] py-[0.55vw] rounded-full bg-[#EA580C] hover:bg-[#D94806] text-white font-extrabold text-[clamp(11px,0.92vw,15px)] flex items-center gap-1.5 shadow-sm active:scale-95 transition-all outline-none"
+              >
+                <User className="w-[1vw] h-[1vw] min-w-[12px] min-h-[12px] stroke-[2.5]" />
+                <span>Customer Login</span>
+              </Link>
+            </div>
+          </div>
 
-          {/* 5. Top-Right: Customer Login Button */}
-          <Link
-            to="/login?portal=customer"
-            title="Customer Login"
-            aria-label="Customer Login"
-            style={{ left: '83.80%', top: '2.50%', width: '14.40%', height: '7.20%', WebkitTapHighlightColor: 'transparent' }}
-            className="absolute rounded-full cursor-pointer hover:brightness-105 active:scale-95 transition-all outline-none focus:outline-none focus:ring-0 select-none"
-          />
+          {/* 2. Left Hero Typography & Feature Items — 100% Vector HTML Sharp */}
+          <div
+            style={{ top: '13.5%', left: '3.4%', width: '33.5%', bottom: '3%' }}
+            className="absolute hidden sm:flex flex-col justify-start z-10 select-text"
+          >
+            {/* Top Partner Badge */}
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5] text-[clamp(10px,0.85vw,13px)] font-bold tracking-wide shadow-xs w-fit mb-[1.2vw]">
+              <Crown className="w-[1vw] h-[1vw] min-w-[13px] min-h-[13px] text-[#EA580C] fill-[#EA580C]" />
+              <span>Your Personal Fitness Partner</span>
+            </div>
 
-          {/* 6. Floating Card: AI Fitness Coach */}
+            {/* 3-Line Headline */}
+            <h1 className="font-black text-[clamp(24px,3.3vw,54px)] leading-[1.08] text-[#0F172A] tracking-tight">
+              <span>Train Smarter</span><br />
+              <span className="relative inline-block text-[#EA580C]">
+                Stay Healthier
+                {/* Underline brush stroke */}
+                <svg className="absolute -bottom-1 left-0 w-full h-[0.35em] text-[#EA580C]" viewBox="0 0 240 16" fill="none" preserveAspectRatio="none">
+                  <path d="M2 12C60 4 180 4 238 12" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
+                </svg>
+              </span><br />
+              <span>Be Fitter</span>
+            </h1>
+
+            {/* Subtitle */}
+            <p className="mt-[1vw] text-[clamp(11px,0.95vw,15px)] text-[#475569] font-medium leading-relaxed max-w-[96%]">
+              AI-powered workouts, expert trainers and personalized nutrition to help you reach your fitness goals faster and stay consistent.
+            </p>
+
+            {/* 3 Feature Items */}
+            <div className="mt-[1.6vw] space-y-[0.9vw] max-w-[96%]">
+              {/* Item 1: AI Workout Plans */}
+              <div 
+                onClick={() => setShowAiWorkoutModal(true)}
+                className="flex items-center gap-[0.8vw] group cursor-pointer"
+              >
+                <div className="w-[2.6vw] h-[2.6vw] min-w-[34px] min-h-[34px] rounded-xl bg-[#FFF7ED] border border-[#FFEDD5] flex items-center justify-center text-[#EA580C] shadow-xs group-hover:scale-105 transition-transform shrink-0">
+                  <Dumbbell className="w-[50%] h-[50%] stroke-[2.4]" />
+                </div>
+                <div>
+                  <div className="font-extrabold text-[clamp(12px,0.98vw,15.5px)] text-[#0F172A] leading-tight">AI Workout Plans</div>
+                  <div className="text-[clamp(10px,0.8vw,12.5px)] text-[#64748B] font-medium leading-tight">Get personalized training plans for your goals</div>
+                </div>
+              </div>
+
+              {/* Item 2: Nutrition Guidance */}
+              <div 
+                onClick={() => setShowDietFlowchartModal(true)}
+                className="flex items-center gap-[0.8vw] group cursor-pointer"
+              >
+                <div className="w-[2.6vw] h-[2.6vw] min-w-[34px] min-h-[34px] rounded-xl bg-[#FFF7ED] border border-[#FFEDD5] flex items-center justify-center text-[#EA580C] shadow-xs group-hover:scale-105 transition-transform shrink-0">
+                  <Apple className="w-[50%] h-[50%] stroke-[2.4]" />
+                </div>
+                <div>
+                  <div className="font-extrabold text-[clamp(12px,0.98vw,15.5px)] text-[#0F172A] leading-tight">Nutrition Guidance</div>
+                  <div className="text-[clamp(10px,0.8vw,12.5px)] text-[#64748B] font-medium leading-tight">Balanced diet plans with calorie tracking</div>
+                </div>
+              </div>
+
+              {/* Item 3: 1-on-1 Elite Trainers */}
+              <Link 
+                to="/trainers" 
+                className="flex items-center gap-[0.8vw] group"
+              >
+                <div className="w-[2.6vw] h-[2.6vw] min-w-[34px] min-h-[34px] rounded-xl bg-[#FFF7ED] border border-[#FFEDD5] flex items-center justify-center text-[#EA580C] shadow-xs group-hover:scale-105 transition-transform shrink-0">
+                  <User className="w-[50%] h-[50%] stroke-[2.4]" />
+                </div>
+                <div>
+                  <div className="font-extrabold text-[clamp(12px,0.98vw,15.5px)] text-[#0F172A] leading-tight">1-on-1 Elite Trainers</div>
+                  <div className="text-[clamp(10px,0.8vw,12.5px)] text-[#64748B] font-medium leading-tight">Book certified trainers and get expert support</div>
+                </div>
+              </Link>
+            </div>
+          </div>
+
+          {/* 3. Interactive Clickable Hotspots for Right Floating Cards */}
+          {/* Card 1: AI Fitness Coach */}
           <button
             type="button"
             onClick={() => setShowAiWorkoutModal(true)}
             title="Launch AI Fitness Coach"
             aria-label="Launch AI Fitness Coach"
-            style={{ left: '71.50%', top: '22.50%', width: '25.00%', height: '11.00%', WebkitTapHighlightColor: 'transparent' }}
-            className="absolute rounded-2xl cursor-pointer hover:bg-black/5 active:scale-98 transition-all outline-none focus:outline-none focus:ring-0 select-none"
+            style={{ left: '71.30%', top: '22.90%', width: '24.90%', height: '12.50%', WebkitTapHighlightColor: 'transparent' }}
+            className="absolute rounded-2xl cursor-pointer hover:bg-black/5 active:scale-98 transition-all outline-none focus:outline-none focus:ring-0 select-none z-10"
           />
 
-          {/* 7. Bottom Right Badge: Workouts */}
+          {/* Card 2: Your Progress */}
+          <button
+            type="button"
+            onClick={() => setIsFeaturesOpen(true)}
+            title="View Your Progress"
+            aria-label="View Your Progress"
+            style={{ left: '77.90%', top: '38.00%', width: '20.30%', height: '15.60%', WebkitTapHighlightColor: 'transparent' }}
+            className="absolute rounded-2xl cursor-pointer hover:bg-black/5 active:scale-98 transition-all outline-none focus:outline-none focus:ring-0 select-none z-10"
+          />
+
+          {/* Card 3: Calories Burned */}
+          <button
+            type="button"
+            onClick={() => setIsFeaturesOpen(true)}
+            title="Calories Burned & Nutrition"
+            aria-label="Calories Burned & Nutrition"
+            style={{ left: '81.40%', top: '57.30%', width: '16.80%', height: '10.80%', WebkitTapHighlightColor: 'transparent' }}
+            className="absolute rounded-2xl cursor-pointer hover:bg-black/5 active:scale-98 transition-all outline-none focus:outline-none focus:ring-0 select-none z-10"
+          />
+
+          {/* 4. Interactive Hotspots for Bottom Right Badges */}
+          {/* Badge 1: Workouts */}
           <button
             type="button"
             onClick={() => setShowAiWorkoutModal(true)}
             title="AI Workouts"
             aria-label="AI Workouts"
-            style={{ left: '67.50%', top: '81.00%', width: '9.50%', height: '15.00%', WebkitTapHighlightColor: 'transparent' }}
-            className="absolute rounded-2xl cursor-pointer hover:bg-black/5 active:scale-95 transition-all outline-none focus:outline-none focus:ring-0 select-none"
+            style={{ left: '68.00%', top: '81.00%', width: '9.00%', height: '15.00%', WebkitTapHighlightColor: 'transparent' }}
+            className="absolute rounded-2xl cursor-pointer hover:bg-black/5 active:scale-95 transition-all outline-none focus:outline-none focus:ring-0 select-none z-10"
           />
 
-          {/* 8. Bottom Right Badge: Track Progress */}
+          {/* Badge 2: Track Progress */}
           <button
             type="button"
             onClick={() => setIsFeaturesOpen(true)}
             title="Track Progress"
             aria-label="Track Progress"
-            style={{ left: '78.50%', top: '81.00%', width: '10.50%', height: '15.00%', WebkitTapHighlightColor: 'transparent' }}
-            className="absolute rounded-2xl cursor-pointer hover:bg-black/5 active:scale-95 transition-all outline-none focus:outline-none focus:ring-0 select-none"
+            style={{ left: '78.50%', top: '81.00%', width: '10.00%', height: '15.00%', WebkitTapHighlightColor: 'transparent' }}
+            className="absolute rounded-2xl cursor-pointer hover:bg-black/5 active:scale-95 transition-all outline-none focus:outline-none focus:ring-0 select-none z-10"
           />
 
-          {/* 9. Bottom Right Badge: Join Challenges */}
+          {/* Badge 3: Join Challenges */}
           <button
             type="button"
             onClick={() => setIsFeaturesOpen(true)}
             title="Join Challenges"
             aria-label="Join Challenges"
             style={{ left: '90.00%', top: '81.00%', width: '9.00%', height: '15.00%', WebkitTapHighlightColor: 'transparent' }}
-            className="absolute rounded-2xl cursor-pointer hover:bg-black/5 active:scale-95 transition-all outline-none focus:outline-none focus:ring-0 select-none"
+            className="absolute rounded-2xl cursor-pointer hover:bg-black/5 active:scale-95 transition-all outline-none focus:outline-none focus:ring-0 select-none z-10"
           />
         </div>
 

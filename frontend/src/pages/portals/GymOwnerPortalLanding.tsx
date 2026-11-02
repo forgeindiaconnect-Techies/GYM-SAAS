@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import gymLandingImg1 from '../../assets/GYM landing page image 1.jpg';
 import gymLandingImg2 from '../../assets/GYM landing page image 2.jpg';
@@ -418,7 +418,7 @@ const GymOwnerPortalLanding = () => {
         <div className="w-full relative select-none">
           {/* Master 2x 2048x952 Artwork matching Reference 1 Exactly */}
           <img
-            src="/gym-owner-hero-unified-2x.png"
+            src="/gym-owner-hero-unified-2x.png?v=3"
             alt="Gymora Gym Owner - Scale Your Gym Operations & Maximize Member Retention"
             className="w-full h-auto block object-cover select-none pointer-events-none"
             loading="eager"
@@ -426,13 +426,13 @@ const GymOwnerPortalLanding = () => {
 
           {/* 1. Top Navigation Bar â€” 100% Vector Sharp, Ultra-Clear Typography */}
           <div
-            style={{ top: '2.50%', left: '2.44%', right: '2.44%', height: '7.20%' }}
+            style={{ top: '3.60%', left: '4.69%', right: '4.69%', height: '6.20%' }}
             className="absolute hidden sm:flex items-center justify-between z-20"
           >
             {/* Logo & Portal Badge */}
-            <div className="flex items-center gap-2.5">
+            <div className="flex items-center gap-2.5 h-full">
               <Link to="/" className="flex items-center gap-2 outline-none select-none">
-                <div className="w-[2.2vw] h-[2.2vw] min-w-[32px] min-h-[32px] bg-gradient-to-br from-[#EA580C] to-[#F97316] rounded-xl flex items-center justify-center shadow-md shadow-orange-600/30">
+                <div className="h-full aspect-square bg-gradient-to-br from-[#EA580C] to-[#F97316] rounded-[22%] flex items-center justify-center shadow-md shadow-orange-600/30">
                   <Activity className="w-[55%] h-[55%] text-white stroke-[2.8]" />
                 </div>
                 <span className="font-extrabold text-[clamp(18px,1.8vw,30px)] tracking-tight text-[#0F172A]">
@@ -445,11 +445,11 @@ const GymOwnerPortalLanding = () => {
             </div>
 
             {/* Navigation Action Buttons */}
-            <div className="flex items-center gap-[0.65vw]">
+            <div className="flex items-center gap-[0.55vw] h-full">
               <Link
                 to="/"
                 style={{ WebkitTapHighlightColor: 'transparent' }}
-                className="px-[1.2vw] py-[0.55vw] rounded-full bg-[#EA580C] hover:bg-[#D94806] text-white font-extrabold text-[clamp(11px,0.92vw,15px)] flex items-center gap-1.5 shadow-sm active:scale-95 transition-all outline-none"
+                className="h-full px-[1.1vw] rounded-full bg-[#EA580C] hover:bg-[#D94806] text-white font-extrabold text-[clamp(11px,0.92vw,15px)] flex items-center justify-center leading-none gap-1.5 shadow-sm active:scale-95 transition-all outline-none"
               >
                 <ArrowLeft className="w-[1vw] h-[1vw] min-w-[12px] min-h-[12px] stroke-[2.5]" />
                 <span>Back</span>
@@ -459,7 +459,7 @@ const GymOwnerPortalLanding = () => {
                 type="button"
                 onClick={() => { setTourStep(1); setIsTourOpen(true); }}
                 style={{ WebkitTapHighlightColor: 'transparent' }}
-                className="px-[1.2vw] py-[0.55vw] rounded-full bg-[#EA580C] hover:bg-[#D94806] text-white font-extrabold text-[clamp(11px,0.92vw,15px)] flex items-center gap-1.5 shadow-sm active:scale-95 transition-all outline-none cursor-pointer"
+                className="h-full px-[1.1vw] rounded-full bg-[#EA580C] hover:bg-[#D94806] text-white font-extrabold text-[clamp(11px,0.92vw,15px)] flex items-center justify-center leading-none gap-1.5 shadow-sm active:scale-95 transition-all outline-none cursor-pointer"
               >
                 <PlayCircle className="w-[1vw] h-[1vw] min-w-[12px] min-h-[12px]" />
                 <span>Gym Owner Journey</span>
@@ -468,7 +468,7 @@ const GymOwnerPortalLanding = () => {
               <a
                 href="#pricing"
                 style={{ WebkitTapHighlightColor: 'transparent' }}
-                className="px-[1.2vw] py-[0.55vw] rounded-full bg-[#EA580C] hover:bg-[#D94806] text-white font-extrabold text-[clamp(11px,0.92vw,15px)] flex items-center shadow-sm active:scale-95 transition-all outline-none"
+                className="h-full px-[1.1vw] rounded-full bg-[#EA580C] hover:bg-[#D94806] text-white font-extrabold text-[clamp(11px,0.92vw,15px)] flex items-center justify-center leading-none shadow-sm active:scale-95 transition-all outline-none"
               >
                 Platform Pricing
               </a>
@@ -476,7 +476,7 @@ const GymOwnerPortalLanding = () => {
               <Link
                 to="/gym-owner-introduction"
                 style={{ WebkitTapHighlightColor: 'transparent' }}
-                className="px-[1.2vw] py-[0.55vw] rounded-full bg-[#EA580C] hover:bg-[#D94806] text-white font-extrabold text-[clamp(11px,0.92vw,15px)] flex items-center shadow-sm active:scale-95 transition-all outline-none"
+                className="h-full px-[1.1vw] rounded-full bg-[#EA580C] hover:bg-[#D94806] text-white font-extrabold text-[clamp(11px,0.92vw,15px)] flex items-center justify-center leading-none shadow-sm active:scale-95 transition-all outline-none"
               >
                 Register Gym
               </Link>
@@ -484,7 +484,7 @@ const GymOwnerPortalLanding = () => {
               <Link
                 to="/login?portal=gym-owner"
                 style={{ WebkitTapHighlightColor: 'transparent' }}
-                className="px-[1.3vw] py-[0.55vw] rounded-full bg-[#EA580C] hover:bg-[#D94806] text-white font-extrabold text-[clamp(11px,0.92vw,15px)] flex items-center shadow-sm active:scale-95 transition-all outline-none"
+                className="h-full px-[1.2vw] rounded-full bg-[#EA580C] hover:bg-[#D94806] text-white font-extrabold text-[clamp(11px,0.92vw,15px)] flex items-center justify-center leading-none shadow-sm active:scale-95 transition-all outline-none"
               >
                 Gym Owner Login
               </Link>
@@ -1987,7 +1987,7 @@ const GymOwnerPortalLanding = () => {
                   </p>
                 </div>
               </div>
-              <div className="flex items-center gap-2.5">
+              <div className="flex items-center gap-2.5 h-full">
                 <button
                   onClick={() => setIsTourOpen(false)}
                   className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold text-xs sm:text-sm rounded-full transition-all shadow-md cursor-pointer"
