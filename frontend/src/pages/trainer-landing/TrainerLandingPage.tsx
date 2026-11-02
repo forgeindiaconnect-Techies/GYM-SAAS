@@ -191,41 +191,43 @@ export const TrainerLandingPage: React.FC = () => {
             loading="eager"
           />
 
-          {/* 1. Top Navigation Bar — 100% Vector Sharp Typography */}
+          {/* 1. Top Navigation Bar — 100% Vector Sharp Typography Matching Reference */}
           <div
-            style={{ top: '2.50%', left: '3.08%', right: '3.08%', height: '7.20%' }}
+            style={{ top: '3.96%', left: '4.69%', right: '4.69%', height: '6.83%' }}
             className="absolute hidden sm:flex items-center justify-between z-20"
           >
             {/* Logo & Portal Badge */}
-            <Link to="/" className="flex items-center gap-2.5 outline-none select-none">
-              <div className="w-[2.2vw] h-[2.2vw] min-w-[32px] min-h-[32px] bg-gradient-to-br from-[#EA580C] to-[#F97316] rounded-xl flex items-center justify-center shadow-md shadow-orange-600/30">
-                <Activity className="w-[55%] h-[55%] text-white stroke-[2.8]" />
-              </div>
-              <span className="font-extrabold text-[clamp(18px,1.8vw,30px)] tracking-tight text-[#0F172A]">
-                Gymora
-              </span>
+            <div className="flex items-center gap-2.5 h-full">
+              <Link to="/" className="flex items-center gap-2 outline-none select-none h-full">
+                <div className="h-full aspect-square bg-gradient-to-br from-[#EA580C] to-[#F97316] rounded-[22%] flex items-center justify-center shadow-md shadow-orange-600/30">
+                  <Activity className="w-[60%] h-[60%] text-white stroke-[2.8]" />
+                </div>
+                <span className="font-extrabold text-[clamp(18px,2vw,32px)] tracking-tight text-[#0F172A]">
+                  Gymora
+                </span>
+              </Link>
               <span className="px-2.5 py-0.5 rounded-full text-[clamp(10px,0.8vw,12px)] font-bold bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5] uppercase tracking-wider">
                 TRAINER NETWORK
               </span>
-            </Link>
+            </div>
 
             {/* Navigation Action Buttons */}
-            <div className="flex items-center gap-[0.7vw]">
+            <div className="flex items-center gap-[0.7vw] h-full">
               <Link
                 to="/"
                 style={{ WebkitTapHighlightColor: 'transparent' }}
-                className="px-[1.3vw] py-[0.55vw] rounded-full bg-white hover:bg-orange-50 border border-[#E5E7EB] text-[#EA580C] font-bold text-[clamp(11px,0.92vw,15px)] flex items-center gap-1.5 shadow-xs active:scale-95 transition-all outline-none"
+                className="h-full px-[1.5vw] rounded-full bg-white hover:bg-orange-50 border border-[#E5E7EB] text-[#EA580C] font-bold text-[clamp(11px,1.05vw,15.5px)] flex items-center justify-center gap-1.5 shadow-xs active:scale-95 transition-all outline-none leading-none"
               >
-                <ArrowLeft className="w-[1vw] h-[1vw] min-w-[12px] min-h-[12px] stroke-[2.5]" />
+                <ArrowLeft className="w-[1.1vw] h-[1.1vw] min-w-[13px] min-h-[13px] stroke-[2.5]" />
                 <span>Back</span>
               </Link>
 
               <Link
                 to="/login?portal=trainer"
                 style={{ WebkitTapHighlightColor: 'transparent' }}
-                className="px-[1.4vw] py-[0.55vw] rounded-full bg-gradient-to-r from-[#EA580C] to-[#F97316] text-white font-bold text-[clamp(11px,0.92vw,15px)] flex items-center gap-1.5 shadow-md shadow-orange-950/20 hover:brightness-105 active:scale-95 transition-all outline-none"
+                className="h-full px-[1.8vw] rounded-full bg-gradient-to-r from-[#EA580C] to-[#F97316] text-white font-bold text-[clamp(11px,1.05vw,15.5px)] flex items-center justify-center gap-1.5 shadow-md shadow-orange-950/20 hover:brightness-105 active:scale-95 transition-all outline-none leading-none"
               >
-                <UserCheck className="w-[1vw] h-[1vw] min-w-[12px] min-h-[12px] stroke-[2.4]" />
+                <UserCheck className="w-[1.1vw] h-[1.1vw] min-w-[13px] min-h-[13px] stroke-[2.4]" />
                 <span>Login</span>
               </Link>
             </div>

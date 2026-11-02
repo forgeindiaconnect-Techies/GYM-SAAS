@@ -301,18 +301,18 @@ const CustomerPortalLanding = () => {
             loading="eager"
           />
 
-          {/* 1. Top Navigation Bar — 100% Vector Sharp, Ultra-Clear Typography */}
+          {/* 1. Top Navigation Bar — 100% Vector Sharp, Ultra-Clear Typography Matching Reference */}
           <div
-            style={{ top: '2.50%', left: '2.44%', right: '2.44%', height: '7.20%' }}
+            style={{ top: '3.29%', left: '4.69%', right: '4.69%', height: '5.67%' }}
             className="absolute hidden sm:flex items-center justify-between z-20"
           >
             {/* Logo & Portal Badge */}
-            <div className="flex items-center gap-2.5">
-              <Link to="/" className="flex items-center gap-2 outline-none select-none">
-                <div className="w-[2.2vw] h-[2.2vw] min-w-[32px] min-h-[32px] bg-gradient-to-br from-[#EA580C] to-[#F97316] rounded-xl flex items-center justify-center shadow-md shadow-orange-600/30">
-                  <Activity className="w-[55%] h-[55%] text-white stroke-[2.8]" />
+            <div className="flex items-center gap-2.5 h-full">
+              <Link to="/" className="flex items-center gap-2 outline-none select-none h-full">
+                <div className="h-full aspect-square bg-gradient-to-br from-[#EA580C] to-[#F97316] rounded-[22%] flex items-center justify-center shadow-md shadow-orange-600/30">
+                  <Activity className="w-[60%] h-[60%] text-white stroke-[2.8]" />
                 </div>
-                <span className="font-extrabold text-[clamp(18px,1.8vw,30px)] tracking-tight text-[#0F172A]">
+                <span className="font-extrabold text-[clamp(18px,2vw,32px)] tracking-tight text-[#0F172A]">
                   Gymora
                 </span>
               </Link>
@@ -323,13 +323,13 @@ const CustomerPortalLanding = () => {
             </div>
 
             {/* Navigation Action Buttons */}
-            <div className="flex items-center gap-[0.65vw]">
+            <div className="flex items-center gap-[0.55vw] h-full">
               <Link
                 to="/"
                 style={{ WebkitTapHighlightColor: 'transparent' }}
-                className="px-[1.2vw] py-[0.55vw] rounded-full bg-[#EA580C] hover:bg-[#D94806] text-white font-extrabold text-[clamp(11px,0.92vw,15px)] flex items-center gap-1.5 shadow-sm active:scale-95 transition-all outline-none"
+                className="h-full px-[1.2vw] rounded-full bg-[#EA580C] hover:bg-[#D94806] text-white font-extrabold text-[clamp(11px,1.02vw,15px)] flex items-center justify-center leading-none gap-1.5 shadow-sm active:scale-95 transition-all outline-none"
               >
-                <ArrowLeft className="w-[1vw] h-[1vw] min-w-[12px] min-h-[12px] stroke-[2.5]" />
+                <ArrowLeft className="w-[1.1vw] h-[1.1vw] min-w-[13px] min-h-[13px] stroke-[2.5]" />
                 <span>Back</span>
               </Link>
 
@@ -337,9 +337,9 @@ const CustomerPortalLanding = () => {
                 type="button"
                 onClick={() => setIsFeaturesOpen(true)}
                 style={{ WebkitTapHighlightColor: 'transparent' }}
-                className="px-[1.2vw] py-[0.55vw] rounded-full bg-[#EA580C] hover:bg-[#D94806] text-white font-extrabold text-[clamp(11px,0.92vw,15px)] flex items-center gap-1.5 shadow-sm active:scale-95 transition-all outline-none cursor-pointer"
+                className="h-full px-[1.2vw] rounded-full bg-[#EA580C] hover:bg-[#D94806] text-white font-extrabold text-[clamp(11px,1.02vw,15px)] flex items-center justify-center leading-none gap-1.5 shadow-sm active:scale-95 transition-all outline-none cursor-pointer"
               >
-                <Sparkles className="w-[1vw] h-[1vw] min-w-[12px] min-h-[12px] stroke-[2.5]" />
+                <Sparkles className="w-[1.1vw] h-[1.1vw] min-w-[13px] min-h-[13px] stroke-[2.5]" />
                 <span>Features</span>
               </button>
 
@@ -347,18 +347,18 @@ const CustomerPortalLanding = () => {
                 to="/gyms"
                 state={{ from: '/portal/customer', fromLabel: 'Back to Customer' }}
                 style={{ WebkitTapHighlightColor: 'transparent' }}
-                className="px-[1.2vw] py-[0.55vw] rounded-full bg-[#EA580C] hover:bg-[#D94806] text-white font-extrabold text-[clamp(11px,0.92vw,15px)] flex items-center gap-1.5 shadow-sm active:scale-95 transition-all outline-none"
+                className="h-full px-[1.2vw] rounded-full bg-[#EA580C] hover:bg-[#D94806] text-white font-extrabold text-[clamp(11px,1.02vw,15px)] flex items-center justify-center leading-none gap-1.5 shadow-sm active:scale-95 transition-all outline-none"
               >
-                <Compass className="w-[1vw] h-[1vw] min-w-[12px] min-h-[12px] stroke-[2.5]" />
+                <Compass className="w-[1.1vw] h-[1.1vw] min-w-[13px] min-h-[13px] stroke-[2.5]" />
                 <span>Find Gyms</span>
               </Link>
 
               <Link
                 to="/login?portal=customer"
                 style={{ WebkitTapHighlightColor: 'transparent' }}
-                className="px-[1.3vw] py-[0.55vw] rounded-full bg-[#EA580C] hover:bg-[#D94806] text-white font-extrabold text-[clamp(11px,0.92vw,15px)] flex items-center gap-1.5 shadow-sm active:scale-95 transition-all outline-none"
+                className="h-full px-[1.3vw] rounded-full bg-[#EA580C] hover:bg-[#D94806] text-white font-extrabold text-[clamp(11px,1.02vw,15px)] flex items-center justify-center leading-none gap-1.5 shadow-sm active:scale-95 transition-all outline-none"
               >
-                <User className="w-[1vw] h-[1vw] min-w-[12px] min-h-[12px] stroke-[2.5]" />
+                <User className="w-[1.1vw] h-[1.1vw] min-w-[13px] min-h-[13px] stroke-[2.5]" />
                 <span>Customer Login</span>
               </Link>
             </div>

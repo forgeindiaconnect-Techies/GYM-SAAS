@@ -1,0 +1,10 @@
+{
+  "appId": "com.gymora.mobile",
+  "appName": "Gymora Mobile",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "server": {
+    "androidScheme": "https"
+  }
+}
+

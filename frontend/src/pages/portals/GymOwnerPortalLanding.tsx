@@ -424,18 +424,18 @@ const GymOwnerPortalLanding = () => {
             loading="eager"
           />
 
-          {/* 1. Top Navigation Bar â€” 100% Vector Sharp, Ultra-Clear Typography */}
+          {/* 1. Top Navigation Bar — 100% Vector Sharp, Ultra-Clear Typography Matching Reference */}
           <div
-            style={{ top: '3.60%', left: '4.69%', right: '4.69%', height: '6.20%' }}
+            style={{ top: '3.98%', left: '4.69%', right: '4.69%', height: '6.86%' }}
             className="absolute hidden sm:flex items-center justify-between z-20"
           >
             {/* Logo & Portal Badge */}
             <div className="flex items-center gap-2.5 h-full">
-              <Link to="/" className="flex items-center gap-2 outline-none select-none">
+              <Link to="/" className="flex items-center gap-2 outline-none select-none h-full">
                 <div className="h-full aspect-square bg-gradient-to-br from-[#EA580C] to-[#F97316] rounded-[22%] flex items-center justify-center shadow-md shadow-orange-600/30">
-                  <Activity className="w-[55%] h-[55%] text-white stroke-[2.8]" />
+                  <Activity className="w-[60%] h-[60%] text-white stroke-[2.8]" />
                 </div>
-                <span className="font-extrabold text-[clamp(18px,1.8vw,30px)] tracking-tight text-[#0F172A]">
+                <span className="font-extrabold text-[clamp(18px,2vw,32px)] tracking-tight text-[#0F172A]">
                   Gymora
                 </span>
               </Link>
@@ -449,9 +449,9 @@ const GymOwnerPortalLanding = () => {
               <Link
                 to="/"
                 style={{ WebkitTapHighlightColor: 'transparent' }}
-                className="h-full px-[1.1vw] rounded-full bg-[#EA580C] hover:bg-[#D94806] text-white font-extrabold text-[clamp(11px,0.92vw,15px)] flex items-center justify-center leading-none gap-1.5 shadow-sm active:scale-95 transition-all outline-none"
+                className="h-full px-[1.2vw] rounded-full bg-[#EA580C] hover:bg-[#D94806] text-white font-extrabold text-[clamp(11px,1.02vw,15px)] flex items-center justify-center leading-none gap-1.5 shadow-sm active:scale-95 transition-all outline-none"
               >
-                <ArrowLeft className="w-[1vw] h-[1vw] min-w-[12px] min-h-[12px] stroke-[2.5]" />
+                <ArrowLeft className="w-[1.1vw] h-[1.1vw] min-w-[13px] min-h-[13px] stroke-[2.5]" />
                 <span>Back</span>
               </Link>
 
@@ -459,16 +459,16 @@ const GymOwnerPortalLanding = () => {
                 type="button"
                 onClick={() => { setTourStep(1); setIsTourOpen(true); }}
                 style={{ WebkitTapHighlightColor: 'transparent' }}
-                className="h-full px-[1.1vw] rounded-full bg-[#EA580C] hover:bg-[#D94806] text-white font-extrabold text-[clamp(11px,0.92vw,15px)] flex items-center justify-center leading-none gap-1.5 shadow-sm active:scale-95 transition-all outline-none cursor-pointer"
+                className="h-full px-[1.2vw] rounded-full bg-[#EA580C] hover:bg-[#D94806] text-white font-extrabold text-[clamp(11px,1.02vw,15px)] flex items-center justify-center leading-none gap-1.5 shadow-sm active:scale-95 transition-all outline-none cursor-pointer"
               >
-                <PlayCircle className="w-[1vw] h-[1vw] min-w-[12px] min-h-[12px]" />
+                <PlayCircle className="w-[1.1vw] h-[1.1vw] min-w-[13px] min-h-[13px]" />
                 <span>Gym Owner Journey</span>
               </button>
 
               <a
                 href="#pricing"
                 style={{ WebkitTapHighlightColor: 'transparent' }}
-                className="h-full px-[1.1vw] rounded-full bg-[#EA580C] hover:bg-[#D94806] text-white font-extrabold text-[clamp(11px,0.92vw,15px)] flex items-center justify-center leading-none shadow-sm active:scale-95 transition-all outline-none"
+                className="h-full px-[1.2vw] rounded-full bg-[#EA580C] hover:bg-[#D94806] text-white font-extrabold text-[clamp(11px,1.02vw,15px)] flex items-center justify-center leading-none shadow-sm active:scale-95 transition-all outline-none"
               >
                 Platform Pricing
               </a>
@@ -476,7 +476,7 @@ const GymOwnerPortalLanding = () => {
               <Link
                 to="/gym-owner-introduction"
                 style={{ WebkitTapHighlightColor: 'transparent' }}
-                className="h-full px-[1.1vw] rounded-full bg-[#EA580C] hover:bg-[#D94806] text-white font-extrabold text-[clamp(11px,0.92vw,15px)] flex items-center justify-center leading-none shadow-sm active:scale-95 transition-all outline-none"
+                className="h-full px-[1.2vw] rounded-full bg-[#EA580C] hover:bg-[#D94806] text-white font-extrabold text-[clamp(11px,1.02vw,15px)] flex items-center justify-center leading-none shadow-sm active:scale-95 transition-all outline-none"
               >
                 Register Gym
               </Link>
@@ -484,7 +484,7 @@ const GymOwnerPortalLanding = () => {
               <Link
                 to="/login?portal=gym-owner"
                 style={{ WebkitTapHighlightColor: 'transparent' }}
-                className="h-full px-[1.2vw] rounded-full bg-[#EA580C] hover:bg-[#D94806] text-white font-extrabold text-[clamp(11px,0.92vw,15px)] flex items-center justify-center leading-none shadow-sm active:scale-95 transition-all outline-none"
+                className="h-full px-[1.3vw] rounded-full bg-[#EA580C] hover:bg-[#D94806] text-white font-extrabold text-[clamp(11px,1.02vw,15px)] flex items-center justify-center leading-none shadow-sm active:scale-95 transition-all outline-none"
               >
                 Gym Owner Login
               </Link>

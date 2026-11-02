@@ -1,0 +1,30 @@
+{
+  "expo": {
+    "name": "Gymora Mobile",
+    "slug": "gymora-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#EA580C"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.gymora.mobile"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#FFF7ED",
+        "foregroundImage": "./assets/android-icon-foreground.png"
+      },
+      "package": "com.gymora.mobile"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    }
+  }
+}
