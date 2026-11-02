@@ -1,14 +1,17 @@
 import axios from 'axios';
 
-// In Expo development:
-// - Android Emulator uses http://10.0.2.2:5600/api
-// - iOS Simulator uses http://localhost:5600/api
-// - Physical device / Web uses LAN IP or localhost
-const BASE_URL = 'http://localhost:5600/api';
+// Dynamically resolve backend API URL from environment configuration (.env)
+// Expo automatically exposes EXPO_PUBLIC_* variables to the mobile runtime
+const BASE_URL =
+  process.env.EXPO_PUBLIC_API_URL ||
+  (process.env.EXPO_PUBLIC_BACKEND_URL ? `${process.env.EXPO_PUBLIC_BACKEND_URL}/api` : '') ||
+  'http://localhost:5600/api';
+
+console.log(`[Gymora Mobile API] Active Base URL: ${BASE_URL}`);
 
 export const api = axios.create({
   baseURL: BASE_URL,
-  timeout: 10000,
+  timeout: 15000,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -35,11 +38,20 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    // Graceful offline fallback logging
-    console.log('[Mobile API Error]:', error.message);
+    console.log('[Gymora Mobile API Error]:', error?.response?.status || error.message);
     return Promise.reject(error);
   }
 );
 
-export default api;
+// Health check utility to verify active connection
+export const checkBackendHealth = async (): Promise<boolean> => {
+  try {
+    const res = await api.get('/health');
+    return res.status === 200;
+  } catch (err) {
+    console.warn('[Gymora Mobile] Backend health check failed:', err);
+    return false;
+  }
+};
 
+export default api;

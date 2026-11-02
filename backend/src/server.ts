@@ -91,6 +91,16 @@ app.use('/api/performance', performanceRoutes);
 app.use('/api/referrals', referralRoutes);
 app.use('/api/hiring', hiringRoutes);
 
+app.get('/', (req, res) => {
+  res.status(200).json({
+    status: 'online',
+    message: 'Gymora Gym SaaS Backend API is live and operational',
+    version: '1.0.0',
+    health: '/api/health',
+    timestamp: new Date().toISOString()
+  });
+});
+
 app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'success', message: 'API is running' });
 });
