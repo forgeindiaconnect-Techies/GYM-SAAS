@@ -21,9 +21,10 @@ import { FaInstagram, FaTwitter, FaYoutube, FaLinkedin } from 'react-icons/fa';
 
 interface TrainerPageLayoutProps {
   children: React.ReactNode;
+  hideHeader?: boolean;
 }
 
-export const TrainerPageLayout: React.FC<TrainerPageLayoutProps> = ({ children }) => {
+export const TrainerPageLayout: React.FC<TrainerPageLayoutProps> = ({ children, hideHeader = false }) => {
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
 
@@ -47,49 +48,51 @@ export const TrainerPageLayout: React.FC<TrainerPageLayoutProps> = ({ children }
   return (
     <div className="min-h-screen bg-[#FFFFFF] text-[#111827] flex flex-col font-sans selection:bg-[#C2410C] selection:text-[#FFFFFF]">
       {/* Header Navigation */}
-      <header
-        className={`sticky top-0 z-50 w-full transition-all duration-200 border-b pt-safe ${
-          scrolled
-            ? 'bg-[#FFFFFF]/95 backdrop-blur-md border-[#E2E8F0] shadow-xl'
-            : 'bg-[#FFFFFF] border-[#E2E8F0]/60'
-        }`}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
-          {/* Logo */}
-          <div className="flex items-center gap-3 shrink-0">
-            <Link to="/" className="flex items-center gap-2.5 group">
-              <div className="w-10 h-10 bg-gradient-to-br from-[#EA580C] to-[#C2410C] rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/15 group-hover:scale-105 transition-transform">
-                <Activity className="text-[#FFFFFF]" size={22} strokeWidth={2.5} />
-              </div>
-              <div>
-                <span className="text-xl sm:text-2xl font-bold tracking-tight text-[#111827] group-hover:text-[#EA580C] transition-colors">
-                  Gymora
-                </span>
-                <span className="hidden md:inline-block ml-2 px-2 py-0.5 rounded text-[10px] font-bold bg-[#FFF7ED] text-[#EA580C] uppercase tracking-wider border border-[#FFEDD5]">
-                  Trainer Network
-                </span>
-              </div>
-            </Link>
-          </div>
+      {!hideHeader && (
+        <header
+          className={`sticky top-0 z-50 w-full transition-all duration-200 border-b pt-safe ${
+            scrolled
+              ? 'bg-[#FFFFFF]/95 backdrop-blur-md border-[#E2E8F0] shadow-xl'
+              : 'bg-[#FFFFFF] border-[#E2E8F0]/60'
+          }`}
+        >
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+            {/* Logo */}
+            <div className="flex items-center gap-3 shrink-0">
+              <Link to="/" className="flex items-center gap-2.5 group">
+                <div className="w-10 h-10 bg-gradient-to-br from-[#EA580C] to-[#C2410C] rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/15 group-hover:scale-105 transition-transform">
+                  <Activity className="text-[#FFFFFF]" size={22} strokeWidth={2.5} />
+                </div>
+                <div>
+                  <span className="text-xl sm:text-2xl font-bold tracking-tight text-[#111827] group-hover:text-[#EA580C] transition-colors">
+                    Gymora
+                  </span>
+                  <span className="hidden md:inline-block ml-2 px-2 py-0.5 rounded text-[10px] font-bold bg-[#FFF7ED] text-[#EA580C] uppercase tracking-wider border border-[#FFEDD5]">
+                    Trainer Network
+                  </span>
+                </div>
+              </Link>
+            </div>
 
-          {/* Action Buttons: Back, Login */}
-          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-            <Link
-              to="/"
-              className="px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#FFFFFF] bg-[#C2410C] hover:bg-[#9A3412] transition-all shadow-md shadow-orange-500/15 flex items-center gap-1.5 shrink-0 whitespace-nowrap"
-            >
-              <ArrowLeft size={16} />
-              <span>Back</span>
-            </Link>
-            <Link
-              to="/login?portal=trainer"
-              className="px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#FFFFFF] bg-[#C2410C] hover:bg-[#9A3412] transition-all shadow-md shadow-orange-500/15 flex items-center gap-1.5 shrink-0 whitespace-nowrap"
-            >
-              <span>Login</span>
-            </Link>
+            {/* Action Buttons: Back, Login */}
+            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+              <Link
+                to="/"
+                className="px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#FFFFFF] bg-[#C2410C] hover:bg-[#9A3412] transition-all shadow-md shadow-orange-500/15 flex items-center gap-1.5 shrink-0 whitespace-nowrap"
+              >
+                <ArrowLeft size={16} />
+                <span>Back</span>
+              </Link>
+              <Link
+                to="/login?portal=trainer"
+                className="px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#FFFFFF] bg-[#C2410C] hover:bg-[#9A3412] transition-all shadow-md shadow-orange-500/15 flex items-center gap-1.5 shrink-0 whitespace-nowrap"
+              >
+                <span>Login</span>
+              </Link>
+            </div>
           </div>
-        </div>
-      </header>
+        </header>
+      )}
 
       {/* Main Page Content */}
       <main className="flex-1">{children}</main>

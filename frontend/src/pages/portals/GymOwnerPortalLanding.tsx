@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import gymLandingImg1 from '../../assets/GYM landing page image 1.jpg';
 import gymLandingImg2 from '../../assets/GYM landing page image 2.jpg';
@@ -10,7 +10,7 @@ import {
   ArrowRight,
   Users, 
   Dumbbell, 
-  CalendarCheck, 
+  Calendar,
   ShoppingBag, 
   TrendingUp, 
   Gift, 
@@ -28,7 +28,6 @@ import {
   DollarSign, 
   UserCheck, 
   Clock, 
-  Layers, 
   MessageSquare,
   X,
   ArrowUp,
@@ -414,93 +413,210 @@ const GymOwnerPortalLanding = () => {
 
   return (
     <div className="min-h-screen bg-[#FFFFFF] text-[#111827] selection:bg-[#C2410C] selection:text-[#FFFFFF] font-sans">
-      {/* Top Navigation */}
-      <nav className="border-b border-[#E2E8F0] bg-[#FFFFFF]/95 backdrop-blur-md sticky top-0 z-50 pt-safe">
-        <div className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
-          {/* Logo & Portal Badge */}
-          <div className="flex items-center space-x-2 sm:space-x-3 shrink-0">
-            <Link to="/" className="flex items-center space-x-2 sm:space-x-2.5 group">
-              <div className="w-9 h-9 sm:w-10 sm:h-10 bg-gradient-to-br from-[#EA580C] to-[#C2410C] rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/15 shrink-0">
-                <Activity className="text-[#FFFFFF]" size={20} strokeWidth={2.5} />
-              </div>
-              <span className="text-xl sm:text-2xl font-black tracking-tight text-[#111827] group-hover:text-[#EA580C] transition-colors">
-                Gymora
+      {/* Unified Master Hero Section — Single, unified design with Gym Owner, Dashboard Laptop, Features, and Navigation */}
+      <header className="relative w-full bg-[#FFFFFF] overflow-hidden">
+        <div className="w-full relative select-none">
+          {/* Master 2x 2048x952 Artwork matching Reference 1 Exactly */}
+          <img
+            src="/gym-owner-hero-unified-2x.png"
+            alt="Gymora Gym Owner - Scale Your Gym Operations & Maximize Member Retention"
+            className="w-full h-auto block object-cover select-none pointer-events-none"
+            loading="eager"
+          />
+
+          {/* 1. Top Navigation Bar â€” 100% Vector Sharp, Ultra-Clear Typography */}
+          <div
+            style={{ top: '2.50%', left: '2.44%', right: '2.44%', height: '7.20%' }}
+            className="absolute hidden sm:flex items-center justify-between z-20"
+          >
+            {/* Logo & Portal Badge */}
+            <div className="flex items-center gap-2.5">
+              <Link to="/" className="flex items-center gap-2 outline-none select-none">
+                <div className="w-[2.2vw] h-[2.2vw] min-w-[32px] min-h-[32px] bg-gradient-to-br from-[#EA580C] to-[#F97316] rounded-xl flex items-center justify-center shadow-md shadow-orange-600/30">
+                  <Activity className="w-[55%] h-[55%] text-white stroke-[2.8]" />
+                </div>
+                <span className="font-extrabold text-[clamp(18px,1.8vw,30px)] tracking-tight text-[#0F172A]">
+                  Gymora
+                </span>
+              </Link>
+              <span className="px-3 py-1 rounded-full text-[clamp(10px,0.85vw,13px)] font-black bg-[#FFEDD5] text-[#C2410C] border-2 border-[#FDBA74] tracking-wide shadow-xs">
+                Gym Owner
               </span>
-            </Link>
-            <span className="hidden sm:inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5]">
-              Gym Owner
-            </span>
+            </div>
+
+            {/* Navigation Action Buttons */}
+            <div className="flex items-center gap-[0.65vw]">
+              <Link
+                to="/"
+                style={{ WebkitTapHighlightColor: 'transparent' }}
+                className="px-[1.2vw] py-[0.55vw] rounded-full bg-[#EA580C] hover:bg-[#D94806] text-white font-extrabold text-[clamp(11px,0.92vw,15px)] flex items-center gap-1.5 shadow-sm active:scale-95 transition-all outline-none"
+              >
+                <ArrowLeft className="w-[1vw] h-[1vw] min-w-[12px] min-h-[12px] stroke-[2.5]" />
+                <span>Back</span>
+              </Link>
+
+              <button
+                type="button"
+                onClick={() => { setTourStep(1); setIsTourOpen(true); }}
+                style={{ WebkitTapHighlightColor: 'transparent' }}
+                className="px-[1.2vw] py-[0.55vw] rounded-full bg-[#EA580C] hover:bg-[#D94806] text-white font-extrabold text-[clamp(11px,0.92vw,15px)] flex items-center gap-1.5 shadow-sm active:scale-95 transition-all outline-none cursor-pointer"
+              >
+                <PlayCircle className="w-[1vw] h-[1vw] min-w-[12px] min-h-[12px]" />
+                <span>Gym Owner Journey</span>
+              </button>
+
+              <a
+                href="#pricing"
+                style={{ WebkitTapHighlightColor: 'transparent' }}
+                className="px-[1.2vw] py-[0.55vw] rounded-full bg-[#EA580C] hover:bg-[#D94806] text-white font-extrabold text-[clamp(11px,0.92vw,15px)] flex items-center shadow-sm active:scale-95 transition-all outline-none"
+              >
+                Platform Pricing
+              </a>
+
+              <Link
+                to="/gym-owner-introduction"
+                style={{ WebkitTapHighlightColor: 'transparent' }}
+                className="px-[1.2vw] py-[0.55vw] rounded-full bg-[#EA580C] hover:bg-[#D94806] text-white font-extrabold text-[clamp(11px,0.92vw,15px)] flex items-center shadow-sm active:scale-95 transition-all outline-none"
+              >
+                Register Gym
+              </Link>
+
+              <Link
+                to="/login?portal=gym-owner"
+                style={{ WebkitTapHighlightColor: 'transparent' }}
+                className="px-[1.3vw] py-[0.55vw] rounded-full bg-[#EA580C] hover:bg-[#D94806] text-white font-extrabold text-[clamp(11px,0.92vw,15px)] flex items-center shadow-sm active:scale-95 transition-all outline-none"
+              >
+                Gym Owner Login
+              </Link>
+            </div>
           </div>
 
-          {/* Action Links */}
-          <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
+          {/* 2. Left Hero Content â€” 100% Vector Sharp, Ultra-Clear Typography & Feature Icons */}
+          <div
+            style={{
+              left: '2.44%',
+              top: '14.50%',
+              maxWidth: '38%',
+            }}
+            className="absolute hidden sm:flex flex-col select-none z-10"
+          >
+            {/* Badge */}
+            <div className="inline-flex items-center gap-1.5 px-[1vw] py-[0.42vw] rounded-full bg-[#FFF7ED] border border-[#FFEDD5] text-[#EA580C] font-extrabold text-[clamp(10px,0.95vw,14px)] w-fit mb-[1.2vw] shadow-xs">
+              <Dumbbell className="w-[1vw] h-[1vw] min-w-[13px] min-h-[13px] stroke-[2.4]" />
+              <span className="whitespace-nowrap">All-in-One Gym Management Platform</span>
+            </div>
+
+            {/* Main Headline */}
+            <h1 className="font-extrabold text-[clamp(24px,3.20vw,52px)] text-[#0F172A] tracking-tight leading-[1.08] mb-[0.6vw]">
+              <span className="block whitespace-nowrap">Scale Your Gym</span>
+              <span className="block whitespace-nowrap">Operations &amp;</span>
+              <span className="block whitespace-nowrap text-[#EA580C]">Maximize Member</span>
+              <span className="block whitespace-nowrap text-[#EA580C]">Retention</span>
+            </h1>
+
+            {/* Orange brush underline under headline */}
+            <div className="w-[14vw] max-w-[240px] h-[4px] bg-gradient-to-r from-[#EA580C] via-[#FB923C] to-transparent rounded-full mb-[1.4vw]" />
+
+            {/* Subheadline */}
+            <p className="text-[#475569] font-medium text-[clamp(11px,1.10vw,17px)] leading-[1.45] max-w-[36vw] mb-[1.8vw]">
+              From multi-branch member tracking and trainer payroll to automated biometric attendance, inventory POS, and revenue analyticsâ€”manage everything seamlessly from one central hub.
+            </p>
+
+            {/* 5 Feature Icons & Labels Row */}
+            <div className="flex items-start gap-[1.1vw] max-w-[37vw]">
+              {/* Feature 1 */}
+              <div className="flex flex-col items-center text-center">
+                <div className="w-[2.4vw] h-[2.4vw] min-w-[32px] min-h-[32px] rounded-xl bg-[#FFF7ED] border border-[#FFEDD5] text-[#EA580C] flex items-center justify-center mb-1 shadow-xs">
+                  <Users className="w-[1.2vw] h-[1.2vw] min-w-[16px] min-h-[16px]" />
+                </div>
+                <span className="text-[clamp(9px,0.78vw,12px)] font-bold text-[#1E293B] leading-tight">
+                  Member<br />Management
+                </span>
+              </div>
+
+              {/* Feature 2 */}
+              <div className="flex flex-col items-center text-center">
+                <div className="w-[2.4vw] h-[2.4vw] min-w-[32px] min-h-[32px] rounded-xl bg-[#FFF7ED] border border-[#FFEDD5] text-[#EA580C] flex items-center justify-center mb-1 shadow-xs">
+                  <Calendar className="w-[1.2vw] h-[1.2vw] min-w-[16px] min-h-[16px]" />
+                </div>
+                <span className="text-[clamp(9px,0.78vw,12px)] font-bold text-[#1E293B] leading-tight">
+                  Attendance<br />&amp; Access
+                </span>
+              </div>
+
+              {/* Feature 3 */}
+              <div className="flex flex-col items-center text-center">
+                <div className="w-[2.4vw] h-[2.4vw] min-w-[32px] min-h-[32px] rounded-xl bg-[#FFF7ED] border border-[#FFEDD5] text-[#EA580C] flex items-center justify-center mb-1 shadow-xs">
+                  <TrendingUp className="w-[1.2vw] h-[1.2vw] min-w-[16px] min-h-[16px]" />
+                </div>
+                <span className="text-[clamp(9px,0.78vw,12px)] font-bold text-[#1E293B] leading-tight">
+                  Revenue<br />Analytics
+                </span>
+              </div>
+
+              {/* Feature 4 */}
+              <div className="flex flex-col items-center text-center">
+                <div className="w-[2.4vw] h-[2.4vw] min-w-[32px] min-h-[32px] rounded-xl bg-[#FFF7ED] border border-[#FFEDD5] text-[#EA580C] flex items-center justify-center mb-1 shadow-xs">
+                  <ShoppingBag className="w-[1.2vw] h-[1.2vw] min-w-[16px] min-h-[16px]" />
+                </div>
+                <span className="text-[clamp(9px,0.78vw,12px)] font-bold text-[#1E293B] leading-tight">
+                  Inventory<br />&amp; POS
+                </span>
+              </div>
+
+              {/* Feature 5 */}
+              <div className="flex flex-col items-center text-center">
+                <div className="w-[2.4vw] h-[2.4vw] min-w-[32px] min-h-[32px] rounded-xl bg-[#FFF7ED] border border-[#FFEDD5] text-[#EA580C] flex items-center justify-center mb-1 shadow-xs">
+                  <ShieldCheck className="w-[1.2vw] h-[1.2vw] min-w-[16px] min-h-[16px]" />
+                </div>
+                <span className="text-[clamp(9px,0.78vw,12px)] font-bold text-[#1E293B] leading-tight">
+                  Secure &amp;<br />Reliable
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+                {/* Mobile Quick Action Touch Bar (ensures effortless tap access on smaller mobile screens) */}
+        <div className="block sm:hidden px-3.5 py-3 bg-[#FFF7ED] border-y border-[#FFEDD5]">
+          <div className="flex items-center justify-between gap-2">
             <Link
               to="/"
-              className="px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold text-[#FFFFFF] bg-[#C2410C] hover:bg-[#9A3412] transition-all shadow-md shadow-orange-500/15 flex items-center gap-1 shrink-0"
+              className="px-3 py-2 rounded-xl text-xs font-bold text-[#FFFFFF] bg-[#EA580C] active:scale-95 flex items-center gap-1 shadow-sm"
             >
-              <ArrowLeft size={14} className="sm:w-4 sm:h-4" />
+              <ArrowLeft size={13} />
               <span>Back</span>
             </Link>
+
             <button
               type="button"
               onClick={() => { setTourStep(1); setIsTourOpen(true); }}
-              className="px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold text-[#FFFFFF] bg-[#C2410C] hover:bg-[#9A3412] transition-all shadow-md shadow-orange-500/15 flex items-center gap-1 cursor-pointer shrink-0"
+              className="px-3 py-2 rounded-xl text-xs font-bold text-[#FFFFFF] bg-[#EA580C] active:scale-95 flex items-center gap-1 shadow-sm"
             >
-              <PlayCircle size={13} className="sm:w-3.5 sm:h-3.5 text-[#FFFFFF]" />
-              <span><span className="hidden sm:inline">Gym Owner </span>Journey</span>
+              <PlayCircle size={13} />
+              <span>Journey</span>
             </button>
+
             <a
               href="#pricing"
-              className="hidden lg:inline-flex px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#FFFFFF] bg-[#C2410C] hover:bg-[#9A3412] transition-all shadow-md shadow-orange-500/15"
+              className="px-3 py-2 rounded-xl text-xs font-bold text-[#FFFFFF] bg-[#EA580C] active:scale-95 shadow-sm"
             >
-              Platform Pricing
+              Pricing
             </a>
+
             <Link
               to="/gym-owner-introduction"
-              className="hidden md:inline-flex px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#FFFFFF] bg-[#C2410C] hover:bg-[#9A3412] transition-all shadow-md shadow-orange-500/15"
+              className="px-3 py-2 rounded-xl text-xs font-bold text-[#FFFFFF] bg-[#EA580C] active:scale-95 shadow-sm"
             >
-              Register Gym
+              Register
             </Link>
+
             <Link
               to="/login?portal=gym-owner"
-              className="px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold text-[#FFFFFF] bg-[#C2410C] hover:bg-[#9A3412] transition-all shadow-md shadow-orange-500/15 flex items-center gap-1 shrink-0"
+              className="px-3 py-2 rounded-xl text-xs font-bold text-[#FFFFFF] bg-[#EA580C] active:scale-95 shadow-sm"
             >
-              <span><span className="hidden sm:inline">Gym Owner </span>Login</span>
+              Login
             </Link>
-          </div>
-        </div>
-      </nav>
-
-      {/* Hero Section */}
-      <header className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20">
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#EA580C]/12 via-[#FFFFFF]/0 to-[#FFFFFF]/0 pointer-events-none" />
-
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
-          {/* Left Content */}
-          <div className="lg:col-span-7 text-center lg:text-left">
-            <h1 className="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight mb-6 leading-tight text-[#111827]">
-              Scale Your Gym Operations &amp; <br className="hidden sm:block" />
-              <span className="text-[#EA580C]">Maximize Member Retention</span>
-            </h1>
-
-            <p className="text-base sm:text-lg text-[#64748B] max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-              From multi-branch member tracking and trainer payroll to automated biometric attendance, inventory POS, and revenue analytics—manage everything seamlessly from one central hub.
-            </p>
-          </div>
-
-          {/* Right Image: Gym Owner Managing Operations */}
-          <div className="lg:col-span-5 relative">
-            {/* Subtle warm orange backdrop glow */}
-            <div className="absolute -inset-2 bg-gradient-to-r from-orange-500/20 via-amber-500/15 to-orange-600/20 rounded-3xl blur-xl opacity-75 pointer-events-none" />
-            <div className="relative rounded-3xl overflow-hidden border-2 border-[#FFEDD5] shadow-2xl bg-[#FFFFFF]">
-              <img
-                src="/gym-owner-hero.jpg"
-                alt="Gym Owner Managing Operations"
-                draggable={false}
-                className="w-full h-[360px] sm:h-[460px] object-cover object-center block select-none pointer-events-none"
-                loading="eager"
-              />
-            </div>
           </div>
         </div>
       </header>

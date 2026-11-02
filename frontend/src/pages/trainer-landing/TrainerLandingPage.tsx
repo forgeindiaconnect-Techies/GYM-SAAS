@@ -4,6 +4,7 @@ import {
   UserCheck,
   Briefcase,
   ArrowRight,
+  ArrowLeft,
   Sparkles,
   Award,
   Building2,
@@ -179,72 +180,125 @@ export const TrainerLandingPage: React.FC = () => {
   ];
 
   return (
-    <TrainerPageLayout>
-      {/* 1. Hero Section */}
-      <section className="relative overflow-hidden pt-12 pb-20 md:pt-20 md:pb-28">
-        {/* Glow ambient background */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[650px] h-[450px] bg-[#FFF7ED] rounded-full blur-[130px] -z-10 pointer-events-none"></div>
+    <TrainerPageLayout hideHeader={true}>
+      {/* 1. Master Unified Hero Section — Single, unified design matching Reference Exactly */}
+      <section className="relative w-full bg-[#FFFFFF] overflow-hidden select-none">
+        <div className="w-full relative">
+          <img
+            src="/trainer-hero-unified-2x.png"
+            alt="Gymora Trainer Network - Build Your Fitness Career with the Right Gym"
+            className="w-full h-auto block object-cover select-none pointer-events-none"
+            loading="eager"
+          />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            {/* Left Content */}
-            <div className="lg:col-span-7 text-center lg:text-left">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#FFF7ED] border border-[#FFEDD5] text-[#EA580C] text-xs font-semibold mb-6 shadow-sm">
-                <Sparkles size={14} />
-                <span>Dedicated Fitness Trainer</span>
+          {/* 1. Top Navigation Bar — 100% Vector Sharp Typography */}
+          <div
+            style={{ top: '2.50%', left: '3.08%', right: '3.08%', height: '7.20%' }}
+            className="absolute hidden sm:flex items-center justify-between z-20"
+          >
+            {/* Logo & Portal Badge */}
+            <Link to="/" className="flex items-center gap-2.5 outline-none select-none">
+              <div className="w-[2.2vw] h-[2.2vw] min-w-[32px] min-h-[32px] bg-gradient-to-br from-[#EA580C] to-[#F97316] rounded-xl flex items-center justify-center shadow-md shadow-orange-600/30">
+                <Activity className="w-[55%] h-[55%] text-white stroke-[2.8]" />
               </div>
+              <span className="font-extrabold text-[clamp(18px,1.8vw,30px)] tracking-tight text-[#0F172A]">
+                Gymora
+              </span>
+              <span className="px-2.5 py-0.5 rounded-full text-[clamp(10px,0.8vw,12px)] font-bold bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5] uppercase tracking-wider">
+                TRAINER NETWORK
+              </span>
+            </Link>
 
-              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-[#111827] leading-[1.15] mb-6">
-                Build Your Fitness Career <br className="hidden sm:block" />
-                <span className="text-[#EA580C]">with the Right Gym</span>
-              </h1>
+            {/* Navigation Action Buttons */}
+            <div className="flex items-center gap-[0.7vw]">
+              <Link
+                to="/"
+                style={{ WebkitTapHighlightColor: 'transparent' }}
+                className="px-[1.3vw] py-[0.55vw] rounded-full bg-white hover:bg-orange-50 border border-[#E5E7EB] text-[#EA580C] font-bold text-[clamp(11px,0.92vw,15px)] flex items-center gap-1.5 shadow-xs active:scale-95 transition-all outline-none"
+              >
+                <ArrowLeft className="w-[1vw] h-[1vw] min-w-[12px] min-h-[12px] stroke-[2.5]" />
+                <span>Back</span>
+              </Link>
 
-              <p className="text-base sm:text-lg text-[#111827] max-w-2xl mx-auto lg:mx-0 mb-8 leading-relaxed font-normal">
-                Showcase your fitness expertise, connect with gym opportunities, guide customers towards their fitness goals, and grow your career as a professional fitness trainer.
-              </p>
+              <Link
+                to="/login?portal=trainer"
+                style={{ WebkitTapHighlightColor: 'transparent' }}
+                className="px-[1.4vw] py-[0.55vw] rounded-full bg-gradient-to-r from-[#EA580C] to-[#F97316] text-white font-bold text-[clamp(11px,0.92vw,15px)] flex items-center gap-1.5 shadow-md shadow-orange-950/20 hover:brightness-105 active:scale-95 transition-all outline-none"
+              >
+                <UserCheck className="w-[1vw] h-[1vw] min-w-[12px] min-h-[12px] stroke-[2.4]" />
+                <span>Login</span>
+              </Link>
+            </div>
+          </div>
 
-              {/* Call-To-Action Button */}
-              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 sm:gap-4 mb-10">
-                <Link
-                  to="/careers"
-                  className="w-full sm:w-auto px-6 py-3.5 rounded-xl text-sm font-bold text-[#FFFFFF] bg-[#C2410C] hover:bg-[#9A3412] transition-all shadow-lg shadow-orange-500/15 flex items-center justify-center gap-2 group"
-                >
-                  <Briefcase size={16} />
-                  <span>Explore Opportunities</span>
-                  <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-                </Link>
-              </div>
-
-              {/* Highlights row */}
-              <div className="grid grid-cols-3 gap-4 pt-6 border-t border-[#E2E8F0]/70 max-w-lg mx-auto lg:mx-0">
-                <div>
-                  <div className="text-xl sm:text-2xl font-black text-[#111827]">100%</div>
-                  <div className="text-[11px] text-[#64748B] mt-0.5 font-medium">Verified Facilities</div>
-                </div>
-                <div>
-                  <div className="text-xl sm:text-2xl font-black text-[#EA580C]">Flexible</div>
-                  <div className="text-[11px] text-[#64748B] mt-0.5 font-medium">Full & Part-Time</div>
-                </div>
-                <div>
-                  <div className="text-xl sm:text-2xl font-black text-[#111827]">Direct</div>
-                  <div className="text-[11px] text-[#64748B] mt-0.5 font-medium">Gym Management</div>
-                </div>
-              </div>
+          {/* 2. Left Hero Content — 100% Vector Sharp, Ultra-Clear Typography */}
+          <div
+            style={{
+              left: '4.50%',
+              top: '14.50%',
+              maxWidth: '38%',
+            }}
+            className="absolute hidden sm:flex flex-col select-none z-10"
+          >
+            {/* Badge */}
+            <div className="inline-flex items-center gap-1.5 px-[1vw] py-[0.42vw] rounded-full bg-[#FFF7ED] border border-[#FFEDD5] text-[#EA580C] font-bold text-[clamp(10px,0.95vw,14px)] w-fit mb-[1.2vw] shadow-xs">
+              <Dumbbell className="w-[1vw] h-[1vw] min-w-[13px] min-h-[13px] stroke-[2.2]" />
+              <span className="whitespace-nowrap">Professional Fitness Trainer</span>
             </div>
 
-            {/* Right Container: Trainer Hero Image */}
-            <div className="lg:col-span-5 relative">
-              {/* Subtle warm orange backdrop glow */}
-              <div className="absolute -inset-2 bg-gradient-to-r from-orange-500/20 via-amber-500/15 to-orange-600/20 rounded-3xl blur-xl opacity-75 pointer-events-none" />
-              <div className="relative rounded-3xl overflow-hidden border-2 border-[#FFEDD5] shadow-2xl bg-[#FFFFFF]">
-                <img
-                  src="/trainer-hero.jpg"
-                  alt="Build Your Fitness Career"
-                  draggable={false}
-                  className="w-full h-[380px] sm:h-[480px] object-cover object-center block select-none pointer-events-none"
-                />
-              </div>
-            </div>
+            {/* Main Headline */}
+            <h1 className="font-extrabold text-[clamp(24px,3.25vw,52px)] text-[#0F172A] tracking-tight leading-[1.08] mb-[0.6vw]">
+              <span className="block whitespace-nowrap">Build Your</span>
+              <span className="block whitespace-nowrap">Fitness Career</span>
+              <span className="block whitespace-nowrap text-[#EA580C] italic">with the Right Gym</span>
+            </h1>
+
+            {/* Orange brush underline under headline */}
+            <div className="w-[16vw] max-w-[280px] h-[4px] bg-gradient-to-r from-[#EA580C] via-[#FB923C] to-transparent rounded-full mb-[1.4vw]" />
+
+            {/* Subheadline */}
+            <p className="text-[#475569] font-medium text-[clamp(11px,1.10vw,17px)] leading-[1.48] max-w-[36vw] mb-[1.8vw]">
+              Showcase your expertise, connect with top gyms, train more clients, and grow your career as a professional fitness trainer.
+            </p>
+
+            {/* Primary CTA Button */}
+            <Link
+              to="/careers"
+              style={{ WebkitTapHighlightColor: 'transparent' }}
+              className="w-fit px-[1.6vw] py-[0.75vw] rounded-full bg-gradient-to-r from-[#EA580C] to-[#F97316] text-white font-bold text-[clamp(11px,1.05vw,16px)] flex items-center gap-[0.55vw] shadow-lg shadow-orange-500/25 hover:brightness-105 active:scale-95 transition-all outline-none"
+            >
+              <Dumbbell className="w-[1.1vw] h-[1.1vw] min-w-[14px] min-h-[14px] stroke-[2.4]" />
+              <span>Explore Opportunities</span>
+              <ArrowRight className="w-[1.1vw] h-[1.1vw] min-w-[14px] min-h-[14px] stroke-[2.5]" />
+            </Link>
+          </div>
+        </div>
+
+        {/* Mobile Quick Action Touch Bar */}
+        <div className="block sm:hidden px-3.5 py-3 bg-[#FFF7ED] border-y border-[#FFEDD5]">
+          <div className="flex items-center justify-between gap-2">
+            <Link
+              to="/"
+              className="px-3.5 py-2 rounded-xl text-xs font-bold text-[#EA580C] bg-white border border-[#FFEDD5] active:scale-95 flex items-center gap-1 shadow-xs"
+            >
+              <ArrowLeft size={13} />
+              <span>Back</span>
+            </Link>
+
+            <Link
+              to="/careers"
+              className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-[#EA580C] active:scale-95 flex items-center gap-1.5 shadow-sm"
+            >
+              <Dumbbell size={13} />
+              <span>Explore Opportunities</span>
+            </Link>
+
+            <Link
+              to="/login?portal=trainer"
+              className="px-3.5 py-2 rounded-xl text-xs font-bold text-white bg-[#EA580C] active:scale-95 shadow-sm"
+            >
+              Login
+            </Link>
           </div>
         </div>
       </section>

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Bot, User, MapPin, Activity, ArrowRight, ArrowLeft, PlayCircle, Star, CheckCircle, XCircle, TrendingUp, Dumbbell, Quote, X, Loader2, Building2, ShieldCheck, ChevronDown, Sparkles, UserCheck, Briefcase, Mail, Users, Headphones, Zap } from 'lucide-react';
+import { Bot, User, Search, Utensils, MapPin, Activity, ArrowRight, ArrowLeft, PlayCircle, Star, CheckCircle, XCircle, TrendingUp, Dumbbell, Quote, X, Loader2, Building2, ShieldCheck, ChevronDown, Sparkles, UserCheck, Briefcase, Mail, Users, Headphones, Zap, Store } from 'lucide-react';
 import { FaInstagram, FaTwitter, FaYoutube, FaFacebook } from 'react-icons/fa';
 import api from '../utils/api';
 import { FeaturePreview } from '../components/Landing/FeaturePreview';
@@ -51,6 +51,21 @@ const LandingPage = () => {
   const [isTourOpen, setIsTourOpen] = useState(false);
   const [tourJourney, setTourJourney] = useState<'select' | 'customer' | 'owner'>('select');
   const [tourStep, setTourStep] = useState(1);
+
+  const GYM_QUOTES = [
+    "“The body achieves what the mind believes.”",
+    "“Push harder than yesterday if you want a different tomorrow.”",
+    "“Success starts with self-discipline and daily consistency.”",
+    "“No shortcuts. Just work, sweat, and results.”",
+  ];
+  const [currentQuoteIndex, setCurrentQuoteIndex] = useState(0);
+
+  useEffect(() => {
+    const quoteTimer = setInterval(() => {
+      setCurrentQuoteIndex(prev => (prev + 1) % GYM_QUOTES.length);
+    }, 4500);
+    return () => clearInterval(quoteTimer);
+  }, []);
 
   const navigate = useNavigate();
 
@@ -172,13 +187,13 @@ const LandingPage = () => {
 
   return (
     <div className="min-h-screen bg-[#FFFFFF] text-[#1F2937] selection:bg-[#C2410C] selection:text-[#FFFFFF] font-bold">
-      {/* Sticky Navigation Bar (Reveals smoothly when scrolled past hero banner) */}
+      {/* Sticky Navigation Bar (Appears smoothly when scrolled past hero section) */}
       <nav
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b border-[#E2E8F0] bg-[#FFFFFF]/95 backdrop-blur-md shadow-sm ${
           isScrolled ? 'translate-y-0 opacity-100 pointer-events-auto' : '-translate-y-full opacity-0 pointer-events-none'
         }`}
       >
-        <div className="w-full mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-4">
+        <div className="max-w-[1600px] w-full mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-4">
           {/* Left Brand */}
           <button onClick={scrollToTop} className="flex items-center space-x-2.5 group cursor-pointer shrink-0 select-none">
             <div className="w-9 h-9 sm:w-10 sm:h-10 bg-gradient-to-br from-[#EA580C] to-[#C2410C] rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/15">
@@ -189,117 +204,214 @@ const LandingPage = () => {
             </span>
           </button>
 
+          {/* Quick Links */}
+          <div className="hidden md:flex items-center gap-6 text-sm font-bold text-[#4B5563]">
+            <Link to="/portal/gym-owner" className="flex items-center gap-1.5 hover:text-[#EA580C] transition-colors">
+              <Building2 size={16} className="text-[#EA580C]" />
+              <span>Gym Owners</span>
+            </Link>
+            <Link to="/trainers" className="flex items-center gap-1.5 hover:text-[#EA580C] transition-colors">
+              <Users size={16} className="text-[#EA580C]" />
+              <span>Trainers</span>
+            </Link>
+            <Link to="/portal/customer" className="flex items-center gap-1.5 hover:text-[#EA580C] transition-colors">
+              <User size={16} className="text-[#EA580C]" />
+              <span>Customers</span>
+            </Link>
+          </div>
+
           {/* Right Action Controls */}
           <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
             <Link
-              to="/gyms"
-              state={{ openEnquiry: true }}
-              className="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-white bg-[#EA580C] hover:bg-[#C2410C] transition-all shadow-md shadow-orange-500/20 flex items-center gap-1.5 shrink-0 whitespace-nowrap active:scale-95"
+              to="/login"
+              id="nav-login"
+              className="px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-[#111827] bg-white hover:bg-orange-50 border border-[#E5E7EB] transition-all shadow-sm flex items-center gap-1.5 shrink-0 whitespace-nowrap active:scale-95"
             >
-              <Mail size={15} className="text-white shrink-0" />
-              <span>Enquire Now</span>
+              <User size={15} className="text-[#EA580C] shrink-0" />
+              <span>Log In</span>
             </Link>
 
             <Link
-              to="/login"
-              id="nav-login"
-              className="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-white bg-[#111827] hover:bg-black border border-white/20 transition-all shadow-md flex items-center gap-1.5 shrink-0 whitespace-nowrap active:scale-95"
+              to="/gyms"
+              state={{ openEnquiry: true }}
+              className="px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-white bg-[#EA580C] hover:bg-[#C2410C] transition-all shadow-md shadow-orange-500/20 flex items-center gap-1.5 shrink-0 whitespace-nowrap active:scale-95"
             >
-              <User size={15} className="text-white shrink-0" />
-              <span>Log In</span>
+              <span>Enquire Now</span>
+              <ArrowRight size={15} className="text-white shrink-0" />
             </Link>
           </div>
         </div>
       </nav>
 
-      {/* Hero Section — Full-width HD Unified Banner */}
+      {/* Exact Reference Hero Section — Single, unified design with female athlete, male athlete, glass cards, and action buttons */}
       <main>
-        <section className="relative w-full bg-[#FFFFFF]">
-          <div className="w-full relative overflow-hidden select-none">
+        <section className="relative w-full bg-[#FFFFFF] overflow-hidden">
+          <div className="w-full relative select-none">
+            {/* Ultra-HD 2048x1054 Razor-Sharp Artwork matching Reference Exactly */}
             <img
-              src="/hero-main-banner-hd.png"
-              alt="Gymora - Run Your Gym Smarter. Grow Your Fitness Business Faster."
-              className="w-full h-auto block"
+              src="/hero-reference-one-hd.png"
+              alt="Gymora - Your Personal AI Fitness Coach + Human Trainer"
+              className="w-full h-auto block object-cover"
               loading="eager"
             />
 
-            {/* Clickable Overlay Hotspots matching exact button coordinates in the image */}
+            {/* Clickable Overlay Hotspots aligned with 100% laser precision to image buttons */}
 
-            {/* 1. Logo Hotspot */}
-            <button
+            {/* 1. Brand Logo (Top-Left) — Crisp Vector Logo */}
+            <Link
+              to="/"
               onClick={scrollToTop}
               title="Gymora Home"
               aria-label="Gymora Home"
-              className="absolute left-[1.5%] top-[3%] w-[16%] h-[13%] rounded-xl cursor-pointer hover:bg-black/5 transition-colors focus:outline-none"
-            />
+              style={{ left: '4.69%', top: '3.60%', height: '6.50%' }}
+              className="absolute flex items-center gap-[0.7vw] outline-none select-none z-10 hover:opacity-95 transition-opacity"
+            >
+              <div className="h-full aspect-square bg-gradient-to-br from-[#EA580C] to-[#F97316] rounded-[22%] flex items-center justify-center shadow-md shadow-orange-600/30">
+                <Activity className="w-[60%] h-[60%] text-white stroke-[2.8]" />
+              </div>
+              <span className="font-extrabold text-[clamp(18px,2vw,32px)] tracking-tight text-[#0F172A]">
+                Gymora
+              </span>
+            </Link>
 
-            {/* 2. Top Enquire Now Button Hotspot */}
-            <Link
-              to="/gyms"
-              state={{ openEnquiry: true }}
-              title="Enquire Now"
-              aria-label="Enquire Now"
-              className="absolute left-[77.5%] top-[3.5%] w-[11.2%] h-[11%] rounded-xl cursor-pointer hover:ring-2 hover:ring-orange-400 hover:ring-offset-2 transition-all active:scale-95 focus:outline-none"
-            />
+            {/* 2-3. Top-Right: Log In and Enquire Now Buttons — Razor-Sharp Crisp Buttons */}
+            <div
+              style={{ top: '3.60%', right: '4.69%', height: '6.20%' }}
+              className="absolute flex items-center gap-[0.85vw] z-10"
+            >
+              <Link
+                to="/login"
+                title="Log In"
+                aria-label="Log In"
+                style={{ WebkitTapHighlightColor: 'transparent' }}
+                className="h-full px-[1.6vw] rounded-full bg-white text-[#EA580C] font-bold text-[clamp(11px,1.15vw,16px)] flex items-center justify-center shadow-sm hover:bg-orange-50 active:scale-95 transition-all outline-none focus:outline-none focus:ring-0 select-none leading-none"
+              >
+                Log In
+              </Link>
 
-            {/* 3. Top Log In Button Hotspot */}
-            <Link
-              to="/login"
-              title="Log In"
-              aria-label="Log In"
-              className="absolute left-[89.2%] top-[3.5%] w-[9.2%] h-[11%] rounded-xl cursor-pointer hover:ring-2 hover:ring-white hover:ring-offset-2 transition-all active:scale-95 focus:outline-none"
-            />
+              <Link
+                to="/gyms"
+                state={{ openEnquiry: true }}
+                title="Enquire Now"
+                aria-label="Enquire Now"
+                style={{ WebkitTapHighlightColor: 'transparent' }}
+                className="h-full px-[1.8vw] rounded-full bg-gradient-to-r from-[#EA580C] to-[#F97316] text-white font-bold text-[clamp(11px,1.15vw,16px)] flex items-center justify-center gap-[0.5vw] shadow-md shadow-orange-950/20 hover:brightness-105 active:scale-95 transition-all outline-none focus:outline-none focus:ring-0 select-none leading-none"
+              >
+                <span>Enquire Now</span>
+                <ArrowRight className="w-[1.1vw] h-[1.1vw] min-w-[13px] min-h-[13px] stroke-[2.5]" />
+              </Link>
+            </div>
 
-            {/* 4. Gym Owners Button Hotspot */}
-            <Link
-              to="/portal/gym-owner"
-              title="Gym Owners Portal"
-              aria-label="Gym Owners Portal"
-              className="absolute left-[5.2%] top-[69.2%] w-[13.8%] h-[13%] rounded-2xl cursor-pointer hover:ring-2 hover:ring-orange-500 hover:ring-offset-2 transition-all active:scale-95 focus:outline-none"
-            />
+            {/* Left Hero Content — 100% Vector Sharp, Beautifully Arranged 3-Line Typography */}
+            <div
+              style={{
+                left: '4.69%',
+                top: '16.50%',
+                maxWidth: '38%',
+              }}
+              className="absolute hidden sm:flex flex-col select-none z-10"
+            >
+              {/* Badge */}
+              <div className="inline-flex items-center gap-1.5 px-[1vw] py-[0.42vw] rounded-full bg-[#FFF7ED] border border-[#FFEDD5] text-[#EA580C] font-bold text-[clamp(10px,0.95vw,15px)] w-fit mb-[1.2vw] shadow-xs">
+                <Sparkles className="w-[1vw] h-[1vw] min-w-[13px] min-h-[13px]" />
+                <span className="whitespace-nowrap">The Future of Fitness is Here</span>
+              </div>
 
-            {/* 5. Trainer Button Hotspot */}
-            <Link
-              to="/trainers"
-              title="Trainers"
-              aria-label="Trainers"
-              className="absolute left-[19.8%] top-[69.2%] w-[11.2%] h-[13%] rounded-2xl cursor-pointer hover:ring-2 hover:ring-orange-400 hover:ring-offset-2 transition-all active:scale-95 focus:outline-none"
-            />
+              {/* Main Headline — Exact 3-Line Structure without awkward breaks */}
+              <h1 className="font-extrabold text-[clamp(24px,3.35vw,54px)] text-[#0F172A] tracking-tight leading-[1.08] mb-[1.2vw]">
+                <span className="block whitespace-nowrap">Your Personal AI</span>
+                <span className="block whitespace-nowrap text-[#EA580C]">Fitness Coach</span>
+                <span className="block whitespace-nowrap">+ Human Trainer</span>
+              </h1>
 
-            {/* 6. Customer Button Hotspot */}
-            <Link
-              to="/portal/customer"
-              title="Customer Portal"
-              aria-label="Customer Portal"
-              className="absolute left-[31.8%] top-[69.2%] w-[11.2%] h-[13%] rounded-2xl cursor-pointer hover:ring-2 hover:ring-orange-400 hover:ring-offset-2 transition-all active:scale-95 focus:outline-none"
-            />
+              {/* Subheadline — Perfectly constrained to never overlap athlete or shaker */}
+              <p className="text-[#475569] font-medium text-[clamp(12px,1.15vw,18px)] leading-[1.48] max-w-[36vw]">
+                Get personalized AI-generated workout and diet plans. Connect with professional trainers and discover the best gyms near you.
+              </p>
+
+              {/* Bold Gym Motivation Quote Callout */}
+              <div className="mt-[1.3vw] flex items-center gap-[0.7vw] max-w-[36vw] px-[1.1vw] py-[0.55vw] rounded-2xl bg-gradient-to-r from-[#FFF7ED] via-[#FFEDD5]/60 to-[#FFF7ED] border border-[#FED7AA] shadow-xs">
+                <div className="w-[1.9vw] h-[1.9vw] min-w-[24px] min-h-[24px] rounded-xl bg-[#EA580C] text-white flex items-center justify-center shrink-0 shadow-sm">
+                  <Quote className="w-[0.95vw] h-[0.95vw] min-w-[12px] min-h-[12px] fill-current" />
+                </div>
+                <p className="font-extrabold text-[clamp(11px,1.08vw,16px)] text-[#0F172A] tracking-tight leading-snug">
+                  {GYM_QUOTES[currentQuoteIndex]}
+                </p>
+              </div>
+            </div>
+
+            {/* 4-6. Hero Role Buttons Row — Unified Flexbox with Perfect Alignment, Identical Heights & Equal Gaps */}
+            <div
+              style={{
+                left: '4.69%',
+                top: '76.20%',
+                height: '7.60%',
+              }}
+              className="absolute hidden sm:flex items-center gap-[0.85vw]"
+            >
+              {/* Gym Owners */}
+              <Link
+                to="/portal/gym-owner"
+                title="Gym Owners Portal"
+                aria-label="Gym Owners Portal"
+                style={{ WebkitTapHighlightColor: 'transparent' }}
+                className="h-full px-[1.5vw] rounded-full bg-gradient-to-r from-[#EA580C] to-[#F97316] text-white flex items-center justify-center gap-[0.55vw] shadow-md shadow-orange-950/20 hover:brightness-105 active:scale-95 transition-all outline-none focus:outline-none focus:ring-0 select-none font-bold text-[clamp(11px,1.15vw,16px)] tracking-tight leading-none"
+              >
+                <Store className="w-[1.2vw] h-[1.2vw] min-w-[15px] min-h-[15px] max-w-[19px] max-h-[19px] shrink-0 stroke-[2.2]" />
+                <span className="whitespace-nowrap">Gym Owners</span>
+              </Link>
+
+              {/* Trainers */}
+              <Link
+                to="/trainers"
+                title="Trainers Portal"
+                aria-label="Trainers Portal"
+                style={{ WebkitTapHighlightColor: 'transparent' }}
+                className="h-full px-[1.5vw] rounded-full bg-gradient-to-r from-[#EA580C] to-[#F97316] text-white flex items-center justify-center gap-[0.55vw] shadow-md shadow-orange-950/20 hover:brightness-105 active:scale-95 transition-all outline-none focus:outline-none focus:ring-0 select-none font-bold text-[clamp(11px,1.15vw,16px)] tracking-tight leading-none"
+              >
+                <Dumbbell className="w-[1.2vw] h-[1.2vw] min-w-[15px] min-h-[15px] max-w-[19px] max-h-[19px] shrink-0 stroke-[2.2]" />
+                <span className="whitespace-nowrap">Trainers</span>
+              </Link>
+
+              {/* Customers */}
+              <Link
+                to="/portal/customer"
+                title="Customers Portal"
+                aria-label="Customers Portal"
+                style={{ WebkitTapHighlightColor: 'transparent' }}
+                className="h-full px-[1.5vw] rounded-full bg-gradient-to-r from-[#EA580C] to-[#F97316] text-white flex items-center justify-center gap-[0.55vw] shadow-md shadow-orange-950/20 hover:brightness-105 active:scale-95 transition-all outline-none focus:outline-none focus:ring-0 select-none font-bold text-[clamp(11px,1.15vw,16px)] tracking-tight leading-none"
+              >
+                <Users className="w-[1.2vw] h-[1.2vw] min-w-[15px] min-h-[15px] max-w-[19px] max-h-[19px] shrink-0 stroke-[2.2]" />
+                <span className="whitespace-nowrap">Customers</span>
+              </Link>
+            </div>
           </div>
 
-          {/* Mobile Role Quick Buttons (Accessible touch bar for smaller mobile viewports) */}
-          <div className="block sm:hidden px-4 py-3 bg-[#FFF7ED]/70 border-y border-[#FFEDD5]">
+          {/* Mobile Quick Action Touch Bar (ensures effortless tap access on smaller mobile devices) */}
+          <div className="block sm:hidden px-4 py-3 bg-[#FFF7ED]/80 border-y border-[#FFEDD5]">
             <div className="grid grid-cols-3 gap-2">
               <Link
                 to="/portal/gym-owner"
-                className="flex items-center justify-center gap-1.5 py-2.5 px-2 bg-[#EA580C] text-white rounded-xl font-bold text-xs shadow-md shadow-orange-500/20 active:scale-95"
+                className="flex flex-col items-center justify-center p-2.5 bg-[#EA580C] text-white rounded-xl font-bold text-xs shadow-md shadow-orange-500/20 active:scale-95"
               >
-                <Building2 size={14} />
+                <Store size={16} className="mb-1" />
                 <span>Gym Owners</span>
               </Link>
 
               <Link
                 to="/trainers"
-                className="flex items-center justify-center gap-1.5 py-2.5 px-2 bg-white text-[#1F2937] border border-[#E5E7EB] rounded-xl font-bold text-xs shadow-sm active:scale-95"
+                className="flex flex-col items-center justify-center p-2.5 bg-[#EA580C] text-white rounded-xl font-bold text-xs shadow-md shadow-orange-500/20 active:scale-95"
               >
-                <Users size={14} className="text-[#EA580C]" />
-                <span>Trainer</span>
+                <Dumbbell size={16} className="text-white mb-1" />
+                <span>Trainers</span>
               </Link>
 
               <Link
                 to="/portal/customer"
-                className="flex items-center justify-center gap-1.5 py-2.5 px-2 bg-white text-[#1F2937] border border-[#E5E7EB] rounded-xl font-bold text-xs shadow-sm active:scale-95"
+                className="flex flex-col items-center justify-center p-2.5 bg-[#EA580C] text-white rounded-xl font-bold text-xs shadow-md shadow-orange-500/20 active:scale-95"
               >
-                <User size={14} className="text-[#EA580C]" />
-                <span>Customer</span>
+                <Users size={16} className="text-white mb-1" />
+                <span>Customers</span>
               </Link>
             </div>
           </div>

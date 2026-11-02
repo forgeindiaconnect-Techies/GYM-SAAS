@@ -57,6 +57,15 @@ const CustomerPortalLanding = () => {
   const [featureSlideIndex, setFeatureSlideIndex] = useState(0);
   const [activeCoachingCard, setActiveCoachingCard] = useState(0);
   const [activeTransformationIndex, setActiveTransformationIndex] = useState(0);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 100);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   useEffect(() => {
     if (location.state && (location.state as any).openTour) {
@@ -223,8 +232,12 @@ const CustomerPortalLanding = () => {
 
   return (
     <div className="min-h-screen bg-[#FFFFFF] text-[#111827] selection:bg-[#C2410C] selection:text-[#FFFFFF] font-sans">
-      {/* Top Navigation */}
-      <nav className="border-b border-[#E2E8F0] bg-[#FFFFFF]/95 backdrop-blur-md sticky top-0 z-50 pt-safe">
+      {/* Sticky Top Navigation (Appears smoothly when scrolled down past hero) */}
+      <nav
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b border-[#E2E8F0] bg-[#FFFFFF]/95 backdrop-blur-md shadow-sm pt-safe ${
+          isScrolled ? 'translate-y-0 opacity-100 pointer-events-auto' : '-translate-y-full opacity-0 pointer-events-none'
+        }`}
+      >
         <div className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
           {/* Logo & Portal Badge */}
           <div className="flex items-center space-x-2 sm:space-x-3 shrink-0">
@@ -277,50 +290,144 @@ const CustomerPortalLanding = () => {
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <header className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20 pb-16">
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#EA580C]/12 via-[#FFFFFF]/0 to-[#FFFFFF]/0 pointer-events-none" />
+      {/* Unified Master Hero Section — Matches Customer Fitness Reference Exactly */}
+      <section className="relative w-full bg-[#FFFFFF] overflow-hidden select-none">
+        <div className="w-full relative">
+          <img
+            src="/customer-hero-unified-2x.png"
+            alt="Gymora Customer Fitness - Train Smarter, Stay Healthier, Be Fitter"
+            className="w-full h-auto block object-cover select-none pointer-events-none"
+            loading="eager"
+          />
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
-          {/* Left Content */}
-          <div className="lg:col-span-7 text-center lg:text-left">
+          {/* Interactive Clickable Hotspots */}
 
+          {/* 1. Brand Logo (Top-Left) */}
+          <Link
+            to="/"
+            title="Gymora Home"
+            aria-label="Gymora Home"
+            style={{ left: '2.90%', top: '2.50%', width: '27.50%', height: '7.20%', WebkitTapHighlightColor: 'transparent' }}
+            className="absolute rounded-xl cursor-pointer hover:bg-black/5 transition-colors outline-none focus:outline-none focus:ring-0 select-none"
+          />
 
-            <h1 className="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight mb-6 leading-tight text-[#111827]">
-              Elevate Your Body &amp; Mind With <br className="hidden sm:block" />
-              <span className="text-[#EA580C]">AI Workouts &amp; Elite Trainers</span>
-            </h1>
+          {/* 2. Top-Right: Back Button */}
+          <Link
+            to="/"
+            title="Back to Home"
+            aria-label="Back to Home"
+            style={{ left: '49.60%', top: '2.50%', width: '9.00%', height: '7.20%', WebkitTapHighlightColor: 'transparent' }}
+            className="absolute rounded-full cursor-pointer hover:brightness-105 active:scale-95 transition-all outline-none focus:outline-none focus:ring-0 select-none"
+          />
 
-            <p className="text-base sm:text-lg text-[#64748B] max-w-2xl mx-auto lg:mx-0 mb-8 leading-relaxed">
-              Access customized AI training and nutrition plans, book 1-on-1 certified coaches, track daily weight and calorie goals, and participate in challenges that reward your dedication.
-            </p>
+          {/* 3. Top-Right: Features Button */}
+          <button
+            type="button"
+            onClick={() => setIsFeaturesOpen(true)}
+            title="Explore Features"
+            aria-label="Explore Features"
+            style={{ left: '59.20%', top: '2.50%', width: '10.90%', height: '7.20%', WebkitTapHighlightColor: 'transparent' }}
+            className="absolute rounded-full cursor-pointer hover:brightness-105 active:scale-95 transition-all outline-none focus:outline-none focus:ring-0 select-none"
+          />
 
-            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 mb-8">
-              <Link
-                to="/register/customer"
-                className="w-full sm:w-auto px-7 py-3.5 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold rounded-xl transition-all flex items-center justify-center space-x-2 shadow-lg shadow-orange-500/15 hover:shadow-teal-500/30"
-              >
-                <Flame size={18} className="text-[#FFFFFF]" />
-                <span>Join Now / Create Account</span>
-              </Link>
-            </div>
-          </div>
+          {/* 4. Top-Right: Find Gyms Button */}
+          <Link
+            to="/gyms"
+            state={{ from: '/portal/customer', fromLabel: 'Back to Customer' }}
+            title="Find Gyms"
+            aria-label="Find Gyms"
+            style={{ left: '71.00%', top: '2.50%', width: '11.60%', height: '7.20%', WebkitTapHighlightColor: 'transparent' }}
+            className="absolute rounded-full cursor-pointer hover:brightness-105 active:scale-95 transition-all outline-none focus:outline-none focus:ring-0 select-none"
+          />
 
-          {/* Right Hero Image Container: Customer Fitness */}
-          <div className="lg:col-span-5 relative">
-            {/* Subtle warm orange backdrop glow */}
-            <div className="absolute -inset-2 bg-gradient-to-r from-orange-500/20 via-amber-500/15 to-orange-600/20 rounded-3xl blur-xl opacity-75 pointer-events-none" />
-            <div className="relative rounded-3xl overflow-hidden border-2 border-[#FFEDD5] shadow-2xl bg-[#FFFFFF]">
-              <img
-                src="/customer-hero.jpg"
-                alt="AI Workouts & Elite Trainers"
-                draggable={false}
-                className="w-full h-[360px] sm:h-[460px] object-cover object-center block select-none pointer-events-none"
-              />
-            </div>
+          {/* 5. Top-Right: Customer Login Button */}
+          <Link
+            to="/login?portal=customer"
+            title="Customer Login"
+            aria-label="Customer Login"
+            style={{ left: '83.80%', top: '2.50%', width: '14.40%', height: '7.20%', WebkitTapHighlightColor: 'transparent' }}
+            className="absolute rounded-full cursor-pointer hover:brightness-105 active:scale-95 transition-all outline-none focus:outline-none focus:ring-0 select-none"
+          />
+
+          {/* 6. Floating Card: AI Fitness Coach */}
+          <button
+            type="button"
+            onClick={() => setShowAiWorkoutModal(true)}
+            title="Launch AI Fitness Coach"
+            aria-label="Launch AI Fitness Coach"
+            style={{ left: '71.50%', top: '22.50%', width: '25.00%', height: '11.00%', WebkitTapHighlightColor: 'transparent' }}
+            className="absolute rounded-2xl cursor-pointer hover:bg-black/5 active:scale-98 transition-all outline-none focus:outline-none focus:ring-0 select-none"
+          />
+
+          {/* 7. Bottom Right Badge: Workouts */}
+          <button
+            type="button"
+            onClick={() => setShowAiWorkoutModal(true)}
+            title="AI Workouts"
+            aria-label="AI Workouts"
+            style={{ left: '67.50%', top: '81.00%', width: '9.50%', height: '15.00%', WebkitTapHighlightColor: 'transparent' }}
+            className="absolute rounded-2xl cursor-pointer hover:bg-black/5 active:scale-95 transition-all outline-none focus:outline-none focus:ring-0 select-none"
+          />
+
+          {/* 8. Bottom Right Badge: Track Progress */}
+          <button
+            type="button"
+            onClick={() => setIsFeaturesOpen(true)}
+            title="Track Progress"
+            aria-label="Track Progress"
+            style={{ left: '78.50%', top: '81.00%', width: '10.50%', height: '15.00%', WebkitTapHighlightColor: 'transparent' }}
+            className="absolute rounded-2xl cursor-pointer hover:bg-black/5 active:scale-95 transition-all outline-none focus:outline-none focus:ring-0 select-none"
+          />
+
+          {/* 9. Bottom Right Badge: Join Challenges */}
+          <button
+            type="button"
+            onClick={() => setIsFeaturesOpen(true)}
+            title="Join Challenges"
+            aria-label="Join Challenges"
+            style={{ left: '90.00%', top: '81.00%', width: '9.00%', height: '15.00%', WebkitTapHighlightColor: 'transparent' }}
+            className="absolute rounded-2xl cursor-pointer hover:bg-black/5 active:scale-95 transition-all outline-none focus:outline-none focus:ring-0 select-none"
+          />
+        </div>
+
+        {/* Mobile Quick Action Touch Bar */}
+        <div className="block sm:hidden px-3.5 py-3 bg-[#FFF7ED] border-y border-[#FFEDD5]">
+          <div className="flex items-center justify-between gap-2">
+            <Link
+              to="/"
+              className="px-3.5 py-2 rounded-xl text-xs font-bold text-[#EA580C] bg-white border border-[#FFEDD5] active:scale-95 flex items-center gap-1 shadow-xs"
+            >
+              <ArrowLeft size={13} />
+              <span>Back</span>
+            </Link>
+
+            <button
+              type="button"
+              onClick={() => setIsFeaturesOpen(true)}
+              className="px-3.5 py-2 rounded-xl text-xs font-bold text-white bg-[#EA580C] active:scale-95 flex items-center gap-1.5 shadow-sm"
+            >
+              <Sparkles size={13} />
+              <span>Features</span>
+            </button>
+
+            <Link
+              to="/gyms"
+              state={{ from: '/portal/customer', fromLabel: 'Back to Customer' }}
+              className="px-3.5 py-2 rounded-xl text-xs font-bold text-white bg-[#EA580C] active:scale-95 flex items-center gap-1 shadow-sm"
+            >
+              <Compass size={13} />
+              <span>Gyms</span>
+            </Link>
+
+            <Link
+              to="/login?portal=customer"
+              className="px-3.5 py-2 rounded-xl text-xs font-bold text-white bg-[#EA580C] active:scale-95 shadow-sm"
+            >
+              Login
+            </Link>
           </div>
         </div>
-      </header>
+      </section>
 
       {/* Visual Showcase Section 1: AI Workout Engine & Real-Time Tracking */}
       <section className="py-20 border-t border-[#E2E8F0] bg-[#F8FAFC]">
