@@ -1,33 +1,51 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, Linking } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../constants/theme';
 import { useAuth } from '../../context/AuthContext';
 
-export const TrainerDashboardScreen: React.FC<{ onNavigateTab: (tab: string) => void }> = ({ onNavigateTab }) => {
+export const TrainerDashboardScreen: React.FC<{ onNavigateTab: (tab: string, sub?: string) => void }> = ({ onNavigateTab }) => {
   const { user } = useAuth();
 
   const sessions = [
-    { id: '1', client: 'Naveen Kumar', goal: 'Muscle Gain', time: '09:00 AM - 10:00 AM', status: 'Completed' },
-    { id: '2', client: 'Priya Sharma', goal: 'Weight Loss', time: '11:30 AM - 12:30 PM', status: 'Next Up' },
-    { id: '3', client: 'Rahul Varma', goal: 'Strength & Core', time: '04:00 PM - 05:00 PM', status: 'Upcoming' },
-    { id: '4', client: 'Vikram Singh', goal: 'Shoulder Rehab', time: '06:30 PM - 07:30 PM', status: 'Upcoming' },
+    { id: '1', client: 'Naveen Kumar', goal: 'Muscle Gain', time: '09:00 AM - 10:00 AM', status: 'Completed', phone: '+91 98765 43210' },
+    { id: '2', client: 'Priya Sharma', goal: 'Weight Loss', time: '11:30 AM - 12:30 PM', status: 'Next Up', phone: '+91 98451 23456' },
+    { id: '3', client: 'Rahul Varma', goal: 'Strength & Core', time: '04:00 PM - 05:00 PM', status: 'Upcoming', phone: '+91 97112 34567' },
+    { id: '4', client: 'Vikram Singh', goal: 'Shoulder Rehab', time: '06:30 PM - 07:30 PM', status: 'Upcoming', phone: '+91 99223 45678' },
   ];
 
+  const handleCallPriya = () => {
+    Alert.alert(
+      'Contact Priya Sharma',
+      'Call client (+91 98451 23456) for upcoming 11:30 AM workout session?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'Call Client', onPress: () => Linking.openURL('tel:+919845123456') },
+      ]
+    );
+  };
+
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <ScrollView 
+      style={styles.container} 
+      contentContainerStyle={styles.content}
+      showsVerticalScrollIndicator={true}
+      showsHorizontalScrollIndicator={false}
+    >
       {/* Trainer Banner */}
       <View style={styles.banner}>
         <View style={styles.bannerTop}>
-          <View>
+          <View style={{ flex: 1, paddingRight: 8 }}>
             <View style={styles.badge}>
               <Text style={styles.badgeText}>Master Coach</Text>
             </View>
-            <Text style={styles.title}>Welcome, Coach {user.name.split(' ')[0]} 🏋️</Text>
+            <Text style={styles.title} numberOfLines={1}>
+              Welcome, Coach {user?.firstName || user?.name?.split(' ')[0] || 'Trainer'} 🏋️
+            </Text>
             <Text style={styles.sub}>4 Sessions Scheduled Today</Text>
           </View>
           <View style={styles.avatar}>
-            <Text style={styles.avatarText}>{user.avatarLetter}</Text>
+            <Text style={styles.avatarText}>{user?.avatarLetter || 'T'}</Text>
           </View>
         </View>
 
@@ -36,7 +54,12 @@ export const TrainerDashboardScreen: React.FC<{ onNavigateTab: (tab: string) => 
             <View style={styles.dot} />
             <Text style={styles.nextLabel}>Next Up: <Text style={styles.nextName}>Priya Sharma</Text> at 11:30 AM</Text>
           </View>
-          <TouchableOpacity style={styles.quickCall}>
+          <TouchableOpacity 
+            style={styles.quickCall} 
+            onPress={handleCallPriya}
+            activeOpacity={0.7}
+            accessibilityLabel="Call Next Client"
+          >
             <Ionicons name="call" size={14} color={COLORS.primary} />
           </TouchableOpacity>
         </View>
@@ -70,7 +93,7 @@ export const TrainerDashboardScreen: React.FC<{ onNavigateTab: (tab: string) => 
       {/* Today's Schedule Timeline */}
       <View style={styles.timelineHeader}>
         <Text style={styles.sectionTitle}>Today's Schedule</Text>
-        <TouchableOpacity onPress={() => onNavigateTab('workouts')}>
+        <TouchableOpacity onPress={() => onNavigateTab('programs')}>
           <Text style={styles.viewRoutinesText}>Routines →</Text>
         </TouchableOpacity>
       </View>
@@ -87,7 +110,7 @@ export const TrainerDashboardScreen: React.FC<{ onNavigateTab: (tab: string) => 
                       {s.client.charAt(0)}
                     </Text>
                   </View>
-                  <View>
+                  <View style={{ flex: 1 }}>
                     <Text style={styles.clientName}>{s.client}</Text>
                     <Text style={styles.clientGoal}>{s.goal}</Text>
                   </View>
@@ -110,7 +133,7 @@ export const TrainerDashboardScreen: React.FC<{ onNavigateTab: (tab: string) => 
                   <Ionicons name="time-outline" size={13} color={COLORS.textMuted} />
                   <Text style={styles.timeText}>{s.time}</Text>
                 </View>
-                <TouchableOpacity onPress={() => onNavigateTab('workouts')}>
+                <TouchableOpacity onPress={() => onNavigateTab('programs')}>
                   <Text style={styles.assignText}>Assign Split</Text>
                 </TouchableOpacity>
               </View>
@@ -124,12 +147,12 @@ export const TrainerDashboardScreen: React.FC<{ onNavigateTab: (tab: string) => 
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: COLORS.background },
-  content: { padding: 16, paddingBottom: 32 },
+  content: { padding: 14, paddingBottom: 110 },
   banner: {
     backgroundColor: COLORS.primary,
     borderRadius: 20,
-    padding: 18,
-    marginBottom: 16,
+    padding: 16,
+    marginBottom: 14,
   },
   bannerTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   badge: {
@@ -138,86 +161,92 @@ const styles = StyleSheet.create({
     paddingVertical: 3,
     borderRadius: 10,
     alignSelf: 'flex-start',
-    marginBottom: 6,
+    marginBottom: 4,
   },
   badgeText: { color: COLORS.white, fontSize: 10, fontWeight: '700' },
-  title: { color: COLORS.white, fontSize: 19, fontWeight: '800' },
-  sub: { color: '#FED7AA', fontSize: 11, marginTop: 2 },
+  title: { fontSize: 18, fontWeight: '800', color: COLORS.white },
+  sub: { fontSize: 11, color: 'rgba(255,255,255,0.85)', marginTop: 2 },
   avatar: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 46,
+    height: 46,
+    borderRadius: 23,
     backgroundColor: 'rgba(255,255,255,0.25)',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  avatarText: { color: COLORS.white, fontSize: 17, fontWeight: '800' },
+  avatarText: { fontSize: 18, fontWeight: '800', color: COLORS.white },
   nextBox: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    justifyContent: 'space-between',
     backgroundColor: 'rgba(0,0,0,0.15)',
-    padding: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 9,
     borderRadius: 12,
-    marginTop: 14,
+    marginTop: 12,
   },
-  nextLeft: { flexDirection: 'row', alignItems: 'center', gap: 6, flex: 1 },
-  dot: { width: 6, height: 6, borderRadius: 3, backgroundColor: '#4ADE80' },
-  nextLabel: { color: COLORS.white, fontSize: 11 },
+  nextLeft: { flexDirection: 'row', alignItems: 'center', gap: 8, flex: 1 },
+  dot: { width: 7, height: 7, borderRadius: 4, backgroundColor: '#4ADE80' },
+  nextLabel: { color: COLORS.white, fontSize: 11, flexShrink: 1 },
   nextName: { fontWeight: '700' },
   quickCall: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
     backgroundColor: COLORS.white,
-    alignItems: 'center',
-    justifyContent: 'center',
+    padding: 7,
+    borderRadius: 16,
   },
-  sectionTitle: { fontSize: 15, fontWeight: '800', color: COLORS.textDark, marginBottom: 12 },
-  kpiGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginBottom: 18 },
+  sectionTitle: { fontSize: 14, fontWeight: '800', color: COLORS.textDark, marginBottom: 10 },
+  kpiGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginBottom: 16,
+  },
   kpiCard: {
-    width: '48%',
+    width: '48.5%',
+    backgroundColor: COLORS.white,
+    padding: 12,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: COLORS.cardBorder,
+  },
+  kpiLabel: { fontSize: 11, color: COLORS.textMuted, fontWeight: '600' },
+  kpiValue: { fontSize: 18, fontWeight: '800', color: COLORS.textDark, marginVertical: 3 },
+  kpiSub: { fontSize: 9, color: COLORS.emerald, fontWeight: '700' },
+  timelineHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  viewRoutinesText: { fontSize: 12, fontWeight: '700', color: COLORS.primary },
+  sessionsList: { gap: 8 },
+  sessionCard: {
     backgroundColor: COLORS.white,
     borderRadius: 14,
     padding: 12,
     borderWidth: 1,
     borderColor: COLORS.cardBorder,
   },
-  kpiLabel: { fontSize: 11, color: COLORS.textMuted, fontWeight: '600' },
-  kpiValue: { fontSize: 18, fontWeight: '800', color: COLORS.textDark, marginTop: 4 },
-  kpiSub: { fontSize: 10, color: COLORS.emerald, fontWeight: '700', marginTop: 2 },
-  timelineHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  viewRoutinesText: { fontSize: 12, fontWeight: '700', color: COLORS.primary },
-  sessionsList: { gap: 10 },
-  sessionCard: {
-    backgroundColor: COLORS.white,
-    borderRadius: 16,
-    padding: 14,
-    borderWidth: 1,
-    borderColor: COLORS.cardBorder,
+  sessionCardNext: {
+    borderColor: COLORS.primary,
+    backgroundColor: '#FFFAF5',
   },
-  sessionCardNext: { borderColor: COLORS.primary, backgroundColor: '#FFFBF7' },
   sessionTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  sessionLeft: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  sessionLeft: { flexDirection: 'row', alignItems: 'center', gap: 10, flex: 1 },
   sessionAvatar: {
-    width: 38,
-    height: 38,
-    borderRadius: 12,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     backgroundColor: COLORS.background,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  sessionAvatarText: { fontSize: 15, fontWeight: '800', color: COLORS.textDark },
+  sessionAvatarText: { fontSize: 14, fontWeight: '800', color: COLORS.textDark },
   clientName: { fontSize: 13, fontWeight: '700', color: COLORS.textDark },
   clientGoal: { fontSize: 10, color: COLORS.textMuted, marginTop: 1 },
-  statusPill: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 10 },
-  statusText: { fontSize: 9, fontWeight: '700' },
+  statusPill: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 },
   bgDone: { backgroundColor: COLORS.emeraldLight },
-  textDone: { color: COLORS.emerald },
-  bgNext: { backgroundColor: COLORS.primary },
-  textNext: { color: COLORS.white },
+  textDone: { color: COLORS.emerald, fontSize: 10, fontWeight: '700' },
+  bgNext: { backgroundColor: COLORS.primaryLight, borderWidth: 1, borderColor: COLORS.primaryBorder },
+  textNext: { color: COLORS.primaryDark, fontSize: 10, fontWeight: '800' },
   bgUpcoming: { backgroundColor: COLORS.background },
-  textUpcoming: { color: COLORS.textMedium },
+  textUpcoming: { color: COLORS.textMuted, fontSize: 10, fontWeight: '600' },
+  statusText: { fontSize: 10 },
   sessionFooter: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -227,8 +256,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: COLORS.divider,
   },
-  timeRow: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+  timeRow: { flexDirection: 'row', alignItems: 'center', gap: 5 },
   timeText: { fontSize: 11, color: COLORS.textMedium },
   assignText: { fontSize: 11, fontWeight: '700', color: COLORS.primary },
 });
-

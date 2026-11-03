@@ -5,7 +5,7 @@ import { COLORS } from '../../constants/theme';
 import { useAuth } from '../../context/AuthContext';
 
 export const CustomerProfileScreen: React.FC = () => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
 
   const attendanceLog = [
     { date: 'Today, 02 Nov', type: 'Push Day (Chest/Tri)', duration: '62 mins' },
@@ -26,7 +26,7 @@ export const CustomerProfileScreen: React.FC = () => {
           </View>
         </View>
 
-        <Text style={styles.memberName}>{user.name}</Text>
+        <Text style={styles.memberName}>{user?.name || 'Valued Member'}</Text>
         <Text style={styles.cardId}>Member ID: GYM-2026-9921</Text>
 
         <View style={styles.passBottom}>
@@ -63,7 +63,7 @@ export const CustomerProfileScreen: React.FC = () => {
       </View>
 
       {/* Logout */}
-      <TouchableOpacity style={styles.logoutBtn}>
+      <TouchableOpacity style={styles.logoutBtn} onPress={logout} activeOpacity={0.7}>
         <Ionicons name="log-out-outline" size={18} color={COLORS.rose} />
         <Text style={styles.logoutText}>Sign Out from Customer App</Text>
       </TouchableOpacity>

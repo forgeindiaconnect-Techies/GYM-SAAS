@@ -5,19 +5,19 @@ import { COLORS } from '../../constants/theme';
 import { useAuth } from '../../context/AuthContext';
 
 export const OwnerSettingsScreen: React.FC = () => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       {/* Profile Card */}
       <View style={styles.profileCard}>
         <View style={styles.avatar}>
-          <Text style={styles.avatarText}>{user.avatarLetter}</Text>
+          <Text style={styles.avatarText}>{user?.avatarLetter || 'O'}</Text>
         </View>
-        <Text style={styles.name}>{user.name}</Text>
+        <Text style={styles.name}>{user?.name || 'Gym Owner'}</Text>
         <Text style={styles.role}>Gym Owner & Administrator</Text>
         <View style={styles.gymPill}>
-          <Text style={styles.gymPillText}>{user.gymName}</Text>
+          <Text style={styles.gymPillText}>{user?.gymName || 'Gymora Arena'}</Text>
         </View>
       </View>
 
@@ -77,7 +77,7 @@ export const OwnerSettingsScreen: React.FC = () => {
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity style={styles.logoutBtn}>
+      <TouchableOpacity style={styles.logoutBtn} onPress={logout} activeOpacity={0.7}>
         <Ionicons name="log-out-outline" size={18} color={COLORS.rose} />
         <Text style={styles.logoutText}>Sign Out from Owner App</Text>
       </TouchableOpacity>

@@ -1,13 +1,39 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Modal } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Modal, BackHandler } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../constants/theme';
 import { useAuth } from '../../context/AuthContext';
 
-export const CustomerDashboardScreen: React.FC<{ onNavigateTab: (tab: string) => void }> = ({ onNavigateTab }) => {
+export interface CustomerDashboardProps {
+  onNavigateTab: (tab: string, sub?: string) => void;
+  externalQrVisible?: boolean;
+  onCloseExternalQr?: () => void;
+}
+
+export const CustomerDashboardScreen: React.FC<CustomerDashboardProps> = ({ 
+  onNavigateTab,
+  externalQrVisible = false,
+  onCloseExternalQr
+}) => {
   const { user } = useAuth();
   const [waterMl, setWaterMl] = useState(2250);
-  const [qrVisible, setQrVisible] = useState(false);
+  const [internalQrVisible, setInternalQrVisible] = useState(false);
+
+  const qrVisible = externalQrVisible || internalQrVisible;
+  const closeQr = () => {
+    setInternalQrVisible(false);
+    if (onCloseExternalQr) onCloseExternalQr();
+  };
+
+  useEffect(() => {
+    if (!qrVisible) return;
+    const backAction = () => {
+      closeQr();
+      return true;
+    };
+    const handler = BackHandler.addEventListener('hardwareBackPress', backAction);
+    return () => handler.remove();
+  }, [qrVisible]);
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
@@ -22,13 +48,14 @@ export const CustomerDashboardScreen: React.FC<{ onNavigateTab: (tab: string) =>
                 <Text style={styles.streakText}>14 Days Streak</Text>
               </View>
             </View>
-            <Text style={styles.title}>Train Hard, {user.name.split(' ')[0]} 🔥</Text>
+            <Text style={styles.title}>Train Hard, {user?.firstName || user?.name?.split(' ')[0] || 'Member'} 🔥</Text>
             <Text style={styles.sub}>Today: Push Day (Chest & Triceps)</Text>
           </View>
           <TouchableOpacity 
             style={styles.qrBtn} 
-            onPress={() => setQrVisible(true)}
+            onPress={() => setInternalQrVisible(true)}
             activeOpacity={0.8}
+            accessibilityLabel="Open Gym Entry Pass"
           >
             <Ionicons name="qr-code" size={24} color={COLORS.primary} />
             <Text style={styles.qrBtnText}>PASS</Text>
@@ -139,32 +166,40 @@ export const CustomerDashboardScreen: React.FC<{ onNavigateTab: (tab: string) =>
         </TouchableOpacity>
       </View>
 
-      {/* QR Code Entry Pass Modal */}
-      <Modal
-        visible={qrVisible}
-        transparent
-        animationType="fade"
-        onRequestClose={() => setQrVisible(false)}
-      >
-        <TouchableOpacity style={styles.modalBg} activeOpacity={1} onPress={() => setQrVisible(false)}>
-          <View style={styles.modalCard}>
-            <Text style={styles.modalHeading}>Digital Gym Entry Pass</Text>
-            <Text style={styles.modalSub}>Scan this barcode at reception or turnstile</Text>
+      {/* QR Code Entry Pass Modal - strictly mounted only when active to avoid dark overlays */}
+      {qrVisible && (
+        <Modal
+          visible={true}
+          transparent
+          animationType="fade"
+          statusBarTranslucent={true}
+          onRequestClose={closeQr}
+        >
+          <TouchableOpacity style={styles.modalBg} activeOpacity={1} onPress={closeQr}>
+            <View style={styles.modalCard} onStartShouldSetResponder={() => true}>
+              <View style={styles.modalCardHeader}>
+                <Text style={styles.modalHeading}>Digital Gym Entry Pass</Text>
+                <TouchableOpacity onPress={closeQr} style={styles.modalCloseIconBtn}>
+                  <Ionicons name="close" size={20} color={COLORS.textMedium} />
+                </TouchableOpacity>
+              </View>
+              <Text style={styles.modalSub}>Scan this barcode at reception or turnstile</Text>
 
-            <View style={styles.qrFrame}>
-              <Ionicons name="qr-code" size={160} color={COLORS.textDark} />
+              <View style={styles.qrFrame}>
+                <Ionicons name="qr-code" size={160} color={COLORS.textDark} />
+              </View>
+
+              <Text style={styles.passUserName}>{user?.name || 'Customer'}</Text>
+              <Text style={styles.passType}>{user?.subscriptionPlan || 'Gold Annual Pass'} • Active</Text>
+              <Text style={styles.passId}>ID: GYM-2026-9921</Text>
+
+              <TouchableOpacity style={styles.closeModalBtn} onPress={closeQr} activeOpacity={0.8}>
+                <Text style={styles.closeModalText}>Close Pass</Text>
+              </TouchableOpacity>
             </View>
-
-            <Text style={styles.passUserName}>{user.name}</Text>
-            <Text style={styles.passType}>Gold Annual Pass • Active</Text>
-            <Text style={styles.passId}>ID: GYM-2026-9921</Text>
-
-            <TouchableOpacity style={styles.closeModalBtn} onPress={() => setQrVisible(false)}>
-              <Text style={styles.closeModalText}>Done</Text>
-            </TouchableOpacity>
-          </View>
-        </TouchableOpacity>
-      </Modal>
+          </TouchableOpacity>
+        </Modal>
+      )}
     </ScrollView>
   );
 };
@@ -327,6 +362,16 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     padding: 24,
     alignItems: 'center',
+  },
+  modalCardHeader: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 4,
+  },
+  modalCloseIconBtn: {
+    padding: 4,
   },
   modalHeading: { fontSize: 16, fontWeight: '800', color: COLORS.textDark },
   modalSub: { fontSize: 11, color: COLORS.textMuted, textAlign: 'center', marginTop: 4, marginBottom: 16 },
