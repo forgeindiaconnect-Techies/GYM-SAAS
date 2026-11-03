@@ -8,8 +8,15 @@ export const CustomerHomeScreen: React.FC<{
   onNavigateTab: (tab: string, sub?: string) => void;
   externalQrVisible?: boolean;
   onCloseExternalQr?: () => void;
-}> = ({ onNavigateTab, externalQrVisible, onCloseExternalQr }) => {
-  const [activeSubTab, setActiveSubTab] = useState<'dashboard' | 'gym'>('dashboard');
+  initialSubTab?: 'dashboard' | 'gym';
+}> = ({ onNavigateTab, externalQrVisible, onCloseExternalQr, initialSubTab = 'dashboard' }) => {
+  const [activeSubTab, setActiveSubTab] = useState<'dashboard' | 'gym'>(initialSubTab);
+
+  React.useEffect(() => {
+    if (initialSubTab === 'dashboard' || initialSubTab === 'gym') {
+      setActiveSubTab(initialSubTab);
+    }
+  }, [initialSubTab]);
 
   return (
     <View style={styles.container}>

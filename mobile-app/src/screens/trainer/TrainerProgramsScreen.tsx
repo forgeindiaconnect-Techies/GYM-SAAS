@@ -1,7 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, BackHandler, TextInput } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { 
+  View, 
+  Text, 
+  StyleSheet, 
+  ScrollView, 
+  TouchableOpacity, 
+  BackHandler, 
+  ActivityIndicator, 
+  RefreshControl, 
+  Alert 
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../constants/theme';
+import { api } from '../../api/client';
 
 export type ProgramSectionKey = 
   | 'none'
@@ -14,6 +25,65 @@ export type ProgramSectionKey =
 
 export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKey }> = ({ initialSection = 'none' }) => {
   const [activeSection, setActiveSection] = useState<ProgramSectionKey>(initialSection);
+  const [loading, setLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+
+  // Live state arrays
+  const [exercises, setExercises] = useState<any[]>([]);
+  const [videos, setVideos] = useState<any[]>([]);
+  const [workoutPlans, setWorkoutPlans] = useState<any[]>([]);
+  const [dietRequests, setDietRequests] = useState<any[]>([]);
+  const [equipments, setEquipments] = useState<any[]>([]);
+  const [completedWorkplans, setCompletedWorkplans] = useState<any[]>([]);
+
+  const fetchSectionData = useCallback(async (section: ProgramSectionKey) => {
+    if (section === 'none') return;
+    try {
+      setLoading(true);
+      if (section === 'exercises') {
+        const res = await api.get('/exercises');
+        const list = res.data?.exercises || (Array.isArray(res.data) ? res.data : []);
+        setExercises(list);
+      } else if (section === 'videos') {
+        const res = await api.get('/workout-videos');
+        const list = res.data?.videos || (Array.isArray(res.data) ? res.data : []);
+        setVideos(list);
+      } else if (section === 'workout-plans') {
+        const res = await api.get('/workout-plans/trainer');
+        const list = res.data?.plans || (Array.isArray(res.data) ? res.data : []);
+        setWorkoutPlans(list);
+      } else if (section === 'diet-plans') {
+        const res = await api.get('/trainer-plans/trainer-requests');
+        const list = res.data?.requests || (Array.isArray(res.data) ? res.data : []);
+        setDietRequests(list);
+      } else if (section === 'equipments') {
+        const res = await api.get('/equipment').catch(() => api.get('/trainer-plans/equipments/customer'));
+        const list = res.data?.equipment || res.data?.equipments || (Array.isArray(res.data) ? res.data : []);
+        setEquipments(list);
+      } else if (section === 'customer-workplan-completed') {
+        const res = await api.get('/workout-progress/trainer/clients-overview');
+        const list = res.data?.recentActivity || res.data?.completed || (Array.isArray(res.data) ? res.data : []);
+        setCompletedWorkplans(list);
+      }
+    } catch (err) {
+      console.log(`[TrainerPrograms] Fetch note for ${section}:`, err);
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (initialSection && initialSection !== 'none') {
+      setActiveSection(initialSection);
+    }
+  }, [initialSection]);
+
+  useEffect(() => {
+    if (activeSection !== 'none') {
+      fetchSectionData(activeSection);
+    }
+  }, [activeSection, fetchSectionData]);
 
   // Handle hardware back button on Android
   useEffect(() => {
@@ -26,215 +96,318 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
     return () => handler.remove();
   }, [activeSection]);
 
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchSectionData(activeSection);
+  };
+
   const programModules = [
-    { key: 'exercises' as ProgramSectionKey, title: 'Exercise Library', icon: 'barbell-outline', count: '140+ Exercises', desc: 'Technique cues, target muscle groups & equipment' },
-    { key: 'videos' as ProgramSectionKey, title: 'Gym Exercise Videos', icon: 'videocam-outline', count: '48 Clips', desc: 'Instructional video walkthroughs for clients' },
-    { key: 'workout-plans' as ProgramSectionKey, title: 'Workout Plans', icon: 'document-text-outline', count: '12 Templates', desc: 'Push-Pull-Legs, Upper/Lower & Hypertrophy splits' },
-    { key: 'diet-plans' as ProgramSectionKey, title: 'Diet Plans', icon: 'nutrition-outline', count: '8 Templates', desc: 'Macro breakdown, calorie targets & meal guides' },
-    { key: 'equipments' as ProgramSectionKey, title: 'Gym Equipments', icon: 'construct-outline', count: '28 Machines', desc: 'Inventory, maintenance status & usage instructions' },
-    { key: 'customer-workplan-completed' as ProgramSectionKey, title: 'Customer Workplan Completed', icon: 'checkmark-done-circle-outline', count: '16 Completed', desc: 'Review completed member splits & compliance sign-offs' },
+    { 
+      key: 'exercises' as ProgramSectionKey, 
+      title: 'Exercise Library', 
+      icon: 'barbell-outline', 
+      count: exercises.length > 0 ? `${exercises.length} Exercises` : 'Library', 
+      desc: 'Technique cues, target muscle groups & equipment' 
+    },
+    { 
+      key: 'videos' as ProgramSectionKey, 
+      title: 'Gym Exercise Videos', 
+      icon: 'videocam-outline', 
+      count: videos.length > 0 ? `${videos.length} Clips` : 'Video Clips', 
+      desc: 'Instructional video walkthroughs for clients' 
+    },
+    { 
+      key: 'workout-plans' as ProgramSectionKey, 
+      title: 'Workout Plans', 
+      icon: 'document-text-outline', 
+      count: workoutPlans.length > 0 ? `${workoutPlans.length} Templates` : 'Plan Splits', 
+      desc: 'Push-Pull-Legs, Upper/Lower & Hypertrophy splits' 
+    },
+    { 
+      key: 'diet-plans' as ProgramSectionKey, 
+      title: 'Diet Plans', 
+      icon: 'nutrition-outline', 
+      count: dietRequests.length > 0 ? `${dietRequests.length} Requests` : 'Meal Plans', 
+      desc: 'Macro breakdown, calorie targets & meal guides' 
+    },
+    { 
+      key: 'equipments' as ProgramSectionKey, 
+      title: 'Gym Equipments', 
+      icon: 'construct-outline', 
+      count: equipments.length > 0 ? `${equipments.length} Units` : 'Equipment', 
+      desc: 'Inventory, maintenance status & usage instructions' 
+    },
+    { 
+      key: 'customer-workplan-completed' as ProgramSectionKey, 
+      title: 'Customer Workplan Completed', 
+      icon: 'checkmark-done-circle-outline', 
+      count: completedWorkplans.length > 0 ? `${completedWorkplans.length} Completed` : 'Logs', 
+      desc: 'Review completed member splits & compliance sign-offs' 
+    },
   ];
 
   /* ----------------- SUB-VIEWS ----------------- */
 
   // 1. Exercise Library
   const renderExercises = () => {
-    const exercises = [
-      { name: 'Barbell Flat Bench Press', muscle: 'Chest & Triceps', equip: 'Olympic Barbell', diff: 'Intermediate' },
-      { name: 'Barbell Back Squat', muscle: 'Quads & Glutes', equip: 'Squat Rack', diff: 'Intermediate' },
-      { name: 'Conventional Deadlift', muscle: 'Posterior Chain', equip: 'Olympic Barbell', diff: 'Advanced' },
-      { name: 'Incline Dumbbell Press', muscle: 'Upper Chest', equip: 'Dumbbells', diff: 'Beginner' },
-      { name: 'Cable Lat Pulldown', muscle: 'Lats & Biceps', equip: 'Cable Tower', diff: 'Beginner' },
-      { name: 'Romanian Deadlift (RDL)', muscle: 'Hamstrings', equip: 'Barbell / Dumbbells', diff: 'Intermediate' },
-    ];
-
     return (
-      <ScrollView style={styles.subScroll} contentContainerStyle={styles.subScrollContent}>
-        <View style={styles.subList}>
-          {exercises.map((ex, i) => (
-            <View key={i} style={styles.subCard}>
-              <View style={styles.subCardHeader}>
-                <Text style={styles.subCardTitle}>{ex.name}</Text>
-                <View style={styles.pillBadge}>
-                  <Text style={styles.pillBadgeText}>{ex.diff}</Text>
+      <ScrollView 
+        style={styles.subScroll} 
+        contentContainerStyle={styles.subScrollContent}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.primary} />}
+      >
+        {loading && !refreshing ? (
+          <View style={{ paddingVertical: 40, alignItems: 'center' }}>
+            <ActivityIndicator size="small" color={COLORS.primary} />
+            <Text style={{ marginTop: 8, fontSize: 12, color: COLORS.textMuted }}>Loading exercises...</Text>
+          </View>
+        ) : exercises.length === 0 ? (
+          <View style={styles.emptyCard}>
+            <Ionicons name="barbell-outline" size={36} color={COLORS.textMuted} />
+            <Text style={styles.emptyTitle}>No Exercises Found</Text>
+            <Text style={styles.emptySub}>The gym exercise catalog is currently being updated.</Text>
+          </View>
+        ) : (
+          <View style={styles.subList}>
+            {exercises.map((ex, i) => (
+              <View key={ex._id || ex.id || i} style={styles.subCard}>
+                <View style={styles.subCardHeader}>
+                  <Text style={styles.subCardTitle}>{ex.name || ex.title}</Text>
+                  <View style={styles.pillBadge}>
+                    <Text style={styles.pillBadgeText}>{ex.difficulty || ex.level || 'General'}</Text>
+                  </View>
                 </View>
+                <Text style={styles.subCardSub}>
+                  Target: <Text style={styles.boldDark}>{ex.muscleGroup || ex.targetMuscle || 'Full Body'}</Text>
+                </Text>
+                <Text style={styles.subCardMeta}>Equipment: {ex.equipment || ex.category || 'Standard Gym'}</Text>
               </View>
-              <Text style={styles.subCardSub}>Target: <Text style={styles.boldDark}>{ex.muscle}</Text></Text>
-              <Text style={styles.subCardMeta}>Equipment: {ex.equip}</Text>
-            </View>
-          ))}
-        </View>
+            ))}
+          </View>
+        )}
       </ScrollView>
     );
   };
 
   // 2. Gym Exercise Videos
   const renderVideos = () => {
-    const videos = [
-      { title: 'Bench Press Arch & Leg Drive Tutorial', duration: '4:15 min', coach: 'Coach Vikram', views: '280 views' },
-      { title: 'Squat Depth & Hip Hinge Masterclass', duration: '5:40 min', coach: 'Coach Vikram', views: '340 views' },
-      { title: 'Deadlift Setup: Avoid Lower Back Rounding', duration: '6:10 min', coach: 'Coach Vikram', views: '410 views' },
-      { title: 'Strict Overhead Press Shoulder Mobility', duration: '3:50 min', coach: 'Coach Vikram', views: '190 views' },
-    ];
-
     return (
-      <ScrollView style={styles.subScroll} contentContainerStyle={styles.subScrollContent}>
-        <View style={styles.subList}>
-          {videos.map((v, i) => (
-            <View key={i} style={styles.subCard}>
-              <View style={styles.videoHeader}>
-                <View style={styles.videoPlayBadge}>
-                  <Ionicons name="play" size={14} color={COLORS.white} />
-                </View>
-                <View style={{ flex: 1, marginLeft: 10 }}>
-                  <Text style={styles.subCardTitle}>{v.title}</Text>
-                  <Text style={styles.subCardMeta}>{v.coach} • {v.duration} • {v.views}</Text>
+      <ScrollView 
+        style={styles.subScroll} 
+        contentContainerStyle={styles.subScrollContent}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.primary} />}
+      >
+        {loading && !refreshing ? (
+          <View style={{ paddingVertical: 40, alignItems: 'center' }}>
+            <ActivityIndicator size="small" color={COLORS.primary} />
+            <Text style={{ marginTop: 8, fontSize: 12, color: COLORS.textMuted }}>Loading video clips...</Text>
+          </View>
+        ) : videos.length === 0 ? (
+          <View style={styles.emptyCard}>
+            <Ionicons name="videocam-outline" size={36} color={COLORS.textMuted} />
+            <Text style={styles.emptyTitle}>No Video Clips Available</Text>
+            <Text style={styles.emptySub}>Exercise video demonstrations uploaded by coaches will appear here.</Text>
+          </View>
+        ) : (
+          <View style={styles.subList}>
+            {videos.map((v, i) => (
+              <View key={v._id || v.id || i} style={styles.subCard}>
+                <View style={styles.videoHeader}>
+                  <View style={styles.videoPlayBadge}>
+                    <Ionicons name="play" size={14} color={COLORS.white} />
+                  </View>
+                  <View style={{ flex: 1, marginLeft: 10 }}>
+                    <Text style={styles.subCardTitle}>{v.title || v.name}</Text>
+                    <Text style={styles.subCardMeta}>
+                      {v.coachName || v.category || 'Trainer Demo'} • {v.duration || 'Video'}
+                    </Text>
+                  </View>
                 </View>
               </View>
-            </View>
-          ))}
-        </View>
+            ))}
+          </View>
+        )}
       </ScrollView>
     );
   };
 
   // 3. Workout Plans
   const renderWorkoutPlans = () => {
-    const plans = [
-      { name: '8-Week Hypertrophy Overload', days: '5 Days / week', level: 'Intermediate', assigned: '6 Clients' },
-      { name: '4-Week Rapid Fat Loss HIIT Split', days: '4 Days / week', level: 'All Levels', assigned: '4 Clients' },
-      { name: 'Push-Pull-Legs Classic Foundation', days: '6 Days / week', level: 'Advanced', assigned: '5 Clients' },
-      { name: 'Upper/Lower Strength Rebuild', days: '4 Days / week', level: 'Beginner', assigned: '3 Clients' },
-    ];
-
     return (
-      <ScrollView style={styles.subScroll} contentContainerStyle={styles.subScrollContent}>
-        <View style={styles.subList}>
-          {plans.map((p, i) => (
-            <View key={i} style={styles.subCard}>
-              <View style={styles.subCardHeader}>
-                <Text style={styles.subCardTitle}>{p.name}</Text>
-                <View style={styles.pillBadgePrimary}>
-                  <Text style={styles.pillBadgePrimaryText}>{p.assigned}</Text>
+      <ScrollView 
+        style={styles.subScroll} 
+        contentContainerStyle={styles.subScrollContent}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.primary} />}
+      >
+        {loading && !refreshing ? (
+          <View style={{ paddingVertical: 40, alignItems: 'center' }}>
+            <ActivityIndicator size="small" color={COLORS.primary} />
+            <Text style={{ marginTop: 8, fontSize: 12, color: COLORS.textMuted }}>Loading workout plans...</Text>
+          </View>
+        ) : workoutPlans.length === 0 ? (
+          <View style={styles.emptyCard}>
+            <Ionicons name="document-text-outline" size={36} color={COLORS.textMuted} />
+            <Text style={styles.emptyTitle}>No Workout Plans Configured</Text>
+            <Text style={styles.emptySub}>Workout split templates assigned to clients will be listed here.</Text>
+          </View>
+        ) : (
+          <View style={styles.subList}>
+            {workoutPlans.map((p, i) => (
+              <View key={p._id || p.id || i} style={styles.subCard}>
+                <View style={styles.subCardHeader}>
+                  <Text style={styles.subCardTitle}>{p.name || p.title || 'Workout Split'}</Text>
+                  <View style={styles.pillBadgePrimary}>
+                    <Text style={styles.pillBadgePrimaryText}>{p.assignedCount ? `${p.assignedCount} Clients` : 'Active Plan'}</Text>
+                  </View>
                 </View>
+                <Text style={styles.subCardSub}>
+                  Frequency: {p.frequency || `${p.days?.length || 4} Days / wk`} • Level: {p.level || 'All Levels'}
+                </Text>
+                <TouchableOpacity 
+                  style={styles.actionRowBtn}
+                  onPress={() => Alert.alert('Plan Details', `${p.name || 'Plan'}\nDescription: ${p.description || 'Custom tailored workout plan'}`)}
+                >
+                  <Text style={styles.actionRowBtnText}>View Plan Split →</Text>
+                </TouchableOpacity>
               </View>
-              <Text style={styles.subCardSub}>Frequency: {p.days} • Level: {p.level}</Text>
-              <TouchableOpacity style={styles.actionRowBtn}>
-                <Text style={styles.actionRowBtnText}>Assign Split to Client →</Text>
-              </TouchableOpacity>
-            </View>
-          ))}
-        </View>
+            ))}
+          </View>
+        )}
       </ScrollView>
     );
   };
 
   // 4. Diet Plans
   const renderDietPlans = () => {
-    const diets = [
-      { name: 'High Protein Lean Bulk (2,600 kcal)', macros: 'P: 180g | C: 260g | F: 70g', goal: 'Muscle Gain' },
-      { name: 'Targeted Caloric Deficit (1,800 kcal)', macros: 'P: 160g | C: 140g | F: 50g', goal: 'Fat Loss' },
-      { name: 'Vegetarian High Protein Plan (2,200 kcal)', macros: 'P: 140g | C: 240g | F: 60g', goal: 'Tone & Health' },
-    ];
-
     return (
-      <ScrollView style={styles.subScroll} contentContainerStyle={styles.subScrollContent}>
-        <View style={styles.subList}>
-          {diets.map((d, i) => (
-            <View key={i} style={styles.subCard}>
-              <View style={styles.subCardHeader}>
-                <Text style={styles.subCardTitle}>{d.name}</Text>
-                <View style={styles.pillBadge}>
-                  <Text style={styles.pillBadgeText}>{d.goal}</Text>
+      <ScrollView 
+        style={styles.subScroll} 
+        contentContainerStyle={styles.subScrollContent}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.primary} />}
+      >
+        {loading && !refreshing ? (
+          <View style={{ paddingVertical: 40, alignItems: 'center' }}>
+            <ActivityIndicator size="small" color={COLORS.primary} />
+            <Text style={{ marginTop: 8, fontSize: 12, color: COLORS.textMuted }}>Loading meal plans...</Text>
+          </View>
+        ) : dietRequests.length === 0 ? (
+          <View style={styles.emptyCard}>
+            <Ionicons name="nutrition-outline" size={36} color={COLORS.textMuted} />
+            <Text style={styles.emptyTitle}>No Diet Plan Requests</Text>
+            <Text style={styles.emptySub}>Client nutrition requests and meal templates will display here.</Text>
+          </View>
+        ) : (
+          <View style={styles.subList}>
+            {dietRequests.map((d, i) => (
+              <View key={d._id || d.id || i} style={styles.subCard}>
+                <View style={styles.subCardHeader}>
+                  <Text style={styles.subCardTitle}>{d.customerId?.name || d.name || 'Nutrition Guidance'}</Text>
+                  <View style={styles.pillBadge}>
+                    <Text style={styles.pillBadgeText}>{d.status || 'Active'}</Text>
+                  </View>
                 </View>
+                <Text style={styles.subCardSub}>
+                  Goal: <Text style={styles.boldDark}>{d.fitnessGoal || d.goal || 'General Health'}</Text>
+                </Text>
+                {d.notes && <Text style={styles.subCardMeta}>Notes: {d.notes}</Text>}
               </View>
-              <Text style={styles.subCardSub}>Macros: <Text style={styles.boldDark}>{d.macros}</Text></Text>
-              <TouchableOpacity style={styles.actionRowBtn}>
-                <Text style={styles.actionRowBtnText}>Send Meal Schedule →</Text>
-              </TouchableOpacity>
-            </View>
-          ))}
-        </View>
+            ))}
+          </View>
+        )}
       </ScrollView>
     );
   };
 
   // 5. Gym Equipments
   const renderEquipments = () => {
-    const equipments = [
-      { name: 'Eleiko Olympic Powerlifting Barbell (20kg)', count: '6 Available', location: 'Platform 1-4', status: 'Optimal' },
-      { name: 'Hammer Strength Iso-Lateral Chest Press', count: '2 Machines', location: 'Zone B', status: 'Optimal' },
-      { name: 'Dual Adjustable Cable Pulley Station', count: '3 Units', location: 'Zone C', status: 'Optimal' },
-      { name: 'Watson Dumbbell Rack (2.5kg - 50kg)', count: 'Full Set', location: 'Free Weights', status: 'Optimal' },
-    ];
-
     return (
-      <ScrollView style={styles.subScroll} contentContainerStyle={styles.subScrollContent}>
-        <View style={styles.subList}>
-          {equipments.map((eq, i) => (
-            <View key={i} style={styles.subCard}>
-              <View style={styles.subCardHeader}>
-                <Text style={styles.subCardTitle}>{eq.name}</Text>
-                <View style={styles.statusOptimalBadge}>
-                  <Text style={styles.statusOptimalText}>{eq.status}</Text>
+      <ScrollView 
+        style={styles.subScroll} 
+        contentContainerStyle={styles.subScrollContent}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.primary} />}
+      >
+        {loading && !refreshing ? (
+          <View style={{ paddingVertical: 40, alignItems: 'center' }}>
+            <ActivityIndicator size="small" color={COLORS.primary} />
+            <Text style={{ marginTop: 8, fontSize: 12, color: COLORS.textMuted }}>Loading equipment list...</Text>
+          </View>
+        ) : equipments.length === 0 ? (
+          <View style={styles.emptyCard}>
+            <Ionicons name="construct-outline" size={36} color={COLORS.textMuted} />
+            <Text style={styles.emptyTitle}>No Equipment Registered</Text>
+            <Text style={styles.emptySub}>Gym equipment records and maintenance logs will appear here.</Text>
+          </View>
+        ) : (
+          <View style={styles.subList}>
+            {equipments.map((eq, i) => (
+              <View key={eq._id || eq.id || i} style={styles.subCard}>
+                <View style={styles.subCardHeader}>
+                  <Text style={styles.subCardTitle}>{eq.name || eq.equipmentName}</Text>
+                  <View style={styles.statusOptimalBadge}>
+                    <Text style={styles.statusOptimalText}>{eq.status || 'Operational'}</Text>
+                  </View>
                 </View>
+                <Text style={styles.subCardSub}>Location: {eq.zone || eq.location || 'Main Floor'}</Text>
+                <Text style={styles.subCardMeta}>Count: {eq.quantity || eq.count || 1} Units</Text>
               </View>
-              <Text style={styles.subCardSub}>Location: {eq.location} • {eq.count}</Text>
-            </View>
-          ))}
-        </View>
+            ))}
+          </View>
+        )}
       </ScrollView>
     );
   };
 
   // 6. Customer Workplan Completed
-  const renderCustomerWorkplanCompleted = () => {
-    const completedWorkplans = [
-      { client: 'Naveen Kumar', plan: 'Push Day (Chest, Shoulders, Triceps)', date: 'Today, 09:55 AM', compliance: '100% (6 of 6 sets hit)', feedback: 'Felt strong on incline dumbbell press. Increased reps to 12.' },
-      { client: 'Priya Sharma', plan: 'HIIT Core & Glute Activation', date: 'Yesterday, 12:20 PM', compliance: '92% (5 of 6 sets)', feedback: 'Skipped last plank set due to wrist fatigue.' },
-      { client: 'Rahul Varma', plan: 'Back & Biceps Pull Hypertrophy', date: '01 Nov, 04:50 PM', compliance: '100% (7 of 7 sets)', feedback: 'Heavy deadlifts hit target 140kg x 5 reps cleanly.' },
-    ];
-
+  const renderCompletedWorkplans = () => {
     return (
-      <ScrollView style={styles.subScroll} contentContainerStyle={styles.subScrollContent}>
-        <View style={styles.subList}>
-          {completedWorkplans.map((wp, i) => (
-            <View key={i} style={styles.subCard}>
-              <View style={styles.subCardHeader}>
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.subCardTitle}>{wp.client}</Text>
-                  <Text style={styles.subCardSub}>{wp.plan}</Text>
+      <ScrollView 
+        style={styles.subScroll} 
+        contentContainerStyle={styles.subScrollContent}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.primary} />}
+      >
+        {loading && !refreshing ? (
+          <View style={{ paddingVertical: 40, alignItems: 'center' }}>
+            <ActivityIndicator size="small" color={COLORS.primary} />
+            <Text style={{ marginTop: 8, fontSize: 12, color: COLORS.textMuted }}>Loading completed exercises...</Text>
+          </View>
+        ) : completedWorkplans.length === 0 ? (
+          <View style={styles.emptyCard}>
+            <Ionicons name="checkmark-done-circle-outline" size={36} color={COLORS.textMuted} />
+            <Text style={styles.emptyTitle}>No Completed Routines Logged</Text>
+            <Text style={styles.emptySub}>When assigned clients log completed sets or workouts, they show here.</Text>
+          </View>
+        ) : (
+          <View style={styles.subList}>
+            {completedWorkplans.map((w, i) => (
+              <View key={w._id || w.id || i} style={styles.subCard}>
+                <View style={styles.subCardHeader}>
+                  <Text style={styles.subCardTitle}>{w.customerName || w.user?.name || 'Client Routine'}</Text>
+                  <View style={styles.statusOptimalBadge}>
+                    <Text style={styles.statusOptimalText}>Completed</Text>
+                  </View>
                 </View>
-                <View style={styles.statusDoneBadge}>
-                  <Ionicons name="checkmark-circle" size={13} color={COLORS.emerald} />
-                  <Text style={styles.statusDoneText}>Verified</Text>
-                </View>
+                <Text style={styles.subCardSub}>
+                  Exercise: <Text style={styles.boldDark}>{w.exerciseName || w.split || 'Training Session'}</Text>
+                </Text>
+                <Text style={styles.subCardMeta}>
+                  {w.sets ? `${w.sets} Sets` : ''} {w.reps ? `× ${w.reps} Reps` : ''} {w.weight ? `(${w.weight} kg)` : ''}
+                </Text>
               </View>
-
-              <View style={styles.metaBox}>
-                <Text style={styles.metaBoxText}>Completed: {wp.date}</Text>
-                <Text style={styles.metaBoxText}>Compliance: <Text style={styles.boldDark}>{wp.compliance}</Text></Text>
-                <Text style={[styles.metaBoxText, { marginTop: 4, fontStyle: 'italic' }]}>"{wp.feedback}"</Text>
-              </View>
-
-              <TouchableOpacity style={styles.signOffBtn}>
-                <Ionicons name="shield-checkmark" size={14} color={COLORS.primaryDark} />
-                <Text style={styles.signOffBtnText}>Coach Sign-Off Completed ✓</Text>
-              </TouchableOpacity>
-            </View>
-          ))}
-        </View>
+            ))}
+          </View>
+        )}
       </ScrollView>
     );
   };
 
-  /* ----------------- MAIN PROGRAMS MENU ----------------- */
+  /* ----------------- RENDER ----------------- */
 
   if (activeSection !== 'none') {
-    const activeModule = programModules.find(m => m.key === activeSection);
+    const activeMod = programModules.find(m => m.key === activeSection);
     return (
-      <View style={styles.container}>
-        <View style={styles.subHeader}>
+      <View style={styles.subContainer}>
+        {/* Sub Header */}
+        <View style={styles.subNavHeader}>
           <TouchableOpacity 
             style={styles.backBtn}
             onPress={() => setActiveSection('none')}
@@ -243,7 +416,8 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
             <Ionicons name="arrow-back" size={20} color={COLORS.textDark} />
             <Text style={styles.backBtnText}>Programs</Text>
           </TouchableOpacity>
-          <Text style={styles.subHeaderTitle} numberOfLines={1}>{activeModule?.title}</Text>
+          <Text style={styles.subNavTitle} numberOfLines={1}>{activeMod?.title}</Text>
+          <View style={{ width: 60 }} />
         </View>
 
         {activeSection === 'exercises' && renderExercises()}
@@ -251,43 +425,43 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
         {activeSection === 'workout-plans' && renderWorkoutPlans()}
         {activeSection === 'diet-plans' && renderDietPlans()}
         {activeSection === 'equipments' && renderEquipments()}
-        {activeSection === 'customer-workplan-completed' && renderCustomerWorkplanCompleted()}
+        {activeSection === 'customer-workplan-completed' && renderCompletedWorkplans()}
       </View>
     );
   }
 
   return (
-    <ScrollView 
-      style={styles.container} 
-      contentContainerStyle={styles.menuContent}
-      showsVerticalScrollIndicator={true}
-    >
-      <View style={styles.banner}>
-        <Text style={styles.bannerTitle}>Training Programs & Resources</Text>
-        <Text style={styles.bannerSub}>Curate workout plans, video libraries, and verify client routines</Text>
+    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+      <View style={styles.introCard}>
+        <Text style={styles.introTitle}>Coaching Programs & Assets</Text>
+        <Text style={styles.introSub}>
+          Access exercise technique manuals, gym video guides, client workout templates and compliance sign-offs.
+        </Text>
       </View>
 
-      <View style={styles.menuList}>
-        {programModules.map((item) => (
+      <View style={styles.moduleGrid}>
+        {programModules.map((m) => (
           <TouchableOpacity
-            key={item.key}
-            style={styles.menuItem}
-            onPress={() => setActiveSection(item.key)}
+            key={m.key}
+            style={styles.moduleCard}
+            onPress={() => setActiveSection(m.key)}
             activeOpacity={0.7}
           >
-            <View style={styles.menuItemLeft}>
-              <View style={styles.iconBox}>
-                <Ionicons name={item.icon as any} size={20} color={COLORS.primary} />
+            <View style={styles.moduleTop}>
+              <View style={styles.iconCircle}>
+                <Ionicons name={m.icon as any} size={20} color={COLORS.primary} />
               </View>
-              <View style={{ flex: 1 }}>
-                <View style={styles.titleRow}>
-                  <Text style={styles.itemTitle}>{item.title}</Text>
-                  <Text style={styles.itemCountBadge}>{item.count}</Text>
-                </View>
-                <Text style={styles.itemDesc}>{item.desc}</Text>
+              <View style={styles.moduleCountBadge}>
+                <Text style={styles.moduleCountText}>{m.count}</Text>
               </View>
             </View>
-            <Ionicons name="chevron-forward" size={16} color={COLORS.textMuted} />
+
+            <Text style={styles.moduleTitle}>{m.title}</Text>
+            <Text style={styles.moduleDesc}>{m.desc}</Text>
+
+            <View style={styles.moduleFooter}>
+              <Text style={styles.openText}>Open Module →</Text>
+            </View>
           </TouchableOpacity>
         ))}
       </View>
@@ -297,154 +471,102 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: COLORS.background },
-  menuContent: { padding: 14, paddingBottom: 100 },
-  banner: {
-    backgroundColor: COLORS.primaryDark,
-    borderRadius: 18,
-    padding: 16,
+  content: { padding: 14, paddingBottom: 110 },
+  introCard: {
+    backgroundColor: COLORS.white,
+    borderRadius: 16,
+    padding: 14,
+    borderWidth: 1,
+    borderColor: COLORS.cardBorder,
     marginBottom: 14,
   },
-  bannerTitle: { fontSize: 16, fontWeight: '800', color: COLORS.white },
-  bannerSub: { fontSize: 11, color: COLORS.primaryLight, marginTop: 4 },
-  menuList: { gap: 10 },
-  menuItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+  introTitle: { fontSize: 16, fontWeight: '800', color: COLORS.textDark },
+  introSub: { fontSize: 11, color: COLORS.textMuted, marginTop: 4, lineHeight: 16 },
+  moduleGrid: { gap: 10 },
+  moduleCard: {
     backgroundColor: COLORS.white,
-    padding: 14,
     borderRadius: 16,
+    padding: 14,
     borderWidth: 1,
     borderColor: COLORS.cardBorder,
   },
-  menuItemLeft: { flexDirection: 'row', alignItems: 'center', gap: 12, flex: 1 },
-  iconBox: {
-    width: 40,
-    height: 40,
-    borderRadius: 12,
+  moduleTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  iconCircle: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
     backgroundColor: COLORS.primaryLight,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  titleRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  itemTitle: { fontSize: 13, fontWeight: '800', color: COLORS.textDark },
-  itemCountBadge: {
-    fontSize: 9,
-    fontWeight: '700',
-    color: COLORS.primaryDark,
-    backgroundColor: COLORS.primaryLight,
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 6,
+  moduleCountBadge: {
+    backgroundColor: COLORS.background,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 8,
     borderWidth: 1,
-    borderColor: COLORS.primaryBorder,
+    borderColor: COLORS.cardBorder,
   },
-  itemDesc: { fontSize: 10, color: COLORS.textMuted, marginTop: 3 },
-  subHeader: {
+  moduleCountText: { fontSize: 10, fontWeight: '700', color: COLORS.textMedium },
+  moduleTitle: { fontSize: 14, fontWeight: '800', color: COLORS.textDark, marginTop: 10 },
+  moduleDesc: { fontSize: 11, color: COLORS.textMuted, marginTop: 2, lineHeight: 15 },
+  moduleFooter: { marginTop: 10, paddingTop: 8, borderTopWidth: 1, borderTopColor: COLORS.divider },
+  openText: { fontSize: 11, fontWeight: '700', color: COLORS.primary },
+  subContainer: { flex: 1, backgroundColor: COLORS.background },
+  subNavHeader: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: COLORS.white,
     paddingHorizontal: 14,
     paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: COLORS.cardBorder,
-    gap: 10,
   },
-  backBtn: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  backBtnText: { fontSize: 12, fontWeight: '700', color: COLORS.primaryDark },
-  subHeaderTitle: { fontSize: 14, fontWeight: '800', color: COLORS.textDark, flex: 1, textAlign: 'right' },
+  backBtn: { flexDirection: 'row', alignItems: 'center', gap: 6, width: 80 },
+  backBtnText: { fontSize: 13, fontWeight: '700', color: COLORS.textDark },
+  subNavTitle: { fontSize: 14, fontWeight: '800', color: COLORS.textDark, flex: 1, textAlign: 'center' },
   subScroll: { flex: 1 },
-  subScrollContent: { padding: 14, paddingBottom: 100 },
+  subScrollContent: { padding: 14, paddingBottom: 110 },
   subList: { gap: 10 },
   subCard: {
     backgroundColor: COLORS.white,
-    borderRadius: 16,
-    padding: 14,
+    borderRadius: 14,
+    padding: 12,
     borderWidth: 1,
     borderColor: COLORS.cardBorder,
   },
-  subCardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 6,
-  },
-  subCardTitle: { fontSize: 13, fontWeight: '800', color: COLORS.textDark, flex: 1 },
-  subCardSub: { fontSize: 11, color: COLORS.textMedium, marginTop: 2 },
-  subCardMeta: { fontSize: 10, color: COLORS.textMuted, marginTop: 3 },
-  boldDark: { fontWeight: '700', color: COLORS.textDark },
-  pillBadge: {
-    backgroundColor: COLORS.background,
-    borderWidth: 1,
-    borderColor: COLORS.cardBorder,
-    paddingHorizontal: 7,
-    paddingVertical: 2,
-    borderRadius: 8,
-  },
+  subCardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  subCardTitle: { fontSize: 13, fontWeight: '800', color: COLORS.textDark, flex: 1, marginRight: 8 },
+  pillBadge: { backgroundColor: COLORS.background, paddingHorizontal: 7, paddingVertical: 3, borderRadius: 6 },
   pillBadgeText: { fontSize: 9, fontWeight: '700', color: COLORS.textMedium },
-  pillBadgePrimary: {
-    backgroundColor: COLORS.primaryLight,
-    borderWidth: 1,
-    borderColor: COLORS.primaryBorder,
-    paddingHorizontal: 7,
-    paddingVertical: 2,
-    borderRadius: 8,
-  },
+  pillBadgePrimary: { backgroundColor: COLORS.primaryLight, paddingHorizontal: 7, paddingVertical: 3, borderRadius: 6 },
   pillBadgePrimaryText: { fontSize: 9, fontWeight: '700', color: COLORS.primaryDark },
+  subCardSub: { fontSize: 11, color: COLORS.textMedium, marginTop: 4 },
+  boldDark: { fontWeight: '700', color: COLORS.textDark },
+  subCardMeta: { fontSize: 10, color: COLORS.textMuted, marginTop: 2 },
+  actionRowBtn: { marginTop: 8, paddingTop: 6, borderTopWidth: 1, borderTopColor: COLORS.divider },
+  actionRowBtnText: { fontSize: 11, fontWeight: '700', color: COLORS.primary },
   videoHeader: { flexDirection: 'row', alignItems: 'center' },
   videoPlayBadge: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+    width: 34,
+    height: 34,
+    borderRadius: 17,
     backgroundColor: COLORS.primary,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  actionRowBtn: {
-    marginTop: 10,
-    paddingTop: 8,
-    borderTopWidth: 1,
-    borderTopColor: COLORS.divider,
-  },
-  actionRowBtnText: { fontSize: 11, fontWeight: '700', color: COLORS.primaryDark },
-  statusOptimalBadge: {
-    backgroundColor: COLORS.emeraldLight,
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 6,
-  },
+  statusOptimalBadge: { backgroundColor: COLORS.emeraldLight, paddingHorizontal: 7, paddingVertical: 3, borderRadius: 6 },
   statusOptimalText: { fontSize: 9, fontWeight: '700', color: COLORS.emerald },
-  statusDoneBadge: {
-    flexDirection: 'row',
+  emptyCard: {
+    backgroundColor: COLORS.white,
+    borderRadius: 14,
+    padding: 30,
     alignItems: 'center',
-    gap: 4,
-    backgroundColor: COLORS.emeraldLight,
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 6,
-  },
-  statusDoneText: { fontSize: 9, fontWeight: '700', color: COLORS.emerald },
-  metaBox: {
-    backgroundColor: COLORS.background,
-    padding: 10,
-    borderRadius: 10,
-    marginTop: 8,
-    gap: 2,
-  },
-  metaBoxText: { fontSize: 10, color: COLORS.textDark },
-  signOffBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    backgroundColor: COLORS.primaryLight,
     borderWidth: 1,
-    borderColor: COLORS.primaryBorder,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 10,
+    borderColor: COLORS.cardBorder,
     marginTop: 10,
-    alignSelf: 'flex-start',
   },
-  signOffBtnText: { fontSize: 10, fontWeight: '800', color: COLORS.primaryDark },
+  emptyTitle: { fontSize: 14, fontWeight: '700', color: COLORS.textDark, marginTop: 10 },
+  emptySub: { fontSize: 11, color: COLORS.textMuted, textAlign: 'center', marginTop: 4, lineHeight: 16 },
 });
-

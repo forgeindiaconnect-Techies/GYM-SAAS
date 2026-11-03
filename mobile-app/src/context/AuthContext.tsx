@@ -6,6 +6,7 @@ export type UserRole = 'GYM_OWNER' | 'TRAINER' | 'CUSTOMER';
 
 export interface MobileUser {
   id: string;
+  _id?: string;
   firstName: string;
   lastName?: string;
   name: string;
@@ -20,6 +21,9 @@ export interface MobileUser {
   avatarLetter: string;
   subscriptionPlan?: string;
   subscriptionStatus?: string;
+  weight?: number;
+  height?: number;
+  fitnessGoal?: string;
 }
 
 interface AuthContextType {
@@ -70,6 +74,7 @@ const formatMobileUser = (rawUser: any): MobileUser => {
 
   return {
     id: rawUser.id || rawUser._id || 'unknown',
+    _id: rawUser._id || rawUser.id || 'unknown',
     firstName,
     lastName,
     name: fullName,
@@ -84,6 +89,9 @@ const formatMobileUser = (rawUser: any): MobileUser => {
     avatarLetter,
     subscriptionPlan: rawUser.subscriptionPlan || (role === 'CUSTOMER' ? 'Gold Annual Pass' : undefined),
     subscriptionStatus: rawUser.subscriptionStatus || 'Active',
+    weight: rawUser.weight,
+    height: rawUser.height,
+    fitnessGoal: rawUser.fitnessGoal || rawUser.goal,
   };
 };
 
@@ -151,8 +159,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     password: string, 
     portalRole?: UserRole
   ): Promise<{ success: boolean; message?: string }> => {
-    const targetPortal = portalRole || selectedPortalRole;
-
     try {
       const res = await api.post('/auth/login', {
         email: email.trim().toLowerCase(),
@@ -168,34 +174,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       const rawUser = res.data.user;
       const userRole = mapBackendRoleToMobile(rawUser.role);
-
-      // Verify account role against expected portal entry
-      if (targetPortal === 'CUSTOMER' && userRole !== 'CUSTOMER') {
-        return {
-          success: false,
-          message: `This account has the role "${mapMobileRoleToHuman(userRole)}". Please switch to the ${mapMobileRoleToHuman(userRole)} login screen.`,
-        };
-      }
-
-      if (targetPortal === 'TRAINER' && userRole !== 'TRAINER') {
-        return {
-          success: false,
-          message: `This account has the role "${mapMobileRoleToHuman(userRole)}". Please switch to the ${mapMobileRoleToHuman(userRole)} login screen.`,
-        };
-      }
-
-      if (targetPortal === 'GYM_OWNER' && userRole !== 'GYM_OWNER') {
-        return {
-          success: false,
-          message: `This account has the role "${mapMobileRoleToHuman(userRole)}". Please switch to the ${mapMobileRoleToHuman(userRole)} login screen.`,
-        };
-      }
-
       const mobileUser = formatMobileUser(rawUser);
 
       // Save token and session
       await AsyncStorage.setItem(STORAGE_KEYS.TOKEN, res.data.token);
       await AsyncStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(mobileUser));
+      await AsyncStorage.setItem(STORAGE_KEYS.PORTAL_ROLE, userRole);
 
       setAuthToken(res.data.token);
       setToken(res.data.token);

@@ -10,6 +10,12 @@ export const CustomerTrainingScreen: React.FC<{ initialSubTab?: string }> = ({ i
     initialSubTab === 'trainer_plan' ? 'trainer_plan' : initialSubTab === 'workout_plan' ? 'workout_plan' : 'training'
   );
 
+  React.useEffect(() => {
+    if (initialSubTab === 'trainer_plan' || initialSubTab === 'workout_plan' || initialSubTab === 'training') {
+      setActiveSubTab(initialSubTab);
+    }
+  }, [initialSubTab]);
+
   return (
     <View style={styles.container}>
       {/* Sub Navigation Bar: Training | Trainer's Plan | My Workout Plan */}

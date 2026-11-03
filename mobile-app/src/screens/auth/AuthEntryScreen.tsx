@@ -12,14 +12,14 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../constants/theme';
-import { useAuth, UserRole } from '../../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import { CustomerRegisterForm } from './CustomerRegisterForm';
 import { ForgotPasswordScreen } from './ForgotPasswordScreen';
 
 export const AuthEntryScreen: React.FC = () => {
-  const { selectedPortalRole, setSelectedPortalRole, login } = useAuth();
+  const { login } = useAuth();
 
-  // Mode switcher: 'login' | 'signup' (Customer only) | 'forgot'
+  // Mode switcher: 'login' | 'signup' | 'forgot'
   const [authView, setAuthView] = useState<'login' | 'signup' | 'forgot'>('login');
 
   // Login form state
@@ -30,24 +30,6 @@ export const AuthEntryScreen: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [successNotice, setSuccessNotice] = useState('');
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
-
-  const portals: UserRole[] = ['GYM_OWNER', 'TRAINER', 'CUSTOMER'];
-
-  const getRoleDisplayName = (role: UserRole): string => {
-    switch (role) {
-      case 'GYM_OWNER': return 'Gym Owner';
-      case 'TRAINER': return 'Trainer';
-      case 'CUSTOMER': return 'Customer';
-    }
-  };
-
-  const getPageTitle = (role: UserRole): string => {
-    switch (role) {
-      case 'GYM_OWNER': return 'Gym Owner Login';
-      case 'TRAINER': return 'Trainer Login';
-      case 'CUSTOMER': return 'Customer Login';
-    }
-  };
 
   const validateLoginForm = () => {
     const errs: Record<string, string> = {};
@@ -69,7 +51,8 @@ export const AuthEntryScreen: React.FC = () => {
     if (!validateLoginForm()) return;
 
     setIsLoading(true);
-    const result = await login(email, password, selectedPortalRole);
+    // Authenticate with server - server returns user and role, automatically opening respective dashboard
+    const result = await login(email, password);
     setIsLoading(false);
 
     if (!result.success) {
@@ -77,25 +60,16 @@ export const AuthEntryScreen: React.FC = () => {
     }
   };
 
-  const handlePortalSwitch = (role: UserRole) => {
-    setSelectedPortalRole(role);
-    setErrorMessage('');
-    setSuccessNotice('');
-    setFieldErrors({});
-    setAuthView('login');
-  };
-
   // View: Customer Sign Up Flow
-  if (selectedPortalRole === 'CUSTOMER' && authView === 'signup') {
+  if (authView === 'signup') {
     return <CustomerRegisterForm onBackToLogin={() => setAuthView('login')} />;
   }
 
-  // View: Forgot Password Flow (available for Gym Owner, Trainer, Customer)
+  // View: Forgot Password Flow
   if (authView === 'forgot') {
     return (
       <ForgotPasswordScreen
         initialEmail={email}
-        role={selectedPortalRole}
         onBackToLogin={(resetEmail?: string) => {
           if (resetEmail) {
             setEmail(resetEmail);
@@ -122,48 +96,17 @@ export const AuthEntryScreen: React.FC = () => {
         {/* Compact Logo & Brand Header */}
         <View style={styles.brandContainer}>
           <View style={styles.logoBadge}>
-            <Ionicons name="fitness" size={26} color={COLORS.white} />
+            <Ionicons name="fitness" size={28} color={COLORS.white} />
           </View>
           <Text style={styles.brandName}>Gymora</Text>
           <Text style={styles.brandSub}>Gym Management & Fitness Platform</Text>
         </View>
 
-        {/* Role Portal Selector: Gym Owner, Trainer, Customer */}
-        <View style={styles.portalCard}>
-          <Text style={styles.portalCardLabel}>Select Role Login Portal</Text>
-          <View style={styles.portalTabsRow}>
-            {portals.map(role => {
-              const isSelected = selectedPortalRole === role;
-              return (
-                <TouchableOpacity
-                  key={role}
-                  style={[styles.portalTab, isSelected && styles.portalTabActive]}
-                  onPress={() => handlePortalSwitch(role)}
-                  activeOpacity={0.7}
-                >
-                  <Ionicons
-                    name={role === 'GYM_OWNER' ? 'business' : role === 'TRAINER' ? 'barbell' : 'person'}
-                    size={14}
-                    color={isSelected ? COLORS.primary : COLORS.textMuted}
-                    style={{ marginRight: 4 }}
-                  />
-                  <Text
-                    style={[styles.portalTabText, isSelected && styles.portalTabTextActive]}
-                    numberOfLines={1}
-                  >
-                    {getRoleDisplayName(role)}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
-          </View>
-        </View>
-
         {/* Main Login Form Card */}
         <View style={styles.formCard}>
-          <Text style={styles.formTitle}>{getPageTitle(selectedPortalRole)}</Text>
+          <Text style={styles.formTitle}>Sign In</Text>
           <Text style={styles.formSub}>
-            Sign in with your verified {getRoleDisplayName(selectedPortalRole)} credentials
+            Enter your account credentials to access your dashboard
           </Text>
 
           {/* Success Banner (e.g. after password reset) */}
@@ -261,7 +204,7 @@ export const AuthEntryScreen: React.FC = () => {
             </TouchableOpacity>
           </View>
 
-          {/* Primary Login Button (Full-width orange, labeled 'Login' for ALL roles) */}
+          {/* Primary Login Button (Full-width orange, labeled 'Login') */}
           <TouchableOpacity
             style={[styles.loginBtn, isLoading && styles.loginBtnDisabled]}
             onPress={handleLoginSubmit}
@@ -279,14 +222,12 @@ export const AuthEntryScreen: React.FC = () => {
           </TouchableOpacity>
 
           {/* Customer Call to Action for Sign Up */}
-          {selectedPortalRole === 'CUSTOMER' && (
-            <View style={styles.signUpPromptRow}>
-              <Text style={styles.signUpPromptText}>New to Gymora? </Text>
-              <TouchableOpacity onPress={() => setAuthView('signup')} activeOpacity={0.7}>
-                <Text style={styles.signUpPromptLink}>Sign Up</Text>
-              </TouchableOpacity>
-            </View>
-          )}
+          <View style={styles.signUpPromptRow}>
+            <Text style={styles.signUpPromptText}>New to Gymora? </Text>
+            <TouchableOpacity onPress={() => setAuthView('signup')} activeOpacity={0.7}>
+              <Text style={styles.signUpPromptLink}>Sign Up</Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/* Security Note */}
@@ -309,22 +250,22 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingHorizontal: 16,
-    paddingTop: 28,
-    paddingBottom: 36,
+    paddingTop: 36,
+    paddingBottom: 40,
     alignItems: 'center',
   },
   brandContainer: {
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 20,
   },
   logoBadge: {
-    width: 48,
-    height: 48,
-    borderRadius: 14,
+    width: 52,
+    height: 52,
+    borderRadius: 16,
     backgroundColor: COLORS.primary,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 8,
+    marginBottom: 10,
     shadowColor: COLORS.primary,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.25,
@@ -332,7 +273,7 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   brandName: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: '800',
     color: COLORS.textDark,
     letterSpacing: -0.5,
@@ -342,58 +283,12 @@ const styles = StyleSheet.create({
     color: COLORS.textMuted,
     marginTop: 2,
   },
-  portalCard: {
-    width: '100%',
-    maxWidth: 420,
-    backgroundColor: COLORS.white,
-    borderRadius: 16,
-    padding: 12,
-    marginBottom: 14,
-    borderWidth: 1,
-    borderColor: COLORS.cardBorder,
-  },
-  portalCardLabel: {
-    fontSize: 11,
-    fontWeight: '700',
-    color: COLORS.textMedium,
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-    marginBottom: 8,
-  },
-  portalTabsRow: {
-    flexDirection: 'row',
-    gap: 6,
-  },
-  portalTab: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 9,
-    paddingHorizontal: 4,
-    borderRadius: 10,
-    backgroundColor: '#F8FAFC',
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-  },
-  portalTabActive: {
-    backgroundColor: COLORS.primaryLight,
-    borderColor: COLORS.primary,
-  },
-  portalTabText: {
-    fontSize: 11,
-    fontWeight: '700',
-    color: COLORS.textMuted,
-  },
-  portalTabTextActive: {
-    color: COLORS.primary,
-  },
   formCard: {
     width: '100%',
     maxWidth: 420,
     backgroundColor: COLORS.white,
     borderRadius: 20,
-    padding: 20,
+    padding: 22,
     borderWidth: 1,
     borderColor: COLORS.cardBorder,
     shadowColor: '#000',
@@ -403,17 +298,17 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   formTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: '800',
     color: COLORS.textDark,
     marginBottom: 4,
     letterSpacing: -0.3,
   },
   formSub: {
-    fontSize: 11,
+    fontSize: 12,
     color: COLORS.textMedium,
-    marginBottom: 16,
-    lineHeight: 16,
+    marginBottom: 18,
+    lineHeight: 17,
   },
   successBanner: {
     flexDirection: 'row',
@@ -493,7 +388,7 @@ const styles = StyleSheet.create({
   forgotPasswordRow: {
     alignItems: 'flex-end',
     marginTop: 6,
-    marginBottom: 16,
+    marginBottom: 18,
   },
   forgotPasswordLink: {
     fontSize: 11,
@@ -530,8 +425,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 16,
-    paddingTop: 12,
+    marginTop: 18,
+    paddingTop: 14,
     borderTopWidth: 1,
     borderTopColor: COLORS.divider,
   },
@@ -548,7 +443,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    marginTop: 20,
+    marginTop: 22,
   },
   securityNoteText: {
     fontSize: 11,

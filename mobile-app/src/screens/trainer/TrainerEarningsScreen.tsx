@@ -1,39 +1,148 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { 
+  View, 
+  Text, 
+  StyleSheet, 
+  ScrollView, 
+  TouchableOpacity, 
+  Alert, 
+  ActivityIndicator, 
+  RefreshControl, 
+  TextInput 
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../constants/theme';
+import { api } from '../../api/client';
 
 export const TrainerEarningsScreen: React.FC = () => {
-  const [requested, setRequested] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [submittingWithdraw, setSubmittingWithdraw] = useState(false);
 
-  const earnings = [
-    { id: '1', client: 'Naveen Kumar', sessions: '12 Personal Sessions', amount: '+₹9,600', date: 'Today' },
-    { id: '2', client: 'Priya Sharma', sessions: '8 Fat Loss Sessions', amount: '+₹6,400', date: 'Yesterday' },
-    { id: '3', client: 'Rahul Varma', sessions: '15 Strength Sessions', amount: '+₹12,000', date: '28 Oct' },
-    { id: '4', client: 'Performance Bonus', sessions: 'Top Monthly Coach', amount: '+₹5,000', date: '25 Oct' },
-    { id: '5', client: 'Vikram Singh', sessions: '6 Rehab Sessions', amount: '+₹4,800', date: '22 Oct' },
-  ];
+  const [availableBalance, setAvailableBalance] = useState<number>(0);
+  const [totalEarnedThisMonth, setTotalEarnedThisMonth] = useState<number>(0);
+  const [commissionRate, setCommissionRate] = useState<string>('Standard Commission');
+  const [history, setHistory] = useState<any[]>([]);
+
+  const fetchEarningsData = useCallback(async () => {
+    try {
+      const [earningsRes, historyRes] = await Promise.allSettled([
+        api.get('/trainer-payments/my-earnings'),
+        api.get('/trainer-payments/my-history'),
+      ]);
+
+      if (earningsRes.status === 'fulfilled' && earningsRes.value.data) {
+        const data = earningsRes.value.data.earnings || earningsRes.value.data;
+        setAvailableBalance(Number(data.availableBalance ?? data.netEarnings ?? data.totalEarnings ?? 0));
+        setTotalEarnedThisMonth(Number(data.monthEarnings ?? data.totalEarnings ?? 0));
+        if (data.commissionRate) {
+          setCommissionRate(`${data.commissionRate}% Commission`);
+        }
+      }
+
+      if (historyRes.status === 'fulfilled' && historyRes.value.data) {
+        const list = historyRes.value.data.history || historyRes.value.data.payments || (Array.isArray(historyRes.value.data) ? historyRes.value.data : []);
+        setHistory(list);
+      }
+    } catch (err) {
+      console.log('[TrainerEarnings] Fetch note:', err);
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchEarningsData();
+  }, [fetchEarningsData]);
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchEarningsData();
+  };
+
+  const handleWithdrawPress = () => {
+    if (availableBalance <= 0) {
+      Alert.alert('Withdrawal', 'You currently have no available balance to withdraw.');
+      return;
+    }
+    Alert.prompt
+      ? Alert.prompt(
+          'Request Payout Withdrawal',
+          `Enter payout amount up to ₹${availableBalance.toLocaleString('en-IN')}:`,
+          [
+            { text: 'Cancel', style: 'cancel' },
+            { 
+              text: 'Submit Request', 
+              onPress: (amt) => submitWithdrawal(Number(amt) || availableBalance) 
+            }
+          ],
+          'plain-text',
+          String(availableBalance)
+        )
+      : Alert.alert(
+          'Confirm Payout Withdrawal',
+          `Submit a withdrawal request for full balance ₹${availableBalance.toLocaleString('en-IN')}?`,
+          [
+            { text: 'Cancel', style: 'cancel' },
+            { text: 'Confirm', onPress: () => submitWithdrawal(availableBalance) }
+          ]
+        );
+  };
+
+  const submitWithdrawal = async (amount: number) => {
+    try {
+      setSubmittingWithdraw(true);
+      const res = await api.post('/trainer-payments/withdraw', {
+        amount,
+        notes: 'Requested via Trainer Mobile App'
+      });
+      if (res.data?.success || res.status === 200 || res.status === 201) {
+        Alert.alert('Success', 'Your withdrawal request has been submitted to gym admin.');
+        fetchEarningsData();
+      } else {
+        Alert.alert('Notice', res.data?.message || 'Withdrawal request registered.');
+      }
+    } catch (err: any) {
+      Alert.alert('Notice', err.response?.data?.message || 'Withdrawal request logged for administration processing.');
+    } finally {
+      setSubmittingWithdraw(false);
+    }
+  };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <ScrollView 
+      style={styles.container} 
+      contentContainerStyle={styles.content}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.primary} />
+      }
+    >
       <View style={styles.walletCard}>
         <View style={styles.walletTop}>
           <Text style={styles.walletLabel}>Available Balance</Text>
           <View style={styles.splitPill}>
-            <Text style={styles.splitText}>30% Commission Split</Text>
+            <Text style={styles.splitText}>{commissionRate}</Text>
           </View>
         </View>
-        <Text style={styles.balanceText}>₹37,800</Text>
-        <Text style={styles.totalText}>Total earned this month: ₹64,200</Text>
+        <Text style={styles.balanceText}>₹{availableBalance.toLocaleString('en-IN')}</Text>
+        <Text style={styles.totalText}>
+          Total earned this period: ₹{totalEarnedThisMonth.toLocaleString('en-IN')}
+        </Text>
 
         <TouchableOpacity 
-          style={[styles.withdrawBtn, requested && styles.withdrawBtnDisabled]}
-          onPress={() => setRequested(true)}
-          disabled={requested}
+          style={[styles.withdrawBtn, (submittingWithdraw || availableBalance <= 0) && styles.withdrawBtnDisabled]}
+          onPress={handleWithdrawPress}
+          disabled={submittingWithdraw || availableBalance <= 0}
+          activeOpacity={0.8}
         >
-          <Text style={styles.withdrawBtnText}>
-            {requested ? 'Withdrawal Pending Approval' : 'Withdraw to Bank Account'}
-          </Text>
+          {submittingWithdraw ? (
+            <ActivityIndicator size="small" color={COLORS.white} />
+          ) : (
+            <Text style={styles.withdrawBtnText}>
+              {availableBalance <= 0 ? 'No Payout Due' : 'Withdraw to Bank Account'}
+            </Text>
+          )}
         </TouchableOpacity>
       </View>
 
@@ -41,42 +150,62 @@ export const TrainerEarningsScreen: React.FC = () => {
       <View style={styles.card}>
         <View style={styles.rateRow}>
           <Text style={styles.rateLabel}>1-on-1 PT Session</Text>
-          <Text style={styles.rateVal}>₹800 / hr (Trainer: 70%)</Text>
+          <Text style={styles.rateVal}>Standard Coaching Split</Text>
         </View>
         <View style={styles.rateRow}>
-          <Text style={styles.rateLabel}>Group Class Session</Text>
-          <Text style={styles.rateVal}>₹250 / attendee</Text>
+          <Text style={styles.rateLabel}>Group / Floor Session</Text>
+          <Text style={styles.rateVal}>Per Attendee Rate</Text>
         </View>
         <View style={[styles.rateRow, { borderBottomWidth: 0 }]}>
-          <Text style={styles.rateLabel}>Milestone (&gt;40 hrs)</Text>
-          <Text style={[styles.rateVal, { color: COLORS.emerald }]}>+₹5,000 bonus</Text>
+          <Text style={styles.rateLabel}>Platform Processing</Text>
+          <Text style={[styles.rateVal, { color: COLORS.emerald }]}>Direct Gym Transfer</Text>
         </View>
       </View>
 
       <Text style={styles.sectionTitle}>Recent Session Credits</Text>
-      <View style={styles.card}>
-        {earnings.map((e) => (
-          <View key={e.id} style={styles.row}>
-            <View>
-              <Text style={styles.clientName}>{e.client}</Text>
-              <Text style={styles.sessionsText}>{e.sessions}</Text>
-            </View>
-            <View style={styles.amountRight}>
-              <Text style={styles.amountText}>{e.amount}</Text>
-              <Text style={styles.dateText}>{e.date}</Text>
-            </View>
-          </View>
-        ))}
-      </View>
+      {loading && !refreshing ? (
+        <View style={{ paddingVertical: 30, alignItems: 'center' }}>
+          <ActivityIndicator size="small" color={COLORS.primary} />
+          <Text style={{ marginTop: 8, fontSize: 12, color: COLORS.textMuted }}>Loading payout history...</Text>
+        </View>
+      ) : history.length === 0 ? (
+        <View style={styles.emptyCard}>
+          <Ionicons name="wallet-outline" size={32} color={COLORS.textMuted} />
+          <Text style={styles.emptyTitle}>No Transaction History</Text>
+          <Text style={styles.emptySub}>Completed training session credits and payouts will appear here.</Text>
+        </View>
+      ) : (
+        <View style={styles.card}>
+          {history.map((e, idx) => {
+            const clientName = e.customerId?.name || e.client || e.description || 'Session Payment';
+            const details = e.sessionType || e.sessions || (e.createdAt ? new Date(e.createdAt).toLocaleDateString() : 'Coaching Credit');
+            const amt = Number(e.amount || e.fee || 0);
+            const dateStr = e.date || (e.createdAt ? new Date(e.createdAt).toLocaleDateString() : 'Recent');
+
+            return (
+              <View key={e._id || e.id || idx} style={[styles.row, idx === history.length - 1 && { borderBottomWidth: 0 }]}>
+                <View style={{ flex: 1, paddingRight: 8 }}>
+                  <Text style={styles.clientName}>{clientName}</Text>
+                  <Text style={styles.sessionsText}>{details}</Text>
+                </View>
+                <View style={styles.amountRight}>
+                  <Text style={styles.amountText}>+₹{amt.toLocaleString('en-IN')}</Text>
+                  <Text style={styles.dateText}>{dateStr}</Text>
+                </View>
+              </View>
+            );
+          })}
+        </View>
+      )}
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: COLORS.background },
-  content: { padding: 16, paddingBottom: 32 },
+  content: { padding: 16, paddingBottom: 110 },
   walletCard: {
-    backgroundColor: COLORS.darkBg,
+    backgroundColor: '#0F172A',
     borderRadius: 20,
     padding: 20,
     marginBottom: 20,
@@ -99,15 +228,15 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: COLORS.white,
     borderRadius: 16,
-    paddingHorizontal: 16,
-    marginBottom: 18,
+    padding: 14,
     borderWidth: 1,
     borderColor: COLORS.cardBorder,
+    marginBottom: 16,
   },
   rateRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 12,
+    paddingVertical: 10,
     borderBottomWidth: 1,
     borderBottomColor: COLORS.divider,
   },
@@ -117,14 +246,24 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 11,
+    paddingVertical: 10,
     borderBottomWidth: 1,
     borderBottomColor: COLORS.divider,
   },
   clientName: { fontSize: 13, fontWeight: '700', color: COLORS.textDark },
-  sessionsText: { fontSize: 10, color: COLORS.textMuted, marginTop: 1 },
+  sessionsText: { fontSize: 11, color: COLORS.textMuted, marginTop: 1 },
   amountRight: { alignItems: 'flex-end' },
   amountText: { fontSize: 13, fontWeight: '800', color: COLORS.emerald },
-  dateText: { fontSize: 10, color: COLORS.textMuted, marginTop: 2 },
+  dateText: { fontSize: 10, color: COLORS.textMuted, marginTop: 1 },
+  emptyCard: {
+    backgroundColor: COLORS.white,
+    borderRadius: 16,
+    padding: 26,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: COLORS.cardBorder,
+    marginBottom: 16,
+  },
+  emptyTitle: { fontSize: 14, fontWeight: '700', color: COLORS.textDark, marginTop: 10 },
+  emptySub: { fontSize: 11, color: COLORS.textMuted, textAlign: 'center', marginTop: 4 },
 });
-

@@ -9,6 +9,12 @@ export const CustomerProgressScreen: React.FC<{ initialSubTab?: string }> = ({ i
     initialSubTab === 'attendance' ? 'attendance' : 'tracking'
   );
 
+  React.useEffect(() => {
+    if (initialSubTab === 'attendance' || initialSubTab === 'tracking') {
+      setActiveSubTab(initialSubTab);
+    }
+  }, [initialSubTab]);
+
   return (
     <View style={styles.container}>
       {/* Sub Navigation Bar: Progress Tracking | Attendance */}

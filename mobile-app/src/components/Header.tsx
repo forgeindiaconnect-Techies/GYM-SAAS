@@ -52,7 +52,7 @@ export const Header: React.FC<{
           </View>
         </View>
 
-        {/* Action Controls: QR Pass + Authenticated Role Badge + Logout (Safe clearance from top-right dev menu) */}
+        {/* Action Controls: QR Pass + Authenticated Role Badge + Notification + Logout (Safe clearance from floating dev menu) */}
         <View style={styles.controlsRow}>
           {activeRole === 'CUSTOMER' && onOpenQrPass && (
             <TouchableOpacity 
@@ -61,16 +61,21 @@ export const Header: React.FC<{
               activeOpacity={0.7}
               accessibilityLabel="Open Membership QR Pass"
             >
-              <Ionicons name="qr-code" size={15} color={COLORS.primary} />
+              <Ionicons name="qr-code" size={14} color={COLORS.primary} />
               <Text style={styles.qrHeaderText}>PASS</Text>
             </TouchableOpacity>
           )}
 
-          {/* Authenticated Role Badge - Displays verified server identity */}
-          <View style={styles.roleBadge}>
+          {/* Authenticated Role Badge */}
+          <TouchableOpacity 
+            style={styles.roleBadge}
+            onPress={handleLogoutPress}
+            activeOpacity={0.7}
+            accessibilityLabel={`Signed in as ${getRoleLabel(activeRole)}. Tap to sign out.`}
+          >
             <View style={styles.activeDot} />
             <Text style={styles.roleBadgeText}>{getRoleLabel(activeRole)}</Text>
-          </View>
+          </TouchableOpacity>
 
           {/* Header Notifications Shortcut */}
           {onOpenNotifications && (
@@ -80,7 +85,7 @@ export const Header: React.FC<{
               activeOpacity={0.7}
               accessibilityLabel="View notifications"
             >
-              <Ionicons name="notifications-outline" size={17} color={COLORS.textDark} />
+              <Ionicons name="notifications-outline" size={16} color={COLORS.textDark} />
               <View style={styles.notifDot} />
             </TouchableOpacity>
           )}
@@ -92,7 +97,7 @@ export const Header: React.FC<{
             activeOpacity={0.7}
             accessibilityLabel="Sign out of your account"
           >
-            <Ionicons name="log-out-outline" size={17} color={COLORS.rose} />
+            <Ionicons name="log-out-outline" size={16} color={COLORS.rose} />
           </TouchableOpacity>
         </View>
       </View>
@@ -103,11 +108,11 @@ export const Header: React.FC<{
 const styles = StyleSheet.create({
   container: {
     backgroundColor: COLORS.white,
-    paddingHorizontal: 14,
-    paddingTop: 12,
+    paddingHorizontal: 12,
+    paddingTop: 10,
     paddingBottom: 10,
     borderBottomWidth: 1,
-    borderBottomColor: COLORS.cardBorder,
+    borderBottomColor: '#F1F5F9',
   },
   topRow: {
     flexDirection: 'row',
@@ -118,45 +123,49 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
+    flex: 1,
     flexShrink: 1,
   },
   logoBadge: {
     width: 32,
     height: 32,
-    borderRadius: 9,
+    borderRadius: 8,
     backgroundColor: COLORS.primary,
     alignItems: 'center',
     justifyContent: 'center',
   },
   brandName: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '800',
     color: COLORS.textDark,
+    lineHeight: 18,
     letterSpacing: -0.3,
   },
   brandSub: {
     fontSize: 10,
     color: COLORS.textMuted,
     fontWeight: '500',
-    maxWidth: 120,
+    lineHeight: 13,
+    maxWidth: 110,
   },
   controlsRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
-    // Add right padding to safely clear Expo Go's floating dev menu gear icon in top-right
-    marginRight: 48,
+    gap: 5,
+    // Safe clearance to ensure floating developer gear (Expo Go / Android overlay) never covers buttons
+    marginRight: 68,
   },
   qrHeaderBtn: {
+    height: 32,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
+    justifyContent: 'center',
+    gap: 3,
     backgroundColor: COLORS.primaryLight,
     borderWidth: 1,
     borderColor: COLORS.primaryBorder,
     paddingHorizontal: 7,
-    paddingVertical: 5,
-    borderRadius: 14,
+    borderRadius: 8,
   },
   qrHeaderText: {
     fontSize: 10,
@@ -165,13 +174,14 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
   },
   roleBadge: {
+    height: 32,
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     gap: 5,
     backgroundColor: COLORS.primaryLight,
     paddingHorizontal: 8,
-    paddingVertical: 5,
-    borderRadius: 16,
+    borderRadius: 8,
     borderWidth: 1,
     borderColor: COLORS.primaryBorder,
   },
@@ -182,29 +192,35 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.emerald,
   },
   roleBadgeText: {
-    fontSize: 11,
+    fontSize: 10,
     fontWeight: '700',
     color: COLORS.primaryDark,
   },
   logoutBtn: {
-    padding: 6,
-    borderRadius: 10,
+    width: 32,
+    height: 32,
+    borderRadius: 8,
     backgroundColor: COLORS.roseLight,
     borderWidth: 1,
     borderColor: '#FECDD3',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   notifBtn: {
-    padding: 6,
-    borderRadius: 10,
+    width: 32,
+    height: 32,
+    borderRadius: 8,
     backgroundColor: COLORS.card,
     borderWidth: 1,
     borderColor: COLORS.cardBorder,
+    alignItems: 'center',
+    justifyContent: 'center',
     position: 'relative',
   },
   notifDot: {
     position: 'absolute',
-    top: 4,
-    right: 4,
+    top: 5,
+    right: 5,
     width: 6,
     height: 6,
     borderRadius: 3,

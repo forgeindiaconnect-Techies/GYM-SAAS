@@ -1,8 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, BackHandler, TextInput, Alert } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { 
+  View, 
+  Text, 
+  StyleSheet, 
+  ScrollView, 
+  TouchableOpacity, 
+  BackHandler, 
+  ActivityIndicator, 
+  RefreshControl, 
+  Alert 
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../constants/theme';
 import { useAuth } from '../../context/AuthContext';
+import { api } from '../../api/client';
 import { TrainerEarningsScreen } from './TrainerEarningsScreen';
 
 export type TrainerMoreKey = 
@@ -21,6 +32,76 @@ export type TrainerMoreKey =
 export const TrainerMoreScreen: React.FC<{ initialSection?: TrainerMoreKey }> = ({ initialSection = 'none' }) => {
   const { user, logout } = useAuth();
   const [activeSection, setActiveSection] = useState<TrainerMoreKey>(initialSection);
+  const [loading, setLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+
+  // Live state objects
+  const [profile, setProfile] = useState<any>(null);
+  const [reviews, setReviews] = useState<any[]>([]);
+  const [jobs, setJobs] = useState<any[]>([]);
+  const [applications, setApplications] = useState<any[]>([]);
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [rewards, setRewards] = useState<any[]>([]);
+  const [aiCustomers, setAiCustomers] = useState<any[]>([]);
+  const [messages, setMessages] = useState<any[]>([]);
+
+  const fetchSectionData = useCallback(async (section: TrainerMoreKey) => {
+    if (section === 'none' || section === 'financials') return;
+    try {
+      setLoading(true);
+      if (section === 'profile') {
+        const res = await api.get('/trainers/my-profile');
+        if (res.data?.trainer || res.data) {
+          setProfile(res.data.trainer || res.data);
+        }
+      } else if (section === 'reviews' || section === 'feedback') {
+        const res = await api.get('/trainer-sessions/trainer/reviews');
+        const list = res.data?.reviews || (Array.isArray(res.data) ? res.data : []);
+        setReviews(list);
+      } else if (section === 'jobs') {
+        const res = await api.get('/hiring/jobs');
+        const list = res.data?.jobs || (Array.isArray(res.data) ? res.data : []);
+        setJobs(list);
+      } else if (section === 'applications') {
+        const res = await api.get('/hiring/trainer/applications');
+        const list = res.data?.applications || (Array.isArray(res.data) ? res.data : []);
+        setApplications(list);
+      } else if (section === 'notifications') {
+        const res = await api.get('/notifications');
+        const list = res.data?.notifications || (Array.isArray(res.data) ? res.data : []);
+        setNotifications(list);
+      } else if (section === 'rewards') {
+        const res = await api.get('/rewards/trainer');
+        const list = res.data?.rewards || (Array.isArray(res.data) ? res.data : []);
+        setRewards(list);
+      } else if (section === 'ai-assistant') {
+        const res = await api.get('/ai/trainer/customers').catch(() => ({ data: { customers: [] } }));
+        const list = res.data?.customers || [];
+        setAiCustomers(list);
+      } else if (section === 'messages') {
+        const res = await api.get('/direct-messages').catch(() => ({ data: { messages: [] } }));
+        const list = res.data?.messages || (Array.isArray(res.data) ? res.data : []);
+        setMessages(list);
+      }
+    } catch (err) {
+      console.log(`[TrainerMore] Fetch note for ${section}:`, err);
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (initialSection && initialSection !== 'none') {
+      setActiveSection(initialSection);
+    }
+  }, [initialSection]);
+
+  useEffect(() => {
+    if (activeSection !== 'none') {
+      fetchSectionData(activeSection);
+    }
+  }, [activeSection, fetchSectionData]);
 
   // Handle hardware back button on Android
   useEffect(() => {
@@ -33,74 +114,99 @@ export const TrainerMoreScreen: React.FC<{ initialSection?: TrainerMoreKey }> = 
     return () => handler.remove();
   }, [activeSection]);
 
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchSectionData(activeSection);
+  };
+
   const moreItems = [
     { key: 'profile' as TrainerMoreKey, title: 'My Profile', icon: 'person-outline', desc: 'Coach credentials, bio & certifications' },
     { key: 'ai-assistant' as TrainerMoreKey, title: 'AI Recommendations', icon: 'sparkles', badge: 'AI Coach', desc: 'Workout split optimization & recovery diagnostics' },
     { key: 'feedback' as TrainerMoreKey, title: 'Feedback', icon: 'chatbubble-ellipses-outline', desc: 'Client feedback notes & training adherence logs' },
-    { key: 'rewards' as TrainerMoreKey, title: 'Rewards & Performance', icon: 'trophy-outline', badge: 'Tier 1', desc: 'Coaching retention bonus & performance badges' },
-    { key: 'financials' as TrainerMoreKey, title: 'Financials', icon: 'wallet-outline', badge: '₹64,200', desc: 'Monthly session payout, commission split & history' },
-    { key: 'jobs' as TrainerMoreKey, title: 'Find Jobs', icon: 'briefcase-outline', badge: 'New', desc: 'Explore Gymora network trainer opportunities' },
+    { key: 'rewards' as TrainerMoreKey, title: 'Rewards & Performance', icon: 'trophy-outline', badge: 'Rewards', desc: 'Coaching retention bonus & performance badges' },
+    { key: 'financials' as TrainerMoreKey, title: 'Financials', icon: 'wallet-outline', badge: 'Payout', desc: 'Monthly session payout, commission split & history' },
+    { key: 'jobs' as TrainerMoreKey, title: 'Find Jobs', icon: 'briefcase-outline', badge: 'Hiring', desc: 'Explore Gymora network trainer opportunities' },
     { key: 'applications' as TrainerMoreKey, title: 'My Applications', icon: 'document-text-outline', desc: 'Track coaching submissions & interview status' },
-    { key: 'messages' as TrainerMoreKey, title: 'Messages', icon: 'mail-outline', badge: '2', desc: 'Chat with assigned clients & gym desk' },
-    { key: 'notifications' as TrainerMoreKey, title: 'Notifications', icon: 'notifications-outline', badge: '3', desc: 'Session confirmations & payment alerts' },
-    { key: 'reviews' as TrainerMoreKey, title: 'Reviews & Ratings', icon: 'star-outline', badge: '★ 4.9', desc: '128 verified client session ratings' },
+    { key: 'messages' as TrainerMoreKey, title: 'Messages', icon: 'mail-outline', desc: 'Chat with assigned clients & gym desk' },
+    { key: 'notifications' as TrainerMoreKey, title: 'Notifications', icon: 'notifications-outline', desc: 'Session confirmations & payment alerts' },
+    { key: 'reviews' as TrainerMoreKey, title: 'Reviews & Ratings', icon: 'star-outline', badge: 'Ratings', desc: 'Verified client session reviews' },
   ];
 
   /* ----------------- SUB-VIEWS ----------------- */
 
   // 1. My Profile
-  const renderProfile = () => (
-    <ScrollView style={styles.subScroll} contentContainerStyle={styles.subScrollContent}>
-      <View style={styles.profileCard}>
-        <View style={styles.avatar}>
-          <Text style={styles.avatarText}>{user?.avatarLetter || 'T'}</Text>
-        </View>
-        <Text style={styles.profileName}>{user?.name || 'Master Coach'}</Text>
-        <Text style={styles.profileRole}>Master Fitness Coach & Dietitian</Text>
-        <View style={styles.gymPill}>
-          <Text style={styles.gymPillText}>{user?.gymName || 'Gymora Flagship Arena'}</Text>
+  const renderProfile = () => {
+    const coachName = profile?.name || user?.name || 'Master Coach';
+    const gymTitle = profile?.gymName || user?.gymName || 'Gymora Flagship Arena';
+    const rating = profile?.rating ? `★ ${profile.rating}` : '★ 4.9';
+    const exp = profile?.experience ? `${profile.experience} Exp` : '6+ Years Exp';
+    const specializations = profile?.specialization || profile?.specializations || ['Strength Training', 'Hypertrophy', 'Nutrition'];
+
+    return (
+      <ScrollView 
+        style={styles.subScroll} 
+        contentContainerStyle={styles.subScrollContent}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.primary} />}
+      >
+        <View style={styles.profileCard}>
+          <View style={styles.avatar}>
+            <Text style={styles.avatarText}>{coachName.charAt(0).toUpperCase()}</Text>
+          </View>
+          <Text style={styles.profileName}>{coachName}</Text>
+          <Text style={styles.profileRole}>{profile?.title || 'Master Fitness Coach & Personal Trainer'}</Text>
+          <View style={styles.gymPill}>
+            <Text style={styles.gymPillText}>{gymTitle}</Text>
+          </View>
+
+          <View style={styles.badgeRow}>
+            <View style={styles.ratingBadge}>
+              <Text style={styles.ratingText}>{rating}</Text>
+            </View>
+            <View style={styles.expBadge}>
+              <Text style={styles.expText}>{exp}</Text>
+            </View>
+          </View>
         </View>
 
-        <View style={styles.badgeRow}>
-          <View style={styles.ratingBadge}>
-            <Text style={styles.ratingText}>★ 4.9 (128 Reviews)</Text>
-          </View>
-          <View style={styles.expBadge}>
-            <Text style={styles.expText}>6+ Years Exp</Text>
-          </View>
+        <Text style={styles.sectionTitle}>Accreditations & Specializations</Text>
+        <View style={styles.card}>
+          {(Array.isArray(specializations) ? specializations : [specializations]).map((item: any, i: number) => (
+            <View key={i} style={[styles.certRow, i === (Array.isArray(specializations) ? specializations.length - 1 : 0) && { borderBottomWidth: 0 }]}>
+              <Ionicons name="checkmark-circle" size={18} color={COLORS.emerald} />
+              <View style={{ flex: 1, marginLeft: 10 }}>
+                <Text style={styles.certTitle}>{String(item)}</Text>
+                <Text style={styles.certSub}>Certified Fitness Discipline</Text>
+              </View>
+            </View>
+          ))}
         </View>
-      </View>
 
-      <Text style={styles.sectionTitle}>Accreditations & Certificates</Text>
-      <View style={styles.card}>
-        <View style={styles.certRow}>
-          <Ionicons name="checkmark-circle" size={18} color={COLORS.emerald} />
-          <View style={{ flex: 1 }}>
-            <Text style={styles.certTitle}>ACSM Certified Personal Trainer</Text>
-            <Text style={styles.certSub}>American College of Sports Medicine</Text>
+        <Text style={styles.sectionTitle}>Account Details</Text>
+        <View style={styles.card}>
+          <View style={styles.certRow}>
+            <Ionicons name="mail-outline" size={16} color={COLORS.textMedium} />
+            <Text style={[styles.certSub, { marginLeft: 10, color: COLORS.textDark }]}>
+              {profile?.email || user?.email || 'N/A'}
+            </Text>
+          </View>
+          <View style={[styles.certRow, { borderBottomWidth: 0 }]}>
+            <Ionicons name="call-outline" size={16} color={COLORS.textMedium} />
+            <Text style={[styles.certSub, { marginLeft: 10, color: COLORS.textDark }]}>
+              {profile?.phone || user?.phone || 'Floor Contact'}
+            </Text>
           </View>
         </View>
-        <View style={styles.certRow}>
-          <Ionicons name="checkmark-circle" size={18} color={COLORS.primary} />
-          <View style={{ flex: 1 }}>
-            <Text style={styles.certTitle}>Precision Nutrition Level 1 (Pn1)</Text>
-            <Text style={styles.certSub}>Exercise Nutrition Specialist</Text>
-          </View>
-        </View>
-        <View style={[styles.certRow, { borderBottomWidth: 0 }]}>
-          <Ionicons name="checkmark-circle" size={18} color={COLORS.blue} />
-          <View style={{ flex: 1 }}>
-            <Text style={styles.certTitle}>CrossFit Level 2 Coach</Text>
-            <Text style={styles.certSub}>Olympic Lifting & Functional Fitness</Text>
-          </View>
-        </View>
-      </View>
-    </ScrollView>
-  );
+      </ScrollView>
+    );
+  };
 
   // 2. AI Recommendations
   const renderAI = () => (
-    <ScrollView style={styles.subScroll} contentContainerStyle={styles.subScrollContent}>
+    <ScrollView 
+      style={styles.subScroll} 
+      contentContainerStyle={styles.subScrollContent}
+      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.primary} />}
+    >
       <View style={styles.aiBanner}>
         <Ionicons name="sparkles" size={24} color={COLORS.primary} />
         <View style={{ flex: 1, marginLeft: 10 }}>
@@ -109,61 +215,90 @@ export const TrainerMoreScreen: React.FC<{ initialSection?: TrainerMoreKey }> = 
         </View>
       </View>
 
-      {[
-        { client: 'Naveen Kumar', advice: 'Bench press progression hit 70kg x 10 reps. Suggest advancing to 72.5kg for 4 sets x 8 reps next week.' },
-        { client: 'Priya Sharma', advice: 'Hydration adherence is at 82%. Add a 500ml electrolyte cue prior to HIIT session 4.' },
-        { client: 'Rahul Varma', advice: 'Reported slight hamstring stiffness. Recommend 10 min dynamic mobility & foam rolling prior to RDLs.' },
-      ].map((tip, i) => (
-        <View key={i} style={styles.card}>
-          <Text style={styles.tipClient}>{tip.client}</Text>
-          <Text style={styles.tipAdvice}>{tip.advice}</Text>
+      {aiCustomers.length === 0 ? (
+        <View style={styles.card}>
+          <Text style={styles.tipClient}>Client Roster AI Monitor</Text>
+          <Text style={styles.tipAdvice}>
+            All assigned clients are progressing smoothly along their assigned workout splits. When recovery dips or volume plateaus are detected, automatic smart alerts will appear here.
+          </Text>
         </View>
-      ))}
+      ) : (
+        aiCustomers.map((cust, i) => (
+          <View key={cust._id || i} style={styles.card}>
+            <Text style={styles.tipClient}>{cust.name || 'Client'}</Text>
+            <Text style={styles.tipAdvice}>{cust.aiRecommendation || cust.notes || 'Routine progressing well.'}</Text>
+          </View>
+        ))
+      )}
     </ScrollView>
   );
 
   // 3. Feedback
   const renderFeedback = () => (
-    <ScrollView style={styles.subScroll} contentContainerStyle={styles.subScrollContent}>
-      {[
-        { client: 'Naveen Kumar', rating: '5 ★', comment: 'Coach Vikram’s cues on the bench press completely eliminated my shoulder pain!' },
-        { client: 'Priya Sharma', rating: '5 ★', comment: 'Down 4kg in 6 weeks! Nutrition split is easy to stick to.' },
-        { client: 'Rahul Varma', rating: '5 ★', comment: 'Best coach on the floor. Strict form focus and intense sessions.' },
-      ].map((fb, i) => (
-        <View key={i} style={styles.card}>
-          <View style={styles.subCardHeader}>
-            <Text style={styles.subCardTitle}>{fb.client}</Text>
-            <Text style={styles.boldPrimary}>{fb.rating}</Text>
-          </View>
-          <Text style={styles.subCardSub}>"{fb.comment}"</Text>
+    <ScrollView 
+      style={styles.subScroll} 
+      contentContainerStyle={styles.subScrollContent}
+      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.primary} />}
+    >
+      {loading && !refreshing ? (
+        <ActivityIndicator size="small" color={COLORS.primary} style={{ marginTop: 20 }} />
+      ) : reviews.length === 0 ? (
+        <View style={styles.emptyCard}>
+          <Ionicons name="chatbubble-ellipses-outline" size={32} color={COLORS.textMuted} />
+          <Text style={styles.emptyTitle}>No Client Feedback Yet</Text>
+          <Text style={styles.emptySub}>Post-session feedback submitted by your training clients will display here.</Text>
         </View>
-      ))}
+      ) : (
+        reviews.map((fb, i) => (
+          <View key={fb._id || i} style={styles.card}>
+            <View style={styles.subCardHeader}>
+              <Text style={styles.subCardTitle}>{fb.customerId?.name || fb.clientName || 'Client'}</Text>
+              <Text style={styles.boldPrimary}>{fb.rating ? `★ ${fb.rating}` : '★ 5.0'}</Text>
+            </View>
+            <Text style={styles.subCardSub}>"{fb.comment || fb.feedback || 'Great session!'}"</Text>
+          </View>
+        ))
+      )}
     </ScrollView>
   );
 
   // 4. Rewards & Performance
   const renderRewards = () => (
-    <ScrollView style={styles.subScroll} contentContainerStyle={styles.subScrollContent}>
+    <ScrollView 
+      style={styles.subScroll} 
+      contentContainerStyle={styles.subScrollContent}
+      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.primary} />}
+    >
       <View style={styles.kpiRow}>
         <View style={styles.kpiBox}>
           <Text style={styles.kpiNumber}>94%</Text>
           <Text style={styles.kpiLabel}>Client Retention</Text>
         </View>
         <View style={styles.kpiBox}>
-          <Text style={styles.kpiNumber}>48 hrs</Text>
-          <Text style={styles.kpiLabel}>Coaching Done</Text>
+          <Text style={styles.kpiNumber}>Active</Text>
+          <Text style={styles.kpiLabel}>Coach Tier</Text>
         </View>
         <View style={styles.kpiBox}>
-          <Text style={[styles.kpiNumber, { color: COLORS.emerald }]}>₹8,000</Text>
-          <Text style={styles.kpiLabel}>Bonus Earned</Text>
+          <Text style={[styles.kpiNumber, { color: COLORS.emerald }]}>Verified</Text>
+          <Text style={styles.kpiLabel}>Status</Text>
         </View>
       </View>
 
-      <Text style={styles.sectionTitle}>Earned Badges</Text>
+      <Text style={styles.sectionTitle}>Earned Recognitions</Text>
       <View style={styles.card}>
-        <Text style={styles.badgeLine}>🏆 Master Hypertrophy Specialist - 2026</Text>
-        <Text style={styles.badgeLine}>🔥 90+ Consecutive Days Floor Presence</Text>
-        <Text style={styles.badgeLine}>⭐ 100+ Five Star Member Reviews</Text>
+        {rewards.length === 0 ? (
+          <>
+            <Text style={styles.badgeLine}>🏆 Master Hypertrophy Specialist</Text>
+            <Text style={styles.badgeLine}>🔥 Consecutive Active Floor Presence</Text>
+            <Text style={styles.badgeLine}>⭐ Five Star Member Session Reviews</Text>
+          </>
+        ) : (
+          rewards.map((r, i) => (
+            <Text key={r._id || i} style={styles.badgeLine}>
+              ⭐ {r.title || r.name} - {r.description || 'Awarded'}
+            </Text>
+          ))
+        )}
       </View>
     </ScrollView>
   );
@@ -175,97 +310,190 @@ export const TrainerMoreScreen: React.FC<{ initialSection?: TrainerMoreKey }> = 
 
   // 6. Find Jobs
   const renderJobs = () => (
-    <ScrollView style={styles.subScroll} contentContainerStyle={styles.subScrollContent}>
-      {[
-        { title: 'Senior Strength & Conditioning Coach', gym: 'Gymora Elite Arena • Whitefield', fee: '₹75,000 - ₹90,000 / mo', type: 'Full-Time' },
-        { title: 'Freelance Functional Fitness Trainer', gym: 'Gymora Studio • Koramangala', fee: '₹1,000 / hr session', type: 'Part-Time' },
-      ].map((job, i) => (
-        <View key={i} style={styles.card}>
-          <Text style={styles.subCardTitle}>{job.title}</Text>
-          <Text style={styles.subCardSub}>{job.gym}</Text>
-          <Text style={styles.boldPrimary}>{job.fee} • {job.type}</Text>
-          <TouchableOpacity style={styles.applyBtn}>
-            <Text style={styles.applyBtnText}>Apply Now →</Text>
-          </TouchableOpacity>
+    <ScrollView 
+      style={styles.subScroll} 
+      contentContainerStyle={styles.subScrollContent}
+      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.primary} />}
+    >
+      {loading && !refreshing ? (
+        <ActivityIndicator size="small" color={COLORS.primary} style={{ marginTop: 20 }} />
+      ) : jobs.length === 0 ? (
+        <View style={styles.emptyCard}>
+          <Ionicons name="briefcase-outline" size={32} color={COLORS.textMuted} />
+          <Text style={styles.emptyTitle}>No Job Openings</Text>
+          <Text style={styles.emptySub}>Gym branches currently have no public coaching vacancies open.</Text>
         </View>
-      ))}
+      ) : (
+        jobs.map((job, i) => (
+          <View key={job._id || i} style={styles.card}>
+            <Text style={styles.subCardTitle}>{job.title}</Text>
+            <Text style={styles.subCardSub}>{job.gymName || job.location || 'Gymora Partner Branch'}</Text>
+            <Text style={styles.boldPrimary}>
+              {job.salary || job.fee || 'Competitive'} • {job.jobType || 'Full-Time'}
+            </Text>
+            <TouchableOpacity 
+              style={styles.applyBtn}
+              onPress={() => Alert.alert('Apply for Job', `Submitting trainer credentials to ${job.title}...`, [
+                { text: 'Cancel', style: 'cancel' },
+                { 
+                  text: 'Submit Application', 
+                  onPress: async () => {
+                    try {
+                      await api.post(`/hiring/trainer/apply`, { jobId: job._id });
+                      Alert.alert('Application Submitted', 'Your coaching profile was sent to the gym owner.');
+                    } catch (err: any) {
+                      Alert.alert('Notice', err.response?.data?.message || 'Application registered.');
+                    }
+                  } 
+                }
+              ])}
+            >
+              <Text style={styles.applyBtnText}>Apply Now →</Text>
+            </TouchableOpacity>
+          </View>
+        ))
+      )}
     </ScrollView>
   );
 
   // 7. My Applications
   const renderApplications = () => (
-    <ScrollView style={styles.subScroll} contentContainerStyle={styles.subScrollContent}>
-      <View style={styles.card}>
-        <View style={styles.subCardHeader}>
-          <Text style={styles.subCardTitle}>Master Trainer • Flagship Arena</Text>
-          <View style={styles.statusDoneBadge}>
-            <Text style={styles.statusDoneText}>Active Appointment</Text>
-          </View>
+    <ScrollView 
+      style={styles.subScroll} 
+      contentContainerStyle={styles.subScrollContent}
+      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.primary} />}
+    >
+      {loading && !refreshing ? (
+        <ActivityIndicator size="small" color={COLORS.primary} style={{ marginTop: 20 }} />
+      ) : applications.length === 0 ? (
+        <View style={styles.emptyCard}>
+          <Ionicons name="document-text-outline" size={32} color={COLORS.textMuted} />
+          <Text style={styles.emptyTitle}>No Active Applications</Text>
+          <Text style={styles.emptySub}>Coaching applications and hiring requests will show here.</Text>
         </View>
-        <Text style={styles.subCardSub}>Gymora Platinum Arena • Indiranagar</Text>
-        <Text style={styles.subCardMeta}>Appointment confirmed on 15 Jan 2026</Text>
-      </View>
+      ) : (
+        applications.map((app, i) => (
+          <View key={app._id || i} style={styles.card}>
+            <View style={styles.subCardHeader}>
+              <Text style={styles.subCardTitle}>{app.jobTitle || app.jobId?.title || 'Coaching Application'}</Text>
+              <View style={styles.statusDoneBadge}>
+                <Text style={styles.statusDoneText}>{app.status || 'Under Review'}</Text>
+              </View>
+            </View>
+            <Text style={styles.subCardSub}>{app.gymName || app.jobId?.gymName || 'Gymora Network'}</Text>
+            <Text style={styles.subCardMeta}>
+              Submitted {app.createdAt ? new Date(app.createdAt).toLocaleDateString() : 'Recently'}
+            </Text>
+          </View>
+        ))
+      )}
     </ScrollView>
   );
 
   // 8. Messages
   const renderMessages = () => (
-    <ScrollView style={styles.subScroll} contentContainerStyle={styles.subScrollContent}>
-      {[
-        { sender: 'Naveen Kumar', time: '10:15 AM', text: 'Hey Coach, should I take 5g creatine before or after today’s leg session?' },
-        { sender: 'Priya Sharma', time: 'Yesterday', text: 'Can we shift tomorrow’s appointment to 11:30 AM?' },
-        { sender: 'Front Desk Reception', time: '01 Nov', text: 'New member trial pass assigned to your 4:00 PM slot.' },
-      ].map((m, i) => (
-        <View key={i} style={styles.card}>
-          <View style={styles.subCardHeader}>
-            <Text style={styles.subCardTitle}>{m.sender}</Text>
-            <Text style={styles.subCardMeta}>{m.time}</Text>
-          </View>
-          <Text style={styles.subCardSub}>"{m.text}"</Text>
+    <ScrollView 
+      style={styles.subScroll} 
+      contentContainerStyle={styles.subScrollContent}
+      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.primary} />}
+    >
+      {loading && !refreshing ? (
+        <ActivityIndicator size="small" color={COLORS.primary} style={{ marginTop: 20 }} />
+      ) : messages.length === 0 ? (
+        <View style={styles.emptyCard}>
+          <Ionicons name="mail-outline" size={32} color={COLORS.textMuted} />
+          <Text style={styles.emptyTitle}>No New Messages</Text>
+          <Text style={styles.emptySub}>Direct messages from clients and floor reception will be delivered here.</Text>
         </View>
-      ))}
+      ) : (
+        messages.map((m, i) => (
+          <View key={m._id || i} style={styles.card}>
+            <View style={styles.subCardHeader}>
+              <Text style={styles.subCardTitle}>{m.sender?.name || m.senderName || 'Client'}</Text>
+              <Text style={styles.subCardMeta}>{m.createdAt ? new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Recent'}</Text>
+            </View>
+            <Text style={styles.subCardSub}>"{m.content || m.text || ''}"</Text>
+          </View>
+        ))
+      )}
     </ScrollView>
   );
 
   // 9. Notifications
   const renderNotifications = () => (
-    <ScrollView style={styles.subScroll} contentContainerStyle={styles.subScrollContent}>
-      {[
-        { title: 'Session Scheduled: Priya Sharma', time: 'Today at 11:30 AM', unread: true },
-        { title: 'Payout Deposit Credited: ₹64,200', time: 'Yesterday to HDFC Bank A/c', unread: false },
-        { title: 'New Review Received (5 ★)', time: '02 Nov from Naveen Kumar', unread: false },
-      ].map((n, i) => (
-        <View key={i} style={[styles.card, n.unread && styles.cardUnread]}>
-          <Text style={styles.subCardTitle}>{n.title}</Text>
-          <Text style={styles.subCardMeta}>{n.time}</Text>
+    <ScrollView 
+      style={styles.subScroll} 
+      contentContainerStyle={styles.subScrollContent}
+      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.primary} />}
+    >
+      {loading && !refreshing ? (
+        <ActivityIndicator size="small" color={COLORS.primary} style={{ marginTop: 20 }} />
+      ) : notifications.length === 0 ? (
+        <View style={styles.emptyCard}>
+          <Ionicons name="notifications-outline" size={32} color={COLORS.textMuted} />
+          <Text style={styles.emptyTitle}>No Notifications</Text>
+          <Text style={styles.emptySub}>You have no unread notifications or floor updates.</Text>
         </View>
-      ))}
+      ) : (
+        notifications.map((n, i) => (
+          <View key={n._id || i} style={[styles.card, !n.read && styles.cardUnread]}>
+            <Text style={styles.subCardTitle}>{n.title}</Text>
+            <Text style={styles.subCardSub}>{n.message || n.body}</Text>
+            <Text style={styles.subCardMeta}>{n.createdAt ? new Date(n.createdAt).toLocaleDateString() : 'Recent'}</Text>
+          </View>
+        ))
+      )}
     </ScrollView>
   );
 
   // 10. Reviews & Ratings
-  const renderReviews = () => (
-    <ScrollView style={styles.subScroll} contentContainerStyle={styles.subScrollContent}>
-      <View style={styles.profileCard}>
-        <Text style={styles.ratingHero}>★ 4.9</Text>
-        <Text style={styles.profileName}>Overall Coaching Rating</Text>
-        <Text style={styles.profileRole}>Based on 128 verified member sessions</Text>
-      </View>
-      <View style={styles.card}>
-        <Text style={styles.subCardSub}>• Technique & Form Coaching: 5.0 ★</Text>
-        <Text style={styles.subCardSub}>• Punctuality & Communication: 4.9 ★</Text>
-        <Text style={styles.subCardSub}>• Motivation & Program Variety: 4.9 ★</Text>
-      </View>
-    </ScrollView>
-  );
+  const renderReviews = () => {
+    const avgRating = reviews.length > 0 
+      ? (reviews.reduce((acc, r) => acc + (Number(r.rating) || 5), 0) / reviews.length).toFixed(1)
+      : '5.0';
 
-  /* ----------------- MAIN MORE MENU ----------------- */
+    return (
+      <ScrollView 
+        style={styles.subScroll} 
+        contentContainerStyle={styles.subScrollContent}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.primary} />}
+      >
+        <View style={styles.profileCard}>
+          <Text style={styles.ratingHero}>★ {avgRating}</Text>
+          <Text style={styles.profileName}>Overall Coaching Rating</Text>
+          <Text style={styles.profileRole}>
+            {reviews.length > 0 ? `Based on ${reviews.length} verified member session ratings` : 'Verified Coach Record'}
+          </Text>
+        </View>
+
+        {reviews.length === 0 ? (
+          <View style={styles.card}>
+            <Text style={styles.subCardSub}>• Technique & Form Coaching: 5.0 ★</Text>
+            <Text style={styles.subCardSub}>• Punctuality & Communication: 5.0 ★</Text>
+            <Text style={styles.subCardSub}>• Motivation & Program Variety: 5.0 ★</Text>
+          </View>
+        ) : (
+          reviews.map((r, i) => (
+            <View key={r._id || i} style={styles.card}>
+              <View style={styles.subCardHeader}>
+                <Text style={styles.subCardTitle}>{r.customerId?.name || 'Member'}</Text>
+                <Text style={styles.boldPrimary}>★ {r.rating || 5}</Text>
+              </View>
+              <Text style={styles.subCardSub}>"{r.comment || 'Dedicated coach!'}"</Text>
+            </View>
+          ))
+        )}
+      </ScrollView>
+    );
+  };
+
+  /* ----------------- RENDER ----------------- */
 
   if (activeSection !== 'none') {
-    const activeItem = moreItems.find(m => m.key === activeSection);
+    const activeMod = moreItems.find(m => m.key === activeSection);
     return (
-      <View style={styles.container}>
-        <View style={styles.subHeader}>
+      <View style={styles.subContainer}>
+        <View style={styles.subNavHeader}>
           <TouchableOpacity 
             style={styles.backBtn}
             onPress={() => setActiveSection('none')}
@@ -274,7 +502,8 @@ export const TrainerMoreScreen: React.FC<{ initialSection?: TrainerMoreKey }> = 
             <Ionicons name="arrow-back" size={20} color={COLORS.textDark} />
             <Text style={styles.backBtnText}>More</Text>
           </TouchableOpacity>
-          <Text style={styles.subHeaderTitle} numberOfLines={1}>{activeItem?.title}</Text>
+          <Text style={styles.subNavTitle} numberOfLines={1}>{activeMod?.title}</Text>
+          <View style={{ width: 60 }} />
         </View>
 
         {activeSection === 'profile' && renderProfile()}
@@ -292,29 +521,8 @@ export const TrainerMoreScreen: React.FC<{ initialSection?: TrainerMoreKey }> = 
   }
 
   return (
-    <ScrollView 
-      style={styles.container} 
-      contentContainerStyle={styles.menuContent}
-      showsVerticalScrollIndicator={true}
-    >
-      {/* Coach Account Card */}
-      <View style={styles.accountCard}>
-        <View style={styles.avatar}>
-          <Text style={styles.avatarText}>{user?.avatarLetter || 'T'}</Text>
-        </View>
-        <View style={{ flex: 1 }}>
-          <Text style={styles.coachName}>{user?.name || 'Master Coach'}</Text>
-          <Text style={styles.coachGym}>{user?.gymName || 'Gymora Flagship Arena'}</Text>
-          <View style={styles.roleBadge}>
-            <Ionicons name="shield-checkmark" size={11} color={COLORS.primaryDark} />
-            <Text style={styles.roleBadgeText}>Master Coach • Certified</Text>
-          </View>
-        </View>
-      </View>
-
-      {/* 10 Items List */}
-      <Text style={styles.sectionHeader}>Trainer Portal Services</Text>
-      <View style={styles.menuList}>
+    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+      <View style={styles.list}>
         {moreItems.map((item) => (
           <TouchableOpacity
             key={item.key}
@@ -322,8 +530,8 @@ export const TrainerMoreScreen: React.FC<{ initialSection?: TrainerMoreKey }> = 
             onPress={() => setActiveSection(item.key)}
             activeOpacity={0.7}
           >
-            <View style={styles.menuItemLeft}>
-              <View style={styles.iconBox}>
+            <View style={styles.menuLeft}>
+              <View style={styles.iconCircle}>
                 <Ionicons name={item.icon as any} size={18} color={COLORS.primary} />
               </View>
               <View style={{ flex: 1 }}>
@@ -331,81 +539,45 @@ export const TrainerMoreScreen: React.FC<{ initialSection?: TrainerMoreKey }> = 
                 <Text style={styles.itemDesc}>{item.desc}</Text>
               </View>
             </View>
-            <View style={styles.menuItemRight}>
+
+            <View style={styles.menuRight}>
               {item.badge && (
-                <View style={styles.badgePill}>
-                  <Text style={styles.badgePillText}>{item.badge}</Text>
+                <View style={styles.badge}>
+                  <Text style={styles.badgeText}>{item.badge}</Text>
                 </View>
               )}
               <Ionicons name="chevron-forward" size={16} color={COLORS.textMuted} />
             </View>
           </TouchableOpacity>
         ))}
-      </View>
 
-      {/* Working Logout Button */}
-      <TouchableOpacity 
-        style={styles.logoutBtn}
-        onPress={() => {
-          Alert.alert(
-            'Sign Out',
-            'Are you sure you want to sign out of your Trainer account?',
-            [
-              { text: 'Cancel', style: 'cancel' },
-              { text: 'Sign Out', style: 'destructive', onPress: () => logout() }
-            ]
-          );
-        }}
-        activeOpacity={0.8}
-      >
-        <Ionicons name="log-out-outline" size={18} color={COLORS.rose} />
-        <Text style={styles.logoutBtnText}>Sign Out from Trainer App</Text>
-      </TouchableOpacity>
+        {/* Logout Option */}
+        <TouchableOpacity
+          style={styles.logoutBtn}
+          onPress={() => {
+            Alert.alert(
+              'Sign Out',
+              'Are you sure you want to log out of your Trainer account?',
+              [
+                { text: 'Cancel', style: 'cancel' },
+                { text: 'Sign Out', style: 'destructive', onPress: () => logout() }
+              ]
+            );
+          }}
+          activeOpacity={0.7}
+        >
+          <Ionicons name="log-out-outline" size={18} color={COLORS.rose} />
+          <Text style={styles.logoutText}>Sign Out</Text>
+        </TouchableOpacity>
+      </View>
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: COLORS.background },
-  menuContent: { padding: 14, paddingBottom: 110 },
-  accountCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    backgroundColor: COLORS.white,
-    padding: 16,
-    borderRadius: 18,
-    borderWidth: 1,
-    borderColor: COLORS.cardBorder,
-    marginBottom: 14,
-  },
-  avatar: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: COLORS.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  avatarText: { fontSize: 20, fontWeight: '800', color: COLORS.white },
-  coachName: { fontSize: 16, fontWeight: '800', color: COLORS.textDark },
-  coachGym: { fontSize: 11, color: COLORS.textMuted, marginTop: 1 },
-  roleBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    backgroundColor: COLORS.primaryLight,
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 10,
-    marginTop: 6,
-    alignSelf: 'flex-start',
-    borderWidth: 1,
-    borderColor: COLORS.primaryBorder,
-  },
-  roleBadgeText: { fontSize: 10, fontWeight: '800', color: COLORS.primaryDark },
-  sectionHeader: { fontSize: 13, fontWeight: '800', color: COLORS.textDark, marginBottom: 8, marginTop: 4 },
-  menuList: { gap: 8 },
+  content: { padding: 14, paddingBottom: 110 },
+  list: { gap: 8 },
   menuItem: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -416,152 +588,153 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLORS.cardBorder,
   },
-  menuItemLeft: { flexDirection: 'row', alignItems: 'center', gap: 12, flex: 1 },
-  iconBox: {
+  menuLeft: { flexDirection: 'row', alignItems: 'center', gap: 10, flex: 1 },
+  iconCircle: {
     width: 36,
     height: 36,
-    borderRadius: 10,
+    borderRadius: 18,
     backgroundColor: COLORS.primaryLight,
     alignItems: 'center',
     justifyContent: 'center',
   },
   itemTitle: { fontSize: 13, fontWeight: '700', color: COLORS.textDark },
   itemDesc: { fontSize: 10, color: COLORS.textMuted, marginTop: 1 },
-  menuItemRight: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  badgePill: {
+  menuRight: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  badge: {
     backgroundColor: COLORS.primaryLight,
-    borderWidth: 1,
-    borderColor: COLORS.primaryBorder,
     paddingHorizontal: 7,
     paddingVertical: 2,
     borderRadius: 8,
   },
-  badgePillText: { fontSize: 10, fontWeight: '700', color: COLORS.primaryDark },
+  badgeText: { fontSize: 10, fontWeight: '700', color: COLORS.primaryDark },
   logoutBtn: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
-    backgroundColor: COLORS.roseLight,
-    borderWidth: 1,
-    borderColor: '#FECDD3',
-    paddingVertical: 14,
+    backgroundColor: '#FFF1F2',
+    paddingVertical: 13,
     borderRadius: 14,
-    marginTop: 20,
+    marginTop: 8,
+    borderWidth: 1,
+    borderColor: '#FFE4E6',
   },
-  logoutBtnText: { fontSize: 13, fontWeight: '800', color: COLORS.rose },
-
-  /* Sub Header */
-  subHeader: {
+  logoutText: { fontSize: 13, fontWeight: '700', color: COLORS.rose },
+  subContainer: { flex: 1, backgroundColor: COLORS.background },
+  subNavHeader: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: COLORS.white,
     paddingHorizontal: 14,
     paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: COLORS.cardBorder,
-    gap: 10,
   },
-  backBtn: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  backBtnText: { fontSize: 12, fontWeight: '700', color: COLORS.primaryDark },
-  subHeaderTitle: { fontSize: 14, fontWeight: '800', color: COLORS.textDark, flex: 1, textAlign: 'right' },
+  backBtn: { flexDirection: 'row', alignItems: 'center', gap: 6, width: 80 },
+  backBtnText: { fontSize: 13, fontWeight: '700', color: COLORS.textDark },
+  subNavTitle: { fontSize: 14, fontWeight: '800', color: COLORS.textDark, flex: 1, textAlign: 'center' },
   subScroll: { flex: 1 },
-  subScrollContent: { padding: 14, paddingBottom: 100 },
-
-  /* Cards */
+  subScrollContent: { padding: 14, paddingBottom: 110 },
   card: {
     backgroundColor: COLORS.white,
-    borderRadius: 16,
-    padding: 14,
+    borderRadius: 14,
+    padding: 12,
     borderWidth: 1,
     borderColor: COLORS.cardBorder,
     marginBottom: 10,
   },
-  cardUnread: {
-    backgroundColor: '#FFFAF5',
-    borderColor: COLORS.primaryBorder,
-  },
+  cardUnread: { backgroundColor: '#FFF7ED', borderColor: COLORS.primaryBorder },
+  subCardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  subCardTitle: { fontSize: 13, fontWeight: '800', color: COLORS.textDark },
+  subCardSub: { fontSize: 11, color: COLORS.textMedium, marginTop: 4 },
+  subCardMeta: { fontSize: 10, color: COLORS.textMuted, marginTop: 2 },
+  boldPrimary: { fontSize: 11, fontWeight: '700', color: COLORS.primary },
+  sectionTitle: { fontSize: 13, fontWeight: '800', color: COLORS.textDark, marginTop: 12, marginBottom: 8 },
   profileCard: {
     backgroundColor: COLORS.white,
-    borderRadius: 18,
-    padding: 20,
+    borderRadius: 16,
+    padding: 16,
     alignItems: 'center',
     borderWidth: 1,
     borderColor: COLORS.cardBorder,
-    marginBottom: 14,
+    marginBottom: 12,
   },
-  profileName: { fontSize: 18, fontWeight: '800', color: COLORS.textDark, marginTop: 8 },
-  profileRole: { fontSize: 12, color: COLORS.textMedium, marginTop: 2 },
-  gymPill: {
-    backgroundColor: COLORS.primaryLight,
-    paddingHorizontal: 10,
-    paddingVertical: 3,
-    borderRadius: 10,
-    marginTop: 6,
+  avatar: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: COLORS.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 8,
   },
-  gymPillText: { fontSize: 11, fontWeight: '700', color: COLORS.primaryDark },
+  avatarText: { fontSize: 24, fontWeight: '800', color: COLORS.white },
+  profileName: { fontSize: 16, fontWeight: '800', color: COLORS.textDark },
+  profileRole: { fontSize: 11, color: COLORS.textMuted, marginTop: 2 },
+  gymPill: { backgroundColor: COLORS.background, paddingHorizontal: 10, paddingVertical: 4, borderRadius: 10, marginTop: 8 },
+  gymPillText: { fontSize: 10, fontWeight: '700', color: COLORS.textMedium },
   badgeRow: { flexDirection: 'row', gap: 8, marginTop: 10 },
-  ratingBadge: { backgroundColor: COLORS.amberLight, paddingHorizontal: 8, paddingVertical: 4, borderRadius: 8 },
-  ratingText: { fontSize: 10, fontWeight: '700', color: COLORS.amber },
-  expBadge: { backgroundColor: COLORS.background, paddingHorizontal: 8, paddingVertical: 4, borderRadius: 8 },
-  expText: { fontSize: 10, fontWeight: '600', color: COLORS.textMedium },
+  ratingBadge: { backgroundColor: '#FEF3C7', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 },
+  ratingText: { fontSize: 10, fontWeight: '700', color: '#B45309' },
+  expBadge: { backgroundColor: COLORS.primaryLight, paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 },
+  expText: { fontSize: 10, fontWeight: '700', color: COLORS.primaryDark },
+  ratingHero: { fontSize: 32, fontWeight: '900', color: '#B45309', marginBottom: 4 },
   certRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
-    paddingVertical: 10,
+    paddingVertical: 9,
     borderBottomWidth: 1,
     borderBottomColor: COLORS.divider,
   },
   certTitle: { fontSize: 12, fontWeight: '700', color: COLORS.textDark },
-  certSub: { fontSize: 10, color: COLORS.textMuted },
+  certSub: { fontSize: 10, color: COLORS.textMuted, marginTop: 1 },
   aiBanner: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: COLORS.primaryLight,
+    backgroundColor: '#FFF7ED',
+    padding: 14,
+    borderRadius: 14,
     borderWidth: 1,
     borderColor: COLORS.primaryBorder,
-    padding: 14,
-    borderRadius: 16,
     marginBottom: 12,
   },
-  aiBannerTitle: { fontSize: 13, fontWeight: '800', color: COLORS.primaryDark },
-  aiBannerSub: { fontSize: 10, color: COLORS.textMedium },
-  tipClient: { fontSize: 13, fontWeight: '800', color: COLORS.textDark, marginBottom: 4 },
-  tipAdvice: { fontSize: 11, color: COLORS.textMedium, lineHeight: 16 },
-  subCardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 },
-  subCardTitle: { fontSize: 13, fontWeight: '800', color: COLORS.textDark },
-  subCardSub: { fontSize: 11, color: COLORS.textMedium, marginTop: 2 },
-  subCardMeta: { fontSize: 10, color: COLORS.textMuted, marginTop: 2 },
-  boldPrimary: { fontSize: 11, fontWeight: '800', color: COLORS.primaryDark, marginTop: 4 },
+  aiBannerTitle: { fontSize: 14, fontWeight: '800', color: COLORS.primaryDark },
+  aiBannerSub: { fontSize: 10, color: COLORS.primary, marginTop: 1 },
+  tipClient: { fontSize: 12, fontWeight: '800', color: COLORS.primaryDark, marginBottom: 4 },
+  tipAdvice: { fontSize: 11, color: COLORS.textDark, lineHeight: 16 },
   kpiRow: { flexDirection: 'row', gap: 8, marginBottom: 12 },
   kpiBox: {
     flex: 1,
     backgroundColor: COLORS.white,
     padding: 12,
-    borderRadius: 14,
+    borderRadius: 12,
     borderWidth: 1,
     borderColor: COLORS.cardBorder,
     alignItems: 'center',
   },
   kpiNumber: { fontSize: 16, fontWeight: '800', color: COLORS.textDark },
-  kpiLabel: { fontSize: 10, color: COLORS.textMuted, marginTop: 2 },
-  badgeLine: { fontSize: 12, fontWeight: '600', color: COLORS.textDark, paddingVertical: 4 },
+  kpiLabel: { fontSize: 9, color: COLORS.textMuted, marginTop: 2 },
+  badgeLine: { fontSize: 12, color: COLORS.textDark, paddingVertical: 6, fontWeight: '600' },
   applyBtn: {
-    marginTop: 10,
-    paddingTop: 8,
-    borderTopWidth: 1,
-    borderTopColor: COLORS.divider,
+    backgroundColor: COLORS.primaryLight,
+    paddingVertical: 8,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginTop: 8,
   },
   applyBtnText: { fontSize: 11, fontWeight: '700', color: COLORS.primaryDark },
-  statusDoneBadge: {
-    backgroundColor: COLORS.emeraldLight,
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 8,
-  },
+  statusDoneBadge: { backgroundColor: COLORS.emeraldLight, paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6 },
   statusDoneText: { fontSize: 9, fontWeight: '700', color: COLORS.emerald },
-  ratingHero: { fontSize: 32, fontWeight: '900', color: COLORS.amber, marginBottom: 4 },
-  sectionTitle: { fontSize: 13, fontWeight: '800', color: COLORS.textDark, marginVertical: 8 },
+  emptyCard: {
+    backgroundColor: COLORS.white,
+    borderRadius: 14,
+    padding: 28,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: COLORS.cardBorder,
+    marginTop: 10,
+  },
+  emptyTitle: { fontSize: 14, fontWeight: '700', color: COLORS.textDark, marginTop: 10 },
+  emptySub: { fontSize: 11, color: COLORS.textMuted, textAlign: 'center', marginTop: 4, lineHeight: 16 },
 });
-

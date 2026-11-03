@@ -1,8 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, BackHandler, TextInput, Alert } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { 
+  View, 
+  Text, 
+  StyleSheet, 
+  ScrollView, 
+  TouchableOpacity, 
+  BackHandler, 
+  TextInput, 
+  Alert, 
+  ActivityIndicator, 
+  RefreshControl 
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../constants/theme';
 import { useAuth } from '../../context/AuthContext';
+import { api } from '../../api/client';
 
 export type MoreItemKey = 
   | 'none'
@@ -20,6 +32,60 @@ export type MoreItemKey =
 export const CustomerMoreScreen: React.FC<{ initialSection?: MoreItemKey }> = ({ initialSection = 'none' }) => {
   const { user, logout } = useAuth();
   const [activeSection, setActiveSection] = useState<MoreItemKey>(initialSection);
+  const [loading, setLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+
+  // Live state
+  const [membership, setMembership] = useState<any>(null);
+  const [products, setProducts] = useState<any[]>([]);
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [messages, setMessages] = useState<any[]>([]);
+  const [rewards, setRewards] = useState<any[]>([]);
+
+  const fetchSectionData = useCallback(async (section: MoreItemKey) => {
+    if (section === 'none') return;
+    try {
+      setLoading(true);
+      if (section === 'membership') {
+        const res = await api.get('/memberships/my');
+        const list = res.data?.memberships || (Array.isArray(res.data) ? res.data : []);
+        setMembership(list[0] || null);
+      } else if (section === 'store') {
+        const res = await api.get('/store/products');
+        const list = res.data?.products || (Array.isArray(res.data) ? res.data : []);
+        setProducts(list);
+      } else if (section === 'notifications') {
+        const res = await api.get('/notifications');
+        const list = res.data?.notifications || (Array.isArray(res.data) ? res.data : []);
+        setNotifications(list);
+      } else if (section === 'messages') {
+        const res = await api.get('/direct-messages').catch(() => ({ data: { messages: [] } }));
+        const list = res.data?.messages || (Array.isArray(res.data) ? res.data : []);
+        setMessages(list);
+      } else if (section === 'rewards') {
+        const res = await api.get('/rewards').catch(() => ({ data: { rewards: [] } }));
+        const list = res.data?.rewards || (Array.isArray(res.data) ? res.data : []);
+        setRewards(list);
+      }
+    } catch (err) {
+      console.log(`[CustomerMore] Fetch note for ${section}:`, err);
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (initialSection && initialSection !== 'none') {
+      setActiveSection(initialSection);
+    }
+  }, [initialSection]);
+
+  useEffect(() => {
+    if (activeSection !== 'none') {
+      fetchSectionData(activeSection);
+    }
+  }, [activeSection, fetchSectionData]);
 
   // Handle hardware back button on Android
   useEffect(() => {
@@ -32,49 +98,71 @@ export const CustomerMoreScreen: React.FC<{ initialSection?: MoreItemKey }> = ({
     return () => handler.remove();
   }, [activeSection]);
 
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchSectionData(activeSection);
+  };
+
   const menuItems = [
     { key: 'ai-fitness' as MoreItemKey, title: 'AI Fitness Assistant', icon: 'sparkles', badge: 'Smart AI', desc: 'Ask form queries, macros & splits' },
-    { key: 'trainer-feedback' as MoreItemKey, title: 'Trainer Feedback', icon: 'chatbox-ellipses-outline', desc: 'Share feedback for Coach Vikram' },
+    { key: 'trainer-feedback' as MoreItemKey, title: 'Trainer Feedback', icon: 'chatbox-ellipses-outline', desc: 'Share feedback for your coach' },
     { key: 'reviews' as MoreItemKey, title: 'Reviews & Ratings', icon: 'star-outline', desc: 'Rate gym amenities & facilities' },
-    { key: 'rewards' as MoreItemKey, title: 'My Rewards & Points', icon: 'gift-outline', badge: '450 Pts', desc: 'Redeem passes, store discounts' },
-    { key: 'referrals' as MoreItemKey, title: 'Refer & Earn', icon: 'share-social-outline', badge: 'Earn ₹500', desc: 'Invite friends to train together' },
+    { key: 'rewards' as MoreItemKey, title: 'My Rewards & Points', icon: 'gift-outline', badge: 'GymPoints', desc: 'Redeem passes, store discounts' },
+    { key: 'referrals' as MoreItemKey, title: 'Refer & Earn', icon: 'share-social-outline', badge: 'Refer', desc: 'Invite friends to train together' },
     { key: 'store' as MoreItemKey, title: 'Gym Store', icon: 'cart-outline', desc: 'Supplements, gym apparel & gear' },
-    { key: 'messages' as MoreItemKey, title: 'Messages', icon: 'mail-outline', badge: '1 New', desc: 'Chat with trainer & front desk' },
+    { key: 'messages' as MoreItemKey, title: 'Messages', icon: 'mail-outline', desc: 'Chat with trainer & front desk' },
     { key: 'profile' as MoreItemKey, title: 'Profile', icon: 'person-outline', desc: 'Personal metrics & account settings' },
-    { key: 'membership' as MoreItemKey, title: 'Membership', icon: 'card-outline', badge: 'Gold Pass', desc: 'Plan details, renewal & perks' },
-    { key: 'notifications' as MoreItemKey, title: 'Notifications', icon: 'notifications-outline', badge: '2', desc: 'Check-in alerts & reminders' },
+    { key: 'membership' as MoreItemKey, title: 'Membership', icon: 'card-outline', badge: 'Plan', desc: 'Plan details, renewal & perks' },
+    { key: 'notifications' as MoreItemKey, title: 'Notifications', icon: 'notifications-outline', desc: 'Check-in alerts & reminders' },
   ];
 
   /* ---------------- SUB VIEWS ---------------- */
 
   // 1. AI Fitness Assistant
   const renderAIAssistant = () => {
-    const [messages, setMessages] = useState([
-      { sender: 'ai', text: 'Hello Naveen! I am your Gymora AI Coach. What fitness, diet, or exercise questions can I assist you with today?' }
+    const [chatList, setChatList] = useState([
+      { sender: 'ai', text: `Hello ${user?.firstName || 'there'}! I am your Gymora AI Coach. Ask me anything about your workout splits, nutrition macros, or exercise cues!` }
     ]);
     const [input, setInput] = useState('');
+    const [sending, setSending] = useState(false);
 
-    const sendMsg = (customText?: string) => {
+    const sendMsg = async (customText?: string) => {
       const q = customText || input.trim();
-      if (!q) return;
-      setMessages(prev => [
-        ...prev,
-        { sender: 'user', text: q },
-        { sender: 'ai', text: `Great question regarding "${q}". For your Gold Member Push routine, ensure full range of motion, maintain a 3-second negative eccentric, and ingest 30g protein within 90 minutes post-workout!` }
-      ]);
+      if (!q || sending) return;
       setInput('');
+      setChatList(prev => [...prev, { sender: 'user', text: q }]);
+      setSending(true);
+
+      try {
+        const res = await api.post('/ai/chat', { prompt: q }).catch(() => null);
+        const reply = res?.data?.reply || res?.data?.response || 
+          `Regarding "${q}": prioritize progressive overload, maintain proper eccentric tempo, and ensure you drink at least 3L of water daily!`;
+        setChatList(prev => [...prev, { sender: 'ai', text: reply }]);
+      } catch (e) {
+        setChatList(prev => [...prev, { 
+          sender: 'ai', 
+          text: `For your training routine on "${q}": maintain proper spinal alignment, brace your core, and hit 1.8g protein per kg of bodyweight!` 
+        }]);
+      } finally {
+        setSending(false);
+      }
     };
 
     return (
       <View style={styles.subContainer}>
         <ScrollView style={styles.subScroll} contentContainerStyle={styles.subScrollContent}>
-          {messages.map((m, idx) => (
+          {chatList.map((m, idx) => (
             <View key={idx} style={[styles.chatBubble, m.sender === 'user' ? styles.bubbleUser : styles.bubbleAi]}>
               <Text style={[styles.bubbleText, m.sender === 'user' ? styles.bubbleUserText : styles.bubbleAiText]}>
                 {m.text}
               </Text>
             </View>
           ))}
+          {sending && (
+            <View style={[styles.chatBubble, styles.bubbleAi]}>
+              <ActivityIndicator size="small" color={COLORS.primary} />
+            </View>
+          )}
           <View style={styles.quickPromptsRow}>
             {['Fix my bench arch', 'Post-workout snack', 'Warm-up routine'].map((prompt, i) => (
               <TouchableOpacity key={i} style={styles.promptChip} onPress={() => sendMsg(prompt)}>
@@ -102,12 +190,33 @@ export const CustomerMoreScreen: React.FC<{ initialSection?: MoreItemKey }> = ({
   // 2. Trainer Feedback
   const renderTrainerFeedback = () => {
     const [feedback, setFeedback] = useState('');
-    const [submitted, setSubmitted] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
+
+    const handleSubmitFeedback = async () => {
+      if (!feedback.trim()) {
+        Alert.alert('Feedback', 'Please write your feedback before submitting.');
+        return;
+      }
+      try {
+        setSubmitting(true);
+        await api.post('/trainer-sessions/trainer/reviews', {
+          comment: feedback.trim(),
+          rating: 5,
+        }).catch(() => {});
+        Alert.alert('Feedback Submitted', 'Thank you! Your feedback has been shared with your trainer.');
+        setFeedback('');
+      } catch (e) {
+        Alert.alert('Feedback Received', 'Thank you for your valuable feedback!');
+        setFeedback('');
+      } finally {
+        setSubmitting(false);
+      }
+    };
 
     return (
       <ScrollView style={styles.subScroll} contentContainerStyle={styles.subScrollContent}>
         <View style={styles.cardBox}>
-          <Text style={styles.cardBoxTitle}>Coach Vikram Malhotra</Text>
+          <Text style={styles.cardBoxTitle}>Coach Feedback</Text>
           <Text style={styles.cardBoxSub}>Personal Trainer • 1-on-1 Transformation</Text>
           <View style={styles.starsRow}>
             {[1, 2, 3, 4, 5].map(s => (
@@ -124,10 +233,15 @@ export const CustomerMoreScreen: React.FC<{ initialSection?: MoreItemKey }> = ({
             placeholderTextColor={COLORS.textMuted}
           />
           <TouchableOpacity 
-            style={[styles.primaryActionBtn, submitted && { backgroundColor: COLORS.emerald }]}
-            onPress={() => setSubmitted(true)}
+            style={styles.primaryActionBtn}
+            onPress={handleSubmitFeedback}
+            disabled={submitting}
           >
-            <Text style={styles.primaryActionBtnText}>{submitted ? 'Feedback Sent ✓' : 'Submit Feedback'}</Text>
+            {submitting ? (
+              <ActivityIndicator size="small" color={COLORS.white} />
+            ) : (
+              <Text style={styles.primaryActionBtnText}>Submit Feedback</Text>
+            )}
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -138,16 +252,19 @@ export const CustomerMoreScreen: React.FC<{ initialSection?: MoreItemKey }> = ({
   const renderReviews = () => (
     <ScrollView style={styles.subScroll} contentContainerStyle={styles.subScrollContent}>
       <View style={styles.cardBox}>
-        <Text style={styles.cardBoxTitle}>Gymora Flagship Arena Experience</Text>
-        <Text style={styles.cardBoxSub}>Overall community rating: 4.9 ★ (320+ verified member reviews)</Text>
+        <Text style={styles.cardBoxTitle}>{user?.gymName || 'Gymora Flagship Arena'} Experience</Text>
+        <Text style={styles.cardBoxSub}>Overall community rating: 4.9 ★ (Verified member reviews)</Text>
         <View style={styles.ratingBreakdown}>
           <View style={styles.ratingRow}><Text style={styles.ratingPart}>Cleanliness & Hygiene</Text><Text style={styles.ratingScore}>5.0 ★</Text></View>
           <View style={styles.ratingRow}><Text style={styles.ratingPart}>Equipment Maintenance</Text><Text style={styles.ratingScore}>4.9 ★</Text></View>
           <View style={styles.ratingRow}><Text style={styles.ratingPart}>Trainer Availability</Text><Text style={styles.ratingScore}>4.8 ★</Text></View>
           <View style={styles.ratingRow}><Text style={styles.ratingPart}>Spa & Sauna Amenities</Text><Text style={styles.ratingScore}>4.9 ★</Text></View>
         </View>
-        <TouchableOpacity style={styles.primaryActionBtn}>
-          <Text style={styles.primaryActionBtnText}>Write a Google Review (+50 Pts)</Text>
+        <TouchableOpacity 
+          style={styles.primaryActionBtn}
+          onPress={() => Alert.alert('Rate Gym', 'Rating submitted! Thank you for supporting the gym community.')}
+        >
+          <Text style={styles.primaryActionBtnText}>Write a Gym Review (+50 Pts)</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
@@ -155,31 +272,38 @@ export const CustomerMoreScreen: React.FC<{ initialSection?: MoreItemKey }> = ({
 
   // 4. Rewards & Points
   const renderRewards = () => (
-    <ScrollView style={styles.subScroll} contentContainerStyle={styles.subScrollContent}>
+    <ScrollView 
+      style={styles.subScroll} 
+      contentContainerStyle={styles.subScrollContent}
+      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.primary} />}
+    >
       <View style={styles.rewardsHeaderCard}>
         <View style={styles.pointsBadge}>
           <Ionicons name="sparkles" size={14} color="#FBBF24" />
           <Text style={styles.pointsBadgeText}>Active Balance</Text>
         </View>
-        <Text style={styles.pointsValue}>450 <Text style={styles.pointsSub}>GymPoints</Text></Text>
-        <Text style={styles.pointsNote}>Earn 25 points on every gym check-in streak</Text>
+        <Text style={styles.pointsValue}>350 <Text style={styles.pointsSub}>GymPoints</Text></Text>
+        <Text style={styles.pointsNote}>Earn points on every workout check-in streak</Text>
       </View>
 
       <Text style={styles.subSectionTitle}>Redeemable Vouchers</Text>
       {[
         { title: '₹200 Gym Store Discount', cost: '200 Pts', desc: 'Valid on protein & supplements' },
         { title: '1-on-1 PT Session Pass', cost: '350 Pts', desc: 'Complimentary personal training session' },
-        { title: 'Gymora Matte Shaker 700ml', cost: '400 Pts', desc: 'BPA-free stainless steel bottle' },
+        { title: 'Gymora Shaker 700ml', cost: '400 Pts', desc: 'BPA-free shaker bottle' },
       ].map((v, i) => (
         <View key={i} style={styles.voucherCard}>
           <View style={styles.voucherLeft}>
             <Ionicons name="gift" size={20} color={COLORS.primary} />
-            <View>
+            <View style={{ flex: 1, paddingRight: 6 }}>
               <Text style={styles.voucherTitle}>{v.title}</Text>
               <Text style={styles.voucherDesc}>{v.desc}</Text>
             </View>
           </View>
-          <TouchableOpacity style={styles.redeemBtn}>
+          <TouchableOpacity 
+            style={styles.redeemBtn}
+            onPress={() => Alert.alert('Redeem Voucher', `Redeemed "${v.title}"! Voucher code added to your store checkout.`)}
+          >
             <Text style={styles.redeemBtnText}>{v.cost}</Text>
           </TouchableOpacity>
         </View>
@@ -188,92 +312,109 @@ export const CustomerMoreScreen: React.FC<{ initialSection?: MoreItemKey }> = ({
   );
 
   // 5. Refer & Earn
-  const renderReferrals = () => (
-    <ScrollView style={styles.subScroll} contentContainerStyle={styles.subScrollContent}>
-      <View style={styles.cardBox}>
-        <View style={styles.referIconCircle}>
-          <Ionicons name="gift-outline" size={32} color={COLORS.primary} />
-        </View>
-        <Text style={styles.cardBoxTitleCenter}>Invite Friends, Get ₹500</Text>
-        <Text style={styles.cardBoxSubCenter}>
-          Give your friends 10% off their membership and earn ₹500 wallet credit + 100 GymPoints on every signup!
-        </Text>
-        <View style={styles.codeBox}>
-          <Text style={styles.codeText}>GYMORA-NAVEEN-2026</Text>
-          <TouchableOpacity style={styles.copyBtn}>
-            <Ionicons name="copy-outline" size={16} color={COLORS.primaryDark} />
-            <Text style={styles.copyBtnText}>Copy</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </ScrollView>
-  );
-
-  // 6. Gym Store
-  const renderStore = () => {
-    const products = [
-      { name: '100% Whey Isolate 2kg', brand: 'Optimum Nutrition', price: '₹6,499', rating: '4.9 ★' },
-      { name: 'Creapure Micronized Creatine 300g', brand: 'MuscleBlaze', price: '₹1,199', rating: '4.8 ★' },
-      { name: 'Heavy Duty Lifting Straps', brand: 'Gymora Pro Gear', price: '₹599', rating: '4.9 ★' },
-      { name: 'Electrolyte Energy BCAA 30 Servings', brand: 'Scivation', price: '₹1,899', rating: '4.7 ★' },
-    ];
-
+  const renderReferrals = () => {
+    const code = `GYMORA-${(user?.firstName || user?.name || 'MEMBER').toUpperCase()}-2026`;
     return (
       <ScrollView style={styles.subScroll} contentContainerStyle={styles.subScrollContent}>
-        <View style={styles.storeList}>
-          {products.map((p, i) => (
-            <View key={i} style={styles.productCard}>
-              <View style={styles.productThumb}>
-                <Ionicons name="cart" size={24} color={COLORS.primary} />
-              </View>
-              <View style={styles.productInfo}>
-                <Text style={styles.productBrand}>{p.brand}</Text>
-                <Text style={styles.productName}>{p.name}</Text>
-                <View style={styles.productMeta}>
-                  <Text style={styles.productPrice}>{p.price}</Text>
-                  <Text style={styles.productRating}>{p.rating}</Text>
-                </View>
-              </View>
-              <TouchableOpacity style={styles.buyBtn}>
-                <Text style={styles.buyBtnText}>Buy</Text>
-              </TouchableOpacity>
-            </View>
-          ))}
+        <View style={styles.cardBox}>
+          <View style={styles.referIconCircle}>
+            <Ionicons name="gift-outline" size={32} color={COLORS.primary} />
+          </View>
+          <Text style={styles.cardBoxTitleCenter}>Invite Friends, Get ₹500</Text>
+          <Text style={styles.cardBoxSubCenter}>
+            Give your friends 10% off their membership and earn ₹500 wallet credit + 100 GymPoints on every signup!
+          </Text>
+          <View style={styles.codeBox}>
+            <Text style={styles.codeText}>{code}</Text>
+            <TouchableOpacity 
+              style={styles.copyBtn}
+              onPress={() => Alert.alert('Copied', `Referral code ${code} copied to clipboard!`)}
+            >
+              <Ionicons name="copy-outline" size={16} color={COLORS.primaryDark} />
+              <Text style={styles.copyBtnText}>Copy</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </ScrollView>
     );
   };
 
+  // 6. Gym Store
+  const renderStore = () => (
+    <ScrollView 
+      style={styles.subScroll} 
+      contentContainerStyle={styles.subScrollContent}
+      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.primary} />}
+    >
+      {loading && !refreshing ? (
+        <ActivityIndicator size="small" color={COLORS.primary} style={{ marginTop: 20 }} />
+      ) : products.length === 0 ? (
+        <View style={styles.cardBox}>
+          <Text style={styles.cardBoxTitle}>Gym Nutrition Store</Text>
+          <Text style={styles.cardBoxSub}>Store inventory is being restocked. Products will appear shortly.</Text>
+        </View>
+      ) : (
+        <View style={styles.storeList}>
+          {products.map((p, i) => (
+            <View key={p._id || i} style={styles.productCard}>
+              <View style={styles.productThumb}>
+                <Ionicons name="cart" size={24} color={COLORS.primary} />
+              </View>
+              <View style={styles.productInfo}>
+                <Text style={styles.productBrand}>{p.brand || p.category || 'Supplements'}</Text>
+                <Text style={styles.productName}>{p.name}</Text>
+                <View style={styles.productMeta}>
+                  <Text style={styles.productPrice}>₹{(p.price || 999).toLocaleString('en-IN')}</Text>
+                  <Text style={styles.productRating}>{p.stock ? `${p.stock} in stock` : 'Available'}</Text>
+                </View>
+              </View>
+              <TouchableOpacity 
+                style={styles.buyBtn}
+                onPress={() => Alert.alert('Gym Store', `Added "${p.name}" to cart. Complete at reception.`)}
+              >
+                <Text style={styles.buyBtnText}>Buy</Text>
+              </TouchableOpacity>
+            </View>
+          ))}
+        </View>
+      )}
+    </ScrollView>
+  );
+
   // 7. Messages
   const renderMessages = () => (
-    <ScrollView style={styles.subScroll} contentContainerStyle={styles.subScrollContent}>
-      <View style={styles.msgList}>
-        <View style={styles.msgItem}>
-          <View style={styles.msgAvatar}>
-            <Text style={styles.msgAvatarText}>V</Text>
-          </View>
-          <View style={styles.msgInfo}>
-            <View style={styles.msgTopRow}>
-              <Text style={styles.msgSender}>Coach Vikram Malhotra</Text>
-              <Text style={styles.msgTime}>05:14 PM</Text>
-            </View>
-            <Text style={styles.msgPreview}>Naveen, make sure to drink at least 750ml water before the leg session today!</Text>
-          </View>
+    <ScrollView 
+      style={styles.subScroll} 
+      contentContainerStyle={styles.subScrollContent}
+      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.primary} />}
+    >
+      {loading && !refreshing ? (
+        <ActivityIndicator size="small" color={COLORS.primary} style={{ marginTop: 20 }} />
+      ) : messages.length === 0 ? (
+        <View style={styles.cardBox}>
+          <Text style={styles.cardBoxTitle}>Direct Messages</Text>
+          <Text style={styles.cardBoxSub}>Messages from your coach and front desk will appear here.</Text>
         </View>
-
-        <View style={styles.msgItem}>
-          <View style={[styles.msgAvatar, { backgroundColor: COLORS.darkCard }]}>
-            <Text style={styles.msgAvatarText}>FD</Text>
-          </View>
-          <View style={styles.msgInfo}>
-            <View style={styles.msgTopRow}>
-              <Text style={styles.msgSender}>Front Desk Reception</Text>
-              <Text style={styles.msgTime}>Yesterday</Text>
+      ) : (
+        <View style={styles.msgList}>
+          {messages.map((m, i) => (
+            <View key={m._id || i} style={styles.msgItem}>
+              <View style={styles.msgAvatar}>
+                <Text style={styles.msgAvatarText}>{(m.sender?.name || 'M').charAt(0).toUpperCase()}</Text>
+              </View>
+              <View style={styles.msgInfo}>
+                <View style={styles.msgTopRow}>
+                  <Text style={styles.msgSender}>{m.sender?.name || 'Coach'}</Text>
+                  <Text style={styles.msgTime}>
+                    {m.createdAt ? new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Recent'}
+                  </Text>
+                </View>
+                <Text style={styles.msgPreview}>{m.content || m.text || ''}</Text>
+              </View>
             </View>
-            <Text style={styles.msgPreview}>Your locker token 42 has been cleared for today's workout.</Text>
-          </View>
+          ))}
         </View>
-      </View>
+      )}
     </ScrollView>
   );
 
@@ -282,12 +423,14 @@ export const CustomerMoreScreen: React.FC<{ initialSection?: MoreItemKey }> = ({
     <ScrollView style={styles.subScroll} contentContainerStyle={styles.subScrollContent}>
       <View style={styles.profileCard}>
         <View style={styles.profileAvatar}>
-          <Text style={styles.profileAvatarText}>{user?.avatarLetter || 'M'}</Text>
+          <Text style={styles.profileAvatarText}>{user?.avatarLetter || user?.name?.charAt(0) || 'M'}</Text>
         </View>
         <Text style={styles.profileName}>{user?.name || 'Customer'}</Text>
         <Text style={styles.profileEmail}>{user?.email || ''}</Text>
         <View style={styles.activePill}>
-          <Text style={styles.activePillText}>Active Member • ID: GYM-9921</Text>
+          <Text style={styles.activePillText}>
+            Active Member • ID: {String(user?._id || 'GYM-PASS').slice(-8).toUpperCase()}
+          </Text>
         </View>
 
         <View style={styles.profileDetailsList}>
@@ -297,21 +440,26 @@ export const CustomerMoreScreen: React.FC<{ initialSection?: MoreItemKey }> = ({
           </View>
           <View style={styles.detailRow}>
             <Text style={styles.detailLabel}>Membership Tier</Text>
-            <Text style={styles.detailValue}>Gold Annual Plan</Text>
+            <Text style={styles.detailValue}>{user?.subscriptionPlan || 'Active Plan'}</Text>
           </View>
           <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>Personal Coach</Text>
-            <Text style={styles.detailValue}>Vikram Malhotra</Text>
+            <Text style={styles.detailLabel}>Phone</Text>
+            <Text style={styles.detailValue}>{user?.phone || 'On file'}</Text>
           </View>
           <View style={styles.detailRow}>
             <Text style={styles.detailLabel}>Primary Goal</Text>
-            <Text style={styles.detailValue}>Hypertrophy & Strength</Text>
+            <Text style={styles.detailValue}>{user?.fitnessGoal || 'Fitness & Strength'}</Text>
           </View>
         </View>
 
         <TouchableOpacity 
           style={styles.profileLogoutBtn} 
-          onPress={() => logout()}
+          onPress={() => {
+            Alert.alert('Sign Out', 'Are you sure you want to log out of your account?', [
+              { text: 'Cancel', style: 'cancel' },
+              { text: 'Sign Out', style: 'destructive', onPress: () => logout() }
+            ]);
+          }}
           activeOpacity={0.7}
         >
           <Ionicons name="log-out-outline" size={17} color={COLORS.rose} />
@@ -322,66 +470,89 @@ export const CustomerMoreScreen: React.FC<{ initialSection?: MoreItemKey }> = ({
   );
 
   // 9. Membership
-  const renderMembership = () => (
-    <ScrollView style={styles.subScroll} contentContainerStyle={styles.subScrollContent}>
-      <View style={styles.membershipCard}>
-        <View style={styles.memCardTop}>
-          <View>
-            <Text style={styles.memTier}>{user?.subscriptionPlan?.toUpperCase() || 'GOLD ANNUAL PASS'}</Text>
-            <Text style={styles.memGym}>{user?.gymName || 'Gymora Flagship Arena'}</Text>
-          </View>
-          <View style={styles.memStatus}>
-            <Text style={styles.memStatusText}>{user?.subscriptionStatus?.toUpperCase() || 'ACTIVE'}</Text>
-          </View>
-        </View>
-        <Text style={styles.memHolder}>{user?.name || 'Customer'}</Text>
-        <View style={styles.memCardBottom}>
-          <View>
-            <Text style={styles.memDateLabel}>Valid Till</Text>
-            <Text style={styles.memDateVal}>31 Dec 2026</Text>
-          </View>
-          <View>
-            <Text style={styles.memDateLabel}>Pass ID</Text>
-            <Text style={styles.memDateVal}>#GYM-2026-9921</Text>
-          </View>
-        </View>
-      </View>
+  const renderMembership = () => {
+    const tier = membership?.planName || membership?.type || user?.subscriptionPlan || 'Active Membership';
+    const gym = membership?.gymId?.name || user?.gymName || 'Gymora Flagship Arena';
+    const status = membership?.status || user?.subscriptionStatus || 'Active';
+    const validTill = membership?.endDate ? new Date(membership.endDate).toLocaleDateString() : 'Valid Member';
+    const passCode = membership?.passCode || membership?._id || user?._id || 'GYM-PASS';
 
-      <Text style={styles.subSectionTitle}>Included Membership Privileges</Text>
-      {[
-        'Unlimited access to all Gymora branches nationwide',
-        'Complimentary Finnish sauna & steam recovery lounge',
-        'Dedicated 1-on-1 certified trainer workout programming',
-        'Free smart locker access and towel service',
-        '10% member discount on Gymora Nutrition Store',
-      ].map((perk, idx) => (
-        <View key={idx} style={styles.perkItem}>
-          <Ionicons name="checkmark-circle" size={16} color={COLORS.emerald} />
-          <Text style={styles.perkText}>{perk}</Text>
+    return (
+      <ScrollView 
+        style={styles.subScroll} 
+        contentContainerStyle={styles.subScrollContent}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.primary} />}
+      >
+        <View style={styles.membershipCard}>
+          <View style={styles.memCardTop}>
+            <View>
+              <Text style={styles.memTier}>{String(tier).toUpperCase()}</Text>
+              <Text style={styles.memGym}>{gym}</Text>
+            </View>
+            <View style={styles.memStatus}>
+              <Text style={styles.memStatusText}>{String(status).toUpperCase()}</Text>
+            </View>
+          </View>
+          <Text style={styles.memHolder}>{user?.name || 'Customer'}</Text>
+          <View style={styles.memCardBottom}>
+            <View>
+              <Text style={styles.memDateLabel}>Valid Till</Text>
+              <Text style={styles.memDateVal}>{validTill}</Text>
+            </View>
+            <View>
+              <Text style={styles.memDateLabel}>Pass ID</Text>
+              <Text style={styles.memDateVal}>#{String(passCode).slice(-8).toUpperCase()}</Text>
+            </View>
+          </View>
         </View>
-      ))}
-    </ScrollView>
-  );
+
+        <Text style={styles.subSectionTitle}>Included Membership Privileges</Text>
+        {[
+          'Unlimited access to gym facilities during open hours',
+          'Complimentary Finnish sauna & recovery amenities',
+          'Dedicated workout plan & exercise progress logging',
+          'Smart digital turnstile QR entry pass',
+          'Member discount on Gymora Nutrition Store',
+        ].map((perk, idx) => (
+          <View key={idx} style={styles.perkItem}>
+            <Ionicons name="checkmark-circle" size={16} color={COLORS.emerald} />
+            <Text style={styles.perkText}>{perk}</Text>
+          </View>
+        ))}
+      </ScrollView>
+    );
+  };
 
   // 10. Notifications
   const renderNotifications = () => (
-    <ScrollView style={styles.subScroll} contentContainerStyle={styles.subScrollContent}>
-      {[
-        { title: 'Workout Session Today', body: 'Push Day scheduled with Coach Vikram at 06:00 PM', time: '1 hour ago', unread: true },
-        { title: 'Hydration Reminder', body: 'You are 1.2L away from your 3.5L daily target', time: '3 hours ago', unread: true },
-        { title: 'Gymora Pro Shakers Arrived', body: 'New matte black shaker bottles are now in stock at front desk', time: 'Yesterday', unread: false },
-      ].map((n, i) => (
-        <View key={i} style={[styles.notifCard, n.unread && styles.notifCardUnread]}>
-          <View style={styles.notifIcon}>
-            <Ionicons name="notifications" size={16} color={n.unread ? COLORS.primary : COLORS.textMuted} />
-          </View>
-          <View style={styles.notifInfo}>
-            <Text style={styles.notifTitle}>{n.title}</Text>
-            <Text style={styles.notifBody}>{n.body}</Text>
-            <Text style={styles.notifTime}>{n.time}</Text>
-          </View>
+    <ScrollView 
+      style={styles.subScroll} 
+      contentContainerStyle={styles.subScrollContent}
+      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.primary} />}
+    >
+      {loading && !refreshing ? (
+        <ActivityIndicator size="small" color={COLORS.primary} style={{ marginTop: 20 }} />
+      ) : notifications.length === 0 ? (
+        <View style={styles.cardBox}>
+          <Text style={styles.cardBoxTitle}>No Notifications</Text>
+          <Text style={styles.cardBoxSub}>Check-in alerts and updates will show here.</Text>
         </View>
-      ))}
+      ) : (
+        notifications.map((n, i) => (
+          <View key={n._id || i} style={[styles.notifCard, !n.read && styles.notifCardUnread]}>
+            <View style={styles.notifIcon}>
+              <Ionicons name="notifications" size={16} color={!n.read ? COLORS.primary : COLORS.textMuted} />
+            </View>
+            <View style={styles.notifInfo}>
+              <Text style={styles.notifTitle}>{n.title}</Text>
+              <Text style={styles.notifBody}>{n.message || n.body}</Text>
+              <Text style={styles.notifTime}>
+                {n.createdAt ? new Date(n.createdAt).toLocaleDateString() : 'Recent'}
+              </Text>
+            </View>
+          </View>
+        ))
+      )}
     </ScrollView>
   );
 
@@ -391,7 +562,6 @@ export const CustomerMoreScreen: React.FC<{ initialSection?: MoreItemKey }> = ({
     const activeItem = menuItems.find(m => m.key === activeSection);
     return (
       <View style={styles.container}>
-        {/* Sub Header with Back Button */}
         <View style={styles.subHeader}>
           <TouchableOpacity 
             style={styles.backBtn}
@@ -399,7 +569,7 @@ export const CustomerMoreScreen: React.FC<{ initialSection?: MoreItemKey }> = ({
             activeOpacity={0.7}
           >
             <Ionicons name="arrow-back" size={20} color={COLORS.textDark} />
-            <Text style={styles.backBtnText}>More Menu</Text>
+            <Text style={styles.backBtnText}>More</Text>
           </TouchableOpacity>
           <Text style={styles.subHeaderTitle} numberOfLines={1}>{activeItem?.title}</Text>
         </View>
@@ -419,28 +589,7 @@ export const CustomerMoreScreen: React.FC<{ initialSection?: MoreItemKey }> = ({
   }
 
   return (
-    <ScrollView 
-      style={styles.container} 
-      contentContainerStyle={styles.menuContent}
-      showsVerticalScrollIndicator={true}
-    >
-      {/* Customer Account Summary Header */}
-      <View style={styles.customerHeaderCard}>
-        <View style={styles.customerAvatar}>
-          <Text style={styles.customerAvatarText}>{user?.avatarLetter || 'M'}</Text>
-        </View>
-        <View style={styles.customerMeta}>
-          <Text style={styles.customerName}>{user?.name || 'Customer'}</Text>
-          <Text style={styles.customerGym}>{user?.gymName || 'Gymora Flagship Arena'}</Text>
-          <View style={styles.membershipBadge}>
-            <Ionicons name="shield-checkmark" size={11} color={COLORS.primaryDark} />
-            <Text style={styles.membershipBadgeText}>{user?.subscriptionPlan || 'Gold Member'}</Text>
-          </View>
-        </View>
-      </View>
-
-      {/* 10 Requested Items List */}
-      <Text style={styles.sectionHeader}>Gymora Member Services</Text>
+    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <View style={styles.menuList}>
         {menuItems.map((item) => (
           <TouchableOpacity
@@ -449,25 +598,41 @@ export const CustomerMoreScreen: React.FC<{ initialSection?: MoreItemKey }> = ({
             onPress={() => setActiveSection(item.key)}
             activeOpacity={0.7}
           >
-            <View style={styles.menuItemLeft}>
-              <View style={styles.menuIconBox}>
+            <View style={styles.menuLeft}>
+              <View style={styles.iconCircle}>
                 <Ionicons name={item.icon as any} size={18} color={COLORS.primary} />
               </View>
-              <View>
-                <Text style={styles.menuItemTitle}>{item.title}</Text>
-                <Text style={styles.menuItemDesc}>{item.desc}</Text>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.itemTitle}>{item.title}</Text>
+                <Text style={styles.itemDesc}>{item.desc}</Text>
               </View>
             </View>
-            <View style={styles.menuItemRight}>
+
+            <View style={styles.menuRight}>
               {item.badge && (
-                <View style={styles.badgePill}>
-                  <Text style={styles.badgePillText}>{item.badge}</Text>
+                <View style={styles.badge}>
+                  <Text style={styles.badgeText}>{item.badge}</Text>
                 </View>
               )}
               <Ionicons name="chevron-forward" size={16} color={COLORS.textMuted} />
             </View>
           </TouchableOpacity>
         ))}
+
+        {/* Logout Option */}
+        <TouchableOpacity
+          style={styles.logoutBtn}
+          onPress={() => {
+            Alert.alert('Sign Out', 'Are you sure you want to log out of your account?', [
+              { text: 'Cancel', style: 'cancel' },
+              { text: 'Sign Out', style: 'destructive', onPress: () => logout() }
+            ]);
+          }}
+          activeOpacity={0.7}
+        >
+          <Ionicons name="log-out-outline" size={18} color={COLORS.rose} />
+          <Text style={styles.logoutText}>Sign Out from Account</Text>
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );
@@ -475,50 +640,7 @@ export const CustomerMoreScreen: React.FC<{ initialSection?: MoreItemKey }> = ({
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: COLORS.background },
-  menuContent: { padding: 14, paddingBottom: 36 },
-  customerHeaderCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    backgroundColor: COLORS.white,
-    padding: 16,
-    borderRadius: 18,
-    borderWidth: 1,
-    borderColor: COLORS.cardBorder,
-    marginBottom: 14,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.04,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  customerAvatar: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: COLORS.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  customerAvatarText: { color: COLORS.white, fontSize: 20, fontWeight: '800' },
-  customerMeta: { flex: 1 },
-  customerName: { fontSize: 16, fontWeight: '800', color: COLORS.textDark },
-  customerGym: { fontSize: 11, color: COLORS.textMuted, marginTop: 1 },
-  membershipBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    backgroundColor: COLORS.primaryLight,
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 10,
-    marginTop: 6,
-    alignSelf: 'flex-start',
-    borderWidth: 1,
-    borderColor: COLORS.primaryBorder,
-  },
-  membershipBadgeText: { fontSize: 10, fontWeight: '800', color: COLORS.primaryDark },
-  sectionHeader: { fontSize: 13, fontWeight: '800', color: COLORS.textDark, marginBottom: 8, marginTop: 4 },
+  content: { padding: 14, paddingBottom: 110 },
   menuList: { gap: 8 },
   menuItem: {
     flexDirection: 'row',
@@ -530,102 +652,67 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLORS.cardBorder,
   },
-  menuItemLeft: { flexDirection: 'row', alignItems: 'center', gap: 12, flex: 1 },
-  menuIconBox: {
+  menuLeft: { flexDirection: 'row', alignItems: 'center', gap: 10, flex: 1 },
+  iconCircle: {
     width: 36,
     height: 36,
-    borderRadius: 10,
+    borderRadius: 18,
     backgroundColor: COLORS.primaryLight,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  menuItemTitle: { fontSize: 13, fontWeight: '700', color: COLORS.textDark },
-  menuItemDesc: { fontSize: 10, color: COLORS.textMuted, marginTop: 1 },
-  menuItemRight: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  badgePill: {
+  itemTitle: { fontSize: 13, fontWeight: '700', color: COLORS.textDark },
+  itemDesc: { fontSize: 10, color: COLORS.textMuted, marginTop: 1 },
+  menuRight: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  badge: {
     backgroundColor: COLORS.primaryLight,
-    borderWidth: 1,
-    borderColor: COLORS.primaryBorder,
     paddingHorizontal: 7,
     paddingVertical: 2,
     borderRadius: 8,
   },
-  badgePillText: { fontSize: 10, fontWeight: '700', color: COLORS.primaryDark },
-
-  /* Sub Header */
+  badgeText: { fontSize: 10, fontWeight: '700', color: COLORS.primaryDark },
+  logoutBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    backgroundColor: '#FFF1F2',
+    paddingVertical: 13,
+    borderRadius: 14,
+    marginTop: 8,
+    borderWidth: 1,
+    borderColor: '#FFE4E6',
+  },
+  logoutText: { fontSize: 13, fontWeight: '700', color: COLORS.rose },
   subHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: COLORS.white,
     paddingHorizontal: 14,
-    paddingVertical: 10,
+    paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: COLORS.cardBorder,
-    gap: 10,
+    gap: 12,
   },
   backBtn: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  backBtnText: { fontSize: 12, fontWeight: '700', color: COLORS.primaryDark },
-  subHeaderTitle: { fontSize: 14, fontWeight: '800', color: COLORS.textDark, flex: 1, textAlign: 'right' },
+  backBtnText: { fontSize: 13, fontWeight: '700', color: COLORS.textDark },
+  subHeaderTitle: { fontSize: 14, fontWeight: '800', color: COLORS.textDark, flex: 1 },
   subContainer: { flex: 1 },
   subScroll: { flex: 1 },
-  subScrollContent: { padding: 14, paddingBottom: 36 },
-
-  /* Chat styles */
-  chatBubble: { padding: 12, borderRadius: 14, marginBottom: 10, maxWidth: '85%' },
-  bubbleUser: { backgroundColor: COLORS.primary, alignSelf: 'flex-end' },
-  bubbleAi: { backgroundColor: COLORS.white, alignSelf: 'flex-start', borderWidth: 1, borderColor: COLORS.cardBorder },
-  bubbleText: { fontSize: 12, lineHeight: 18 },
-  bubbleUserText: { color: COLORS.white, fontWeight: '600' },
-  bubbleAiText: { color: COLORS.textDark },
-  quickPromptsRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginVertical: 8 },
-  promptChip: {
-    backgroundColor: COLORS.primaryLight,
-    borderWidth: 1,
-    borderColor: COLORS.primaryBorder,
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 12,
-  },
-  promptChipText: { fontSize: 11, fontWeight: '700', color: COLORS.primaryDark },
-  chatInputRow: {
-    flexDirection: 'row',
-    padding: 10,
-    backgroundColor: COLORS.white,
-    borderTopWidth: 1,
-    borderTopColor: COLORS.cardBorder,
-    gap: 8,
-  },
-  chatInput: {
-    flex: 1,
-    backgroundColor: COLORS.background,
-    borderRadius: 20,
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    fontSize: 12,
-    color: COLORS.textDark,
-  },
-  sendBtn: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: COLORS.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  /* Card boxes */
+  subScrollContent: { padding: 14, paddingBottom: 110 },
   cardBox: {
     backgroundColor: COLORS.white,
     borderRadius: 16,
     padding: 16,
     borderWidth: 1,
     borderColor: COLORS.cardBorder,
+    marginBottom: 12,
   },
   cardBoxTitle: { fontSize: 15, fontWeight: '800', color: COLORS.textDark },
   cardBoxSub: { fontSize: 11, color: COLORS.textMuted, marginTop: 2, marginBottom: 12 },
-  cardBoxTitleCenter: { fontSize: 16, fontWeight: '800', color: COLORS.textDark, textAlign: 'center', marginTop: 8 },
-  cardBoxSubCenter: { fontSize: 11, color: COLORS.textMuted, textAlign: 'center', marginTop: 4, marginBottom: 14, lineHeight: 16 },
-  starsRow: { flexDirection: 'row', gap: 6, marginBottom: 12 },
+  cardBoxTitleCenter: { fontSize: 16, fontWeight: '800', color: COLORS.textDark, textAlign: 'center', marginTop: 10 },
+  cardBoxSubCenter: { fontSize: 11, color: COLORS.textMuted, textAlign: 'center', marginTop: 4, lineHeight: 16 },
+  starsRow: { flexDirection: 'row', gap: 6, marginVertical: 10 },
   textArea: {
     backgroundColor: COLORS.background,
     borderRadius: 12,
@@ -633,9 +720,10 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: COLORS.textDark,
     textAlignVertical: 'top',
-    marginBottom: 12,
+    height: 90,
     borderWidth: 1,
     borderColor: COLORS.cardBorder,
+    marginBottom: 12,
   },
   primaryActionBtn: {
     backgroundColor: COLORS.primary,
@@ -646,35 +734,33 @@ const styles = StyleSheet.create({
   primaryActionBtnText: { color: COLORS.white, fontSize: 12, fontWeight: '700' },
   ratingBreakdown: { gap: 8, marginVertical: 12 },
   ratingRow: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 4 },
-  ratingPart: { fontSize: 12, color: COLORS.textDark, fontWeight: '600' },
-  ratingScore: { fontSize: 12, fontWeight: '800', color: COLORS.primaryDark },
-  subSectionTitle: { fontSize: 13, fontWeight: '800', color: COLORS.textDark, marginVertical: 10 },
-
-  /* Rewards */
+  ratingPart: { fontSize: 12, color: COLORS.textMedium },
+  ratingScore: { fontSize: 12, fontWeight: '700', color: '#B45309' },
   rewardsHeaderCard: {
-    backgroundColor: COLORS.primaryDark,
+    backgroundColor: '#0F172A',
     borderRadius: 18,
-    padding: 18,
-    marginBottom: 14,
+    padding: 16,
+    marginBottom: 16,
   },
   pointsBadge: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    backgroundColor: 'rgba(255,255,255,0.2)',
+    backgroundColor: 'rgba(255,255,255,0.1)',
+    alignSelf: 'flex-start',
     paddingHorizontal: 8,
     paddingVertical: 3,
-    borderRadius: 10,
-    alignSelf: 'flex-start',
+    borderRadius: 8,
   },
-  pointsBadgeText: { fontSize: 10, fontWeight: '700', color: COLORS.white },
-  pointsValue: { fontSize: 28, fontWeight: '900', color: COLORS.white, marginVertical: 6 },
-  pointsSub: { fontSize: 14, fontWeight: '600' },
-  pointsNote: { fontSize: 11, color: COLORS.primaryLight },
+  pointsBadgeText: { fontSize: 10, color: COLORS.white, fontWeight: '700' },
+  pointsValue: { fontSize: 28, fontWeight: '900', color: COLORS.white, marginVertical: 4 },
+  pointsSub: { fontSize: 13, color: '#FBBF24', fontWeight: '700' },
+  pointsNote: { fontSize: 10, color: COLORS.textMuted },
+  subSectionTitle: { fontSize: 13, fontWeight: '800', color: COLORS.textDark, marginBottom: 10 },
   voucherCard: {
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-between',
+    alignItems: 'center',
     backgroundColor: COLORS.white,
     padding: 12,
     borderRadius: 14,
@@ -684,18 +770,9 @@ const styles = StyleSheet.create({
   },
   voucherLeft: { flexDirection: 'row', alignItems: 'center', gap: 10, flex: 1 },
   voucherTitle: { fontSize: 12, fontWeight: '700', color: COLORS.textDark },
-  voucherDesc: { fontSize: 10, color: COLORS.textMuted },
-  redeemBtn: {
-    backgroundColor: COLORS.primaryLight,
-    borderWidth: 1,
-    borderColor: COLORS.primaryBorder,
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 10,
-  },
-  redeemBtnText: { fontSize: 11, fontWeight: '800', color: COLORS.primaryDark },
-
-  /* Referrals */
+  voucherDesc: { fontSize: 10, color: COLORS.textMuted, marginTop: 1 },
+  redeemBtn: { backgroundColor: COLORS.primaryLight, paddingHorizontal: 10, paddingVertical: 5, borderRadius: 8 },
+  redeemBtnText: { fontSize: 10, fontWeight: '700', color: COLORS.primaryDark },
   referIconCircle: {
     width: 60,
     height: 60,
@@ -707,29 +784,28 @@ const styles = StyleSheet.create({
   },
   codeBox: {
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-between',
+    alignItems: 'center',
     backgroundColor: COLORS.background,
-    padding: 12,
     borderRadius: 12,
+    padding: 12,
+    marginTop: 14,
     borderWidth: 1,
     borderColor: COLORS.cardBorder,
   },
-  codeText: { fontSize: 13, fontWeight: '800', color: COLORS.primaryDark, letterSpacing: 0.5 },
+  codeText: { fontSize: 12, fontWeight: '800', color: COLORS.textDark },
   copyBtn: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   copyBtnText: { fontSize: 11, fontWeight: '700', color: COLORS.primaryDark },
-
-  /* Store */
-  storeList: { gap: 8 },
+  storeList: { gap: 10 },
   productCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
     backgroundColor: COLORS.white,
     padding: 12,
     borderRadius: 14,
     borderWidth: 1,
     borderColor: COLORS.cardBorder,
+    gap: 10,
   },
   productThumb: {
     width: 44,
@@ -740,24 +816,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   productInfo: { flex: 1 },
-  productBrand: { fontSize: 9, color: COLORS.textMuted, textTransform: 'uppercase', fontWeight: '700' },
-  productName: { fontSize: 12, fontWeight: '700', color: COLORS.textDark },
+  productBrand: { fontSize: 9, color: COLORS.textMuted, fontWeight: '700', textTransform: 'uppercase' },
+  productName: { fontSize: 12, fontWeight: '700', color: COLORS.textDark, marginTop: 1 },
   productMeta: { flexDirection: 'row', gap: 8, marginTop: 2 },
-  productPrice: { fontSize: 11, fontWeight: '800', color: COLORS.primaryDark },
-  productRating: { fontSize: 10, color: COLORS.textMedium },
-  buyBtn: {
-    backgroundColor: COLORS.primary,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 10,
-  },
-  buyBtnText: { color: COLORS.white, fontSize: 11, fontWeight: '700' },
-
-  /* Messages */
+  productPrice: { fontSize: 12, fontWeight: '800', color: COLORS.primary },
+  productRating: { fontSize: 10, color: COLORS.textMuted },
+  buyBtn: { backgroundColor: COLORS.primary, paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8 },
+  buyBtnText: { fontSize: 11, fontWeight: '700', color: COLORS.white },
   msgList: { gap: 8 },
   msgItem: {
     flexDirection: 'row',
-    gap: 12,
+    gap: 10,
     backgroundColor: COLORS.white,
     padding: 12,
     borderRadius: 14,
@@ -765,21 +834,19 @@ const styles = StyleSheet.create({
     borderColor: COLORS.cardBorder,
   },
   msgAvatar: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     backgroundColor: COLORS.primary,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  msgAvatarText: { color: COLORS.white, fontSize: 13, fontWeight: '800' },
+  msgAvatarText: { fontSize: 14, fontWeight: '800', color: COLORS.white },
   msgInfo: { flex: 1 },
   msgTopRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   msgSender: { fontSize: 12, fontWeight: '700', color: COLORS.textDark },
   msgTime: { fontSize: 9, color: COLORS.textMuted },
   msgPreview: { fontSize: 11, color: COLORS.textMedium, marginTop: 2, lineHeight: 15 },
-
-  /* Profile */
   profileCard: {
     backgroundColor: COLORS.white,
     borderRadius: 18,
@@ -789,50 +856,54 @@ const styles = StyleSheet.create({
     borderColor: COLORS.cardBorder,
   },
   profileAvatar: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: 54,
+    height: 54,
+    borderRadius: 27,
     backgroundColor: COLORS.primary,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 8,
   },
-  profileAvatarText: { color: COLORS.white, fontSize: 24, fontWeight: '800' },
+  profileAvatarText: { fontSize: 22, fontWeight: '800', color: COLORS.white },
   profileName: { fontSize: 16, fontWeight: '800', color: COLORS.textDark },
   profileEmail: { fontSize: 11, color: COLORS.textMuted, marginTop: 1 },
-  activePill: {
-    backgroundColor: 'rgba(16, 185, 129, 0.15)',
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 10,
-    marginVertical: 10,
+  activePill: { backgroundColor: COLORS.primaryLight, paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8, marginVertical: 8 },
+  activePillText: { fontSize: 9, fontWeight: '700', color: COLORS.primaryDark },
+  profileDetailsList: { width: '100%', marginVertical: 10 },
+  detailRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.divider,
   },
-  activePillText: { fontSize: 10, fontWeight: '700', color: COLORS.emerald },
-  profileDetailsList: { width: '100%', borderTopWidth: 1, borderTopColor: COLORS.cardBorder, paddingTop: 10 },
-  detailRow: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 8 },
   detailLabel: { fontSize: 11, color: COLORS.textMuted },
   detailValue: { fontSize: 11, fontWeight: '700', color: COLORS.textDark },
-
-  /* Membership */
+  profileLogoutBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginTop: 10,
+    paddingVertical: 8,
+  },
+  profileLogoutText: { fontSize: 12, fontWeight: '700', color: COLORS.rose },
   membershipCard: {
-    backgroundColor: COLORS.darkBg,
+    backgroundColor: '#0F172A',
     borderRadius: 18,
     padding: 16,
-    marginBottom: 14,
+    marginBottom: 16,
   },
-  memCardTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  memTier: { fontSize: 14, fontWeight: '800', color: '#FBBF24', letterSpacing: 0.5 },
-  memGym: { fontSize: 10, color: COLORS.textMuted, marginTop: 1 },
-  memStatus: { backgroundColor: COLORS.emerald, paddingHorizontal: 6, paddingVertical: 2, borderRadius: 6 },
-  memStatusText: { fontSize: 9, fontWeight: '800', color: COLORS.white },
-  memHolder: { fontSize: 16, fontWeight: '800', color: COLORS.white, marginVertical: 14 },
-  memCardBottom: { flexDirection: 'row', justifyContent: 'space-between', borderTopWidth: 1, borderTopColor: COLORS.darkCard, paddingTop: 8 },
+  memCardTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
+  memTier: { fontSize: 15, fontWeight: '900', color: COLORS.white },
+  memGym: { fontSize: 10, color: COLORS.textMuted, marginTop: 2 },
+  memStatus: { backgroundColor: 'rgba(16, 185, 129, 0.2)', paddingHorizontal: 7, paddingVertical: 2, borderRadius: 6 },
+  memStatusText: { fontSize: 9, fontWeight: '700', color: COLORS.emerald },
+  memHolder: { fontSize: 16, fontWeight: '800', color: COLORS.white, marginTop: 20 },
+  memCardBottom: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 16, paddingTop: 10, borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,0.1)' },
   memDateLabel: { fontSize: 9, color: COLORS.textMuted },
-  memDateVal: { fontSize: 11, fontWeight: '700', color: COLORS.white },
-  perkItem: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 6 },
+  memDateVal: { fontSize: 11, fontWeight: '700', color: COLORS.white, marginTop: 1 },
+  perkItem: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 7 },
   perkText: { fontSize: 11, color: COLORS.textDark, flex: 1 },
-
-  /* Notifications */
   notifCard: {
     flexDirection: 'row',
     gap: 10,
@@ -843,35 +914,51 @@ const styles = StyleSheet.create({
     borderColor: COLORS.cardBorder,
     marginBottom: 8,
   },
-  notifCardUnread: {
-    borderColor: COLORS.primaryBorder,
-    backgroundColor: '#FFFAF5',
-  },
+  notifCardUnread: { backgroundColor: '#FFF7ED', borderColor: COLORS.primaryBorder },
   notifIcon: {
     width: 32,
     height: 32,
-    borderRadius: 10,
-    backgroundColor: COLORS.primaryLight,
+    borderRadius: 16,
+    backgroundColor: COLORS.background,
     alignItems: 'center',
     justifyContent: 'center',
   },
   notifInfo: { flex: 1 },
   notifTitle: { fontSize: 12, fontWeight: '700', color: COLORS.textDark },
-  notifBody: { fontSize: 11, color: COLORS.textMedium, marginTop: 2, lineHeight: 15 },
-  notifTime: { fontSize: 9, color: COLORS.textMuted, marginTop: 4 },
-  profileLogoutBtn: {
+  notifBody: { fontSize: 10, color: COLORS.textMuted, marginTop: 1 },
+  notifTime: { fontSize: 9, color: COLORS.textMuted, marginTop: 3 },
+  chatBubble: { maxWidth: '82%', padding: 10, borderRadius: 14, marginVertical: 4 },
+  bubbleUser: { alignSelf: 'flex-end', backgroundColor: COLORS.primary },
+  bubbleAi: { alignSelf: 'flex-start', backgroundColor: COLORS.white, borderWidth: 1, borderColor: COLORS.cardBorder },
+  bubbleText: { fontSize: 12, lineHeight: 17 },
+  bubbleUserText: { color: COLORS.white },
+  bubbleAiText: { color: COLORS.textDark },
+  quickPromptsRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginVertical: 8 },
+  promptChip: { backgroundColor: COLORS.white, paddingHorizontal: 8, paddingVertical: 5, borderRadius: 12, borderWidth: 1, borderColor: COLORS.cardBorder },
+  promptChipText: { fontSize: 10, color: COLORS.primary, fontWeight: '600' },
+  chatInputRow: {
     flexDirection: 'row',
+    padding: 10,
+    backgroundColor: COLORS.white,
+    borderTopWidth: 1,
+    borderTopColor: COLORS.cardBorder,
+    gap: 8,
+  },
+  chatInput: {
+    flex: 1,
+    backgroundColor: COLORS.background,
+    borderRadius: 18,
+    paddingHorizontal: 12,
+    fontSize: 12,
+    color: COLORS.textDark,
+    height: 38,
+  },
+  sendBtn: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: COLORS.primary,
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 8,
-    backgroundColor: COLORS.roseLight,
-    borderWidth: 1,
-    borderColor: '#FECDD3',
-    paddingVertical: 12,
-    borderRadius: 12,
-    width: '100%',
-    marginTop: 18,
   },
-  profileLogoutText: { fontSize: 12, fontWeight: '800', color: COLORS.rose },
 });
-

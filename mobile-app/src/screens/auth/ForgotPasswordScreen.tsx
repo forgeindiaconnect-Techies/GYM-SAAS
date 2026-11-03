@@ -16,7 +16,7 @@ import { useAuth, UserRole, mapMobileRoleToHuman } from '../../context/AuthConte
 
 export interface ForgotPasswordScreenProps {
   initialEmail?: string;
-  role: UserRole;
+  role?: UserRole;
   onBackToLogin: (resetSuccessEmail?: string) => void;
 }
 
@@ -26,6 +26,7 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
   onBackToLogin,
 }) => {
   const { requestPasswordReset, confirmPasswordReset } = useAuth();
+  const roleDisplayName = role ? mapMobileRoleToHuman(role) : 'Gymora';
 
   // Reset steps: 'request' (enter email) -> 'verify' (enter OTP & new password) -> 'success'
   const [step, setStep] = useState<'request' | 'verify' | 'success'>('request');
@@ -167,7 +168,7 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
           </View>
           <Text style={styles.brandName}>Gymora</Text>
           <View style={styles.roleTag}>
-            <Text style={styles.roleTagText}>{mapMobileRoleToHuman(role)} Portal</Text>
+            <Text style={styles.roleTagText}>{roleDisplayName} Account</Text>
           </View>
         </View>
 
@@ -177,7 +178,7 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
             <>
               <Text style={styles.cardTitle}>Reset Password</Text>
               <Text style={styles.cardSub}>
-                Enter your {mapMobileRoleToHuman(role)} registered email address to receive password-reset instructions.
+                Enter your {roleDisplayName} registered email address to receive password-reset instructions.
               </Text>
 
               {/* Status Message */}
@@ -399,7 +400,7 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
               </View>
               <Text style={styles.successTitle}>Password Reset Complete</Text>
               <Text style={styles.successSub}>
-                Your {mapMobileRoleToHuman(role)} account password has been updated securely. You can now log in using your new password.
+                Your {roleDisplayName} account password has been updated securely. You can now log in using your new password.
               </Text>
 
               <TouchableOpacity
@@ -420,7 +421,7 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
               activeOpacity={0.7}
             >
               <Ionicons name="arrow-back" size={15} color={COLORS.primary} />
-              <Text style={styles.backToLoginText}>Back to {mapMobileRoleToHuman(role)} Login</Text>
+              <Text style={styles.backToLoginText}>Back to Login</Text>
             </TouchableOpacity>
           )}
         </View>

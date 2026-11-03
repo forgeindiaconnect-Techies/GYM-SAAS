@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, SafeAreaView, Platform, StatusBar as RNStatusBar, ActivityIndicator, Text } from 'react-native';
+import { View, StyleSheet, SafeAreaView, Platform, StatusBar as RNStatusBar, ActivityIndicator, Text, BackHandler } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 
 // Context & Theme
@@ -35,14 +35,71 @@ import { CustomerMoreScreen } from './src/screens/customer/CustomerMoreScreen';
 const MainAppContent = () => {
   const { isAuthenticated, activeRole, isLoading } = useAuth();
   const [activeTab, setActiveTab] = useState('home');
+  const [activeSub, setActiveSub] = useState(null);
+  const [navHistory, setNavHistory] = useState([]);
   const [customerQrVisible, setCustomerQrVisible] = useState(false);
 
   // Set default tab based on authenticated role
   useEffect(() => {
-    if (activeRole === 'GYM_OWNER') setActiveTab('overview');
-    else if (activeRole === 'TRAINER') setActiveTab('home');
-    else if (activeRole === 'CUSTOMER') setActiveTab('home');
+    if (activeRole === 'GYM_OWNER') {
+      setActiveTab('overview');
+      setActiveSub(null);
+    } else if (activeRole === 'TRAINER') {
+      setActiveTab('home');
+      setActiveSub(null);
+    } else if (activeRole === 'CUSTOMER') {
+      setActiveTab('home');
+      setActiveSub(null);
+    }
+    setNavHistory([]);
   }, [activeRole]);
+
+  // Navigate helper with history stack
+  const navigateTo = (newTab, newSub = null) => {
+    if (newTab === activeTab && newSub === activeSub) return;
+    setNavHistory(prev => [...prev.slice(-20), { tab: activeTab, sub: activeSub }]);
+    setActiveTab(newTab);
+    setActiveSub(newSub);
+  };
+
+  // Android hardware Back button handling
+  useEffect(() => {
+    const onBackPress = () => {
+      // 1. Close QR Pass modal if open
+      if (customerQrVisible) {
+        setCustomerQrVisible(false);
+        return true;
+      }
+
+      // 2. Clear sub-section if active
+      if (activeSub) {
+        setActiveSub(null);
+        return true;
+      }
+
+      // 3. Pop history stack if not empty
+      if (navHistory.length > 0) {
+        const last = navHistory[navHistory.length - 1];
+        setNavHistory(prev => prev.slice(0, -1));
+        setActiveTab(last.tab);
+        setActiveSub(last.sub || null);
+        return true;
+      }
+
+      // 4. Return to root tab if not already there
+      const defaultTab = activeRole === 'GYM_OWNER' ? 'overview' : 'home';
+      if (activeTab !== defaultTab) {
+        setActiveTab(defaultTab);
+        setActiveSub(null);
+        return true;
+      }
+
+      return false; // Exit app
+    };
+
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', onBackPress);
+    return () => backHandler.remove();
+  }, [customerQrVisible, activeSub, navHistory, activeTab, activeRole]);
 
   // Loading splash state
   if (isLoading) {
@@ -64,31 +121,57 @@ const MainAppContent = () => {
     );
   }
 
-  const handleCustomerNavigate = (tab, sub) => {
-    if (tab === 'today' || tab === 'home' || tab === 'dashboard') setActiveTab('home');
-    else if (tab === 'workouts' || tab === 'trainers' || tab === 'training') setActiveTab('training');
-    else if (tab === 'diet') setActiveTab('diet');
-    else if (tab === 'progress') setActiveTab('progress');
-    else if (tab === 'profile' || tab === 'more') setActiveTab('more');
-    else setActiveTab(tab);
+  const handleCustomerNavigate = (tab, sub = null) => {
+    if (tab === 'today' || tab === 'home' || tab === 'dashboard') {
+      navigateTo('home', sub || 'dashboard');
+    } else if (tab === 'workouts' || tab === 'trainers' || tab === 'training') {
+      navigateTo('training', sub || (tab === 'workouts' ? 'workout_plan' : 'training'));
+    } else if (tab === 'diet') {
+      navigateTo('diet', null);
+    } else if (tab === 'progress') {
+      navigateTo('progress', sub || 'tracking');
+    } else if (tab === 'profile' || tab === 'more') {
+      navigateTo('more', sub || 'none');
+    } else {
+      navigateTo(tab, sub);
+    }
   };
 
-  const handleTrainerNavigate = (tab, sub) => {
-    if (tab === 'home' || tab === 'dashboard') setActiveTab('home');
-    else if (tab === 'clients') setActiveTab('clients');
-    else if (tab === 'schedule') setActiveTab('schedule');
-    else if (tab === 'programs' || tab === 'workouts') setActiveTab('programs');
-    else if (tab === 'more' || tab === 'profile' || tab === 'earnings') setActiveTab('more');
-    else setActiveTab(tab);
+  const handleTrainerNavigate = (tab, sub = null) => {
+    if (tab === 'home' || tab === 'dashboard') {
+      navigateTo('home', null);
+    } else if (tab === 'clients') {
+      navigateTo('clients', null);
+    } else if (tab === 'schedule') {
+      navigateTo('schedule', null);
+    } else if (tab === 'programs' || tab === 'workouts') {
+      navigateTo('programs', sub || (tab === 'workouts' ? 'workout-plans' : 'none'));
+    } else if (tab === 'more' || tab === 'profile' || tab === 'earnings') {
+      navigateTo('more', sub || (tab === 'earnings' ? 'financials' : 'none'));
+    } else {
+      navigateTo(tab, sub);
+    }
   };
 
-  const handleOwnerNavigate = (tab, sub) => {
-    if (tab === 'overview' || tab === 'home' || tab === 'dashboard') setActiveTab('overview');
-    else if (tab === 'members' || tab === 'enquiries') setActiveTab('members');
-    else if (tab === 'trainers' || tab === 'hiring') setActiveTab('trainers');
-    else if (tab === 'finances' || tab === 'revenue' || tab === 'payments') setActiveTab('finances');
-    else if (tab === 'more' || tab === 'settings' || tab === 'operations' || tab === 'store') setActiveTab('more');
-    else setActiveTab(tab);
+  const handleOwnerNavigate = (tab, sub = null) => {
+    if (tab === 'overview' || tab === 'home' || tab === 'dashboard') {
+      navigateTo('overview', null);
+    } else if (tab === 'members' || tab === 'enquiries') {
+      navigateTo('members', sub || (tab === 'enquiries' ? 'enquiries' : 'members'));
+    } else if (tab === 'trainers' || tab === 'hiring') {
+      navigateTo('trainers', sub || (tab === 'hiring' ? 'hiring' : 'trainers'));
+    } else if (tab === 'finances' || tab === 'revenue' || tab === 'payments') {
+      navigateTo('finances', sub || (tab === 'payments' ? 'payments' : 'analytics'));
+    } else if (tab === 'more' || tab === 'settings' || tab === 'operations' || tab === 'store') {
+      navigateTo('more', sub || null);
+    } else {
+      navigateTo(tab, sub);
+    }
+  };
+
+  const handleBottomTabSelect = (tabKey) => {
+    if (tabKey === activeTab && !activeSub) return;
+    navigateTo(tabKey, null);
   };
 
   const renderActiveScreen = () => {
@@ -99,17 +182,17 @@ const MainAppContent = () => {
           return <OwnerDashboardScreen onNavigateTab={handleOwnerNavigate} />;
         case 'members':
         case 'enquiries':
-          return <OwnerMembersScreen />;
+          return <OwnerMembersScreen initialSection={activeSub === 'enquiries' ? 'enquiries' : 'members'} />;
         case 'trainers':
         case 'hiring':
-          return <OwnerTrainersScreen />;
+          return <OwnerTrainersScreen initialTab={activeSub === 'hiring' ? 'hiring' : 'trainers'} />;
         case 'finances':
         case 'revenue':
         case 'payments':
-          return <OwnerFinancesScreen />;
+          return <OwnerFinancesScreen initialTab={activeSub === 'payments' ? 'payments' : 'analytics'} />;
         case 'more':
         case 'settings':
-          return <OwnerMoreScreen />;
+          return <OwnerMoreScreen initialSubPage={activeSub || undefined} onCloseSubPage={() => setActiveSub(null)} />;
         default:
           return <OwnerDashboardScreen onNavigateTab={handleOwnerNavigate} />;
       }
@@ -121,16 +204,16 @@ const MainAppContent = () => {
         case 'dashboard':
           return <TrainerDashboardScreen onNavigateTab={handleTrainerNavigate} />;
         case 'clients':
-          return <TrainerClientsScreen />;
+          return <TrainerClientsScreen onNavigateTab={handleTrainerNavigate} />;
         case 'schedule':
           return <TrainerScheduleScreen onNavigateTab={handleTrainerNavigate} />;
         case 'programs':
         case 'workouts':
-          return <TrainerProgramsScreen />;
+          return <TrainerProgramsScreen initialSection={activeSub || 'none'} />;
         case 'more':
         case 'profile':
         case 'earnings':
-          return <TrainerMoreScreen />;
+          return <TrainerMoreScreen initialSection={activeSub || 'none'} />;
         default:
           return <TrainerDashboardScreen onNavigateTab={handleTrainerNavigate} />;
       }
@@ -145,25 +228,27 @@ const MainAppContent = () => {
               onNavigateTab={handleCustomerNavigate} 
               externalQrVisible={customerQrVisible}
               onCloseExternalQr={() => setCustomerQrVisible(false)}
+              initialSubTab={activeSub === 'gym' ? 'gym' : 'dashboard'}
             />
           );
         case 'training':
         case 'workouts':
         case 'trainers':
-          return <CustomerTrainingScreen />;
+          return <CustomerTrainingScreen initialSubTab={activeSub || 'training'} />;
         case 'diet':
           return <CustomerDietScreen />;
         case 'progress':
-          return <CustomerProgressScreen />;
+          return <CustomerProgressScreen initialSubTab={activeSub || 'tracking'} />;
         case 'more':
         case 'profile':
-          return <CustomerMoreScreen />;
+          return <CustomerMoreScreen initialSection={activeSub || 'none'} />;
         default:
           return (
             <CustomerHomeScreen 
               onNavigateTab={handleCustomerNavigate} 
               externalQrVisible={customerQrVisible}
               onCloseExternalQr={() => setCustomerQrVisible(false)}
+              initialSubTab={activeSub === 'gym' ? 'gym' : 'dashboard'}
             />
           );
       }
@@ -178,15 +263,15 @@ const MainAppContent = () => {
       <Header 
         onOpenQrPass={() => setCustomerQrVisible(true)} 
         onOpenNotifications={() => {
-          if (activeRole === 'GYM_OWNER') setActiveTab('more');
-          else if (activeRole === 'TRAINER') setActiveTab('more');
-          else if (activeRole === 'CUSTOMER') setActiveTab('more');
+          if (activeRole === 'GYM_OWNER') handleOwnerNavigate('more', 'notifications');
+          else if (activeRole === 'TRAINER') handleTrainerNavigate('more', 'notifications');
+          else if (activeRole === 'CUSTOMER') handleCustomerNavigate('more', 'notifications');
         }}
       />
       <View style={styles.body}>
         {renderActiveScreen()}
       </View>
-      <BottomTabBar activeTab={activeTab} onSelectTab={setActiveTab} />
+      <BottomTabBar activeTab={activeTab} onSelectTab={handleBottomTabSelect} />
     </SafeAreaView>
   );
 };
