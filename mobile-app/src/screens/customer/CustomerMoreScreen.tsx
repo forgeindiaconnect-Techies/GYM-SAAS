@@ -15,6 +15,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../constants/theme';
 import { useAuth } from '../../context/AuthContext';
 import { api } from '../../api/client';
+import { CustomerStoreScreen } from './CustomerStoreScreen';
 
 export type MoreItemKey = 
   | 'none'
@@ -579,7 +580,7 @@ export const CustomerMoreScreen: React.FC<{ initialSection?: MoreItemKey }> = ({
         {activeSection === 'reviews' && renderReviews()}
         {activeSection === 'rewards' && renderRewards()}
         {activeSection === 'referrals' && renderReferrals()}
-        {activeSection === 'store' && renderStore()}
+        {activeSection === 'store' && <CustomerStoreScreen />}
         {activeSection === 'messages' && renderMessages()}
         {activeSection === 'profile' && renderProfile()}
         {activeSection === 'membership' && renderMembership()}

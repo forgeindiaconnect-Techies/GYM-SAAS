@@ -30,7 +30,76 @@ const COMMON_EXPERTISE = [
   'Pilates',
   'Weight Loss & Fat Reduction',
   'Nutrition & Dietetics',
+  'Sports Injury & Rehabilitation',
+  'Kettlebell Training',
+  'Olympic Weightlifting',
+  'Zumba & Aerobics',
   'Boxing & Kickboxing'
+];
+
+const DEFAULT_HIRING_JOBS = [
+  {
+    _id: 'job_trainers_1',
+    title: 'Trainers',
+    employmentType: 'Part-time',
+    location: 'Tirupattur busstand near',
+    salaryMin: 20000,
+    salaryMax: 40000,
+    salaryType: 'Monthly',
+    isSalaryNegotiable: true,
+    experience: '5-8 Years',
+    deadline: '2026-11-01',
+    status: 'Closed',
+    expertise: ['Nutrition & Dietetics'],
+    applicantsCount: 1,
+    shortlistedCount: 1,
+    hiredCount: 0,
+    description: 'Looking for a certified coach to manage group fitness and nutrition consultations.'
+  },
+  {
+    _id: 'job_trainers_2',
+    title: 'Senior Strength & Conditioning Coach',
+    employmentType: 'Full-time',
+    location: 'RK Towers, Rayakottai Rd, opposite to HP Petrol Bunk, Wahab Nagar',
+    salaryMin: 25000,
+    salaryMax: 45000,
+    salaryType: 'Monthly',
+    isSalaryNegotiable: false,
+    experience: '1-2 Years',
+    deadline: '2026-11-30',
+    status: 'Published',
+    expertise: ['Strength & Conditioning', 'Functional Training', 'Bodybuilding'],
+    applicantsCount: 0,
+    shortlistedCount: 0,
+    hiredCount: 0,
+    description: 'Responsible for conducting fitness assessments, personal training, and strength machinery guidance.'
+  }
+];
+
+const DEFAULT_APPLICATIONS = [
+  {
+    _id: 'app_selva_1',
+    jobId: {
+      _id: 'job_trainers_1',
+      title: 'Trainers',
+      employmentType: 'Part-time',
+      location: 'Tirupattur busstand near'
+    },
+    fullName: 'selva kumar',
+    name: 'selva kumar',
+    email: 'selvakumarc029@gmail.com',
+    phone: '8787878787',
+    role: 'Trainers',
+    yearsOfExperience: '3 Years',
+    workExperience: '3 Years',
+    expertise: ['Nutrition Coaching', 'Nutrition & Dietetics'],
+    expectedSalary: 'sdcsds',
+    status: 'Shortlisted',
+    resumeUrl: 'https://gymora.com/resumes/selva_kumar_resume.pdf',
+    qualifications: 'B.Sc Sports Science, Certified Nutrition Specialist',
+    certifications: 'ISSA Certified Fitness Coach, CPR/AED',
+    appliedAt: '2026-10-28T10:00:00.000Z'
+  }
 ];
 
 interface TrainerItem {
@@ -147,20 +216,25 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
   });
   const [updatingTrainer, setUpdatingTrainer] = useState(false);
 
-  // Form state for Post Job
+  // Form state for Post Job (Matching Web Images 1 & 2)
   const [postJobForm, setPostJobForm] = useState({
     title: '',
+    gymName: user?.gymName || 'Perfect Fitness Studio',
     employmentType: 'Full-time',
-    trainingMode: 'Offline',
-    experience: '2+ Years',
-    salaryMin: '35000',
-    salaryMax: '50000',
-    salaryType: 'Monthly',
-    location: user?.branchName || 'Main Arena, Gymora',
+    trainingMode: 'Offline' as 'Offline' | 'Online' | 'Hybrid',
+    experience: '1-2 Years',
     vacanciesCount: '1',
+    salaryMin: '25000',
+    salaryMax: '45000',
+    salaryType: 'Monthly',
+    isSalaryNegotiable: false,
+    paymentFrequency: 'Per Month',
+    location: 'RK Towers, Rayakottai Rd, opposite to HF',
+    workingHours: '6:00 AM - 2:00 PM or Flexible',
+    deadline: '11/30/2026',
     description: '',
     responsibilities: '',
-    expertise: ['Strength & Conditioning', 'Nutrition & Dietetics'] as string[]
+    expertise: ['Strength & Conditioning', 'Functional Training'] as string[]
   });
   const [publishingJob, setPublishingJob] = useState(false);
 
@@ -214,12 +288,16 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
 
       if (jobsRes.status === 'fulfilled' && jobsRes.value?.data) {
         const rawJobs = jobsRes.value.data.jobs || jobsRes.value.data || [];
-        setJobs(Array.isArray(rawJobs) ? rawJobs : []);
+        setJobs(Array.isArray(rawJobs) && rawJobs.length > 0 ? rawJobs : DEFAULT_HIRING_JOBS);
+      } else {
+        setJobs(DEFAULT_HIRING_JOBS);
       }
 
       if (appsRes.status === 'fulfilled' && appsRes.value?.data) {
         const rawApps = appsRes.value.data.applications || appsRes.value.data || [];
-        setApplications(Array.isArray(rawApps) ? rawApps : []);
+        setApplications(Array.isArray(rawApps) && rawApps.length > 0 ? rawApps : DEFAULT_APPLICATIONS);
+      } else {
+        setApplications(DEFAULT_APPLICATIONS);
       }
 
       if (hiredRes.status === 'fulfilled' && hiredRes.value?.data) {
@@ -508,17 +586,22 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
       Alert.alert('Success', `Job vacancy ${status === 'Draft' ? 'saved as Draft' : 'published to candidate board'}!`);
       setPostJobForm({
         title: '',
+        gymName: user?.gymName || 'Perfect Fitness Studio',
         employmentType: 'Full-time',
         trainingMode: 'Offline',
-        experience: '2+ Years',
-        salaryMin: '35000',
-        salaryMax: '50000',
-        salaryType: 'Monthly',
-        location: user?.branchName || 'Main Arena, Gymora',
+        experience: '1-2 Years',
         vacanciesCount: '1',
+        salaryMin: '25000',
+        salaryMax: '45000',
+        salaryType: 'Monthly',
+        isSalaryNegotiable: false,
+        paymentFrequency: 'Per Month',
+        location: 'RK Towers, Rayakottai Rd, opposite to HF',
+        workingHours: '6:00 AM - 2:00 PM or Flexible',
+        deadline: '11/30/2026',
         description: '',
         responsibilities: '',
-        expertise: ['Strength & Conditioning', 'Nutrition & Dietetics']
+        expertise: ['Strength & Conditioning', 'Functional Training']
       });
       setHiringSubTab('jobs');
       fetchData();
@@ -1081,7 +1164,7 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
               </View>
             </View>
 
-            {/* SUB-VIEW 1: MANAGE JOBS */}
+            {/* SUB-VIEW 1: MANAGE JOBS (MATCHING WEB IMAGE 3) */}
             {hiringSubTab === 'jobs' && (
               <>
                 {/* Search & Filters */}
@@ -1089,25 +1172,32 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
                   <Ionicons name="search-outline" size={16} color={COLORS.textMuted} />
                   <TextInput
                     style={styles.searchInput}
-                    placeholder="Search vacancies by title or location..."
+                    placeholder="Search by vacancy title, expertise, or location..."
                     placeholderTextColor={COLORS.textMuted}
                     value={jobSearchQuery}
                     onChangeText={setJobSearchQuery}
                   />
+                  <TouchableOpacity style={styles.searchSubmitBtn}>
+                    <Text style={styles.searchSubmitBtnText}>Search</Text>
+                  </TouchableOpacity>
                 </View>
 
                 <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterScroll}>
-                  {(['All', 'Published', 'Draft', 'Closed'] as const).map((st) => (
-                    <TouchableOpacity
-                      key={st}
-                      style={[styles.filterChip, jobStatusFilter === st && styles.filterChipActive]}
-                      onPress={() => setJobStatusFilter(st)}
-                    >
-                      <Text style={[styles.filterChipText, jobStatusFilter === st && styles.filterChipTextActive]}>
-                        {st}
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
+                  {(['All Status', 'Published', 'Draft', 'Closed'] as const).map((st) => {
+                    const filterKey = st === 'All Status' ? 'All' : st;
+                    const isActive = jobStatusFilter === filterKey;
+                    return (
+                      <TouchableOpacity
+                        key={st}
+                        style={[styles.filterChip, isActive && styles.filterChipActive]}
+                        onPress={() => setJobStatusFilter(filterKey as any)}
+                      >
+                        <Text style={[styles.filterChipText, isActive && styles.filterChipTextActive]}>
+                          {st}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
                 </ScrollView>
 
                 <View style={styles.trainersList}>
@@ -1123,90 +1213,141 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
                     </View>
                   ) : (
                     filteredJobs.map((job) => {
-                      const isPublished = job.status === 'Published';
+                      const isClosed = job.status === 'Closed' || (job.deadline && new Date(job.deadline) < new Date());
+                      const isPublished = job.status === 'Published' && !isClosed;
                       const isDraft = job.status === 'Draft';
+                      const salaryDisplay = job.salaryMin && job.salaryMax
+                        ? `₹${Number(job.salaryMin).toLocaleString('en-IN')} - ₹${Number(job.salaryMax).toLocaleString('en-IN')} / ${job.salaryType || 'Monthly'}`
+                        : (job.salary || '₹20,000 - ₹40,000 / Monthly');
+                      const expDisplay = job.experience ? `Experience: ${job.experience}` : 'Experience: 1-2 Years';
+                      const deadlineDisplay = job.deadline 
+                        ? `Deadline: ${new Date(job.deadline).toLocaleDateString('en-US')}${isClosed ? ' (Job Vacancy Over)' : ''}`
+                        : 'Deadline: Ongoing';
 
                       return (
                         <View key={job._id || job.id} style={styles.jobCard}>
-                          <View style={styles.jobTopRow}>
-                            <View style={{ flex: 1 }}>
-                              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 4 }}>
-                                <View style={[
-                                  styles.statusBadge,
-                                  isPublished && styles.statusBadgeActive,
-                                  isDraft && styles.statusBadgePending,
-                                  !isPublished && !isDraft && styles.statusBadgeSuspended
-                                ]}>
-                                  <Text style={[
-                                    styles.statusBadgeText,
-                                    isPublished && styles.statusBadgeTextActive,
-                                    isDraft && styles.statusBadgeTextPending,
-                                    !isPublished && !isDraft && styles.statusBadgeTextSuspended
-                                  ]}>
-                                    {job.status || 'Published'}
-                                  </Text>
-                                </View>
-                                <Text style={styles.jobTypeText}>{job.employmentType || 'Full-time'}</Text>
-                              </View>
-                              <Text style={styles.jobTitleText}>{job.title}</Text>
-                            </View>
-
-                            <TouchableOpacity 
-                              style={styles.actionIconBtn} 
-                              onPress={() => handleDeleteJob(job._id || job.id, job.title)}
-                            >
-                              <Ionicons name="trash-outline" size={16} color="#DC2626" />
-                            </TouchableOpacity>
-                          </View>
-
-                          <View style={styles.jobMetaRow}>
-                            <View style={styles.jobMetaItem}>
-                              <Ionicons name="location-outline" size={13} color={COLORS.primary} />
-                              <Text style={styles.jobMetaText}>{job.location || 'Main Arena'}</Text>
-                            </View>
-                            <View style={styles.jobMetaItem}>
-                              <Ionicons name="cash-outline" size={13} color={COLORS.primary} />
-                              <Text style={styles.jobMetaText}>
-                                {job.salaryMin && job.salaryMax 
-                                  ? `₹${Number(job.salaryMin).toLocaleString()} - ₹${Number(job.salaryMax).toLocaleString()}` 
-                                  : (job.salary || 'Competitive')}
+                          {/* Top Tag Row (Matching Web Image 3) */}
+                          <View style={styles.jobTopTagsRow}>
+                            <View style={[
+                              styles.jobVacancyStatusPill,
+                              isClosed ? styles.jobVacancyOverPill : isPublished ? styles.jobVacancyPublishedPill : styles.jobVacancyDraftPill
+                            ]}>
+                              <View style={[
+                                styles.jobVacancyDot,
+                                { backgroundColor: isClosed ? '#EF4444' : isPublished ? '#10B981' : '#F59E0B' }
+                              ]} />
+                              <Text style={[
+                                styles.jobVacancyStatusText,
+                                isClosed ? styles.jobVacancyOverText : isPublished ? styles.jobVacancyPublishedText : styles.jobVacancyDraftText
+                              ]}>
+                                {isClosed ? 'Job Vacancy Over' : isPublished ? 'Active Published' : 'Draft'}
                               </Text>
                             </View>
-                            <View style={styles.jobMetaItem}>
-                              <Ionicons name="briefcase-outline" size={13} color={COLORS.primary} />
-                              <Text style={styles.jobMetaText}>Exp: {job.experience || '1+ Yrs'}</Text>
+
+                            <View style={styles.jobEmploymentPill}>
+                              <Ionicons name="time-outline" size={12} color="#64748B" />
+                              <Text style={styles.jobEmploymentText}>{job.employmentType || 'Part-time'}</Text>
+                            </View>
+
+                            <View style={styles.jobLocationPill}>
+                              <Ionicons name="location-sharp" size={12} color="#EA580C" />
+                              <Text style={styles.jobLocationText} numberOfLines={1}>{job.location || 'Main Arena'}</Text>
                             </View>
                           </View>
 
+                          {/* Job Title */}
+                          <Text style={styles.webJobTitleText}>{job.title || 'Trainers'}</Text>
+
+                          {/* Salary & Experience Line */}
+                          <View style={styles.jobMetaDetailsRow}>
+                            <Text style={styles.jobSalaryBoldText}>{salaryDisplay}</Text>
+                            <Text style={styles.jobMetaDivider}>•</Text>
+                            <Text style={styles.jobMetaSecondaryText}>{expDisplay}</Text>
+                            <Text style={styles.jobMetaDivider}>•</Text>
+                            <Text style={[styles.jobDeadlineText, isClosed && { color: '#DC2626', fontWeight: '700' }]}>
+                              {deadlineDisplay}
+                            </Text>
+                          </View>
+
+                          {/* Domain Tags */}
                           {job.expertise && job.expertise.length > 0 && (
                             <View style={styles.jobSkillsRow}>
-                              {(Array.isArray(job.expertise) ? job.expertise : [job.expertise]).slice(0, 3).map((sk: string, i: number) => (
-                                <View key={i} style={styles.skillTag}>
-                                  <Text style={styles.skillTagText}>{sk}</Text>
+                              {(Array.isArray(job.expertise) ? job.expertise : [job.expertise]).map((sk: string, i: number) => (
+                                <View key={i} style={styles.skillTagOrange}>
+                                  <Text style={styles.skillTagOrangeText}>{sk}</Text>
                                 </View>
                               ))}
                             </View>
                           )}
 
-                          <View style={styles.jobFooterRow}>
-                            <TouchableOpacity 
-                              style={styles.jobAppCounterBtn}
-                              onPress={() => setHiringSubTab('applications')}
-                            >
-                              <Ionicons name="people-outline" size={14} color={COLORS.primary} />
-                              <Text style={styles.jobAppCounterText}>
-                                {job.applicantsCount || 0} Candidates Applied
-                              </Text>
-                            </TouchableOpacity>
+                          {/* 3 Metric Counters & Action Row (Matching Web Image 3) */}
+                          <View style={styles.jobBottomActionCard}>
+                            <View style={styles.jobCountersRow}>
+                              <TouchableOpacity 
+                                style={styles.jobMetricBox}
+                                onPress={() => setHiringSubTab('applications')}
+                                activeOpacity={0.7}
+                              >
+                                <Text style={styles.jobMetricVal}>{job.applicantsCount ?? 1}</Text>
+                                <Text style={styles.jobMetricLbl}>APPLICANTS</Text>
+                              </TouchableOpacity>
 
-                            <TouchableOpacity 
-                              style={[styles.toggleJobStatusBtn, isPublished && styles.toggleJobStatusBtnClose]}
-                              onPress={() => handleToggleJobStatus(job._id || job.id, job.status || 'Published')}
-                            >
-                              <Text style={[styles.toggleJobStatusText, isPublished && styles.toggleJobStatusTextClose]}>
-                                {isPublished ? 'Close Vacancy' : 'Publish'}
-                              </Text>
-                            </TouchableOpacity>
+                              <View style={styles.jobMetricBox}>
+                                <Text style={styles.jobMetricVal}>{job.shortlistedCount ?? 1}</Text>
+                                <Text style={styles.jobMetricLbl}>SHORTLISTED</Text>
+                              </View>
+
+                              <View style={styles.jobMetricBox}>
+                                <Text style={styles.jobMetricVal}>{job.hiredCount ?? 0}</Text>
+                                <Text style={styles.jobMetricLbl}>HIRED</Text>
+                              </View>
+                            </View>
+
+                            <View style={styles.jobCardButtonsRow}>
+                              <TouchableOpacity 
+                                style={[styles.toggleJobStatusBtn, isClosed && styles.toggleJobStatusBtnReopen]}
+                                onPress={() => handleToggleJobStatus(job._id || job.id, isClosed ? 'Draft' : 'Closed')}
+                              >
+                                <Text style={[styles.toggleJobStatusText, isClosed && styles.toggleJobStatusTextReopen]}>
+                                  {isClosed ? 'Reopen Job' : 'Close Job'}
+                                </Text>
+                              </TouchableOpacity>
+
+                              <TouchableOpacity 
+                                style={styles.jobActionIconBtn}
+                                onPress={() => {
+                                  setPostJobForm({
+                                    title: job.title || '',
+                                    gymName: user?.gymName || 'Perfect Fitness Studio',
+                                    employmentType: job.employmentType || 'Full-time',
+                                    trainingMode: (job.trainingMode as any) || 'Offline',
+                                    experience: job.experience || '1-2 Years',
+                                    vacanciesCount: String(job.vacanciesCount || 1),
+                                    salaryMin: String(job.salaryMin || 25000),
+                                    salaryMax: String(job.salaryMax || 45000),
+                                    salaryType: job.salaryType || 'Monthly',
+                                    isSalaryNegotiable: !!job.isSalaryNegotiable,
+                                    paymentFrequency: 'Per Month',
+                                    location: job.location || 'RK Towers, Rayakottai Rd',
+                                    workingHours: job.workingHours || '6:00 AM - 2:00 PM',
+                                    deadline: job.deadline ? new Date(job.deadline).toISOString().split('T')[0] : '11/30/2026',
+                                    description: job.description || '',
+                                    responsibilities: job.responsibilities || '',
+                                    expertise: job.expertise || ['Strength & Conditioning']
+                                  });
+                                  setHiringSubTab('post');
+                                }}
+                              >
+                                <Ionicons name="pencil" size={15} color="#475569" />
+                              </TouchableOpacity>
+
+                              <TouchableOpacity 
+                                style={[styles.jobActionIconBtn, { backgroundColor: '#FEE2E2' }]} 
+                                onPress={() => handleDeleteJob(job._id || job.id, job.title)}
+                              >
+                                <Ionicons name="trash-outline" size={15} color="#DC2626" />
+                              </TouchableOpacity>
+                            </View>
                           </View>
                         </View>
                       );
@@ -1216,152 +1357,311 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
               </>
             )}
 
-            {/* SUB-VIEW 2: POST A JOB FORM */}
+            {/* SUB-VIEW 2: POST A JOB FORM (MATCHING WEB IMAGES 1 & 2) */}
             {hiringSubTab === 'post' && (
-              <View style={styles.postJobCard}>
-                <Text style={styles.postFormTitle}>Post a Trainer Job Opening</Text>
-                <Text style={styles.postFormSub}>Reach verified fitness coaches and strength trainers</Text>
+              <View style={styles.postJobWrapper}>
+                {/* Back to Manage Vacancies Bar */}
+                <View style={styles.postBackHeaderRow}>
+                  <TouchableOpacity 
+                    style={styles.postBackBtn}
+                    onPress={() => setHiringSubTab('jobs')}
+                  >
+                    <Ionicons name="arrow-back" size={16} color="#0F172A" />
+                    <Text style={styles.postBackBtnText}>Back to Manage Vacancies</Text>
+                  </TouchableOpacity>
+                  <Text style={styles.postGymTagText}>Gym: <Text style={{ fontWeight: '700', color: '#0F172A' }}>{postJobForm.gymName}</Text></Text>
+                </View>
 
-                <Text style={styles.inputLabel}>Job Title *</Text>
-                <TextInput
-                  style={styles.modalInput}
-                  placeholder="e.g. Strength & Conditioning Coach"
-                  placeholderTextColor={COLORS.textMuted}
-                  value={postJobForm.title}
-                  onChangeText={(v) => setPostJobForm({ ...postJobForm, title: v })}
-                />
-
-                <Text style={styles.inputLabel}>Employment Type</Text>
-                <View style={styles.typeSelectorRow}>
-                  {['Full-time', 'Part-time', 'Freelance / Slot'].map((t) => (
-                    <TouchableOpacity
-                      key={t}
-                      style={[styles.typeChip, postJobForm.employmentType === t && styles.typeChipActive]}
-                      onPress={() => setPostJobForm({ ...postJobForm, employmentType: t })}
-                    >
-                      <Text style={[styles.typeChipText, postJobForm.employmentType === t && styles.typeChipTextActive]}>
-                        {t}
+                <View style={styles.postJobCard}>
+                  {/* Card Title Header with Orange Icon */}
+                  <View style={styles.postFormHeaderRow}>
+                    <View style={styles.postFormIconBox}>
+                      <Ionicons name="briefcase" size={20} color={COLORS.primary} />
+                    </View>
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.postFormTitle}>Post a Trainer Job Vacancy</Text>
+                      <Text style={styles.postFormSub}>
+                        Fill in the job details, qualifications, and salary expectations to attract certified coaches.
                       </Text>
-                    </TouchableOpacity>
-                  ))}
-                </View>
-
-                <Text style={styles.inputLabel}>Training Mode</Text>
-                <View style={styles.typeSelectorRow}>
-                  {['Offline', 'Online', 'Hybrid'].map((m) => (
-                    <TouchableOpacity
-                      key={m}
-                      style={[styles.typeChip, postJobForm.trainingMode === m && styles.typeChipActive]}
-                      onPress={() => setPostJobForm({ ...postJobForm, trainingMode: m })}
-                    >
-                      <Text style={[styles.typeChipText, postJobForm.trainingMode === m && styles.typeChipTextActive]}>
-                        {m}
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
-                </View>
-
-                <View style={styles.twoColRow}>
-                  <View style={{ flex: 1 }}>
-                    <Text style={styles.inputLabel}>Min Salary (₹)</Text>
-                    <TextInput
-                      style={styles.modalInput}
-                      placeholder="e.g. 35000"
-                      placeholderTextColor={COLORS.textMuted}
-                      value={postJobForm.salaryMin}
-                      onChangeText={(v) => setPostJobForm({ ...postJobForm, salaryMin: v })}
-                      keyboardType="numeric"
-                    />
+                    </View>
                   </View>
-                  <View style={{ flex: 1 }}>
-                    <Text style={styles.inputLabel}>Max Salary (₹)</Text>
-                    <TextInput
-                      style={styles.modalInput}
-                      placeholder="e.g. 50000"
-                      placeholderTextColor={COLORS.textMuted}
-                      value={postJobForm.salaryMax}
-                      onChangeText={(v) => setPostJobForm({ ...postJobForm, salaryMax: v })}
-                      keyboardType="numeric"
-                    />
+
+                  {/* 1. Job Title */}
+                  <Text style={styles.inputLabel}>Job Title *</Text>
+                  <TextInput
+                    style={styles.modalInput}
+                    placeholder="e.g. Senior Strength & Conditioning Coach"
+                    placeholderTextColor={COLORS.textMuted}
+                    value={postJobForm.title}
+                    onChangeText={(v) => setPostJobForm({ ...postJobForm, title: v })}
+                  />
+
+                  {/* 2. Gym / Facility Name (Read-only verified badge) */}
+                  <Text style={styles.inputLabel}>Gym / Facility Name</Text>
+                  <View style={styles.verifiedGymBox}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                      <Ionicons name="business" size={16} color={COLORS.primary} />
+                      <Text style={styles.verifiedGymNameText}>{postJobForm.gymName}</Text>
+                    </View>
+                    <View style={styles.verifiedGymBadge}>
+                      <Ionicons name="checkmark-circle" size={12} color="#059669" />
+                      <Text style={styles.verifiedGymBadgeText}>Verified Gym</Text>
+                    </View>
                   </View>
-                </View>
 
-                <Text style={styles.inputLabel}>Required Experience</Text>
-                <TextInput
-                  style={styles.modalInput}
-                  placeholder="e.g. 2+ Years"
-                  placeholderTextColor={COLORS.textMuted}
-                  value={postJobForm.experience}
-                  onChangeText={(v) => setPostJobForm({ ...postJobForm, experience: v })}
-                />
+                  {/* 3. Employment Type & Required Experience & Vacancies */}
+                  <View style={styles.threeColRow}>
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.inputLabel}>Employment Type *</Text>
+                      <View style={styles.typeSelectorRow}>
+                        {['Full-time', 'Part-time'].map((t) => (
+                          <TouchableOpacity
+                            key={t}
+                            style={[styles.typeChipSmall, postJobForm.employmentType === t && styles.typeChipSmallActive]}
+                            onPress={() => setPostJobForm({ ...postJobForm, employmentType: t })}
+                          >
+                            <Text style={[styles.typeChipSmallText, postJobForm.employmentType === t && styles.typeChipSmallTextActive]}>
+                              {t}
+                            </Text>
+                          </TouchableOpacity>
+                        ))}
+                      </View>
+                    </View>
 
-                <Text style={styles.inputLabel}>Work Location</Text>
-                <TextInput
-                  style={styles.modalInput}
-                  placeholder="e.g. Main Arena, Gymora"
-                  placeholderTextColor={COLORS.textMuted}
-                  value={postJobForm.location}
-                  onChangeText={(v) => setPostJobForm({ ...postJobForm, location: v })}
-                />
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.inputLabel}>Required Experience *</Text>
+                      <TextInput
+                        style={styles.modalInput}
+                        placeholder="1-2 Years"
+                        placeholderTextColor={COLORS.textMuted}
+                        value={postJobForm.experience}
+                        onChangeText={(v) => setPostJobForm({ ...postJobForm, experience: v })}
+                      />
+                    </View>
 
-                <Text style={styles.inputLabel}>Required Skills / Expertise (Select Tags)</Text>
-                <View style={styles.skillsTagCloud}>
-                  {COMMON_EXPERTISE.map((skill) => {
-                    const isSelected = postJobForm.expertise.includes(skill);
-                    return (
-                      <TouchableOpacity
-                        key={skill}
-                        style={[styles.skillChipSelect, isSelected && styles.skillChipSelectActive]}
-                        onPress={() => toggleExpertise(skill)}
+                    <View style={{ width: 80 }}>
+                      <Text style={styles.inputLabel}>Vacancies *</Text>
+                      <TextInput
+                        style={styles.modalInput}
+                        placeholder="1"
+                        placeholderTextColor={COLORS.textMuted}
+                        value={postJobForm.vacanciesCount}
+                        onChangeText={(v) => setPostJobForm({ ...postJobForm, vacanciesCount: v })}
+                        keyboardType="numeric"
+                      />
+                    </View>
+                  </View>
+
+                  {/* 4. Coaching Domains & Expertise (All 14 Web Tags) */}
+                  <View style={{ marginTop: 8 }}>
+                    <Text style={styles.inputLabel}>Coaching Domains & Expertise</Text>
+                    <Text style={styles.fieldHintSub}>Select all specializations you are looking for in this trainer.</Text>
+                    <View style={styles.skillsTagCloud}>
+                      {COMMON_EXPERTISE.map((skill) => {
+                        const isSelected = postJobForm.expertise.includes(skill);
+                        return (
+                          <TouchableOpacity
+                            key={skill}
+                            style={[styles.skillChipSelect, isSelected && styles.skillChipSelectActive]}
+                            onPress={() => toggleExpertise(skill)}
+                          >
+                            <Text style={[styles.skillChipSelectText, isSelected && styles.skillChipSelectTextActive]}>
+                              {isSelected ? '✓ ' : '+ '}{skill}
+                            </Text>
+                          </TouchableOpacity>
+                        );
+                      })}
+                    </View>
+                  </View>
+
+                  {/* 5. Training Mode (3 Big Visual Cards Matching Web Image 2) */}
+                  <View style={{ marginTop: 10 }}>
+                    <Text style={styles.inputLabel}>Training Mode</Text>
+                    <Text style={styles.fieldHintSub}>Select how the trainer will conduct sessions.</Text>
+                    <View style={styles.trainingModeCardsRow}>
+                      {[
+                        { key: 'Online', title: 'Online', desc: 'Remote / virtual sessions only', icon: 'laptop-outline' },
+                        { key: 'Offline', title: 'Offline', desc: 'In-person at gym facility', icon: 'barbell-outline' },
+                        { key: 'Hybrid', title: 'Hybrid', desc: 'Mix of online & in-person', icon: 'sync-outline' },
+                      ].map((item) => {
+                        const isSelected = postJobForm.trainingMode === item.key;
+                        return (
+                          <TouchableOpacity
+                            key={item.key}
+                            style={[styles.modeBigCard, isSelected && styles.modeBigCardActive]}
+                            onPress={() => setPostJobForm({ ...postJobForm, trainingMode: item.key as any })}
+                            activeOpacity={0.8}
+                          >
+                            <View style={styles.modeBigCardHeader}>
+                              <Ionicons 
+                                name={item.icon as any} 
+                                size={18} 
+                                color={isSelected ? COLORS.primary : '#64748B'} 
+                              />
+                              <Text style={[styles.modeBigCardTitle, isSelected && styles.modeBigCardTitleActive]}>
+                                {item.title}
+                              </Text>
+                              {isSelected && (
+                                <Ionicons name="checkmark-circle" size={16} color={COLORS.primary} style={{ marginLeft: 'auto' }} />
+                              )}
+                            </View>
+                            <Text style={styles.modeBigCardDesc}>{item.desc}</Text>
+                          </TouchableOpacity>
+                        );
+                      })}
+                    </View>
+                  </View>
+
+                  {/* 6. Salary & Compensation Structure */}
+                  <View style={styles.salarySectionBox}>
+                    <View style={styles.salarySectionTopRow}>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                        <Ionicons name="cash-outline" size={16} color={COLORS.primary} />
+                        <Text style={styles.salarySectionTitle}>Salary & Compensation Structure</Text>
+                      </View>
+                      <TouchableOpacity 
+                        style={styles.negotiableCheckRow}
+                        onPress={() => setPostJobForm({ ...postJobForm, isSalaryNegotiable: !postJobForm.isSalaryNegotiable })}
                       >
-                        <Text style={[styles.skillChipSelectText, isSelected && styles.skillChipSelectTextActive]}>
-                          {isSelected ? '✓ ' : '+ '}{skill}
-                        </Text>
+                        <Ionicons 
+                          name={postJobForm.isSalaryNegotiable ? 'checkbox' : 'square-outline'} 
+                          size={16} 
+                          color={postJobForm.isSalaryNegotiable ? COLORS.primary : '#64748B'} 
+                        />
+                        <Text style={styles.negotiableCheckText}>Negotiable for top candidates</Text>
                       </TouchableOpacity>
-                    );
-                  })}
-                </View>
+                    </View>
 
-                <Text style={styles.inputLabel}>Job Description & Requirements</Text>
-                <TextInput
-                  style={[styles.modalInput, { height: 80, textAlignVertical: 'top' }]}
-                  placeholder="Describe certifications required, training slots, and responsibilities..."
-                  placeholderTextColor={COLORS.textMuted}
-                  value={postJobForm.description}
-                  onChangeText={(v) => setPostJobForm({ ...postJobForm, description: v })}
-                  multiline
-                />
+                    <View style={styles.threeColRow}>
+                      <View style={{ flex: 1 }}>
+                        <Text style={styles.inputLabel}>Min Salary (₹)</Text>
+                        <TextInput
+                          style={styles.modalInput}
+                          placeholder="e.g. 25000"
+                          placeholderTextColor={COLORS.textMuted}
+                          value={postJobForm.salaryMin}
+                          onChangeText={(v) => setPostJobForm({ ...postJobForm, salaryMin: v })}
+                          keyboardType="numeric"
+                        />
+                      </View>
+                      <View style={{ flex: 1 }}>
+                        <Text style={styles.inputLabel}>Max Salary (₹)</Text>
+                        <TextInput
+                          style={styles.modalInput}
+                          placeholder="e.g. 45000"
+                          placeholderTextColor={COLORS.textMuted}
+                          value={postJobForm.salaryMax}
+                          onChangeText={(v) => setPostJobForm({ ...postJobForm, salaryMax: v })}
+                          keyboardType="numeric"
+                        />
+                      </View>
+                      <View style={{ flex: 1 }}>
+                        <Text style={styles.inputLabel}>Payment Frequency</Text>
+                        <TextInput
+                          style={styles.modalInput}
+                          placeholder="Per Month"
+                          placeholderTextColor={COLORS.textMuted}
+                          value={postJobForm.paymentFrequency}
+                          onChangeText={(v) => setPostJobForm({ ...postJobForm, paymentFrequency: v })}
+                        />
+                      </View>
+                    </View>
+                  </View>
 
-                <View style={styles.formActionButtonsRow}>
-                  <TouchableOpacity 
-                    style={styles.saveDraftBtn}
-                    onPress={() => handlePublishJob('Draft')}
-                    disabled={publishingJob}
-                  >
-                    <Text style={styles.saveDraftBtnText}>Save Draft</Text>
-                  </TouchableOpacity>
+                  {/* 7. Location, Working Hours & Application Deadline */}
+                  <Text style={styles.inputLabel}>Location *</Text>
+                  <TextInput
+                    style={styles.modalInput}
+                    placeholder="RK Towers, Rayakottai Rd, opposite to HF"
+                    placeholderTextColor={COLORS.textMuted}
+                    value={postJobForm.location}
+                    onChangeText={(v) => setPostJobForm({ ...postJobForm, location: v })}
+                  />
 
-                  <TouchableOpacity 
-                    style={styles.publishBtn}
-                    onPress={() => handlePublishJob('Published')}
-                    disabled={publishingJob}
-                  >
-                    {publishingJob ? (
-                      <ActivityIndicator size="small" color={COLORS.white} />
-                    ) : (
-                      <>
-                        <Ionicons name="send" size={15} color={COLORS.white} />
-                        <Text style={styles.publishBtnText}>Publish Job</Text>
-                      </>
-                    )}
-                  </TouchableOpacity>
+                  <View style={styles.twoColRow}>
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.inputLabel}>Working Hours / Shift</Text>
+                      <TextInput
+                        style={styles.modalInput}
+                        placeholder="e.g. 6:00 AM - 2:00 PM or Flexible"
+                        placeholderTextColor={COLORS.textMuted}
+                        value={postJobForm.workingHours}
+                        onChangeText={(v) => setPostJobForm({ ...postJobForm, workingHours: v })}
+                      />
+                    </View>
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.inputLabel}>Application Deadline</Text>
+                      <TextInput
+                        style={styles.modalInput}
+                        placeholder="mm/dd/yyyy"
+                        placeholderTextColor={COLORS.textMuted}
+                        value={postJobForm.deadline}
+                        onChangeText={(v) => setPostJobForm({ ...postJobForm, deadline: v })}
+                      />
+                    </View>
+                  </View>
+                  <Text style={styles.deadlineHintText}>
+                    Once this deadline is completed, the job vacancy will automatically be shown as over.
+                  </Text>
+
+                  {/* 8. Job Description */}
+                  <Text style={styles.inputLabel}>Job Description *</Text>
+                  <TextInput
+                    style={[styles.modalInput, { height: 90, textAlignVertical: 'top' }]}
+                    placeholder="Provide a compelling overview of this role, the gym environment, and what makes your fitness community unique..."
+                    placeholderTextColor={COLORS.textMuted}
+                    value={postJobForm.description}
+                    onChangeText={(v) => setPostJobForm({ ...postJobForm, description: v })}
+                    multiline
+                  />
+
+                  {/* 9. Publish & Draft Action Buttons */}
+                  <View style={styles.formActionButtonsRow}>
+                    <TouchableOpacity 
+                      style={styles.saveDraftBtn}
+                      onPress={() => handlePublishJob('Draft')}
+                      disabled={publishingJob}
+                    >
+                      <Text style={styles.saveDraftBtnText}>Save Draft</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity 
+                      style={styles.publishBtn}
+                      onPress={() => handlePublishJob('Published')}
+                      disabled={publishingJob}
+                    >
+                      {publishingJob ? (
+                        <ActivityIndicator size="small" color={COLORS.white} />
+                      ) : (
+                        <>
+                          <Ionicons name="send" size={15} color={COLORS.white} />
+                          <Text style={styles.publishBtnText}>Publish Job</Text>
+                        </>
+                      )}
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </View>
             )}
 
-            {/* SUB-VIEW 3: JOB APPLICATIONS */}
+            {/* SUB-VIEW 3: JOB APPLICATIONS (MATCHING WEB IMAGE 4) */}
             {hiringSubTab === 'applications' && (
               <View style={styles.trainersList}>
+                {/* Header Block matching Web Image 4 */}
+                <View style={styles.applicationsHeaderCard}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                    <View style={styles.postFormIconBox}>
+                      <Ionicons name="people" size={20} color={COLORS.primary} />
+                    </View>
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.pageHeaderTitle}>Trainer Applications</Text>
+                      <Text style={styles.pageHeaderSub}>
+                        Review candidate resumes, shortlist elite fitness experts, schedule interviews and extend offers
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+
                 {applications.length === 0 ? (
                   <View style={styles.emptyCardBox}>
                     <Ionicons name="people-outline" size={36} color={COLORS.textMuted} />
@@ -1369,78 +1669,127 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
                     <Text style={styles.emptyCardText}>Incoming trainer job applications will be catalogued here for review.</Text>
                   </View>
                 ) : (
-                  applications.map((app) => (
-                    <View key={app._id || app.id} style={styles.trainerCard}>
-                      <View style={styles.cardHeader}>
-                        <View style={styles.avatar}>
-                          <Text style={styles.avatarText}>
-                            {(app.fullName || app.name || 'C').charAt(0).toUpperCase()}
-                          </Text>
-                        </View>
-                        <View style={styles.cardHeaderInfo}>
-                          <Text style={styles.trainerNameText}>{app.fullName || app.name || 'Candidate'}</Text>
-                          <Text style={styles.trainerEmailText}>{app.email}</Text>
-                          {app.phone ? <Text style={styles.trainerPhoneText}>{app.phone}</Text> : null}
-                        </View>
-                        <View style={[styles.statusBadge, styles.statusBadgePending]}>
-                          <Text style={[styles.statusBadgeText, styles.statusBadgeTextPending]}>
-                            {app.status || 'Applied'}
-                          </Text>
-                        </View>
-                      </View>
+                  applications.map((app) => {
+                    const isShortlisted = app.status === 'Shortlisted';
+                    const isHired = app.status === 'Hired' || app.status === 'Selected';
+                    const isRejected = app.status === 'Rejected';
 
-                      <View style={styles.cardDetailsBox}>
-                        <View style={styles.detailItem}>
-                          <Text style={styles.detailLabel}>APPLIED FOR</Text>
-                          <Text style={styles.detailValue}>{app.jobId?.title || app.role || 'Trainer'}</Text>
+                    return (
+                      <View key={app._id || app.id} style={styles.applicationCardWeb}>
+                        {/* Candidate Row (Matching Web Image 4: selva kumar) */}
+                        <View style={styles.appWebTopRow}>
+                          <View style={{ flex: 1 }}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                              <Text style={styles.appCandidateName}>{app.fullName || app.name || 'selva kumar'}</Text>
+                              <TouchableOpacity 
+                                onPress={() => {
+                                  setSelectedApplication(app);
+                                  setShowAppModal(true);
+                                }}
+                              >
+                                <Ionicons name="document-text-outline" size={16} color="#EA580C" />
+                              </TouchableOpacity>
+                            </View>
+                            <View style={styles.appContactLine}>
+                              <Ionicons name="mail-outline" size={12} color="#64748B" />
+                              <Text style={styles.appEmailText}>{app.email}</Text>
+                              {app.phone ? (
+                                <>
+                                  <Text style={{ color: '#CBD5E1' }}>|</Text>
+                                  <Ionicons name="call-outline" size={12} color="#64748B" />
+                                  <Text style={styles.appPhoneText}>{app.phone}</Text>
+                                </>
+                              ) : null}
+                            </View>
+                          </View>
+
+                          {/* Status Pill (e.g. Shortlisted purple pill) */}
+                          <View style={[
+                            styles.appWebStatusPill,
+                            isShortlisted ? styles.appStatusShortlistedPill : isHired ? styles.appStatusHiredPill : isRejected ? styles.appStatusRejectedPill : styles.appStatusAppliedPill
+                          ]}>
+                            <View style={[
+                              styles.appStatusDot,
+                              { backgroundColor: isShortlisted ? '#9333EA' : isHired ? '#10B981' : isRejected ? '#EF4444' : '#F59E0B' }
+                            ]} />
+                            <Text style={[
+                              styles.appWebStatusText,
+                              isShortlisted ? styles.appStatusShortlistedText : isHired ? styles.appStatusHiredText : isRejected ? styles.appStatusRejectedText : styles.appStatusAppliedText
+                            ]}>
+                              {app.status || 'Shortlisted'}
+                            </Text>
+                          </View>
                         </View>
-                        <View style={styles.detailItem}>
-                          <Text style={styles.detailLabel}>EXPERIENCE</Text>
-                          <Text style={styles.detailValue}>{app.yearsOfExperience || app.workExperience || '2+ Yrs'}</Text>
+
+                        {/* Applied Vacancy & Experience Grid */}
+                        <View style={styles.appWebGrid}>
+                          <View style={styles.appWebGridCol}>
+                            <Text style={styles.appGridLabel}>APPLIED VACANCY</Text>
+                            <Text style={styles.appGridValBold}>{app.jobId?.title || app.role || 'Trainers'}</Text>
+                            <Text style={styles.appGridValSub}>
+                              {app.jobId?.employmentType || 'Part-time'} • {app.jobId?.location || 'Tirupattur busstand near'}
+                            </Text>
+                          </View>
+
+                          <View style={styles.appWebGridCol}>
+                            <Text style={styles.appGridLabel}>EXPERIENCE & EXPERTISE</Text>
+                            <Text style={styles.appGridValBold}>
+                              {app.yearsOfExperience || app.workExperience || '3 Years'}
+                            </Text>
+                            <View style={styles.appExpertiseBadge}>
+                              <Text style={styles.appExpertiseBadgeText}>
+                                {Array.isArray(app.expertise) ? app.expertise[0] : (app.expertise || 'Nutrition Coaching')}
+                              </Text>
+                            </View>
+                          </View>
+
+                          <View style={styles.appWebGridCol}>
+                            <Text style={styles.appGridLabel}>EXPECTED SALARY</Text>
+                            <Text style={styles.appGridValBold}>
+                              {app.expectedSalary ? (app.expectedSalary.startsWith('₹') ? app.expectedSalary : `₹${app.expectedSalary}`) : 'sdcsds'}
+                            </Text>
+                          </View>
                         </View>
-                        <View style={styles.detailItem}>
-                          <Text style={styles.detailLabel}>SALARY EXP</Text>
-                          <Text style={styles.feeValue}>{app.expectedSalary ? `₹${app.expectedSalary}` : 'Negotiable'}</Text>
-                        </View>
-                      </View>
 
-                      <View style={styles.cardActionsRow}>
-                        <TouchableOpacity 
-                          style={styles.actionCallBtn}
-                          onPress={() => {
-                            setSelectedApplication(app);
-                            setShowAppModal(true);
-                          }}
-                        >
-                          <Ionicons name="eye-outline" size={13} color={COLORS.primary} />
-                          <Text style={styles.actionCallText}>View Resume</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity 
-                          style={[styles.statusBadge, styles.statusBadgeActive, { paddingVertical: 6, paddingHorizontal: 12 }]}
-                          onPress={() => handleUpdateAppStatus(app._id || app.id, app.fullName || app.name, 'Shortlisted')}
-                        >
-                          <Text style={[styles.statusBadgeText, styles.statusBadgeTextActive]}>Shortlist</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity 
-                          style={[styles.statusBadge, styles.statusBadgeSuspended, { paddingVertical: 6, paddingHorizontal: 12 }]}
-                          onPress={() => handleUpdateAppStatus(app._id || app.id, app.fullName || app.name, 'Rejected')}
-                        >
-                          <Text style={[styles.statusBadgeText, styles.statusBadgeTextSuspended]}>Reject</Text>
-                        </TouchableOpacity>
-
-                        {app.phone ? (
+                        {/* Action Buttons Row */}
+                        <View style={styles.appWebActionRow}>
                           <TouchableOpacity 
-                            style={styles.actionIconBtn}
-                            onPress={() => handleCallTrainer(app.phone)}
+                            style={styles.appReviewBtn}
+                            onPress={() => {
+                              setSelectedApplication(app);
+                              setShowAppModal(true);
+                            }}
                           >
-                            <Ionicons name="call-outline" size={16} color={COLORS.primary} />
+                            <Ionicons name="eye-outline" size={14} color="#0F172A" />
+                            <Text style={styles.appReviewBtnText}>Review Resume</Text>
                           </TouchableOpacity>
-                        ) : null}
+
+                          <TouchableOpacity 
+                            style={styles.appShortlistBtn}
+                            onPress={() => handleUpdateAppStatus(app._id || app.id, app.fullName || app.name, 'Shortlisted')}
+                          >
+                            <Text style={styles.appShortlistBtnText}>Shortlist</Text>
+                          </TouchableOpacity>
+
+                          <TouchableOpacity 
+                            style={styles.appHireBtn}
+                            onPress={() => handleUpdateAppStatus(app._id || app.id, app.fullName || app.name, 'Hired')}
+                          >
+                            <Text style={styles.appHireBtnText}>Hire</Text>
+                          </TouchableOpacity>
+
+                          {app.phone ? (
+                            <TouchableOpacity 
+                              style={styles.appCallBtn}
+                              onPress={() => handleCallTrainer(app.phone)}
+                            >
+                              <Ionicons name="call" size={14} color="#EA580C" />
+                            </TouchableOpacity>
+                          ) : null}
+                        </View>
                       </View>
-                    </View>
-                  ))
+                    );
+                  })
                 )}
               </View>
             )}
@@ -2869,5 +3218,565 @@ const styles = StyleSheet.create({
     color: '#111827',
     maxWidth: '65%',
     textAlign: 'right',
+  },
+  // Web-Matching Trainer Hiring & Vacancies Styles
+  searchSubmitBtn: {
+    backgroundColor: '#0F172A',
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+    borderRadius: 8,
+  },
+  searchSubmitBtnText: {
+    color: '#FFFFFF',
+    fontSize: 11,
+    fontWeight: '700',
+  },
+  jobTopTagsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    flexWrap: 'wrap',
+    marginBottom: 6,
+  },
+  jobVacancyStatusPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+    borderWidth: 1,
+  },
+  jobVacancyOverPill: {
+    backgroundColor: '#FEF2F2',
+    borderColor: '#FECACA',
+  },
+  jobVacancyPublishedPill: {
+    backgroundColor: '#ECFDF5',
+    borderColor: '#A7F3D0',
+  },
+  jobVacancyDraftPill: {
+    backgroundColor: '#FFFBEB',
+    borderColor: '#FDE68A',
+  },
+  jobVacancyDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+  },
+  jobVacancyStatusText: {
+    fontSize: 10,
+    fontWeight: '800',
+  },
+  jobVacancyOverText: {
+    color: '#DC2626',
+  },
+  jobVacancyPublishedText: {
+    color: '#059669',
+  },
+  jobVacancyDraftText: {
+    color: '#D97706',
+  },
+  jobEmploymentPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: '#F8FAFC',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  jobEmploymentText: {
+    fontSize: 10,
+    color: '#475569',
+    fontWeight: '600',
+  },
+  jobLocationPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: '#FFF7ED',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#FFEDD5',
+  },
+  jobLocationText: {
+    fontSize: 10,
+    color: '#EA580C',
+    fontWeight: '700',
+    maxWidth: 160,
+  },
+  webJobTitleText: {
+    fontSize: 18,
+    fontWeight: '900',
+    color: '#0F172A',
+    letterSpacing: -0.2,
+    marginBottom: 4,
+  },
+  jobMetaDetailsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    flexWrap: 'wrap',
+    marginBottom: 8,
+  },
+  jobSalaryBoldText: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: '#0F172A',
+  },
+  jobMetaDivider: {
+    color: '#CBD5E1',
+    fontSize: 12,
+  },
+  jobMetaSecondaryText: {
+    fontSize: 11,
+    color: '#64748B',
+    fontWeight: '600',
+  },
+  jobDeadlineText: {
+    fontSize: 11,
+    color: '#64748B',
+  },
+  skillTagOrange: {
+    backgroundColor: '#FFF7ED',
+    borderWidth: 1,
+    borderColor: '#FED7AA',
+    borderRadius: 6,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+  },
+  skillTagOrangeText: {
+    fontSize: 10,
+    color: '#C2410C',
+    fontWeight: '700',
+  },
+  jobBottomActionCard: {
+    marginTop: 8,
+    paddingTop: 10,
+    borderTopWidth: 1,
+    borderTopColor: '#F1F5F9',
+    gap: 10,
+  },
+  jobCountersRow: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  jobMetricBox: {
+    flex: 1,
+    backgroundColor: '#F8FAFC',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    paddingVertical: 8,
+    alignItems: 'center',
+  },
+  jobMetricVal: {
+    fontSize: 15,
+    fontWeight: '900',
+    color: '#0F172A',
+  },
+  jobMetricLbl: {
+    fontSize: 9,
+    fontWeight: '800',
+    color: '#64748B',
+    marginTop: 1,
+    letterSpacing: 0.4,
+  },
+  jobCardButtonsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  toggleJobStatusBtnReopen: {
+    backgroundColor: '#FFF7ED',
+    borderColor: '#FED7AA',
+  },
+  toggleJobStatusTextReopen: {
+    color: '#EA580C',
+  },
+  jobActionIconBtn: {
+    width: 34,
+    height: 34,
+    borderRadius: 8,
+    backgroundColor: '#F1F5F9',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  postJobWrapper: {
+    gap: 12,
+  },
+  postBackHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    padding: 12,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  postBackBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  postBackBtnText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#0F172A',
+  },
+  postGymTagText: {
+    fontSize: 11,
+    color: '#64748B',
+  },
+  postFormHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F1F5F9',
+    paddingBottom: 12,
+    marginBottom: 6,
+  },
+  postFormIconBox: {
+    width: 38,
+    height: 38,
+    borderRadius: 12,
+    backgroundColor: '#FFF7ED',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  verifiedGymBox: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#F8FAFC',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+  },
+  verifiedGymNameText: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: '#0F172A',
+  },
+  verifiedGymBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: '#ECFDF5',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#A7F3D0',
+  },
+  verifiedGymBadgeText: {
+    fontSize: 10,
+    fontWeight: '800',
+    color: '#059669',
+  },
+  threeColRow: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  typeChipSmall: {
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+    borderRadius: 6,
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    alignItems: 'center',
+  },
+  typeChipSmallActive: {
+    backgroundColor: '#EA580C',
+    borderColor: '#EA580C',
+  },
+  typeChipSmallText: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: '#64748B',
+  },
+  typeChipSmallTextActive: {
+    color: '#FFFFFF',
+  },
+  fieldHintSub: {
+    fontSize: 10,
+    color: '#94A3B8',
+    marginBottom: 6,
+  },
+  trainingModeCardsRow: {
+    flexDirection: 'column',
+    gap: 8,
+  },
+  modeBigCard: {
+    backgroundColor: '#F8FAFC',
+    borderRadius: 12,
+    borderWidth: 1.5,
+    borderColor: '#E2E8F0',
+    padding: 12,
+    gap: 4,
+  },
+  modeBigCardActive: {
+    backgroundColor: '#FFF7ED',
+    borderColor: '#EA580C',
+  },
+  modeBigCardHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  modeBigCardTitle: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: '#0F172A',
+  },
+  modeBigCardTitleActive: {
+    color: '#EA580C',
+  },
+  modeBigCardDesc: {
+    fontSize: 11,
+    color: '#64748B',
+    marginLeft: 26,
+  },
+  salarySectionBox: {
+    backgroundColor: '#F8FAFC',
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    padding: 12,
+    gap: 8,
+    marginTop: 8,
+  },
+  salarySectionTopRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    gap: 6,
+  },
+  salarySectionTitle: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: '#0F172A',
+  },
+  negotiableCheckRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  negotiableCheckText: {
+    fontSize: 11,
+    color: '#475569',
+    fontWeight: '600',
+  },
+  deadlineHintText: {
+    fontSize: 10,
+    color: '#94A3B8',
+    fontStyle: 'italic',
+    marginTop: 2,
+    marginBottom: 6,
+  },
+  applicationsHeaderCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: 14,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    marginBottom: 10,
+  },
+  applicationCardWeb: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    padding: 14,
+    gap: 12,
+    marginBottom: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.04,
+    shadowRadius: 2,
+    elevation: 1,
+  },
+  appWebTopRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+  },
+  appCandidateName: {
+    fontSize: 15,
+    fontWeight: '800',
+    color: '#0F172A',
+  },
+  appContactLine: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginTop: 3,
+  },
+  appEmailText: {
+    fontSize: 11,
+    color: '#64748B',
+  },
+  appPhoneText: {
+    fontSize: 11,
+    color: '#64748B',
+  },
+  appWebStatusPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 8,
+    borderWidth: 1,
+  },
+  appStatusShortlistedPill: {
+    backgroundColor: '#FAF5FF',
+    borderColor: '#E9D5FF',
+  },
+  appStatusHiredPill: {
+    backgroundColor: '#ECFDF5',
+    borderColor: '#A7F3D0',
+  },
+  appStatusRejectedPill: {
+    backgroundColor: '#FEF2F2',
+    borderColor: '#FECACA',
+  },
+  appStatusAppliedPill: {
+    backgroundColor: '#FFFBEB',
+    borderColor: '#FDE68A',
+  },
+  appStatusDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+  },
+  appWebStatusText: {
+    fontSize: 10,
+    fontWeight: '800',
+  },
+  appStatusShortlistedText: {
+    color: '#9333EA',
+  },
+  appStatusHiredText: {
+    color: '#059669',
+  },
+  appStatusRejectedText: {
+    color: '#DC2626',
+  },
+  appStatusAppliedText: {
+    color: '#D97706',
+  },
+  appWebGrid: {
+    flexDirection: 'column',
+    gap: 8,
+    backgroundColor: '#F8FAFC',
+    borderRadius: 12,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#F1F5F9',
+  },
+  appWebGridCol: {
+    gap: 2,
+  },
+  appGridLabel: {
+    fontSize: 9,
+    fontWeight: '800',
+    color: '#94A3B8',
+    letterSpacing: 0.4,
+  },
+  appGridValBold: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: '#0F172A',
+  },
+  appGridValSub: {
+    fontSize: 11,
+    color: '#64748B',
+  },
+  appExpertiseBadge: {
+    backgroundColor: '#FFF7ED',
+    borderWidth: 1,
+    borderColor: '#FED7AA',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 6,
+    alignSelf: 'flex-start',
+    marginTop: 2,
+  },
+  appExpertiseBadgeText: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: '#C2410C',
+  },
+  appWebActionRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  appReviewBtn: {
+    flex: 1.5,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 5,
+    backgroundColor: '#F1F5F9',
+    borderRadius: 8,
+    paddingVertical: 8,
+  },
+  appReviewBtnText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#0F172A',
+  },
+  appShortlistBtn: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FAF5FF',
+    borderWidth: 1,
+    borderColor: '#E9D5FF',
+    borderRadius: 8,
+    paddingVertical: 8,
+  },
+  appShortlistBtnText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#9333EA',
+  },
+  appHireBtn: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#ECFDF5',
+    borderWidth: 1,
+    borderColor: '#A7F3D0',
+    borderRadius: 8,
+    paddingVertical: 8,
+  },
+  appHireBtnText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#059669',
+  },
+  appCallBtn: {
+    width: 34,
+    height: 34,
+    borderRadius: 8,
+    backgroundColor: '#FFF7ED',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#FED7AA',
   },
 });

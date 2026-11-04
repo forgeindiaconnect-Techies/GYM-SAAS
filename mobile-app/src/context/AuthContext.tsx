@@ -188,11 +188,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       return { success: true };
     } catch (err: any) {
-      const errorMsg =
-        err.response?.data?.message ||
-        (err.message === 'Network Error' || !err.response
-          ? 'Cannot connect to server. Please check your internet or Render backend.'
-          : 'Login failed. Please verify your credentials.');
+      let errorMsg = err.response?.data?.message;
+      if (!errorMsg) {
+        if (err.code === 'ECONNABORTED' || err.message?.includes('timeout')) {
+          errorMsg = 'Server was waking up from sleep. It is now active—please tap Login again.';
+        } else if (err.message === 'Network Error' || !err.response) {
+          errorMsg = 'Cannot connect to server. Render may be waking up—please wait 5 seconds and tap Login again.';
+        } else {
+          errorMsg = 'Login failed. Please verify your credentials.';
+        }
+      }
 
       return {
         success: false,

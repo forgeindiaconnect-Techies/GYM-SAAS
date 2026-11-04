@@ -30,6 +30,8 @@ import { CustomerHomeScreen } from './src/screens/customer/CustomerHomeScreen';
 import { CustomerTrainingScreen } from './src/screens/customer/CustomerTrainingScreen';
 import { CustomerDietScreen } from './src/screens/customer/CustomerDietScreen';
 import { CustomerProgressScreen } from './src/screens/customer/CustomerProgressScreen';
+import { CustomerFitnessScreen } from './src/screens/customer/CustomerFitnessScreen';
+import { CustomerStoreScreen } from './src/screens/customer/CustomerStoreScreen';
 import { CustomerMoreScreen } from './src/screens/customer/CustomerMoreScreen';
 
 const MainAppContent = () => {
@@ -126,10 +128,10 @@ const MainAppContent = () => {
       navigateTo('home', sub || 'dashboard');
     } else if (tab === 'workouts' || tab === 'trainers' || tab === 'training') {
       navigateTo('training', sub || (tab === 'workouts' ? 'workout_plan' : 'training'));
-    } else if (tab === 'diet') {
-      navigateTo('diet', null);
-    } else if (tab === 'progress') {
-      navigateTo('progress', sub || 'tracking');
+    } else if (tab === 'fitness' || tab === 'diet' || tab === 'progress') {
+      navigateTo('fitness', sub || (tab === 'diet' ? 'diet' : tab === 'progress' ? 'progress' : 'workout'));
+    } else if (tab === 'store' || tab === 'cart' || tab === 'orders' || tab === 'payments') {
+      navigateTo('store', sub || (tab === 'cart' ? 'cart' : tab === 'orders' ? 'orders' : tab === 'payments' ? 'payments' : 'store'));
     } else if (tab === 'profile' || tab === 'more') {
       navigateTo('more', sub || 'none');
     } else {
@@ -235,10 +237,22 @@ const MainAppContent = () => {
         case 'workouts':
         case 'trainers':
           return <CustomerTrainingScreen initialSubTab={activeSub || 'training'} />;
+        case 'fitness':
         case 'diet':
-          return <CustomerDietScreen />;
         case 'progress':
-          return <CustomerProgressScreen initialSubTab={activeSub || 'tracking'} />;
+          return (
+            <CustomerFitnessScreen 
+              initialSubTab={activeSub || (activeTab === 'diet' ? 'diet' : activeTab === 'progress' ? 'progress' : 'workout')} 
+            />
+          );
+        case 'store':
+        case 'cart':
+        case 'orders':
+          return (
+            <CustomerStoreScreen 
+              initialSubTab={activeSub || (activeTab === 'cart' ? 'cart' : activeTab === 'orders' ? 'orders' : 'store')} 
+            />
+          );
         case 'more':
         case 'profile':
           return <CustomerMoreScreen initialSection={activeSub || 'none'} />;

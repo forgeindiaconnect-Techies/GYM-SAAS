@@ -38,8 +38,8 @@ export const BottomTabBar: React.FC<{
         return [
           { key: 'home', label: 'Home', icon: 'home-outline' },
           { key: 'training', label: 'Training', icon: 'barbell-outline' },
-          { key: 'diet', label: 'Diet', icon: 'nutrition-outline' },
-          { key: 'progress', label: 'Progress', icon: 'trending-up-outline' },
+          { key: 'fitness', label: 'Fitness', icon: 'fitness-outline' },
+          { key: 'store', label: 'Store', icon: 'cart-outline' },
           { key: 'more', label: 'More', icon: 'grid-outline' },
         ];
       default:
