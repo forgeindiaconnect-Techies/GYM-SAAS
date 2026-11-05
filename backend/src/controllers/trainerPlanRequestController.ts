@@ -674,91 +674,58 @@ export const getTrainerClientsList = async (req: AuthRequest, res: Response): Pr
 
 const DEFAULT_GYM_EQUIPMENTS = [
   {
-    name: 'Olympic Barbell & Bumper Plate Set',
-    category: 'Free Weights',
-    brand: 'Eleiko',
-    quantity: 6,
-    condition: 'Good',
-    availability: 'Available',
-    status: 'Active',
-    nextService: '2026-12-01',
-    isApproved: false
-  },
-  {
-    name: 'Power Squat Rack & Pull-up Station',
-    category: 'Strength Machines',
-    brand: 'Rogue Fitness',
+    name: 'Commercial Treadmill T90',
+    category: 'Cardio',
+    brand: 'LifeFitness',
     quantity: 4,
     condition: 'Good',
     availability: 'Available',
     status: 'Active',
-    nextService: '2026-11-15',
+    nextService: 'Up to date',
     isApproved: false
   },
   {
-    name: 'Dual Adjustable Cable Crossover Machine',
-    category: 'Cable Machines',
-    brand: 'Life Fitness',
+    name: 'Olympic Barbell & Bumper Plates',
+    category: 'Strength',
+    brand: 'Rogue',
+    quantity: 6,
+    condition: 'Good',
+    availability: 'Available',
+    status: 'Active',
+    nextService: 'Up to date',
+    isApproved: false
+  },
+  {
+    name: 'Dual Adjustable Pulley Cable Machine',
+    category: 'Strength',
+    brand: 'Matrix',
     quantity: 2,
     condition: 'Good',
     availability: 'Available',
     status: 'Active',
-    nextService: '2026-10-30',
+    nextService: 'Up to date',
     isApproved: false
   },
   {
-    name: 'Commercial Treadmill T8000',
+    name: 'Commercial Spin Bike Pro',
     category: 'Cardio',
-    brand: 'Technogym',
+    brand: 'Keiser',
     quantity: 8,
     condition: 'Good',
     availability: 'Available',
     status: 'Active',
-    nextService: '2026-11-20',
+    nextService: 'Up to date',
     isApproved: false
   },
   {
-    name: 'Hex Dumbbell Set (2.5kg - 50kg Rack)',
+    name: 'Dumbbell Set (2.5kg - 40kg)',
     category: 'Free Weights',
-    brand: 'Hammer Strength',
-    quantity: 2,
+    brand: 'Eleiko',
+    quantity: 12,
     condition: 'Good',
     availability: 'Available',
     status: 'Active',
-    nextService: '2026-12-15',
-    isApproved: false
-  },
-  {
-    name: '45-Degree Incline Leg Press Machine',
-    category: 'Strength Machines',
-    brand: 'Matrix Fitness',
-    quantity: 2,
-    condition: 'Good',
-    availability: 'Available',
-    status: 'Active',
-    nextService: '2026-11-10',
-    isApproved: false
-  },
-  {
-    name: 'Commercial Concept2 Indoor Rower',
-    category: 'Cardio',
-    brand: 'Concept2',
-    quantity: 3,
-    condition: 'Good',
-    availability: 'Available',
-    status: 'Active',
-    nextService: '2026-12-05',
-    isApproved: false
-  },
-  {
-    name: 'Seated Chest Press & Fly Selectorized Machine',
-    category: 'Strength Machines',
-    brand: 'Precor',
-    quantity: 2,
-    condition: 'Good',
-    availability: 'Available',
-    status: 'Active',
-    nextService: '2026-11-25',
+    nextService: 'Up to date',
     isApproved: false
   }
 ];
