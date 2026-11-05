@@ -149,7 +149,7 @@ const MainAppContent = () => {
     } else if (tab === 'programs' || tab === 'workouts') {
       navigateTo('programs', sub || (tab === 'workouts' ? 'workout-plans' : 'none'));
     } else if (tab === 'more' || tab === 'profile' || tab === 'earnings') {
-      navigateTo('more', sub || (tab === 'earnings' ? 'financials' : 'none'));
+      navigateTo('more', sub || (tab === 'earnings' ? 'financials' : (tab === 'profile' ? 'profile' : 'none')));
     } else {
       navigateTo(tab, sub);
     }
@@ -215,7 +215,7 @@ const MainAppContent = () => {
         case 'more':
         case 'profile':
         case 'earnings':
-          return <TrainerMoreScreen initialSection={activeSub || 'none'} />;
+          return <TrainerMoreScreen initialSection={activeSub || (activeTab === 'profile' ? 'profile' : (activeTab === 'earnings' ? 'financials' : 'none'))} />;
         default:
           return <TrainerDashboardScreen onNavigateTab={handleTrainerNavigate} />;
       }

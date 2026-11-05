@@ -17,6 +17,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../constants/theme';
 import { useAuth } from '../../context/AuthContext';
 import { api } from '../../api/client';
+import { FileDownloader } from '../../utils/fileDownloader';
 
 const { width } = Dimensions.get('window');
 
@@ -664,6 +665,106 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
       setShowAppModal(false);
     } catch (err) {
       Alert.alert('Error', 'Failed to update application status.');
+    }
+  };
+
+
+  // Trainer Export and Download Handlers
+  const handleExportTrainersPDF = async () => {
+    try {
+      const headers = ['#', 'Trainer Name', 'Specialization', 'Phone', 'Status', 'Clients'];
+      const rows = filteredTrainers.map((t: any, idx: number) => [
+        idx + 1,
+        t.name || t.fullName,
+        t.specialization || 'Fitness Coach',
+        t.phone || 'N/A',
+        t.status || 'Active',
+        t.assignedClientsCount || 1
+      ]);
+      await FileDownloader.downloadReportPDF({
+        title: 'Gym Coaching Staff Roster',
+        subtitle: `Certified Trainers Directory (${filteredTrainers.length} active coaches)`,
+        gymName: user?.gymName || 'Perfect Fitness Studio',
+        summaryMetrics: [
+          { label: 'Total Trainers', value: String(trainers.length) },
+          { label: 'Active Coaches', value: String(filteredTrainers.filter((t: any) => t.status === 'Active').length) },
+        ],
+        headers,
+        rows
+      }, 'Trainers_Roster');
+    } catch (err: any) {
+      Alert.alert('Export Error', err?.message || 'Failed to export trainers PDF.');
+    }
+  };
+
+  const handleExportTrainersCSV = async () => {
+    try {
+      const headers = ['#', 'Trainer Name', 'Specialization', 'Email', 'Phone', 'Status'];
+      const rows = filteredTrainers.map((t: any, idx: number) => [
+        idx + 1,
+        t.name || t.fullName,
+        t.specialization || 'Fitness Coach',
+        t.email || 'N/A',
+        t.phone || 'N/A',
+        t.status || 'Active'
+      ]);
+      await FileDownloader.downloadCSV(`Trainers_Roster_${new Date().toISOString().slice(0, 10)}`, headers, rows);
+    } catch (err: any) {
+      Alert.alert('Export Error', err?.message || 'Failed to export trainers CSV.');
+    }
+  };
+
+  const handleDownloadTrainerAgreement = async (tr: any) => {
+    try {
+      await FileDownloader.downloadReportPDF({
+        title: 'Trainer Professional Coaching Contract & Agreement',
+        subtitle: `Coaching Engagement Terms - ${tr.name || tr.fullName}`,
+        gymName: user?.gymName || 'Perfect Fitness Studio',
+        summaryMetrics: [
+          { label: 'Trainer Name', value: tr.name || tr.fullName || 'Trainer' },
+          { label: 'Designation', value: tr.specialization || 'Elite Fitness Coach' },
+          { label: 'Monthly Base Fee', value: '₹25,000' },
+          { label: 'Status', value: tr.status || 'Active' },
+        ],
+        headers: ['Clause / Term', 'Contract Specification'],
+        rows: [
+          ['Facility & Club', user?.gymName || 'Perfect Fitness Studio'],
+          ['Training Engagement', tr.specialization || 'General Fitness, Strength & Conditioning'],
+          ['Working Schedule', `${tr.availableDays || 'Monday - Friday'} • ${tr.availableStartTime || '06:00 AM'} - ${tr.availableEndTime || '08:00 PM'}`],
+          ['Qualifications & Accreditations', tr.qualifications || 'Certified Fitness Coach (ACE/ISSA)'],
+          ['Safety & Floor Compliance', 'Full adherence to gym equipment hygiene, client safety, and protocol'],
+          ['Disbursement Cycle', 'Monthly disbursement on the 10th via UPI / Direct Bank Transfer'],
+        ]
+      }, `Trainer_Agreement_${(tr.name || 'Trainer').replace(/\s+/g, '_')}`);
+    } catch (err: any) {
+      Alert.alert('Download Error', err?.message || 'Failed to download trainer agreement.');
+    }
+  };
+
+  const handleDownloadApplicationPDF = async (app: any) => {
+    try {
+      await FileDownloader.downloadReportPDF({
+        title: 'Trainer Candidate Job Application',
+        subtitle: `Application for Position: ${app.jobTitle || 'Fitness Coach'}`,
+        gymName: user?.gymName || 'Perfect Fitness Studio',
+        summaryMetrics: [
+          { label: 'Candidate Name', value: app.fullName || app.name || 'Coach Applicant' },
+          { label: 'Experience', value: app.experience || '3-5 Years' },
+          { label: 'Application Status', value: app.status || 'Under Review' },
+        ],
+        headers: ['Credential / Field', 'Applicant Details'],
+        rows: [
+          ['Full Legal Name', app.fullName || app.name || 'Candidate'],
+          ['Email Address', app.email || 'N/A'],
+          ['Mobile Number', app.phone || app.mobile || 'N/A'],
+          ['Expected Compensation', app.expectedSalary ? '₹' + app.expectedSalary : 'Negotiable'],
+          ['Specialization', app.specialization || 'Strength & Conditioning, Nutrition'],
+          ['Certifications', app.certifications || 'CPR, Certified Personal Trainer'],
+          ['Cover Letter / Statement', app.coverLetter || 'Eager to contribute to fitness club coaching goals.'],
+        ]
+      }, `Trainer_Application_${(app.fullName || 'Candidate').replace(/\s+/g, '_')}`);
+    } catch (err: any) {
+      Alert.alert('Download Error', err?.message || 'Failed to download application summary.');
     }
   };
 
@@ -2121,12 +2222,21 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
               </ScrollView>
             )}
 
-            <View style={styles.modalActions}>
+            <View style={[styles.modalActions, { gap: 10 }]}>
               <TouchableOpacity 
-                style={[styles.modalSubmitBtn, { flex: 1 }]} 
+                style={[styles.modalSubmitBtn, { flex: 1.5, backgroundColor: COLORS.primary, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6 }]} 
+                onPress={() => {
+                  if (selectedTrainer) handleDownloadTrainerAgreement(selectedTrainer);
+                }}
+              >
+                <Ionicons name="download-outline" size={16} color="#FFFFFF" />
+                <Text style={styles.modalSubmitText}>Download Agreement (PDF)</Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={[styles.modalCancelBtn, { flex: 0.7, alignItems: 'center', justifyContent: 'center' }]} 
                 onPress={() => setShowViewModal(false)}
               >
-                <Text style={styles.modalSubmitText}>Close</Text>
+                <Text style={styles.modalCancelText}>Close</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -2369,7 +2479,16 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
               </ScrollView>
             )}
 
-            <View style={styles.modalActions}>
+            <View style={[styles.modalActions, { gap: 8 }]}>
+              <TouchableOpacity 
+                style={[styles.modalSubmitBtn, { flex: 1.2, backgroundColor: COLORS.primary, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 4 }]}
+                onPress={() => {
+                  if (selectedApplication) handleDownloadApplicationPDF(selectedApplication);
+                }}
+              >
+                <Ionicons name="download-outline" size={14} color="#FFFFFF" />
+                <Text style={styles.modalSubmitText}>PDF Summary</Text>
+              </TouchableOpacity>
               <TouchableOpacity 
                 style={[styles.modalSubmitBtn, { flex: 1, backgroundColor: '#15803D' }]}
                 onPress={() => handleUpdateAppStatus(
@@ -2381,7 +2500,7 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
                 <Text style={styles.modalSubmitText}>Hire Trainer</Text>
               </TouchableOpacity>
               <TouchableOpacity 
-                style={[styles.modalCancelBtn, { flex: 1 }]}
+                style={[styles.modalCancelBtn, { flex: 0.8, alignItems: 'center', justifyContent: 'center' }]}
                 onPress={() => setShowAppModal(false)}
               >
                 <Text style={styles.modalCancelText}>Close</Text>

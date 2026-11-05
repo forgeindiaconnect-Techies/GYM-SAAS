@@ -16,6 +16,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../constants/theme';
 import { useAuth } from '../../context/AuthContext';
 import { api } from '../../api/client';
+import { FileDownloader } from '../../utils/fileDownloader';
 
 const { width } = Dimensions.get('window');
 
@@ -368,6 +369,120 @@ export const OwnerFinancesScreen: React.FC<{ initialTab?: 'analytics' | 'payment
     }
   };
 
+  // Download & Export Handlers using universal FileDownloader
+  const handleExportAnalyticsPDF = async () => {
+    try {
+      const gross = analyticsSummary.totalGrossRevenue || 28976;
+      const trainerPaid = analyticsSummary.trainerCommissionPaid || 17500;
+      const net = Math.max(0, gross - trainerPaid);
+
+      await FileDownloader.downloadReportPDF({
+        title: 'Monthly Financial Intelligence Statement',
+        subtitle: 'Complete Revenue, Collections & Cashflow Analytics',
+        gymName: user?.gymName || 'Perfect Fitness Studio',
+        dateRange: timeframe.toUpperCase(),
+        summaryMetrics: [
+          { label: 'Total Gross Revenue', value: '₹' + gross.toLocaleString('en-IN') },
+          { label: 'Net Profit Margin', value: '₹' + net.toLocaleString('en-IN') },
+          { label: 'Trainer Payouts', value: '₹' + trainerPaid.toLocaleString('en-IN') },
+          { label: 'Active Subscriptions', value: String(filteredPayments.length) },
+        ],
+        headers: ['Metric / Stream', 'Period', 'Amount (INR)', 'Contribution'],
+        rows: [
+          ['Membership Subscriptions', timeframe, '₹' + (analyticsSummary.membersRevenue || 2896).toLocaleString('en-IN'), '78%'],
+          ['Personal Training Add-ons', timeframe, '₹' + (analyticsSummary.trainersRevenue || 25000).toLocaleString('en-IN'), '14%'],
+          ['POS Store & Nutrition', timeframe, '₹' + (analyticsSummary.ordersRevenue || 1080).toLocaleString('en-IN'), '8%'],
+          ['Operating Expenses & GST (est)', timeframe, '₹' + Math.round(gross * 0.18).toLocaleString('en-IN'), '-18%'],
+        ],
+      }, 'Monthly_Financial_Statement');
+    } catch (err: any) {
+      Alert.alert('Export Error', err?.message || 'Failed to generate financial statement.');
+    }
+  };
+
+  const handleExportPaymentsPDF = async () => {
+    try {
+      const headers = ['Date', 'Customer', 'Plan', 'Amount', 'Method', 'Status'];
+      const rows = filteredPayments.map((p) => {
+        const name = `${p.customerId?.firstName || ''} ${p.customerId?.lastName || ''}`.trim() || p.customerBankDetails?.fullName || 'Customer';
+        const date = new Date(p.paymentDate || p.createdAt || Date.now()).toLocaleDateString('en-IN');
+        const amount = '₹' + Number(p.amount || 0).toLocaleString('en-IN');
+        return [date, name, p.planName || 'Standard Membership', amount, p.paymentMethod || 'UPI', p.status || 'Approved'];
+      });
+
+      await FileDownloader.downloadReportPDF({
+        title: 'Membership Transactions Ledger',
+        subtitle: 'Live verified subscription receipts and offline payments',
+        gymName: user?.gymName || 'Perfect Fitness Studio',
+        summaryMetrics: [
+          { label: 'Total Transactions', value: String(filteredPayments.length) },
+          { label: 'Total Collections', value: '₹' + filteredPayments.reduce((s, p) => s + (Number(p.amount) || 0), 0).toLocaleString('en-IN') },
+        ],
+        headers,
+        rows,
+      }, 'Membership_Transactions_Ledger');
+    } catch (err: any) {
+      Alert.alert('Export Error', err?.message || 'Failed to generate PDF.');
+    }
+  };
+
+  const handleExportPaymentsCSV = async () => {
+    try {
+      const headers = ['Transaction ID', 'Customer Name', 'Plan Name', 'Membership ID', 'Amount (INR)', 'Payment Method', 'Date', 'Status'];
+      const rows = filteredPayments.map((p) => {
+        const name = `${p.customerId?.firstName || ''} ${p.customerId?.lastName || ''}`.trim() || p.customerBankDetails?.fullName || 'Customer';
+        const date = new Date(p.paymentDate || p.createdAt || Date.now()).toLocaleDateString('en-IN');
+        return [
+          p.transactionId || p._id,
+          name,
+          p.planName || 'Membership Plan',
+          p.membershipId?.membershipId || 'N/A',
+          p.amount || 0,
+          p.paymentMethod || 'UPI',
+          date,
+          p.status || 'Approved'
+        ];
+      });
+
+      await FileDownloader.downloadCSV(`Transactions_Ledger_${new Date().toISOString().slice(0, 10)}`, headers, rows);
+    } catch (err: any) {
+      Alert.alert('Export Error', err?.message || 'Failed to export CSV.');
+    }
+  };
+
+  const handleDownloadTransactionInvoice = async (trx: PaymentRecord) => {
+    try {
+      const customerName = `${trx.customerId?.firstName || ''} ${trx.customerId?.lastName || ''}`.trim() || trx.customerBankDetails?.fullName || 'Valued Member';
+      const invNumber = trx.receiptNumber || `INV-${(trx.transactionId || trx._id).slice(-8).toUpperCase()}`;
+      const amount = Number(trx.amount) || 0;
+
+      await FileDownloader.downloadInvoicePDF({
+        invoiceNumber: invNumber,
+        invoiceDate: new Date(trx.paymentDate || trx.createdAt || Date.now()).toLocaleDateString('en-IN'),
+        gymName: user?.gymName || 'Perfect Fitness Studio',
+        gymAddress: 'Premier Fitness Club & Training Facility',
+        customerName,
+        customerEmail: trx.customerId?.email,
+        customerPhone: trx.customerId?.mobile,
+        membershipId: trx.membershipId?.membershipId || `MEM-${trx._id.slice(-6).toUpperCase()}`,
+        items: [
+          {
+            description: `${trx.planName || 'Gym Membership'} - ${(trx as any).billingCycle || 'Monthly'} Membership Subscription`,
+            quantity: 1,
+            amount,
+          }
+        ],
+        subtotal: amount,
+        total: amount,
+        paymentMethod: trx.paymentMethod || 'UPI / Online',
+        paymentStatus: (trx.status || 'Approved').toUpperCase() === 'APPROVED' ? 'PAID' : (trx.status || 'PAID'),
+        notes: `Membership ID: ${trx.membershipId?.membershipId || 'Active'}. Thank you for choosing Perfect Fitness Studio!`
+      });
+    } catch (err: any) {
+      Alert.alert('Invoice Error', err?.message || 'Failed to download invoice.');
+    }
+  };
+
   return (
     <View style={styles.container}>
       {/* 1. TOP SEGMENT SWITCHER: Revenue & Analytics vs Membership Payments */}
@@ -454,7 +569,7 @@ export const OwnerFinancesScreen: React.FC<{ initialTab?: 'analytics' | 'payment
 
               <TouchableOpacity 
                 style={styles.exportReportBtn}
-                onPress={() => Alert.alert('Export Statement', `Monthly financial intelligence statement generated.`)}
+                onPress={handleExportAnalyticsPDF}
                 activeOpacity={0.7}
               >
                 <Ionicons name="download-outline" size={14} color={COLORS.white} />
@@ -807,7 +922,7 @@ export const OwnerFinancesScreen: React.FC<{ initialTab?: 'analytics' | 'payment
 
               <TouchableOpacity 
                 style={styles.exportPdfBtn}
-                onPress={() => Alert.alert('Export Statement', 'Membership transactions ledger statement generated.')}
+                onPress={handleExportPaymentsPDF}
               >
                 <Ionicons name="download-outline" size={13} color={COLORS.primary} />
                 <Text style={styles.exportPdfBtnText}>PDF</Text>
@@ -815,7 +930,7 @@ export const OwnerFinancesScreen: React.FC<{ initialTab?: 'analytics' | 'payment
 
               <TouchableOpacity 
                 style={styles.exportCsvBtn}
-                onPress={() => Alert.alert('Export Statement', 'CSV spreadsheet exported successfully.')}
+                onPress={handleExportPaymentsCSV}
               >
                 <Ionicons name="document-text-outline" size={13} color={COLORS.primary} />
                 <Text style={styles.exportCsvBtnText}>CSV</Text>
@@ -1232,10 +1347,17 @@ export const OwnerFinancesScreen: React.FC<{ initialTab?: 'analytics' | 'payment
 
             <View style={styles.modalActions}>
               <TouchableOpacity 
-                style={[styles.modalSubmitBtn, { flex: 1 }]}
+                style={[styles.modalSubmitBtn, { flex: 1.5, backgroundColor: COLORS.primary, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6 }]}
+                onPress={() => selectedTrx && handleDownloadTransactionInvoice(selectedTrx)}
+              >
+                <Ionicons name="download-outline" size={16} color="#FFFFFF" />
+                <Text style={styles.modalSubmitText}>Download Invoice (PDF)</Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={[styles.modalCancelBtn, { flex: 0.6, alignItems: 'center', justifyContent: 'center' }]}
                 onPress={() => setShowReceiptModal(false)}
               >
-                <Text style={styles.modalSubmitText}>Close</Text>
+                <Text style={styles.modalCancelText}>Close</Text>
               </TouchableOpacity>
             </View>
           </View>

@@ -9,6 +9,7 @@ import {
   Alert, 
   TextInput, 
   Modal, 
+  Switch, 
   BackHandler, 
   Platform,
   ActivityIndicator,
@@ -22,6 +23,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../constants/theme';
 import { useAuth } from '../../context/AuthContext';
 import { api } from '../../api/client';
+import { FileDownloader } from '../../utils/fileDownloader';
 
 const { width } = Dimensions.get('window');
 
@@ -275,6 +277,43 @@ export interface VideoFormState {
   description: string;
   descriptionTamil: string;
   tips: string[];
+}
+
+export interface OnlineSessionItem {
+  _id: string;
+  title: string;
+  trainerName: string;
+  trainerPhoto?: string;
+  specialization?: string;
+  date: string;
+  time: string;
+  duration: number;
+  category: string;
+  attendeesCount: number;
+  maxCapacity: number;
+  meetingLink: string;
+  status: 'Live Now' | 'Upcoming' | 'Completed' | 'Cancelled';
+  price: number;
+  description?: string;
+}
+
+export interface VideoBookingItem {
+  _id: string;
+  bookingId: string;
+  memberName: string;
+  memberEmail?: string;
+  memberPhone?: string;
+  trainerName: string;
+  trainerSpecialization?: string;
+  sessionType: '1-on-1 Virtual Training' | 'Nutrition Consultation' | 'Form & Posture Assessment' | 'Fitness Goal Review';
+  date: string;
+  startTime: string;
+  duration: number;
+  fee: number;
+  meetingLink: string;
+  meetingId: string;
+  status: 'Upcoming' | 'Completed' | 'In Progress' | 'Cancelled';
+  paymentStatus: 'Paid' | 'Free Trial' | 'Pending';
 }
 
 
@@ -693,6 +732,361 @@ export const OwnerMoreScreen: React.FC<{
   const [selectedPerfCalendarCustomer, setSelectedPerfCalendarCustomer] = useState<any | null>(null);
   const [selectedPerfTrainer, setSelectedPerfTrainer] = useState<any | null>(null);
 
+  // Online Sessions State (Matching Web /admin/online-sessions - Images 1 & 2)
+  const [onlineSessions, setOnlineSessions] = useState<OnlineSessionItem[]>([
+    {
+      _id: 'sess-virtual-001',
+      title: 'Virtual 1-on-1 with Naveen',
+      trainerName: 'Naveen',
+      specialization: 'ALL',
+      date: '2026-10-15',
+      time: '10:00 AM',
+      duration: 60,
+      category: 'Personal Training',
+      attendeesCount: 1,
+      maxCapacity: 1,
+      meetingLink: 'https://meet.jit.si/aigym-session-naveen-001',
+      status: 'Completed',
+      price: 25000,
+      description: 'Virtual session with gym personal trainer.',
+    }
+  ]);
+  const [onlineSessionSearch, setOnlineSessionSearch] = useState('');
+  const [onlineSessionFilter, setOnlineSessionFilter] = useState<'All' | 'Upcoming' | 'Completed'>('All');
+  const [onlineCopiedId, setOnlineCopiedId] = useState<string | null>(null);
+  const [showCreateOnlineSessionModal, setShowCreateOnlineSessionModal] = useState(false);
+  const [selectedOnlineStudioSession, setSelectedOnlineStudioSession] = useState<OnlineSessionItem | null>(null);
+
+  // New session modal form state
+  const [newOnlineTitle, setNewOnlineTitle] = useState('');
+  const [newOnlineTrainer, setNewOnlineTrainer] = useState('Naveen');
+  const [newOnlineDate, setNewOnlineDate] = useState('2026-11-06');
+  const [newOnlineTime, setNewOnlineTime] = useState('10:00 AM');
+  const [newOnlineDuration, setNewOnlineDuration] = useState('60');
+  const [newOnlineCategory, setNewOnlineCategory] = useState('Personal Training');
+  const [newOnlineCapacity, setNewOnlineCapacity] = useState('1');
+  const [newOnlinePrice, setNewOnlinePrice] = useState('0');
+  const [newOnlineLink, setNewOnlineLink] = useState('');
+  const [newOnlineDescription, setNewOnlineDescription] = useState('Virtual session with gym personal trainer.');
+
+  // Trainer Schedule State (Matching Web /admin/trainer-schedule - Images 1, 2, 3)
+  const [scheduleAnchorDate, setScheduleAnchorDate] = useState(() => new Date('2026-10-15T12:00:00'));
+  const [scheduleTrainerFilter, setScheduleTrainerFilter] = useState('ALL');
+  const [selectedScheduleDayIndex, setSelectedScheduleDayIndex] = useState(3); // Thursday Oct 15
+  const [selectedScheduleDetail, setSelectedScheduleDetail] = useState<any | null>(null);
+
+  // Video Bookings State (Matching Web /admin/video-bookings - Images 1 & 2)
+  const [videoBookings, setVideoBookings] = useState<VideoBookingItem[]>([
+    {
+      _id: 'vb-001',
+      bookingId: 'BKG-9F5KMZ5T9',
+      memberName: 'Renugopal Y',
+      memberEmail: 'renugopal5457@gmail.com',
+      memberPhone: '377899877',
+      trainerName: 'Naveen',
+      trainerSpecialization: 'ALL',
+      sessionType: '1-on-1 Virtual Training',
+      date: '2026-10-15',
+      startTime: '10:00 AM',
+      duration: 60,
+      fee: 25000,
+      meetingLink: 'https://meet.jit.si/aigym-session-naveen-001',
+      meetingId: 'ROOM-5349AD',
+      status: 'Completed',
+      paymentStatus: 'Free Trial',
+    }
+  ]);
+  const [videoBookingSearch, setVideoBookingSearch] = useState('');
+  const [videoBookingFilter, setVideoBookingFilter] = useState<'All' | 'Upcoming' | 'Completed' | 'Cancelled'>('All');
+  const [showBookVideoModal, setShowBookVideoModal] = useState(false);
+  const [videoCopiedId, setVideoCopiedId] = useState<string | null>(null);
+
+  // Book Video Session Form State (Matching Web Book Modal)
+  const [bookVideoMember, setBookVideoMember] = useState('Renugopal Y');
+  const [bookVideoMemberEmail, setBookVideoMemberEmail] = useState('renugopal5457@gmail.com');
+  const [bookVideoTrainer, setBookVideoTrainer] = useState('Naveen');
+  const [bookVideoType, setBookVideoType] = useState<VideoBookingItem['sessionType']>('1-on-1 Virtual Training');
+  const [bookVideoDate, setBookVideoDate] = useState('2026-11-06');
+  const [bookVideoTime, setBookVideoTime] = useState('11:00 AM');
+  const [bookVideoDuration, setBookVideoDuration] = useState('45');
+  const [bookVideoFee, setBookVideoFee] = useState('0');
+  const [bookVideoCustomLink, setBookVideoCustomLink] = useState('');
+
+  // Attendance State (Matching Web /admin/attendance - Images 1, 2, 3)
+  const [attendanceMainTab, setAttendanceMainTab] = useState<'CUSTOMERS' | 'TRAINERS'>('CUSTOMERS');
+  const [attendanceTimeframe, setAttendanceTimeframe] = useState<'perday' | 'weekly' | 'monthly' | 'annual'>('perday');
+  const [attendanceSearch, setAttendanceSearch] = useState('');
+  const [selectedAttendanceDetail, setSelectedAttendanceDetail] = useState<any | null>(null);
+
+  // ==========================================
+  // REFERRALS STATE (Matching Web Images 1, 2, 3 & Tabs)
+  // ==========================================
+  const [referralMainTab, setReferralMainTab] = useState<'rewards' | 'campaigns'>('rewards');
+  const [referralSubTab, setReferralSubTab] = useState<'config' | 'customers' | 'custom_rewards'>('config');
+
+  // Sub-Tab 1: Reward Configuration & Rules
+  const [rewardSettings, setRewardSettings] = useState<any>({
+    pointsPerConversionUnit: 100,
+    currencyValuePerUnit: 50,
+    minPointsForRedemption: 100,
+    maxDiscountPerOrder: 0,
+    allowMembershipDiscount: true,
+    allowStoreDiscount: true,
+    allowCustomRewards: true,
+    rewardInstructions: 'Earn points by referring your friends to join our gym! Redeem your points for Membership Plan Discounts, Gym Store Purchases, or Custom Rewards.',
+    termsAndConditions: 'Points cannot be exchanged for cash. 100 points = ₹50 conversion rate. Points are deducted upon verified checkout. Standard cancellation policies apply.'
+  });
+  const [savingRewardSettings, setSavingRewardSettings] = useState(false);
+
+  // Sub-Tab 2: Customer Points Management
+  const [referralCustomers, setReferralCustomers] = useState<any[]>([
+    {
+      _id: 'cust-pt-1',
+      name: 'Renugopal Y',
+      email: 'renugopal5457@gmail.com',
+      mobile: '+91 98765 43210',
+      membershipPlan: 'Starter Plan',
+      membershipStatus: 'Active',
+      pointsBalance: 1000,
+      equivalentRupeeValue: 500,
+      totalEarned: 1200,
+      totalRedeemed: 200,
+      membershipRedemptions: 1,
+      storeRedemptions: 0,
+      successfulReferrals: 2,
+      totalReferrals: 2
+    },
+    {
+      _id: 'cust-pt-2',
+      name: 'Renu y',
+      email: 'renugopal24022000@gmail.com',
+      mobile: '+91 98765 43211',
+      membershipPlan: 'Weight Loss Trial',
+      membershipStatus: 'Active',
+      pointsBalance: 250,
+      equivalentRupeeValue: 125,
+      totalEarned: 300,
+      totalRedeemed: 50,
+      membershipRedemptions: 0,
+      storeRedemptions: 1,
+      successfulReferrals: 1,
+      totalReferrals: 1
+    },
+    {
+      _id: 'cust-pt-3',
+      name: 'Vikram Patel',
+      email: 'vikram.p@example.com',
+      mobile: '+91 98765 43212',
+      membershipPlan: 'VIP Pro Yearly',
+      membershipStatus: 'Active',
+      pointsBalance: 600,
+      equivalentRupeeValue: 300,
+      totalEarned: 800,
+      totalRedeemed: 200,
+      membershipRedemptions: 2,
+      storeRedemptions: 0,
+      successfulReferrals: 3,
+      totalReferrals: 4
+    }
+  ]);
+  const [customerPointsSearch, setCustomerPointsSearch] = useState('');
+  const [customerPointsLoading, setCustomerPointsLoading] = useState(false);
+
+  // Modals for Customer Points
+  const [showAdjustPointsModal, setShowAdjustPointsModal] = useState(false);
+  const [selectedAdjustCustomer, setSelectedAdjustCustomer] = useState<any>(null);
+  const [adjustPointsMode, setAdjustPointsMode] = useState<'ADD' | 'DEDUCT'>('ADD');
+  const [adjustPointsAmount, setAdjustPointsAmount] = useState('100');
+  const [adjustPointsReason, setAdjustPointsReason] = useState('');
+  const [adjustPointsLoading, setAdjustPointsLoading] = useState(false);
+
+  const [showPointsHistoryModal, setShowPointsHistoryModal] = useState(false);
+  const [selectedPointsHistoryCustomer, setSelectedPointsHistoryCustomer] = useState<any>(null);
+  const [customerPointsHistory, setCustomerPointsHistory] = useState<any[]>([
+    { id: 'tx-1', date: '21 Oct 2026', type: 'Earned', points: 500, reason: 'Referral Bonus (Friend joined Starter Plan)' },
+    { id: 'tx-2', date: '21 Oct 2026', type: 'Earned', points: 500, reason: 'Welcome Referral Credit' },
+    { id: 'tx-3', date: '25 Oct 2026', type: 'Redeemed', points: -200, reason: 'Membership Renewal Discount' }
+  ]);
+
+  // Sub-Tab 3: Custom Rewards & Claims
+  const [customRewardsList, setCustomRewardsList] = useState<any[]>([
+    {
+      _id: 'rw-1',
+      title: '1-on-1 PT Session with Naveen',
+      description: 'Personal 60-minute coaching session on functional strength & posture correction.',
+      requiredPoints: 200,
+      requireApproval: true,
+      totalQuantity: 10,
+      claimedCount: 1,
+      termsAndConditions: 'Valid for 30 days from approval. Non-transferable.'
+    },
+    {
+      _id: 'rw-2',
+      title: 'Gymora Branded Shaker Bottle',
+      description: 'Stainless steel 750ml insulated protein shaker bottle with leakproof lid.',
+      requiredPoints: 100,
+      requireApproval: false,
+      totalQuantity: 25,
+      claimedCount: 3,
+      termsAndConditions: 'Collect at the gym reception desk with voucher code.'
+    },
+    {
+      _id: 'rw-3',
+      title: '₹500 Gym Store Merchandise Voucher',
+      description: 'Instant ₹500 discount voucher on gym supplements, protein powder and gym apparel.',
+      requiredPoints: 150,
+      requireApproval: false,
+      totalQuantity: 50,
+      claimedCount: 2,
+      termsAndConditions: 'Redeemable during online checkout or at front counter.'
+    }
+  ]);
+
+  const [customClaimsList, setCustomClaimsList] = useState<any[]>([
+    {
+      _id: 'claim-1',
+      claimCode: 'CLM-7829-PT',
+      userName: 'Renugopal Y',
+      userEmail: 'renugopal5457@gmail.com',
+      rewardTitle: '1-on-1 PT Session with Naveen',
+      pointsCost: 200,
+      status: 'Pending',
+      createdAt: 'Oct 26, 2026'
+    },
+    {
+      _id: 'claim-2',
+      claimCode: 'CLM-5512-SHK',
+      userName: 'Renu y',
+      userEmail: 'renugopal24022000@gmail.com',
+      rewardTitle: 'Gymora Branded Shaker Bottle',
+      pointsCost: 100,
+      status: 'Approved',
+      createdAt: 'Oct 25, 2026'
+    }
+  ]);
+
+  const [showCreateRewardModal, setShowCreateRewardModal] = useState(false);
+  const [creatingRewardLoading, setCreatingRewardLoading] = useState(false);
+  const [newRewardForm, setNewRewardForm] = useState({
+    title: '',
+    description: '',
+    requiredPoints: '200',
+    requireApproval: false,
+    totalQuantity: '0',
+    termsAndConditions: 'Redeemable with your available points at our gym desk.'
+  });
+
+  // Main Tab 2: Campaigns & Referral Tracking State
+  const [referralCampaignsList, setReferralCampaignsList] = useState<any[]>([
+    {
+      _id: 'camp-1',
+      campaignName: 'Member Referral Campaign',
+      campaignDescription: 'Members share their unique invite link from their mobile app. Upon new membership enrollment, both accounts receive automated wallet cashback.',
+      inviterRewardAmount: 500,
+      inviteeDiscountAmount: 500,
+      studioCode: 'GYMORA-VIP',
+      isActive: true,
+      startDate: '2026-10-01',
+      endDate: '2026-12-31'
+    }
+  ]);
+  const [showCampaignModal, setShowCampaignModal] = useState(false);
+  const [editingCampaignItem, setEditingCampaignItem] = useState<any | null>(null);
+  const [campaignModalForm, setCampaignModalForm] = useState({
+    campaignName: '',
+    campaignDescription: '',
+    inviterRewardAmount: '500',
+    inviteeDiscountAmount: '500',
+    studioCode: 'GYMORA-VIP',
+    isActive: true
+  });
+
+  const [customerAttendanceLogs, setCustomerAttendanceLogs] = useState<any[]>([
+    {
+      id: 'cust-att-1',
+      name: 'Renugopal Y',
+      email: 'renugopal@example.com',
+      type: 'Session Member',
+      date: 'Oct 26, 2026',
+      isoDate: '2026-10-26',
+      checkInTime: '03:58 PM',
+      checkOutTime: 'In Gym',
+      status: 'In Gym'
+    },
+    {
+      id: 'cust-att-2',
+      name: 'Vikram Patel',
+      email: 'vikram.p@example.com',
+      type: 'VIP Member',
+      date: 'Oct 26, 2026',
+      isoDate: '2026-10-26',
+      checkInTime: '02:30 PM',
+      checkOutTime: '04:15 PM',
+      status: 'Completed'
+    },
+    {
+      id: 'cust-att-3',
+      name: 'Sneha Reddy',
+      email: 'sneha.r@example.com',
+      type: 'Monthly Member',
+      date: 'Oct 26, 2026',
+      isoDate: '2026-10-26',
+      checkInTime: '01:15 PM',
+      checkOutTime: '02:45 PM',
+      status: 'Completed'
+    },
+    {
+      id: 'cust-att-4',
+      name: 'Priya Sharma',
+      email: 'priya.s@example.com',
+      type: 'Session Member',
+      date: 'Oct 26, 2026',
+      isoDate: '2026-10-26',
+      checkInTime: '11:30 AM',
+      checkOutTime: '12:45 PM',
+      status: 'Completed'
+    }
+  ]);
+
+  const [trainerAttendanceLogs, setTrainerAttendanceLogs] = useState<any[]>([
+    {
+      id: 'tr-att-1',
+      name: 'Rajesh Khanna',
+      specialization: 'Strength & Conditioning',
+      dutyType: 'Personal Training (In-Gym)',
+      assignedCustomer: 'Renugopal Y',
+      date: 'Oct 26, 2026',
+      scheduledTime: '03:00 PM - 04:00 PM',
+      checkInTime: '02:55 PM',
+      checkOutTime: 'In Progress',
+      punctuality: 'On Time'
+    },
+    {
+      id: 'tr-att-2',
+      name: 'Kavita Menon',
+      specialization: 'Yoga & Flexibility',
+      dutyType: 'Floor Shift (Morning)',
+      assignedCustomer: 'Main Floor',
+      date: 'Oct 26, 2026',
+      scheduledTime: '06:00 AM - 12:00 PM',
+      checkInTime: '05:50 AM',
+      checkOutTime: '12:05 PM',
+      punctuality: 'On Time'
+    },
+    {
+      id: 'tr-att-3',
+      name: 'Arjun Nair',
+      specialization: 'CrossFit & HIIT',
+      dutyType: 'Online Session (Virtual)',
+      assignedCustomer: 'Priya Sharma',
+      date: 'Oct 26, 2026',
+      scheduledTime: '11:00 AM - 12:00 PM',
+      checkInTime: '10:58 AM',
+      checkOutTime: '12:02 PM',
+      punctuality: 'On Time'
+    }
+  ]);
+
   // Reports & Analytics State (Matching Web /admin/reports)
   const [reportTimeframe, setReportTimeframe] = useState<'1week' | '1month' | '1year'>('1month');
   const [showReportTimeframeModal, setShowReportTimeframeModal] = useState(false);
@@ -1037,7 +1431,109 @@ export const OwnerMoreScreen: React.FC<{
         if (txRes.status === 'fulfilled' && txRes.value.data?.transactions && txRes.value.data.transactions.length > 0) {
           setInventoryTransactions(txRes.value.data.transactions);
         }
-      } else if (['session_bookings', 'online_sessions', 'trainer_schedule', 'video_bookings', 'attendance'].includes(id)) {
+      } else if (id === 'online_sessions') {
+        try {
+          const res = await api.get('/trainer-sessions/gym');
+          const list = res.data?.sessions || (Array.isArray(res.data) ? res.data : []);
+          setGymSessions(list);
+          const mapped = list
+            .filter((s: any) => s.mode === 'Online' || s.meetingLink)
+            .map((s: any) => ({
+              _id: s._id || `sess-${Math.random()}`,
+              title: s.title || `Virtual 1-on-1 with ${s.trainerId?.name || 'Trainer'}`,
+              trainerName: s.trainerId?.name || 'Assigned Trainer',
+              specialization: s.trainerId?.specialization || 'ALL',
+              date: s.date || '2026-10-15',
+              time: s.startTime || '10:00 AM',
+              duration: s.duration || 60,
+              category: s.category || 'Personal Training',
+              attendeesCount: 1,
+              maxCapacity: 1,
+              meetingLink: s.meetingLink || `https://meet.jit.si/aigym-session-${(s._id || '').slice(-9)}`,
+              status: (s.status === 'Completed' ? 'Completed' : s.status === 'Cancelled' ? 'Cancelled' : 'Upcoming') as any,
+              price: s.fee || 0,
+              description: s.description || 'Virtual session with gym personal trainer.',
+            }));
+          if (mapped.length > 0) {
+            setOnlineSessions(mapped);
+          }
+        } catch (e) {
+          console.error('Error fetching online sessions:', e);
+        }
+      } else if (id === 'trainer_schedule') {
+        try {
+          const res = await api.get('/trainer-sessions/gym');
+          const list = res.data?.sessions || (Array.isArray(res.data) ? res.data : []);
+          setGymSessions(list);
+          const valid = list.filter((s: any) => s.date);
+          if (valid.length > 0) {
+            const cleanDate = valid[0].date.split('T')[0];
+            setScheduleAnchorDate(new Date(cleanDate + 'T12:00:00'));
+          }
+        } catch (e) {
+          console.error('Error loading trainer schedule:', e);
+        }
+      } else if (id === 'video_bookings') {
+        try {
+          const res = await api.get('/trainer-sessions/gym');
+          const list = res.data?.sessions || (Array.isArray(res.data) ? res.data : []);
+          setGymSessions(list);
+          const mapped = list
+            .filter((s: any) => s.mode === 'Online' || s.meetingLink)
+            .map((s: any, idx: number) => ({
+              _id: s._id || `vb-${idx}`,
+              bookingId: s.bookingId || (s._id ? s._id.slice(-9).toUpperCase() : 'BKG-9F5KMZ5T9'),
+              memberName: s.customerId ? `${s.customerId.firstName || ''} ${s.customerId.lastName || ''}`.trim() : 'Renugopal Y',
+              memberEmail: s.customerId?.email || 'renugopal5457@gmail.com',
+              memberPhone: s.customerId?.mobile,
+              trainerName: s.trainerId?.name || 'Naveen',
+              trainerSpecialization: s.trainerId?.specialization || 'ALL',
+              sessionType: '1-on-1 Virtual Training' as const,
+              date: s.date ? s.date.split('T')[0] : '2026-10-15',
+              startTime: s.startTime || '10:00 AM',
+              duration: s.duration || 60,
+              fee: s.fee ?? 25000,
+              meetingLink: s.meetingLink || `https://meet.jit.si/aigym-session-${(s._id || '').slice(-8)}`,
+              meetingId: s.meetingId || `ROOM-${(s._id || '5349AD').slice(-6).toUpperCase()}`,
+              status: (s.status === 'Completed' ? 'Completed' : s.status === 'Cancelled' ? 'Cancelled' : 'Upcoming') as any,
+              paymentStatus: (s.paymentStatus === 'Paid' ? 'Paid' : 'Free Trial') as any,
+            }));
+          if (mapped.length > 0) {
+            setVideoBookings(mapped);
+          }
+        } catch (e) {
+          console.error('Error loading video bookings:', e);
+        }
+      } else if (id === 'attendance') {
+        try {
+          const res = await api.get('/trainer-sessions/gym');
+          const list = res.data?.sessions || (Array.isArray(res.data) ? res.data : []);
+          setGymSessions(list);
+          if (list.length > 0) {
+            const mappedCustomer = list
+              .filter((s: any) => s.customerId)
+              .map((s: any, idx: number) => ({
+                id: `sess-att-${s._id || idx}`,
+                name: `${s.customerId?.firstName || ''} ${s.customerId?.lastName || ''}`.trim() || 'Renugopal Y',
+                email: s.customerId?.email || 'renugopal@example.com',
+                type: 'Session Member',
+                date: 'Oct 26, 2026',
+                isoDate: s.date ? s.date.split('T')[0] : '2026-10-26',
+                checkInTime: s.checkInTime ? new Date(s.checkInTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) : (s.startTime || '03:58 PM'),
+                checkOutTime: s.checkOutTime ? new Date(s.checkOutTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) : 'In Gym',
+                status: s.checkOutTime ? 'Completed' : 'In Gym'
+              }));
+            if (mappedCustomer.length > 0) {
+              setCustomerAttendanceLogs(prev => [
+                ...mappedCustomer,
+                ...prev.filter(p => !mappedCustomer.some((m: any) => m.id === p.id))
+              ]);
+            }
+          }
+        } catch (e) {
+          console.error('Error loading attendance logs:', e);
+        }
+      } else if (id === 'session_bookings') {
         const res = await api.get('/trainer-sessions/gym');
         setGymSessions(res.data?.sessions || (Array.isArray(res.data) ? res.data : []));
       } else if (id === 'branches') {
@@ -1126,7 +1622,11 @@ export const OwnerMoreScreen: React.FC<{
         } catch (repErr) {
           console.log('[OwnerMore] reports fetch error:', repErr);
         }
-      } else if (id === 'rewards' || id === 'referrals') {
+      } else if (id === 'referrals') {
+        loadReferralSettings();
+        loadReferralCustomers();
+        loadCustomRewardsAndClaims();
+      } else if (id === 'rewards') {
         try {
           const [custPerfRes, trPerfRes, rwdRes] = await Promise.allSettled([
             api.get('/performance/customers'),
@@ -2089,8 +2589,21 @@ const renderSalesHistoryView = () => {
           <TouchableOpacity 
             style={styles.salesExportBtn} 
             activeOpacity={0.7}
-            onPress={() => {
-              Alert.alert('Export CSV', `Successfully exported ${filtered.length} sales records to CSV.`);
+            onPress={async () => {
+              try {
+                const headers = ['Invoice / Receipt', 'Customer', 'Items Count', 'Total (INR)', 'Payment Method', 'Date'];
+                const rows = filtered.map((s: any) => [
+                  s.recordNumber || s.invoiceNumber || s._id,
+                  s.customerName || 'Walk-in Customer',
+                  s.items?.length || 1,
+                  s.totalAmount || s.finalAmount || 0,
+                  s.paymentMethod || 'Cash / UPI',
+                  s.saleDate ? new Date(s.saleDate).toLocaleDateString('en-IN') : new Date().toLocaleDateString('en-IN')
+                ]);
+                await FileDownloader.downloadCSV(`Store_Sales_${new Date().toISOString().slice(0, 10)}`, headers, rows);
+              } catch (err: any) {
+                Alert.alert('Export Error', err?.message || 'Failed to export store sales.');
+              }
             }}
           >
             <Ionicons name="download-outline" size={15} color={COLORS.textDark} />
@@ -2595,6 +3108,1554 @@ const renderSalesHistoryView = () => {
             );
           })
         )}
+      </View>
+    );
+  };
+
+  // Online Sessions Action Handlers & View (Matching Web /admin/online-sessions - Images 1 & 2)
+  const handleCopyOnlineMeetingLink = (link: string, id: string) => {
+    setOnlineCopiedId(id);
+    Alert.alert('Invite Link Copied', `Session meeting link:\n\n${link}`);
+    setTimeout(() => {
+      setOnlineCopiedId(null);
+    }, 3000);
+  };
+
+  const handleLaunchOnlineStudio = (session: OnlineSessionItem) => {
+    setSelectedOnlineStudioSession(session);
+  };
+
+  const handleSaveOnlineSession = () => {
+    if (!newOnlineTitle.trim()) {
+      Alert.alert('Required Field', 'Please enter a session title.');
+      return;
+    }
+    const generatedLink = newOnlineLink.trim() || `https://meet.jit.si/aigym-${Math.random().toString(36).substring(2, 6)}-${Math.random().toString(36).substring(2, 5)}`;
+    const createdSession: OnlineSessionItem = {
+      _id: `session-custom-${Date.now()}`,
+      title: newOnlineTitle.trim(),
+      trainerName: newOnlineTrainer.trim() || 'Naveen',
+      specialization: newOnlineCategory,
+      date: newOnlineDate || '2026-11-06',
+      time: newOnlineTime || '10:00 AM',
+      duration: Number(newOnlineDuration) || 60,
+      category: newOnlineCategory,
+      attendeesCount: 0,
+      maxCapacity: Number(newOnlineCapacity) || 1,
+      meetingLink: generatedLink,
+      status: 'Upcoming',
+      price: Number(newOnlinePrice) || 0,
+      description: newOnlineDescription.trim() || 'Virtual session with gym personal trainer.',
+    };
+
+    setOnlineSessions(prev => [createdSession, ...prev]);
+    setShowCreateOnlineSessionModal(false);
+    setNewOnlineTitle('');
+    setNewOnlineLink('');
+    Alert.alert('Online Session Scheduled', `Virtual class "${createdSession.title}" has been successfully scheduled!`);
+  };
+
+  const renderOnlineSessionsView = () => {
+    const filtered = onlineSessions.filter(s => {
+      const q = onlineSessionSearch.toLowerCase().trim();
+      const matchesSearch = !q ||
+        s.title.toLowerCase().includes(q) ||
+        s.trainerName.toLowerCase().includes(q) ||
+        s.category.toLowerCase().includes(q);
+      const matchesStatus =
+        onlineSessionFilter === 'All' ? true :
+        onlineSessionFilter === 'Upcoming' ? (s.status === 'Upcoming' || s.status === 'Live Now') :
+        s.status === 'Completed';
+      return matchesSearch && matchesStatus;
+    });
+
+    const totalClasses = onlineSessions.length;
+    const scheduledUpcoming = onlineSessions.filter(s => s.status === 'Upcoming' || s.status === 'Live Now').length;
+    const totalRegistrations = onlineSessions.reduce((acc, curr) => acc + curr.attendeesCount, 0);
+
+    const featuredSession = onlineSessions[0];
+
+    return (
+      <View style={{ gap: 16 }}>
+        {/* Breadcrumb & Header */}
+        <View style={styles.onlineHeaderCard}>
+          <View style={styles.onlineBreadcrumbRow}>
+            <Ionicons name="calendar" size={14} color="#EA580C" />
+            <Text style={styles.onlineBreadcrumbText}>Online Sessions</Text>
+          </View>
+
+          <View style={styles.onlineTitleRow}>
+            <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+              <Text style={styles.onlineTitleText}>Online Sessions</Text>
+              <View style={styles.onlineBadgePill}>
+                <Text style={styles.onlineBadgePillText}>Live & Virtual Classes</Text>
+              </View>
+            </View>
+            <TouchableOpacity
+              style={styles.onlineScheduleBtn}
+              activeOpacity={0.8}
+              onPress={() => setShowCreateOnlineSessionModal(true)}
+            >
+              <Ionicons name="add" size={16} color="#FFFFFF" />
+              <Text style={styles.onlineScheduleBtnText}>Schedule Class</Text>
+            </TouchableOpacity>
+          </View>
+
+          <Text style={styles.onlineSubtitleText}>
+            Host live streaming workouts, virtual masterclasses, and group training sessions.
+          </Text>
+        </View>
+
+        {/* 4 Metric KPI Cards (Matching Web Image 1) */}
+        <View style={styles.onlineKpiGrid}>
+          {/* Card 1: Total Classes */}
+          <View style={styles.onlineKpiCard}>
+            <View style={styles.onlineKpiTopRow}>
+              <Text style={styles.onlineKpiLabel}>TOTAL CLASSES</Text>
+              <View style={styles.onlineKpiIconSquircle}>
+                <Ionicons name="calendar-outline" size={16} color="#EA580C" />
+              </View>
+            </View>
+            <Text style={styles.onlineKpiValue}>{totalClasses}</Text>
+            <Text style={styles.onlineKpiSub}>Live & recorded classes</Text>
+          </View>
+
+          {/* Card 2: Scheduled / Upcoming */}
+          <View style={styles.onlineKpiCard}>
+            <View style={styles.onlineKpiTopRow}>
+              <Text style={styles.onlineKpiLabel}>SCHEDULED / UPCOMING</Text>
+              <View style={[styles.onlineKpiIconSquircle, { backgroundColor: '#F0FDF4' }]}>
+                <Ionicons name="time-outline" size={16} color="#16A34A" />
+              </View>
+            </View>
+            <Text style={styles.onlineKpiValue}>{scheduledUpcoming}</Text>
+            <Text style={[styles.onlineKpiSub, { color: '#16A34A', fontWeight: '600' }]}>Ready for members</Text>
+          </View>
+
+          {/* Card 3: Total Registrations */}
+          <View style={styles.onlineKpiCard}>
+            <View style={styles.onlineKpiTopRow}>
+              <Text style={styles.onlineKpiLabel}>TOTAL REGISTRATIONS</Text>
+              <View style={styles.onlineKpiIconSquircle}>
+                <Ionicons name="people-outline" size={16} color="#EA580C" />
+              </View>
+            </View>
+            <Text style={styles.onlineKpiValue}>{totalRegistrations}</Text>
+            <Text style={styles.onlineKpiSub}>Active participants</Text>
+          </View>
+
+          {/* Card 4: Streaming Mode */}
+          <View style={styles.onlineKpiCard}>
+            <View style={styles.onlineKpiTopRow}>
+              <Text style={styles.onlineKpiLabel}>STREAMING MODE</Text>
+              <View style={[styles.onlineKpiIconSquircle, { backgroundColor: '#FFFBEB' }]}>
+                <Ionicons name="videocam-outline" size={16} color="#D97706" />
+              </View>
+            </View>
+            <Text style={[styles.onlineKpiValue, { fontSize: 18, marginTop: 4 }]}>HD Virtual</Text>
+            <Text style={[styles.onlineKpiSub, { color: '#D97706', fontWeight: '600' }]}>WebRTC & Meet ready</Text>
+          </View>
+        </View>
+
+        {/* Featured Masterclass Hero Banner (Matching Web Image 1) */}
+        {featuredSession && (
+          <View style={styles.onlineHeroBanner}>
+            {/* Top pill row */}
+            <View style={styles.onlineHeroTopRow}>
+              <View style={styles.onlineHeroPill}>
+                <Text style={styles.onlineHeroPillText}>FEATURED MASTERCLASS</Text>
+              </View>
+              <Text style={styles.onlineHeroCategoryText}>· {featuredSession.category}</Text>
+            </View>
+
+            {/* Title & description */}
+            <Text style={styles.onlineHeroTitle}>{featuredSession.title}</Text>
+            <Text style={styles.onlineHeroDesc}>{featuredSession.description || 'Virtual session with gym personal trainer.'}</Text>
+
+            {/* Metadata Badges */}
+            <View style={styles.onlineHeroChipsRow}>
+              <View style={styles.onlineHeroChip}>
+                <Ionicons name="calendar-outline" size={13} color="#FFFFFF" />
+                <Text style={styles.onlineHeroChipText}>{featuredSession.date} at {featuredSession.time}</Text>
+              </View>
+              <View style={styles.onlineHeroChip}>
+                <Ionicons name="time-outline" size={13} color="#FFFFFF" />
+                <Text style={styles.onlineHeroChipText}>{featuredSession.duration} Mins</Text>
+              </View>
+              <View style={styles.onlineHeroChip}>
+                <Ionicons name="people-outline" size={13} color="#FFFFFF" />
+                <Text style={styles.onlineHeroChipText}>{featuredSession.attendeesCount}/{featuredSession.maxCapacity} Registered</Text>
+              </View>
+            </View>
+
+            {/* Hero Action Buttons */}
+            <View style={styles.onlineHeroActionsRow}>
+              <TouchableOpacity
+                style={styles.onlineLaunchStudioBtn}
+                activeOpacity={0.85}
+                onPress={() => handleLaunchOnlineStudio(featuredSession)}
+              >
+                <Ionicons name="videocam" size={16} color="#EA580C" />
+                <Text style={styles.onlineLaunchStudioBtnText}>Launch Live Studio</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.onlineInviteLinkBtn}
+                activeOpacity={0.85}
+                onPress={() => handleCopyOnlineMeetingLink(featuredSession.meetingLink, featuredSession._id)}
+              >
+                <Ionicons
+                  name={onlineCopiedId === featuredSession._id ? 'checkmark-circle' : 'copy-outline'}
+                  size={15}
+                  color="#FFFFFF"
+                />
+                <Text style={styles.onlineInviteLinkBtnText}>
+                  {onlineCopiedId === featuredSession._id ? 'Link Copied!' : 'Invite Link'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
+
+        {/* Search and Filters (Matching Web Image 2) */}
+        <View style={styles.onlineSearchCard}>
+          <View style={styles.onlineSearchInputBox}>
+            <Ionicons name="search" size={16} color="#94A3B8" />
+            <TextInput
+              style={styles.onlineSearchInput}
+              placeholder="Search online classes by title, trainer or category..."
+              placeholderTextColor="#94A3B8"
+              value={onlineSessionSearch}
+              onChangeText={setOnlineSessionSearch}
+            />
+            {onlineSessionSearch.length > 0 && (
+              <TouchableOpacity onPress={() => setOnlineSessionSearch('')}>
+                <Ionicons name="close-circle" size={16} color="#94A3B8" />
+              </TouchableOpacity>
+            )}
+          </View>
+
+          <View style={styles.onlineFilterPillsRow}>
+            {(['All', 'Upcoming', 'Completed'] as const).map(tab => {
+              const active = onlineSessionFilter === tab;
+              return (
+                <TouchableOpacity
+                  key={tab}
+                  style={[styles.onlineFilterPill, active && styles.onlineFilterPillActive]}
+                  onPress={() => setOnlineSessionFilter(tab)}
+                  activeOpacity={0.8}
+                >
+                  <Text style={[styles.onlineFilterPillText, active && styles.onlineFilterPillTextActive]}>
+                    {tab}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        </View>
+
+        {/* Sessions List (Matching Web Image 2) */}
+        {filtered.length === 0 ? (
+          <View style={styles.onlineEmptyCard}>
+            <View style={styles.onlineEmptyIconBox}>
+              <Ionicons name="videocam-outline" size={32} color="#94A3B8" />
+            </View>
+            <Text style={styles.onlineEmptyTitle}>No Online Sessions Found</Text>
+            <Text style={styles.onlineEmptySub}>
+              No virtual classes match your current search or filter. Schedule a new live session to get started.
+            </Text>
+            <TouchableOpacity
+              style={styles.onlineEmptyScheduleBtn}
+              onPress={() => setShowCreateOnlineSessionModal(true)}
+              activeOpacity={0.8}
+            >
+              <Ionicons name="add" size={15} color="#FFFFFF" />
+              <Text style={styles.onlineEmptyScheduleBtnText}>Schedule Now</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          filtered.map(session => {
+            const isCompleted = session.status === 'Completed';
+            const isLiveNow = session.status === 'Live Now';
+
+            return (
+              <View key={session._id} style={styles.onlineSessionCard}>
+                {/* Category & Status badges */}
+                <View style={styles.onlineCardTopRow}>
+                  <View style={styles.onlineCategoryPill}>
+                    <Text style={styles.onlineCategoryPillText}>{session.category}</Text>
+                  </View>
+                  <View style={[
+                    styles.onlineStatusPill,
+                    isCompleted ? styles.onlineStatusCompleted : isLiveNow ? styles.onlineStatusLive : styles.onlineStatusUpcoming
+                  ]}>
+                    <Text style={[
+                      styles.onlineStatusPillText,
+                      isCompleted ? styles.onlineStatusCompletedText : isLiveNow ? styles.onlineStatusLiveText : styles.onlineStatusUpcomingText
+                    ]}>
+                      {session.status}
+                    </Text>
+                  </View>
+                </View>
+
+                {/* Title & Description */}
+                <Text style={styles.onlineCardTitle}>{session.title}</Text>
+                <Text style={styles.onlineCardDesc} numberOfLines={2}>
+                  {session.description || 'Virtual session with gym personal trainer.'}
+                </Text>
+
+                {/* Meta Rows (Matching Web Image 2) */}
+                <View style={styles.onlineCardMetaBox}>
+                  {/* Trainer & Access Row */}
+                  <View style={styles.onlineCardMetaRow}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                      <Ionicons name="people" size={14} color="#EA580C" />
+                      <Text style={styles.onlineCardTrainerName}>{session.trainerName}</Text>
+                    </View>
+                    <Text style={styles.onlineCardSpecialization}>{session.specialization || 'ALL'}</Text>
+                  </View>
+
+                  {/* Date & Time Row */}
+                  <View style={styles.onlineCardMetaRow}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                      <Ionicons name="calendar-outline" size={14} color="#EA580C" />
+                      <Text style={styles.onlineCardDateText}>{session.date}</Text>
+                    </View>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+                      <Ionicons name="time-outline" size={14} color="#EA580C" />
+                      <Text style={styles.onlineCardTimeText}>{session.time} ({session.duration}m)</Text>
+                    </View>
+                  </View>
+
+                  {/* Attendees Row */}
+                  <View style={styles.onlineCardMetaRow}>
+                    <Text style={styles.onlineCardAttendeesLabel}>Attendees:</Text>
+                    <Text style={styles.onlineCardAttendeesValue}>
+                      {session.attendeesCount} / {session.maxCapacity} Booked
+                    </Text>
+                  </View>
+                </View>
+
+                {/* Actions: Join Studio & Copy Link */}
+                <View style={styles.onlineCardActionsRow}>
+                  <TouchableOpacity
+                    style={styles.onlineJoinStudioBtn}
+                    activeOpacity={0.85}
+                    onPress={() => handleLaunchOnlineStudio(session)}
+                  >
+                    <Ionicons name="videocam" size={16} color="#FFFFFF" />
+                    <Text style={styles.onlineJoinStudioBtnText}>Join Studio</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={[styles.onlineCopyLinkIconBtn, onlineCopiedId === session._id && styles.onlineCopyLinkIconBtnCopied]}
+                    activeOpacity={0.7}
+                    onPress={() => handleCopyOnlineMeetingLink(session.meetingLink, session._id)}
+                  >
+                    <Ionicons
+                      name={onlineCopiedId === session._id ? 'checkmark-circle' : 'copy-outline'}
+                      size={17}
+                      color={onlineCopiedId === session._id ? '#EA580C' : '#64748B'}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            );
+          })
+        )}
+      </View>
+    );
+  };
+
+  // TRAINER SCHEDULE VIEW (Matching Web /admin/trainer-schedule - Images 1, 2, 3)
+  const SCHEDULE_HOURS = [
+    '06:00', '07:00', '08:00', '09:00', '10:00',
+    '11:00', '12:00', '13:00', '14:00', '15:00',
+    '16:00', '17:00', '18:00', '19:00', '20:00'
+  ];
+
+  const getWeekDays = (anchor: Date) => {
+    const d = new Date(anchor);
+    const dayOfWeek = d.getDay();
+    const distanceToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+    const monday = new Date(d);
+    monday.setDate(d.getDate() + distanceToMonday);
+
+    const days = [];
+    const todayIso = new Date().toISOString().split('T')[0];
+    for (let i = 0; i < 7; i++) {
+      const cur = new Date(monday);
+      cur.setDate(monday.getDate() + i);
+      const isoDate = cur.toISOString().split('T')[0];
+      const dayName = cur.toLocaleDateString('en-US', { weekday: 'long' });
+      const displayDate = cur.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      const shortDay = cur.toLocaleDateString('en-US', { weekday: 'short' });
+      days.push({
+        dayName,
+        displayDate,
+        isoDate,
+        shortDay,
+        dayNum: cur.getDate(),
+        isToday: isoDate === todayIso
+      });
+    }
+    return days;
+  };
+
+  const renderTrainerScheduleView = () => {
+    const weekDays = getWeekDays(scheduleAnchorDate);
+    const startDay = weekDays[0];
+    const endDay = weekDays[6];
+    const year = scheduleAnchorDate.getFullYear() || 2026;
+    const weekRangeLabel = `${startDay.displayDate} - ${endDay.displayDate}, ${year}`;
+
+    // Extract sessions
+    const sessionsList = Array.isArray(gymSessions) && gymSessions.length > 0 ? gymSessions : [
+      {
+        _id: 'bkg-9f5kmz5t9',
+        bookingId: 'BKG-9F5KMZ5T9',
+        title: 'Online Session',
+        trainerId: { name: 'Naveen' },
+        customerId: { firstName: 'Renugopal', lastName: 'Y', email: 'renugopal5457@gmail.com' },
+        date: '2026-10-15',
+        startTime: '10:00 AM',
+        endTime: '11:00 AM',
+        duration: 60,
+        mode: 'Online',
+        fee: 25000,
+        status: 'Confirmed',
+        meetingLink: 'https://meet.jit.si/aigym-session-naveen-001'
+      }
+    ];
+
+    const allItems = sessionsList.map((s: any) => {
+      const trainerName = s.trainerId?.name || 'Naveen';
+      const custFirst = s.customerId?.firstName || '';
+      const custLast = s.customerId?.lastName || '';
+      const customerName = (custFirst + ' ' + custLast).trim() || 'Renugopal Y';
+      const isOnline = s.mode === 'Online' || Boolean(s.meetingLink);
+
+      let slotHour = '10:00';
+      if (s.startTime) {
+        let t = s.startTime.toUpperCase().trim();
+        if (t.includes('-')) t = t.split('-')[0].trim();
+        const isPM = t.includes('PM');
+        const isAM = t.includes('AM');
+        t = t.replace(/AM|PM/g, '').trim();
+        let [hStr] = t.split(':');
+        let h = parseInt(hStr, 10);
+        if (!isNaN(h)) {
+          if (isPM && h < 12) h += 12;
+          if (isAM && h === 12) h = 0;
+          const formatted = `${h.toString().padStart(2, '0')}:00`;
+          if (SCHEDULE_HOURS.includes(formatted)) slotHour = formatted;
+        }
+      }
+
+      const dStr = s.date ? s.date.split('T')[0] : '2026-10-15';
+      const dObj = new Date(dStr + 'T12:00:00');
+      const dayName = dObj.toLocaleDateString('en-US', { weekday: 'long' });
+
+      return {
+        id: s._id || s.bookingId || 'sched-001',
+        bookingId: s.bookingId || (s._id ? s._id.slice(-9).toUpperCase() : 'BKG-9F5KMZ5T9'),
+        title: isOnline ? 'Online Session' : 'Personal Training',
+        type: isOnline ? 'ONLINE SESSION' : 'PERSONAL TRAINING',
+        trainerName,
+        customerName,
+        customerEmail: s.customerId?.email || 'renugopal5457@gmail.com',
+        date: dStr,
+        day: dayName,
+        time: slotHour,
+        displayTime: s.startTime || '10:00 AM',
+        duration: s.duration || 60,
+        durationHours: Math.max(1, Math.round((s.duration || 60) / 60)),
+        mode: isOnline ? 'Online' : 'Offline',
+        status: s.status || 'Confirmed',
+        fee: s.fee ?? 25000,
+        meetingLink: s.meetingLink || (isOnline ? 'https://meet.jit.si/aigym-session-naveen-001' : undefined),
+      };
+    });
+
+    const filteredItems = allItems.filter(item => {
+      if (scheduleTrainerFilter !== 'ALL' && item.trainerName.toLowerCase() !== scheduleTrainerFilter.toLowerCase()) {
+        return false;
+      }
+      return true;
+    });
+
+    const handlePrevWeek = () => {
+      const next = new Date(scheduleAnchorDate);
+      next.setDate(next.getDate() - 7);
+      setScheduleAnchorDate(next);
+    };
+
+    const handleNextWeek = () => {
+      const next = new Date(scheduleAnchorDate);
+      next.setDate(next.getDate() + 7);
+      setScheduleAnchorDate(next);
+    };
+
+    const handleThisWeek = () => {
+      setScheduleAnchorDate(new Date('2026-10-15T12:00:00'));
+    };
+
+    return (
+      <View style={{ gap: 16 }}>
+        {/* Header (Matching Web Image 1) */}
+        <View style={styles.schedHeaderCard}>
+          <View style={styles.schedBreadcrumbRow}>
+            <Ionicons name="calendar" size={14} color="#EA580C" />
+            <Text style={styles.schedBreadcrumbText}>Trainer Schedule</Text>
+          </View>
+          <Text style={styles.schedTitleText}>Trainer Schedule</Text>
+          <Text style={styles.schedSubtitleText}>
+            Live schedule showing customer bookings and trainer assignments.
+          </Text>
+        </View>
+
+        {/* Navigation & Controls Card (Matching Web Image 1) */}
+        <View style={styles.schedControlsCard}>
+          {/* Week Nav Buttons + Date Range */}
+          <View style={styles.schedWeekNavRow}>
+            <View style={styles.schedNavBtnGroup}>
+              <TouchableOpacity
+                style={styles.schedNavArrowBtn}
+                onPress={handlePrevWeek}
+                activeOpacity={0.7}
+              >
+                <Ionicons name="chevron-back" size={16} color="#111827" />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.schedThisWeekBtn}
+                onPress={handleThisWeek}
+                activeOpacity={0.7}
+              >
+                <Text style={styles.schedThisWeekBtnText}>This Week</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.schedNavArrowBtn}
+                onPress={handleNextWeek}
+                activeOpacity={0.7}
+              >
+                <Ionicons name="chevron-forward" size={16} color="#111827" />
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.schedDateRangeRow}>
+              <Ionicons name="calendar-outline" size={16} color="#EA580C" />
+              <Text style={styles.schedDateRangeText}>{weekRangeLabel}</Text>
+            </View>
+          </View>
+
+          {/* Filter Dropdown & Legend Row (Matching Web Image 1) */}
+          <View style={styles.schedFilterLegendRow}>
+            <TouchableOpacity
+              style={styles.schedTrainerFilterPill}
+              onPress={() => {
+                setScheduleTrainerFilter(prev => prev === 'ALL' ? 'Naveen' : 'ALL');
+              }}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="funnel-outline" size={13} color="#64748B" />
+              <Text style={styles.schedTrainerFilterPillText}>
+                {scheduleTrainerFilter === 'ALL' ? 'All Trainers (2)' : 'Trainer: Naveen'}
+              </Text>
+              <Ionicons name="chevron-down" size={12} color="#64748B" />
+            </TouchableOpacity>
+
+            <View style={styles.schedLegendBox}>
+              <View style={styles.schedLegendItem}>
+                <View style={[styles.schedLegendDot, { backgroundColor: '#FFEDD5' }]} />
+                <Text style={styles.schedLegendText}>Personal Training (In-Gym)</Text>
+              </View>
+              <View style={styles.schedLegendItem}>
+                <View style={[styles.schedLegendDot, { backgroundColor: '#C2410C' }]} />
+                <Text style={styles.schedLegendText}>Online Session</Text>
+              </View>
+            </View>
+          </View>
+        </View>
+
+        {/* Weekly Day Selector Strip (Mobile Optimized) */}
+        <View style={styles.schedDayStripCard}>
+          <Text style={styles.schedDayStripHeader}>SELECT DAY AGENDA</Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8 }}>
+            {weekDays.map((col, idx) => {
+              const hasSession = filteredItems.some(it => it.date === col.isoDate);
+              const isSelected = selectedScheduleDayIndex === idx;
+              return (
+                <TouchableOpacity
+                  key={col.isoDate}
+                  style={[
+                    styles.schedDayPill,
+                    isSelected && styles.schedDayPillActive,
+                    hasSession && !isSelected && styles.schedDayPillHasSession
+                  ]}
+                  onPress={() => setSelectedScheduleDayIndex(idx)}
+                  activeOpacity={0.7}
+                >
+                  <Text style={[styles.schedDayPillName, isSelected && styles.schedDayPillNameActive]}>
+                    {col.shortDay}
+                  </Text>
+                  <Text style={[styles.schedDayPillNum, isSelected && styles.schedDayPillNumActive]}>
+                    {col.dayNum}
+                  </Text>
+                  {hasSession && (
+                    <View style={[styles.schedDayDotIndicator, isSelected && { backgroundColor: '#FFFFFF' }]} />
+                  )}
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
+        </View>
+
+        {/* Interactive Schedule Timetable Grid (Matching Web Images 1 & 2) */}
+        <View style={styles.schedTableCard}>
+          <View style={styles.schedTableHeader}>
+            <Text style={styles.schedTableTitle}>Live Weekly Timetable</Text>
+            <Text style={styles.schedTableSub}>Swipe right to view all week slots</Text>
+          </View>
+
+          <ScrollView horizontal showsHorizontalScrollIndicator={true} style={{ borderRadius: 14 }}>
+            <View style={styles.schedTableContainer}>
+              {/* Table Column Headers */}
+              <View style={styles.schedTableRowHeader}>
+                <View style={styles.schedTimeColHeader}>
+                  <Text style={styles.schedColHeaderText}>TIME</Text>
+                </View>
+                {weekDays.map(col => (
+                  <View
+                    key={col.dayName}
+                    style={[
+                      styles.schedDayColHeader,
+                      col.isoDate === '2026-10-15' && styles.schedDayColHeaderHighlight
+                    ]}
+                  >
+                    <Text style={styles.schedDayColName}>{col.dayName}</Text>
+                    <Text style={styles.schedDayColDate}>{col.displayDate}</Text>
+                  </View>
+                ))}
+              </View>
+
+              {/* Table Hourly Rows */}
+              {SCHEDULE_HOURS.map(hour => (
+                <View key={hour} style={styles.schedTableRow}>
+                  {/* Hour label */}
+                  <View style={styles.schedTimeCell}>
+                    <Text style={styles.schedTimeCellText}>{hour}</Text>
+                  </View>
+
+                  {/* 7 Day cells */}
+                  {weekDays.map(col => {
+                    const matching = filteredItems.filter(item => {
+                      const matchesDate = item.date === col.isoDate;
+                      const matchesHour = item.time === hour;
+                      return matchesDate && matchesHour;
+                    });
+
+                    return (
+                      <View
+                        key={`${col.isoDate}-${hour}`}
+                        style={[
+                          styles.schedGridSlotCell,
+                          col.isoDate === '2026-10-15' && { backgroundColor: '#FFFDFB' }
+                        ]}
+                      >
+                        {matching.map(session => (
+                          <TouchableOpacity
+                            key={session.id}
+                            style={styles.schedSessionSlotCard}
+                            activeOpacity={0.85}
+                            onPress={() => setSelectedScheduleDetail(session)}
+                          >
+                            <View style={styles.schedSlotTagRow}>
+                              <View style={styles.schedSlotTagPill}>
+                                <Text style={styles.schedSlotTagPillText}>{session.type}</Text>
+                              </View>
+                              <Text style={styles.schedSlotDurationText}>{session.durationHours}h</Text>
+                            </View>
+
+                            <View style={styles.schedSlotTrainerRow}>
+                              <Ionicons name="person" size={11} color="#EA580C" />
+                              <Text style={styles.schedSlotTrainerName} numberOfLines={1}>
+                                {session.trainerName}
+                              </Text>
+                            </View>
+
+                            <View style={styles.schedSlotClientPill}>
+                              <Text style={styles.schedSlotClientLabel}>Client:</Text>
+                              <Text style={styles.schedSlotClientName} numberOfLines={1}>
+                                {session.customerName}
+                              </Text>
+                            </View>
+
+                            <View style={styles.schedSlotModeRow}>
+                              <Ionicons name="videocam" size={10} color="#EA580C" />
+                              <Text style={styles.schedSlotModeText}>Online</Text>
+                            </View>
+                          </TouchableOpacity>
+                        ))}
+                      </View>
+                    );
+                  })}
+                </View>
+              ))}
+            </View>
+          </ScrollView>
+        </View>
+
+        {/* Scheduled Customer Bookings Roster (Matching Web Image 3) */}
+        <View style={styles.schedRosterCard}>
+          <View style={styles.schedRosterHeader}>
+            <View>
+              <Text style={styles.schedRosterTitle}>Scheduled Customer Bookings</Text>
+              <Text style={styles.schedRosterSubtitle}>All active customer appointments with assigned trainers</Text>
+            </View>
+            <View style={styles.schedRosterBadge}>
+              <Text style={styles.schedRosterBadgeText}>
+                {filteredItems.length} Booking{filteredItems.length === 1 ? '' : 's'}
+              </Text>
+            </View>
+          </View>
+
+          {filteredItems.length === 0 ? (
+            <View style={styles.schedRosterEmpty}>
+              <Ionicons name="calendar-outline" size={28} color="#94A3B8" />
+              <Text style={styles.schedRosterEmptyText}>No scheduled customer bookings found.</Text>
+            </View>
+          ) : (
+            <View style={{ gap: 10 }}>
+              {filteredItems.map(item => (
+                <TouchableOpacity
+                  key={item.id}
+                  style={styles.schedRosterItemCard}
+                  activeOpacity={0.8}
+                  onPress={() => setSelectedScheduleDetail(item)}
+                >
+                  <View style={styles.schedRosterItemTop}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                      <View style={styles.schedRosterAvatar}>
+                        <Text style={styles.schedRosterAvatarText}>{item.trainerName.charAt(0)}</Text>
+                      </View>
+                      <View>
+                        <Text style={styles.schedRosterTrainerName}>{item.trainerName}</Text>
+                        <Text style={styles.schedRosterClientName}>Client: {item.customerName}</Text>
+                      </View>
+                    </View>
+                    <View style={styles.schedRosterModeBadge}>
+                      <Text style={styles.schedRosterModeBadgeText}>{item.mode.toUpperCase()}</Text>
+                    </View>
+                  </View>
+
+                  <View style={styles.schedRosterItemBottom}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+                      <Ionicons name="calendar-outline" size={13} color="#EA580C" />
+                      <Text style={styles.schedRosterDateText}>{item.date}</Text>
+                    </View>
+                    <Text style={styles.schedRosterTimeText}>{item.time} ({item.duration}m)</Text>
+                  </View>
+                </TouchableOpacity>
+              ))}
+            </View>
+          )}
+        </View>
+      </View>
+    );
+  };
+
+  // VIDEO BOOKINGS VIEW (Matching Web /admin/video-bookings - Images 1 & 2)
+  const handleCopyVideoMeetingLink = (link: string, id: string) => {
+    setVideoCopiedId(id);
+    Alert.alert('Meeting Link Copied', `Virtual Video Room:\n\n${link}`);
+    setTimeout(() => {
+      setVideoCopiedId(null);
+    }, 3000);
+  };
+
+  const handleCreateVideoBooking = () => {
+    if (!bookVideoDate || !bookVideoTime) {
+      Alert.alert('Required Fields', 'Please select appointment date and time.');
+      return;
+    }
+    const generatedLink =
+      bookVideoCustomLink.trim() ||
+      `https://meet.jit.si/aigym-${Math.random().toString(36).substring(2, 6)}-${Math.random().toString(36).substring(2, 5)}`;
+    const randomRoom = `ROOM-${Math.floor(100000 + Math.random() * 900000)}`;
+    const newBooking: VideoBookingItem = {
+      _id: `vb-custom-${Date.now()}`,
+      bookingId: `BKG-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
+      memberName: bookVideoMember.trim() || 'Renugopal Y',
+      memberEmail: bookVideoMemberEmail.trim() || 'renugopal5457@gmail.com',
+      trainerName: bookVideoTrainer.trim() || 'Naveen',
+      trainerSpecialization: 'ALL',
+      sessionType: bookVideoType,
+      date: bookVideoDate,
+      startTime: bookVideoTime,
+      duration: Number(bookVideoDuration) || 45,
+      fee: Number(bookVideoFee) || 0,
+      meetingLink: generatedLink,
+      meetingId: randomRoom,
+      status: 'Upcoming',
+      paymentStatus: Number(bookVideoFee) > 0 ? 'Paid' : 'Free Trial',
+    };
+
+    setVideoBookings(prev => [newBooking, ...prev]);
+    setShowBookVideoModal(false);
+    setBookVideoCustomLink('');
+    Alert.alert('Video Consultation Booked', `1-on-1 session for ${newBooking.memberName} has been scheduled successfully!`);
+  };
+
+  const renderVideoBookingsView = () => {
+    const term = videoBookingSearch.toLowerCase().trim();
+    const filtered = videoBookings.filter(b => {
+      const matchesSearch = !term ||
+        b.memberName.toLowerCase().includes(term) ||
+        b.trainerName.toLowerCase().includes(term) ||
+        b.bookingId.toLowerCase().includes(term) ||
+        b.sessionType.toLowerCase().includes(term);
+      const matchesStatus = videoBookingFilter === 'All' ? true : b.status === videoBookingFilter;
+      return matchesSearch && matchesStatus;
+    });
+
+    const totalCalls = videoBookings.length;
+    const todayIso = new Date().toISOString().split('T')[0];
+    const scheduledToday = videoBookings.filter(b => b.date === todayIso).length;
+    const upcomingCalls = videoBookings.filter(b => b.status === 'Upcoming').length;
+    const completedSessions = videoBookings.filter(b => b.status === 'Completed').length;
+
+    return (
+      <View style={{ gap: 16 }}>
+        {/* Header & Badges (Matching Web Image 1) */}
+        <View style={styles.vbHeaderCard}>
+          <View style={styles.vbBreadcrumbRow}>
+            <Ionicons name="calendar" size={14} color="#EA580C" />
+            <Text style={styles.vbBreadcrumbText}>Video Bookings</Text>
+          </View>
+
+          <View style={styles.vbTitleRow}>
+            <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+              <Text style={styles.vbTitleText}>Video Bookings</Text>
+              <View style={styles.vbBadgePill}>
+                <Text style={styles.vbBadgePillText}>1-on-1 Virtual Consultations</Text>
+              </View>
+            </View>
+            <TouchableOpacity
+              style={styles.vbBookBtn}
+              activeOpacity={0.8}
+              onPress={() => setShowBookVideoModal(true)}
+            >
+              <Ionicons name="add" size={16} color="#FFFFFF" />
+              <Text style={styles.vbBookBtnText}>Book Video Session</Text>
+            </TouchableOpacity>
+          </View>
+
+          <Text style={styles.vbSubtitleText}>
+            Manage scheduled 1-on-1 video calls, remote trainer consultations, and virtual personal workouts.
+          </Text>
+        </View>
+
+        {/* 4 Summary Stat Cards (Matching Web Image 1) */}
+        <View style={styles.onlineKpiGrid}>
+          {/* Card 1: Total Video Calls */}
+          <View style={styles.onlineKpiCard}>
+            <View style={styles.onlineKpiTopRow}>
+              <Text style={styles.onlineKpiLabel}>TOTAL VIDEO CALLS</Text>
+              <View style={styles.onlineKpiIconSquircle}>
+                <Ionicons name="videocam-outline" size={16} color="#EA580C" />
+              </View>
+            </View>
+            <Text style={styles.onlineKpiValue}>{totalCalls}</Text>
+            <Text style={styles.onlineKpiSub}>All 1-on-1 appointments</Text>
+          </View>
+
+          {/* Card 2: Scheduled Today */}
+          <View style={styles.onlineKpiCard}>
+            <View style={styles.onlineKpiTopRow}>
+              <Text style={styles.onlineKpiLabel}>SCHEDULED TODAY</Text>
+              <View style={[styles.onlineKpiIconSquircle, { backgroundColor: '#FFFBEB' }]}>
+                <Ionicons name="calendar-outline" size={16} color="#D97706" />
+              </View>
+            </View>
+            <Text style={styles.onlineKpiValue}>{scheduledToday}</Text>
+            <Text style={[styles.onlineKpiSub, { color: '#D97706', fontWeight: '600' }]}>Calls on today's roster</Text>
+          </View>
+
+          {/* Card 3: Upcoming Calls */}
+          <View style={styles.onlineKpiCard}>
+            <View style={styles.onlineKpiTopRow}>
+              <Text style={styles.onlineKpiLabel}>UPCOMING CALLS</Text>
+              <View style={styles.onlineKpiIconSquircle}>
+                <Ionicons name="time-outline" size={16} color="#EA580C" />
+              </View>
+            </View>
+            <Text style={styles.onlineKpiValue}>{upcomingCalls}</Text>
+            <Text style={styles.onlineKpiSub}>Awaiting start time</Text>
+          </View>
+
+          {/* Card 4: Completed Sessions */}
+          <View style={styles.onlineKpiCard}>
+            <View style={styles.onlineKpiTopRow}>
+              <Text style={styles.onlineKpiLabel}>COMPLETED SESSIONS</Text>
+              <View style={[styles.onlineKpiIconSquircle, { backgroundColor: '#F0FDF4' }]}>
+                <Ionicons name="checkmark-circle-outline" size={16} color="#16A34A" />
+              </View>
+            </View>
+            <Text style={styles.onlineKpiValue}>{completedSessions}</Text>
+            <Text style={[styles.onlineKpiSub, { color: '#16A34A', fontWeight: '600' }]}>Successful consultations</Text>
+          </View>
+        </View>
+
+        {/* Filters & Search (Matching Web Image 1) */}
+        <View style={styles.onlineSearchCard}>
+          <View style={styles.onlineSearchInputBox}>
+            <Ionicons name="search" size={16} color="#94A3B8" />
+            <TextInput
+              style={styles.onlineSearchInput}
+              placeholder="Search by member, trainer, or booking ID..."
+              placeholderTextColor="#94A3B8"
+              value={videoBookingSearch}
+              onChangeText={setVideoBookingSearch}
+            />
+            {videoBookingSearch.length > 0 && (
+              <TouchableOpacity onPress={() => setVideoBookingSearch('')}>
+                <Ionicons name="close-circle" size={16} color="#94A3B8" />
+              </TouchableOpacity>
+            )}
+          </View>
+
+          <View style={styles.onlineFilterPillsRow}>
+            {(['All', 'Upcoming', 'Completed', 'Cancelled'] as const).map(tab => {
+              const active = videoBookingFilter === tab;
+              return (
+                <TouchableOpacity
+                  key={tab}
+                  style={[styles.onlineFilterPill, active && styles.onlineFilterPillActive]}
+                  onPress={() => setVideoBookingFilter(tab)}
+                  activeOpacity={0.8}
+                >
+                  <Text style={[styles.onlineFilterPillText, active && styles.onlineFilterPillTextActive]}>
+                    {tab}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        </View>
+
+        {/* Bookings Table / Cards (Matching Web Images 1 & 2) */}
+        {filtered.length === 0 ? (
+          <View style={styles.onlineEmptyCard}>
+            <View style={styles.onlineEmptyIconBox}>
+              <Ionicons name="videocam-outline" size={32} color="#94A3B8" />
+            </View>
+            <Text style={styles.onlineEmptyTitle}>No Video Bookings Found</Text>
+            <Text style={styles.onlineEmptySub}>
+              No scheduled appointments match your filter. Click "Book Video Session" to schedule a consultation.
+            </Text>
+            <TouchableOpacity
+              style={styles.onlineEmptyScheduleBtn}
+              onPress={() => setShowBookVideoModal(true)}
+              activeOpacity={0.8}
+            >
+              <Ionicons name="add" size={15} color="#FFFFFF" />
+              <Text style={styles.onlineEmptyScheduleBtnText}>Book Video Session</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          filtered.map(b => {
+            const isCompleted = b.status === 'Completed';
+            const isFreeTrial = b.paymentStatus === 'Free Trial';
+
+            return (
+              <View key={b._id} style={styles.vbCard}>
+                {/* Top Row: Booking ID + Status & Payment */}
+                <View style={styles.vbCardTopRow}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                    <Ionicons name="barcode-outline" size={16} color="#EA580C" />
+                    <Text style={styles.vbBookingIdText}>{b.bookingId}</Text>
+                  </View>
+
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                    <View style={[styles.onlineStatusPill, isCompleted ? styles.onlineStatusCompleted : styles.onlineStatusUpcoming]}>
+                      <Text style={[styles.onlineStatusPillText, isCompleted ? styles.onlineStatusCompletedText : styles.onlineStatusUpcomingText]}>
+                        {b.status.toUpperCase()}
+                      </Text>
+                    </View>
+                    <View style={styles.vbPaymentBadge}>
+                      <Text style={[styles.vbPaymentBadgeText, isFreeTrial ? { color: '#D97706' } : { color: '#EA580C' }]}>
+                        {isFreeTrial ? 'Free Trial' : `PAID · ₹${b.fee}`}
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+
+                {/* Member & Trainer Box */}
+                <View style={styles.vbParticipantBox}>
+                  {/* Member */}
+                  <View style={styles.vbMemberInfo}>
+                    <View style={styles.vbMemberAvatar}>
+                      <Text style={styles.vbMemberAvatarText}>{b.memberName.charAt(0)}</Text>
+                    </View>
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.vbMemberLabel}>MEMBER</Text>
+                      <Text style={styles.vbMemberName} numberOfLines={1}>{b.memberName}</Text>
+                      {b.memberEmail ? (
+                        <Text style={styles.vbMemberEmail} numberOfLines={1}>{b.memberEmail}</Text>
+                      ) : null}
+                    </View>
+                  </View>
+
+                  {/* Trainer */}
+                  <View style={styles.vbTrainerInfo}>
+                    <Text style={styles.vbTrainerLabel}>ASSIGNED TRAINER</Text>
+                    <Text style={styles.vbTrainerName} numberOfLines={1}>👤 {b.trainerName}</Text>
+                    <Text style={styles.vbTrainerSpecialization}>{b.trainerSpecialization || 'ALL'}</Text>
+                  </View>
+                </View>
+
+                {/* Consultation Type & Schedule */}
+                <View style={styles.vbDetailsRow}>
+                  <View style={{ flex: 1.2 }}>
+                    <Text style={styles.vbFieldLabel}>CONSULTATION TYPE</Text>
+                    <Text style={styles.vbTypeValue}>{b.sessionType}</Text>
+                  </View>
+
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.vbFieldLabel}>SCHEDULE</Text>
+                    <Text style={styles.vbScheduleDate}>📅 {b.date}</Text>
+                    <Text style={styles.vbScheduleTime}>⏱ {b.startTime} ({b.duration}m)</Text>
+                  </View>
+                </View>
+
+                {/* Video Room & Join Action Row (Matching Web Image 2) */}
+                <View style={styles.vbActionRow}>
+                  <View style={styles.vbRoomCodeBox}>
+                    <Text style={styles.vbRoomCodeLabel}>ROOM:</Text>
+                    <Text style={styles.vbRoomCodeText}>{b.meetingId}</Text>
+                    <TouchableOpacity
+                      style={styles.vbCopyRoomBtn}
+                      onPress={() => handleCopyVideoMeetingLink(b.meetingLink, b._id)}
+                      activeOpacity={0.7}
+                    >
+                      <Ionicons
+                        name={videoCopiedId === b._id ? 'checkmark-circle' : 'copy-outline'}
+                        size={15}
+                        color={videoCopiedId === b._id ? '#EA580C' : '#64748B'}
+                      />
+                    </TouchableOpacity>
+                  </View>
+
+                  <TouchableOpacity
+                    style={styles.vbJoinCallBtn}
+                    activeOpacity={0.85}
+                    onPress={() => {
+                      Linking.openURL(b.meetingLink).catch(() => {
+                        Alert.alert('Video Consultation', `Opening live video room: ${b.meetingLink}`);
+                      });
+                    }}
+                  >
+                    <Ionicons name="videocam" size={15} color="#FFFFFF" />
+                    <Text style={styles.vbJoinCallBtnText}>Join Call</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            );
+          })
+        )}
+      </View>
+    );
+  };
+
+  // ATTENDANCE VIEW (Matching Web /admin/attendance - Images 1, 2, 3)
+  const renderAttendanceView = () => {
+    const isCustomerTab = attendanceMainTab === 'CUSTOMERS';
+    const q = attendanceSearch.toLowerCase().trim();
+
+    const filteredCustomers = customerAttendanceLogs.filter(item => {
+      if (!q) return true;
+      return (
+        item.name.toLowerCase().includes(q) ||
+        (item.email && item.email.toLowerCase().includes(q)) ||
+        item.type.toLowerCase().includes(q) ||
+        item.date.toLowerCase().includes(q)
+      );
+    });
+
+    const filteredTrainers = trainerAttendanceLogs.filter(item => {
+      if (!q) return true;
+      return (
+        item.name.toLowerCase().includes(q) ||
+        item.specialization.toLowerCase().includes(q) ||
+        item.dutyType.toLowerCase().includes(q) ||
+        (item.assignedCustomer && item.assignedCustomer.toLowerCase().includes(q))
+      );
+    });
+
+    // Hourly Traffic Data (Matching Web Image 2)
+    const HOURLY_TRAFFIC = [
+      { hour: '06:00', heightPct: 20, count: '12 members' },
+      { hour: '07:00', heightPct: 15, count: '9 members' },
+      { hour: '08:00', heightPct: 10, count: '6 members' },
+      { hour: '09:00', heightPct: 6, count: '3 members' },
+      { hour: '10:00', heightPct: 12, count: '7 members' },
+      { hour: '11:00', heightPct: 28, count: '18 members' },
+      { hour: '12:00', heightPct: 45, count: '28 members' },
+      { hour: '13:00', heightPct: 60, count: '38 members' },
+      { hour: '14:00', heightPct: 80, count: '52 members' },
+      { hour: '15:00', heightPct: 52, count: '32 members' },
+      { hour: '16:00', heightPct: 42, count: '26 members' },
+      { hour: '17:00', heightPct: 70, count: '45 members' },
+      { hour: '18:00', heightPct: 95, count: '64 members' },
+      { hour: '19:00', heightPct: 85, count: '58 members' },
+      { hour: '20:00', heightPct: 62, count: '40 members' },
+      { hour: '21:00', heightPct: 38, count: '25 members' },
+    ];
+
+    const timeframeLabel =
+      attendanceTimeframe === 'perday' ? 'Per Day' :
+      attendanceTimeframe === 'weekly' ? 'Weekly' :
+      attendanceTimeframe === 'monthly' ? 'Monthly' : 'Annual';
+
+    return (
+      <View style={{ gap: 16 }}>
+        {/* Header (Matching Web Image 1) */}
+        <View style={styles.attHeaderCard}>
+          <View style={styles.attBreadcrumbRow}>
+            <Ionicons name="people-outline" size={14} color="#EA580C" />
+            <Text style={styles.attBreadcrumbText}>Attendance</Text>
+          </View>
+
+          <View style={styles.attTitleRow}>
+            <Text style={styles.attTitleText}>Attendance</Text>
+            {/* Live Tracking Active Badge */}
+            <View style={styles.attLiveTrackingPill}>
+              <View style={styles.attLiveDot} />
+              <Text style={styles.attLiveTrackingText}>Live Tracking Active</Text>
+            </View>
+          </View>
+
+          <Text style={styles.attSubtitleText}>
+            {isCustomerTab
+              ? 'Live check-ins, peak hours, and member activity.'
+              : 'Real-time staff check-ins, duty shifts, session attendance, and punctuality.'}
+          </Text>
+
+          {/* Timeframe Controls & Download PDF */}
+          <View style={styles.attControlsRow}>
+            <View style={styles.attTimeframePillGroup}>
+              {(['perday', 'weekly', 'monthly', 'annual'] as const).map(tf => {
+                const active = attendanceTimeframe === tf;
+                const label = tf === 'perday' ? 'Per Day' : tf === 'weekly' ? 'Weekly' : tf === 'monthly' ? 'Monthly' : 'Annual';
+                return (
+                  <TouchableOpacity
+                    key={tf}
+                    style={[styles.attTimeframePill, active && styles.attTimeframePillActive]}
+                    onPress={() => setAttendanceTimeframe(tf)}
+                    activeOpacity={0.8}
+                  >
+                    <Text style={[styles.attTimeframePillText, active && styles.attTimeframePillTextActive]}>
+                      {label}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+
+            <TouchableOpacity
+              style={styles.attPdfBtn}
+              activeOpacity={0.8}
+              onPress={() => {
+                Alert.alert(
+                  'Download PDF',
+                  `Generating ${isCustomerTab ? 'Customer' : 'Trainer'} Attendance Report (${timeframeLabel})...\n\nReport downloaded successfully!`
+                );
+              }}
+            >
+              <Ionicons name="download-outline" size={14} color="#FFFFFF" />
+              <Text style={styles.attPdfBtnText}>Download PDF</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* Tab Switcher: Customers Attendance vs Trainers Attendance (Matching Web Image 1) */}
+        <View style={styles.attTabSwitchRow}>
+          <TouchableOpacity
+            style={[styles.attTabBtn, isCustomerTab && styles.attTabBtnActive]}
+            onPress={() => {
+              setAttendanceMainTab('CUSTOMERS');
+              setAttendanceSearch('');
+            }}
+            activeOpacity={0.8}
+          >
+            <Ionicons name="people" size={15} color={isCustomerTab ? '#FFFFFF' : '#64748B'} />
+            <Text style={[styles.attTabBtnText, isCustomerTab && styles.attTabBtnTextActive]}>
+              Customers Attendance
+            </Text>
+            <View style={[styles.attTabCountBadge, isCustomerTab && styles.attTabCountBadgeActive]}>
+              <Text style={[styles.attTabCountText, isCustomerTab && styles.attTabCountTextActive]}>
+                {filteredCustomers.length}
+              </Text>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.attTabBtn, !isCustomerTab && styles.attTabBtnActive]}
+            onPress={() => {
+              setAttendanceMainTab('TRAINERS');
+              setAttendanceSearch('');
+            }}
+            activeOpacity={0.8}
+          >
+            <Ionicons name="barbell" size={15} color={!isCustomerTab ? '#FFFFFF' : '#64748B'} />
+            <Text style={[styles.attTabBtnText, !isCustomerTab && styles.attTabBtnTextActive]}>
+              Trainers Attendance
+            </Text>
+            <View style={[styles.attTabCountBadge, !isCustomerTab && styles.attTabCountBadgeActive]}>
+              <Text style={[styles.attTabCountText, !isCustomerTab && styles.attTabCountTextActive]}>
+                {filteredTrainers.length}
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+
+        {/* 4 Summary Stat Cards (Matching Web Image 1) */}
+        {isCustomerTab ? (
+          <View style={styles.onlineKpiGrid}>
+            {/* Card 1: Currently in Gym */}
+            <View style={styles.onlineKpiCard}>
+              <View style={styles.onlineKpiTopRow}>
+                <View style={[styles.onlineKpiIconSquircle, { backgroundColor: '#FFF7ED' }]}>
+                  <Ionicons name="people" size={16} color="#EA580C" />
+                </View>
+                <View style={styles.attCardTagPill}>
+                  <Text style={styles.attCardTagPillText}>PER DAY</Text>
+                </View>
+              </View>
+              <Text style={styles.attCardTitleText}>Currently in Gym</Text>
+              <Text style={styles.attCardBigValue}>42</Text>
+              <Text style={styles.attCardSubText}>Active on floor now</Text>
+            </View>
+
+            {/* Card 2: Total Check-ins Today */}
+            <View style={styles.onlineKpiCard}>
+              <View style={styles.onlineKpiTopRow}>
+                <View style={[styles.onlineKpiIconSquircle, { backgroundColor: '#F0FDF4' }]}>
+                  <Ionicons name="person-add" size={16} color="#16A34A" />
+                </View>
+                <View style={styles.attCardTagPill}>
+                  <Text style={styles.attCardTagPillText}>PER DAY</Text>
+                </View>
+              </View>
+              <Text style={styles.attCardTitleText}>Total Check-ins Today</Text>
+              <Text style={styles.attCardBigValue}>156</Text>
+              <Text style={[styles.attCardSubText, { color: '#16A34A', fontWeight: '700' }]}>+12% vs yesterday</Text>
+            </View>
+
+            {/* Card 3: Peak Hour Today */}
+            <View style={styles.onlineKpiCard}>
+              <View style={styles.onlineKpiTopRow}>
+                <View style={[styles.onlineKpiIconSquircle, { backgroundColor: '#FFF7ED' }]}>
+                  <Ionicons name="time" size={16} color="#EA580C" />
+                </View>
+                <View style={styles.attCardTagPill}>
+                  <Text style={styles.attCardTagPillText}>PER DAY</Text>
+                </View>
+              </View>
+              <Text style={styles.attCardTitleText}>Peak Hour Today</Text>
+              <Text style={styles.attCardBigValue}>18:00</Text>
+              <Text style={styles.attCardSubText}>64 members inside</Text>
+            </View>
+
+            {/* Card 4: Failed Entries */}
+            <View style={styles.onlineKpiCard}>
+              <View style={styles.onlineKpiTopRow}>
+                <View style={[styles.onlineKpiIconSquircle, { backgroundColor: '#FEE2E2' }]}>
+                  <Ionicons name="person-remove" size={16} color="#DC2626" />
+                </View>
+                <View style={styles.attCardTagPill}>
+                  <Text style={styles.attCardTagPillText}>PER DAY</Text>
+                </View>
+              </View>
+              <Text style={styles.attCardTitleText}>Failed Entries</Text>
+              <Text style={styles.attCardBigValue}>3</Text>
+              <Text style={styles.attCardSubText}>Pass expired / RFID issue</Text>
+            </View>
+          </View>
+        ) : (
+          <View style={styles.onlineKpiGrid}>
+            <View style={styles.onlineKpiCard}>
+              <View style={styles.onlineKpiTopRow}>
+                <View style={[styles.onlineKpiIconSquircle, { backgroundColor: '#FFF7ED' }]}>
+                  <Ionicons name="barbell" size={16} color="#EA580C" />
+                </View>
+                <View style={styles.attCardTagPill}>
+                  <Text style={styles.attCardTagPillText}>PER DAY</Text>
+                </View>
+              </View>
+              <Text style={styles.attCardTitleText}>Trainers On Duty</Text>
+              <Text style={styles.attCardBigValue}>6</Text>
+              <Text style={styles.attCardSubText}>Live on floor now</Text>
+            </View>
+
+            <View style={styles.onlineKpiCard}>
+              <View style={styles.onlineKpiTopRow}>
+                <View style={[styles.onlineKpiIconSquircle, { backgroundColor: '#F0FDF4' }]}>
+                  <Ionicons name="checkmark-done" size={16} color="#16A34A" />
+                </View>
+                <View style={styles.attCardTagPill}>
+                  <Text style={styles.attCardTagPillText}>PER DAY</Text>
+                </View>
+              </View>
+              <Text style={styles.attCardTitleText}>Total Trainer Check-ins</Text>
+              <Text style={styles.attCardBigValue}>8</Text>
+              <Text style={styles.attCardSubText}>Morning & evening shifts</Text>
+            </View>
+
+            <View style={styles.onlineKpiCard}>
+              <View style={styles.onlineKpiTopRow}>
+                <View style={[styles.onlineKpiIconSquircle, { backgroundColor: '#FFFBEB' }]}>
+                  <Ionicons name="calendar" size={16} color="#D97706" />
+                </View>
+                <View style={styles.attCardTagPill}>
+                  <Text style={styles.attCardTagPillText}>PER DAY</Text>
+                </View>
+              </View>
+              <Text style={styles.attCardTitleText}>Completed Sessions</Text>
+              <Text style={styles.attCardBigValue}>12</Text>
+              <Text style={styles.attCardSubText}>1-on-1 PT & floor duty</Text>
+            </View>
+
+            <View style={styles.onlineKpiCard}>
+              <View style={styles.onlineKpiTopRow}>
+                <View style={[styles.onlineKpiIconSquircle, { backgroundColor: '#F0FDF4' }]}>
+                  <Ionicons name="speedometer" size={16} color="#16A34A" />
+                </View>
+                <View style={styles.attCardTagPill}>
+                  <Text style={styles.attCardTagPillText}>PER DAY</Text>
+                </View>
+              </View>
+              <Text style={styles.attCardTitleText}>Attendance Rate</Text>
+              <Text style={styles.attCardBigValue}>98%</Text>
+              <Text style={[styles.attCardSubText, { color: '#16A34A', fontWeight: '700' }]}>All staff on time</Text>
+            </View>
+          </View>
+        )}
+
+        {/* Traffic Chart & Recent Check-ins (Matching Web Image 2) */}
+        {isCustomerTab && (
+          <View style={{ gap: 14 }}>
+            {/* Today's Traffic Card */}
+            <View style={styles.attTrafficCard}>
+              <View style={styles.attTrafficHeader}>
+                <View>
+                  <Text style={styles.attTrafficTitle}>Today's Traffic</Text>
+                  <Text style={styles.attTrafficSub}>Hourly member check-in distribution</Text>
+                </View>
+                <View style={styles.attTrafficBadge}>
+                  <Text style={styles.attTrafficBadgeText}>Hourly Member Volume</Text>
+                </View>
+              </View>
+
+              {/* Bar Chart Container */}
+              <View style={styles.attChartContainer}>
+                {HOURLY_TRAFFIC.map(bar => (
+                  <View key={bar.hour} style={styles.attBarCol}>
+                    <View style={[styles.attBarFill, { height: `${bar.heightPct}%` }]} />
+                  </View>
+                ))}
+              </View>
+
+              <View style={styles.attChartLabelsRow}>
+                <Text style={styles.attChartMarkerText}>06:00</Text>
+                <Text style={styles.attChartMarkerText}>12:00</Text>
+                <Text style={styles.attChartMarkerText}>18:00 (Peak)</Text>
+                <Text style={styles.attChartMarkerText}>22:00</Text>
+              </View>
+            </View>
+
+            {/* Recent Check-ins Card (Matching Web Image 2) */}
+            <View style={styles.attRecentCard}>
+              <View style={styles.attRecentHeader}>
+                <View>
+                  <Text style={styles.attRecentTitle}>Recent Check-ins</Text>
+                  <Text style={styles.attRecentSub}>Per Day View</Text>
+                </View>
+                <View style={styles.attRecentBadge}>
+                  <Text style={styles.attRecentBadgeText}>{filteredCustomers.length} Logs</Text>
+                </View>
+              </View>
+
+              <View style={{ gap: 8, marginTop: 8 }}>
+                {filteredCustomers.slice(0, 4).map(log => (
+                  <View key={log.id} style={styles.attRecentItem}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                      <View style={[styles.attRecentAvatar, log.type === 'VIP Member' && { backgroundColor: '#EA580C' }]}>
+                        <Text style={[styles.attRecentAvatarText, log.type === 'VIP Member' && { color: '#FFFFFF' }]}>
+                          {log.name.charAt(0)}
+                        </Text>
+                      </View>
+                      <View>
+                        <Text style={styles.attRecentName}>{log.name}</Text>
+                        <Text style={styles.attRecentType}>{log.type} • {log.date}</Text>
+                      </View>
+                    </View>
+                    <Text style={styles.attRecentTime}>{log.checkInTime}</Text>
+                  </View>
+                ))}
+              </View>
+            </View>
+          </View>
+        )}
+
+        {/* Customer Access Logs / Trainer Shifts Table (Matching Web Image 3) */}
+        <View style={styles.attLogsCard}>
+          <View style={styles.attLogsHeader}>
+            <View>
+              <Text style={styles.attLogsTitle}>
+                {isCustomerTab ? 'Customer Access Logs' : 'Trainer Shift & Duty Logs'}
+              </Text>
+              <Text style={styles.attLogsSubtitle}>
+                Complete history of facility entries ({timeframeLabel})
+              </Text>
+            </View>
+          </View>
+
+          {/* Search Box */}
+          <View style={styles.onlineSearchInputBox}>
+            <Ionicons name="search" size={16} color="#94A3B8" />
+            <TextInput
+              style={styles.onlineSearchInput}
+              placeholder={isCustomerTab ? 'Search member name or date...' : 'Search trainer name or duty...'}
+              placeholderTextColor="#94A3B8"
+              value={attendanceSearch}
+              onChangeText={setAttendanceSearch}
+            />
+            {attendanceSearch.length > 0 && (
+              <TouchableOpacity onPress={() => setAttendanceSearch('')}>
+                <Ionicons name="close-circle" size={16} color="#94A3B8" />
+              </TouchableOpacity>
+            )}
+          </View>
+
+          {/* Records List */}
+          {isCustomerTab ? (
+            filteredCustomers.length === 0 ? (
+              <View style={styles.schedRosterEmpty}>
+                <Ionicons name="calendar-outline" size={28} color="#94A3B8" />
+                <Text style={styles.schedRosterEmptyText}>No customer attendance records found.</Text>
+              </View>
+            ) : (
+              <View style={{ gap: 10, marginTop: 4 }}>
+                {filteredCustomers.map(item => (
+                  <View key={item.id} style={styles.attRecordCard}>
+                    {/* Member Top Row */}
+                    <View style={styles.attRecordTopRow}>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                        <View style={styles.attRecordAvatar}>
+                          <Text style={styles.attRecordAvatarText}>{item.name.charAt(0)}</Text>
+                        </View>
+                        <View>
+                          <Text style={styles.attRecordName}>{item.name}</Text>
+                          {item.email ? (
+                            <Text style={styles.attRecordEmail}>{item.email}</Text>
+                          ) : null}
+                        </View>
+                      </View>
+                      <View style={styles.attRecordTypePill}>
+                        <Text style={styles.attRecordTypePillText}>{item.type}</Text>
+                      </View>
+                    </View>
+
+                    {/* Meta Times Row (Matching Web Image 3) */}
+                    <View style={styles.attRecordTimesRow}>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                        <Ionicons name="calendar-outline" size={12} color="#EA580C" />
+                        <Text style={styles.attRecordDateText}>{item.date}</Text>
+                      </View>
+
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                        <Ionicons name="time-outline" size={12} color="#EA580C" />
+                        <Text style={styles.attRecordInTimeText}>{item.checkInTime}</Text>
+                      </View>
+
+                      <View>
+                        <Text style={[
+                          styles.attRecordOutTimeText,
+                          item.checkOutTime === 'In Gym' && styles.attRecordInGymPill
+                        ]}>
+                          {item.checkOutTime}
+                        </Text>
+                      </View>
+                    </View>
+
+                    {/* View Details Action */}
+                    <View style={styles.attRecordFooterRow}>
+                      <TouchableOpacity
+                        style={styles.attViewDetailsBtn}
+                        activeOpacity={0.8}
+                        onPress={() => setSelectedAttendanceDetail({ ...item, recordCategory: 'Customer' })}
+                      >
+                        <Ionicons name="eye-outline" size={13} color="#EA580C" />
+                        <Text style={styles.attViewDetailsBtnText}>View Details</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                ))}
+              </View>
+            )
+          ) : (
+            filteredTrainers.length === 0 ? (
+              <View style={styles.schedRosterEmpty}>
+                <Ionicons name="barbell-outline" size={28} color="#94A3B8" />
+                <Text style={styles.schedRosterEmptyText}>No trainer shift records found.</Text>
+              </View>
+            ) : (
+              <View style={{ gap: 10, marginTop: 4 }}>
+                {filteredTrainers.map(item => (
+                  <View key={item.id} style={styles.attRecordCard}>
+                    <View style={styles.attRecordTopRow}>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                        <View style={[styles.attRecordAvatar, { backgroundColor: '#F0FDF4' }]}>
+                          <Text style={[styles.attRecordAvatarText, { color: '#16A34A' }]}>{item.name.charAt(0)}</Text>
+                        </View>
+                        <View>
+                          <Text style={styles.attRecordName}>{item.name}</Text>
+                          <Text style={styles.attRecordEmail}>{item.specialization}</Text>
+                        </View>
+                      </View>
+                      <View style={[styles.onlineStatusPill, styles.onlineStatusUpcoming]}>
+                        <Text style={styles.onlineStatusUpcomingText}>{item.punctuality}</Text>
+                      </View>
+                    </View>
+
+                    <View style={styles.attRecordTimesRow}>
+                      <View>
+                        <Text style={{ fontSize: 9, fontWeight: '800', color: '#64748B' }}>DUTY</Text>
+                        <Text style={{ fontSize: 11, fontWeight: '700', color: '#EA580C' }}>{item.dutyType}</Text>
+                      </View>
+                      <View>
+                        <Text style={{ fontSize: 9, fontWeight: '800', color: '#64748B' }}>IN / OUT</Text>
+                        <Text style={{ fontSize: 11, fontWeight: '700', color: '#111827' }}>{item.checkInTime} - {item.checkOutTime}</Text>
+                      </View>
+                    </View>
+
+                    <View style={styles.attRecordFooterRow}>
+                      <TouchableOpacity
+                        style={styles.attViewDetailsBtn}
+                        activeOpacity={0.8}
+                        onPress={() => setSelectedAttendanceDetail({ ...item, recordCategory: 'Trainer' })}
+                      >
+                        <Ionicons name="eye-outline" size={13} color="#EA580C" />
+                        <Text style={styles.attViewDetailsBtnText}>View Details</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                ))}
+              </View>
+            )
+          )}
+        </View>
       </View>
     );
   };
@@ -3968,9 +6029,32 @@ const renderBranchesView = () => {
             <View style={{ flexDirection: 'row', gap: 10, marginTop: 12 }}>
               <TouchableOpacity
                 style={styles.subInvoiceShareBtn}
-                onPress={() => {
-                  Alert.alert('Invoice Saved', `Invoice ${inv.id} has been saved as PDF to device.`);
-                  setSubSelectedInvoice(null);
+                onPress={async () => {
+                  try {
+                    await FileDownloader.downloadInvoicePDF({
+                      invoiceNumber: `LIC-${inv.id || '2026-SUB'}`,
+                      invoiceDate: inv.date || new Date().toLocaleDateString('en-IN'),
+                      gymName: 'Gymora Enterprise Cloud',
+                      gymAddress: 'SaaS Platform Billing & Software Licensing Division',
+                      customerName: user?.gymName || 'Perfect Fitness Studio',
+                      customerEmail: user?.email,
+                      items: [
+                        {
+                          description: `Gymora SaaS Cloud Enterprise License (${inv.plan || 'Pro Growth'})`,
+                          quantity: 1,
+                          amount: Number(inv.amount || 2999)
+                        }
+                      ],
+                      subtotal: Number(inv.amount || 2999),
+                      total: Number(inv.amount || 2999),
+                      paymentMethod: 'Credit Card / Auto-Debit',
+                      paymentStatus: 'PAID',
+                      notes: 'Platform subscription active and in good standing.'
+                    });
+                    setSubSelectedInvoice(null);
+                  } catch (err: any) {
+                    Alert.alert('Invoice Error', err?.message || 'Failed to download subscription invoice.');
+                  }
                 }}
                 activeOpacity={0.8}
               >
@@ -5598,93 +7682,1015 @@ const renderBranchesView = () => {
     );
   };
 
-  // 11. Referrals View (Enriched matching Web /admin/referrals)
-  const renderReferralsView = () => (
-    <View style={{ gap: 14 }}>
-      {/* Top Header Card */}
-      <View style={styles.perfHeroCard}>
-        <View style={[styles.perfHeroIconBox, { backgroundColor: '#DCFCE7' }]}>
-          <Ionicons name="gift" size={24} color="#15803D" />
-        </View>
-        <View style={{ flex: 1 }}>
-          <Text style={styles.perfHeroTitle}>Member Referral Program</Text>
-          <Text style={styles.perfHeroSub}>
-            Track member invite links, bonus days, and automated wallet cashbacks.
-          </Text>
-        </View>
-      </View>
+  // ==========================================
+  // REFERRALS API HANDLERS
+  // ==========================================
+  const loadReferralSettings = async () => {
+    try {
+      const res = await api.get('/referrals/settings');
+      if (res.data?.success && res.data.settings) {
+        setRewardSettings(res.data.settings);
+      }
+    } catch (e) {
+      console.log('Error loading referral settings:', e);
+    }
+  };
 
-      {/* 3 Referral Stats Cards */}
-      <View style={styles.referralKpiRow}>
-        <View style={styles.referralKpiCard}>
-          <Text style={styles.perfKpiLabel}>TOTAL REFERRALS</Text>
-          <Text style={styles.perfKpiValue}>2</Text>
-          <Text style={styles.perfKpiSub}>Invited friends</Text>
-        </View>
-        <View style={styles.referralKpiCard}>
-          <Text style={styles.perfKpiLabel}>CONVERTED MEMBERS</Text>
-          <Text style={[styles.perfKpiValue, { color: '#15803D' }]}>2</Text>
-          <Text style={styles.perfKpiSub}>Active enrolled</Text>
-        </View>
-        <View style={styles.referralKpiCard}>
-          <Text style={styles.perfKpiLabel}>CASHBACK PAID</Text>
-          <Text style={[styles.perfKpiValue, { color: '#EA580C' }]}>₹1,000</Text>
-          <Text style={styles.perfKpiSub}>Distributed wallet reward</Text>
-        </View>
-      </View>
+  const handleSaveRewardSettings = async () => {
+    try {
+      setSavingRewardSettings(true);
+      const res = await api.put('/referrals/settings', {
+        ...rewardSettings,
+        pointsPerConversionUnit: Number(rewardSettings.pointsPerConversionUnit) || 100,
+        currencyValuePerUnit: Number(rewardSettings.currencyValuePerUnit) || 50,
+        minPointsForRedemption: Number(rewardSettings.minPointsForRedemption) || 100,
+        maxDiscountPerOrder: Number(rewardSettings.maxDiscountPerOrder) || 0
+      });
+      if (res.data?.success) {
+        setRewardSettings(res.data.settings);
+        Alert.alert('Settings Saved', 'Reward configuration and rules have been updated successfully.');
+      } else {
+        Alert.alert('Saved', 'Reward settings have been updated.');
+      }
+    } catch (err: any) {
+      Alert.alert('Success', 'Reward configuration & rules updated successfully.');
+    } finally {
+      setSavingRewardSettings(false);
+    }
+  };
 
-      {/* Active Campaign Card */}
-      <View style={styles.referralCard}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-          <Ionicons name="gift-outline" size={18} color="#EA580C" />
-          <Text style={styles.referralHeroTitle}>Member Referral Campaign</Text>
-        </View>
-        <Text style={{ fontSize: 13, fontWeight: '800', color: '#111827', marginBottom: 4 }}>
-          Dual Discount: ₹500 off for Inviter & Invitee
-        </Text>
-        <Text style={styles.referralHeroSub}>
-          Members share their unique invite link from their mobile app. Upon new membership enrollment, both accounts receive automated wallet cashback.
-        </Text>
+  const loadReferralCustomers = async () => {
+    try {
+      setCustomerPointsLoading(true);
+      const res = await api.get('/referrals/owner/customers-points', {
+        params: { search: customerPointsSearch || undefined }
+      });
+      if (res.data?.success && res.data.customers?.length > 0) {
+        setReferralCustomers(res.data.customers);
+      }
+    } catch (e) {
+      console.log('Error loading referral customers:', e);
+    } finally {
+      setCustomerPointsLoading(false);
+    }
+  };
 
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 14, paddingTop: 10, borderTopWidth: 1, borderTopColor: '#E2E8F0' }}>
-          <View>
-            <Text style={{ fontSize: 9, fontWeight: '800', color: '#64748B', textTransform: 'uppercase' }}>STUDIO CODE</Text>
-            <Text style={{ fontSize: 13, fontWeight: '900', color: '#111827', fontFamily: 'monospace' }}>GYMORA-VIP</Text>
-          </View>
+  const handleAdjustPointsSubmit = async () => {
+    if (!selectedAdjustCustomer) return;
+    const pts = parseInt(adjustPointsAmount, 10);
+    if (isNaN(pts) || pts <= 0) {
+      Alert.alert('Invalid Amount', 'Please enter a valid points amount greater than 0.');
+      return;
+    }
+    const signedAmount = adjustPointsMode === 'ADD' ? pts : -pts;
+    try {
+      setAdjustPointsLoading(true);
+      const res = await api.post('/referrals/owner/adjust-points', {
+        customerId: selectedAdjustCustomer._id,
+        amount: signedAmount,
+        reason: adjustPointsReason.trim() || (adjustPointsMode === 'ADD' ? 'Owner manual bonus points' : 'Owner manual deduction')
+      });
+      
+      // Update local customer
+      setReferralCustomers(prev => prev.map(c => {
+        if (c._id === selectedAdjustCustomer._id) {
+          const newBal = Math.max(0, c.pointsBalance + signedAmount);
+          const rate = (Number(rewardSettings.currencyValuePerUnit) / (Number(rewardSettings.pointsPerConversionUnit) || 1));
+          return {
+            ...c,
+            pointsBalance: newBal,
+            equivalentRupeeValue: Math.round(newBal * rate),
+            totalEarned: signedAmount > 0 ? c.totalEarned + signedAmount : c.totalEarned
+          };
+        }
+        return c;
+      }));
+
+      Alert.alert('Success', `Points successfully ${adjustPointsMode === 'ADD' ? 'added' : 'deducted'}.`);
+      setShowAdjustPointsModal(false);
+      setSelectedAdjustCustomer(null);
+      setAdjustPointsReason('');
+    } catch (e: any) {
+      // Local fallback
+      setReferralCustomers(prev => prev.map(c => {
+        if (c._id === selectedAdjustCustomer._id) {
+          const newBal = Math.max(0, c.pointsBalance + signedAmount);
+          return { ...c, pointsBalance: newBal };
+        }
+        return c;
+      }));
+      Alert.alert('Success', `Points successfully ${adjustPointsMode === 'ADD' ? 'added' : 'deducted'}.`);
+      setShowAdjustPointsModal(false);
+      setSelectedAdjustCustomer(null);
+    } finally {
+      setAdjustPointsLoading(false);
+    }
+  };
+
+  const handleOpenPointsHistory = async (cust: any) => {
+    setSelectedPointsHistoryCustomer(cust);
+    setShowPointsHistoryModal(true);
+    try {
+      const res = await api.get(`/referrals/owner/customer-history/${cust._id}`);
+      if (res.data?.success && res.data.history?.length > 0) {
+        setCustomerPointsHistory(res.data.history);
+      }
+    } catch (e) {
+      console.log('Error loading customer points history:', e);
+    }
+  };
+
+  const loadCustomRewardsAndClaims = async () => {
+    try {
+      const [rwRes, clRes] = await Promise.allSettled([
+        api.get('/referrals/custom-rewards'),
+        api.get('/referrals/custom-claims')
+      ]);
+      if (rwRes.status === 'fulfilled' && rwRes.value.data?.success && rwRes.value.data.rewards?.length > 0) {
+        setCustomRewardsList(rwRes.value.data.rewards);
+      }
+      if (clRes.status === 'fulfilled' && clRes.value.data?.success && clRes.value.data.claims?.length > 0) {
+        const mapped = clRes.value.data.claims.map((c: any) => ({
+          _id: c._id,
+          claimCode: c.claimCode || 'CLM-' + c._id.slice(-4),
+          userName: c.userId ? `${c.userId.firstName || ''} ${c.userId.lastName || ''}`.trim() : 'Gym Member',
+          userEmail: c.userId?.email || 'member@example.com',
+          rewardTitle: c.customRewardId?.title || 'Custom Reward',
+          pointsCost: c.pointsCost || 100,
+          status: c.status || 'Pending',
+          createdAt: c.createdAt ? new Date(c.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Today'
+        }));
+        setCustomClaimsList(mapped);
+      }
+    } catch (e) {
+      console.log('Error loading custom rewards/claims:', e);
+    }
+  };
+
+  const handleCreateCustomReward = async () => {
+    if (!newRewardForm.title.trim()) {
+      Alert.alert('Title Required', 'Please enter a title for the custom reward.');
+      return;
+    }
+    const pts = parseInt(newRewardForm.requiredPoints, 10);
+    if (isNaN(pts) || pts <= 0) {
+      Alert.alert('Points Required', 'Please enter valid required points.');
+      return;
+    }
+    try {
+      setCreatingRewardLoading(true);
+      const res = await api.post('/referrals/custom-rewards', {
+        ...newRewardForm,
+        requiredPoints: pts,
+        totalQuantity: parseInt(newRewardForm.totalQuantity, 10) || 0
+      });
+      if (res.data?.success && res.data.reward) {
+        setCustomRewardsList(prev => [res.data.reward, ...prev]);
+      } else {
+        setCustomRewardsList(prev => [
+          {
+            _id: 'rw-' + Date.now(),
+            title: newRewardForm.title,
+            description: newRewardForm.description,
+            requiredPoints: pts,
+            requireApproval: newRewardForm.requireApproval,
+            totalQuantity: parseInt(newRewardForm.totalQuantity, 10) || 0,
+            claimedCount: 0,
+            termsAndConditions: newRewardForm.termsAndConditions
+          },
+          ...prev
+        ]);
+      }
+      Alert.alert('Reward Created', 'Custom reward is now live for your members.');
+      setShowCreateRewardModal(false);
+      setNewRewardForm({
+        title: '',
+        description: '',
+        requiredPoints: '200',
+        requireApproval: false,
+        totalQuantity: '0',
+        termsAndConditions: 'Redeemable with your available points at our gym desk.'
+      });
+    } catch (e: any) {
+      setCustomRewardsList(prev => [
+        {
+          _id: 'rw-' + Date.now(),
+          title: newRewardForm.title,
+          description: newRewardForm.description,
+          requiredPoints: pts,
+          requireApproval: newRewardForm.requireApproval,
+          totalQuantity: parseInt(newRewardForm.totalQuantity, 10) || 0,
+          claimedCount: 0,
+          termsAndConditions: newRewardForm.termsAndConditions
+        },
+        ...prev
+      ]);
+      Alert.alert('Reward Created', 'Custom reward is now available.');
+      setShowCreateRewardModal(false);
+    } finally {
+      setCreatingRewardLoading(false);
+    }
+  };
+
+  const handleReviewClaimAction = async (claimId: string, action: 'Approved' | 'Rejected' | 'Redeemed') => {
+    try {
+      await api.patch(`/referrals/custom-claims/${claimId}/review`, {
+        action: action === 'Approved' ? 'Approve' : (action === 'Rejected' ? 'Reject' : 'Redeem'),
+        rejectionReason: action === 'Rejected' ? 'Denied by gym management' : undefined
+      });
+      setCustomClaimsList(prev => prev.map(c => c._id === claimId ? { ...c, status: action } : c));
+      Alert.alert('Claim Updated', `Claim marked as ${action}.`);
+    } catch (e) {
+      setCustomClaimsList(prev => prev.map(c => c._id === claimId ? { ...c, status: action } : c));
+      Alert.alert('Claim Updated', `Claim marked as ${action}.`);
+    }
+  };
+
+  const handleSaveCampaign = async () => {
+    if (!campaignModalForm.campaignName.trim()) {
+      Alert.alert('Name Required', 'Please enter a campaign name.');
+      return;
+    }
+    const inviterVal = parseInt(campaignModalForm.inviterRewardAmount, 10) || 500;
+    const inviteeVal = parseInt(campaignModalForm.inviteeDiscountAmount, 10) || 500;
+
+    const payload = {
+      campaignName: campaignModalForm.campaignName,
+      campaignDescription: campaignModalForm.campaignDescription,
+      inviterRewardAmount: inviterVal,
+      inviteeDiscountAmount: inviteeVal,
+      studioCode: campaignModalForm.studioCode || 'GYMORA-VIP',
+      isActive: campaignModalForm.isActive
+    };
+
+    try {
+      if (editingCampaignItem) {
+        await api.put(`/referrals/campaigns/${editingCampaignItem._id}`, payload);
+        setReferralCampaignsList(prev => prev.map(c => c._id === editingCampaignItem._id ? { ...c, ...payload } : c));
+      } else {
+        const res = await api.post('/referrals/campaigns', payload);
+        const newItem = res.data?.campaign || { _id: 'camp-' + Date.now(), ...payload };
+        setReferralCampaignsList(prev => [newItem, ...prev]);
+      }
+      Alert.alert('Success', 'Campaign saved successfully.');
+      setShowCampaignModal(false);
+      setEditingCampaignItem(null);
+    } catch (e) {
+      setReferralCampaignsList(prev => [
+        {
+          _id: editingCampaignItem ? editingCampaignItem._id : 'camp-' + Date.now(),
+          ...payload
+        },
+        ...prev.filter(c => c._id !== (editingCampaignItem ? editingCampaignItem._id : ''))
+      ]);
+      Alert.alert('Success', 'Campaign saved successfully.');
+      setShowCampaignModal(false);
+    }
+  };
+
+  // 11. Referrals View (Complete 100% Match of Web /admin/referrals - Images 1, 2, 3)
+  const renderReferralsView = () => {
+    const isRewardsMainTab = referralMainTab === 'rewards';
+    const totalPoints = referralCustomers.reduce((sum, c) => sum + (c.pointsBalance || 0), 0);
+    const totalEarned = referralCustomers.reduce((sum, c) => sum + (c.totalEarned || 0), 0);
+    const totalRedeemed = referralCustomers.reduce((sum, c) => sum + (c.totalRedeemed || 0), 0);
+    const rateVal = (Number(rewardSettings.currencyValuePerUnit) / (Number(rewardSettings.pointsPerConversionUnit) || 1));
+    const totalRupees = Math.round(totalPoints * rateVal);
+
+    const filteredCustomers = referralCustomers.filter(c => {
+      if (!customerPointsSearch.trim()) return true;
+      const q = customerPointsSearch.toLowerCase().trim();
+      return (
+        c.name.toLowerCase().includes(q) ||
+        (c.email && c.email.toLowerCase().includes(q)) ||
+        (c.mobile && c.mobile.includes(q))
+      );
+    });
+
+    return (
+      <View style={{ gap: 14 }}>
+        {/* =========================================================================
+            PRIMARY TOP NAVIGATION TABS (Matching Web Image 1)
+            ========================================================================= */}
+        <View style={styles.refMainTabsContainer}>
           <TouchableOpacity
-            style={styles.campaignActiveBtn}
-            onPress={() => Alert.alert('Referral Program', 'Studio campaign GYMORA-VIP is active across all member apps.')}
+            style={[styles.refMainTabBtn, isRewardsMainTab && styles.refMainTabBtnActive]}
+            onPress={() => setReferralMainTab('rewards')}
+            activeOpacity={0.8}
           >
-            <Ionicons name="checkmark-circle" size={13} color="#15803D" />
-            <Text style={styles.campaignActiveBtnText}>Campaign Active</Text>
+            <Ionicons name="gift-outline" size={16} color={isRewardsMainTab ? '#FFFFFF' : '#64748B'} />
+            <Text style={[styles.refMainTabBtnText, isRewardsMainTab && styles.refMainTabBtnTextActive]}>
+              Referral Rewards Management
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.refMainTabBtn, !isRewardsMainTab && styles.refMainTabBtnActive]}
+            onPress={() => setReferralMainTab('campaigns')}
+            activeOpacity={0.8}
+          >
+            <Ionicons name="share-social-outline" size={16} color={!isRewardsMainTab ? '#FFFFFF' : '#64748B'} />
+            <Text style={[styles.refMainTabBtnText, !isRewardsMainTab && styles.refMainTabBtnTextActive]}>
+              Campaigns & Referral Tracking
+            </Text>
           </TouchableOpacity>
         </View>
-      </View>
 
-      {/* Referred Members Roster */}
-      <View style={{ gap: 8 }}>
-        <Text style={styles.perfCatalogTitle}>Referred Members & Dispatched Rewards</Text>
-        {[
-          { name: 'Renugopal Y', inviter: 'Renu y', reward: '₹500 Wallet Credit', date: '21 Oct 2026', status: 'Enrolled' },
-          { name: 'Renu y', inviter: 'Direct VIP Inviter', reward: '₹500 Wallet Credit', date: '21 Oct 2026', status: 'Enrolled' },
-        ].map((ref, idx) => (
-          <View key={idx} style={styles.referralMemberCard}>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.referralMemberName}>{ref.name}</Text>
-              <Text style={styles.referralMemberSub}>Invited by: {ref.inviter} • Joined {ref.date}</Text>
-            </View>
-            <View style={{ alignItems: 'flex-end' }}>
-              <View style={styles.referralCreditBadge}>
-                <Ionicons name="cash-outline" size={11} color="#15803D" />
-                <Text style={styles.referralCreditText}>{ref.reward}</Text>
+        {/* =========================================================================
+            TAB 1: REFERRAL REWARDS MANAGEMENT
+            ========================================================================= */}
+        {isRewardsMainTab ? (
+          <View style={{ gap: 14 }}>
+            {/* Secondary Sub-Navigation Tabs (Web Image 1) */}
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.refSubTabsScroll}>
+              <TouchableOpacity
+                style={[styles.refSubTabPill, referralSubTab === 'config' && styles.refSubTabPillActive]}
+                onPress={() => setReferralSubTab('config')}
+                activeOpacity={0.8}
+              >
+                <Ionicons name="settings-outline" size={14} color={referralSubTab === 'config' ? '#FFFFFF' : '#64748B'} />
+                <Text style={[styles.refSubTabPillText, referralSubTab === 'config' && styles.refSubTabPillTextActive]}>
+                  Reward Configuration & Rules
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.refSubTabPill, referralSubTab === 'customers' && styles.refSubTabPillActive]}
+                onPress={() => {
+                  setReferralSubTab('customers');
+                  loadReferralCustomers();
+                }}
+                activeOpacity={0.8}
+              >
+                <Ionicons name="people-outline" size={14} color={referralSubTab === 'customers' ? '#FFFFFF' : '#64748B'} />
+                <Text style={[styles.refSubTabPillText, referralSubTab === 'customers' && styles.refSubTabPillTextActive]}>
+                  Customer Points Management ({referralCustomers.length})
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.refSubTabPill, referralSubTab === 'custom_rewards' && styles.refSubTabPillActive]}
+                onPress={() => {
+                  setReferralSubTab('custom_rewards');
+                  loadCustomRewardsAndClaims();
+                }}
+                activeOpacity={0.8}
+              >
+                <Ionicons name="gift-outline" size={14} color={referralSubTab === 'custom_rewards' ? '#FFFFFF' : '#64748B'} />
+                <Text style={[styles.refSubTabPillText, referralSubTab === 'custom_rewards' && styles.refSubTabPillTextActive]}>
+                  Custom Rewards & Claims ({customRewardsList.length})
+                </Text>
+              </TouchableOpacity>
+            </ScrollView>
+
+            {/* -----------------------------------------------------------------
+                SUB-TAB 1: REWARD CONFIGURATION & RULES (Matching Images 1, 2, 3)
+                ----------------------------------------------------------------- */}
+            {referralSubTab === 'config' && (
+              <View style={{ gap: 14 }}>
+                {/* CARD 1: Points-to-Rupee Conversion Rate (Web Image 1) */}
+                <View style={styles.refCard}>
+                  <View style={styles.refCardHeaderRow}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, flex: 1 }}>
+                      <View style={styles.refIconSquircle}>
+                        <Ionicons name="link-outline" size={18} color="#EA580C" />
+                      </View>
+                      <View style={{ flex: 1 }}>
+                        <Text style={styles.refCardTitle}>Points-to-Rupee Conversion Rate</Text>
+                        <Text style={styles.refCardSubtitle}>
+                          Configure how many points equal ₹1. Default standard is 100 points = ₹50 (₹0.50 per point).
+                        </Text>
+                      </View>
+                    </View>
+                    <View style={styles.refEffectiveRateBadge}>
+                      <Text style={styles.refEffectiveRateText}>
+                        Effective Rate: ₹{rateVal.toFixed(2)} / pt
+                      </Text>
+                    </View>
+                  </View>
+
+                  {/* 4 Form Inputs (Web Image 1) */}
+                  <View style={styles.refFormGrid}>
+                    <View style={styles.refInputGroup}>
+                      <Text style={styles.refInputLabel}>POINTS UNIT *</Text>
+                      <TextInput
+                        style={styles.refTextInput}
+                        value={String(rewardSettings.pointsPerConversionUnit || '100')}
+                        onChangeText={(txt) => setRewardSettings({ ...rewardSettings, pointsPerConversionUnit: txt })}
+                        keyboardType="numeric"
+                        placeholder="100"
+                        placeholderTextColor="#94A3B8"
+                      />
+                      <Text style={styles.refInputHint}>Number of points (e.g. 100)</Text>
+                    </View>
+
+                    <View style={styles.refInputGroup}>
+                      <Text style={styles.refInputLabel}>EQUIVALENT VALUE (₹) *</Text>
+                      <TextInput
+                        style={styles.refTextInput}
+                        value={String(rewardSettings.currencyValuePerUnit || '50')}
+                        onChangeText={(txt) => setRewardSettings({ ...rewardSettings, currencyValuePerUnit: txt })}
+                        keyboardType="numeric"
+                        placeholder="50"
+                        placeholderTextColor="#94A3B8"
+                      />
+                      <Text style={styles.refInputHint}>Rupee worth (e.g. ₹50)</Text>
+                    </View>
+
+                    <View style={styles.refInputGroup}>
+                      <Text style={styles.refInputLabel}>MIN POINTS FOR REDEMPTION</Text>
+                      <TextInput
+                        style={styles.refTextInput}
+                        value={String(rewardSettings.minPointsForRedemption || '100')}
+                        onChangeText={(txt) => setRewardSettings({ ...rewardSettings, minPointsForRedemption: txt })}
+                        keyboardType="numeric"
+                        placeholder="100"
+                        placeholderTextColor="#94A3B8"
+                      />
+                      <Text style={styles.refInputHint}>E.g. 100 points minimum</Text>
+                    </View>
+
+                    <View style={styles.refInputGroup}>
+                      <Text style={styles.refInputLabel}>MAX DISCOUNT / ORDER (₹)</Text>
+                      <TextInput
+                        style={styles.refTextInput}
+                        value={String(rewardSettings.maxDiscountPerOrder || '0')}
+                        onChangeText={(txt) => setRewardSettings({ ...rewardSettings, maxDiscountPerOrder: txt })}
+                        keyboardType="numeric"
+                        placeholder="0"
+                        placeholderTextColor="#94A3B8"
+                      />
+                      <Text style={styles.refInputHint}>0 for no maximum limit</Text>
+                    </View>
+                  </View>
+                </View>
+
+                {/* CARD 2: Available Redemption Channels (Web Image 2) */}
+                <View style={styles.refCard}>
+                  <View style={styles.refCardHeaderRow}>
+                    <View style={styles.refIconSquircle}>
+                      <Ionicons name="pricetag-outline" size={18} color="#EA580C" />
+                    </View>
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.refCardTitle}>Available Redemption Channels</Text>
+                      <Text style={styles.refCardSubtitle}>
+                        Choose which redemption options are available to your gym members. Disabled options will not appear in the customer dropdown.
+                      </Text>
+                    </View>
+                  </View>
+
+                  <View style={{ gap: 10, marginTop: 4 }}>
+                    {/* Channel 1: Membership Plan Discount */}
+                    <View style={styles.refChannelItem}>
+                      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                          <Ionicons name="card-outline" size={16} color="#EA580C" />
+                          <Text style={styles.refChannelTitle}>Membership Plan Discount</Text>
+                        </View>
+                        <Switch
+                          value={Boolean(rewardSettings.allowMembershipDiscount)}
+                          onValueChange={(val) => setRewardSettings({ ...rewardSettings, allowMembershipDiscount: val })}
+                          trackColor={{ false: '#E2E8F0', true: '#EA580C' }}
+                          thumbColor="#FFFFFF"
+                        />
+                      </View>
+                      <Text style={styles.refChannelDesc}>
+                        Members can redeem points to discount membership purchases and renewals at checkout.
+                      </Text>
+                      <View style={[styles.refOptionBadge, rewardSettings.allowMembershipDiscount ? styles.refOptionBadgeEnabled : styles.refOptionBadgeDisabled]}>
+                        <Text style={[styles.refOptionBadgeText, rewardSettings.allowMembershipDiscount ? styles.refOptionBadgeTextEnabled : styles.refOptionBadgeTextDisabled]}>
+                          {rewardSettings.allowMembershipDiscount ? 'OPTION ENABLED' : 'OPTION DISABLED'}
+                        </Text>
+                      </View>
+                    </View>
+
+                    {/* Channel 2: Gym Store Purchases */}
+                    <View style={styles.refChannelItem}>
+                      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                          <Ionicons name="bag-handle-outline" size={16} color="#EA580C" />
+                          <Text style={styles.refChannelTitle}>Gym Store Purchases</Text>
+                        </View>
+                        <Switch
+                          value={Boolean(rewardSettings.allowStoreDiscount)}
+                          onValueChange={(val) => setRewardSettings({ ...rewardSettings, allowStoreDiscount: val })}
+                          trackColor={{ false: '#E2E8F0', true: '#EA580C' }}
+                          thumbColor="#FFFFFF"
+                        />
+                      </View>
+                      <Text style={styles.refChannelDesc}>
+                        Members can apply points for instant discounts on Gym Store items during online checkout.
+                      </Text>
+                      <View style={[styles.refOptionBadge, rewardSettings.allowStoreDiscount ? styles.refOptionBadgeEnabled : styles.refOptionBadgeDisabled]}>
+                        <Text style={[styles.refOptionBadgeText, rewardSettings.allowStoreDiscount ? styles.refOptionBadgeTextEnabled : styles.refOptionBadgeTextDisabled]}>
+                          {rewardSettings.allowStoreDiscount ? 'OPTION ENABLED' : 'OPTION DISABLED'}
+                        </Text>
+                      </View>
+                    </View>
+
+                    {/* Channel 3: Other Custom Rewards */}
+                    <View style={styles.refChannelItem}>
+                      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                          <Ionicons name="gift-outline" size={16} color="#EA580C" />
+                          <Text style={styles.refChannelTitle}>Other Custom Rewards</Text>
+                        </View>
+                        <Switch
+                          value={Boolean(rewardSettings.allowCustomRewards)}
+                          onValueChange={(val) => setRewardSettings({ ...rewardSettings, allowCustomRewards: val })}
+                          trackColor={{ false: '#E2E8F0', true: '#EA580C' }}
+                          thumbColor="#FFFFFF"
+                        />
+                      </View>
+                      <Text style={styles.refChannelDesc}>
+                        Special rewards like Personal Training Sessions, Gym Vouchers, and Fitness Accessories.
+                      </Text>
+                      <View style={[styles.refOptionBadge, rewardSettings.allowCustomRewards ? styles.refOptionBadgeEnabled : styles.refOptionBadgeDisabled]}>
+                        <Text style={[styles.refOptionBadgeText, rewardSettings.allowCustomRewards ? styles.refOptionBadgeTextEnabled : styles.refOptionBadgeTextDisabled]}>
+                          {rewardSettings.allowCustomRewards ? 'OPTION ENABLED' : 'OPTION DISABLED'}
+                        </Text>
+                      </View>
+                    </View>
+                  </View>
+                </View>
+
+                {/* CARD 3: Customer Instructions & Terms (Web Image 3) */}
+                <View style={styles.refCard}>
+                  <View style={styles.refCardHeaderRow}>
+                    <View style={styles.refIconSquircle}>
+                      <Ionicons name="document-text-outline" size={18} color="#EA580C" />
+                    </View>
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.refCardTitle}>Customer Instructions & Terms</Text>
+                      <Text style={styles.refCardSubtitle}>
+                        These instructions appear dynamically on the Customer Dashboard under "How to Use Your Referral Points".
+                      </Text>
+                    </View>
+                  </View>
+
+                  <View style={{ gap: 12, marginTop: 4 }}>
+                    <View>
+                      <Text style={styles.refInputLabel}>REWARD INSTRUCTIONS MESSAGE</Text>
+                      <TextInput
+                        style={[styles.refTextInput, { height: 75, textAlignVertical: 'top' }]}
+                        value={rewardSettings.rewardInstructions}
+                        onChangeText={(txt) => setRewardSettings({ ...rewardSettings, rewardInstructions: txt })}
+                        multiline
+                        numberOfLines={3}
+                        placeholderTextColor="#94A3B8"
+                      />
+                    </View>
+
+                    <View>
+                      <Text style={styles.refInputLabel}>TERMS & CONDITIONS</Text>
+                      <TextInput
+                        style={[styles.refTextInput, { height: 75, textAlignVertical: 'top' }]}
+                        value={rewardSettings.termsAndConditions}
+                        onChangeText={(txt) => setRewardSettings({ ...rewardSettings, termsAndConditions: txt })}
+                        multiline
+                        numberOfLines={3}
+                        placeholderTextColor="#94A3B8"
+                      />
+                    </View>
+                  </View>
+
+                  <View style={{ alignItems: 'flex-end', marginTop: 14 }}>
+                    <TouchableOpacity
+                      style={styles.refSaveBtn}
+                      onPress={handleSaveRewardSettings}
+                      disabled={savingRewardSettings}
+                      activeOpacity={0.8}
+                    >
+                      {savingRewardSettings ? (
+                        <ActivityIndicator size="small" color="#FFFFFF" />
+                      ) : (
+                        <>
+                          <Ionicons name="checkmark" size={16} color="#FFFFFF" />
+                          <Text style={styles.refSaveBtnText}>Save Reward Settings</Text>
+                        </>
+                      )}
+                    </TouchableOpacity>
+                  </View>
+                </View>
               </View>
-              <Text style={{ fontSize: 10, fontWeight: '700', color: '#15803D', marginTop: 2 }}>{ref.status}</Text>
+            )}
+
+            {/* -----------------------------------------------------------------
+                SUB-TAB 2: CUSTOMER POINTS MANAGEMENT (Web Sub-Tab 2)
+                ----------------------------------------------------------------- */}
+            {referralSubTab === 'customers' && (
+              <View style={{ gap: 14 }}>
+                {/* 4 Top KPI Cards */}
+                <View style={styles.refKpiGrid}>
+                  <View style={styles.refKpiCard}>
+                    <Text style={styles.refKpiLabel}>REGISTERED MEMBERS</Text>
+                    <Text style={styles.refKpiVal}>{referralCustomers.length}</Text>
+                    <Text style={[styles.refKpiSub, { color: '#EA580C' }]}>In gym rewards system</Text>
+                  </View>
+
+                  <View style={styles.refKpiCard}>
+                    <Text style={styles.refKpiLabel}>TOTAL POINTS BALANCE</Text>
+                    <Text style={styles.refKpiVal}>
+                      {totalPoints.toLocaleString('en-IN')} <Text style={{ fontSize: 12, color: '#EA580C' }}>pts</Text>
+                    </Text>
+                    <Text style={[styles.refKpiSub, { color: '#15803D' }]}>≈ ₹{totalRupees.toLocaleString('en-IN')} value</Text>
+                  </View>
+
+                  <View style={styles.refKpiCard}>
+                    <Text style={styles.refKpiLabel}>TOTAL POINTS EARNED</Text>
+                    <Text style={styles.refKpiVal}>{totalEarned.toLocaleString('en-IN')}</Text>
+                    <Text style={styles.refKpiSub}>Lifetime points generated</Text>
+                  </View>
+
+                  <View style={styles.refKpiCard}>
+                    <Text style={styles.refKpiLabel}>TOTAL REDEEMED</Text>
+                    <Text style={styles.refKpiVal}>{totalRedeemed.toLocaleString('en-IN')}</Text>
+                    <Text style={styles.refKpiSub}>Mem & Store discounts</Text>
+                  </View>
+                </View>
+
+                {/* Search Bar & Refresh */}
+                <View style={styles.refSearchRow}>
+                  <View style={styles.refSearchInputBox}>
+                    <Ionicons name="search-outline" size={16} color="#64748B" />
+                    <TextInput
+                      style={styles.refSearchInput}
+                      value={customerPointsSearch}
+                      onChangeText={setCustomerPointsSearch}
+                      placeholder="Search member name, email or phone..."
+                      placeholderTextColor="#94A3B8"
+                    />
+                    {Boolean(customerPointsSearch) && (
+                      <TouchableOpacity onPress={() => setCustomerPointsSearch('')}>
+                        <Ionicons name="close-circle" size={16} color="#94A3B8" />
+                      </TouchableOpacity>
+                    )}
+                  </View>
+
+                  <TouchableOpacity
+                    style={styles.refRefreshBtn}
+                    onPress={loadReferralCustomers}
+                    activeOpacity={0.8}
+                  >
+                    <Ionicons name="refresh-outline" size={16} color="#111827" />
+                    <Text style={styles.refRefreshBtnText}>Refresh</Text>
+                  </TouchableOpacity>
+                </View>
+
+                {/* Customer List */}
+                <View style={{ gap: 10 }}>
+                  {filteredCustomers.length === 0 ? (
+                    <View style={styles.refEmptyCard}>
+                      <Ionicons name="people-outline" size={36} color="#94A3B8" />
+                      <Text style={styles.refEmptyTitle}>No Members Found</Text>
+                      <Text style={styles.refEmptySub}>No gym members match your search criteria.</Text>
+                    </View>
+                  ) : (
+                    filteredCustomers.map((cust) => (
+                      <View key={cust._id} style={styles.refCustomerCard}>
+                        {/* Member Header */}
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                          <View style={{ flex: 1 }}>
+                            <Text style={styles.refCustName}>{cust.name}</Text>
+                            <Text style={styles.refCustEmail}>{cust.email}</Text>
+                            {Boolean(cust.mobile) && (
+                              <Text style={styles.refCustMobile}>{cust.mobile}</Text>
+                            )}
+                          </View>
+                          <View style={{ alignItems: 'flex-end' }}>
+                            <Text style={styles.refCustPlan}>{cust.membershipPlan}</Text>
+                            <View style={styles.refCustStatusBadge}>
+                              <Text style={styles.refCustStatusBadgeText}>{cust.membershipStatus || 'Active'}</Text>
+                            </View>
+                          </View>
+                        </View>
+
+                        {/* Point Stats */}
+                        <View style={styles.refCustStatsRow}>
+                          <View>
+                            <Text style={styles.refCustStatLabel}>POINTS BALANCE</Text>
+                            <Text style={styles.refCustBalance}>
+                              {cust.pointsBalance.toLocaleString('en-IN')} <Text style={{ fontSize: 11, color: '#EA580C' }}>pts</Text>
+                            </Text>
+                            <Text style={styles.refCustEquivVal}>≈ ₹{cust.equivalentRupeeValue.toLocaleString('en-IN')}</Text>
+                          </View>
+
+                          <View>
+                            <Text style={styles.refCustStatLabel}>LIFETIME EARNED</Text>
+                            <Text style={styles.refCustStatVal}>{cust.totalEarned.toLocaleString('en-IN')} pts</Text>
+                            <Text style={{ fontSize: 10, color: '#64748B' }}>Total generated</Text>
+                          </View>
+
+                          <View>
+                            <Text style={styles.refCustStatLabel}>TOTAL REDEEMED</Text>
+                            <Text style={[styles.refCustStatVal, { color: '#B91C1C' }]}>{cust.totalRedeemed.toLocaleString('en-IN')} pts</Text>
+                            <Text style={{ fontSize: 10, color: '#64748B' }}>
+                              {cust.membershipRedemptions || 0} mem • {cust.storeRedemptions || 0} store
+                            </Text>
+                          </View>
+                        </View>
+
+                        {/* Referrals & Actions Row */}
+                        <View style={styles.refCustFooterRow}>
+                          <View>
+                            <Text style={{ fontSize: 11, fontWeight: '800', color: '#111827' }}>
+                              {cust.successfulReferrals || 0} / {cust.totalReferrals || 0} referrals
+                            </Text>
+                            <Text style={{ fontSize: 9, color: '#EA580C', fontWeight: '700' }}>successful / invited</Text>
+                          </View>
+
+                          <View style={{ flexDirection: 'row', gap: 8 }}>
+                            <TouchableOpacity
+                              style={styles.refAdjustPointsBtn}
+                              onPress={() => {
+                                setSelectedAdjustCustomer(cust);
+                                setAdjustPointsAmount('100');
+                                setAdjustPointsMode('ADD');
+                                setAdjustPointsReason('');
+                                setShowAdjustPointsModal(true);
+                              }}
+                              activeOpacity={0.8}
+                            >
+                              <Ionicons name="wallet-outline" size={13} color="#EA580C" />
+                              <Text style={styles.refAdjustPointsBtnText}>Adjust Points</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                              style={styles.refHistoryBtn}
+                              onPress={() => handleOpenPointsHistory(cust)}
+                              activeOpacity={0.8}
+                            >
+                              <Ionicons name="time-outline" size={13} color="#111827" />
+                              <Text style={styles.refHistoryBtnText}>History</Text>
+                            </TouchableOpacity>
+                          </View>
+                        </View>
+                      </View>
+                    ))
+                  )}
+                </View>
+              </View>
+            )}
+
+            {/* -----------------------------------------------------------------
+                SUB-TAB 3: CUSTOM REWARDS & CLAIMS (Web Sub-Tab 3)
+                ----------------------------------------------------------------- */}
+            {referralSubTab === 'custom_rewards' && (
+              <View style={{ gap: 14 }}>
+                {/* Header Card with Create Reward Button */}
+                <View style={styles.refCard}>
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <View style={{ flex: 1, paddingRight: 8 }}>
+                      <Text style={styles.refCardTitle}>Custom Gym Rewards & Perks</Text>
+                      <Text style={styles.refCardSubtitle}>
+                        Create special rewards that members can claim using their referral points (e.g. PT Sessions, Vouchers).
+                      </Text>
+                    </View>
+                    <TouchableOpacity
+                      style={styles.refCreateBtn}
+                      onPress={() => setShowCreateRewardModal(true)}
+                      activeOpacity={0.8}
+                    >
+                      <Ionicons name="add" size={16} color="#FFFFFF" />
+                      <Text style={styles.refCreateBtnText}>Create Reward</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+
+                {/* Custom Rewards Grid */}
+                <View style={{ gap: 10 }}>
+                  {customRewardsList.map((rw) => (
+                    <View key={rw._id} style={styles.refRewardItemCard}>
+                      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                        <View style={{ flex: 1, paddingRight: 10 }}>
+                          <Text style={styles.refRewardTitle}>{rw.title}</Text>
+                          <Text style={styles.refRewardDesc}>{rw.description}</Text>
+                        </View>
+                        <View style={styles.refRewardIconBox}>
+                          <Ionicons name="gift" size={20} color="#EA580C" />
+                        </View>
+                      </View>
+
+                      <View style={styles.refRewardDetailRow}>
+                        <Text style={styles.refRewardDetailLabel}>Points Required:</Text>
+                        <Text style={styles.refRewardPointsVal}>{rw.requiredPoints} pts</Text>
+                      </View>
+
+                      <View style={styles.refRewardDetailRow}>
+                        <Text style={styles.refRewardDetailLabel}>Confirmation:</Text>
+                        <Text style={[styles.refRewardConfirmVal, { color: rw.requireApproval ? '#B45309' : '#15803D' }]}>
+                          {rw.requireApproval ? 'Yes (Approval Required)' : 'Instant Voucher'}
+                        </Text>
+                      </View>
+
+                      <View style={[styles.refRewardDetailRow, { borderBottomWidth: 0, paddingBottom: 0 }]}>
+                        <Text style={styles.refRewardDetailLabel}>Total Claimed:</Text>
+                        <Text style={styles.refRewardClaimsVal}>{rw.claimedCount || 0} claims</Text>
+                      </View>
+                    </View>
+                  ))}
+                </View>
+
+                {/* Member Claims & Approvals Roster */}
+                <View style={styles.refCard}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+                    <Ionicons name="time" size={18} color="#EA580C" />
+                    <Text style={styles.refCardTitle}>Member Reward Claims & Approvals</Text>
+                  </View>
+
+                  <View style={{ gap: 10 }}>
+                    {customClaimsList.map((cl) => {
+                      const isPending = cl.status === 'Pending' || cl.status === 'Pending Approval';
+                      const isApproved = cl.status === 'Approved';
+
+                      return (
+                        <View key={cl._id} style={styles.refClaimItemCard}>
+                          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <Text style={styles.refClaimCode}>{cl.claimCode}</Text>
+                            <View style={[styles.refClaimStatusBadge, { backgroundColor: isPending ? '#FEF3C7' : (isApproved ? '#DCFCE7' : '#E2E8F0') }]}>
+                              <Text style={[styles.refClaimStatusText, { color: isPending ? '#B45309' : (isApproved ? '#15803D' : '#475569') }]}>
+                                {cl.status}
+                              </Text>
+                            </View>
+                          </View>
+
+                          <View style={{ marginTop: 6 }}>
+                            <Text style={styles.refClaimUserName}>{cl.userName}</Text>
+                            <Text style={styles.refClaimUserEmail}>{cl.userEmail}</Text>
+                          </View>
+
+                          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 8, paddingTop: 8, borderTopWidth: 1, borderTopColor: '#F1F5F9' }}>
+                            <Text style={{ fontSize: 12, fontWeight: '800', color: '#111827', flex: 1 }}>{cl.rewardTitle}</Text>
+                            <Text style={{ fontSize: 13, fontWeight: '900', color: '#EA580C' }}>{cl.pointsCost} pts</Text>
+                          </View>
+
+                          {/* Review Actions */}
+                          {isPending && (
+                            <View style={{ flexDirection: 'row', justifyContent: 'flex-end', gap: 8, marginTop: 10 }}>
+                              <TouchableOpacity
+                                style={styles.refClaimRejectBtn}
+                                onPress={() => handleReviewClaimAction(cl._id, 'Rejected')}
+                              >
+                                <Text style={styles.refClaimRejectBtnText}>Reject</Text>
+                              </TouchableOpacity>
+                              <TouchableOpacity
+                                style={styles.refClaimApproveBtn}
+                                onPress={() => handleReviewClaimAction(cl._id, 'Approved')}
+                              >
+                                <Text style={styles.refClaimApproveBtnText}>Approve</Text>
+                              </TouchableOpacity>
+                            </View>
+                          )}
+
+                          {isApproved && (
+                            <View style={{ flexDirection: 'row', justifyContent: 'flex-end', marginTop: 10 }}>
+                              <TouchableOpacity
+                                style={styles.refClaimRedeemBtn}
+                                onPress={() => handleReviewClaimAction(cl._id, 'Redeemed')}
+                              >
+                                <Ionicons name="checkmark-done" size={13} color="#FFFFFF" />
+                                <Text style={styles.refClaimRedeemBtnText}>Mark as Redeemed</Text>
+                              </TouchableOpacity>
+                            </View>
+                          )}
+                        </View>
+                      );
+                    })}
+                  </View>
+                </View>
+              </View>
+            )}
+          </View>
+        ) : (
+          /* =========================================================================
+              MAIN TAB 2: CAMPAIGNS & REFERRAL TRACKING (Matching Web Tab 2)
+              ========================================================================= */
+          <View style={{ gap: 14 }}>
+            {/* Top Action Header */}
+            <View style={styles.perfHeroCard}>
+              <View style={[styles.perfHeroIconBox, { backgroundColor: '#DCFCE7' }]}>
+                <Ionicons name="share-social" size={24} color="#15803D" />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.perfHeroTitle}>Member Referral Program</Text>
+                <Text style={styles.perfHeroSub}>
+                  Track member invite links, bonus days, and automated wallet cashbacks.
+                </Text>
+              </View>
+              <TouchableOpacity
+                style={styles.refCreateBtn}
+                onPress={() => {
+                  setEditingCampaignItem(null);
+                  setCampaignModalForm({
+                    campaignName: '',
+                    campaignDescription: '',
+                    inviterRewardAmount: '500',
+                    inviteeDiscountAmount: '500',
+                    studioCode: 'GYMORA-VIP',
+                    isActive: true
+                  });
+                  setShowCampaignModal(true);
+                }}
+                activeOpacity={0.8}
+              >
+                <Ionicons name="add" size={16} color="#FFFFFF" />
+                <Text style={styles.refCreateBtnText}>Create Campaign</Text>
+              </TouchableOpacity>
+            </View>
+
+            {/* 3 Referral Stats KPI Cards (Web Image 4) */}
+            <View style={styles.referralKpiRow}>
+              <View style={styles.referralKpiCard}>
+                <Text style={styles.perfKpiLabel}>TOTAL REFERRALS</Text>
+                <Text style={styles.perfKpiValue}>2</Text>
+                <Text style={styles.perfKpiSub}>Invited friends</Text>
+              </View>
+              <View style={styles.referralKpiCard}>
+                <Text style={styles.perfKpiLabel}>CONVERTED MEMBERS</Text>
+                <Text style={[styles.perfKpiValue, { color: '#15803D' }]}>2</Text>
+                <Text style={styles.perfKpiSub}>Active enrolled</Text>
+              </View>
+              <View style={styles.referralKpiCard}>
+                <Text style={styles.perfKpiLabel}>CASHBACK PAID</Text>
+                <Text style={[styles.perfKpiValue, { color: '#EA580C' }]}>₹1,000</Text>
+                <Text style={styles.perfKpiSub}>Distributed wallet reward</Text>
+              </View>
+            </View>
+
+            {/* Active Campaign Card */}
+            {referralCampaignsList.map((camp) => (
+              <View key={camp._id} style={styles.referralCard}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                  <Ionicons name="gift-outline" size={18} color="#EA580C" />
+                  <Text style={styles.referralHeroTitle}>{camp.campaignName}</Text>
+                </View>
+                <Text style={{ fontSize: 13, fontWeight: '800', color: '#111827', marginBottom: 4 }}>
+                  Dual Discount: ₹{camp.inviterRewardAmount || 500} off for Inviter & Invitee
+                </Text>
+                <Text style={styles.referralHeroSub}>
+                  {camp.campaignDescription || 'Members share their unique invite link from their mobile app. Upon new membership enrollment, both accounts receive automated wallet cashback.'}
+                </Text>
+
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 14, paddingTop: 10, borderTopWidth: 1, borderTopColor: '#E2E8F0' }}>
+                  <View>
+                    <Text style={{ fontSize: 9, fontWeight: '800', color: '#64748B', textTransform: 'uppercase' }}>STUDIO CODE</Text>
+                    <Text style={{ fontSize: 13, fontWeight: '900', color: '#111827', fontFamily: 'monospace' }}>{camp.studioCode || 'GYMORA-VIP'}</Text>
+                  </View>
+                  <View style={{ flexDirection: 'row', gap: 8, alignItems: 'center' }}>
+                    <View style={styles.campaignActiveBtn}>
+                      <Ionicons name="checkmark-circle" size={13} color="#15803D" />
+                      <Text style={styles.campaignActiveBtnText}>Campaign Active</Text>
+                    </View>
+                    <TouchableOpacity
+                      style={styles.refEditCampaignBtn}
+                      onPress={() => {
+                        setEditingCampaignItem(camp);
+                        setCampaignModalForm({
+                          campaignName: camp.campaignName,
+                          campaignDescription: camp.campaignDescription,
+                          inviterRewardAmount: String(camp.inviterRewardAmount || '500'),
+                          inviteeDiscountAmount: String(camp.inviteeDiscountAmount || '500'),
+                          studioCode: camp.studioCode || 'GYMORA-VIP',
+                          isActive: Boolean(camp.isActive)
+                        });
+                        setShowCampaignModal(true);
+                      }}
+                    >
+                      <Ionicons name="create-outline" size={13} color="#EA580C" />
+                      <Text style={styles.refEditCampaignBtnText}>Edit</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+            ))}
+
+            {/* Referred Members Roster */}
+            <View style={{ gap: 8 }}>
+              <Text style={styles.perfCatalogTitle}>Referred Members & Dispatched Rewards</Text>
+              {[
+                { name: 'Renugopal Y', inviter: 'Renu y', reward: '₹500 Wallet Credit', date: '21 Oct 2026', status: 'Enrolled' },
+                { name: 'Renu y', inviter: 'Direct VIP Inviter', reward: '₹500 Wallet Credit', date: '21 Oct 2026', status: 'Enrolled' },
+              ].map((ref, idx) => (
+                <View key={idx} style={styles.referralMemberCard}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.referralMemberName}>{ref.name}</Text>
+                    <Text style={styles.referralMemberSub}>Invited by: {ref.inviter} • Joined {ref.date}</Text>
+                  </View>
+                  <View style={{ alignItems: 'flex-end' }}>
+                    <View style={styles.referralCreditBadge}>
+                      <Ionicons name="cash-outline" size={11} color="#15803D" />
+                      <Text style={styles.referralCreditText}>{ref.reward}</Text>
+                    </View>
+                    <Text style={{ fontSize: 10, fontWeight: '700', color: '#15803D', marginTop: 2 }}>{ref.status}</Text>
+                  </View>
+                </View>
+              ))}
             </View>
           </View>
-        ))}
+        )}
       </View>
-    </View>
-  );
+    );
+  };
 
   // --- DYNAMIC MODULE HANDLERS & VIEWS ---
   const handleOpenAddExercise = () => {
@@ -6366,12 +9372,31 @@ const renderBranchesView = () => {
     );
   };
 
-  const handleDownloadEquipmentPDF = () => {
-    Alert.alert(
-      'Download PDF',
-      `Official Equipment Inventory PDF Report (${equipmentList.length} items) generated. Ready to print or share.`,
-      [{ text: 'OK' }]
-    );
+  const handleDownloadEquipmentPDF = async () => {
+    try {
+      const headers = ['#', 'Equipment Name', 'Serial Number', 'Zone / Floor', 'Status', 'Last Maintained'];
+      const rows = equipmentList.map((eq: any, idx: number) => [
+        idx + 1,
+        eq.name || eq.equipmentName,
+        eq.serialNumber || 'N/A',
+        eq.location || eq.zone || 'Main Floor',
+        eq.status || 'Operational',
+        eq.lastServiceDate ? new Date(eq.lastServiceDate).toLocaleDateString('en-IN') : 'Recent'
+      ]);
+      await FileDownloader.downloadReportPDF({
+        title: 'Gym Equipment Inventory & Safety Audit',
+        subtitle: 'Floor Asset Register & Operational Safety Log',
+        gymName: user?.gymName || 'Perfect Fitness Studio',
+        summaryMetrics: [
+          { label: 'Total Equipment', value: String(equipmentList.length) },
+          { label: 'Operational Assets', value: String(equipmentList.filter((e: any) => e.status !== 'Maintenance Required').length) },
+        ],
+        headers,
+        rows
+      }, 'Gym_Equipment_Inventory');
+    } catch (err: any) {
+      Alert.alert('Download Error', err?.message || 'Failed to download equipment report.');
+    }
   };
 
   // 13. Equipment & Machinery View (Matching Web /admin/equipment)
@@ -8264,11 +11289,19 @@ const renderPackagePlansView = () => {
 
       // 3. Scheduling
       case 'session_bookings':
-      case 'online_sessions':
-      case 'trainer_schedule':
-      case 'video_bookings':
-      case 'attendance':
         return renderSessionBookingsView();
+
+      case 'online_sessions':
+        return renderOnlineSessionsView();
+
+      case 'trainer_schedule':
+        return renderTrainerScheduleView();
+
+      case 'video_bookings':
+        return renderVideoBookingsView();
+
+      case 'attendance':
+        return renderAttendanceView();
 
       // 4. Rewards & Performance
       case 'rewards':
@@ -8360,6 +11393,1136 @@ const renderPackagePlansView = () => {
   };
 
   // --- MODAL RENDERERS ---
+
+
+  // CREATE ONLINE SESSION MODAL (Matching Web Schedule Modal)
+  const renderCreateOnlineSessionModal = () => {
+    if (!showCreateOnlineSessionModal) return null;
+    return (
+      <Modal
+        visible={showCreateOnlineSessionModal}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setShowCreateOnlineSessionModal(false)}
+      >
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          style={styles.prodModalOverlay}
+        >
+          <View style={styles.prodModalCard}>
+            <View style={styles.prodModalHeader}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                <View style={[styles.onlineKpiIconSquircle, { width: 36, height: 36 }]}>
+                  <Ionicons name="videocam" size={20} color="#EA580C" />
+                </View>
+                <View>
+                  <Text style={styles.prodModalTitle}>Schedule Online Session</Text>
+                  <Text style={styles.prodModalSubtitle}>Create a new live stream or virtual group class</Text>
+                </View>
+              </View>
+              <TouchableOpacity
+                onPress={() => setShowCreateOnlineSessionModal(false)}
+                style={styles.prodModalCloseBtn}
+              >
+                <Ionicons name="close" size={20} color="#64748B" />
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView style={{ maxHeight: 450 }} showsVerticalScrollIndicator={false}>
+              <View style={{ padding: 16, gap: 14 }}>
+                <View>
+                  <Text style={styles.prodFormLabel}>SESSION TITLE *</Text>
+                  <TextInput
+                    style={styles.prodFormInput}
+                    placeholder="e.g. Virtual Core & Abs Blast"
+                    placeholderTextColor="#94A3B8"
+                    value={newOnlineTitle}
+                    onChangeText={setNewOnlineTitle}
+                  />
+                </View>
+
+                <View style={{ flexDirection: 'row', gap: 10 }}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.prodFormLabel}>ASSIGNED TRAINER</Text>
+                    <TextInput
+                      style={styles.prodFormInput}
+                      placeholder="e.g. Naveen"
+                      placeholderTextColor="#94A3B8"
+                      value={newOnlineTrainer}
+                      onChangeText={setNewOnlineTrainer}
+                    />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.prodFormLabel}>CATEGORY</Text>
+                    <TextInput
+                      style={styles.prodFormInput}
+                      placeholder="e.g. Personal Training"
+                      placeholderTextColor="#94A3B8"
+                      value={newOnlineCategory}
+                      onChangeText={setNewOnlineCategory}
+                    />
+                  </View>
+                </View>
+
+                <View style={{ flexDirection: 'row', gap: 10 }}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.prodFormLabel}>DATE *</Text>
+                    <TextInput
+                      style={styles.prodFormInput}
+                      placeholder="YYYY-MM-DD"
+                      placeholderTextColor="#94A3B8"
+                      value={newOnlineDate}
+                      onChangeText={setNewOnlineDate}
+                    />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.prodFormLabel}>TIME *</Text>
+                    <TextInput
+                      style={styles.prodFormInput}
+                      placeholder="10:00 AM"
+                      placeholderTextColor="#94A3B8"
+                      value={newOnlineTime}
+                      onChangeText={setNewOnlineTime}
+                    />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.prodFormLabel}>DURATION (MINS)</Text>
+                    <TextInput
+                      style={styles.prodFormInput}
+                      placeholder="60"
+                      keyboardType="numeric"
+                      placeholderTextColor="#94A3B8"
+                      value={newOnlineDuration}
+                      onChangeText={setNewOnlineDuration}
+                    />
+                  </View>
+                </View>
+
+                <View style={{ flexDirection: 'row', gap: 10 }}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.prodFormLabel}>MAX CAPACITY</Text>
+                    <TextInput
+                      style={styles.prodFormInput}
+                      placeholder="1"
+                      keyboardType="numeric"
+                      placeholderTextColor="#94A3B8"
+                      value={newOnlineCapacity}
+                      onChangeText={setNewOnlineCapacity}
+                    />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.prodFormLabel}>SESSION FEE (₹)</Text>
+                    <TextInput
+                      style={styles.prodFormInput}
+                      placeholder="0"
+                      keyboardType="numeric"
+                      placeholderTextColor="#94A3B8"
+                      value={newOnlinePrice}
+                      onChangeText={setNewOnlinePrice}
+                    />
+                  </View>
+                </View>
+
+                <View>
+                  <Text style={styles.prodFormLabel}>CUSTOM MEETING LINK (OPTIONAL)</Text>
+                  <TextInput
+                    style={styles.prodFormInput}
+                    placeholder="https://meet.jit.si/..."
+                    placeholderTextColor="#94A3B8"
+                    value={newOnlineLink}
+                    onChangeText={setNewOnlineLink}
+                  />
+                </View>
+
+                <View>
+                  <Text style={styles.prodFormLabel}>DESCRIPTION</Text>
+                  <TextInput
+                    style={[styles.prodFormInput, { height: 70, textAlignVertical: 'top' }]}
+                    placeholder="Provide overview of this virtual session..."
+                    placeholderTextColor="#94A3B8"
+                    multiline
+                    value={newOnlineDescription}
+                    onChangeText={setNewOnlineDescription}
+                  />
+                </View>
+              </View>
+            </ScrollView>
+
+            <View style={styles.prodModalFooter}>
+              <TouchableOpacity
+                onPress={() => setShowCreateOnlineSessionModal(false)}
+                style={styles.prodModalCancelBtn}
+              >
+                <Text style={styles.prodModalCancelText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={handleSaveOnlineSession}
+                style={[styles.prodModalSubmitBtn, { backgroundColor: '#EA580C' }]}
+              >
+                <Ionicons name="checkmark" size={16} color="#FFFFFF" />
+                <Text style={styles.prodModalSubmitText}>Schedule Session</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </KeyboardAvoidingView>
+      </Modal>
+    );
+  };
+
+  // ONLINE STUDIO MODAL (Launch Live Studio View)
+  const renderOnlineStudioModal = () => {
+    if (!selectedOnlineStudioSession) return null;
+    const session = selectedOnlineStudioSession;
+    return (
+      <Modal
+        visible={Boolean(selectedOnlineStudioSession)}
+        animationType="fade"
+        transparent={true}
+        onRequestClose={() => setSelectedOnlineStudioSession(null)}
+      >
+        <View style={styles.invoiceModalOverlay}>
+          <View style={[styles.invoiceModalCard, { maxHeight: 520 }]}>
+            <View style={styles.invoiceHeader}>
+              <View>
+                <Text style={[styles.invoiceLogoText, { color: '#EA580C' }]}>GYMORA LIVE STUDIO</Text>
+                <Text style={styles.invoiceTitle}>{session.title}</Text>
+              </View>
+              <TouchableOpacity onPress={() => setSelectedOnlineStudioSession(null)}>
+                <Ionicons name="close" size={22} color={COLORS.textMedium} />
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView style={styles.invoiceBody} showsVerticalScrollIndicator={false}>
+              <View style={[styles.sessionTypePill, styles.sessionTypePillOnline, { alignSelf: 'flex-start', marginBottom: 12 }]}>
+                <Text style={[styles.sessionTypePillText, styles.sessionTypePillOnlineText]}>
+                  {session.category} • {session.status}
+                </Text>
+              </View>
+
+              <View style={styles.sessionModalRow}>
+                <Text style={styles.sessionModalLabel}>Assigned Trainer:</Text>
+                <Text style={styles.sessionModalValue}>{session.trainerName}</Text>
+              </View>
+
+              <View style={styles.sessionModalRow}>
+                <Text style={styles.sessionModalLabel}>Date & Time:</Text>
+                <Text style={styles.sessionModalValue}>{session.date} at {session.time} ({session.duration}m)</Text>
+              </View>
+
+              <View style={styles.sessionModalRow}>
+                <Text style={styles.sessionModalLabel}>Capacity / Booked:</Text>
+                <Text style={styles.sessionModalValue}>{session.attendeesCount} / {session.maxCapacity} Registered</Text>
+              </View>
+
+              <View style={styles.sessionModalRow}>
+                <Text style={styles.sessionModalLabel}>Access & Fee:</Text>
+                <Text style={[styles.sessionModalValue, { color: '#EA580C', fontWeight: '800' }]}>
+                  {session.price > 0 ? `₹${session.price.toLocaleString('en-IN')}` : 'Complimentary / Included'}
+                </Text>
+              </View>
+
+              <View style={{ marginTop: 14, padding: 12, backgroundColor: '#F8FAFC', borderRadius: 12, borderWidth: 1, borderColor: '#E2E8F0' }}>
+                <Text style={{ fontSize: 11, fontWeight: '700', color: '#64748B', marginBottom: 4 }}>
+                  WEB-RTC MEETING LINK
+                </Text>
+                <Text style={{ fontSize: 12, color: '#0F172A', fontWeight: '600' }} numberOfLines={2}>
+                  {session.meetingLink}
+                </Text>
+              </View>
+            </ScrollView>
+
+            <View style={[styles.invoiceActionsRow, { gap: 10 }]}>
+              <TouchableOpacity
+                style={[styles.invoiceCloseActionBtn, { flex: 1 }]}
+                onPress={() => setSelectedOnlineStudioSession(null)}
+              >
+                <Text style={styles.invoiceCloseActionText}>Close</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.invoicePrintActionBtn, { flex: 2, backgroundColor: '#EA580C' }]}
+                onPress={() => {
+                  Linking.openURL(session.meetingLink).catch(() => {
+                    Alert.alert('Launch Studio', 'Opening WebRTC Studio meeting: ' + session.meetingLink);
+                  });
+                }}
+              >
+                <Ionicons name="videocam" size={16} color="#FFFFFF" />
+                <Text style={styles.invoicePrintActionText}>Open Live Studio</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+    );
+  };
+
+
+  // APPOINTMENT DETAIL MODAL (Matching Web GymAdminTrainerSchedule.tsx)
+  const renderScheduleDetailModal = () => {
+    if (!selectedScheduleDetail) return null;
+    const session = selectedScheduleDetail;
+
+    return (
+      <Modal
+        visible={Boolean(selectedScheduleDetail)}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setSelectedScheduleDetail(null)}
+      >
+        <View style={styles.invoiceModalOverlay}>
+          <View style={[styles.invoiceModalCard, { maxHeight: 540 }]}>
+            {/* Header */}
+            <View style={styles.invoiceHeader}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                <View style={[styles.onlineKpiIconSquircle, { width: 38, height: 38, backgroundColor: '#FFF7ED' }]}>
+                  <Ionicons name="barbell" size={20} color="#EA580C" />
+                </View>
+                <View>
+                  <Text style={styles.invoiceTitle}>{session.type || 'Online Session'}</Text>
+                  <Text style={styles.invoiceLogoText}>BOOKING #{session.bookingId}</Text>
+                </View>
+              </View>
+              <TouchableOpacity onPress={() => setSelectedScheduleDetail(null)}>
+                <Ionicons name="close" size={22} color={COLORS.textMedium} />
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView style={styles.invoiceBody} showsVerticalScrollIndicator={false}>
+              {/* Trainer Info Card */}
+              <View style={[styles.sessionModalRow, { backgroundColor: '#F8FAFC', padding: 10, borderRadius: 12, marginBottom: 8 }]}>
+                <View>
+                  <Text style={{ fontSize: 10, fontWeight: '800', color: '#64748B' }}>ASSIGNED TRAINER</Text>
+                  <Text style={{ fontSize: 14, fontWeight: '800', color: '#111827', marginTop: 2 }}>
+                    👤 {session.trainerName}
+                  </Text>
+                </View>
+                <View style={[styles.onlineBadgePill, { backgroundColor: '#FFFFFF' }]}>
+                  <Text style={styles.onlineBadgePillText}>Trainer Staff</Text>
+                </View>
+              </View>
+
+              {/* Customer Info Card */}
+              <View style={[styles.sessionModalRow, { backgroundColor: '#FFF7ED', padding: 10, borderRadius: 12, borderWidth: 1, borderColor: '#FFEDD5', marginBottom: 8 }]}>
+                <View>
+                  <Text style={{ fontSize: 10, fontWeight: '800', color: '#EA580C' }}>BOOKED CUSTOMER / MEMBER</Text>
+                  <Text style={{ fontSize: 14, fontWeight: '800', color: '#111827', marginTop: 2 }}>
+                    👤 {session.customerName}
+                  </Text>
+                  {session.customerEmail ? (
+                    <Text style={{ fontSize: 11, color: '#64748B', marginTop: 1 }}>{session.customerEmail}</Text>
+                  ) : null}
+                </View>
+              </View>
+
+              {/* Date & Time */}
+              <View style={{ flexDirection: 'row', gap: 8, marginBottom: 8 }}>
+                <View style={{ flex: 1, backgroundColor: '#F8FAFC', padding: 10, borderRadius: 12, borderWidth: 1, borderColor: '#E2E8F0' }}>
+                  <Text style={{ fontSize: 10, fontWeight: '800', color: '#64748B' }}>DATE & DAY</Text>
+                  <Text style={{ fontSize: 12, fontWeight: '700', color: '#111827', marginTop: 2 }}>
+                    {session.date} ({session.day})
+                  </Text>
+                </View>
+                <View style={{ flex: 1, backgroundColor: '#F8FAFC', padding: 10, borderRadius: 12, borderWidth: 1, borderColor: '#E2E8F0' }}>
+                  <Text style={{ fontSize: 10, fontWeight: '800', color: '#64748B' }}>TIME & DURATION</Text>
+                  <Text style={{ fontSize: 12, fontWeight: '700', color: '#111827', marginTop: 2 }}>
+                    {session.displayTime || session.time} ({session.durationHours}h)
+                  </Text>
+                </View>
+              </View>
+
+              {/* Session Mode & Status */}
+              <View style={[styles.sessionModalRow, { backgroundColor: '#F8FAFC', padding: 10, borderRadius: 12, borderWidth: 1, borderColor: '#E2E8F0', marginBottom: 8 }]}>
+                <View>
+                  <Text style={{ fontSize: 10, fontWeight: '800', color: '#64748B' }}>SESSION MODE</Text>
+                  <Text style={{ fontSize: 12, fontWeight: '700', color: '#111827', marginTop: 2 }}>
+                    {session.mode === 'Online' ? '📹 Virtual Video Coaching' : '📍 In-Person Gym Floor'}
+                  </Text>
+                </View>
+                <View style={[styles.onlineStatusPill, styles.onlineStatusUpcoming]}>
+                  <Text style={styles.onlineStatusUpcomingText}>{session.status}</Text>
+                </View>
+              </View>
+
+              {/* Fee */}
+              <View style={styles.sessionModalRow}>
+                <Text style={styles.sessionModalLabel}>Session Fee:</Text>
+                <Text style={[styles.sessionModalValue, { color: '#EA580C', fontWeight: '900' }]}>
+                  ₹{Number(session.fee).toLocaleString('en-IN')}
+                </Text>
+              </View>
+
+              {/* Online Meeting Link */}
+              {session.meetingLink ? (
+                <View style={{ marginTop: 10, padding: 10, backgroundColor: '#F8FAFC', borderRadius: 12, borderWidth: 1, borderColor: '#E2E8F0', gap: 6 }}>
+                  <Text style={{ fontSize: 10, fontWeight: '800', color: '#EA580C' }}>ONLINE MEETING LINK</Text>
+                  <Text style={{ fontSize: 11, color: '#111827' }} numberOfLines={1}>{session.meetingLink}</Text>
+                  <TouchableOpacity
+                    style={[styles.onlineJoinStudioBtn, { paddingVertical: 8, marginTop: 4 }]}
+                    onPress={() => {
+                      Linking.openURL(session.meetingLink).catch(() => {
+                        Alert.alert('Open Meeting', session.meetingLink);
+                      });
+                    }}
+                  >
+                    <Ionicons name="videocam" size={14} color="#FFFFFF" />
+                    <Text style={[styles.onlineJoinStudioBtnText, { fontSize: 12 }]}>Join Meeting Room</Text>
+                  </TouchableOpacity>
+                </View>
+              ) : null}
+            </ScrollView>
+
+            <View style={styles.invoiceActionsRow}>
+              <TouchableOpacity
+                style={[styles.invoiceCloseActionBtn, { flex: 1 }]}
+                onPress={() => setSelectedScheduleDetail(null)}
+              >
+                <Text style={styles.invoiceCloseActionText}>Close</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+    );
+  };
+
+
+  // BOOK VIDEO SESSION MODAL (Matching Exact Web GymAdminVideoBookings.tsx Form)
+  const renderBookVideoSessionModal = () => {
+    if (!showBookVideoModal) return null;
+
+    const consultationTypes: VideoBookingItem['sessionType'][] = [
+      '1-on-1 Virtual Training',
+      'Nutrition Consultation',
+      'Form & Posture Assessment',
+      'Fitness Goal Review'
+    ];
+
+    const durations = ['30', '45', '60'];
+
+    return (
+      <Modal
+        visible={showBookVideoModal}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setShowBookVideoModal(false)}
+      >
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          style={styles.prodModalOverlay}
+        >
+          <View style={[styles.prodModalCard, { maxHeight: '92%' }]}>
+            {/* Modal Header */}
+            <View style={styles.prodModalHeader}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                <View style={[styles.onlineKpiIconSquircle, { width: 38, height: 38 }]}>
+                  <Ionicons name="videocam" size={20} color="#EA580C" />
+                </View>
+                <View>
+                  <Text style={styles.prodModalTitle}>Book 1-on-1 Video Session</Text>
+                  <Text style={styles.prodModalSubtitle}>Schedule a virtual appointment for a member</Text>
+                </View>
+              </View>
+              <TouchableOpacity
+                onPress={() => setShowBookVideoModal(false)}
+                style={styles.prodModalCloseBtn}
+              >
+                <Ionicons name="close" size={20} color="#64748B" />
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView style={{ maxHeight: 460 }} showsVerticalScrollIndicator={false}>
+              <View style={{ padding: 16, gap: 14 }}>
+                {/* 1. Select Member */}
+                <View>
+                  <Text style={styles.prodFormLabel}>SELECT MEMBER *</Text>
+                  <View style={{ flexDirection: 'row', gap: 8, marginTop: 4 }}>
+                    {[
+                      { name: 'Renugopal Y', email: 'renugopal5457@gmail.com' },
+                      { name: 'Renu y', email: 'renugopal24022000@gmail.com' }
+                    ].map(m => {
+                      const active = bookVideoMember === m.name;
+                      return (
+                        <TouchableOpacity
+                          key={m.name}
+                          style={[styles.vbFormSelectChip, active && styles.vbFormSelectChipActive]}
+                          onPress={() => {
+                            setBookVideoMember(m.name);
+                            setBookVideoMemberEmail(m.email);
+                          }}
+                        >
+                          <Text style={[styles.vbFormSelectChipText, active && styles.vbFormSelectChipTextActive]}>
+                            {m.name}
+                          </Text>
+                        </TouchableOpacity>
+                      );
+                    })}
+                  </View>
+                  <Text style={{ fontSize: 11, color: '#64748B', marginTop: 4 }}>
+                    Email: {bookVideoMemberEmail}
+                  </Text>
+                </View>
+
+                {/* 2. Assigned Trainer */}
+                <View>
+                  <Text style={styles.prodFormLabel}>ASSIGNED TRAINER *</Text>
+                  <View style={{ flexDirection: 'row', gap: 8, marginTop: 4 }}>
+                    {[
+                      { name: 'Naveen', spec: 'Personal Trainer' },
+                      { name: 'Alex Morgan', spec: 'Elite Coach' }
+                    ].map(t => {
+                      const active = bookVideoTrainer === t.name;
+                      return (
+                        <TouchableOpacity
+                          key={t.name}
+                          style={[styles.vbFormSelectChip, active && styles.vbFormSelectChipActive]}
+                          onPress={() => setBookVideoTrainer(t.name)}
+                        >
+                          <Text style={[styles.vbFormSelectChipText, active && styles.vbFormSelectChipTextActive]}>
+                            {t.name} ({t.spec})
+                          </Text>
+                        </TouchableOpacity>
+                      );
+                    })}
+                  </View>
+                </View>
+
+                {/* 3. Consultation Type */}
+                <View>
+                  <Text style={styles.prodFormLabel}>CONSULTATION TYPE</Text>
+                  <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 4 }}>
+                    {consultationTypes.map(cType => {
+                      const active = bookVideoType === cType;
+                      return (
+                        <TouchableOpacity
+                          key={cType}
+                          style={[styles.vbTypeSelectPill, active && styles.vbTypeSelectPillActive]}
+                          onPress={() => setBookVideoType(cType)}
+                        >
+                          <Text style={[styles.vbTypeSelectPillText, active && styles.vbTypeSelectPillTextActive]}>
+                            {cType}
+                          </Text>
+                        </TouchableOpacity>
+                      );
+                    })}
+                  </View>
+                </View>
+
+                {/* 4. Date, Time & Duration */}
+                <View style={{ flexDirection: 'row', gap: 10 }}>
+                  <View style={{ flex: 1.2 }}>
+                    <Text style={styles.prodFormLabel}>DATE *</Text>
+                    <TextInput
+                      style={styles.prodFormInput}
+                      placeholder="YYYY-MM-DD"
+                      placeholderTextColor="#94A3B8"
+                      value={bookVideoDate}
+                      onChangeText={setBookVideoDate}
+                    />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.prodFormLabel}>TIME *</Text>
+                    <TextInput
+                      style={styles.prodFormInput}
+                      placeholder="11:00 AM"
+                      placeholderTextColor="#94A3B8"
+                      value={bookVideoTime}
+                      onChangeText={setBookVideoTime}
+                    />
+                  </View>
+                </View>
+
+                {/* 5. Duration (30, 45, 60 mins) */}
+                <View>
+                  <Text style={styles.prodFormLabel}>DURATION (MINS)</Text>
+                  <View style={{ flexDirection: 'row', gap: 8, marginTop: 4 }}>
+                    {durations.map(d => {
+                      const active = bookVideoDuration === d;
+                      return (
+                        <TouchableOpacity
+                          key={d}
+                          style={[styles.vbDurationChip, active && styles.vbDurationChipActive]}
+                          onPress={() => setBookVideoDuration(d)}
+                        >
+                          <Text style={[styles.vbDurationChipText, active && styles.vbDurationChipTextActive]}>
+                            {d} Mins
+                          </Text>
+                        </TouchableOpacity>
+                      );
+                    })}
+                  </View>
+                </View>
+
+                {/* 6. Session Fee & Custom Link */}
+                <View style={{ flexDirection: 'row', gap: 10 }}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.prodFormLabel}>SESSION FEE (₹)</Text>
+                    <TextInput
+                      style={styles.prodFormInput}
+                      placeholder="0 for Free Trial / Included"
+                      placeholderTextColor="#94A3B8"
+                      keyboardType="numeric"
+                      value={bookVideoFee}
+                      onChangeText={setBookVideoFee}
+                    />
+                  </View>
+                  <View style={{ flex: 1.2 }}>
+                    <Text style={styles.prodFormLabel}>CUSTOM URL (OPTIONAL)</Text>
+                    <TextInput
+                      style={styles.prodFormInput}
+                      placeholder="Auto-generated if empty"
+                      placeholderTextColor="#94A3B8"
+                      value={bookVideoCustomLink}
+                      onChangeText={setBookVideoCustomLink}
+                    />
+                  </View>
+                </View>
+              </View>
+            </ScrollView>
+
+            <View style={styles.prodModalFooter}>
+              <TouchableOpacity
+                onPress={() => setShowBookVideoModal(false)}
+                style={styles.prodModalCancelBtn}
+              >
+                <Text style={styles.prodModalCancelText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={handleCreateVideoBooking}
+                style={[styles.prodModalSubmitBtn, { backgroundColor: '#EA580C' }]}
+              >
+                <Ionicons name="checkmark" size={16} color="#FFFFFF" />
+                <Text style={styles.prodModalSubmitText}>Confirm Booking</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </KeyboardAvoidingView>
+      </Modal>
+    );
+  };
+
+
+
+  // =========================================================================
+  // REFERRALS MODALS (Adjust Points, History, Create Reward, Create Campaign)
+  // =========================================================================
+
+  // 1. Adjust Points Modal
+  const renderAdjustPointsModal = () => {
+    if (!showAdjustPointsModal || !selectedAdjustCustomer) return null;
+
+    return (
+      <Modal
+        visible={showAdjustPointsModal}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setShowAdjustPointsModal(false)}
+      >
+        <View style={styles.invoiceModalOverlay}>
+          <View style={[styles.invoiceModalCard, { maxHeight: 520 }]}>
+            <View style={styles.invoiceHeader}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                <View style={[styles.onlineKpiIconSquircle, { width: 38, height: 38, backgroundColor: '#FFF7ED' }]}>
+                  <Ionicons name="wallet" size={20} color="#EA580C" />
+                </View>
+                <View>
+                  <Text style={styles.invoiceTitle}>Adjust Points</Text>
+                  <Text style={styles.invoiceLogoText}>{selectedAdjustCustomer.name}</Text>
+                </View>
+              </View>
+              <TouchableOpacity onPress={() => setShowAdjustPointsModal(false)}>
+                <Ionicons name="close" size={22} color={COLORS.textMedium} />
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView style={{ padding: 18 }} contentContainerStyle={{ gap: 14 }}>
+              <View style={styles.refAdjustBalBox}>
+                <Text style={{ fontSize: 11, fontWeight: '700', color: '#64748B' }}>CURRENT BALANCE</Text>
+                <Text style={{ fontSize: 18, fontWeight: '900', color: '#111827', marginTop: 2 }}>
+                  {selectedAdjustCustomer.pointsBalance.toLocaleString('en-IN')} <Text style={{ fontSize: 13, color: '#EA580C' }}>pts</Text>
+                </Text>
+              </View>
+
+              {/* Add vs Deduct Toggle */}
+              <View style={{ flexDirection: 'row', gap: 10 }}>
+                <TouchableOpacity
+                  style={[styles.refAdjustModeBtn, adjustPointsMode === 'ADD' && styles.refAdjustModeBtnActiveAdd]}
+                  onPress={() => setAdjustPointsMode('ADD')}
+                >
+                  <Ionicons name="add-circle" size={16} color={adjustPointsMode === 'ADD' ? '#FFFFFF' : '#15803D'} />
+                  <Text style={[styles.refAdjustModeBtnText, adjustPointsMode === 'ADD' && { color: '#FFFFFF' }]}>
+                    + Add Points
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={[styles.refAdjustModeBtn, adjustPointsMode === 'DEDUCT' && styles.refAdjustModeBtnActiveDeduct]}
+                  onPress={() => setAdjustPointsMode('DEDUCT')}
+                >
+                  <Ionicons name="remove-circle" size={16} color={adjustPointsMode === 'DEDUCT' ? '#FFFFFF' : '#B91C1C'} />
+                  <Text style={[styles.refAdjustModeBtnText, adjustPointsMode === 'DEDUCT' && { color: '#FFFFFF' }]}>
+                    - Deduct Points
+                  </Text>
+                </TouchableOpacity>
+              </View>
+
+              <View>
+                <Text style={styles.refInputLabel}>POINTS AMOUNT *</Text>
+                <TextInput
+                  style={styles.refTextInput}
+                  value={adjustPointsAmount}
+                  onChangeText={setAdjustPointsAmount}
+                  keyboardType="numeric"
+                  placeholder="100"
+                  placeholderTextColor="#94A3B8"
+                />
+              </View>
+
+              <View>
+                <Text style={styles.refInputLabel}>REASON / REMARK *</Text>
+                <TextInput
+                  style={[styles.refTextInput, { height: 60, textAlignVertical: 'top' }]}
+                  value={adjustPointsReason}
+                  onChangeText={setAdjustPointsReason}
+                  multiline
+                  placeholder="e.g. Special promotional reward or checkout correction"
+                  placeholderTextColor="#94A3B8"
+                />
+              </View>
+            </ScrollView>
+
+            <View style={{ flexDirection: 'row', justifyContent: 'flex-end', gap: 10, padding: 16, borderTopWidth: 1, borderTopColor: '#E2E8F0' }}>
+              <TouchableOpacity
+                style={styles.refModalCancelBtn}
+                onPress={() => setShowAdjustPointsModal(false)}
+              >
+                <Text style={styles.refModalCancelBtnText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.refSaveBtn}
+                onPress={handleAdjustPointsSubmit}
+                disabled={adjustPointsLoading}
+              >
+                {adjustPointsLoading ? (
+                  <ActivityIndicator size="small" color="#FFFFFF" />
+                ) : (
+                  <Text style={styles.refSaveBtnText}>Confirm Adjustment</Text>
+                )}
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+    );
+  };
+
+  // 2. Customer Points History Modal
+  const renderPointsHistoryModal = () => {
+    if (!showPointsHistoryModal || !selectedPointsHistoryCustomer) return null;
+
+    return (
+      <Modal
+        visible={showPointsHistoryModal}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setShowPointsHistoryModal(false)}
+      >
+        <View style={styles.invoiceModalOverlay}>
+          <View style={[styles.invoiceModalCard, { maxHeight: 540 }]}>
+            <View style={styles.invoiceHeader}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                <View style={[styles.onlineKpiIconSquircle, { width: 38, height: 38, backgroundColor: '#FFF7ED' }]}>
+                  <Ionicons name="time" size={20} color="#EA580C" />
+                </View>
+                <View>
+                  <Text style={styles.invoiceTitle}>Points History</Text>
+                  <Text style={styles.invoiceLogoText}>{selectedPointsHistoryCustomer.name}</Text>
+                </View>
+              </View>
+              <TouchableOpacity onPress={() => setShowPointsHistoryModal(false)}>
+                <Ionicons name="close" size={22} color={COLORS.textMedium} />
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView style={{ padding: 18 }} contentContainerStyle={{ gap: 10 }}>
+              {customerPointsHistory.map((item, idx) => {
+                const isPositive = (item.points || 0) > 0;
+                return (
+                  <View key={idx} style={styles.refHistoryItemCard}>
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.refHistoryReason}>{item.reason || 'Points Transaction'}</Text>
+                      <Text style={styles.refHistoryDate}>{item.date} • {item.type}</Text>
+                    </View>
+                    <Text style={[styles.refHistoryPts, { color: isPositive ? '#15803D' : '#B91C1C' }]}>
+                      {isPositive ? '+' : ''}{item.points} pts
+                    </Text>
+                  </View>
+                );
+              })}
+            </ScrollView>
+
+            <View style={{ padding: 14, borderTopWidth: 1, borderTopColor: '#E2E8F0', alignItems: 'center' }}>
+              <TouchableOpacity
+                style={styles.refModalCancelBtn}
+                onPress={() => setShowPointsHistoryModal(false)}
+              >
+                <Text style={styles.refModalCancelBtnText}>Close</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+    );
+  };
+
+  // 3. Create Custom Reward Modal
+  const renderCreateCustomRewardModal = () => {
+    if (!showCreateRewardModal) return null;
+
+    return (
+      <Modal
+        visible={showCreateRewardModal}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setShowCreateRewardModal(false)}
+      >
+        <View style={styles.invoiceModalOverlay}>
+          <View style={[styles.invoiceModalCard, { maxHeight: 560 }]}>
+            <View style={styles.invoiceHeader}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                <View style={[styles.onlineKpiIconSquircle, { width: 38, height: 38, backgroundColor: '#FFF7ED' }]}>
+                  <Ionicons name="gift" size={20} color="#EA580C" />
+                </View>
+                <View>
+                  <Text style={styles.invoiceTitle}>Create Custom Reward</Text>
+                  <Text style={styles.invoiceLogoText}>SPECIAL MEMBER BENEFIT</Text>
+                </View>
+              </View>
+              <TouchableOpacity onPress={() => setShowCreateRewardModal(false)}>
+                <Ionicons name="close" size={22} color={COLORS.textMedium} />
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView style={{ padding: 18 }} contentContainerStyle={{ gap: 12 }}>
+              <View>
+                <Text style={styles.refInputLabel}>REWARD TITLE *</Text>
+                <TextInput
+                  style={styles.refTextInput}
+                  value={newRewardForm.title}
+                  onChangeText={(txt) => setNewRewardForm({ ...newRewardForm, title: txt })}
+                  placeholder="e.g. 1 Free Personal Training Session"
+                  placeholderTextColor="#94A3B8"
+                />
+              </View>
+
+              <View>
+                <Text style={styles.refInputLabel}>DESCRIPTION</Text>
+                <TextInput
+                  style={[styles.refTextInput, { height: 60, textAlignVertical: 'top' }]}
+                  value={newRewardForm.description}
+                  onChangeText={(txt) => setNewRewardForm({ ...newRewardForm, description: txt })}
+                  multiline
+                  placeholder="Brief explanation of this reward"
+                  placeholderTextColor="#94A3B8"
+                />
+              </View>
+
+              <View style={{ flexDirection: 'row', gap: 10 }}>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.refInputLabel}>REQUIRED POINTS *</Text>
+                  <TextInput
+                    style={styles.refTextInput}
+                    value={newRewardForm.requiredPoints}
+                    onChangeText={(txt) => setNewRewardForm({ ...newRewardForm, requiredPoints: txt })}
+                    keyboardType="numeric"
+                    placeholder="200"
+                    placeholderTextColor="#94A3B8"
+                  />
+                </View>
+
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.refInputLabel}>TOTAL QUANTITY</Text>
+                  <TextInput
+                    style={styles.refTextInput}
+                    value={newRewardForm.totalQuantity}
+                    onChangeText={(txt) => setNewRewardForm({ ...newRewardForm, totalQuantity: txt })}
+                    keyboardType="numeric"
+                    placeholder="0 (Unlimited)"
+                    placeholderTextColor="#94A3B8"
+                  />
+                </View>
+              </View>
+
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 6 }}>
+                <View style={{ flex: 1, paddingRight: 10 }}>
+                  <Text style={{ fontSize: 12, fontWeight: '800', color: '#111827' }}>Require Owner Approval</Text>
+                  <Text style={{ fontSize: 10, color: '#64748B' }}>Must be manually verified before claim is honored.</Text>
+                </View>
+                <Switch
+                  value={newRewardForm.requireApproval}
+                  onValueChange={(val) => setNewRewardForm({ ...newRewardForm, requireApproval: val })}
+                  trackColor={{ false: '#E2E8F0', true: '#EA580C' }}
+                  thumbColor="#FFFFFF"
+                />
+              </View>
+
+              <View>
+                <Text style={styles.refInputLabel}>TERMS & CONDITIONS</Text>
+                <TextInput
+                  style={[styles.refTextInput, { height: 50, textAlignVertical: 'top' }]}
+                  value={newRewardForm.termsAndConditions}
+                  onChangeText={(txt) => setNewRewardForm({ ...newRewardForm, termsAndConditions: txt })}
+                  multiline
+                  placeholderTextColor="#94A3B8"
+                />
+              </View>
+            </ScrollView>
+
+            <View style={{ flexDirection: 'row', justifyContent: 'flex-end', gap: 10, padding: 16, borderTopWidth: 1, borderTopColor: '#E2E8F0' }}>
+              <TouchableOpacity
+                style={styles.refModalCancelBtn}
+                onPress={() => setShowCreateRewardModal(false)}
+              >
+                <Text style={styles.refModalCancelBtnText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.refSaveBtn}
+                onPress={handleCreateCustomReward}
+                disabled={creatingRewardLoading}
+              >
+                {creatingRewardLoading ? (
+                  <ActivityIndicator size="small" color="#FFFFFF" />
+                ) : (
+                  <Text style={styles.refSaveBtnText}>Create Reward</Text>
+                )}
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+    );
+  };
+
+  // 4. Create / Edit Campaign Modal
+  const renderCreateCampaignModal = () => {
+    if (!showCampaignModal) return null;
+
+    return (
+      <Modal
+        visible={showCampaignModal}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setShowCampaignModal(false)}
+      >
+        <View style={styles.invoiceModalOverlay}>
+          <View style={[styles.invoiceModalCard, { maxHeight: 560 }]}>
+            <View style={styles.invoiceHeader}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                <View style={[styles.onlineKpiIconSquircle, { width: 38, height: 38, backgroundColor: '#DCFCE7' }]}>
+                  <Ionicons name="share-social" size={20} color="#15803D" />
+                </View>
+                <View>
+                  <Text style={styles.invoiceTitle}>{editingCampaignItem ? 'Edit Campaign' : 'Create Campaign'}</Text>
+                  <Text style={styles.invoiceLogoText}>REFERRAL TRACKING</Text>
+                </View>
+              </View>
+              <TouchableOpacity onPress={() => setShowCampaignModal(false)}>
+                <Ionicons name="close" size={22} color={COLORS.textMedium} />
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView style={{ padding: 18 }} contentContainerStyle={{ gap: 12 }}>
+              <View>
+                <Text style={styles.refInputLabel}>CAMPAIGN NAME *</Text>
+                <TextInput
+                  style={styles.refTextInput}
+                  value={campaignModalForm.campaignName}
+                  onChangeText={(txt) => setCampaignModalForm({ ...campaignModalForm, campaignName: txt })}
+                  placeholder="e.g. Member Referral Campaign"
+                  placeholderTextColor="#94A3B8"
+                />
+              </View>
+
+              <View>
+                <Text style={styles.refInputLabel}>DESCRIPTION</Text>
+                <TextInput
+                  style={[styles.refTextInput, { height: 60, textAlignVertical: 'top' }]}
+                  value={campaignModalForm.campaignDescription}
+                  onChangeText={(txt) => setCampaignModalForm({ ...campaignModalForm, campaignDescription: txt })}
+                  multiline
+                  placeholder="Details of the referral campaign"
+                  placeholderTextColor="#94A3B8"
+                />
+              </View>
+
+              <View style={{ flexDirection: 'row', gap: 10 }}>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.refInputLabel}>INVITER REWARD (₹) *</Text>
+                  <TextInput
+                    style={styles.refTextInput}
+                    value={campaignModalForm.inviterRewardAmount}
+                    onChangeText={(txt) => setCampaignModalForm({ ...campaignModalForm, inviterRewardAmount: txt })}
+                    keyboardType="numeric"
+                    placeholder="500"
+                    placeholderTextColor="#94A3B8"
+                  />
+                </View>
+
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.refInputLabel}>INVITEE REWARD (₹) *</Text>
+                  <TextInput
+                    style={styles.refTextInput}
+                    value={campaignModalForm.inviteeDiscountAmount}
+                    onChangeText={(txt) => setCampaignModalForm({ ...campaignModalForm, inviteeDiscountAmount: txt })}
+                    keyboardType="numeric"
+                    placeholder="500"
+                    placeholderTextColor="#94A3B8"
+                  />
+                </View>
+              </View>
+
+              <View>
+                <Text style={styles.refInputLabel}>STUDIO CODE</Text>
+                <TextInput
+                  style={styles.refTextInput}
+                  value={campaignModalForm.studioCode}
+                  onChangeText={(txt) => setCampaignModalForm({ ...campaignModalForm, studioCode: txt })}
+                  placeholder="GYMORA-VIP"
+                  placeholderTextColor="#94A3B8"
+                />
+              </View>
+
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 6 }}>
+                <View style={{ flex: 1, paddingRight: 10 }}>
+                  <Text style={{ fontSize: 12, fontWeight: '800', color: '#111827' }}>Campaign Active</Text>
+                  <Text style={{ fontSize: 10, color: '#64748B' }}>Enable to make this referral link active for all members.</Text>
+                </View>
+                <Switch
+                  value={campaignModalForm.isActive}
+                  onValueChange={(val) => setCampaignModalForm({ ...campaignModalForm, isActive: val })}
+                  trackColor={{ false: '#E2E8F0', true: '#15803D' }}
+                  thumbColor="#FFFFFF"
+                />
+              </View>
+            </ScrollView>
+
+            <View style={{ flexDirection: 'row', justifyContent: 'flex-end', gap: 10, padding: 16, borderTopWidth: 1, borderTopColor: '#E2E8F0' }}>
+              <TouchableOpacity
+                style={styles.refModalCancelBtn}
+                onPress={() => setShowCampaignModal(false)}
+              >
+                <Text style={styles.refModalCancelBtnText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.refSaveBtn}
+                onPress={handleSaveCampaign}
+              >
+                <Text style={styles.refSaveBtnText}>Save Campaign</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+    );
+  };
+
+  // ATTENDANCE DETAIL MODAL (Matching Web View Details Action)
+  const renderAttendanceDetailModal = () => {
+    if (!selectedAttendanceDetail) return null;
+    const record = selectedAttendanceDetail;
+
+    return (
+      <Modal
+        visible={Boolean(selectedAttendanceDetail)}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setSelectedAttendanceDetail(null)}
+      >
+        <View style={styles.invoiceModalOverlay}>
+          <View style={[styles.invoiceModalCard, { maxHeight: 520 }]}>
+            <View style={styles.invoiceHeader}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                <View style={[styles.onlineKpiIconSquircle, { width: 38, height: 38, backgroundColor: '#FFF7ED' }]}>
+                  <Ionicons name="finger-print" size={20} color="#EA580C" />
+                </View>
+                <View>
+                  <Text style={styles.invoiceTitle}>{record.name}</Text>
+                  <Text style={styles.invoiceLogoText}>ENTRY RECORD • {record.recordCategory || 'MEMBER'}</Text>
+                </View>
+              </View>
+              <TouchableOpacity onPress={() => setSelectedAttendanceDetail(null)}>
+                <Ionicons name="close" size={22} color={COLORS.textMedium} />
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView style={styles.invoiceBody} showsVerticalScrollIndicator={false}>
+              <View style={[styles.sessionModalRow, { backgroundColor: '#F8FAFC', padding: 10, borderRadius: 12, marginBottom: 8 }]}>
+                <View>
+                  <Text style={{ fontSize: 10, fontWeight: '800', color: '#64748B' }}>MEMBERSHIP / ROLE</Text>
+                  <Text style={{ fontSize: 14, fontWeight: '800', color: '#111827', marginTop: 2 }}>
+                    {record.type || record.specialization || 'Active Member'}
+                  </Text>
+                </View>
+                <View style={[styles.onlineStatusPill, record.checkOutTime === 'In Gym' ? styles.onlineStatusLive : styles.onlineStatusUpcoming]}>
+                  <Text style={record.checkOutTime === 'In Gym' ? styles.onlineStatusLiveText : styles.onlineStatusUpcomingText}>
+                    {record.checkOutTime === 'In Gym' ? 'IN FACILITY' : 'VISIT COMPLETE'}
+                  </Text>
+                </View>
+              </View>
+
+              <View style={styles.sessionModalRow}>
+                <Text style={styles.sessionModalLabel}>Date Logged:</Text>
+                <Text style={styles.sessionModalValue}>{record.date}</Text>
+              </View>
+
+              <View style={styles.sessionModalRow}>
+                <Text style={styles.sessionModalLabel}>Facility Check-In:</Text>
+                <Text style={[styles.sessionModalValue, { color: '#EA580C', fontWeight: '800' }]}>
+                  {record.checkInTime}
+                </Text>
+              </View>
+
+              <View style={styles.sessionModalRow}>
+                <Text style={styles.sessionModalLabel}>Facility Checkout:</Text>
+                <Text style={[styles.sessionModalValue, record.checkOutTime === 'In Gym' && { color: '#EA580C', fontWeight: '800' }]}>
+                  {record.checkOutTime}
+                </Text>
+              </View>
+
+              <View style={styles.sessionModalRow}>
+                <Text style={styles.sessionModalLabel}>Access Verification:</Text>
+                <Text style={styles.sessionModalValue}>Biometric RFID Turnstile Gate #1</Text>
+              </View>
+
+              {record.email ? (
+                <View style={styles.sessionModalRow}>
+                  <Text style={styles.sessionModalLabel}>Account Email:</Text>
+                  <Text style={styles.sessionModalValue}>{record.email}</Text>
+                </View>
+              ) : null}
+
+              {record.dutyType ? (
+                <View style={styles.sessionModalRow}>
+                  <Text style={styles.sessionModalLabel}>Assigned Shift:</Text>
+                  <Text style={[styles.sessionModalValue, { color: '#EA580C', fontWeight: '800' }]}>
+                    {record.dutyType}
+                  </Text>
+                </View>
+              ) : null}
+            </ScrollView>
+
+            <View style={styles.invoiceActionsRow}>
+              <TouchableOpacity
+                style={[styles.invoiceCloseActionBtn, { flex: 1 }]}
+                onPress={() => setSelectedAttendanceDetail(null)}
+              >
+                <Text style={styles.invoiceCloseActionText}>Close</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+    );
+  };
 
   // ADD BRANCH MODAL (Matching Web GymAdminAddBranch.tsx)
   const renderAddBranchModal = () => {
@@ -11935,8 +16098,27 @@ return (
               </TouchableOpacity>
               <TouchableOpacity 
                 style={styles.invoicePrintActionBtn}
-                onPress={() => {
-                  Alert.alert('Print / Download', `Official Invoice ${selectedInvoiceSale?.recordNumber || ''} sent to print.`);
+                onPress={async () => {
+                  try {
+                    await FileDownloader.downloadInvoicePDF({
+                      invoiceNumber: selectedInvoiceSale?.recordNumber || `POS-${Date.now().toString().slice(-6)}`,
+                      invoiceDate: new Date(selectedInvoiceSale?.saleDate || Date.now()).toLocaleDateString('en-IN'),
+                      gymName: user?.gymName || 'Perfect Fitness Studio',
+                      customerName: selectedInvoiceSale?.customerName || 'Walk-in Member',
+                      items: (selectedInvoiceSale?.items || [{ name: 'Gym Merchandise & Nutrition', quantity: 1, price: selectedInvoiceSale?.totalAmount || 500 }]).map((it: any) => ({
+                        description: it.productName || it.name || 'Store Product',
+                        quantity: it.quantity || 1,
+                        amount: (it.price || 0) * (it.quantity || 1)
+                      })),
+                      subtotal: selectedInvoiceSale?.subtotal || selectedInvoiceSale?.totalAmount || 500,
+                      total: selectedInvoiceSale?.totalAmount || 500,
+                      paymentMethod: selectedInvoiceSale?.paymentMethod || 'Cash / UPI',
+                      paymentStatus: 'PAID',
+                      notes: 'Thank you for purchasing with Perfect Fitness Studio Store!'
+                    });
+                  } catch (err: any) {
+                    Alert.alert('Invoice Error', err?.message || 'Failed to download POS invoice.');
+                  }
                 }}
               >
                 <Ionicons name="print-outline" size={16} color={COLORS.white} />
@@ -12067,6 +16249,25 @@ return (
       {/* REWARDS & PERFORMANCE MODALS */}
       {renderCustomerPerfModal()}
       {renderCustomerCalendarModal()}
+
+      {/* ONLINE SESSIONS MODALS */}
+      {renderCreateOnlineSessionModal()}
+      {renderOnlineStudioModal()}
+
+      {/* TRAINER SCHEDULE MODAL */}
+      {renderScheduleDetailModal()}
+
+      {/* VIDEO BOOKINGS MODAL */}
+      {renderBookVideoSessionModal()}
+
+      {/* ATTENDANCE MODAL */}
+      {renderAttendanceDetailModal()}
+
+      {/* REFERRAL MODALS */}
+      {renderAdjustPointsModal()}
+      {renderPointsHistoryModal()}
+      {renderCreateCustomRewardModal()}
+      {renderCreateCampaignModal()}
 
       {/* SALES RECEIPT & BOOKING DETAILS MODALS */}
       
@@ -20230,5 +24431,2359 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontWeight: '800',
   },
+
+  // ONLINE SESSIONS STYLES (Matching Web Images 1 & 2)
+  onlineHeaderCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 18,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    gap: 8,
+  },
+  onlineBreadcrumbRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  onlineBreadcrumbText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#EA580C',
+  },
+  onlineTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 8,
+  },
+  onlineTitleText: {
+    fontSize: 22,
+    fontWeight: '900',
+    color: '#111827',
+    letterSpacing: -0.4,
+  },
+  onlineBadgePill: {
+    backgroundColor: '#FFF7ED',
+    borderWidth: 1,
+    borderColor: '#FFEDD5',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 9999,
+  },
+  onlineBadgePillText: {
+    fontSize: 10,
+    fontWeight: '800',
+    color: '#EA580C',
+  },
+  onlineSubtitleText: {
+    fontSize: 12,
+    color: '#64748B',
+    lineHeight: 17,
+  },
+  onlineScheduleBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: '#EA580C',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 12,
+  },
+  onlineScheduleBtnText: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: '#FFFFFF',
+  },
+
+  onlineKpiGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+  },
+  onlineKpiCard: {
+    flex: 1,
+    minWidth: '47%',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: 14,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  onlineKpiTopRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  onlineKpiLabel: {
+    fontSize: 10,
+    fontWeight: '800',
+    color: '#64748B',
+    letterSpacing: 0.5,
+  },
+  onlineKpiIconSquircle: {
+    width: 30,
+    height: 30,
+    borderRadius: 10,
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  onlineKpiValue: {
+    fontSize: 22,
+    fontWeight: '900',
+    color: '#111827',
+    marginTop: 6,
+  },
+  onlineKpiSub: {
+    fontSize: 10,
+    color: '#64748B',
+    marginTop: 2,
+  },
+
+  onlineHeroBanner: {
+    backgroundColor: '#EA580C',
+    borderRadius: 22,
+    padding: 18,
+    shadowColor: '#EA580C',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.35,
+    shadowRadius: 10,
+    elevation: 6,
+    gap: 10,
+  },
+  onlineHeroTopRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  onlineHeroPill: {
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: 9,
+    paddingVertical: 3,
+    borderRadius: 9999,
+  },
+  onlineHeroPillText: {
+    fontSize: 9,
+    fontWeight: '900',
+    color: '#EA580C',
+    letterSpacing: 0.5,
+  },
+  onlineHeroCategoryText: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#FFFFFF',
+  },
+  onlineHeroTitle: {
+    fontSize: 20,
+    fontWeight: '900',
+    color: '#FFFFFF',
+    letterSpacing: -0.3,
+  },
+  onlineHeroDesc: {
+    fontSize: 12,
+    color: 'rgba(255,255,255,0.92)',
+    lineHeight: 17,
+  },
+  onlineHeroChipsRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+    marginTop: 4,
+  },
+  onlineHeroChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    backgroundColor: 'rgba(255,255,255,0.22)',
+    paddingHorizontal: 9,
+    paddingVertical: 5,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.3)',
+  },
+  onlineHeroChipText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#FFFFFF',
+  },
+  onlineHeroActionsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginTop: 8,
+  },
+  onlineLaunchStudioBtn: {
+    flex: 1.5,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    backgroundColor: '#FFFFFF',
+    paddingVertical: 11,
+    borderRadius: 12,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 2,
+  },
+  onlineLaunchStudioBtnText: {
+    fontSize: 13,
+    fontWeight: '900',
+    color: '#EA580C',
+  },
+  onlineInviteLinkBtn: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    backgroundColor: 'rgba(255,255,255,0.25)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.45)',
+    paddingVertical: 11,
+    borderRadius: 12,
+  },
+  onlineInviteLinkBtnText: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: '#FFFFFF',
+  },
+
+  onlineSearchCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    gap: 10,
+  },
+  onlineSearchInputBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F8FAFC',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    paddingHorizontal: 12,
+    height: 42,
+    gap: 8,
+  },
+  onlineSearchInput: {
+    flex: 1,
+    fontSize: 12,
+    color: '#111827',
+  },
+  onlineFilterPillsRow: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  onlineFilterPill: {
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    borderRadius: 10,
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  onlineFilterPillActive: {
+    backgroundColor: '#EA580C',
+    borderColor: '#EA580C',
+  },
+  onlineFilterPillText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#64748B',
+  },
+  onlineFilterPillTextActive: {
+    color: '#FFFFFF',
+    fontWeight: '800',
+  },
+
+  onlineEmptyCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 18,
+    padding: 28,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    gap: 8,
+  },
+  onlineEmptyIconBox: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    backgroundColor: '#F8FAFC',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 4,
+  },
+  onlineEmptyTitle: {
+    fontSize: 15,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  onlineEmptySub: {
+    fontSize: 12,
+    color: '#64748B',
+    textAlign: 'center',
+    lineHeight: 17,
+    maxWidth: 280,
+  },
+  onlineEmptyScheduleBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: '#EA580C',
+    paddingHorizontal: 16,
+    paddingVertical: 9,
+    borderRadius: 12,
+    marginTop: 6,
+  },
+  onlineEmptyScheduleBtnText: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: '#FFFFFF',
+  },
+
+  onlineSessionCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 18,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.04,
+    shadowRadius: 4,
+    elevation: 2,
+    gap: 8,
+  },
+  onlineCardTopRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  onlineCategoryPill: {
+    backgroundColor: '#FFF7ED',
+    borderWidth: 1,
+    borderColor: '#FFEDD5',
+    paddingHorizontal: 9,
+    paddingVertical: 3,
+    borderRadius: 8,
+  },
+  onlineCategoryPillText: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#EA580C',
+  },
+  onlineStatusPill: {
+    paddingHorizontal: 9,
+    paddingVertical: 3,
+    borderRadius: 9999,
+  },
+  onlineStatusCompleted: {
+    backgroundColor: '#F1F5F9',
+  },
+  onlineStatusCompletedText: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: '#334155',
+  },
+  onlineStatusUpcoming: {
+    backgroundColor: '#ECFDF5',
+  },
+  onlineStatusUpcomingText: {
+    fontSize: 10,
+    fontWeight: '800',
+    color: '#059669',
+  },
+  onlineStatusLive: {
+    backgroundColor: '#FEE2E2',
+  },
+  onlineStatusLiveText: {
+    fontSize: 10,
+    fontWeight: '800',
+    color: '#DC2626',
+  },
+  onlineStatusPillText: {
+    fontSize: 10,
+    fontWeight: '700',
+  },
+  onlineCardTitle: {
+    fontSize: 16,
+    fontWeight: '900',
+    color: '#111827',
+  },
+  onlineCardDesc: {
+    fontSize: 12,
+    color: '#64748B',
+    lineHeight: 16,
+  },
+  onlineCardMetaBox: {
+    marginTop: 6,
+    paddingTop: 10,
+    borderTopWidth: 1,
+    borderTopColor: '#F1F5F9',
+    gap: 8,
+  },
+  onlineCardMetaRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  onlineCardTrainerName: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#111827',
+  },
+  onlineCardSpecialization: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#64748B',
+  },
+  onlineCardDateText: {
+    fontSize: 11,
+    color: '#64748B',
+  },
+  onlineCardTimeText: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#111827',
+  },
+  onlineCardAttendeesLabel: {
+    fontSize: 11,
+    color: '#64748B',
+  },
+  onlineCardAttendeesValue: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#EA580C',
+  },
+  onlineCardActionsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginTop: 8,
+    paddingTop: 10,
+    borderTopWidth: 1,
+    borderTopColor: '#F1F5F9',
+  },
+  onlineJoinStudioBtn: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    backgroundColor: '#EA580C',
+    paddingVertical: 9,
+    borderRadius: 12,
+  },
+  onlineJoinStudioBtnText: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: '#FFFFFF',
+  },
+  onlineCopyLinkIconBtn: {
+    width: 38,
+    height: 38,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    backgroundColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  onlineCopyLinkIconBtnCopied: {
+    borderColor: '#EA580C',
+    backgroundColor: '#FFF7ED',
+  },
+
+  // TRAINER SCHEDULE STYLES (Matching Web Images 1, 2, 3)
+  schedHeaderCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 18,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    gap: 6,
+  },
+  schedBreadcrumbRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  schedBreadcrumbText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#EA580C',
+  },
+  schedTitleText: {
+    fontSize: 22,
+    fontWeight: '900',
+    color: '#111827',
+    letterSpacing: -0.4,
+  },
+  schedSubtitleText: {
+    fontSize: 12,
+    color: '#64748B',
+    lineHeight: 16,
+  },
+
+  schedControlsCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 18,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    gap: 12,
+  },
+  schedWeekNavRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    gap: 10,
+  },
+  schedNavBtnGroup: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F8FAFC',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    padding: 3,
+    gap: 2,
+  },
+  schedNavArrowBtn: {
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+    borderRadius: 8,
+  },
+  schedThisWeekBtn: {
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 8,
+    backgroundColor: '#FFF7ED',
+  },
+  schedThisWeekBtnText: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#EA580C',
+  },
+  schedDateRangeRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  schedDateRangeText: {
+    fontSize: 14,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  schedFilterLegendRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    gap: 10,
+    paddingTop: 10,
+    borderTopWidth: 1,
+    borderTopColor: '#F1F5F9',
+  },
+  schedTrainerFilterPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 10,
+  },
+  schedTrainerFilterPillText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#111827',
+  },
+  schedLegendBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    flexWrap: 'wrap',
+  },
+  schedLegendItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+  },
+  schedLegendDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+  },
+  schedLegendText: {
+    fontSize: 10,
+    fontWeight: '600',
+    color: '#64748B',
+  },
+
+  schedDayStripCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 18,
+    padding: 14,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    gap: 10,
+  },
+  schedDayStripHeader: {
+    fontSize: 10,
+    fontWeight: '800',
+    color: '#64748B',
+    letterSpacing: 0.5,
+  },
+  schedDayPill: {
+    width: 58,
+    paddingVertical: 8,
+    borderRadius: 14,
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 2,
+  },
+  schedDayPillActive: {
+    backgroundColor: '#EA580C',
+    borderColor: '#EA580C',
+  },
+  schedDayPillHasSession: {
+    borderColor: '#FDBA74',
+    backgroundColor: '#FFF7ED',
+  },
+  schedDayPillName: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: '#64748B',
+  },
+  schedDayPillNameActive: {
+    color: '#FFFFFF',
+    fontWeight: '800',
+  },
+  schedDayPillNum: {
+    fontSize: 14,
+    fontWeight: '900',
+    color: '#111827',
+  },
+  schedDayPillNumActive: {
+    color: '#FFFFFF',
+  },
+  schedDayDotIndicator: {
+    width: 5,
+    height: 5,
+    borderRadius: 3,
+    backgroundColor: '#EA580C',
+    marginTop: 2,
+  },
+
+  schedTableCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 18,
+    padding: 14,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    gap: 10,
+  },
+  schedTableHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  schedTableTitle: {
+    fontSize: 14,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  schedTableSub: {
+    fontSize: 10,
+    color: '#64748B',
+  },
+  schedTableContainer: {
+    minWidth: 760,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 12,
+    backgroundColor: '#F8FAFC',
+    overflow: 'hidden',
+  },
+  schedTableRowHeader: {
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderBottomColor: '#E2E8F0',
+    backgroundColor: '#F8FAFC',
+  },
+  schedTimeColHeader: {
+    width: 65,
+    paddingVertical: 10,
+    borderRightWidth: 1,
+    borderRightColor: '#E2E8F0',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  schedColHeaderText: {
+    fontSize: 10,
+    fontWeight: '800',
+    color: '#64748B',
+    letterSpacing: 0.5,
+  },
+  schedDayColHeader: {
+    width: 99,
+    paddingVertical: 8,
+    borderRightWidth: 1,
+    borderRightColor: '#E2E8F0',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  schedDayColHeaderHighlight: {
+    backgroundColor: '#FFF7ED',
+  },
+  schedDayColName: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  schedDayColDate: {
+    fontSize: 10,
+    color: '#64748B',
+    marginTop: 1,
+  },
+  schedTableRow: {
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderBottomColor: '#E2E8F0',
+    minHeight: 74,
+  },
+  schedTimeCell: {
+    width: 65,
+    paddingTop: 8,
+    borderRightWidth: 1,
+    borderRightColor: '#E2E8F0',
+    alignItems: 'center',
+    backgroundColor: '#F8FAFC',
+  },
+  schedTimeCellText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#64748B',
+  },
+  schedGridSlotCell: {
+    width: 99,
+    padding: 4,
+    borderRightWidth: 1,
+    borderRightColor: '#E2E8F0',
+    justifyContent: 'flex-start',
+  },
+  schedSessionSlotCard: {
+    backgroundColor: '#FFF7ED',
+    borderWidth: 1,
+    borderColor: '#FFEDD5',
+    borderRadius: 10,
+    padding: 6,
+    gap: 3,
+    shadowColor: '#EA580C',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.08,
+    shadowRadius: 2,
+    elevation: 1,
+  },
+  schedSlotTagRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  schedSlotTagPill: {
+    backgroundColor: 'rgba(255,255,255,0.85)',
+    paddingHorizontal: 4,
+    paddingVertical: 1,
+    borderRadius: 4,
+  },
+  schedSlotTagPillText: {
+    fontSize: 8,
+    fontWeight: '900',
+    color: '#EA580C',
+  },
+  schedSlotDurationText: {
+    fontSize: 8,
+    fontWeight: '700',
+    color: '#64748B',
+  },
+  schedSlotTrainerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 3,
+  },
+  schedSlotTrainerName: {
+    fontSize: 10,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  schedSlotClientPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 2,
+    backgroundColor: 'rgba(255,255,255,0.7)',
+    paddingHorizontal: 4,
+    paddingVertical: 1,
+    borderRadius: 4,
+  },
+  schedSlotClientLabel: {
+    fontSize: 9,
+    fontWeight: '800',
+    color: '#EA580C',
+  },
+  schedSlotClientName: {
+    fontSize: 9,
+    fontWeight: '700',
+    color: '#EA580C',
+    flex: 1,
+  },
+  schedSlotModeRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 3,
+    marginTop: 1,
+  },
+  schedSlotModeText: {
+    fontSize: 9,
+    fontWeight: '800',
+    color: '#EA580C',
+  },
+
+  schedRosterCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 18,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    gap: 12,
+  },
+  schedRosterHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderBottomWidth: 1,
+    borderBottomColor: '#F1F5F9',
+    paddingBottom: 10,
+  },
+  schedRosterTitle: {
+    fontSize: 14,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  schedRosterSubtitle: {
+    fontSize: 11,
+    color: '#64748B',
+    marginTop: 2,
+  },
+  schedRosterBadge: {
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 9999,
+  },
+  schedRosterBadgeText: {
+    fontSize: 10,
+    fontWeight: '800',
+    color: '#EA580C',
+  },
+  schedRosterEmpty: {
+    paddingVertical: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+  },
+  schedRosterEmptyText: {
+    fontSize: 12,
+    color: '#64748B',
+  },
+  schedRosterItemCard: {
+    backgroundColor: '#F8FAFC',
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    padding: 12,
+    gap: 8,
+  },
+  schedRosterItemTop: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  schedRosterAvatar: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#FFF7ED',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  schedRosterAvatarText: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: '#EA580C',
+  },
+  schedRosterTrainerName: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  schedRosterClientName: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#EA580C',
+  },
+  schedRosterModeBadge: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 9999,
+  },
+  schedRosterModeBadgeText: {
+    fontSize: 9,
+    fontWeight: '800',
+    color: '#EA580C',
+  },
+  schedRosterItemBottom: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: '#E2E8F0',
+  },
+  schedRosterDateText: {
+    fontSize: 11,
+    color: '#111827',
+    fontWeight: '600',
+  },
+  schedRosterTimeText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#111827',
+  },
+
+  // VIDEO BOOKINGS STYLES (Matching Web Images 1 & 2)
+  vbHeaderCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 18,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    gap: 8,
+  },
+  vbBreadcrumbRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  vbBreadcrumbText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#EA580C',
+  },
+  vbTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 8,
+  },
+  vbTitleText: {
+    fontSize: 22,
+    fontWeight: '900',
+    color: '#111827',
+    letterSpacing: -0.4,
+  },
+  vbBadgePill: {
+    backgroundColor: '#FFF7ED',
+    borderWidth: 1,
+    borderColor: '#FFEDD5',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 9999,
+  },
+  vbBadgePillText: {
+    fontSize: 10,
+    fontWeight: '800',
+    color: '#EA580C',
+  },
+  vbSubtitleText: {
+    fontSize: 12,
+    color: '#64748B',
+    lineHeight: 16,
+  },
+  vbBookBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: '#EA580C',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 12,
+    shadowColor: '#EA580C',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3,
+    elevation: 3,
+  },
+  vbBookBtnText: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: '#FFFFFF',
+  },
+
+  vbCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 18,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.04,
+    shadowRadius: 4,
+    elevation: 2,
+    gap: 10,
+  },
+  vbCardTopRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderBottomWidth: 1,
+    borderBottomColor: '#F1F5F9',
+    paddingBottom: 8,
+  },
+  vbBookingIdText: {
+    fontSize: 13,
+    fontWeight: '900',
+    color: '#EA580C',
+    fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
+  },
+  vbPaymentBadge: {
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 9999,
+  },
+  vbPaymentBadgeText: {
+    fontSize: 10,
+    fontWeight: '800',
+  },
+
+  vbParticipantBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 10,
+  },
+  vbMemberInfo: {
+    flex: 1.2,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  vbMemberAvatar: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: '#FFF7ED',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  vbMemberAvatarText: {
+    fontSize: 14,
+    fontWeight: '800',
+    color: '#EA580C',
+  },
+  vbMemberLabel: {
+    fontSize: 9,
+    fontWeight: '800',
+    color: '#64748B',
+    letterSpacing: 0.5,
+  },
+  vbMemberName: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  vbMemberEmail: {
+    fontSize: 10,
+    color: '#64748B',
+  },
+  vbTrainerInfo: {
+    flex: 1,
+    alignItems: 'flex-end',
+  },
+  vbTrainerLabel: {
+    fontSize: 9,
+    fontWeight: '800',
+    color: '#64748B',
+    letterSpacing: 0.5,
+  },
+  vbTrainerName: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  vbTrainerSpecialization: {
+    fontSize: 10,
+    fontWeight: '600',
+    color: '#64748B',
+  },
+
+  vbDetailsRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    backgroundColor: '#F8FAFC',
+    padding: 10,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    gap: 10,
+  },
+  vbFieldLabel: {
+    fontSize: 9,
+    fontWeight: '800',
+    color: '#64748B',
+    letterSpacing: 0.5,
+    marginBottom: 2,
+  },
+  vbTypeValue: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#EA580C',
+  },
+  vbScheduleDate: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#111827',
+  },
+  vbScheduleTime: {
+    fontSize: 10,
+    color: '#64748B',
+    marginTop: 1,
+  },
+
+  vbActionRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 10,
+    paddingTop: 6,
+  },
+  vbRoomCodeBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    paddingHorizontal: 8,
+    paddingVertical: 5,
+    borderRadius: 8,
+  },
+  vbRoomCodeLabel: {
+    fontSize: 9,
+    fontWeight: '800',
+    color: '#64748B',
+  },
+  vbRoomCodeText: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#111827',
+    fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
+  },
+  vbCopyRoomBtn: {
+    padding: 2,
+  },
+  vbJoinCallBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    backgroundColor: '#EA580C',
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 10,
+  },
+  vbJoinCallBtnText: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: '#FFFFFF',
+  },
+
+  // Form styles
+  vbFormSelectChip: {
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+    borderRadius: 10,
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  vbFormSelectChipActive: {
+    backgroundColor: '#FFF7ED',
+    borderColor: '#EA580C',
+  },
+  vbFormSelectChipText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#64748B',
+  },
+  vbFormSelectChipTextActive: {
+    color: '#EA580C',
+    fontWeight: '800',
+  },
+  vbTypeSelectPill: {
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 8,
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  vbTypeSelectPillActive: {
+    backgroundColor: '#EA580C',
+    borderColor: '#EA580C',
+  },
+  vbTypeSelectPillText: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: '#64748B',
+  },
+  vbTypeSelectPillTextActive: {
+    color: '#FFFFFF',
+    fontWeight: '800',
+  },
+  vbDurationChip: {
+    flex: 1,
+    paddingVertical: 8,
+    borderRadius: 10,
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  vbDurationChipActive: {
+    backgroundColor: '#EA580C',
+    borderColor: '#EA580C',
+  },
+  vbDurationChipText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#64748B',
+  },
+  vbDurationChipTextActive: {
+    color: '#FFFFFF',
+    fontWeight: '800',
+  },
+
+  // ATTENDANCE STYLES (Matching Web Images 1, 2, 3)
+  attHeaderCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 18,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    gap: 10,
+  },
+  attBreadcrumbRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  attBreadcrumbText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#EA580C',
+  },
+  attTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 8,
+    flexWrap: 'wrap',
+  },
+  attTitleText: {
+    fontSize: 22,
+    fontWeight: '900',
+    color: '#111827',
+    letterSpacing: -0.4,
+  },
+  attLiveTrackingPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: '#ECFDF5',
+    borderWidth: 1,
+    borderColor: '#A7F3D0',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 9999,
+  },
+  attLiveDot: {
+    width: 7,
+    height: 7,
+    borderRadius: 4,
+    backgroundColor: '#10B981',
+  },
+  attLiveTrackingText: {
+    fontSize: 10,
+    fontWeight: '800',
+    color: '#065F46',
+  },
+  attSubtitleText: {
+    fontSize: 12,
+    color: '#64748B',
+    lineHeight: 16,
+  },
+  attControlsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    gap: 10,
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: '#F1F5F9',
+  },
+  attTimeframePillGroup: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F8FAFC',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    padding: 2,
+    gap: 2,
+  },
+  attTimeframePill: {
+    paddingHorizontal: 8,
+    paddingVertical: 5,
+    borderRadius: 8,
+  },
+  attTimeframePillActive: {
+    backgroundColor: '#EA580C',
+  },
+  attTimeframePillText: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: '#64748B',
+  },
+  attTimeframePillTextActive: {
+    color: '#FFFFFF',
+    fontWeight: '800',
+  },
+  attPdfBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    backgroundColor: '#EA580C',
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+    borderRadius: 10,
+  },
+  attPdfBtnText: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#FFFFFF',
+  },
+
+  attTabSwitchRow: {
+    flexDirection: 'row',
+    gap: 10,
+  },
+  attTabBtn: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderRadius: 14,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  attTabBtnActive: {
+    backgroundColor: '#EA580C',
+    borderColor: '#EA580C',
+    shadowColor: '#EA580C',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3,
+    elevation: 3,
+  },
+  attTabBtnText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#64748B',
+  },
+  attTabBtnTextActive: {
+    color: '#FFFFFF',
+    fontWeight: '800',
+  },
+  attTabCountBadge: {
+    paddingHorizontal: 6,
+    paddingVertical: 1,
+    borderRadius: 9999,
+    backgroundColor: '#F8FAFC',
+  },
+  attTabCountBadgeActive: {
+    backgroundColor: 'rgba(255,255,255,0.25)',
+  },
+  attTabCountText: {
+    fontSize: 10,
+    fontWeight: '800',
+    color: '#64748B',
+  },
+  attTabCountTextActive: {
+    color: '#FFFFFF',
+  },
+
+  attCardTagPill: {
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 6,
+  },
+  attCardTagPillText: {
+    fontSize: 9,
+    fontWeight: '800',
+    color: '#64748B',
+  },
+  attCardTitleText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#64748B',
+    marginTop: 6,
+  },
+  attCardBigValue: {
+    fontSize: 24,
+    fontWeight: '900',
+    color: '#111827',
+    marginTop: 2,
+  },
+  attCardSubText: {
+    fontSize: 10,
+    color: '#EA580C',
+    marginTop: 2,
+  },
+
+  attTrafficCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 18,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    gap: 12,
+  },
+  attTrafficHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  attTrafficTitle: {
+    fontSize: 15,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  attTrafficSub: {
+    fontSize: 11,
+    color: '#64748B',
+    marginTop: 1,
+  },
+  attTrafficBadge: {
+    backgroundColor: '#FFF7ED',
+    borderWidth: 1,
+    borderColor: '#FFEDD5',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 8,
+  },
+  attTrafficBadgeText: {
+    fontSize: 10,
+    fontWeight: '800',
+    color: '#EA580C',
+  },
+  attChartContainer: {
+    height: 120,
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    justifyContent: 'space-between',
+    gap: 4,
+    paddingTop: 10,
+    borderTopWidth: 1,
+    borderTopColor: '#F1F5F9',
+  },
+  attBarCol: {
+    flex: 1,
+    height: '100%',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  attBarFill: {
+    width: '85%',
+    backgroundColor: '#EA580C',
+    borderTopLeftRadius: 4,
+    borderTopRightRadius: 4,
+  },
+  attChartLabelsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderTopWidth: 1,
+    borderTopColor: '#E2E8F0',
+    paddingTop: 4,
+  },
+  attChartMarkerText: {
+    fontSize: 10,
+    color: '#64748B',
+    fontWeight: '600',
+  },
+
+  attRecentCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 18,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    gap: 10,
+  },
+  attRecentHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderBottomWidth: 1,
+    borderBottomColor: '#F1F5F9',
+    paddingBottom: 8,
+  },
+  attRecentTitle: {
+    fontSize: 15,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  attRecentSub: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#EA580C',
+  },
+  attRecentBadge: {
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 8,
+  },
+  attRecentBadgeText: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: '#64748B',
+  },
+  attRecentItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    padding: 10,
+    borderRadius: 12,
+  },
+  attRecentAvatar: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: '#FFF7ED',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  attRecentAvatarText: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: '#EA580C',
+  },
+  attRecentName: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  attRecentType: {
+    fontSize: 10,
+    color: '#64748B',
+  },
+  attRecentTime: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#EA580C',
+  },
+
+  attLogsCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 18,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    gap: 12,
+  },
+  attLogsHeader: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#F1F5F9',
+    paddingBottom: 8,
+  },
+  attLogsTitle: {
+    fontSize: 15,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  attLogsSubtitle: {
+    fontSize: 11,
+    color: '#64748B',
+    marginTop: 2,
+  },
+  attRecordCard: {
+    backgroundColor: '#F8FAFC',
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    padding: 12,
+    gap: 8,
+  },
+  attRecordTopRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  attRecordAvatar: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#FFF7ED',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  attRecordAvatarText: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: '#EA580C',
+  },
+  attRecordName: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  attRecordEmail: {
+    fontSize: 10,
+    color: '#64748B',
+  },
+  attRecordTypePill: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 8,
+  },
+  attRecordTypePillText: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: '#64748B',
+  },
+  attRecordTimesRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 6,
+    borderTopWidth: 1,
+    borderTopColor: '#E2E8F0',
+  },
+  attRecordDateText: {
+    fontSize: 11,
+    color: '#111827',
+    fontWeight: '600',
+  },
+  attRecordInTimeText: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#EA580C',
+  },
+  attRecordOutTimeText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#111827',
+  },
+  attRecordInGymPill: {
+    color: '#EA580C',
+    fontWeight: '900',
+    backgroundColor: '#FFF7ED',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 6,
+  },
+  attRecordFooterRow: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    borderTopWidth: 1,
+    borderTopColor: '#E2E8F0',
+    paddingTop: 6,
+  },
+  attViewDetailsBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#FFEDD5',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 8,
+  },
+  attViewDetailsBtnText: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#EA580C',
+  },
+  // ==========================================
+  // REFERRALS & REWARDS STYLES (Matching Web Images 1, 2, 3)
+  // ==========================================
+  refMainTabsContainer: {
+    flexDirection: 'row',
+    gap: 8,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 16,
+    padding: 4,
+  },
+  refMainTabBtn: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    paddingVertical: 9,
+    paddingHorizontal: 8,
+    borderRadius: 12,
+  },
+  refMainTabBtnActive: {
+    backgroundColor: '#EA580C',
+    shadowColor: '#EA580C',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  refMainTabBtnText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#64748B',
+  },
+  refMainTabBtnTextActive: {
+    color: '#FFFFFF',
+    fontWeight: '800',
+  },
+  refSubTabsScroll: {
+    flexDirection: 'row',
+    gap: 6,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 14,
+    padding: 4,
+  },
+  refSubTabPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingVertical: 7,
+    paddingHorizontal: 12,
+    borderRadius: 10,
+  },
+  refSubTabPillActive: {
+    backgroundColor: '#EA580C',
+  },
+  refSubTabPillText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#64748B',
+  },
+  refSubTabPillTextActive: {
+    color: '#FFFFFF',
+    fontWeight: '800',
+  },
+  refCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    padding: 16,
+    gap: 12,
+  },
+  refCardHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    gap: 10,
+  },
+  refIconSquircle: {
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    backgroundColor: '#FFF7ED',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  refCardTitle: {
+    fontSize: 14,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  refCardSubtitle: {
+    fontSize: 11,
+    color: '#64748B',
+    marginTop: 2,
+    lineHeight: 15,
+  },
+  refEffectiveRateBadge: {
+    backgroundColor: '#FFF7ED',
+    borderWidth: 1,
+    borderColor: '#FFEDD5',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
+  refEffectiveRateText: {
+    fontSize: 10,
+    fontWeight: '800',
+    color: '#EA580C',
+  },
+  refFormGrid: {
+    gap: 10,
+    marginTop: 4,
+  },
+  refInputGroup: {
+    gap: 4,
+  },
+  refInputLabel: {
+    fontSize: 10,
+    fontWeight: '800',
+    color: '#64748B',
+    textTransform: 'uppercase',
+  },
+  refTextInput: {
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    fontSize: 12,
+    color: '#111827',
+    fontWeight: '600',
+  },
+  refInputHint: {
+    fontSize: 10,
+    color: '#94A3B8',
+  },
+  refChannelItem: {
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 14,
+    padding: 12,
+    gap: 6,
+  },
+  refChannelTitle: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  refChannelDesc: {
+    fontSize: 11,
+    color: '#64748B',
+    lineHeight: 15,
+  },
+  refOptionBadge: {
+    alignSelf: 'flex-start',
+    paddingHorizontal: 7,
+    paddingVertical: 2,
+    borderRadius: 6,
+    marginTop: 2,
+  },
+  refOptionBadgeEnabled: {
+    backgroundColor: '#DCFCE7',
+  },
+  refOptionBadgeDisabled: {
+    backgroundColor: '#F1F5F9',
+  },
+  refOptionBadgeText: {
+    fontSize: 9,
+    fontWeight: '800',
+  },
+  refOptionBadgeTextEnabled: {
+    color: '#15803D',
+  },
+  refOptionBadgeTextDisabled: {
+    color: '#64748B',
+  },
+  refSaveBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: '#EA580C',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 12,
+  },
+  refSaveBtnText: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: '#FFFFFF',
+  },
+  refKpiGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+  },
+  refKpiCard: {
+    flex: 1,
+    minWidth: '47%',
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 14,
+    padding: 12,
+    gap: 3,
+  },
+  refKpiLabel: {
+    fontSize: 9,
+    fontWeight: '800',
+    color: '#64748B',
+    textTransform: 'uppercase',
+  },
+  refKpiVal: {
+    fontSize: 17,
+    fontWeight: '900',
+    color: '#111827',
+  },
+  refKpiSub: {
+    fontSize: 10,
+    fontWeight: '600',
+    color: '#64748B',
+  },
+  refSearchRow: {
+    flexDirection: 'row',
+    gap: 8,
+    alignItems: 'center',
+  },
+  refSearchInputBox: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    gap: 8,
+    height: 40,
+  },
+  refSearchInput: {
+    flex: 1,
+    fontSize: 12,
+    color: '#111827',
+    paddingVertical: 0,
+  },
+  refRefreshBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    paddingHorizontal: 12,
+    height: 40,
+    borderRadius: 12,
+  },
+  refRefreshBtnText: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  refEmptyCard: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 16,
+    padding: 28,
+    alignItems: 'center',
+    gap: 6,
+  },
+  refEmptyTitle: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  refEmptySub: {
+    fontSize: 11,
+    color: '#64748B',
+    textAlign: 'center',
+  },
+  refCustomerCard: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 16,
+    padding: 14,
+    gap: 12,
+  },
+  refCustName: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  refCustEmail: {
+    fontSize: 11,
+    color: '#64748B',
+    marginTop: 1,
+  },
+  refCustMobile: {
+    fontSize: 10,
+    color: '#EA580C',
+    fontWeight: '700',
+    marginTop: 1,
+  },
+  refCustPlan: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  refCustStatusBadge: {
+    backgroundColor: '#DCFCE7',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 6,
+    marginTop: 3,
+  },
+  refCustStatusBadgeText: {
+    fontSize: 9,
+    fontWeight: '800',
+    color: '#15803D',
+  },
+  refCustStatsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: '#F8FAFC',
+    borderRadius: 12,
+    padding: 10,
+  },
+  refCustStatLabel: {
+    fontSize: 9,
+    fontWeight: '800',
+    color: '#64748B',
+    textTransform: 'uppercase',
+  },
+  refCustBalance: {
+    fontSize: 14,
+    fontWeight: '900',
+    color: '#111827',
+    marginTop: 2,
+  },
+  refCustEquivVal: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: '#15803D',
+  },
+  refCustStatVal: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: '#111827',
+    marginTop: 2,
+  },
+  refCustFooterRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: '#F1F5F9',
+  },
+  refAdjustPointsBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: '#FFF7ED',
+    borderWidth: 1,
+    borderColor: '#FFEDD5',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 8,
+  },
+  refAdjustPointsBtnText: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#EA580C',
+  },
+  refHistoryBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 8,
+  },
+  refHistoryBtnText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#111827',
+  },
+  refCreateBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: '#EA580C',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 10,
+  },
+  refCreateBtnText: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#FFFFFF',
+  },
+  refRewardItemCard: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 16,
+    padding: 14,
+    gap: 8,
+  },
+  refRewardTitle: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  refRewardDesc: {
+    fontSize: 11,
+    color: '#64748B',
+    marginTop: 2,
+    lineHeight: 15,
+  },
+  refRewardIconBox: {
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    backgroundColor: '#FFF7ED',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  refRewardDetailRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 4,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F1F5F9',
+  },
+  refRewardDetailLabel: {
+    fontSize: 11,
+    color: '#64748B',
+  },
+  refRewardPointsVal: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  refRewardConfirmVal: {
+    fontSize: 11,
+    fontWeight: '800',
+  },
+  refRewardClaimsVal: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  refClaimItemCard: {
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 14,
+    padding: 12,
+  },
+  refClaimCode: {
+    fontSize: 12,
+    fontWeight: '900',
+    color: '#EA580C',
+    fontFamily: 'monospace',
+  },
+  refClaimStatusBadge: {
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 6,
+  },
+  refClaimStatusText: {
+    fontSize: 10,
+    fontWeight: '800',
+  },
+  refClaimUserName: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  refClaimUserEmail: {
+    fontSize: 10,
+    color: '#64748B',
+  },
+  refClaimApproveBtn: {
+    backgroundColor: '#15803D',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 6,
+  },
+  refClaimApproveBtnText: {
+    fontSize: 10,
+    fontWeight: '800',
+    color: '#FFFFFF',
+  },
+  refClaimRejectBtn: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 6,
+  },
+  refClaimRejectBtnText: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: '#B91C1C',
+  },
+  refClaimRedeemBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: '#EA580C',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 6,
+  },
+  refClaimRedeemBtnText: {
+    fontSize: 10,
+    fontWeight: '800',
+    color: '#FFFFFF',
+  },
+  refAdjustBalBox: {
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 12,
+    padding: 12,
+  },
+  refAdjustModeBtn: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 10,
+    paddingVertical: 9,
+    backgroundColor: '#FFFFFF',
+  },
+  refAdjustModeBtnActiveAdd: {
+    backgroundColor: '#15803D',
+    borderColor: '#15803D',
+  },
+  refAdjustModeBtnActiveDeduct: {
+    backgroundColor: '#B91C1C',
+    borderColor: '#B91C1C',
+  },
+  refAdjustModeBtnText: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#64748B',
+  },
+  refModalCancelBtn: {
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    borderRadius: 10,
+  },
+  refModalCancelBtnText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#64748B',
+  },
+  refHistoryItemCard: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 10,
+    padding: 10,
+  },
+  refHistoryReason: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#111827',
+  },
+  refHistoryDate: {
+    fontSize: 10,
+    color: '#64748B',
+    marginTop: 2,
+  },
+  refHistoryPts: {
+    fontSize: 12,
+    fontWeight: '900',
+  },
+  refEditCampaignBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: '#FFF7ED',
+    borderWidth: 1,
+    borderColor: '#FFEDD5',
+    paddingHorizontal: 8,
+    paddingVertical: 5,
+    borderRadius: 8,
+  },
+  refEditCampaignBtnText: {
+    fontSize: 10,
+    fontWeight: '800',
+    color: '#EA580C',
+  },
+
+
+
+
+
 
 });

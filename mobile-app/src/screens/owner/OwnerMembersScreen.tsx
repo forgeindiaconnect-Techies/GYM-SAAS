@@ -16,6 +16,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../constants/theme';
 import { useAuth } from '../../context/AuthContext';
 import { api } from '../../api/client';
+import { FileDownloader } from '../../utils/fileDownloader';
 
 export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquiries' }> = ({ initialSection = 'members' }) => {
   const { user } = useAuth();
@@ -294,6 +295,81 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
     if (memberFilter === 'New') return m.customerType === 'New Customer';
     return m.status === memberFilter;
   });
+
+
+  // Member Directory Export Handlers
+  const handleExportMembersPDF = async () => {
+    try {
+      const headers = ['#', 'Member Name', 'Plan', 'Status', 'Phone', 'Join Date'];
+      const rows = filteredMembers.map((m, idx) => [
+        idx + 1,
+        m.name,
+        m.plan || 'Standard',
+        m.status || 'Active',
+        m.phone || 'N/A',
+        m.joinDate || 'Recent'
+      ]);
+      await FileDownloader.downloadReportPDF({
+        title: 'Gym Member Directory',
+        subtitle: `Official Registered Members List (${filteredMembers.length} records)`,
+        gymName: user?.gymName || 'Perfect Fitness Studio',
+        summaryMetrics: [
+          { label: 'Total Members', value: String(members.length) },
+          { label: 'Filtered Count', value: String(filteredMembers.length) },
+        ],
+        headers,
+        rows
+      }, 'Member_Directory');
+    } catch (err: any) {
+      Alert.alert('Export Error', err?.message || 'Failed to export members PDF.');
+    }
+  };
+
+  const handleExportMembersCSV = async () => {
+    try {
+      const headers = ['#', 'Member Name', 'Email', 'Phone', 'Plan', 'Status', 'Join Date'];
+      const rows = filteredMembers.map((m, idx) => [
+        idx + 1,
+        m.name,
+        m.email || 'N/A',
+        m.phone || 'N/A',
+        m.plan || 'Standard',
+        m.status || 'Active',
+        m.joinDate || 'Recent'
+      ]);
+      await FileDownloader.downloadCSV(`Members_Directory_${new Date().toISOString().slice(0, 10)}`, headers, rows);
+    } catch (err: any) {
+      Alert.alert('Export Error', err?.message || 'Failed to export members CSV.');
+    }
+  };
+
+  const handleDownloadMemberInvoice = async (m: any) => {
+    try {
+      await FileDownloader.downloadInvoicePDF({
+        invoiceNumber: `INV-${(m.id || m._id || 'MEM').slice(-6).toUpperCase()}`,
+        invoiceDate: new Date().toLocaleDateString('en-IN'),
+        gymName: user?.gymName || 'Perfect Fitness Studio',
+        customerName: m.name || `${m.firstName || ''} ${m.lastName || ''}`.trim() || 'Gym Member',
+        customerEmail: m.email,
+        customerPhone: m.phone,
+        membershipId: m.membershipId || `MEM-${(m.id || '001').slice(-6).toUpperCase()}`,
+        items: [
+          {
+            description: `${m.plan || 'Standard Membership'} - Facilities Access & Floor Training`,
+            quantity: 1,
+            amount: m.amount || 2999
+          }
+        ],
+        subtotal: m.amount || 2999,
+        total: m.amount || 2999,
+        paymentMethod: 'UPI / Online Verified',
+        paymentStatus: 'PAID',
+        notes: `Active Member: ${m.name}. Emergency Contact: ${m.emergencyContact?.name || 'N/A'}`
+      });
+    } catch (err: any) {
+      Alert.alert('Download Error', err?.message || 'Failed to download member invoice.');
+    }
+  };
 
   // Enquiry filters matching Web: All, NEW, CONTACTED, FOLLOW_UP, CONVERTED, CLOSED
   const enquiryFilterTabs = ['All', 'NEW', 'CONTACTED', 'FOLLOW_UP', 'CONVERTED', 'CLOSED'];
@@ -701,7 +777,7 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
           </View>
         ) : activeSection === 'members' ? (
           <>
-            {/* Search & Add Member */}
+            {/* Search & Add Member with PDF / CSV Export */}
             <View style={styles.searchRow}>
               <View style={styles.searchBox}>
                 <Ionicons name="search" size={16} color={COLORS.textMuted} />
@@ -718,6 +794,23 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
                   </TouchableOpacity>
                 )}
               </View>
+
+              <TouchableOpacity 
+                style={[styles.addBtn, { backgroundColor: '#FFFFFF', borderWidth: 1, borderColor: '#EA580C' }]} 
+                activeOpacity={0.8}
+                onPress={handleExportMembersPDF}
+              >
+                <Ionicons name="download-outline" size={16} color="#EA580C" />
+              </TouchableOpacity>
+
+              <TouchableOpacity 
+                style={[styles.addBtn, { backgroundColor: '#FFFFFF', borderWidth: 1, borderColor: '#EA580C' }]} 
+                activeOpacity={0.8}
+                onPress={handleExportMembersCSV}
+              >
+                <Ionicons name="document-text-outline" size={16} color="#EA580C" />
+              </TouchableOpacity>
+
               <TouchableOpacity 
                 style={styles.addBtn} 
                 activeOpacity={0.8}
@@ -1302,24 +1395,34 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
               </ScrollView>
             )}
 
-            {/* Bottom Actions Bar */}
-            <View style={styles.modalBottomBar}>
+            {/* Bottom Actions Bar with Download Invoice */}
+            <View style={[styles.modalBottomBar, { gap: 8 }]}>
               <TouchableOpacity 
-                style={styles.modalCancelBtn} 
+                style={[styles.modalCancelBtn, { flex: 0.8 }]} 
                 onPress={() => setViewMemberModalVisible(false)}
               >
                 <Text style={styles.modalCancelText}>Close</Text>
               </TouchableOpacity>
 
               <TouchableOpacity 
-                style={[styles.modalSubmitBtn, { backgroundColor: COLORS.blue }]} 
+                style={[styles.modalSubmitBtn, { flex: 1.4, backgroundColor: COLORS.primary }]} 
+                onPress={() => {
+                  if (selectedMember) handleDownloadMemberInvoice(selectedMember);
+                }}
+              >
+                <Ionicons name="download-outline" size={14} color={COLORS.white} style={{ marginRight: 6 }} />
+                <Text style={styles.modalSubmitText}>Download Invoice</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity 
+                style={[styles.modalSubmitBtn, { flex: 1, backgroundColor: COLORS.blue }]} 
                 onPress={() => {
                   setViewMemberModalVisible(false);
                   handleOpenEdit(selectedMember);
                 }}
               >
                 <Ionicons name="pencil" size={14} color={COLORS.white} style={{ marginRight: 6 }} />
-                <Text style={styles.modalSubmitText}>Edit Member</Text>
+                <Text style={styles.modalSubmitText}>Edit</Text>
               </TouchableOpacity>
             </View>
           </View>
