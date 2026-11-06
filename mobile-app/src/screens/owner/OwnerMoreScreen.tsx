@@ -24,6 +24,9 @@ import { COLORS } from '../../constants/theme';
 import { useAuth } from '../../context/AuthContext';
 import { api } from '../../api/client';
 import { FileDownloader } from '../../utils/fileDownloader';
+import { OwnerTrainersScreen } from './OwnerTrainersScreen';
+import { OwnerMembersScreen } from './OwnerMembersScreen';
+import { OwnerFinancesScreen } from './OwnerFinancesScreen';
 
 const { width } = Dimensions.get('window');
 
@@ -690,7 +693,8 @@ interface MoreItem {
 export const OwnerMoreScreen: React.FC<{ 
   initialSubPage?: string; 
   onCloseSubPage?: () => void;
-}> = ({ initialSubPage, onCloseSubPage }) => {
+  onNavigateTab?: (tab: string, sub?: string) => void;
+}> = ({ initialSubPage, onCloseSubPage, onNavigateTab }) => {
   const { user, logout } = useAuth();
   const [activeDetailItem, setActiveDetailItem] = useState<string | null>(initialSubPage || null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -1679,7 +1683,8 @@ export const OwnerMoreScreen: React.FC<{
   const fetchDetailData = useCallback(async (id: string) => {
     try {
       setLoading(true);
-      if (id === 'exercises') {
+      const normalizedId = (id || '').toLowerCase().trim();
+      if (normalizedId === 'exercises' || normalizedId === 'exercise' || normalizedId === 'operations') {
         const res = await api.get('/exercises');
         setExercises(res.data?.exercises || (Array.isArray(res.data) ? res.data : []));
       } else if (id === 'videos') {
@@ -1858,7 +1863,7 @@ export const OwnerMoreScreen: React.FC<{
       } else if (id === 'branches') {
         const res = await api.get('/branches');
         setBranches(res.data?.branches || (Array.isArray(res.data) ? res.data : []));
-      } else if (id === 'gym_profile') {
+      } else if (normalizedId === 'gym_profile' || normalizedId === 'profile' || normalizedId === 'settings' || normalizedId === 'gym') {
         try {
           const [gymRes, bRes] = await Promise.all([
             user?.gymId ? api.get(`/gyms/${user.gymId}`).catch(() => api.get('/gyms/my-gym')).catch(() => null) : api.get('/gyms/my-gym').catch(() => null),
@@ -1890,7 +1895,7 @@ export const OwnerMoreScreen: React.FC<{
         } catch (gpErr) {
           console.log('[OwnerMore] gym_profile fetch error:', gpErr);
         }
-      } else if (id === 'notifications') {
+      } else if (normalizedId === 'notifications' || normalizedId === 'notification' || normalizedId === 'alerts') {
         try {
           setLoadingNotifications(true);
           const branchParam = user?.branchId ? ('?branchId=' + user.branchId) : '';
@@ -1907,7 +1912,7 @@ export const OwnerMoreScreen: React.FC<{
         } finally {
           setLoadingNotifications(false);
         }
-      } else if (id === 'reviews') {
+      } else if (normalizedId === 'reviews' || normalizedId === 'review' || normalizedId === 'ratings' || normalizedId === 'rating') {
         try {
           const res = await api.get('/gyms/owner/reviews').catch(() => null);
           if (res?.data?.success) {
@@ -1933,7 +1938,7 @@ export const OwnerMoreScreen: React.FC<{
         } catch (rErr) {
           console.log('[OwnerMore] reviews fetch error:', rErr);
         }
-      } else if (id === 'subscription') {
+      } else if (normalizedId === 'subscription' || normalizedId === 'subscriptions') {
         try {
           const [subRes, histRes, gymRes] = await Promise.all([
             api.get('/subscriptions/my').catch(() => null),
@@ -8246,16 +8251,18 @@ const renderBranchesView = () => {
       setSelectedNotification(notif);
     };
 
-    const getLinkSection = (notif: any) => {
-      const link = (notif.link || '').toLowerCase();
-      const text = ((notif.title || '') + ' ' + (notif.message || '')).toLowerCase();
-      if (link.includes('trainer') || text.includes('trainer')) return 'trainers';
-      if (link.includes('order') || text.includes('order') || text.includes('store')) return 'store_orders';
-      if (link.includes('booking') || text.includes('booking')) return 'session_bookings';
+    const getLinkSection = (notif: any): string | null => {
+      const link = (notif?.link || '').toLowerCase();
+      const text = ((notif?.title || '') + ' ' + (notif?.message || '')).toLowerCase();
+      if (link.includes('trainer') || text.includes('trainer') || link.includes('hiring') || text.includes('applied') || text.includes('resume')) return 'trainers';
+      if (link.includes('enquiry') || link.includes('contact') || text.includes('contact') || text.includes('message') || text.includes('enquiry')) return 'enquiries';
+      if (link.includes('order') || text.includes('order') || text.includes('store') || text.includes('product')) return 'store_orders';
+      if (link.includes('booking') || text.includes('booking') || text.includes('session')) return 'session_bookings';
       if (link.includes('equipment') || text.includes('equipment')) return 'equipment';
-      if (link.includes('review') || text.includes('review')) return 'reviews';
-      if (link.includes('report') || text.includes('report')) return 'reports';
-      if (link.includes('member') || text.includes('member')) return 'plans';
+      if (link.includes('review') || text.includes('review') || text.includes('feedback')) return 'reviews';
+      if (link.includes('report') || text.includes('report') || text.includes('revenue')) return 'reports';
+      if (link.includes('member') || text.includes('member') || link.includes('plan') || text.includes('renewal')) return 'plans';
+      if (link.includes('finance') || text.includes('payment')) return 'finances';
       return null;
     };
 
@@ -8621,8 +8628,26 @@ const renderBranchesView = () => {
                           <TouchableOpacity
                             activeOpacity={0.8}
                             onPress={() => {
+                              const targetSection = section;
                               setSelectedNotification(null);
-                              setActiveDetailItem(section);
+                              if (onNavigateTab) {
+                                if (targetSection === 'trainers' || targetSection === 'hiring') {
+                                  if (onCloseSubPage) onCloseSubPage();
+                                  onNavigateTab('trainers', targetSection === 'hiring' ? 'hiring' : 'trainers');
+                                  return;
+                                }
+                                if (targetSection === 'members' || targetSection === 'enquiries') {
+                                  if (onCloseSubPage) onCloseSubPage();
+                                  onNavigateTab('members', targetSection === 'enquiries' ? 'enquiries' : 'members');
+                                  return;
+                                }
+                                if (targetSection === 'finances') {
+                                  if (onCloseSubPage) onCloseSubPage();
+                                  onNavigateTab('finances');
+                                  return;
+                                }
+                              }
+                              setActiveDetailItem(targetSection);
                             }}
                             style={styles.ntModalActionBtn}
                           >
@@ -8699,6 +8724,16 @@ const renderBranchesView = () => {
               </TouchableOpacity>
             ) : null}
           </View>
+        </View>
+
+        {/* Web Parity Table Header Row (Matching Web Image 3: ID, Name, Type, Deleted At, Reason, Action) */}
+        <View style={styles.delTableHeaderRow}>
+          <Text style={[styles.delTableColHeader, { flex: 0.9 }]}>ID</Text>
+          <Text style={[styles.delTableColHeader, { flex: 1.2 }]}>Name</Text>
+          <Text style={[styles.delTableColHeader, { flex: 0.9 }]}>Type</Text>
+          <Text style={[styles.delTableColHeader, { flex: 1.1 }]}>Deleted At</Text>
+          <Text style={[styles.delTableColHeader, { flex: 1.3 }]}>Reason</Text>
+          <Text style={[styles.delTableColHeader, { flex: 0.9, textAlign: 'right' }]}>Action</Text>
         </View>
 
         {/* Records Content */}
@@ -12991,90 +13026,187 @@ const renderPackagePlansView = () => {
       );
     }
 
-    switch (id) {
+    const normalizedId = (id || '').toLowerCase().trim();
+
+    switch (normalizedId) {
       // 1. Gym & Operations
       case 'exercises':
+      case 'exercise':
+      case 'exercise_library':
+      case 'operations':
         return renderExerciseLibraryView();
 
       case 'videos':
+      case 'video':
+      case 'exercise_videos':
         return renderExerciseVideosView();
 
       case 'equipment':
+      case 'equipments':
         return renderEquipmentView();
 
       case 'plans':
+      case 'plan':
+      case 'packages':
+      case 'package':
+      case 'membership_plans':
         return renderPackagePlansView();
 
       // 2. Gym Store
+      case 'store':
       case 'store_overview':
+      case 'overview':
         return renderStoreOverviewView();
 
       case 'store_orders':
+      case 'orders':
+      case 'order':
         return renderOrdersView();
 
       case 'store_offline':
+      case 'offline':
+      case 'offline_sales':
+      case 'pos':
         return renderOfflineSalesView();
 
       case 'store_history':
+      case 'history':
+      case 'sales_history':
+      case 'sales':
         return renderSalesHistoryView();
 
       case 'store_products':
+      case 'products':
+      case 'product':
         return renderStoreProductsView();
 
       case 'store_inventory':
+      case 'inventory':
+      case 'stock':
         return renderInventoryView();
 
       // 3. Scheduling
       case 'session_bookings':
+      case 'bookings':
+      case 'booking':
         return renderSessionBookingsView();
 
       case 'online_sessions':
+      case 'online':
         return renderOnlineSessionsView();
 
       case 'trainer_schedule':
+      case 'schedule':
         return renderTrainerScheduleView();
 
       case 'video_bookings':
         return renderVideoBookingsView();
 
       case 'attendance':
+      case 'checkins':
+      case 'checkin':
         return renderAttendanceView();
 
       // 4. Rewards & Performance
       case 'rewards':
+      case 'reward':
+      case 'rewards_performance':
+      case 'performance':
         return renderRewardsView();
 
       case 'referrals':
+      case 'referral':
         return renderReferralsView();
 
       // 5. Admin & Settings
       case 'branches':
+      case 'branch':
         return renderBranchesView();
 
       case 'gym_profile':
+      case 'profile':
+      case 'settings':
+      case 'admin_settings':
+      case 'gym':
         return renderGymProfileView();
 
       case 'subscription':
+      case 'subscriptions':
         return renderSubscriptionView();
 
       case 'reports':
+      case 'report':
+      case 'analytics':
         return renderReportsView();
 
       case 'reviews':
+      case 'review':
+      case 'ratings':
+      case 'rating':
         return renderReviewsView();
 
       case 'notifications':
+      case 'notification':
+      case 'alerts':
+      case 'alert':
         return renderNotificationsView();
 
       case 'deleted_details':
+      case 'deleted':
+      case 'trash':
         return renderDeletedDetailsView();
+
+      // Primary tabs supported in overlay view
+      case 'trainers':
+      case 'trainer':
+      case 'hiring':
+        return <OwnerTrainersScreen initialTab={normalizedId === 'hiring' ? 'hiring' : 'trainers'} />;
+
+      case 'members':
+      case 'member':
+      case 'enquiries':
+      case 'enquiry':
+        return <OwnerMembersScreen initialSection={normalizedId === 'enquiries' || normalizedId === 'enquiry' ? 'enquiries' : 'members'} />;
+
+      case 'finances':
+      case 'finance':
+      case 'revenue':
+      case 'payments':
+      case 'payment':
+        return <OwnerFinancesScreen initialTab={normalizedId === 'payments' || normalizedId === 'payment' ? 'payments' : 'analytics'} />;
 
       default:
         return (
           <View style={styles.emptyDetailCard}>
-            <Ionicons name="apps-outline" size={32} color={COLORS.textMuted} />
-            <Text style={styles.emptyDetailTitle}>Section Details</Text>
-            <Text style={styles.emptyDetailSub}>This feature is configured and active for your gym.</Text>
+            <Ionicons name="apps" size={36} color={COLORS.primary} />
+            <Text style={styles.emptyDetailTitle}>Gym Management Navigation</Text>
+            <Text style={styles.emptyDetailSub}>Select any feature to manage your gym quickly:</Text>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginTop: 16, justifyContent: 'center' }}>
+              <TouchableOpacity
+                onPress={() => setActiveDetailItem('reviews')}
+                style={{ backgroundColor: '#FFF7ED', paddingHorizontal: 14, paddingVertical: 10, borderRadius: 10, borderWidth: 1, borderColor: '#FED7AA' }}
+              >
+                <Text style={{ fontSize: 13, fontWeight: '700', color: '#EA580C' }}>⭐ Reviews & Rating</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setActiveDetailItem('notifications')}
+                style={{ backgroundColor: '#FFF7ED', paddingHorizontal: 14, paddingVertical: 10, borderRadius: 10, borderWidth: 1, borderColor: '#FED7AA' }}
+              >
+                <Text style={{ fontSize: 13, fontWeight: '700', color: '#EA580C' }}>🔔 Notifications</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setActiveDetailItem('store_overview')}
+                style={{ backgroundColor: '#FFF7ED', paddingHorizontal: 14, paddingVertical: 10, borderRadius: 10, borderWidth: 1, borderColor: '#FED7AA' }}
+              >
+                <Text style={{ fontSize: 13, fontWeight: '700', color: '#EA580C' }}>🛒 Gym Store</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setActiveDetailItem('gym_profile')}
+                style={{ backgroundColor: '#FFF7ED', paddingHorizontal: 14, paddingVertical: 10, borderRadius: 10, borderWidth: 1, borderColor: '#FED7AA' }}
+              >
+                <Text style={{ fontSize: 13, fontWeight: '700', color: '#EA580C' }}>⚙️ Gym Profile</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         );
     }
@@ -28591,6 +28723,22 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: '#111827',
     paddingVertical: 0,
+  },
+  delTableHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    marginTop: 2,
+  },
+  delTableColHeader: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#475569',
   },
   delEmptyCard: {
     backgroundColor: '#FFFFFF',

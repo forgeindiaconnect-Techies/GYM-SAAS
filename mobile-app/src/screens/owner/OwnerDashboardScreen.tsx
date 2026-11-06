@@ -329,21 +329,6 @@ export const OwnerDashboardScreen: React.FC<{
 
         <TouchableOpacity 
           style={styles.actionBtn} 
-          onPress={() => {
-            setScannedPassCode('');
-            setScanResult(null);
-            setScanModalVisible(true);
-          }}
-          activeOpacity={0.7}
-        >
-          <View style={[styles.actionIconBox, { backgroundColor: '#EFF6FF' }]}>
-            <Ionicons name="qr-code" size={20} color={COLORS.blue} />
-          </View>
-          <Text style={styles.actionText}>Scan Pass</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity 
-          style={styles.actionBtn} 
           onPress={() => onNavigateTab('trainers')}
           activeOpacity={0.7}
         >

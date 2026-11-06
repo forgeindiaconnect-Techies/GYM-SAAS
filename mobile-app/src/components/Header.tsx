@@ -7,9 +7,8 @@ import { useAuth, UserRole } from '../context/AuthContext';
 export const Header: React.FC<{ 
   title?: string; 
   subtitle?: string;
-  onOpenQrPass?: () => void;
   onOpenNotifications?: () => void;
-}> = ({ title, subtitle, onOpenQrPass, onOpenNotifications }) => {
+}> = ({ title, subtitle, onOpenNotifications }) => {
   const { user, activeRole, logout } = useAuth();
 
   const getRoleLabel = (role: UserRole | null) => {
@@ -52,19 +51,8 @@ export const Header: React.FC<{
           </View>
         </View>
 
-        {/* Action Controls: QR Pass + Authenticated Role Badge + Notification + Logout (Safe clearance from floating dev menu) */}
+        {/* Action Controls: Authenticated Role Badge + Notification + Logout (Safe clearance from floating dev menu) */}
         <View style={styles.controlsRow}>
-          {activeRole === 'CUSTOMER' && onOpenQrPass && (
-            <TouchableOpacity 
-              style={styles.qrHeaderBtn}
-              onPress={onOpenQrPass}
-              activeOpacity={0.7}
-              accessibilityLabel="Open Membership QR Pass"
-            >
-              <Ionicons name="qr-code" size={14} color={COLORS.primary} />
-              <Text style={styles.qrHeaderText}>PASS</Text>
-            </TouchableOpacity>
-          )}
 
           {/* Authenticated Role Badge */}
           <TouchableOpacity 
@@ -154,24 +142,6 @@ const styles = StyleSheet.create({
     gap: 5,
     // Safe clearance to ensure floating developer gear (Expo Go / Android overlay) never covers buttons
     marginRight: 68,
-  },
-  qrHeaderBtn: {
-    height: 32,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 3,
-    backgroundColor: COLORS.primaryLight,
-    borderWidth: 1,
-    borderColor: COLORS.primaryBorder,
-    paddingHorizontal: 7,
-    borderRadius: 8,
-  },
-  qrHeaderText: {
-    fontSize: 10,
-    fontWeight: '800',
-    color: COLORS.primaryDark,
-    letterSpacing: 0.3,
   },
   roleBadge: {
     height: 32,

@@ -132,6 +132,8 @@ const MainAppContent = () => {
       navigateTo('fitness', sub || (tab === 'diet' ? 'diet' : tab === 'progress' ? 'progress' : 'workout'));
     } else if (tab === 'store' || tab === 'cart' || tab === 'orders' || tab === 'payments') {
       navigateTo('store', sub || (tab === 'cart' ? 'cart' : tab === 'orders' ? 'orders' : tab === 'payments' ? 'payments' : 'store'));
+    } else if (tab === 'referrals' || tab === 'rewards' || tab === 'reviews' || tab === 'membership' || tab === 'notifications') {
+      navigateTo('more', tab);
     } else if (tab === 'profile' || tab === 'more') {
       navigateTo('more', sub || 'none');
     } else {
@@ -194,7 +196,13 @@ const MainAppContent = () => {
           return <OwnerFinancesScreen initialTab={activeSub === 'payments' ? 'payments' : 'analytics'} />;
         case 'more':
         case 'settings':
-          return <OwnerMoreScreen initialSubPage={activeSub || undefined} onCloseSubPage={() => setActiveSub(null)} />;
+          return (
+            <OwnerMoreScreen 
+              initialSubPage={activeSub || undefined} 
+              onCloseSubPage={() => setActiveSub(null)} 
+              onNavigateTab={handleOwnerNavigate} 
+            />
+          );
         default:
           return <OwnerDashboardScreen onNavigateTab={handleOwnerNavigate} />;
       }
@@ -255,7 +263,15 @@ const MainAppContent = () => {
           );
         case 'more':
         case 'profile':
-          return <CustomerMoreScreen initialSection={activeSub || 'none'} />;
+        case 'rewards':
+        case 'referrals':
+        case 'reviews':
+          return (
+            <CustomerMoreScreen 
+              initialSection={(activeTab === 'rewards' || activeTab === 'referrals' || activeTab === 'reviews') ? activeTab : (activeSub || 'none')} 
+              onNavigateTab={handleCustomerNavigate}
+            />
+          );
         default:
           return (
             <CustomerHomeScreen 
@@ -275,7 +291,6 @@ const MainAppContent = () => {
     <SafeAreaView style={styles.safeArea}>
       <StatusBar style="dark" backgroundColor={COLORS.white} />
       <Header 
-        onOpenQrPass={() => setCustomerQrVisible(true)} 
         onOpenNotifications={() => {
           if (activeRole === 'GYM_OWNER') handleOwnerNavigate('more', 'notifications');
           else if (activeRole === 'TRAINER') handleTrainerNavigate('more', 'notifications');

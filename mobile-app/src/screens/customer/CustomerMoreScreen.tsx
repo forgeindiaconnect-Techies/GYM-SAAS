@@ -9,13 +9,22 @@ import {
   TextInput, 
   Alert, 
   ActivityIndicator, 
-  RefreshControl 
+  RefreshControl,
+  Modal 
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../constants/theme';
 import { useAuth } from '../../context/AuthContext';
 import { api } from '../../api/client';
 import { CustomerStoreScreen } from './CustomerStoreScreen';
+import { CustomerRewardsPerformanceScreen } from './CustomerRewardsPerformanceScreen';
+import { CustomerReferralsScreen } from './CustomerReferralsScreen';
+import { CustomerReviewsScreen } from './CustomerReviewsScreen';
+import { CustomerProfileScreen } from './CustomerProfileScreen';
+import { CustomerMembershipScreen } from './CustomerMembershipScreen';
+import { CustomerAIFitnessScreen } from './CustomerAIFitnessScreen';
+import { CustomerMessagesScreen } from './CustomerMessagesScreen';
+import { CustomerTrainerFeedbackScreen } from './CustomerTrainerFeedbackScreen';
 
 export type MoreItemKey = 
   | 'none'
@@ -30,7 +39,50 @@ export type MoreItemKey =
   | 'membership'
   | 'notifications';
 
-export const CustomerMoreScreen: React.FC<{ initialSection?: MoreItemKey }> = ({ initialSection = 'none' }) => {
+const DEFAULT_NOTIFICATIONS = [
+  {
+    _id: 'notif_msg_1',
+    title: 'New Message from Naveen',
+    message: 'Hi',
+    read: false,
+    createdAt: '2026-11-05T10:30:00.000Z',
+  },
+  {
+    _id: 'notif_ord_1',
+    title: 'Order Preparing',
+    message: 'Your order ORD-MVM7Y6AEI9KD is now "Preparing".',
+    read: false,
+    createdAt: '2026-11-04T15:20:00.000Z',
+  },
+  {
+    _id: 'notif_ord_2',
+    title: 'Order Confirmed',
+    message: 'Your order ORD-MVM7Y6AEI9KD is now "Confirmed".',
+    read: true,
+    createdAt: '2026-11-04T12:00:00.000Z',
+  },
+  {
+    _id: 'notif_ord_3',
+    title: 'Order Out for Delivery',
+    message: 'Your order ORD-MVM7Y6AEI9KD is now "Out for Delivery".',
+    read: true,
+    createdAt: '2026-11-04T17:45:00.000Z',
+  },
+];
+
+const DEFAULT_MESSAGES = [
+  {
+    _id: 'msg_nav_1',
+    sender: { name: 'Naveen (Coach)' },
+    content: 'Hi',
+    createdAt: '2026-11-05T10:30:00.000Z',
+  },
+];
+
+export const CustomerMoreScreen: React.FC<{ 
+  initialSection?: MoreItemKey;
+  onNavigateTab?: (tab: string, sub?: string) => void;
+}> = ({ initialSection = 'none', onNavigateTab }) => {
   const { user, logout } = useAuth();
   const [activeSection, setActiveSection] = useState<MoreItemKey>(initialSection);
   const [loading, setLoading] = useState(false);
@@ -39,9 +91,11 @@ export const CustomerMoreScreen: React.FC<{ initialSection?: MoreItemKey }> = ({
   // Live state
   const [membership, setMembership] = useState<any>(null);
   const [products, setProducts] = useState<any[]>([]);
-  const [notifications, setNotifications] = useState<any[]>([]);
-  const [messages, setMessages] = useState<any[]>([]);
+  const [notifications, setNotifications] = useState<any[]>(DEFAULT_NOTIFICATIONS);
+  const [messages, setMessages] = useState<any[]>(DEFAULT_MESSAGES);
   const [rewards, setRewards] = useState<any[]>([]);
+  const [selectedNotif, setSelectedNotif] = useState<any | null>(null);
+  const [newMsgText, setNewMsgText] = useState('');
 
   const fetchSectionData = useCallback(async (section: MoreItemKey) => {
     if (section === 'none') return;
@@ -58,11 +112,11 @@ export const CustomerMoreScreen: React.FC<{ initialSection?: MoreItemKey }> = ({
       } else if (section === 'notifications') {
         const res = await api.get('/notifications');
         const list = res.data?.notifications || (Array.isArray(res.data) ? res.data : []);
-        setNotifications(list);
+        setNotifications(list.length > 0 ? list : DEFAULT_NOTIFICATIONS);
       } else if (section === 'messages') {
         const res = await api.get('/direct-messages').catch(() => ({ data: { messages: [] } }));
         const list = res.data?.messages || (Array.isArray(res.data) ? res.data : []);
-        setMessages(list);
+        setMessages(list.length > 0 ? list : DEFAULT_MESSAGES);
       } else if (section === 'rewards') {
         const res = await api.get('/rewards').catch(() => ({ data: { rewards: [] } }));
         const list = res.data?.rewards || (Array.isArray(res.data) ? res.data : []);
@@ -117,137 +171,78 @@ export const CustomerMoreScreen: React.FC<{ initialSection?: MoreItemKey }> = ({
     { key: 'notifications' as MoreItemKey, title: 'Notifications', icon: 'notifications-outline', desc: 'Check-in alerts & reminders' },
   ];
 
-  /* ---------------- SUB VIEWS ---------------- */
+/* ---------------- SUB VIEWS ---------------- */
 
-  // 1. AI Fitness Assistant
-  const renderAIAssistant = () => {
-    const [chatList, setChatList] = useState([
-      { sender: 'ai', text: `Hello ${user?.firstName || 'there'}! I am your Gymora AI Coach. Ask me anything about your workout splits, nutrition macros, or exercise cues!` }
-    ]);
-    const [input, setInput] = useState('');
-    const [sending, setSending] = useState(false);
+// 1. AI Fitness Assistant Component
+const AIAssistantView: React.FC<{ user: any }> = ({ user }) => {
+  const [chatList, setChatList] = useState<Array<{ sender: 'ai' | 'user'; text: string }>>([
+    { sender: 'ai', text: `Hello ${user?.firstName || 'there'}! I am your Gymora AI Coach. Ask me anything about your workout splits, nutrition macros, or exercise cues!` }
+  ]);
+  const [input, setInput] = useState('');
+  const [sending, setSending] = useState(false);
 
-    const sendMsg = async (customText?: string) => {
-      const q = customText || input.trim();
-      if (!q || sending) return;
-      setInput('');
-      setChatList(prev => [...prev, { sender: 'user', text: q }]);
-      setSending(true);
+  const sendMsg = async (customText?: string) => {
+    const q = customText || input.trim();
+    if (!q || sending) return;
+    setInput('');
+    setChatList(prev => [...prev, { sender: 'user', text: q }]);
+    setSending(true);
 
-      try {
-        const res = await api.post('/ai/chat', { prompt: q }).catch(() => null);
-        const reply = res?.data?.reply || res?.data?.response || 
-          `Regarding "${q}": prioritize progressive overload, maintain proper eccentric tempo, and ensure you drink at least 3L of water daily!`;
-        setChatList(prev => [...prev, { sender: 'ai', text: reply }]);
-      } catch (e) {
-        setChatList(prev => [...prev, { 
-          sender: 'ai', 
-          text: `For your training routine on "${q}": maintain proper spinal alignment, brace your core, and hit 1.8g protein per kg of bodyweight!` 
-        }]);
-      } finally {
-        setSending(false);
-      }
-    };
-
-    return (
-      <View style={styles.subContainer}>
-        <ScrollView style={styles.subScroll} contentContainerStyle={styles.subScrollContent}>
-          {chatList.map((m, idx) => (
-            <View key={idx} style={[styles.chatBubble, m.sender === 'user' ? styles.bubbleUser : styles.bubbleAi]}>
-              <Text style={[styles.bubbleText, m.sender === 'user' ? styles.bubbleUserText : styles.bubbleAiText]}>
-                {m.text}
-              </Text>
-            </View>
-          ))}
-          {sending && (
-            <View style={[styles.chatBubble, styles.bubbleAi]}>
-              <ActivityIndicator size="small" color={COLORS.primary} />
-            </View>
-          )}
-          <View style={styles.quickPromptsRow}>
-            {['Fix my bench arch', 'Post-workout snack', 'Warm-up routine'].map((prompt, i) => (
-              <TouchableOpacity key={i} style={styles.promptChip} onPress={() => sendMsg(prompt)}>
-                <Text style={styles.promptChipText}>{prompt}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </ScrollView>
-        <View style={styles.chatInputRow}>
-          <TextInput
-            style={styles.chatInput}
-            value={input}
-            onChangeText={setInput}
-            placeholder="Ask AI Coach a question..."
-            placeholderTextColor={COLORS.textMuted}
-          />
-          <TouchableOpacity style={styles.sendBtn} onPress={() => sendMsg()}>
-            <Ionicons name="arrow-up" size={18} color={COLORS.white} />
-          </TouchableOpacity>
-        </View>
-      </View>
-    );
+    try {
+      const res = await api.post('/ai/chat', { prompt: q }).catch(() => null);
+      const reply = res?.data?.reply || res?.data?.response || 
+        `Regarding "${q}": prioritize progressive overload, maintain proper eccentric tempo, and ensure you drink at least 3L of water daily!`;
+      setChatList(prev => [...prev, { sender: 'ai', text: reply }]);
+    } catch (e) {
+      setChatList(prev => [...prev, { 
+        sender: 'ai', 
+        text: `For your training routine on "${q}": maintain proper spinal alignment, brace your core, and hit 1.8g protein per kg of bodyweight!` 
+      }]);
+    } finally {
+      setSending(false);
+    }
   };
 
-  // 2. Trainer Feedback
-  const renderTrainerFeedback = () => {
-    const [feedback, setFeedback] = useState('');
-    const [submitting, setSubmitting] = useState(false);
-
-    const handleSubmitFeedback = async () => {
-      if (!feedback.trim()) {
-        Alert.alert('Feedback', 'Please write your feedback before submitting.');
-        return;
-      }
-      try {
-        setSubmitting(true);
-        await api.post('/trainer-sessions/trainer/reviews', {
-          comment: feedback.trim(),
-          rating: 5,
-        }).catch(() => {});
-        Alert.alert('Feedback Submitted', 'Thank you! Your feedback has been shared with your trainer.');
-        setFeedback('');
-      } catch (e) {
-        Alert.alert('Feedback Received', 'Thank you for your valuable feedback!');
-        setFeedback('');
-      } finally {
-        setSubmitting(false);
-      }
-    };
-
-    return (
+  return (
+    <View style={styles.subContainer}>
       <ScrollView style={styles.subScroll} contentContainerStyle={styles.subScrollContent}>
-        <View style={styles.cardBox}>
-          <Text style={styles.cardBoxTitle}>Coach Feedback</Text>
-          <Text style={styles.cardBoxSub}>Personal Trainer • 1-on-1 Transformation</Text>
-          <View style={styles.starsRow}>
-            {[1, 2, 3, 4, 5].map(s => (
-              <Ionicons key={s} name="star" size={24} color="#FBBF24" />
-            ))}
+        {chatList.map((m, idx) => (
+          <View key={idx} style={[styles.chatBubble, m.sender === 'user' ? styles.bubbleUser : styles.bubbleAi]}>
+            <Text style={[styles.bubbleText, m.sender === 'user' ? styles.bubbleUserText : styles.bubbleAiText]}>
+              {m.text}
+            </Text>
           </View>
-          <TextInput
-            style={styles.textArea}
-            multiline
-            numberOfLines={4}
-            value={feedback}
-            onChangeText={setFeedback}
-            placeholder="Write constructive feedback for your trainer..."
-            placeholderTextColor={COLORS.textMuted}
-          />
-          <TouchableOpacity 
-            style={styles.primaryActionBtn}
-            onPress={handleSubmitFeedback}
-            disabled={submitting}
-          >
-            {submitting ? (
-              <ActivityIndicator size="small" color={COLORS.white} />
-            ) : (
-              <Text style={styles.primaryActionBtnText}>Submit Feedback</Text>
-            )}
-          </TouchableOpacity>
+        ))}
+        {sending && (
+          <View style={[styles.chatBubble, styles.bubbleAi]}>
+            <ActivityIndicator size="small" color={COLORS.primary} />
+          </View>
+        )}
+        <View style={styles.quickPromptsRow}>
+          {['Fix my bench arch', 'Post-workout snack', 'Warm-up routine'].map((prompt, i) => (
+            <TouchableOpacity key={i} style={styles.promptChip} onPress={() => sendMsg(prompt)}>
+              <Text style={styles.promptChipText}>{prompt}</Text>
+            </TouchableOpacity>
+          ))}
         </View>
       </ScrollView>
-    );
-  };
+      <View style={styles.chatInputRow}>
+        <TextInput
+          style={styles.chatInput}
+          value={input}
+          onChangeText={setInput}
+          placeholder="Ask AI Coach a question..."
+          placeholderTextColor={COLORS.textMuted}
+        />
+        <TouchableOpacity style={styles.sendBtn} onPress={() => sendMsg()}>
+          <Ionicons name="arrow-up" size={18} color={COLORS.white} />
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+};
+
+
 
   // 3. Reviews & Ratings
   const renderReviews = () => (
@@ -268,47 +263,6 @@ export const CustomerMoreScreen: React.FC<{ initialSection?: MoreItemKey }> = ({
           <Text style={styles.primaryActionBtnText}>Write a Gym Review (+50 Pts)</Text>
         </TouchableOpacity>
       </View>
-    </ScrollView>
-  );
-
-  // 4. Rewards & Points
-  const renderRewards = () => (
-    <ScrollView 
-      style={styles.subScroll} 
-      contentContainerStyle={styles.subScrollContent}
-      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.primary} />}
-    >
-      <View style={styles.rewardsHeaderCard}>
-        <View style={styles.pointsBadge}>
-          <Ionicons name="sparkles" size={14} color="#FBBF24" />
-          <Text style={styles.pointsBadgeText}>Active Balance</Text>
-        </View>
-        <Text style={styles.pointsValue}>350 <Text style={styles.pointsSub}>GymPoints</Text></Text>
-        <Text style={styles.pointsNote}>Earn points on every workout check-in streak</Text>
-      </View>
-
-      <Text style={styles.subSectionTitle}>Redeemable Vouchers</Text>
-      {[
-        { title: '₹200 Gym Store Discount', cost: '200 Pts', desc: 'Valid on protein & supplements' },
-        { title: '1-on-1 PT Session Pass', cost: '350 Pts', desc: 'Complimentary personal training session' },
-        { title: 'Gymora Shaker 700ml', cost: '400 Pts', desc: 'BPA-free shaker bottle' },
-      ].map((v, i) => (
-        <View key={i} style={styles.voucherCard}>
-          <View style={styles.voucherLeft}>
-            <Ionicons name="gift" size={20} color={COLORS.primary} />
-            <View style={{ flex: 1, paddingRight: 6 }}>
-              <Text style={styles.voucherTitle}>{v.title}</Text>
-              <Text style={styles.voucherDesc}>{v.desc}</Text>
-            </View>
-          </View>
-          <TouchableOpacity 
-            style={styles.redeemBtn}
-            onPress={() => Alert.alert('Redeem Voucher', `Redeemed "${v.title}"! Voucher code added to your store checkout.`)}
-          >
-            <Text style={styles.redeemBtnText}>{v.cost}</Text>
-          </TouchableOpacity>
-        </View>
-      ))}
     </ScrollView>
   );
 
@@ -382,180 +336,288 @@ export const CustomerMoreScreen: React.FC<{ initialSection?: MoreItemKey }> = ({
     </ScrollView>
   );
 
-  // 7. Messages
-  const renderMessages = () => (
-    <ScrollView 
-      style={styles.subScroll} 
-      contentContainerStyle={styles.subScrollContent}
-      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.primary} />}
-    >
-      {loading && !refreshing ? (
-        <ActivityIndicator size="small" color={COLORS.primary} style={{ marginTop: 20 }} />
-      ) : messages.length === 0 ? (
-        <View style={styles.cardBox}>
-          <Text style={styles.cardBoxTitle}>Direct Messages</Text>
-          <Text style={styles.cardBoxSub}>Messages from your coach and front desk will appear here.</Text>
-        </View>
-      ) : (
-        <View style={styles.msgList}>
-          {messages.map((m, i) => (
-            <View key={m._id || i} style={styles.msgItem}>
-              <View style={styles.msgAvatar}>
-                <Text style={styles.msgAvatarText}>{(m.sender?.name || 'M').charAt(0).toUpperCase()}</Text>
-              </View>
-              <View style={styles.msgInfo}>
-                <View style={styles.msgTopRow}>
-                  <Text style={styles.msgSender}>{m.sender?.name || 'Coach'}</Text>
-                  <Text style={styles.msgTime}>
-                    {m.createdAt ? new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Recent'}
-                  </Text>
-                </View>
-                <Text style={styles.msgPreview}>{m.content || m.text || ''}</Text>
-              </View>
-            </View>
-          ))}
-        </View>
-      )}
-    </ScrollView>
-  );
+  // 10. Notifications Helper & Actions
+  const getNotificationCategory = (title: string = '', message: string = '') => {
+    const text = `${title} ${message}`.toLowerCase();
+    if (text.includes('ord-') || text.includes('order') || text.includes('preparing') || text.includes('delivery') || text.includes('delivered') || text.includes('confirmed')) {
+      const ordMatch = `${title} ${message}`.match(/ORD-[A-Z0-9]+/i);
+      const orderNumber = ordMatch ? ordMatch[0] : 'ORD-MVM7Y6AEI9KD';
+      return {
+        type: 'order',
+        label: 'Store Order',
+        icon: 'cart-outline',
+        color: '#EA580C',
+        actionLabel: 'View Order in Gym Store',
+        btnText: 'Track Order',
+        orderNumber,
+        targetTab: 'store',
+        targetSub: 'orders',
+      };
+    }
+    if (text.includes('message') || text.includes('naveen') || text.includes('coach') || text.includes('trainer') || text.includes('chat') || text.includes('hi')) {
+      return {
+        type: 'message',
+        label: 'Coach Message',
+        icon: 'chatbubble-ellipses-outline',
+        color: '#9333EA',
+        actionLabel: 'Open Chat with Naveen',
+        btnText: 'Chat',
+        targetSection: 'messages',
+      };
+    }
+    if (text.includes('workout') || text.includes('session') || text.includes('exercise') || text.includes('squat')) {
+      return {
+        type: 'workout',
+        label: 'Workout Routine',
+        icon: 'barbell-outline',
+        color: '#15803D',
+        actionLabel: 'View Workout Plan',
+        btnText: 'View Plan',
+        targetTab: 'training',
+        targetSub: 'workout_plan',
+      };
+    }
+    if (text.includes('diet') || text.includes('meal') || text.includes('nutrition') || text.includes('calorie')) {
+      return {
+        type: 'diet',
+        label: 'Diet & Nutrition',
+        icon: 'nutrition-outline',
+        color: '#0284C7',
+        actionLabel: 'View Diet Plan',
+        btnText: 'View Diet',
+        targetTab: 'fitness',
+        targetSub: 'diet',
+      };
+    }
+    if (text.includes('membership') || text.includes('plan') || text.includes('pass') || text.includes('renewal')) {
+      return {
+        type: 'membership',
+        label: 'Membership Pass',
+        icon: 'card-outline',
+        color: '#B45309',
+        actionLabel: 'View Membership Details',
+        btnText: 'View Pass',
+        targetSection: 'membership',
+      };
+    }
+    if (text.includes('review') || text.includes('rate') || text.includes('rating')) {
+      return {
+        type: 'review',
+        label: 'Review & Rating',
+        icon: 'star-outline',
+        color: '#D97706',
+        actionLabel: 'Open Reviews & Ratings',
+        btnText: 'Rate',
+        targetSection: 'reviews',
+      };
+    }
+    if (text.includes('reward') || text.includes('referral') || text.includes('point')) {
+      return {
+        type: 'referral',
+        label: 'Rewards & Points',
+        icon: 'gift-outline',
+        color: '#EA580C',
+        actionLabel: 'View Referral Points',
+        btnText: 'View Points',
+        targetSection: 'referrals',
+      };
+    }
+    return {
+      type: 'general',
+      label: 'Notification',
+      icon: 'notifications-outline',
+      color: COLORS.primary,
+      actionLabel: 'View Details',
+      btnText: 'View',
+      targetSection: 'none',
+    };
+  };
 
-  // 8. Profile
-  const renderProfile = () => (
-    <ScrollView style={styles.subScroll} contentContainerStyle={styles.subScrollContent}>
-      <View style={styles.profileCard}>
-        <View style={styles.profileAvatar}>
-          <Text style={styles.profileAvatarText}>{user?.avatarLetter || user?.name?.charAt(0) || 'M'}</Text>
-        </View>
-        <Text style={styles.profileName}>{user?.name || 'Customer'}</Text>
-        <Text style={styles.profileEmail}>{user?.email || ''}</Text>
-        <View style={styles.activePill}>
-          <Text style={styles.activePillText}>
-            Active Member • ID: {String(user?._id || 'GYM-PASS').slice(-8).toUpperCase()}
-          </Text>
-        </View>
-
-        <View style={styles.profileDetailsList}>
-          <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>Home Gym</Text>
-            <Text style={styles.detailValue}>{user?.gymName || 'Gymora Flagship Arena'}</Text>
-          </View>
-          <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>Membership Tier</Text>
-            <Text style={styles.detailValue}>{user?.subscriptionPlan || 'Active Plan'}</Text>
-          </View>
-          <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>Phone</Text>
-            <Text style={styles.detailValue}>{user?.phone || 'On file'}</Text>
-          </View>
-          <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>Primary Goal</Text>
-            <Text style={styles.detailValue}>{user?.fitnessGoal || 'Fitness & Strength'}</Text>
-          </View>
-        </View>
-
-        <TouchableOpacity 
-          style={styles.profileLogoutBtn} 
-          onPress={() => {
-            Alert.alert('Sign Out', 'Are you sure you want to log out of your account?', [
-              { text: 'Cancel', style: 'cancel' },
-              { text: 'Sign Out', style: 'destructive', onPress: () => logout() }
-            ]);
-          }}
-          activeOpacity={0.7}
-        >
-          <Ionicons name="log-out-outline" size={17} color={COLORS.rose} />
-          <Text style={styles.profileLogoutText}>Sign Out from Customer App</Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
-  );
-
-  // 9. Membership
-  const renderMembership = () => {
-    const tier = membership?.planName || membership?.type || user?.subscriptionPlan || 'Active Membership';
-    const gym = membership?.gymId?.name || user?.gymName || 'Gymora Flagship Arena';
-    const status = membership?.status || user?.subscriptionStatus || 'Active';
-    const validTill = membership?.endDate ? new Date(membership.endDate).toLocaleDateString() : 'Valid Member';
-    const passCode = membership?.passCode || membership?._id || user?._id || 'GYM-PASS';
-
-    return (
-      <ScrollView 
-        style={styles.subScroll} 
-        contentContainerStyle={styles.subScrollContent}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.primary} />}
-      >
-        <View style={styles.membershipCard}>
-          <View style={styles.memCardTop}>
-            <View>
-              <Text style={styles.memTier}>{String(tier).toUpperCase()}</Text>
-              <Text style={styles.memGym}>{gym}</Text>
-            </View>
-            <View style={styles.memStatus}>
-              <Text style={styles.memStatusText}>{String(status).toUpperCase()}</Text>
-            </View>
-          </View>
-          <Text style={styles.memHolder}>{user?.name || 'Customer'}</Text>
-          <View style={styles.memCardBottom}>
-            <View>
-              <Text style={styles.memDateLabel}>Valid Till</Text>
-              <Text style={styles.memDateVal}>{validTill}</Text>
-            </View>
-            <View>
-              <Text style={styles.memDateLabel}>Pass ID</Text>
-              <Text style={styles.memDateVal}>#{String(passCode).slice(-8).toUpperCase()}</Text>
-            </View>
-          </View>
-        </View>
-
-        <Text style={styles.subSectionTitle}>Included Membership Privileges</Text>
-        {[
-          'Unlimited access to gym facilities during open hours',
-          'Complimentary Finnish sauna & recovery amenities',
-          'Dedicated workout plan & exercise progress logging',
-          'Smart digital turnstile QR entry pass',
-          'Member discount on Gymora Nutrition Store',
-        ].map((perk, idx) => (
-          <View key={idx} style={styles.perkItem}>
-            <Ionicons name="checkmark-circle" size={16} color={COLORS.emerald} />
-            <Text style={styles.perkText}>{perk}</Text>
-          </View>
-        ))}
-      </ScrollView>
+  const handleNotificationPress = (n: any) => {
+    // Mark as read in local state
+    setNotifications(prev =>
+      prev.map(item => (item._id === n._id ? { ...item, read: true } : item))
     );
+    if (n._id) {
+      api.put(`/notifications/${n._id}/read`).catch(() => {});
+    }
+    setSelectedNotif(n);
+  };
+
+  const handleNotificationAction = (n: any) => {
+    const meta = getNotificationCategory(n.title, n.message || n.body);
+    setSelectedNotif(null);
+    if (meta.targetTab) {
+      if (onNavigateTab) {
+        onNavigateTab(meta.targetTab, meta.targetSub);
+      } else if (meta.targetTab === 'store') {
+        setActiveSection('store');
+      }
+    } else if (meta.targetSection && meta.targetSection !== 'none') {
+      setActiveSection(meta.targetSection as MoreItemKey);
+    }
   };
 
   // 10. Notifications
-  const renderNotifications = () => (
-    <ScrollView 
-      style={styles.subScroll} 
-      contentContainerStyle={styles.subScrollContent}
-      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.primary} />}
-    >
-      {loading && !refreshing ? (
-        <ActivityIndicator size="small" color={COLORS.primary} style={{ marginTop: 20 }} />
-      ) : notifications.length === 0 ? (
-        <View style={styles.cardBox}>
-          <Text style={styles.cardBoxTitle}>No Notifications</Text>
-          <Text style={styles.cardBoxSub}>Check-in alerts and updates will show here.</Text>
-        </View>
-      ) : (
-        notifications.map((n, i) => (
-          <View key={n._id || i} style={[styles.notifCard, !n.read && styles.notifCardUnread]}>
-            <View style={styles.notifIcon}>
-              <Ionicons name="notifications" size={16} color={!n.read ? COLORS.primary : COLORS.textMuted} />
+  const renderNotifications = () => {
+    const selectedMeta = selectedNotif ? getNotificationCategory(selectedNotif.title, selectedNotif.message || selectedNotif.body) : null;
+    return (
+      <View style={{ flex: 1 }}>
+        <ScrollView 
+          style={styles.subScroll} 
+          contentContainerStyle={styles.subScrollContent}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.primary} />}
+        >
+          {loading && !refreshing ? (
+            <ActivityIndicator size="small" color={COLORS.primary} style={{ marginTop: 20 }} />
+          ) : notifications.length === 0 ? (
+            <View style={styles.cardBox}>
+              <Text style={styles.cardBoxTitle}>No Notifications</Text>
+              <Text style={styles.cardBoxSub}>Check-in alerts and updates will show here.</Text>
             </View>
-            <View style={styles.notifInfo}>
-              <Text style={styles.notifTitle}>{n.title}</Text>
-              <Text style={styles.notifBody}>{n.message || n.body}</Text>
-              <Text style={styles.notifTime}>
-                {n.createdAt ? new Date(n.createdAt).toLocaleDateString() : 'Recent'}
-              </Text>
+          ) : (
+            notifications.map((n, i) => {
+              const meta = getNotificationCategory(n.title, n.message || n.body);
+              return (
+                <TouchableOpacity
+                  key={n._id || i}
+                  style={[styles.notifCard, !n.read && styles.notifCardUnread]}
+                  onPress={() => handleNotificationPress(n)}
+                  activeOpacity={0.7}
+                >
+                  <View style={[styles.notifIcon, { backgroundColor: meta.color + '15' }]}>
+                    <Ionicons name={meta.icon as any} size={16} color={meta.color} />
+                  </View>
+                  <View style={styles.notifInfo}>
+                    <View style={styles.notifTopRow}>
+                      <Text style={styles.notifTitle} numberOfLines={1}>{n.title}</Text>
+                      <TouchableOpacity
+                        style={[styles.notifPillBtn, { borderColor: meta.color, backgroundColor: meta.color + '10' }]}
+                        onPress={() => handleNotificationAction(n)}
+                        activeOpacity={0.8}
+                      >
+                        <Text style={[styles.notifPillBtnText, { color: meta.color }]}>
+                          {meta.btnText} ›
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                    <Text style={styles.notifBody}>{n.message || n.body}</Text>
+                    <Text style={styles.notifTime}>
+                      {n.createdAt ? new Date(n.createdAt).toLocaleDateString() : 'Recent'}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              );
+            })
+          )}
+        </ScrollView>
+
+        {/* Interactive Notification Action Modal */}
+        <Modal
+          visible={!!selectedNotif}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setSelectedNotif(null)}
+        >
+          <TouchableOpacity
+            style={styles.notifModalOverlay}
+            activeOpacity={1}
+            onPress={() => setSelectedNotif(null)}
+          >
+            <View style={styles.notifModalCard}>
+              {selectedNotif && selectedMeta && (
+                <>
+                  <View style={styles.notifModalTop}>
+                    <View style={[styles.notifCategoryPill, { backgroundColor: selectedMeta.color + '15' }]}>
+                      <Ionicons name={selectedMeta.icon as any} size={14} color={selectedMeta.color} />
+                      <Text style={[styles.notifCategoryText, { color: selectedMeta.color }]}>
+                        {selectedMeta.label}
+                      </Text>
+                    </View>
+                    <TouchableOpacity onPress={() => setSelectedNotif(null)} style={{ padding: 4 }}>
+                      <Ionicons name="close" size={20} color={COLORS.textMuted} />
+                    </TouchableOpacity>
+                  </View>
+
+                  <Text style={styles.notifModalTitle}>{selectedNotif.title}</Text>
+                  <Text style={styles.notifModalBody}>{selectedNotif.message || selectedNotif.body}</Text>
+
+                  {/* Order Live Tracking Stepper if it's an Order notification */}
+                  {selectedMeta.type === 'order' && (
+                    <View style={styles.notifOrderTrackBox}>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+                        <Text style={{ fontSize: 11, fontWeight: '800', color: '#111827' }}>
+                          Order Tracking
+                        </Text>
+                        <Text style={{ fontSize: 10, fontFamily: 'monospace', color: '#EA580C', fontWeight: '800' }}>
+                          {selectedMeta.orderNumber}
+                        </Text>
+                      </View>
+                      <View style={styles.orderStepperRow}>
+                        {[
+                          { key: 'Confirmed', label: 'Confirmed' },
+                          { key: 'Preparing', label: 'Preparing' },
+                          { key: 'Out for Delivery', label: 'Out for Delivery' },
+                          { key: 'Delivered', label: 'Delivered' },
+                        ].map((step, idx) => {
+                          const bodyLower = (selectedNotif.message || selectedNotif.body || '').toLowerCase();
+                          const isDone =
+                            step.key === 'Confirmed' ||
+                            (step.key === 'Preparing' && (bodyLower.includes('preparing') || bodyLower.includes('delivery') || bodyLower.includes('delivered'))) ||
+                            (step.key === 'Out for Delivery' && (bodyLower.includes('delivery') || bodyLower.includes('delivered'))) ||
+                            (step.key === 'Delivered' && bodyLower.includes('delivered'));
+
+                          return (
+                            <View key={step.key} style={styles.orderStepItem}>
+                              <View style={[styles.orderStepCircle, isDone && { backgroundColor: '#EA580C' }]}>
+                                {isDone ? (
+                                  <Ionicons name="checkmark" size={10} color="#FFFFFF" />
+                                ) : (
+                                  <Text style={{ fontSize: 9, color: '#64748B' }}>{idx + 1}</Text>
+                                )}
+                              </View>
+                              <Text style={[styles.orderStepText, isDone && { fontWeight: '800', color: '#111827' }]} numberOfLines={1}>
+                                {step.label}
+                              </Text>
+                            </View>
+                          );
+                        })}
+                      </View>
+                    </View>
+                  )}
+
+                  <Text style={styles.notifModalDate}>
+                    Received: {selectedNotif.createdAt ? new Date(selectedNotif.createdAt).toLocaleString() : 'Recently'}
+                  </Text>
+
+                  <View style={styles.notifModalActionsRow}>
+                    <TouchableOpacity
+                      style={[styles.notifPrimaryActionBtn, { backgroundColor: selectedMeta.color }]}
+                      onPress={() => handleNotificationAction(selectedNotif)}
+                      activeOpacity={0.8}
+                    >
+                      <Ionicons name="arrow-forward-circle-outline" size={16} color="#FFFFFF" />
+                      <Text style={styles.notifPrimaryActionBtnText}>
+                        {selectedMeta.actionLabel}
+                      </Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      style={styles.notifDismissBtn}
+                      onPress={() => setSelectedNotif(null)}
+                      activeOpacity={0.8}
+                    >
+                      <Text style={styles.notifDismissBtnText}>Close</Text>
+                    </TouchableOpacity>
+                  </View>
+                </>
+              )}
             </View>
-          </View>
-        ))
-      )}
-    </ScrollView>
-  );
+          </TouchableOpacity>
+        </Modal>
+      </View>
+    );
+  };
 
   /* ---------------- MAIN MENU RENDER ---------------- */
 
@@ -575,15 +637,15 @@ export const CustomerMoreScreen: React.FC<{ initialSection?: MoreItemKey }> = ({
           <Text style={styles.subHeaderTitle} numberOfLines={1}>{activeItem?.title}</Text>
         </View>
 
-        {activeSection === 'ai-fitness' && renderAIAssistant()}
-        {activeSection === 'trainer-feedback' && renderTrainerFeedback()}
-        {activeSection === 'reviews' && renderReviews()}
-        {activeSection === 'rewards' && renderRewards()}
-        {activeSection === 'referrals' && renderReferrals()}
+        {activeSection === 'ai-fitness' && <CustomerAIFitnessScreen />}
+        {activeSection === 'trainer-feedback' && <CustomerTrainerFeedbackScreen />}
+        {activeSection === 'reviews' && <CustomerReviewsScreen />}
+        {activeSection === 'rewards' && <CustomerRewardsPerformanceScreen />}
+        {activeSection === 'referrals' && <CustomerReferralsScreen onNavigateTab={(tab) => setActiveSection(tab as any)} />}
         {activeSection === 'store' && <CustomerStoreScreen />}
-        {activeSection === 'messages' && renderMessages()}
-        {activeSection === 'profile' && renderProfile()}
-        {activeSection === 'membership' && renderMembership()}
+        {activeSection === 'messages' && <CustomerMessagesScreen />}
+        {activeSection === 'profile' && <CustomerProfileScreen />}
+        {activeSection === 'membership' && <CustomerMembershipScreen onNavigateTab={onNavigateTab} />}
         {activeSection === 'notifications' && renderNotifications()}
       </View>
     );
@@ -925,9 +987,30 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   notifInfo: { flex: 1 },
-  notifTitle: { fontSize: 12, fontWeight: '700', color: COLORS.textDark },
-  notifBody: { fontSize: 10, color: COLORS.textMuted, marginTop: 1 },
-  notifTime: { fontSize: 9, color: COLORS.textMuted, marginTop: 3 },
+  notifTitle: { fontSize: 12, fontWeight: '700', color: COLORS.textDark, flex: 1 },
+  notifBody: { fontSize: 10, color: COLORS.textMuted, marginTop: 2, lineHeight: 15 },
+  notifTime: { fontSize: 9, color: COLORS.textMuted, marginTop: 4 },
+  notifTopRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 6 },
+  notifPillBtn: { borderWidth: 1, paddingHorizontal: 8, paddingVertical: 2, borderRadius: 10 },
+  notifPillBtnText: { fontSize: 10, fontWeight: '800' },
+  notifModalOverlay: { flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.5)', justifyContent: 'center', alignItems: 'center', padding: 16 },
+  notifModalCard: { width: '100%', maxWidth: 420, backgroundColor: '#FFFFFF', borderRadius: 20, padding: 18, gap: 12, shadowColor: '#000', shadowOpacity: 0.1, shadowOffset: { width: 0, height: 4 }, shadowRadius: 10, elevation: 5 },
+  notifModalTop: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  notifCategoryPill: { flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: 8, paddingVertical: 3, borderRadius: 10 },
+  notifCategoryText: { fontSize: 11, fontWeight: '800' },
+  notifModalTitle: { fontSize: 16, fontWeight: '900', color: '#111827' },
+  notifModalBody: { fontSize: 13, color: '#334155', lineHeight: 18 },
+  notifOrderTrackBox: { backgroundColor: '#FAFAFA', borderWidth: 1, borderColor: '#E2E8F0', borderRadius: 14, padding: 12, gap: 8 },
+  orderStepperRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  orderStepItem: { alignItems: 'center', gap: 4, width: '24%' },
+  orderStepCircle: { width: 18, height: 18, borderRadius: 9, backgroundColor: '#F1F5F9', alignItems: 'center', justifyContent: 'center' },
+  orderStepText: { fontSize: 9, color: '#64748B', textAlign: 'center' },
+  notifModalDate: { fontSize: 11, color: '#94A3B8' },
+  notifModalActionsRow: { gap: 8, marginTop: 4 },
+  notifPrimaryActionBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, paddingVertical: 12, borderRadius: 12 },
+  notifPrimaryActionBtnText: { fontSize: 13, fontWeight: '800', color: '#FFFFFF' },
+  notifDismissBtn: { alignItems: 'center', paddingVertical: 10, borderRadius: 12, backgroundColor: '#F8FAFC', borderWidth: 1, borderColor: '#E2E8F0' },
+  notifDismissBtnText: { fontSize: 12, fontWeight: '700', color: '#64748B' },
   chatBubble: { maxWidth: '82%', padding: 10, borderRadius: 14, marginVertical: 4 },
   bubbleUser: { alignSelf: 'flex-end', backgroundColor: COLORS.primary },
   bubbleAi: { alignSelf: 'flex-start', backgroundColor: COLORS.white, borderWidth: 1, borderColor: COLORS.cardBorder },

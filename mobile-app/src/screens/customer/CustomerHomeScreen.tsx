@@ -52,7 +52,7 @@ export const CustomerHomeScreen: React.FC<{
             onCloseExternalQr={onCloseExternalQr}
           />
         ) : (
-          <CustomerGymScreen />
+          <CustomerGymScreen onNavigateTab={onNavigateTab} />
         )}
       </View>
     </View>

@@ -447,12 +447,22 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
       return;
     }
 
+    const cleanEditPhone = editForm.phone ? editForm.phone.replace(/\D/g, '') : '';
+    if (editForm.phone && cleanEditPhone.length !== 10) {
+      Alert.alert('Validation Error', 'Mobile phone must be exactly 10 digits.');
+      return;
+    }
+
     try {
       setUpdatingTrainer(true);
-      await api.put(`/trainers/${selectedTrainer._id}`, editForm);
+      await api.put(`/trainers/${selectedTrainer._id}`, {
+        ...editForm,
+        phone: cleanEditPhone || undefined
+      });
       setTrainers(prev => prev.map(t => t._id === selectedTrainer._id ? {
         ...t,
         ...editForm,
+        phone: cleanEditPhone || undefined,
         fee: editForm.fee ? Number(editForm.fee) : undefined
       } : t));
       setShowEditModal(false);
@@ -497,14 +507,20 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
 
   const handleHireSubmit = async () => {
     if (hireMethod === 'manual') {
-      if (!manualForm.name.trim() || !manualForm.email.trim() || !manualForm.phone.trim()) {
+      const cleanPhone = manualForm.phone.replace(/\D/g, '');
+      if (!manualForm.name.trim() || !manualForm.email.trim()) {
         Alert.alert('Validation Error', 'Name, email, and phone are required.');
+        return;
+      }
+      if (!cleanPhone || cleanPhone.length !== 10) {
+        Alert.alert('Invalid Mobile Number', 'Please enter a valid 10-digit mobile number.');
         return;
       }
       try {
         setSubmittingTrainer(true);
         const res = await api.post('/trainers/manual-add', {
           ...manualForm,
+          phone: cleanPhone,
           branchId: user?.branchId
         });
         Alert.alert('Trainer Hired', `${manualForm.name} added to the gym roster!`);
@@ -537,9 +553,17 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
         Alert.alert('Validation Error', 'Trainer Name and valid Email are required.');
         return;
       }
+      const cleanInvitePhone = inviteForm.phone ? inviteForm.phone.replace(/\D/g, '') : '';
+      if (inviteForm.phone && cleanInvitePhone.length !== 10) {
+        Alert.alert('Invalid Mobile Number', 'If provided, mobile phone must be exactly 10 digits.');
+        return;
+      }
       try {
         setSubmittingTrainer(true);
-        await api.post('/trainers/invite', inviteForm);
+        await api.post('/trainers/invite', {
+          ...inviteForm,
+          phone: cleanInvitePhone || undefined,
+        });
         Alert.alert('Invite Sent', `Invitation dispatched to ${inviteForm.email}.`);
         setShowHireModal(false);
         setInviteForm({
@@ -2001,8 +2025,12 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
                     placeholder="e.g. 9876543210"
                     placeholderTextColor={COLORS.textMuted}
                     value={manualForm.phone}
-                    onChangeText={(v) => setManualForm({ ...manualForm, phone: v })}
+                    onChangeText={(v) => {
+                      const digits = v.replace(/\D/g, '').slice(0, 10);
+                      setManualForm({ ...manualForm, phone: digits });
+                    }}
                     keyboardType="phone-pad"
+                    maxLength={10}
                   />
 
                   <Text style={styles.inputLabel}>Specialization</Text>
@@ -2085,14 +2113,18 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
                     autoCapitalize="none"
                   />
 
-                  <Text style={styles.inputLabel}>Mobile Phone (Optional)</Text>
+                  <Text style={styles.inputLabel}>Mobile Phone (Optional - 10 Digits)</Text>
                   <TextInput
                     style={styles.modalInput}
                     placeholder="e.g. 9876543210"
                     placeholderTextColor={COLORS.textMuted}
                     value={inviteForm.phone}
-                    onChangeText={(v) => setInviteForm({ ...inviteForm, phone: v })}
+                    onChangeText={(v) => {
+                      const digits = v.replace(/\D/g, '').slice(0, 10);
+                      setInviteForm({ ...inviteForm, phone: digits });
+                    }}
                     keyboardType="phone-pad"
+                    maxLength={10}
                   />
 
                   <Text style={styles.inputLabel}>Personal Invitation Message</Text>
@@ -2273,12 +2305,18 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
                 keyboardType="email-address"
               />
 
-              <Text style={styles.inputLabel}>Mobile Phone *</Text>
+              <Text style={styles.inputLabel}>Mobile Phone * (10 Digits)</Text>
               <TextInput
                 style={styles.modalInput}
+                placeholder="e.g. 9876543210"
+                placeholderTextColor={COLORS.textMuted}
                 value={editForm.phone}
-                onChangeText={(v) => setEditForm({ ...editForm, phone: v })}
+                onChangeText={(v) => {
+                  const digits = v.replace(/\D/g, '').slice(0, 10);
+                  setEditForm({ ...editForm, phone: digits });
+                }}
                 keyboardType="phone-pad"
+                maxLength={10}
               />
 
               <Text style={styles.inputLabel}>Specialization</Text>
