@@ -91,11 +91,25 @@ export const getMobileTrackingTimeline = (order: any) => {
       const key = (h.status || '').toString().toLowerCase().trim();
       if (key && !seenOrder.includes(key)) seenOrder.push(key);
     });
-    const deduplicatedHistory = seenOrder.map(key => statusMap.get(key));
+    const deduplicatedHistory = seenOrder.map(key => statusMap.get(key)).filter(Boolean);
 
-    const fmt = (val: any) => val
-      ? new Date(val).toLocaleString([], { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })
-      : '';
+    const safeFormatDate = (val: any, fallback = ''): string => {
+      if (!val) return fallback;
+      try {
+        const d = new Date(val);
+        if (isNaN(d.getTime())) return typeof val === 'string' ? val : fallback;
+        const month = d.getMonth() + 1;
+        const day = d.getDate();
+        const year = d.getFullYear();
+        let hours = d.getHours();
+        const minutes = d.getMinutes().toString().padStart(2, '0');
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12 || 12;
+        return `${month}/${day}/${year}, ${hours}:${minutes} ${ampm}`;
+      } catch {
+        return typeof val === 'string' ? val : fallback;
+      }
+    };
 
     return deduplicatedHistory.map((h: any, idx: number, arr: any[]) => {
       const isLast = idx === arr.length - 1;
@@ -103,7 +117,7 @@ export const getMobileTrackingTimeline = (order: any) => {
       return {
         status: h.status,
         label: h.status === 'Completed' ? (isDelivery ? 'Delivered' : 'Picked Up') : h.status,
-        time: fmt(h.at) || h.time || 'Completed',
+        time: safeFormatDate(h.at, h.time || 'Completed'),
         note: h.note || `Status changed to ${h.status}`,
         completed: true,
         isCurrent: isLast,
@@ -112,6 +126,24 @@ export const getMobileTrackingTimeline = (order: any) => {
       };
     });
   }
+
+  const safeFormatDate = (val: any, fallback = ''): string => {
+    if (!val) return fallback;
+    try {
+      const d = new Date(val);
+      if (isNaN(d.getTime())) return typeof val === 'string' ? val : fallback;
+      const month = d.getMonth() + 1;
+      const day = d.getDate();
+      const year = d.getFullYear();
+      let hours = d.getHours();
+      const minutes = d.getMinutes().toString().padStart(2, '0');
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      hours = hours % 12 || 12;
+      return `${month}/${day}/${year}, ${hours}:${minutes} ${ampm}`;
+    } catch {
+      return typeof val === 'string' ? val : fallback;
+    }
+  };
 
   const currentStatus = (order.status || 'Pending').toLowerCase();
   let currentIndex = pipeline.findIndex(p => p.status.toLowerCase() === currentStatus);
@@ -125,7 +157,7 @@ export const getMobileTrackingTimeline = (order: any) => {
     order.statusHistory.forEach((h: any) => {
       if (h?.status) {
         historyMap[h.status.toLowerCase()] = {
-          time: h.at ? new Date(h.at).toLocaleString([], { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true }) : undefined,
+          time: safeFormatDate(h.at),
           note: h.note
         };
       }
@@ -135,14 +167,14 @@ export const getMobileTrackingTimeline = (order: any) => {
     order.trackingTimeline.forEach((t: any) => {
       if (t?.status) {
         historyMap[t.status.toLowerCase()] = {
-          time: t.time || (t.at ? new Date(t.at).toLocaleString([], { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true }) : undefined),
+          time: t.time || safeFormatDate(t.at),
           note: t.note
         };
       }
     });
   }
 
-  const orderCreatedFormatted = order.createdAt ? new Date(order.createdAt).toLocaleString([], { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true }) : undefined;
+  const orderCreatedFormatted = safeFormatDate(order.createdAt);
 
   return pipeline.map((stage, idx) => {
     const isReached = idx <= maxReachedIndex;
@@ -274,7 +306,23 @@ export const CustomerStoreScreen: React.FC<{ initialSubTab?: string }> = ({ init
           orderNumber: o.orderNumber,
           itemCount: o.items?.reduce((acc: number, it: any) => acc + (it.quantity || 1), 0) || 1,
           createdAt: o.createdAt,
-          dateDisplay: o.createdAt ? new Date(o.createdAt).toLocaleString([], { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true }) : 'Recent',
+          dateDisplay: (() => {
+            if (!o.createdAt) return 'Recent';
+            try {
+              const d = new Date(o.createdAt);
+              if (isNaN(d.getTime())) return 'Recent';
+              const m = d.getMonth() + 1;
+              const day = d.getDate();
+              const y = d.getFullYear();
+              let h = d.getHours();
+              const min = d.getMinutes().toString().padStart(2, '0');
+              const ampm = h >= 12 ? 'PM' : 'AM';
+              h = h % 12 || 12;
+              return `${m}/${day}/${y}, ${h}:${min} ${ampm}`;
+            } catch {
+              return 'Recent';
+            }
+          })(),
           fulfilmentType: o.fulfilmentType || 'Delivery',
           total: o.total || 0,
           status: o.status || 'Pending',

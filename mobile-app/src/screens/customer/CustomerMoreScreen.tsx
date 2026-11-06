@@ -25,6 +25,7 @@ import { CustomerMembershipScreen } from './CustomerMembershipScreen';
 import { CustomerAIFitnessScreen } from './CustomerAIFitnessScreen';
 import { CustomerMessagesScreen } from './CustomerMessagesScreen';
 import { CustomerTrainerFeedbackScreen } from './CustomerTrainerFeedbackScreen';
+import { CustomerTrainerPlanScreen } from './CustomerTrainerPlanScreen';
 
 export type MoreItemKey = 
   | 'none'
@@ -33,6 +34,7 @@ export type MoreItemKey =
   | 'reviews'
   | 'rewards'
   | 'referrals'
+  | 'trainer-plan'
   | 'store'
   | 'messages'
   | 'profile'
@@ -164,7 +166,7 @@ export const CustomerMoreScreen: React.FC<{
     { key: 'reviews' as MoreItemKey, title: 'Reviews & Ratings', icon: 'star-outline', desc: 'Rate gym amenities & facilities' },
     { key: 'rewards' as MoreItemKey, title: 'My Rewards & Points', icon: 'gift-outline', badge: 'GymPoints', desc: 'Redeem passes, store discounts' },
     { key: 'referrals' as MoreItemKey, title: 'Refer & Earn', icon: 'share-social-outline', badge: 'Refer', desc: 'Invite friends to train together' },
-    { key: 'store' as MoreItemKey, title: 'Gym Store', icon: 'cart-outline', desc: 'Supplements, gym apparel & gear' },
+    { key: 'trainer-plan' as MoreItemKey, title: "Trainer's Plan", icon: 'clipboard-outline', desc: 'Workout, diet, videos & equipments' },
     { key: 'messages' as MoreItemKey, title: 'Messages', icon: 'mail-outline', desc: 'Chat with trainer & front desk' },
     { key: 'profile' as MoreItemKey, title: 'Profile', icon: 'person-outline', desc: 'Personal metrics & account settings' },
     { key: 'membership' as MoreItemKey, title: 'Membership', icon: 'card-outline', badge: 'Plan', desc: 'Plan details, renewal & perks' },
@@ -642,6 +644,7 @@ const AIAssistantView: React.FC<{ user: any }> = ({ user }) => {
         {activeSection === 'reviews' && <CustomerReviewsScreen />}
         {activeSection === 'rewards' && <CustomerRewardsPerformanceScreen />}
         {activeSection === 'referrals' && <CustomerReferralsScreen onNavigateTab={(tab) => setActiveSection(tab as any)} />}
+        {activeSection === 'trainer-plan' && <CustomerTrainerPlanScreen />}
         {activeSection === 'store' && <CustomerStoreScreen />}
         {activeSection === 'messages' && <CustomerMessagesScreen />}
         {activeSection === 'profile' && <CustomerProfileScreen />}

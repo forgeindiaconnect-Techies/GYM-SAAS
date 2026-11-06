@@ -89,15 +89,20 @@ export const CustomerTrainerFeedbackScreen: React.FC = () => {
     setReplyError('');
     setReplySuccess(false);
 
-    const nowFormatted = new Date().toLocaleString([], {
-      month: 'numeric',
-      day: 'numeric',
-      year: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: true,
-    });
+    const formatNow = () => {
+      const d = new Date();
+      const m = d.getMonth() + 1;
+      const day = d.getDate();
+      const y = d.getFullYear();
+      let h = d.getHours();
+      const min = d.getMinutes().toString().padStart(2, '0');
+      const sec = d.getSeconds().toString().padStart(2, '0');
+      const ampm = h >= 12 ? 'PM' : 'AM';
+      h = h % 12 || 12;
+      return `${m}/${day}/${y}, ${h}:${min}:${sec} ${ampm}`;
+    };
+
+    const nowFormatted = formatNow();
 
     const newMsg: ChatMessage = {
       id: `msg-${Date.now()}`,
@@ -129,15 +134,16 @@ export const CustomerTrainerFeedbackScreen: React.FC = () => {
     // Auto-reply simulation from Coach Naveen if discussion is active
     if (chatMessages.length < 5) {
       setTimeout(() => {
-        const replyTime = new Date().toLocaleString([], {
-          month: 'numeric',
-          day: 'numeric',
-          year: 'numeric',
-          hour: 'numeric',
-          minute: '2-digit',
-          second: '2-digit',
-          hour12: true,
-        });
+        const d = new Date();
+        const m = d.getMonth() + 1;
+        const day = d.getDate();
+        const y = d.getFullYear();
+        let h = d.getHours();
+        const min = d.getMinutes().toString().padStart(2, '0');
+        const sec = d.getSeconds().toString().padStart(2, '0');
+        const ampm = h >= 12 ? 'PM' : 'AM';
+        h = h % 12 || 12;
+        const replyTime = `${m}/${day}/${y}, ${h}:${min}:${sec} ${ampm}`;
 
         const coachReply: ChatMessage = {
           id: `reply-${Date.now()}`,
