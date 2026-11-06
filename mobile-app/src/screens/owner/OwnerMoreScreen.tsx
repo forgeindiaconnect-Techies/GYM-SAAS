@@ -285,12 +285,30 @@ const PACKAGE_DURATIONS: string[] = ['1 Month', '3 Months', '6 Months', '12 Mont
 const PACKAGE_FITNESS_GOALS: string[] = ['All', 'Strength', 'Weight Loss', 'Muscle Gain', 'General Fitness', 'Cardio', 'Endurance'];
 const PACKAGE_TRAINING_TYPES: string[] = ['General Training', 'Personal Training', 'Group Class', 'Online Coaching', 'VIP'];
 
+const DEFAULT_PACKAGE_BADGE = { bg: '#FFF7ED', text: '#EA580C', label: 'STANDARD', icon: 'barbell', accent: '#EA580C' };
+
 const PACKAGE_BADGE_CONFIG: Record<string, { bg: string; text: string; label: string; icon: any; accent: string }> = {
   popular: { bg: '#FEF3C7', text: '#D97706', label: 'MOST POPULAR', icon: 'flame', accent: '#D97706' },
   best_value: { bg: '#DCFCE7', text: '#15803D', label: 'BEST VALUE', icon: 'star', accent: '#15803D' },
   starter: { bg: '#EFF6FF', text: '#1D4ED8', label: 'STARTER', icon: 'rocket', accent: '#1D4ED8' },
   exclusive: { bg: '#F3E8FF', text: '#7E22CE', label: 'EXCLUSIVE', icon: 'diamond', accent: '#7E22CE' },
-  default: { bg: '#F1F5F9', text: '#475569', label: 'STANDARD', icon: 'barbell', accent: '#475569' },
+  default: { bg: '#FFF7ED', text: '#EA580C', label: 'STANDARD', icon: 'barbell', accent: '#EA580C' },
+  // Fitness Goals
+  'Strength': { bg: '#FEF3C7', text: '#D97706', label: 'STRENGTH', icon: 'barbell', accent: '#D97706' },
+  'Weight Loss': { bg: '#FEE2E2', text: '#DC2626', label: 'WEIGHT LOSS', icon: 'flame', accent: '#DC2626' },
+  'Muscle Gain': { bg: '#EFF6FF', text: '#2563EB', label: 'MUSCLE GAIN', icon: 'fitness', accent: '#2563EB' },
+  'General Fitness': { bg: '#ECFDF5', text: '#059669', label: 'GENERAL FITNESS', icon: 'heart', accent: '#059669' },
+  'Cardio': { bg: '#FDF2F8', text: '#DB2777', label: 'CARDIO', icon: 'pulse', accent: '#DB2777' },
+  'Endurance': { bg: '#F3E8FF', text: '#7C3AED', label: 'ENDURANCE', icon: 'bicycle', accent: '#7C3AED' },
+  'All': { bg: '#F1F5F9', text: '#475569', label: 'ALL', icon: 'grid', accent: '#475569' },
+};
+
+const getPackageBadge = (pkg: any) => {
+  if (!pkg) return DEFAULT_PACKAGE_BADGE;
+  if (pkg.fitnessGoal && PACKAGE_BADGE_CONFIG[pkg.fitnessGoal]) return PACKAGE_BADGE_CONFIG[pkg.fitnessGoal];
+  if (pkg.badge && PACKAGE_BADGE_CONFIG[pkg.badge]) return PACKAGE_BADGE_CONFIG[pkg.badge];
+  if (pkg.name && PACKAGE_BADGE_CONFIG[pkg.name]) return PACKAGE_BADGE_CONFIG[pkg.name];
+  return PACKAGE_BADGE_CONFIG['Strength'] || PACKAGE_BADGE_CONFIG['default'] || DEFAULT_PACKAGE_BADGE;
 };
 
 const EQUIPMENT_CONDITIONS: string[] = ['Excellent', 'Good', 'Fair', 'Needs Maintenance', 'Under Repair'];
@@ -11688,7 +11706,7 @@ const renderPackagePlansView = () => {
           </View>
         ) : (
           filteredPackages.map((pkg: any) => {
-            const badge = PACKAGE_BADGE_CONFIG[pkg.fitnessGoal] || PACKAGE_BADGE_CONFIG['Strength'];
+            const badge = getPackageBadge(pkg);
             const monthlyPrice = Number(pkg.monthlyPrice ?? pkg.price ?? 399);
             const annualPrice = Number(pkg.annualPrice ?? (monthlyPrice * 10));
             const price = packageBillingView === 'monthly' ? monthlyPrice : annualPrice;
@@ -11718,14 +11736,14 @@ const renderPackagePlansView = () => {
                 {/* Top Row: Icon + Title + Edit Pencil */}
                 <View style={styles.pkgCardTopRow}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, flex: 1 }}>
-                    <View style={[styles.pkgGoalIconBox, { backgroundColor: badge.bg }]}>
-                      <Ionicons name={badge.icon} size={22} color={badge.accent} />
+                    <View style={[styles.pkgGoalIconBox, { backgroundColor: badge?.bg || '#FFF7ED' }]}>
+                      <Ionicons name={badge?.icon || 'barbell'} size={22} color={badge?.accent || '#EA580C'} />
                     </View>
                     <View style={{ flex: 1 }}>
                       <Text style={styles.pkgNameText}>{pkg.name || pkg.fitnessGoal}</Text>
                       {pkg.name && pkg.fitnessGoal && pkg.name.toLowerCase() !== pkg.fitnessGoal.toLowerCase() && (
-                        <View style={[styles.pkgGoalSubBadge, { backgroundColor: badge.bg }]}>
-                          <Text style={[styles.pkgGoalSubBadgeText, { color: badge.accent }]}>
+                        <View style={[styles.pkgGoalSubBadge, { backgroundColor: badge?.bg || '#FFF7ED' }]}>
+                          <Text style={[styles.pkgGoalSubBadgeText, { color: badge?.accent || '#EA580C' }]}>
                             {pkg.fitnessGoal}
                           </Text>
                         </View>
@@ -11771,8 +11789,8 @@ const renderPackagePlansView = () => {
                   <View style={{ gap: 7, marginTop: 4 }}>
                     {features.slice(0, 4).map((f: string, i: number) => (
                       <View key={i} style={styles.pkgFeatureItemRow}>
-                        <View style={[styles.pkgFeatureCheckCircle, { backgroundColor: badge.bg }]}>
-                          <Ionicons name="checkmark" size={11} color={badge.accent} />
+                        <View style={[styles.pkgFeatureCheckCircle, { backgroundColor: badge?.bg || '#FFF7ED' }]}>
+                          <Ionicons name="checkmark" size={11} color={badge?.accent || '#EA580C'} />
                         </View>
                         <Text style={styles.pkgFeatureItemText}>{f}</Text>
                       </View>
@@ -16338,7 +16356,7 @@ const renderAddPackageModal = () => {
     if (!selectedPackageDetail) return null;
 
     const pkg = selectedPackageDetail;
-    const badge = PACKAGE_BADGE_CONFIG[pkg.fitnessGoal] || PACKAGE_BADGE_CONFIG['Strength'];
+    const badge = getPackageBadge(pkg);
     const monthlyPrice = Number(pkg.monthlyPrice ?? pkg.price ?? 399);
     const annualPrice = Number(pkg.annualPrice ?? (monthlyPrice * 10));
     const isActive = (pkg.status || 'Active') === 'Active';
@@ -16358,8 +16376,8 @@ const renderAddPackageModal = () => {
             {/* Modal Header */}
             <View style={styles.pkgModalHeader}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, flex: 1 }}>
-                <View style={[styles.pkgGoalIconBox, { backgroundColor: badge.bg }]}>
-                  <Ionicons name={badge.icon} size={22} color={badge.accent} />
+                <View style={[styles.pkgGoalIconBox, { backgroundColor: badge?.bg || '#FFF7ED' }]}>
+                  <Ionicons name={badge?.icon || 'barbell'} size={22} color={badge?.accent || '#EA580C'} />
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={styles.pkgModalTitle}>{pkg.name || pkg.fitnessGoal}</Text>
@@ -16428,8 +16446,8 @@ const renderAddPackageModal = () => {
                 <View style={{ gap: 8, marginTop: 4 }}>
                   {features.map((feat: string, idx: number) => (
                     <View key={idx} style={styles.pkgFeatureItemRow}>
-                      <View style={[styles.pkgFeatureCheckCircle, { backgroundColor: badge.bg }]}>
-                        <Ionicons name="checkmark" size={12} color={badge.accent} />
+                      <View style={[styles.pkgFeatureCheckCircle, { backgroundColor: badge?.bg || '#FFF7ED' }]}>
+                        <Ionicons name="checkmark" size={12} color={badge?.accent || '#EA580C'} />
                       </View>
                       <Text style={[styles.pkgFeatureItemText, { fontSize: 13 }]}>{feat}</Text>
                     </View>
