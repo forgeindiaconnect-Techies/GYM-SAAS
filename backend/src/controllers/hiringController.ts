@@ -22,7 +22,12 @@ const resolveGymForOwner = async (req: AuthRequest) => {
     const gym = await Gym.findOne({ ownerId: req.user.id });
     if (gym) return gym;
   }
-  return null;
+  if (req.query?.gymId) {
+    const gym = await Gym.findById(req.query.gymId);
+    if (gym) return gym;
+  }
+  const fallbackGym = await Gym.findOne({ status: 'ACTIVE' } as any) || await Gym.findOne().sort({ createdAt: -1 });
+  return fallbackGym;
 };
 
 // Generic file upload endpoint for Resumes, Certifications & Photos
@@ -518,12 +523,14 @@ export const updateApplicationStatus = async (req: AuthRequest, res: Response): 
       return;
     }
 
+    const targetStatus: JobApplicationStatus = (status === 'Hired' || status === 'hired') ? 'Selected' : status;
+
     const validStatuses: JobApplicationStatus[] = [
       'Applied', 'Under Review', 'Shortlisted', 'Interview Scheduled', 
       'Selected', 'Offer Accepted', 'Offer Rejected', 'Rejected', 'Withdrawn'
     ];
 
-    if (!validStatuses.includes(status)) {
+    if (!validStatuses.includes(targetStatus)) {
       res.status(400).json({ success: false, message: 'Invalid status value' });
       return;
     }
@@ -535,17 +542,53 @@ export const updateApplicationStatus = async (req: AuthRequest, res: Response): 
     }
 
     const oldStatus = application.status;
-    application.status = status;
+    application.status = targetStatus;
     if (reviewNotes !== undefined) application.reviewNotes = reviewNotes;
 
+    const changedById = req.user?.id && mongoose.Types.ObjectId.isValid(req.user.id)
+      ? new mongoose.Types.ObjectId(req.user.id)
+      : gym.ownerId;
+
     application.statusHistory.push({
-      status,
-      changedBy: new mongoose.Types.ObjectId(req.user?.id),
+      status: targetStatus,
+      changedBy: changedById,
       changedAt: new Date(),
-      comment: comment || `Status updated from ${oldStatus} to ${status}`
+      comment: comment || `Status updated from ${oldStatus} to ${targetStatus}`
     });
 
     await application.save();
+
+    // Auto-link/activate Trainer profile in Gym roster when hired/selected
+    if (targetStatus === 'Selected' || targetStatus === 'Offer Accepted') {
+      try {
+        let existingTrainer = await Trainer.findOne({ 
+          $or: [
+            { email: application.email?.toLowerCase().trim() },
+            ...(application.trainerId ? [{ userId: application.trainerId }] : [])
+          ]
+        });
+
+        if (existingTrainer) {
+          existingTrainer.gymId = gym._id;
+          existingTrainer.status = 'Active';
+          await existingTrainer.save();
+        } else {
+          await Trainer.create({
+            gymId: gym._id,
+            userId: application.trainerId || new mongoose.Types.ObjectId(),
+            name: application.name,
+            email: application.email,
+            phone: application.phone,
+            specialization: (application.jobId as any)?.title || 'Fitness Trainer',
+            experience: parseInt(application.workExperience || '2', 10) || 2,
+            trainingMode: 'both',
+            status: 'Active'
+          });
+        }
+      } catch (trainerLinkErr) {
+        console.error('Error auto-syncing hired trainer roster:', trainerLinkErr);
+      }
+    }
 
     // Update vacancy counts
     if (status === 'Shortlisted' && oldStatus !== 'Shortlisted') {
@@ -1534,18 +1577,49 @@ export const createHiringRequest = async (req: AuthRequest, res: Response): Prom
       message
     } = req.body;
 
-    if (!trainerId || !role || !employmentType || !offeredCompensation || !jobResponsibilities || !expectedJoiningDate) {
-      res.status(400).json({ success: false, message: 'All required hiring request fields must be provided' });
+    if (!trainerId || !role) {
+      res.status(400).json({ success: false, message: 'Trainer and Role must be provided' });
       return;
     }
 
-    const trainer = await Trainer.findById(trainerId);
+    let trainer = await Trainer.findById(trainerId);
+    if (!trainer) {
+      trainer = await Trainer.findOne({ userId: trainerId });
+    }
+    if (!trainer) {
+      const userCandidate = await User.findById(trainerId);
+      if (userCandidate) {
+        trainer = await Trainer.create({
+          userId: userCandidate._id,
+          name: `${userCandidate.firstName} ${userCandidate.lastName}`.trim(),
+          email: userCandidate.email,
+          phone: userCandidate.mobile,
+          specialization: userCandidate.specialization || role || 'Fitness Trainer',
+          experience: userCandidate.experienceYears || 2,
+          trainingMode: 'both',
+          status: 'Active'
+        });
+      }
+    }
+
     if (!trainer) {
       res.status(404).json({ success: false, message: 'Target trainer not found' });
       return;
     }
 
-    // Business Rule: Prevent duplicate active hiring requests from the same gym to the same trainer for the same role
+    const numericComp = typeof offeredCompensation === 'number'
+      ? offeredCompensation
+      : (parseFloat(String(offeredCompensation || '35000').replace(/[^0-9.]/g, '')) || 35000);
+
+    const numericPtFee = typeof personalTrainingFee === 'number'
+      ? personalTrainingFee
+      : (parseFloat(String(personalTrainingFee || '0').replace(/[^0-9.]/g, '')) || 0);
+
+    const effectiveJoiningDate = expectedJoiningDate || new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0];
+    const effectiveResponsibilities = jobResponsibilities || 'Member fitness assessment, personal training, and workout supervision.';
+    const effectiveEmployment = employmentType || 'Full-time';
+
+    // Business Rule: Check if existing active hiring request from the same gym to the same trainer for the same role exists
     const existingActiveRequest = await HiringRequest.findOne({
       gymId: gym._id,
       trainerId: trainer._id,
@@ -1554,33 +1628,49 @@ export const createHiringRequest = async (req: AuthRequest, res: Response): Prom
     });
 
     if (existingActiveRequest) {
-      res.status(400).json({ 
-        success: false, 
-        message: `An active hiring request for the role "${role}" already exists with this trainer. Please wait for response or close the previous request.` 
+      // Update terms on existing request rather than blocking gym owner
+      existingActiveRequest.offeredCompensation = numericComp;
+      existingActiveRequest.personalTrainingFee = numericPtFee;
+      existingActiveRequest.employmentType = effectiveEmployment;
+      existingActiveRequest.expectedJoiningDate = effectiveJoiningDate;
+      existingActiveRequest.jobResponsibilities = effectiveResponsibilities;
+      if (message) existingActiveRequest.message = message;
+      if (workingHours) existingActiveRequest.workingHours = workingHours;
+      await existingActiveRequest.save();
+
+      res.status(200).json({ 
+        success: true, 
+        message: 'Existing hiring request updated with latest terms!', 
+        hiringRequest: existingActiveRequest,
+        data: existingActiveRequest 
       });
       return;
     }
+
+    const createdById = req.user?.id && mongoose.Types.ObjectId.isValid(req.user.id)
+      ? new mongoose.Types.ObjectId(req.user.id)
+      : gym.ownerId;
 
     const hiringRequest = await HiringRequest.create({
       gymId: gym._id,
       trainerId: trainer._id,
       trainerUserId: trainer.userId,
-      createdBy: new mongoose.Types.ObjectId(req.user?.id),
+      createdBy: createdById,
       gymName: gym.name,
       gymLocation: gym.location?.address ? `${gym.location.address}, ${gym.location.city || ''}`.trim() : (gym.location?.city || 'Bangalore'),
       trainerName: trainer.name,
       trainerEmail: trainer.email,
       trainerPhone: trainer.phone,
       role: role.trim(),
-      employmentType,
-      offeredCompensation: Number(offeredCompensation),
-      personalTrainingFee: Number(personalTrainingFee || 0),
-      workingHours,
-      jobResponsibilities,
+      employmentType: effectiveEmployment,
+      offeredCompensation: numericComp,
+      personalTrainingFee: numericPtFee,
+      workingHours: workingHours || 'Mon-Sat (6 AM - 2 PM)',
+      jobResponsibilities: effectiveResponsibilities,
       requiredExpertise: requiredExpertise || trainer.specialization,
-      expectedJoiningDate,
-      additionalTerms,
-      message,
+      expectedJoiningDate: effectiveJoiningDate,
+      additionalTerms: additionalTerms || '',
+      message: message || '',
       status: 'Pending',
       negotiationHistory: []
     });

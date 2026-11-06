@@ -206,14 +206,22 @@ const requireStoreOwner = async (req: AuthRequest, res: Response): Promise<boole
 
 const requireStoreCustomer = async (req: AuthRequest, res: Response): Promise<boolean> => {
   const user = (await User.findById(req.user?.id)) as IUser | null;
-  if (!user?.gymId) {
-    res.status(403).json({ success: false, message: 'You are not linked to a gym with an active store.' });
+  if (!user) {
+    res.status(401).json({ success: false, message: 'User not found' });
     return false;
   }
-  const gym = await Gym.findById(user.gymId);
-  if (!gym || !isStoreEnabledForGym(gym).enabled) {
-    res.status(403).json({ success: false, message: 'Store is not currently active at your gym.' });
-    return false;
+  if (!user.gymId) {
+    const latestOrder = await StoreOrder.findOne({ customerId: user._id }).sort({ createdAt: -1 });
+    if (latestOrder?.gymId) {
+      user.gymId = latestOrder.gymId;
+      await user.save();
+    } else {
+      const activeGym = await Gym.findOne({ status: 'ACTIVE' } as any) || await Gym.findOne().sort({ createdAt: -1 });
+      if (activeGym) {
+        user.gymId = activeGym._id;
+        await user.save();
+      }
+    }
   }
   return true;
 };
@@ -1403,19 +1411,36 @@ export const updateOrderStatus = async (req: AuthRequest, res: Response): Promis
       res.status(404).json({ success: false, message: 'Order not found' });
       return;
     }
-    const allowed = TRANSITIONS[order.status] || [];
-    if (!status || !Object.values(StoreOrderStatus).includes(status)) {
+
+    let targetStatus: StoreOrderStatus | undefined;
+    const rawStatus = (status || '').toString().trim();
+    if (rawStatus.toLowerCase() === 'delivered') {
+      targetStatus = StoreOrderStatus.COMPLETED;
+    } else {
+      targetStatus = Object.values(StoreOrderStatus).find(
+        (val) => val.toLowerCase() === rawStatus.toLowerCase()
+      );
+    }
+
+    if (!targetStatus) {
       res.status(400).json({ success: false, message: 'Invalid status' });
       return;
     }
-    // Removed strict transition rules to allow free status updates
-    const prev = order.status;
-    order.status = status;
-    order.statusHistory.push({ status, note: note || `Status changed to ${status}`, at: new Date() });
 
-    if (status === StoreOrderStatus.CANCELLED || status === StoreOrderStatus.REFUNDED) {
+    const prev = order.status;
+    order.status = targetStatus;
+
+    const lastHistory = order.statusHistory.length > 0 ? order.statusHistory[order.statusHistory.length - 1] : null;
+    if (!lastHistory || lastHistory.status !== targetStatus) {
+      order.statusHistory.push({ status: targetStatus, note: note || `Status changed to ${targetStatus}`, at: new Date() });
+    } else if (note) {
+      lastHistory.note = note;
+      lastHistory.at = new Date();
+    }
+
+    if (targetStatus === StoreOrderStatus.CANCELLED || targetStatus === StoreOrderStatus.REFUNDED) {
       await restockOrderItems(order);
-      if (status === StoreOrderStatus.CANCELLED) {
+      if (targetStatus === StoreOrderStatus.CANCELLED) {
         order.cancellationReason = note || 'Cancelled by the gym';
         if (order.paymentStatus === StoreOrderPaymentStatus.PAID) {
           order.paymentStatus = StoreOrderPaymentStatus.REFUNDED;
@@ -1437,15 +1462,15 @@ export const updateOrderStatus = async (req: AuthRequest, res: Response): Promis
         recipientId: customer._id,
         recipientRole: 'MEMBER',
         gymId,
-        title: `Order ${status}`,
-        message: `Your order ${order.orderNumber} is now "${status}".${note ? ` Note: ${note}` : ''}`,
+        title: `Order ${targetStatus}`,
+        message: `Your order ${order.orderNumber} is now "${targetStatus}".${note ? ` Note: ${note}` : ''}`,
         type: 'info',
         relatedRecordId: order._id,
         link: '/member/store/orders',
       });
     }
 
-    if (status === StoreOrderStatus.COMPLETED) {
+    if (targetStatus === StoreOrderStatus.COMPLETED) {
       await notify({
         recipientId: customer?._id,
         recipientRole: 'MEMBER',
@@ -1458,7 +1483,7 @@ export const updateOrderStatus = async (req: AuthRequest, res: Response): Promis
       });
     }
 
-    res.status(200).json({ success: true, message: `Order is now ${status}`, order, previousStatus: prev });
+    res.status(200).json({ success: true, message: `Order is now ${targetStatus}`, order, previousStatus: prev });
   } catch (error: any) {
     res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }
@@ -1468,8 +1493,8 @@ export const getMyOrders = async (req: AuthRequest, res: Response): Promise<void
   try {
     if (!(await requireStoreCustomer(req, res))) return;
     const user = (await User.findById(req.user!.id)) as IUser;
-    const { status, page = '1', limit = '20' } = req.query;
-    const filter: any = { customerId: user._id, gymId: user.gymId };
+    const { status, page = '1', limit = '50' } = req.query;
+    const filter: any = { customerId: user._id };
     if (status && status !== 'all') {
       if (status === 'Cancelled') {
         filter.status = { $in: ['Cancelled', 'Refunded'] };
@@ -1478,7 +1503,7 @@ export const getMyOrders = async (req: AuthRequest, res: Response): Promise<void
       }
     }
     const pNum = Math.max(1, parseInt(String(page), 10) || 1);
-    const lNum = Math.min(100, Math.max(1, parseInt(String(limit), 10) || 20));
+    const lNum = Math.min(100, Math.max(1, parseInt(String(limit), 10) || 50));
     const total = await StoreOrder.countDocuments(filter);
     const orders = await StoreOrder.find(filter)
       .populate('customerId', 'firstName lastName email mobile profilePhoto')
@@ -1496,7 +1521,7 @@ export const getMyOrderById = async (req: AuthRequest, res: Response): Promise<v
     if (!(await requireStoreCustomer(req, res))) return;
     const user = (await User.findById(req.user!.id)) as IUser;
     const { id } = req.params;
-    const order = await StoreOrder.findOne({ _id: id, customerId: user._id, gymId: user.gymId });
+    const order = await StoreOrder.findOne({ _id: id, customerId: user._id });
     if (!order) {
       res.status(404).json({ success: false, message: 'Order not found' });
       return;
@@ -1511,7 +1536,7 @@ export const cancelMyOrder = async (req: AuthRequest, res: Response): Promise<vo
   try {
     if (!(await requireStoreCustomer(req, res))) return;
     const user = (await User.findById(req.user!.id)) as IUser;
-    const order = await StoreOrder.findOne({ _id: req.params.id, customerId: user._id, gymId: user.gymId });
+    const order = await StoreOrder.findOne({ _id: req.params.id, customerId: user._id });
     if (!order) {
       res.status(404).json({ success: false, message: 'Order not found' });
       return;

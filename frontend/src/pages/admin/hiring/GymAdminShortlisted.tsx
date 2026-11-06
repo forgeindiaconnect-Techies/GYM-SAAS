@@ -50,7 +50,7 @@ export default function GymAdminShortlisted() {
   const fetchShortlisted = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('aigym_token') || localStorage.getItem('token');
       const res = await axios.get('http://localhost:5600/api/hiring/admin/applications', {
         headers: { Authorization: `Bearer ${token}` },
         params: { status: 'Shortlisted' }
@@ -70,7 +70,7 @@ export default function GymAdminShortlisted() {
     if (!selectedApp) return;
     setActionLoading(true);
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('aigym_token') || localStorage.getItem('token');
       const res = await axios.post(
         'http://localhost:5600/api/hiring/admin/interviews',
         {
@@ -96,7 +96,7 @@ export default function GymAdminShortlisted() {
     if (!selectedApp) return;
     setActionLoading(true);
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('aigym_token') || localStorage.getItem('token');
       const res = await axios.post(
         'http://localhost:5600/api/hiring/admin/offers',
         {

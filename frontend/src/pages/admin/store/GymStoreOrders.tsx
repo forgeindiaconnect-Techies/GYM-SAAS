@@ -29,6 +29,101 @@ const nextActions: Record<string, string[]> = {
   'Completed': ['Refunded'],
 };
 
+const getOrderTimelineSteps = (order: any) => {
+  if (!order) return [];
+  const isCancelFlow = order.status === 'Cancelled' || order.status === 'Refunded';
+  const isDelivery = order.fulfilmentType === 'Delivery';
+
+  const pipeline = isDelivery
+    ? [
+        { status: 'Pending', label: 'Order Placed', defaultNote: 'Order placed and payment received' },
+        { status: 'Confirmed', label: 'Order Confirmed', defaultNote: 'Order confirmed by store manager' },
+        { status: 'Preparing', label: 'Order Preparing', defaultNote: 'Order is being packed at gym store' },
+        { status: 'Out for Delivery', label: 'Out for Delivery', defaultNote: 'Package is on the way to delivery address' },
+        { status: 'Completed', label: 'Delivered', defaultNote: 'Order successfully delivered to customer' },
+      ]
+    : [
+        { status: 'Pending', label: 'Order Placed', defaultNote: 'Order placed and payment received' },
+        { status: 'Confirmed', label: 'Order Confirmed', defaultNote: 'Order confirmed by store manager' },
+        { status: 'Preparing', label: 'Order Preparing', defaultNote: 'Order is being packed at gym store' },
+        { status: 'Ready for Pickup', label: 'Ready for Pickup', defaultNote: 'Order ready for collection at gym front desk' },
+        { status: 'Completed', label: 'Picked Up', defaultNote: 'Order picked up by customer' },
+      ];
+
+  if (isCancelFlow) {
+    const rawHistory = Array.isArray(order.statusHistory) && order.statusHistory.length > 0
+      ? order.statusHistory
+      : [
+          { status: 'Pending', at: order.createdAt, note: 'Order placed' },
+          { status: order.status, at: order.updatedAt || new Date(), note: order.cancellationReason || 'Order cancelled' }
+        ];
+
+    // Deduplicate consecutive identical statuses so repeated clicks only show once
+    const deduplicatedHistory: any[] = [];
+    rawHistory.forEach((h: any) => {
+      const statusKey = (h.status || '').toString().toLowerCase().trim();
+      const last = deduplicatedHistory[deduplicatedHistory.length - 1];
+      const lastKey = last ? (last.status || '').toString().toLowerCase().trim() : '';
+
+      if (statusKey === lastKey) {
+        deduplicatedHistory[deduplicatedHistory.length - 1] = h;
+      } else {
+        deduplicatedHistory.push(h);
+      }
+    });
+
+    return deduplicatedHistory.map((h: any) => ({
+      status: h.status,
+      at: h.at,
+      note: h.note || `Status: ${h.status}`,
+      future: false,
+      isCancelled: h.status === 'Cancelled' || h.status === 'Refunded',
+    }));
+  }
+
+  const currentStatus = order.status || 'Pending';
+  const currentIndex = pipeline.findIndex(p => p.status.toLowerCase() === currentStatus.toLowerCase());
+  const maxReachedIndex = currentIndex >= 0 ? currentIndex : 0;
+
+  const historyMap: Record<string, { at?: any; note?: string }> = {};
+  if (Array.isArray(order.statusHistory)) {
+    order.statusHistory.forEach((h: any) => {
+      if (h?.status) {
+        historyMap[h.status.toLowerCase()] = {
+          at: h.at,
+          note: h.note
+        };
+      }
+    });
+  }
+
+  return pipeline.map((stage, idx) => {
+    const isReached = idx <= maxReachedIndex;
+    const isCurrent = idx === maxReachedIndex;
+    const recorded = historyMap[stage.status.toLowerCase()];
+
+    let atTime = undefined;
+    if (isReached) {
+      if (recorded?.at) {
+        atTime = recorded.at;
+      } else if (idx === 0 && order.createdAt) {
+        atTime = order.createdAt;
+      } else {
+        atTime = isCurrent ? (order.updatedAt || new Date()) : undefined;
+      }
+    }
+
+    return {
+      status: stage.status,
+      label: stage.label,
+      at: atTime,
+      note: recorded?.note || stage.defaultNote,
+      future: !isReached,
+      isCurrent,
+    };
+  });
+};
+
 const GymStoreOrders = () => {
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -260,20 +355,9 @@ const GymStoreOrders = () => {
               )}
 
               {/* ── Status Timeline (zigzag) ── */}
-              {selected.statusHistory && selected.statusHistory.length > 0 && (() => {
+              {(() => {
                 const isCancelFlow = selected.status === 'Cancelled' || selected.status === 'Refunded';
-                const steps = isCancelFlow
-                  ? selected.statusHistory
-                  : [
-                      ...selected.statusHistory,
-                      ...[
-                        'Pending', 'Confirmed', 'Preparing',
-                        selected.fulfilmentType === 'Delivery' ? 'Out for Delivery' : 'Ready for Pickup',
-                        'Completed'
-                      ]
-                        .filter((step: string) => !selected.statusHistory.some((h: any) => h.status === step))
-                        .map((step: string) => ({ status: step, future: true }))
-                    ];
+                const steps = getOrderTimelineSteps(selected);
                 return (
                   <div>
                     <p className="text-xs font-bold text-[#64748B] uppercase mb-6">Status Timeline</p>
@@ -320,7 +404,7 @@ const GymStoreOrders = () => {
                                     <p className={`font-bold text-sm ${labelColor}`}>{h.status}</p>
                                     {isReached ? (
                                       <p className="text-[11px] text-[#475569] mt-0.5 leading-snug">
-                                        {new Date(h.at).toLocaleString()}
+                                        {h.at ? new Date(h.at).toLocaleString() : 'Completed'}
                                         {h.note && h.note !== h.status ? <><br /><span className="italic">{h.note}</span></> : ''}
                                       </p>
                                     ) : (
@@ -350,7 +434,7 @@ const GymStoreOrders = () => {
                                     <p className={`font-bold text-sm ${labelColor}`}>{h.status}</p>
                                     {isReached ? (
                                       <p className="text-[11px] text-[#475569] mt-0.5 leading-snug">
-                                        {new Date(h.at).toLocaleString()}
+                                        {h.at ? new Date(h.at).toLocaleString() : 'Completed'}
                                         {h.note && h.note !== h.status ? <><br /><span className="italic">{h.note}</span></> : ''}
                                       </p>
                                     ) : (

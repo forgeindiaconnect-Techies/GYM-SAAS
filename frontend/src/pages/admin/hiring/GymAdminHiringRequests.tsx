@@ -86,7 +86,7 @@ export default function GymAdminHiringRequests() {
     setLoading(true);
     setError('');
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('aigym_token') || localStorage.getItem('token');
       const res = await axios.get('http://localhost:5600/api/hiring/owner/hiring-requests', {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -105,7 +105,7 @@ export default function GymAdminHiringRequests() {
     setSubmittingAction(true);
     setActionSuccessMsg('');
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('aigym_token') || localStorage.getItem('token');
       const res = await axios.post(
         `http://localhost:5600/api/hiring/owner/hiring-requests/${requestId}/confirm`,
         {},
@@ -132,7 +132,7 @@ export default function GymAdminHiringRequests() {
     if (!selectedReq) return;
     setSubmittingAction(true);
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('aigym_token') || localStorage.getItem('token');
       const res = await axios.post(
         `http://localhost:5600/api/hiring/owner/hiring-requests/${selectedReq._id}/negotiate`,
         {

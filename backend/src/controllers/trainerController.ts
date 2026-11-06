@@ -18,7 +18,11 @@ const isAuthorizedStaff = (role?: string) => {
 const resolveGymId = async (req: AuthRequest): Promise<string | undefined> => {
   if (req.user?.gymId) return req.user.gymId.toString();
   if (req.query.gymId) return req.query.gymId as string;
-  const gym = await Gym.findOne().sort({ createdAt: -1 });
+  if (req.user?.id) {
+    const gymByOwner = await Gym.findOne({ ownerId: req.user.id });
+    if (gymByOwner) return gymByOwner._id.toString();
+  }
+  const gym = await Gym.findOne({ status: 'ACTIVE' } as any) || await Gym.findOne().sort({ createdAt: -1 });
   return gym?._id?.toString();
 };
 
@@ -36,80 +40,135 @@ export const manualAddTrainer = async (req: AuthRequest, res: Response): Promise
     const {
       name, email, phone, profilePhoto, specialization, experience,
       trainingMode, qualifications, certifications, expertise, bio,
-      fee, paymentType, status, availableDays, availableStartTime, availableEndTime, availableSlot, password, branchId
+      fee, paymentType, status, availableDays, availableStartTime, availableEndTime, availableSlot, password, branchId,
+      firstName: rawFirstName, lastName: rawLastName, mobile: rawMobile, experienceYears, salary, qualification
     } = req.body;
 
-    if (!name || !email || !phone || !specialization || !trainingMode) {
-      res.status(400).json({ success: false, message: 'Required fields missing' });
+    const effectiveName = (name || `${rawFirstName || ''} ${rawLastName || ''}`).trim();
+    const effectiveEmail = (email || '').trim().toLowerCase();
+    const effectivePhone = (phone || rawMobile || '').trim();
+    const effectiveSpecialization = specialization || req.body.role || 'Fitness Trainer';
+    let effectiveMode = trainingMode || 'both';
+
+    if (!effectiveName || !effectiveEmail || !effectivePhone) {
+      res.status(400).json({ success: false, message: 'Trainer Name, Email, and Phone are required' });
       return;
     }
 
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      res.status(400).json({ success: false, message: 'Email already in use' });
-      return;
-    }
-
-    // Ensure the training mode is valid for the gym
+    // Ensure the gym exists or resolve fallback
     const gym = await Gym.findById(resolvedGymId);
     if (!gym) {
       res.status(404).json({ success: false, message: 'Gym not found' });
       return;
     }
 
-    if (gym.trainingMode !== 'both' && trainingMode !== 'both' && gym.trainingMode !== trainingMode) {
-      res.status(400).json({ success: false, message: `Trainer mode ${trainingMode} is not supported by this gym (${gym.trainingMode})` });
-      return;
+    // Adapt training mode if gym does not support specified mode
+    if (gym.trainingMode !== 'both' && effectiveMode !== 'both' && gym.trainingMode !== effectiveMode) {
+      effectiveMode = gym.trainingMode || 'both';
     }
 
-    const defaultPassword = password || 'WelcomeTrainer123!';
-    const salt = await bcrypt.genSalt(10);
-    const passwordHash = await bcrypt.hash(defaultPassword, salt);
+    // Safe numerical parsing for experience & fee to prevent Mongoose cast errors
+    const parsedExperience = typeof experience === 'number'
+      ? experience
+      : parseInt(String(experience || experienceYears || '0').replace(/[^0-9]/g, ''), 10) || 0;
 
-    const [firstName, ...lastNames] = name.split(' ');
-    const lastName = lastNames.join(' ') || ' ';
+    const parsedFee = typeof fee === 'number'
+      ? fee
+      : parseFloat(String(fee || salary || '0').replace(/[^0-9.]/g, '')) || 0;
 
-    const user = new User({
-      firstName,
-      lastName,
-      email,
-      mobile: phone,
-      passwordHash,
-      role: Role.TRAINER,
-      gymId: resolvedGymId,
-      isActive: true,
-      approvalStatus: ApprovalStatus.APPROVED
-    });
+    const effectiveQualifications = qualifications || qualification || '';
 
-    await user.save();
+    // Check if user already exists
+    let existingUser = await User.findOne({ email: effectiveEmail });
+    let userId: any;
+
+    if (existingUser) {
+      userId = existingUser._id;
+      // Ensure user is assigned to this gym if not already
+      if (!existingUser.gymId && resolvedGymId) {
+        existingUser.gymId = resolvedGymId as any;
+        await existingUser.save();
+      }
+
+      // Check if Trainer profile already exists for this user or email
+      let existingTrainer = await Trainer.findOne({ 
+        $or: [{ userId: existingUser._id }, { email: effectiveEmail }] 
+      });
+
+      if (existingTrainer) {
+        existingTrainer.gymId = resolvedGymId as any;
+        existingTrainer.name = effectiveName;
+        existingTrainer.phone = effectivePhone;
+        existingTrainer.specialization = effectiveSpecialization;
+        existingTrainer.experience = parsedExperience;
+        existingTrainer.trainingMode = effectiveMode as any;
+        existingTrainer.fee = parsedFee;
+        existingTrainer.status = status || 'Active';
+        if (bio) existingTrainer.bio = bio;
+        if (qualifications || qualification) existingTrainer.qualifications = effectiveQualifications;
+        if (certifications) existingTrainer.certifications = certifications;
+        if (branchId && branchId !== 'main') existingTrainer.branchId = branchId;
+        await existingTrainer.save();
+
+        res.status(200).json({ 
+          success: true, 
+          message: `${effectiveName} successfully updated and added to gym roster!`, 
+          trainer: existingTrainer 
+        });
+        return;
+      }
+    } else {
+      // Create new user account for trainer
+      const defaultPassword = password || 'WelcomeTrainer123!';
+      const salt = await bcrypt.genSalt(10);
+      const passwordHash = await bcrypt.hash(defaultPassword, salt);
+
+      const [firstName, ...lastNames] = effectiveName.split(' ');
+      const lastName = lastNames.join(' ') || ' ';
+
+      const user = new User({
+        firstName: rawFirstName || firstName,
+        lastName: rawLastName || lastName,
+        email: effectiveEmail,
+        mobile: effectivePhone,
+        passwordHash,
+        role: Role.TRAINER,
+        gymId: resolvedGymId,
+        isActive: true,
+        approvalStatus: ApprovalStatus.APPROVED
+      });
+
+      await user.save();
+      userId = user._id;
+    }
 
     const trainer = new Trainer({
       gymId: resolvedGymId,
       branchId: branchId && branchId !== 'main' ? branchId : undefined,
-      userId: user._id,
-      name,
-      email,
-      phone,
+      userId,
+      name: effectiveName,
+      email: effectiveEmail,
+      phone: effectivePhone,
       profilePhoto,
-      specialization,
-      experience,
-      trainingMode,
-      qualifications,
-      certifications,
-      expertise,
-      bio,
-      availableDays,
-      availableStartTime,
-      availableEndTime,
-      availableSlot,
-      fee,
-      paymentType,
+      specialization: effectiveSpecialization,
+      experience: parsedExperience,
+      trainingMode: effectiveMode,
+      qualifications: effectiveQualifications,
+      certifications: certifications || '',
+      expertise: expertise || effectiveSpecialization,
+      bio: bio || '',
+      availableDays: availableDays || 'Monday to Friday',
+      availableStartTime: availableStartTime || '06:00 AM',
+      availableEndTime: availableEndTime || '08:00 PM',
+      availableSlot: availableSlot || 10,
+      fee: parsedFee,
+      paymentType: paymentType || 'Per Month',
       status: status || 'Active'
     });
 
     await trainer.save();
 
-    if (fee && Number(fee) > 0) {
+    if (parsedFee > 0) {
       try {
         const cycleMap: Record<string, 'Weekly' | 'Monthly' | 'Per Session' | 'Custom'> = {
           'Per Week': 'Weekly',
@@ -125,13 +184,13 @@ export const manualAddTrainer = async (req: AuthRequest, res: Response): Promise
           gymId: resolvedGymId,
           branchId: branchId && branchId !== 'main' ? branchId : undefined,
           trainerId: trainer._id,
-          trainingType: modeMap[trainingMode] || 'Offline Training',
-          feeAmount: Number(fee),
+          trainingType: modeMap[effectiveMode] || 'Offline Training',
+          feeAmount: parsedFee,
           billingCycle: cycleMap[paymentType || 'Per Month'] || 'Monthly',
           effectiveFrom: new Date(),
           paymentMethod: 'Bank Transfer',
           status: 'Active',
-          notes: `Configured during trainer onboarding (${specialization || 'General'})`,
+          notes: `Configured during trainer onboarding (${effectiveSpecialization})`,
           createdBy: (gymOwner as any).id || (gymOwner as any)._id
         });
       } catch (feeErr) {
@@ -139,9 +198,10 @@ export const manualAddTrainer = async (req: AuthRequest, res: Response): Promise
       }
     }
 
-    res.status(201).json({ success: true, message: 'Trainer added successfully', trainer });
+    res.status(201).json({ success: true, message: 'Trainer hired and added to gym roster successfully!', trainer });
   } catch (error: any) {
-    res.status(500).json({ success: false, message: 'Server error', error: error.message });
+    console.error('Error in manualAddTrainer:', error);
+    res.status(500).json({ success: false, message: error.message || 'Server error', error: error.message });
   }
 };
 

@@ -37,6 +37,7 @@ router.get('/online-available', authenticate, getOnlineTrainers);
 // Protected gym owner routes
 router.post('/manual-add', authenticate, manualAddTrainer);
 router.post('/invite', authenticate, inviteTrainer);
+router.post('/', authenticate, manualAddTrainer);
 router.get('/', authenticate, getTrainers);
 router.get('/:id', authenticate, getTrainerById);
 router.patch('/:id/status', authenticate, updateTrainerStatus);

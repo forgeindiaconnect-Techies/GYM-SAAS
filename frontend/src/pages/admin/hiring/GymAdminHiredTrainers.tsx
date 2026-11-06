@@ -49,7 +49,7 @@ export default function GymAdminHiredTrainers() {
   const fetchHired = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('aigym_token') || localStorage.getItem('token');
       const headers = { Authorization: `Bearer ${token}` };
 
       // 1. Fetch Job Offers that are Accepted

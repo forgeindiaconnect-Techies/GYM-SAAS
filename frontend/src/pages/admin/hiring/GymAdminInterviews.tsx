@@ -31,7 +31,7 @@ export default function GymAdminInterviews() {
   const fetchInterviews = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('aigym_token') || localStorage.getItem('token');
       const params: any = {};
       if (statusFilter) params.status = statusFilter;
       const res = await axios.get('http://localhost:5600/api/hiring/admin/interviews', {
@@ -51,7 +51,7 @@ export default function GymAdminInterviews() {
   const handleUpdateStatus = async (interviewId: string, newStatus: string) => {
     setActionLoading(true);
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('aigym_token') || localStorage.getItem('token');
       const res = await axios.patch(
         `http://localhost:5600/api/hiring/admin/interviews/${interviewId}/status`,
         { status: newStatus },
