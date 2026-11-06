@@ -2,26 +2,38 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../constants/theme';
+import { CustomerAIFitnessScreen } from './CustomerAIFitnessScreen';
 import { CustomerWorkoutsScreen } from './CustomerWorkoutsScreen';
 import { CustomerDietScreen } from './CustomerDietScreen';
 import { CustomerProgressTrackingScreen } from './CustomerProgressTrackingScreen';
 import { CustomerAttendanceScreen } from './CustomerAttendanceScreen';
 
-export const CustomerFitnessScreen: React.FC<{ initialSubTab?: string }> = ({ initialSubTab = 'workout' }) => {
-  const [activeSubTab, setActiveSubTab] = useState<'workout' | 'diet' | 'progress' | 'attendance'>(
-    initialSubTab === 'diet' ? 'diet' : initialSubTab === 'attendance' ? 'attendance' : initialSubTab === 'progress' ? 'progress' : 'workout'
+export const CustomerFitnessScreen: React.FC<{ initialSubTab?: string }> = ({ initialSubTab = 'ai' }) => {
+  const [activeSubTab, setActiveSubTab] = useState<'ai' | 'workout' | 'diet' | 'progress' | 'attendance'>(
+    initialSubTab === 'workout' ? 'workout' : initialSubTab === 'diet' ? 'diet' : initialSubTab === 'attendance' ? 'attendance' : initialSubTab === 'progress' ? 'progress' : 'ai'
   );
 
   useEffect(() => {
-    if (initialSubTab === 'diet' || initialSubTab === 'attendance' || initialSubTab === 'progress' || initialSubTab === 'workout') {
+    if (initialSubTab === 'ai' || initialSubTab === 'workout' || initialSubTab === 'diet' || initialSubTab === 'attendance' || initialSubTab === 'progress') {
       setActiveSubTab(initialSubTab);
     }
   }, [initialSubTab]);
 
   return (
     <View style={styles.container}>
-      {/* 4 Fitness Subtabs: Workout Plan | Diet Plan | Progress Tracking | Attendance */}
+      {/* 5 Fitness Subtabs: AI Assistant | Workout Plan | Diet Plan | Progress Tracking | Attendance */}
       <View style={styles.subTabBar}>
+        <TouchableOpacity
+          style={[styles.subTabBtn, activeSubTab === 'ai' && styles.subTabBtnActive]}
+          onPress={() => setActiveSubTab('ai')}
+          activeOpacity={0.7}
+        >
+          <Ionicons name="sparkles" size={13} color={activeSubTab === 'ai' ? '#EA580C' : '#64748B'} />
+          <Text style={[styles.subTabText, activeSubTab === 'ai' && styles.subTabTextActive]}>
+            AI Coach
+          </Text>
+        </TouchableOpacity>
+
         <TouchableOpacity
           style={[styles.subTabBtn, activeSubTab === 'workout' && styles.subTabBtnActive]}
           onPress={() => setActiveSubTab('workout')}
@@ -68,6 +80,7 @@ export const CustomerFitnessScreen: React.FC<{ initialSubTab?: string }> = ({ in
       </View>
 
       <View style={styles.body}>
+        {activeSubTab === 'ai' && <CustomerAIFitnessScreen />}
         {activeSubTab === 'workout' && <CustomerWorkoutsScreen />}
         {activeSubTab === 'diet' && <CustomerDietScreen />}
         {activeSubTab === 'progress' && <CustomerProgressTrackingScreen />}

@@ -18,8 +18,10 @@ import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../constants/theme';
 import { api } from '../../api/client';
 import { useAuth } from '../../context/AuthContext';
+import { CustomerTrainerPlanScreen } from './CustomerTrainerPlanScreen';
+import { CustomerTrainerFeedbackScreen } from './CustomerTrainerFeedbackScreen';
 
-type TabType = 'find_trainers' | 'my_trainer' | 'my_bookings' | 'online_sessions' | 'messages';
+type TabType = 'find_trainers' | 'my_trainer' | 'trainer_plan' | 'trainer_feedback' | 'my_bookings' | 'online_sessions' | 'messages';
 
 interface Trainer {
   _id: string;
@@ -127,6 +129,8 @@ export const CustomerTrainingScreen: React.FC<{ initialSubTab?: string }> = ({ i
   // Resolve initial tab safely
   const resolveTab = (tab: string): TabType => {
     if (tab === 'trainer' || tab === 'my_trainer') return 'my_trainer';
+    if (tab === 'trainer-plan' || tab === 'trainer_plan' || tab === 'plan') return 'trainer_plan';
+    if (tab === 'trainer-feedback' || tab === 'trainer_feedback' || tab === 'feedback' || tab === 'review') return 'trainer_feedback';
     if (tab === 'bookings' || tab === 'my_bookings') return 'my_bookings';
     if (tab === 'online-sessions' || tab === 'online_sessions') return 'online_sessions';
     if (tab === 'chat' || tab === 'messages') return 'messages';
@@ -883,6 +887,36 @@ export const CustomerTrainingScreen: React.FC<{ initialSubTab?: string }> = ({ i
           </TouchableOpacity>
 
           <TouchableOpacity
+            style={[styles.subTabBtn, activeTab === 'trainer_plan' && styles.subTabBtnActive]}
+            onPress={() => setActiveTab('trainer_plan')}
+            activeOpacity={0.7}
+          >
+            <Ionicons 
+              name="clipboard-outline" 
+              size={14} 
+              color={activeTab === 'trainer_plan' ? '#FFFFFF' : '#64748B'} 
+            />
+            <Text style={[styles.subTabText, activeTab === 'trainer_plan' && styles.subTabTextActive]}>
+              Trainer's Plan
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.subTabBtn, activeTab === 'trainer_feedback' && styles.subTabBtnActive]}
+            onPress={() => setActiveTab('trainer_feedback')}
+            activeOpacity={0.7}
+          >
+            <Ionicons 
+              name="chatbox-ellipses-outline" 
+              size={14} 
+              color={activeTab === 'trainer_feedback' ? '#FFFFFF' : '#64748B'} 
+            />
+            <Text style={[styles.subTabText, activeTab === 'trainer_feedback' && styles.subTabTextActive]}>
+              Feedback
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
             style={[styles.subTabBtn, activeTab === 'my_bookings' && styles.subTabBtnActive]}
             onPress={() => setActiveTab('my_bookings')}
             activeOpacity={0.7}
@@ -933,6 +967,8 @@ export const CustomerTrainingScreen: React.FC<{ initialSubTab?: string }> = ({ i
       <View style={styles.content}>
         {activeTab === 'find_trainers' && renderFindTrainersView()}
         {activeTab === 'my_trainer' && renderMyTrainerView()}
+        {activeTab === 'trainer_plan' && <CustomerTrainerPlanScreen />}
+        {activeTab === 'trainer_feedback' && <CustomerTrainerFeedbackScreen />}
         {activeTab === 'my_bookings' && renderMyBookingsView()}
         {activeTab === 'online_sessions' && renderOnlineSessionsView()}
         {activeTab === 'messages' && renderMessagesView()}
