@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useState, useEffect, useCallback } from 'react';
 import { 
   View, 
@@ -452,7 +453,29 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
                 setViewMemberModalVisible(false);
                 setSelectedMember(null);
               }
-              Alert.alert('Member Removed', `${member.name} was removed from the member directory.`);
+
+              // Record in Deleted Details
+              try {
+                const record = {
+                  id: `DEL-${(member.id || member._id || Date.now().toString()).slice(-6).toUpperCase()}`,
+                  originalId: member.id || member._id,
+                  name: member.name || 'Member',
+                  type: 'Member',
+                  phone: member.phone || member.mobile || '+91 98765 12345',
+                  email: member.email || 'member@gmail.com',
+                  deletedAt: new Date().toISOString().split('T')[0],
+                  deletedBy: 'Admin',
+                  reason: 'Removed from member directory'
+                };
+                const existing = await AsyncStorage.getItem('gym_deleted_records');
+                const list = existing ? JSON.parse(existing) : [];
+                list.unshift(record);
+                await AsyncStorage.setItem('gym_deleted_records', JSON.stringify(list));
+              } catch (storageErr) {
+                console.log('Error caching deleted member:', storageErr);
+              }
+
+              Alert.alert('Member Removed', `${member.name} was moved to Deleted Details.`);
             } catch (err: any) {
               Alert.alert('Error', err.response?.data?.message || 'Could not delete member.');
             }

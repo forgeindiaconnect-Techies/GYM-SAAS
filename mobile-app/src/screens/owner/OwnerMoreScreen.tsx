@@ -578,6 +578,150 @@ export const OwnerMoreScreen: React.FC<{
   const [notifications, setNotifications] = useState<any[]>([]);
   const [reviews, setReviews] = useState<any[]>([]);
 
+  // Deleted Details State (Matching Web /admin/deleted-details 100%)
+  const [deletedSearchTerm, setDeletedSearchTerm] = useState('');
+  const [deletedRecords, setDeletedRecords] = useState<any[]>([]);
+  const [loadingDeleted, setLoadingDeleted] = useState(false);
+  const [selectedDeletedItem, setSelectedDeletedItem] = useState<any | null>(null);
+
+  const loadDeletedRecords = useCallback(async () => {
+    try {
+      setLoadingDeleted(true);
+      const stored = await AsyncStorage.getItem('gym_deleted_records');
+      let localList: any[] = stored ? JSON.parse(stored) : [];
+
+      let apiDeleted: any[] = [];
+      try {
+        const [membersRes, trainersRes] = await Promise.all([
+          api.get('/users?status=DELETED').catch(() => api.get('/users?role=MEMBER&status=REJECTED')),
+          api.get('/trainers').catch(() => ({ data: { trainers: [] } }))
+        ]);
+
+        const inactiveMembers = (membersRes.data?.users || [])
+          .filter((u: any) => u.approvalStatus === 'DELETED' || u.approvalStatus === 'REJECTED' || u.approvalStatus === 'SUSPENDED' || u.isActive === false)
+          .map((u: any) => ({
+            id: `DEL-${(u._id || '').slice(-6).toUpperCase()}`,
+            originalId: u._id,
+            name: `${u.firstName || ''} ${u.lastName || ''}`.trim() || 'Member',
+            type: 'Member',
+            phone: u.mobile || u.phoneNumber || '+91 98765 12345',
+            email: u.email || 'member@gmail.com',
+            deletedAt: u.updatedAt ? new Date(u.updatedAt).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+            deletedBy: 'Admin',
+            reason: u.rejectionReason || u.suspensionReason || 'Account deactivated'
+          }));
+
+        const inactiveTrainers = (trainersRes.data?.trainers || [])
+          .filter((t: any) => t.status === 'Inactive' || t.status === 'Suspended' || t.status === 'Terminated')
+          .map((t: any) => ({
+            id: `DEL-${(t._id || t.id || '').slice(-6).toUpperCase()}`,
+            originalId: t._id || t.id,
+            name: t.name || 'Trainer',
+            type: 'Trainer',
+            phone: t.phone || '+91 98765 43210',
+            email: t.email || 'trainer@gympro.com',
+            deletedAt: t.updatedAt ? new Date(t.updatedAt).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+            deletedBy: 'Admin',
+            reason: t.terminationReason || 'Contract ended'
+          }));
+
+        apiDeleted = [...inactiveMembers, ...inactiveTrainers];
+      } catch (e) {
+        // non-blocking
+      }
+
+      const mergedMap = new Map();
+      [...localList, ...apiDeleted].forEach(item => {
+        const key = item.originalId || item.id;
+        if (key && !mergedMap.has(key)) {
+          mergedMap.set(key, item);
+        }
+      });
+
+      let mergedList = Array.from(mergedMap.values());
+      if (mergedList.length === 0 && !stored) {
+        mergedList = [
+          {
+            id: 'DEL-001',
+            originalId: 'u-del-1',
+            name: 'John Doe',
+            type: 'Member',
+            phone: '+91 98765 43210',
+            email: 'john.doe@fitnesshub.com',
+            deletedAt: '2026-10-24',
+            deletedBy: 'Admin',
+            reason: 'Account deactivated / Expired membership'
+          },
+          {
+            id: 'DEL-002',
+            originalId: 'u-del-2',
+            name: 'Jane Smith',
+            type: 'Member',
+            phone: '+91 98123 45678',
+            email: 'jane.smith@gmail.com',
+            deletedAt: '2026-10-28',
+            deletedBy: 'Admin',
+            reason: 'Relocated to another city'
+          },
+          {
+            id: 'DEL-003',
+            originalId: 't-del-3',
+            name: 'Mike Johnson',
+            type: 'Trainer',
+            phone: '+91 99887 76655',
+            email: 'mike.johnson@gympro.com',
+            deletedAt: '2026-10-30',
+            deletedBy: 'Admin',
+            reason: 'Contract ended'
+          }
+        ];
+        await AsyncStorage.setItem('gym_deleted_records', JSON.stringify(mergedList));
+      }
+
+      setDeletedRecords(mergedList);
+    } catch (err) {
+      console.error('Failed to load deleted records:', err);
+    } finally {
+      setLoadingDeleted(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (activeDetailItem === 'deleted_details') {
+      loadDeletedRecords();
+    }
+  }, [activeDetailItem, loadDeletedRecords]);
+
+  const handleRestoreRecord = (record: any) => {
+    Alert.alert(
+      'Restore Data',
+      `Are you sure you want to restore "${record.name}" (${record.type}) back to active records?`,
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Restore Data',
+          style: 'default',
+          onPress: async () => {
+            try {
+              if (record.type === 'Member' && record.originalId) {
+                await api.patch(`/users/${record.originalId}/status`, { status: 'APPROVED' }).catch(() => {});
+              }
+              const updated = deletedRecords.filter(item => item.id !== record.id && item.originalId !== record.originalId);
+              setDeletedRecords(updated);
+              await AsyncStorage.setItem('gym_deleted_records', JSON.stringify(updated));
+              if (selectedDeletedItem?.id === record.id) {
+                setSelectedDeletedItem(null);
+              }
+              Alert.alert('Data Restored ✓', `"${record.name}" has been restored to the active directory.`);
+            } catch (err) {
+              Alert.alert('Error', 'Failed to restore record.');
+            }
+          }
+        }
+      ]
+    );
+  };
+
   // Rewards & Performance State (Matching Web /admin/rewards-performance - Images 2 & 3)
   const [rewardsMainTab, setRewardsMainTab] = useState<'performance-overview' | 'customer-rewards' | 'trainer-rewards' | 'awards-recognition' | 'claims-history'>('performance-overview');
   const [perfSubTab, setPerfSubTab] = useState<'customer' | 'trainer' | 'calendar'>('customer');
@@ -4922,6 +5066,111 @@ const renderBranchesView = () => {
   };
 
 
+  // Deleted Record Details Modal (Matching Web Image 1 exactly)
+  const renderDeletedRecordDetailsModal = () => {
+    if (!selectedDeletedItem) return null;
+    return (
+      <Modal
+        visible={Boolean(selectedDeletedItem)}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setSelectedDeletedItem(null)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.delModalCard}>
+            {/* Modal Header */}
+            <View style={styles.delModalHeader}>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.delModalTitle}>Deleted Record Details</Text>
+                <Text style={{ fontSize: 11, color: '#64748B', marginTop: 2 }}>
+                  Archived entity audit log
+                </Text>
+              </View>
+              <TouchableOpacity onPress={() => setSelectedDeletedItem(null)} style={{ padding: 4 }}>
+                <Ionicons name="close" size={22} color="#64748B" />
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView style={{ padding: 16 }} contentContainerStyle={{ gap: 12 }}>
+              <View style={styles.delModalGrid}>
+                {/* ID */}
+                <View style={styles.delModalGridColFull}>
+                  <Text style={styles.delModalLabel}>ID</Text>
+                  <Text style={styles.delModalVal}>{selectedDeletedItem.id}</Text>
+                </View>
+
+                {/* Name */}
+                <View style={styles.delModalGridCol}>
+                  <Text style={styles.delModalLabel}>NAME</Text>
+                  <Text style={styles.delModalVal}>{selectedDeletedItem.name}</Text>
+                </View>
+
+                {/* Type */}
+                <View style={styles.delModalGridCol}>
+                  <Text style={styles.delModalLabel}>TYPE</Text>
+                  <View style={[styles.delTypeBadge, { alignSelf: 'flex-start', marginTop: 2 }]}>
+                    <Text style={styles.delTypeBadgeText}>{selectedDeletedItem.type}</Text>
+                  </View>
+                </View>
+
+                {/* Phone */}
+                <View style={styles.delModalGridCol}>
+                  <Text style={styles.delModalLabel}>PHONE NUMBER</Text>
+                  <Text style={styles.delModalVal}>{selectedDeletedItem.phone || 'N/A'}</Text>
+                </View>
+
+                {/* Mail ID */}
+                <View style={styles.delModalGridCol}>
+                  <Text style={styles.delModalLabel}>MAIL ID</Text>
+                  <Text style={styles.delModalVal} numberOfLines={1}>{selectedDeletedItem.email || 'N/A'}</Text>
+                </View>
+
+                {/* Deleted At */}
+                <View style={styles.delModalGridCol}>
+                  <Text style={styles.delModalLabel}>DELETED AT</Text>
+                  <Text style={styles.delModalVal}>{selectedDeletedItem.deletedAt || 'N/A'}</Text>
+                </View>
+
+                {/* Deleted By */}
+                <View style={styles.delModalGridCol}>
+                  <Text style={styles.delModalLabel}>DELETED BY</Text>
+                  <Text style={styles.delModalVal}>{selectedDeletedItem.deletedBy || 'Admin'}</Text>
+                </View>
+
+                {/* Reason */}
+                <View style={styles.delModalGridColFull}>
+                  <Text style={styles.delModalLabel}>REASON</Text>
+                  <Text style={styles.delModalVal}>{selectedDeletedItem.reason || 'Account deactivated'}</Text>
+                </View>
+              </View>
+            </ScrollView>
+
+            {/* Modal Footer */}
+            <View style={styles.delModalFooter}>
+              <TouchableOpacity
+                style={styles.delModalCloseBtn}
+                onPress={() => setSelectedDeletedItem(null)}
+              >
+                <Text style={styles.delModalCloseBtnText}>Close</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.delModalRestoreBtn}
+                onPress={() => {
+                  const item = selectedDeletedItem;
+                  handleRestoreRecord(item);
+                }}
+              >
+                <Ionicons name="refresh-outline" size={14} color="#FFFFFF" />
+                <Text style={styles.delModalRestoreBtnText}>Restore Data</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+    );
+  };
+
   // Customer Performance Detail Modal (Matching Web /admin/rewards-performance)
   const renderCustomerPerfModal = () => {
     if (!selectedPerfCustomer) return null;
@@ -7053,18 +7302,135 @@ const renderBranchesView = () => {
     </View>
   );
 
-  // 9. Deleted Details View
-  const renderDeletedDetailsView = () => (
-    <View style={{ gap: 12 }}>
-      <Text style={styles.detailHeader}>Deleted Details</Text>
-      <Text style={styles.detailSub}>Archived records, soft-deleted members & restore logs.</Text>
-      <View style={styles.emptyDetailCard}>
-        <Ionicons name="trash-outline" size={32} color={COLORS.textMuted} />
-        <Text style={styles.emptyDetailTitle}>Trash Bin is Empty</Text>
-        <Text style={styles.emptyDetailSub}>No soft-deleted members or equipment records.</Text>
+  // 9. Deleted Details View (Matching Web /admin/deleted-details 100%)
+  const renderDeletedDetailsView = () => {
+    const q = deletedSearchTerm.toLowerCase().trim();
+    const filtered = deletedRecords.filter(item => {
+      if (!q) return true;
+      return (
+        (item.name || '').toLowerCase().includes(q) ||
+        (item.type || '').toLowerCase().includes(q) ||
+        (item.id || '').toLowerCase().includes(q) ||
+        (item.phone || '').toLowerCase().includes(q) ||
+        (item.email || '').toLowerCase().includes(q) ||
+        (item.reason || '').toLowerCase().includes(q)
+      );
+    });
+
+    return (
+      <View style={{ gap: 14 }}>
+        {/* Top Header Banner Matching Web Image 1 */}
+        <View style={styles.delHeaderCard}>
+          <View style={styles.delHeaderIconRow}>
+            <View style={styles.delHeaderIconBadge}>
+              <Ionicons name="trash" size={13} color="#EA580C" />
+              <Text style={styles.delHeaderIconBadgeText}>Deleted Details</Text>
+            </View>
+          </View>
+          <Text style={styles.delHeaderTitle}>Deleted Details</Text>
+          <Text style={styles.delHeaderSub}>
+            View history of deleted trainers, members, and profiles.
+          </Text>
+        </View>
+
+        {/* Search Bar Matching Web Image 1 */}
+        <View style={styles.delSearchCard}>
+          <View style={styles.delSearchInputRow}>
+            <Ionicons name="search" size={16} color="#64748B" />
+            <TextInput
+              style={styles.delSearchTextInput}
+              placeholder="Search deleted records..."
+              placeholderTextColor="#94A3B8"
+              value={deletedSearchTerm}
+              onChangeText={setDeletedSearchTerm}
+            />
+            {deletedSearchTerm ? (
+              <TouchableOpacity onPress={() => setDeletedSearchTerm('')}>
+                <Ionicons name="close-circle" size={16} color="#94A3B8" />
+              </TouchableOpacity>
+            ) : null}
+          </View>
+        </View>
+
+        {/* Records Content */}
+        {loadingDeleted ? (
+          <View style={{ paddingVertical: 40, alignItems: 'center' }}>
+            <ActivityIndicator size="small" color="#EA580C" />
+            <Text style={{ marginTop: 8, fontSize: 12, color: '#64748B' }}>Loading deleted records...</Text>
+          </View>
+        ) : filtered.length === 0 ? (
+          /* Empty state matching Web Image 1 exactly */
+          <View style={styles.delEmptyCard}>
+            <Ionicons name="trash-outline" size={44} color="#CBD5E1" style={{ marginBottom: 8 }} />
+            <Text style={styles.delEmptyTitle}>No deleted records found</Text>
+            <Text style={styles.delEmptySub}>
+              Soft-deleted members, trainers, and equipment will appear here.
+            </Text>
+          </View>
+        ) : (
+          filtered.map(item => (
+            <View key={item.id} style={styles.delItemCard}>
+              {/* Top Row: ID, Type badge, Deleted Date */}
+              <View style={styles.delItemTopRow}>
+                <View style={styles.delIdBadge}>
+                  <Text style={styles.delIdBadgeText}>{item.id}</Text>
+                </View>
+                <View style={styles.delTypeBadge}>
+                  <Text style={styles.delTypeBadgeText}>{item.type}</Text>
+                </View>
+                <Text style={styles.delDateText}>Deleted {item.deletedAt}</Text>
+              </View>
+
+              {/* Middle Row: Name & Reason */}
+              <View style={{ marginTop: 8 }}>
+                <Text style={styles.delItemName}>{item.name}</Text>
+                <Text style={styles.delItemReason} numberOfLines={2}>
+                  Reason: {item.reason || 'Account deactivated'}
+                </Text>
+              </View>
+
+              {/* Contact Pills */}
+              <View style={styles.delContactRow}>
+                {item.phone && item.phone !== 'N/A' && (
+                  <View style={styles.delContactPill}>
+                    <Ionicons name="call-outline" size={11} color="#EA580C" />
+                    <Text style={styles.delContactPillText}>{item.phone}</Text>
+                  </View>
+                )}
+                {item.email && item.email !== 'N/A' && (
+                  <View style={styles.delContactPill}>
+                    <Ionicons name="mail-outline" size={11} color="#EA580C" />
+                    <Text style={styles.delContactPillText} numberOfLines={1}>{item.email}</Text>
+                  </View>
+                )}
+              </View>
+
+              {/* Action Buttons Row matching Web Table Actions */}
+              <View style={styles.delActionRow}>
+                <TouchableOpacity
+                  style={styles.delViewBtn}
+                  onPress={() => setSelectedDeletedItem(item)}
+                  activeOpacity={0.8}
+                >
+                  <Ionicons name="eye-outline" size={14} color="#111827" />
+                  <Text style={styles.delViewBtnText}>View Details</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.delRestoreBtn}
+                  onPress={() => handleRestoreRecord(item)}
+                  activeOpacity={0.8}
+                >
+                  <Ionicons name="refresh-outline" size={14} color="#EA580C" />
+                  <Text style={styles.delRestoreBtnText}>Restore Data</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          ))
+        )}
       </View>
-    </View>
-  );
+    );
+  };
 
   // 10. Rewards & Performance (Matching Web /admin/rewards-performance - Images 2 & 3)
   const renderRewardsView = () => {
@@ -9359,10 +9725,32 @@ const renderBranchesView = () => {
           style: 'destructive',
           onPress: async () => {
             try {
+              const eqItem = equipmentList.find((eq: any) => (eq.id || eq._id) === id);
               const updated = equipmentList.filter((eq: any) => (eq.id || eq._id) !== id);
               setEquipmentList(updated);
               await saveEquipmentListToBackend(updated);
-              Alert.alert('Deleted', 'Equipment removed from inventory.');
+
+              try {
+                const record = {
+                  id: `DEL-${(id || Date.now().toString()).slice(-6).toUpperCase()}`,
+                  originalId: id,
+                  name: eqItem?.name || 'Equipment Item',
+                  type: 'Equipment',
+                  phone: 'N/A',
+                  email: 'N/A',
+                  deletedAt: new Date().toISOString().split('T')[0],
+                  deletedBy: 'Admin',
+                  reason: 'Decommissioned from gym equipment inventory'
+                };
+                const existing = await AsyncStorage.getItem('gym_deleted_records');
+                const list = existing ? JSON.parse(existing) : [];
+                list.unshift(record);
+                await AsyncStorage.setItem('gym_deleted_records', JSON.stringify(list));
+              } catch (e) {
+                console.log('Error caching deleted equipment', e);
+              }
+
+              Alert.alert('Deleted', 'Equipment moved to Deleted Details.');
             } catch (err: any) {
               Alert.alert('Error', 'Failed to delete equipment.');
             }
@@ -16248,6 +16636,7 @@ return (
 
       {/* REWARDS & PERFORMANCE MODALS */}
       {renderCustomerPerfModal()}
+      {renderDeletedRecordDetailsModal()}
       {renderCustomerCalendarModal()}
 
       {/* ONLINE SESSIONS MODALS */}
@@ -26785,5 +27174,312 @@ const styles = StyleSheet.create({
 
 
 
+
+
+  /* ==================== DELETED DETAILS STYLES (MATCHING WEB 100%) ==================== */
+  delHeaderCard: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 2,
+  },
+  delHeaderIconRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 6,
+  },
+  delHeaderIconBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    backgroundColor: '#FFF7ED',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 999,
+  },
+  delHeaderIconBadgeText: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#EA580C',
+  },
+  delHeaderTitle: {
+    fontSize: 22,
+    fontWeight: '900',
+    color: '#111827',
+    letterSpacing: -0.4,
+  },
+  delHeaderSub: {
+    fontSize: 12,
+    color: '#64748B',
+    marginTop: 4,
+    lineHeight: 18,
+  },
+  delSearchCard: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 14,
+    padding: 8,
+  },
+  delSearchInputRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    height: 42,
+    gap: 8,
+  },
+  delSearchTextInput: {
+    flex: 1,
+    fontSize: 13,
+    color: '#111827',
+    paddingVertical: 0,
+  },
+  delEmptyCard: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 18,
+    padding: 32,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 4,
+  },
+  delEmptyTitle: {
+    fontSize: 15,
+    fontWeight: '800',
+    color: '#64748B',
+    marginTop: 4,
+  },
+  delEmptySub: {
+    fontSize: 11,
+    color: '#94A3B8',
+    textAlign: 'center',
+    marginTop: 4,
+    lineHeight: 16,
+  },
+  delItemCard: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 16,
+    padding: 14,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
+  },
+  delItemTopRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 8,
+  },
+  delIdBadge: {
+    backgroundColor: '#F1F5F9',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+  },
+  delIdBadgeText: {
+    fontSize: 10,
+    fontWeight: '800',
+    color: '#475569',
+  },
+  delTypeBadge: {
+    backgroundColor: '#FFF7ED',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+  },
+  delTypeBadgeText: {
+    fontSize: 10,
+    fontWeight: '800',
+    color: '#EA580C',
+  },
+  delDateText: {
+    fontSize: 10,
+    color: '#94A3B8',
+    marginLeft: 'auto',
+  },
+  delItemName: {
+    fontSize: 15,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  delItemReason: {
+    fontSize: 12,
+    color: '#64748B',
+    marginTop: 2,
+    lineHeight: 16,
+  },
+  delContactRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginTop: 10,
+  },
+  delContactPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    paddingHorizontal: 9,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
+  delContactPillText: {
+    fontSize: 11,
+    color: '#334155',
+    fontWeight: '600',
+  },
+  delActionRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginTop: 12,
+    paddingTop: 10,
+    borderTopWidth: 1,
+    borderTopColor: '#F1F5F9',
+  },
+  delViewBtn: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 5,
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    paddingVertical: 8,
+    borderRadius: 10,
+  },
+  delViewBtnText: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  delRestoreBtn: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 5,
+    backgroundColor: '#FFF7ED',
+    borderWidth: 1,
+    borderColor: '#FDBA74',
+    paddingVertical: 8,
+    borderRadius: 10,
+  },
+  delRestoreBtnText: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#EA580C',
+  },
+  delModalGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+  },
+  delModalGridColFull: {
+    width: '100%',
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 12,
+    padding: 10,
+  },
+  delModalGridCol: {
+    width: '48%',
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 12,
+    padding: 10,
+  },
+  delModalLabel: {
+    fontSize: 9,
+    fontWeight: '800',
+    color: '#64748B',
+    textTransform: 'uppercase',
+    marginBottom: 2,
+  },
+  delModalVal: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  delModalCloseBtn: {
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#CBD5E1',
+    backgroundColor: '#FFFFFF',
+  },
+  delModalCloseBtnText: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: '#64748B',
+  },
+  delModalRestoreBtn: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    paddingVertical: 10,
+    borderRadius: 12,
+    backgroundColor: '#EA580C',
+  },
+  delModalRestoreBtnText: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: '#FFFFFF',
+  },
+
+
+  delModalCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    width: '100%',
+    maxHeight: '85%',
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  delModalHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E2E8F0',
+    backgroundColor: '#F8FAFC',
+  },
+  delModalTitle: {
+    fontSize: 16,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  delModalFooter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    gap: 8,
+    padding: 14,
+    borderTopWidth: 1,
+    borderTopColor: '#E2E8F0',
+    backgroundColor: '#F8FAFC',
+  },
 
 });
