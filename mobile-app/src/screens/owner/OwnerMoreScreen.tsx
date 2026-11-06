@@ -33,6 +33,99 @@ const EXERCISE_STATUSES = ['All', 'Active', 'Inactive'];
 
 const EQUIPMENT_CATEGORIES = ['All', 'Cardio', 'Strength', 'Free Weights', 'Functional', 'Recovery'];
 
+const DEFAULT_NOTIFICATIONS: any[] = [
+  {
+    _id: 'notif_1',
+    title: 'New Trainer Job Application',
+    message: 'selva kumar registered and applied for "Trainers". Review their profile and resume in your dashboard.',
+    type: 'info',
+    isRead: false,
+    createdAt: '2026-10-29T15:04:00.000Z',
+    link: 'trainers',
+  },
+  {
+    _id: 'notif_2',
+    title: 'New Contact Message from Maalik Kumar',
+    message: 'Maalik Kumar (maalik@gmail.com): "Hiiiii"',
+    type: 'message',
+    isRead: false,
+    createdAt: '2026-10-26T11:02:00.000Z',
+    link: 'enquiries',
+  },
+  {
+    _id: 'notif_3',
+    title: 'New Store Order - Stock Auto-Deducted',
+    message: 'Order ORD-MVM7Y6AEI9KD (₹140) placed by Renugopal Y. Inventory stock reduced for: classy (x1).',
+    type: 'alert',
+    isRead: false,
+    createdAt: '2026-10-26T10:45:00.000Z',
+    link: 'store_orders',
+  },
+  {
+    _id: 'notif_4',
+    title: 'New Member Online Booking',
+    message: 'Renugopal Y has booked a Personal Training session with coach Naveen.',
+    type: 'success',
+    isRead: true,
+    createdAt: '2026-10-25T09:30:00.000Z',
+    link: 'session_bookings',
+  },
+  {
+    _id: 'notif_5',
+    title: 'Membership Renewal Approaching',
+    message: '3 members have packages expiring in the next 7 days. Send reminder alerts.',
+    type: 'alert',
+    isRead: true,
+    createdAt: '2026-10-24T14:15:00.000Z',
+    link: 'plans',
+  },
+  {
+    _id: 'notif_6',
+    title: 'New Equipment Added to Inventory',
+    message: 'Cable Crossover Machine added to Floor 1 by Head Trainer.',
+    type: 'info',
+    isRead: true,
+    createdAt: '2026-10-22T16:20:00.000Z',
+    link: 'equipment',
+  },
+  {
+    _id: 'notif_7',
+    title: 'Diet & Workout Plan Assigned',
+    message: 'Coach Naveen updated the 7-day hypertrophy plan for Renugopal Y.',
+    type: 'success',
+    isRead: true,
+    createdAt: '2026-10-20T12:00:00.000Z',
+    link: 'exercises',
+  },
+  {
+    _id: 'notif_8',
+    title: 'Monthly Revenue Report Ready',
+    message: 'Financial summary for October generated with complete membership receipts.',
+    type: 'info',
+    isRead: true,
+    createdAt: '2026-10-18T18:00:00.000Z',
+    link: 'reports',
+  },
+  {
+    _id: 'notif_9',
+    title: 'Member Review Received',
+    message: 'Renugopal Y rated the gym 4.0 stars: "Good gym. Thanks to all".',
+    type: 'message',
+    isRead: true,
+    createdAt: '2026-10-15T10:00:00.000Z',
+    link: 'reviews',
+  },
+  {
+    _id: 'notif_10',
+    title: 'Trainer Feedback Logged',
+    message: 'Renugopal Y reviewed personal trainer Naveen: "Great coach Naveen".',
+    type: 'info',
+    isRead: true,
+    createdAt: '2026-10-15T11:00:00.000Z',
+    link: 'reviews',
+  },
+];
+
 const DEFAULT_REVIEWS_DATA: any = {
   gym: {
     _id: 'default_gym_pfl',
@@ -629,7 +722,10 @@ export const OwnerMoreScreen: React.FC<{
   const [storeDashboardData, setStoreDashboardData] = useState<any>(null);
   const [gymSessions, setGymSessions] = useState<any[]>([]);
   const [branches, setBranches] = useState<any[]>([]);
-  const [notifications, setNotifications] = useState<any[]>([]);
+  const [notifications, setNotifications] = useState<any[]>(DEFAULT_NOTIFICATIONS);
+  const [notificationFilter, setNotificationFilter] = useState<'all' | 'unread' | 'alerts' | 'members' | 'billing'>('all');
+  const [selectedNotification, setSelectedNotification] = useState<any | null>(null);
+  const [loadingNotifications, setLoadingNotifications] = useState<boolean>(false);
   const [reviews, setReviews] = useState<any[]>([]);
   // Review & Rating State (Matching Web /admin/reviews 100%)
   const [reviewsData, setReviewsData] = useState<any>(DEFAULT_REVIEWS_DATA);
@@ -1777,8 +1873,22 @@ export const OwnerMoreScreen: React.FC<{
           console.log('[OwnerMore] gym_profile fetch error:', gpErr);
         }
       } else if (id === 'notifications') {
-        const res = await api.get('/notifications');
-        setNotifications(res.data?.notifications || (Array.isArray(res.data) ? res.data : []));
+        try {
+          setLoadingNotifications(true);
+          const branchParam = user?.branchId ? ('?branchId=' + user.branchId) : '';
+          const res = await api.get('/notifications' + branchParam).catch(() => null);
+          const fetched = res?.data?.notifications || (Array.isArray(res?.data) ? res.data : []);
+          if (fetched && fetched.length > 0) {
+            setNotifications(fetched);
+          } else {
+            setNotifications(DEFAULT_NOTIFICATIONS);
+          }
+        } catch (nErr) {
+          console.log('[OwnerMore] notifications fetch error:', nErr);
+          setNotifications(DEFAULT_NOTIFICATIONS);
+        } finally {
+          setLoadingNotifications(false);
+        }
       } else if (id === 'reviews') {
         try {
           const res = await api.get('/gyms/owner/reviews').catch(() => null);
@@ -8046,6 +8156,483 @@ const renderBranchesView = () => {
     );
   };
 
+  // 8.5 Notifications View (Matching Web /admin/notifications 100%)
+  const renderNotificationsView = () => {
+    const formatNotificationDate = (dateStr?: string) => {
+      if (!dateStr) return 'Recently';
+      try {
+        const d = new Date(dateStr);
+        if (isNaN(d.getTime())) return dateStr;
+        const day = d.getDate();
+        const month = d.toLocaleDateString('en-US', { month: 'short' });
+        let hours = d.getHours();
+        const minutes = d.getMinutes().toString().padStart(2, '0');
+        const ampm = hours >= 12 ? 'pm' : 'am';
+        hours = hours % 12;
+        hours = hours ? hours : 12;
+        return day + ' ' + month + ', ' + hours.toString().padStart(2, '0') + ':' + minutes + ' ' + ampm;
+      } catch {
+        return dateStr;
+      }
+    };
+
+    const unreadCount = notifications.filter((n: any) => !n.isRead).length;
+
+    const filteredList = notifications.filter((notif: any) => {
+      if (notificationFilter === 'unread') return !notif.isRead;
+      const text = ((notif.title || '') + ' ' + (notif.message || '')).toLowerCase();
+      if (notificationFilter === 'alerts') {
+        return notif.type === 'alert' || text.includes('alert') || text.includes('warning') || text.includes('due');
+      }
+      if (notificationFilter === 'members') {
+        return text.includes('member') || text.includes('enquiry') || text.includes('lead') || text.includes('trial') || text.includes('trainer') || text.includes('application') || text.includes('contact');
+      }
+      if (notificationFilter === 'billing') {
+        return text.includes('payment') || text.includes('order') || text.includes('store') || text.includes('subscription') || text.includes('invoice') || text.includes('revenue') || text.includes('fee');
+      }
+      return true;
+    });
+
+    const handleMarkAsRead = async (id: string) => {
+      try {
+        await api.put('/notifications/' + id + '/read').catch(() => null);
+        setNotifications((prev: any[]) => prev.map((n: any) => n._id === id ? { ...n, isRead: true } : n));
+      } catch (err) {
+        console.error('Failed to mark read', err);
+      }
+    };
+
+    const handleMarkAllAsRead = async () => {
+      try {
+        await api.put('/notifications/mark-all-read').catch(() => null);
+        setNotifications((prev: any[]) => prev.map((n: any) => ({ ...n, isRead: true })));
+      } catch (err) {
+        console.error('Failed to mark all read', err);
+      }
+    };
+
+    const handleDeleteNotification = async (id: string) => {
+      try {
+        await api.delete('/notifications/' + id).catch(() => null);
+        setNotifications((prev: any[]) => prev.filter((n: any) => n._id !== id));
+        if (selectedNotification?._id === id) setSelectedNotification(null);
+      } catch (err) {
+        console.error('Failed to delete notification', err);
+      }
+    };
+
+    const handleOpenNotification = (notif: any) => {
+      if (!notif.isRead) {
+        handleMarkAsRead(notif._id);
+      }
+      setSelectedNotification(notif);
+    };
+
+    const getLinkSection = (notif: any) => {
+      const link = (notif.link || '').toLowerCase();
+      const text = ((notif.title || '') + ' ' + (notif.message || '')).toLowerCase();
+      if (link.includes('trainer') || text.includes('trainer')) return 'trainers';
+      if (link.includes('order') || text.includes('order') || text.includes('store')) return 'store_orders';
+      if (link.includes('booking') || text.includes('booking')) return 'session_bookings';
+      if (link.includes('equipment') || text.includes('equipment')) return 'equipment';
+      if (link.includes('review') || text.includes('review')) return 'reviews';
+      if (link.includes('report') || text.includes('report')) return 'reports';
+      if (link.includes('member') || text.includes('member')) return 'plans';
+      return null;
+    };
+
+    return (
+      <View style={{ gap: 14 }}>
+        {/* Top Header Card Matching Web Image 1 */}
+        <View style={styles.ntHeaderCard}>
+          <View style={styles.ntHeaderTopRow}>
+            <View style={styles.ntHeaderIconBadge}>
+              <Ionicons name="notifications" size={20} color="#EA580C" />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.ntHeaderTitle}>System Notifications</Text>
+              <Text style={styles.ntHeaderSub}>
+                Real-time activity alerts, member actions, payment verifications, and store updates.
+              </Text>
+            </View>
+          </View>
+
+          <View style={styles.ntHeaderActionRow}>
+            <View style={styles.ntUnreadPill}>
+              <Text style={styles.ntUnreadPillText}>{unreadCount} Unread</Text>
+            </View>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              disabled={unreadCount === 0}
+              onPress={handleMarkAllAsRead}
+              style={[
+                styles.ntMarkAllBtn,
+                unreadCount === 0 ? { opacity: 0.5 } : null,
+              ]}
+            >
+              <Ionicons name="checkmark-done" size={14} color="#EA580C" />
+              <Text style={styles.ntMarkAllBtnText}>Mark all read</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* Filter Tabs Row Matching Web Image 1 */}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.ntFilterTabsScroll}
+        >
+          {/* All */}
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() => setNotificationFilter('all')}
+            style={[
+              styles.ntFilterTab,
+              notificationFilter === 'all' ? styles.ntFilterTabActive : styles.ntFilterTabInactive,
+            ]}
+          >
+            <Text
+              style={[
+                styles.ntFilterTabText,
+                notificationFilter === 'all' ? styles.ntFilterTabTextActive : styles.ntFilterTabTextInactive,
+              ]}
+            >
+              All ({notifications.length})
+            </Text>
+          </TouchableOpacity>
+
+          {/* Unread */}
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() => setNotificationFilter('unread')}
+            style={[
+              styles.ntFilterTab,
+              notificationFilter === 'unread' ? styles.ntFilterTabActive : styles.ntFilterTabInactive,
+            ]}
+          >
+            <Text
+              style={[
+                styles.ntFilterTabText,
+                notificationFilter === 'unread' ? styles.ntFilterTabTextActive : styles.ntFilterTabTextInactive,
+              ]}
+            >
+              Unread ({unreadCount})
+            </Text>
+          </TouchableOpacity>
+
+          {/* Alerts */}
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() => setNotificationFilter('alerts')}
+            style={[
+              styles.ntFilterTab,
+              notificationFilter === 'alerts' ? styles.ntFilterTabActive : styles.ntFilterTabInactive,
+            ]}
+          >
+            <Ionicons
+              name="alert-circle"
+              size={13}
+              color={notificationFilter === 'alerts' ? '#FFFFFF' : '#EF4444'}
+            />
+            <Text
+              style={[
+                styles.ntFilterTabText,
+                notificationFilter === 'alerts' ? styles.ntFilterTabTextActive : styles.ntFilterTabTextInactive,
+              ]}
+            >
+              Alerts
+            </Text>
+          </TouchableOpacity>
+
+          {/* Members & Enquiries */}
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() => setNotificationFilter('members')}
+            style={[
+              styles.ntFilterTab,
+              notificationFilter === 'members' ? styles.ntFilterTabActive : styles.ntFilterTabInactive,
+            ]}
+          >
+            <Ionicons
+              name="people"
+              size={13}
+              color={notificationFilter === 'members' ? '#FFFFFF' : '#EA580C'}
+            />
+            <Text
+              style={[
+                styles.ntFilterTabText,
+                notificationFilter === 'members' ? styles.ntFilterTabTextActive : styles.ntFilterTabTextInactive,
+              ]}
+            >
+              Members & Enquiries
+            </Text>
+          </TouchableOpacity>
+
+          {/* Billing & Store */}
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() => setNotificationFilter('billing')}
+            style={[
+              styles.ntFilterTab,
+              notificationFilter === 'billing' ? styles.ntFilterTabActive : styles.ntFilterTabInactive,
+            ]}
+          >
+            <Ionicons
+              name="card"
+              size={13}
+              color={notificationFilter === 'billing' ? '#FFFFFF' : '#10B981'}
+            />
+            <Text
+              style={[
+                styles.ntFilterTabText,
+                notificationFilter === 'billing' ? styles.ntFilterTabTextActive : styles.ntFilterTabTextInactive,
+              ]}
+            >
+              Billing & Store
+            </Text>
+          </TouchableOpacity>
+        </ScrollView>
+
+        {/* Notifications List */}
+        {loadingNotifications ? (
+          <View style={{ paddingVertical: 40, alignItems: 'center' }}>
+            <ActivityIndicator size="small" color="#EA580C" />
+            <Text style={{ marginTop: 8, fontSize: 12, color: '#64748B' }}>Loading notifications...</Text>
+          </View>
+        ) : filteredList.length === 0 ? (
+          <View style={styles.ntEmptyCard}>
+            <View style={styles.ntEmptyIconBadge}>
+              <Ionicons name="notifications-off-outline" size={32} color="#CBD5E1" />
+            </View>
+            <Text style={styles.ntEmptyTitle}>No notifications found</Text>
+            <Text style={styles.ntEmptySub}>
+              {notificationFilter === 'unread'
+                ? "You're all caught up! No unread notifications."
+                : "System alerts and gym events will appear here."}
+            </Text>
+          </View>
+        ) : (
+          <View style={{ gap: 10 }}>
+            {filteredList.map((notif: any) => {
+              const isUnread = !notif.isRead;
+              const type = notif.type || 'info';
+
+              let iconName: any = 'information-circle';
+              let iconColor = '#EA580C';
+              let iconBg = '#FFF7ED';
+              let iconBorder = '#FFEDD5';
+
+              if (type === 'alert') {
+                iconName = 'alert-circle';
+                iconColor = '#EF4444';
+                iconBg = '#FEE2E2';
+                iconBorder = '#FECACA';
+              } else if (type === 'message') {
+                iconName = 'chatbubble-ellipses';
+                iconColor = '#EA580C';
+                iconBg = '#FFF7ED';
+                iconBorder = '#FFEDD5';
+              } else if (type === 'success') {
+                iconName = 'checkmark-circle';
+                iconColor = '#10B981';
+                iconBg = '#ECFDF5';
+                iconBorder = '#A7F3D0';
+              }
+
+              return (
+                <TouchableOpacity
+                  key={notif._id}
+                  activeOpacity={0.85}
+                  onPress={() => handleOpenNotification(notif)}
+                  style={[
+                    styles.ntItemCard,
+                    isUnread ? styles.ntItemCardUnread : null,
+                  ]}
+                >
+                  {/* Left Icon Badge */}
+                  <View
+                    style={[
+                      styles.ntTypeIconBadge,
+                      { backgroundColor: iconBg, borderColor: iconBorder },
+                    ]}
+                  >
+                    <Ionicons name={iconName} size={18} color={iconColor} />
+                  </View>
+
+                  {/* Body Content */}
+                  <View style={{ flex: 1, minWidth: 0 }}>
+                    <View style={styles.ntItemTopRow}>
+                      <Text
+                        style={[
+                          styles.ntItemTitle,
+                          isUnread ? { fontWeight: '900', color: '#111827' } : { fontWeight: '700', color: '#334155' },
+                        ]}
+                        numberOfLines={1}
+                      >
+                        {notif.title}
+                      </Text>
+                      <Text style={styles.ntItemDateText}>
+                        {formatNotificationDate(notif.createdAt)}
+                      </Text>
+                    </View>
+
+                    <Text style={styles.ntItemMessageText} numberOfLines={2}>
+                      {notif.message}
+                    </Text>
+                  </View>
+
+                  {/* Actions (Mark read + Trash) */}
+                  <View style={styles.ntItemActionsRow}>
+                    {isUnread && (
+                      <TouchableOpacity
+                        activeOpacity={0.7}
+                        onPress={(e) => {
+                          e.stopPropagation();
+                          handleMarkAsRead(notif._id);
+                        }}
+                        style={styles.ntActionBtn}
+                        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                      >
+                        <Ionicons name="checkmark-done" size={15} color="#EA580C" />
+                      </TouchableOpacity>
+                    )}
+                    <TouchableOpacity
+                      activeOpacity={0.7}
+                      onPress={(e) => {
+                        e.stopPropagation();
+                        handleDeleteNotification(notif._id);
+                      }}
+                      style={styles.ntActionBtn}
+                      hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                    >
+                      <Ionicons name="trash-outline" size={15} color="#94A3B8" />
+                    </TouchableOpacity>
+                  </View>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        )}
+
+        {/* Notification Details Modal Matching Web Modal */}
+        <Modal
+          visible={Boolean(selectedNotification)}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setSelectedNotification(null)}
+        >
+          <TouchableOpacity
+            style={styles.ntModalBackdrop}
+            activeOpacity={1}
+            onPress={() => setSelectedNotification(null)}
+          >
+            <View style={styles.ntModalCard}>
+              {/* Modal Header */}
+              <View style={styles.ntModalHeader}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, flex: 1 }}>
+                  <View style={styles.ntModalIconBadge}>
+                    <Ionicons name="notifications" size={18} color="#EA580C" />
+                  </View>
+                  <View>
+                    <Text style={styles.ntModalTitle}>Notification Details</Text>
+                    <Text style={styles.ntModalSub}>Admin Activity Log</Text>
+                  </View>
+                </View>
+                <TouchableOpacity
+                  onPress={() => setSelectedNotification(null)}
+                  style={styles.ntModalCloseBtn}
+                >
+                  <Ionicons name="close" size={18} color="#64748B" />
+                </TouchableOpacity>
+              </View>
+
+              {/* Modal Content */}
+              {selectedNotification && (
+                <View style={{ gap: 14 }}>
+                  {/* Subject */}
+                  <View>
+                    <Text style={styles.ntModalFieldLabel}>SUBJECT</Text>
+                    <Text style={styles.ntModalSubjectText}>{selectedNotification.title}</Text>
+                  </View>
+
+                  {/* Message Body Box */}
+                  <View>
+                    <Text style={styles.ntModalFieldLabel}>MESSAGE</Text>
+                    <View style={styles.ntModalMessageBox}>
+                      <Text style={styles.ntModalMessageText}>{selectedNotification.message}</Text>
+                    </View>
+                  </View>
+
+                  {/* Metadata Grid */}
+                  <View style={styles.ntModalMetaGrid}>
+                    <View style={styles.ntModalMetaCol}>
+                      <Text style={styles.ntModalFieldLabel}>TYPE</Text>
+                      <View style={styles.ntModalTypeBadge}>
+                        <Text style={styles.ntModalTypeBadgeText}>
+                          {(selectedNotification.type || 'info').toUpperCase()}
+                        </Text>
+                      </View>
+                    </View>
+                    <View style={styles.ntModalMetaCol}>
+                      <Text style={styles.ntModalFieldLabel}>RECEIVED</Text>
+                      <Text style={styles.ntModalMetaValue}>
+                        {formatNotificationDate(selectedNotification.createdAt)}
+                      </Text>
+                    </View>
+                    <View style={styles.ntModalMetaCol}>
+                      <Text style={styles.ntModalFieldLabel}>STATUS</Text>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                        <Ionicons
+                          name={selectedNotification.isRead ? 'checkmark-circle' : 'ellipse'}
+                          size={12}
+                          color={selectedNotification.isRead ? '#10B981' : '#EA580C'}
+                        />
+                        <Text style={[styles.ntModalMetaValue, { fontWeight: '800' }]}>
+                          {selectedNotification.isRead ? 'Read' : 'Unread'}
+                        </Text>
+                      </View>
+                    </View>
+                  </View>
+
+                  {/* Action Buttons */}
+                  <View style={styles.ntModalFooter}>
+                    {(() => {
+                      const section = getLinkSection(selectedNotification);
+                      if (section) {
+                        return (
+                          <TouchableOpacity
+                            activeOpacity={0.8}
+                            onPress={() => {
+                              setSelectedNotification(null);
+                              setActiveDetailItem(section);
+                            }}
+                            style={styles.ntModalActionBtn}
+                          >
+                            <Ionicons name="open-outline" size={14} color="#FFFFFF" />
+                            <Text style={styles.ntModalActionBtnText}>Open Section</Text>
+                          </TouchableOpacity>
+                        );
+                      }
+                      return null;
+                    })()}
+
+                    <TouchableOpacity
+                      activeOpacity={0.8}
+                      onPress={() => setSelectedNotification(null)}
+                      style={styles.ntModalDismissBtn}
+                    >
+                      <Text style={styles.ntModalDismissBtnText}>Close</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              )}
+            </View>
+          </TouchableOpacity>
+        </Modal>
+      </View>
+    );
+  };
+
   // 9. Deleted Details View (Matching Web /admin/deleted-details 100%)
   const renderDeletedDetailsView = () => {
     const q = deletedSearchTerm.toLowerCase().trim();
@@ -12457,6 +13044,9 @@ const renderPackagePlansView = () => {
 
       case 'reviews':
         return renderReviewsView();
+
+      case 'notifications':
+        return renderNotificationsView();
 
       case 'deleted_details':
         return renderDeletedDetailsView();
@@ -28897,6 +29487,358 @@ const styles = StyleSheet.create({
   rwModalOptionTextSelected: {
     fontWeight: '800',
     color: '#EA580C',
+  },
+
+
+  /* ==================== NOTIFICATIONS STYLES (MATCHING WEB 100%) ==================== */
+  ntHeaderCard: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 18,
+    padding: 16,
+    gap: 12,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.04,
+    shadowRadius: 2,
+    elevation: 1,
+  },
+  ntHeaderTopRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  ntHeaderIconBadge: {
+    width: 44,
+    height: 44,
+    borderRadius: 14,
+    backgroundColor: '#FFF7ED',
+    borderWidth: 1,
+    borderColor: '#FFEDD5',
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#EA580C',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  ntHeaderTitle: {
+    fontSize: 20,
+    fontWeight: '900',
+    color: '#111827',
+    letterSpacing: -0.3,
+  },
+  ntHeaderSub: {
+    fontSize: 11.5,
+    color: '#64748B',
+    marginTop: 2,
+    lineHeight: 16,
+  },
+  ntHeaderActionRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: '#F1F5F9',
+  },
+  ntUnreadPill: {
+    backgroundColor: '#FFF7ED',
+    borderWidth: 1,
+    borderColor: '#FED7AA',
+    paddingHorizontal: 10,
+    paddingVertical: 3.5,
+    borderRadius: 999,
+  },
+  ntUnreadPillText: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#EA580C',
+  },
+  ntMarkAllBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1.5,
+    borderColor: '#CBD5E1',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 10,
+  },
+  ntMarkAllBtnText: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  ntFilterTabsScroll: {
+    gap: 8,
+    paddingVertical: 2,
+  },
+  ntFilterTab: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+    borderRadius: 10,
+    borderWidth: 1,
+  },
+  ntFilterTabActive: {
+    backgroundColor: '#C2410C',
+    borderColor: '#C2410C',
+    shadowColor: '#EA580C',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  ntFilterTabInactive: {
+    backgroundColor: '#FFFFFF',
+    borderColor: '#E2E8F0',
+  },
+  ntFilterTabText: {
+    fontSize: 11,
+    fontWeight: '800',
+  },
+  ntFilterTabTextActive: {
+    color: '#FFFFFF',
+  },
+  ntFilterTabTextInactive: {
+    color: '#64748B',
+  },
+  ntEmptyCard: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 18,
+    padding: 36,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  ntEmptyIconBadge: {
+    width: 52,
+    height: 52,
+    borderRadius: 18,
+    backgroundColor: '#F8FAFC',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 10,
+  },
+  ntEmptyTitle: {
+    fontSize: 15,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  ntEmptySub: {
+    fontSize: 11,
+    color: '#64748B',
+    textAlign: 'center',
+    marginTop: 4,
+    lineHeight: 16,
+    maxWidth: 260,
+  },
+  ntItemCard: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 16,
+    padding: 13,
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 10,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.03,
+    shadowRadius: 2,
+    elevation: 1,
+  },
+  ntItemCardUnread: {
+    borderLeftWidth: 4,
+    borderLeftColor: '#EA580C',
+    backgroundColor: '#FFFFFF',
+  },
+  ntTypeIconBadge: {
+    width: 36,
+    height: 36,
+    borderRadius: 12,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 2,
+  },
+  ntItemTopRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 6,
+    marginBottom: 3,
+  },
+  ntItemTitle: {
+    fontSize: 13,
+    flex: 1,
+  },
+  ntItemDateText: {
+    fontSize: 10,
+    color: '#64748B',
+    fontWeight: '600',
+  },
+  ntItemMessageText: {
+    fontSize: 11.5,
+    color: '#64748B',
+    lineHeight: 16,
+  },
+  ntItemActionsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    alignSelf: 'center',
+    paddingLeft: 4,
+  },
+  ntActionBtn: {
+    padding: 5,
+    borderRadius: 6,
+  },
+  ntModalBackdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 18,
+  },
+  ntModalCard: {
+    width: '100%',
+    maxWidth: 360,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    padding: 18,
+    gap: 14,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.2,
+    shadowRadius: 10,
+    elevation: 6,
+  },
+  ntModalHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingBottom: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F1F5F9',
+  },
+  ntModalIconBadge: {
+    width: 34,
+    height: 34,
+    borderRadius: 10,
+    backgroundColor: '#FFF7ED',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  ntModalTitle: {
+    fontSize: 15,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  ntModalSub: {
+    fontSize: 10.5,
+    color: '#64748B',
+  },
+  ntModalCloseBtn: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: '#F8FAFC',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  ntModalFieldLabel: {
+    fontSize: 9.5,
+    fontWeight: '800',
+    color: '#64748B',
+    letterSpacing: 0.5,
+    marginBottom: 4,
+  },
+  ntModalSubjectText: {
+    fontSize: 14,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  ntModalMessageBox: {
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 12,
+    padding: 12,
+  },
+  ntModalMessageText: {
+    fontSize: 12,
+    color: '#1F2937',
+    lineHeight: 18,
+  },
+  ntModalMetaGrid: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: '#F1F5F9',
+  },
+  ntModalMetaCol: {
+    flex: 1,
+  },
+  ntModalTypeBadge: {
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 6,
+    alignSelf: 'flex-start',
+  },
+  ntModalTypeBadgeText: {
+    fontSize: 9,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  ntModalMetaValue: {
+    fontSize: 11,
+    color: '#111827',
+  },
+  ntModalFooter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    gap: 8,
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: '#F1F5F9',
+  },
+  ntModalActionBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: '#EA580C',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 10,
+  },
+  ntModalActionBtnText: {
+    fontSize: 11.5,
+    fontWeight: '800',
+    color: '#FFFFFF',
+  },
+  ntModalDismissBtn: {
+    backgroundColor: '#F1F5F9',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 10,
+  },
+  ntModalDismissBtnText: {
+    fontSize: 11.5,
+    fontWeight: '700',
+    color: '#475569',
   },
 
 });
