@@ -83,6 +83,12 @@ app.use('/api/direct-messages', directMessageRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/trainer-plans', trainerPlanRoutes);
 app.use('/api/gym-packages', gymPackageRoutes);
+app.use('/api/packages', gymPackageRoutes);
+app.use('/api/customer-memberships', membershipRoutes);
+app.use('/api/equipment', (req, res, next) => {
+  req.url = '/equipments/customer';
+  trainerPlanRoutes(req, res, next);
+});
 app.use('/api/diet-progress', dietProgressRoutes);
 app.use('/api/challenges', challengeRoutes);
 app.use('/api/rewards', rewardRoutes);

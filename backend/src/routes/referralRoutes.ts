@@ -81,5 +81,6 @@ router.post('/redeem-custom', authenticate, redeemCustomRewardCustomer);
 router.post('/redeem', authenticate, redeemCustomerReward);
 router.post('/my-rewards/redeem', authenticate, redeemCustomerReward);
 router.post('/invite-email', authenticate, sendEmailInvite);
+router.post('/invite', authenticate, sendEmailInvite);
 
 export default router;

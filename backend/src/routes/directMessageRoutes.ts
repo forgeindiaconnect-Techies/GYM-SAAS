@@ -12,6 +12,7 @@ const router = express.Router();
 
 router.use(authenticate);
 
+router.get('/', getContacts);
 router.get('/contacts', getContacts);
 router.get('/history/:otherUserId', getHistory);
 router.post('/send', sendMessage);

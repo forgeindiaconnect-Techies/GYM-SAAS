@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import bcrypt from 'bcrypt';
 import User, { Role, SubscriptionStatus } from '../models/User';
 import { AuthRequest } from '../middlewares/auth';
 import Gym from '../models/Gym';
@@ -234,6 +235,81 @@ export const deleteUser = async (req: Request, res: Response): Promise<void> => 
     }
     res.status(200).json({ success: true, message: 'User deleted successfully' });
   } catch (error: any) {
+    res.status(500).json({ success: false, message: 'Server error', error: error.message });
+  }
+};
+
+export const createUser = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const { firstName, lastName, name, email, mobile, phone, role, subscriptionPlan, branchId } = req.body;
+    const gymId = req.body.gymId || req.user?.gymId;
+    const finalEmail = (email || `member_${Date.now()}@gymora.com`).trim().toLowerCase();
+    const finalPhone = mobile || phone || '';
+
+    let existingUser = await User.findOne({ email: finalEmail });
+    if (existingUser) {
+      res.status(400).json({ success: false, message: 'A user with this email already exists' });
+      return;
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const passwordHash = await bcrypt.hash('password123', salt);
+
+    const nameParts = (name || '').trim().split(' ');
+    const fName = firstName || nameParts[0] || 'Member';
+    const lName = lastName || nameParts.slice(1).join(' ') || '';
+
+    const user = new User({
+      firstName: fName,
+      lastName: lName,
+      email: finalEmail,
+      mobile: finalPhone,
+      passwordHash,
+      role: role || Role.MEMBER,
+      gymId,
+      branchId: branchId || req.user?.branchId,
+      approvalStatus: 'APPROVED',
+      isActive: true,
+      subscriptionPlan: subscriptionPlan || 'Annual Pass',
+      subscriptionStatus: SubscriptionStatus.ACTIVE,
+      paymentStatus: 'Approved'
+    });
+
+    await user.save();
+
+    if (user.role === Role.MEMBER && gymId) {
+      try {
+        const startDate = new Date();
+        const endDate = new Date();
+        endDate.setFullYear(endDate.getFullYear() + 1);
+
+        await CustomerMembership.create({
+          userId: user._id,
+          gymId,
+          branchId: user.branchId,
+          planName: subscriptionPlan || 'Standard Pass',
+          duration: '1 Year',
+          price: 0,
+          startDate,
+          endDate,
+          status: CustomerMembershipStatus.ACTIVE,
+          paymentMethod: 'Counter',
+          membershipId: 'MEM-' + Math.random().toString(36).substring(2, 8).toUpperCase(),
+          receiptNumber: 'REC-' + Math.random().toString(36).substring(2, 8).toUpperCase()
+        });
+      } catch (memErr) {
+        console.warn('Membership creation notice:', memErr);
+      }
+    }
+
+    const userObj = user.toObject();
+    delete (userObj as any).passwordHash;
+    (userObj as any).id = user._id;
+    (userObj as any).phone = user.mobile;
+
+    res.status(201).json({ success: true, message: 'User created successfully', user: userObj });
+  } catch (error: any) {
+    console.error('Error in createUser:', error);
     res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }
 };

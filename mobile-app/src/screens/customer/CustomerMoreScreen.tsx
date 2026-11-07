@@ -108,7 +108,7 @@ export const CustomerMoreScreen: React.FC<{
         const list = res.data?.memberships || (Array.isArray(res.data) ? res.data : []);
         setMembership(list[0] || null);
       } else if (section === 'store') {
-        const res = await api.get('/store/products');
+        const res = await api.get('/store/customer/products').catch(() => api.get('/store/products'));
         const list = res.data?.products || (Array.isArray(res.data) ? res.data : []);
         setProducts(list);
       } else if (section === 'notifications') {
@@ -116,11 +116,11 @@ export const CustomerMoreScreen: React.FC<{
         const list = res.data?.notifications || (Array.isArray(res.data) ? res.data : []);
         setNotifications(list.length > 0 ? list : DEFAULT_NOTIFICATIONS);
       } else if (section === 'messages') {
-        const res = await api.get('/direct-messages').catch(() => ({ data: { messages: [] } }));
-        const list = res.data?.messages || (Array.isArray(res.data) ? res.data : []);
+        const res = await api.get('/direct-messages/contacts').catch(() => api.get('/direct-messages')).catch(() => ({ data: { messages: [] } }));
+        const list = res.data?.contacts || res.data?.messages || (Array.isArray(res.data) ? res.data : []);
         setMessages(list.length > 0 ? list : DEFAULT_MESSAGES);
       } else if (section === 'rewards') {
-        const res = await api.get('/rewards').catch(() => ({ data: { rewards: [] } }));
+        const res = await api.get('/rewards/member').catch(() => api.get('/rewards')).catch(() => ({ data: { rewards: [] } }));
         const list = res.data?.rewards || (Array.isArray(res.data) ? res.data : []);
         setRewards(list);
       }
@@ -191,7 +191,9 @@ const AIAssistantView: React.FC<{ user: any }> = ({ user }) => {
     setSending(true);
 
     try {
-      const res = await api.post('/ai/chat', { prompt: q }).catch(() => null);
+      const res = await api.post('/ai/member/chat', { prompt: q, message: q })
+        .catch(() => api.post('/ai/chat', { prompt: q, message: q }))
+        .catch(() => null);
       const reply = res?.data?.reply || res?.data?.response || 
         `Regarding "${q}": prioritize progressive overload, maintain proper eccentric tempo, and ensure you drink at least 3L of water daily!`;
       setChatList(prev => [...prev, { sender: 'ai', text: reply }]);

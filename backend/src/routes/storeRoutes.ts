@@ -43,6 +43,14 @@ const router = express.Router();
 router.get('/status', authenticate, getStoreStatus);
 router.get('/customer/status', authenticate, getCustomerStoreStatus);
 
+// Generic products endpoint for mobile app
+router.get('/products', authenticate, (req: any, res: any) => {
+  if (req.user?.role === 'MEMBER') {
+    return getCustomerProducts(req, res);
+  }
+  return getProducts(req, res);
+});
+
 // Image upload
 router.post('/upload', authenticate, upload.single('image'), uploadImage);
 

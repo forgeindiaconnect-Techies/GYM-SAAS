@@ -51,8 +51,10 @@ export const api = axios.create({
 AsyncStorage.getItem(BACKEND_STORAGE_KEY)
   .then((savedUrl) => {
     if (savedUrl && typeof savedUrl === 'string' && savedUrl.trim().startsWith('http')) {
-      api.defaults.baseURL = savedUrl.trim();
-      console.log(`[Gymora Mobile API] Restored Custom Base URL: ${savedUrl}`);
+      const cleaned = savedUrl.trim().replace(/\/+$/, '');
+      const finalUrl = cleaned.endsWith('/api') ? cleaned : `${cleaned}/api`;
+      api.defaults.baseURL = finalUrl;
+      console.log(`[Gymora Mobile API] Restored Custom Base URL: ${finalUrl}`);
     }
   })
   .catch((err) => {
@@ -89,6 +91,17 @@ export const setAuthToken = (token: string | null) => {
 };
 
 api.interceptors.request.use(async (config) => {
+  // Normalize baseURL to ensure it always ends with /api
+  if (config.baseURL) {
+    const cleanBase = config.baseURL.trim().replace(/\/+$/, '');
+    config.baseURL = cleanBase.endsWith('/api') ? cleanBase : `${cleanBase}/api`;
+  }
+
+  // Prevent accidental double /api prefix (e.g. /api/api/...)
+  if (config.url && config.url.startsWith('/api/')) {
+    config.url = config.url.replace(/^\/api/, '');
+  }
+
   try {
     if (!config.headers.Authorization) {
       if (userToken) {
@@ -107,10 +120,23 @@ api.interceptors.request.use(async (config) => {
   return config;
 });
 
+const recentErrorLogs = new Map<string, number>();
+
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    console.log('[Gymora Mobile API Error]:', error?.response?.status || error.message);
+    const status = error?.response?.status;
+    const url = error?.config?.url || 'unknown';
+    const method = (error?.config?.method || 'get').toUpperCase();
+    const errKey = `${method}:${url}:${status || error.message}`;
+    const now = Date.now();
+    const lastLogged = recentErrorLogs.get(errKey) || 0;
+
+    // Log the error with method and endpoint, throttling identical repeated calls within 3s
+    if (now - lastLogged > 3000) {
+      recentErrorLogs.set(errKey, now);
+      console.log(`[Gymora Mobile API Error]: ${status || error.message} on ${method} ${url}`);
+    }
     return Promise.reject(error);
   }
 );

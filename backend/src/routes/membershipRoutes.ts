@@ -11,7 +11,10 @@ import { authenticate } from '../middlewares/auth';
 
 const router = express.Router();
 
+router.post('/', authenticate, joinGym);
 router.post('/join', authenticate, joinGym);
+router.post('/subscribe', authenticate, joinGym);
+router.post('/checkout', authenticate, joinGym);
 router.get('/my', authenticate, getMyMemberships);
 router.get('/gym', authenticate, getGymMemberships);
 router.put('/:id/verify', authenticate, verifyMembership);

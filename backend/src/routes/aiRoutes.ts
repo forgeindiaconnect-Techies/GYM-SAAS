@@ -21,6 +21,7 @@ router.post('/member/generate', authenticate, authorize(['MEMBER']), generateRec
 router.get('/member/latest', authenticate, authorize(['MEMBER']), getLatestRecommendation);
 router.post('/member/reply', authenticate, authorize(['MEMBER']), memberReplyToTrainer);
 router.post('/member/chat', optionalAuthenticate, memberChatbotQuery);
+router.post('/chat', optionalAuthenticate, memberChatbotQuery);
 router.post('/assistant/search', optionalAuthenticate, memberChatbotQuery);
 
 // Trainer Routes

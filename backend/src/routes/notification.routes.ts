@@ -8,7 +8,9 @@ router.use(authenticate);
 
 router.get('/', getNotifications);
 router.put('/mark-all-read', markAllAsRead);
+router.patch('/mark-all-read', markAllAsRead);
 router.put('/:id/read', markAsRead);
+router.patch('/:id/read', markAsRead);
 router.delete('/:id', deleteNotification);
 
 export default router;

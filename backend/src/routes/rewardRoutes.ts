@@ -16,6 +16,13 @@ const router = express.Router();
 // All reward routes require authentication
 router.use(authenticate);
 
+// Dynamic root rewards endpoint for all roles
+router.get('/', (req: any, res: any) => {
+  if (req.user?.role === 'TRAINER') return getTrainerRewards(req, res);
+  if (req.user?.role === 'MEMBER') return getMemberRewards(req, res);
+  return getOwnerRewards(req, res);
+});
+
 // Owner operations
 router.post('/', createReward);
 router.get('/owner', getOwnerRewards);

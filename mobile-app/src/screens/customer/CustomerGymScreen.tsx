@@ -251,7 +251,11 @@ export const CustomerGymScreen: React.FC<{ onNavigateTab?: (tab: string, sub?: s
         paymentMethod: paymentMethod,
         referralCode: appliedReferral?.code,
         usePoints: usePoints,
-      }).catch(() => null);
+      }).catch(() => api.post('/memberships/join', {
+        planName: checkoutPlan.name,
+        duration: checkoutPlan.duration || '1 Month',
+        price: totalAmount,
+      })).catch(() => null);
 
       setIsProcessingPayment(false);
       setPaymentSuccess({

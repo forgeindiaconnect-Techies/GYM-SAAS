@@ -56,6 +56,15 @@ router.post('/upload', resumeUpload.single('file'), uploadDocument);
 // ==========================================
 // Gym Owner routes
 // ==========================================
+router.post('/jobs', authenticate, createOwnerJob);
+router.put('/jobs/:id', authenticate, updateOwnerJob);
+router.delete('/jobs/:id', authenticate, deleteOwnerJob);
+router.get('/applications', authenticate, getOwnerApplications);
+router.get('/applications/:id', authenticate, getOwnerApplicationById);
+router.patch('/applications/:id/status', authenticate, updateApplicationStatus);
+router.patch('/applications/:id', authenticate, updateApplicationStatus);
+router.get('/hired', authenticate, getOwnerHiredTrainers);
+
 router.post('/owner/jobs', authenticate, createOwnerJob);
 router.post('/admin/jobs', authenticate, createOwnerJob);
 router.get('/owner/jobs', authenticate, getOwnerJobs);
