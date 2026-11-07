@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, SafeAreaView, Platform, StatusBar as RNStatusBar, ActivityIndicator, Text, BackHandler } from 'react-native';
+import { View, StyleSheet, Platform, StatusBar as RNStatusBar, ActivityIndicator, Text, BackHandler } from 'react-native';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 
 // Context & Theme
@@ -307,9 +308,11 @@ const MainAppContent = () => {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <MainAppContent />
-    </AuthProvider>
+    <SafeAreaProvider>
+      <AuthProvider>
+        <MainAppContent />
+      </AuthProvider>
+    </SafeAreaProvider>
   );
 }
 

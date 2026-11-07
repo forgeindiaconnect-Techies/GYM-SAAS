@@ -160,10 +160,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     portalRole?: UserRole
   ): Promise<{ success: boolean; message?: string }> => {
     try {
-      const res = await api.post('/auth/login', {
-        email: email.trim().toLowerCase(),
-        password,
-      });
+      let res: any = null;
+
+      // Attempt login with automatic cold-start wake-up retry
+      for (let attempt = 1; attempt <= 2; attempt++) {
+        try {
+          res = await api.post('/auth/login', {
+            email: email.trim().toLowerCase(),
+            password,
+          });
+          break;
+        } catch (postErr: any) {
+          // If server was sleeping / cold-starting and this was the 1st attempt, retry once after 2.5s
+          if (attempt === 1 && (!postErr.response || postErr.code === 'ECONNABORTED' || postErr.message === 'Network Error')) {
+            await new Promise((r) => setTimeout(r, 2500));
+            continue;
+          }
+          throw postErr;
+        }
+      }
 
       if (!res.data?.success || !res.data?.token || !res.data?.user) {
         return {

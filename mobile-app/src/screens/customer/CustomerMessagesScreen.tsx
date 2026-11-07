@@ -66,8 +66,8 @@ const formatFileSize = (bytes?: number) => {
 
 const DEFAULT_TRAINERS: TrainerContact[] = [
   {
-    id: 'tr_naveen',
-    _id: 'tr_naveen',
+    id: '6ac9ff7cac89daf4e4a5a93c',
+    _id: '6ac9ff7cac89daf4e4a5a93c',
     name: 'Naveen',
     role: 'Personal Trainer',
     specialization: 'Personal Trainer',
@@ -88,6 +88,24 @@ const DEFAULT_TRAINERS: TrainerContact[] = [
 ];
 
 const INITIAL_CONVERSATIONS: Record<string, ChatMessage[]> = {
+  '6ac9ff7cac89daf4e4a5a93c': [
+    {
+      id: 'msg_1',
+      senderId: 'user_renugopal',
+      senderName: 'Renugopal Y',
+      text: 'good afternoon',
+      createdAt: '01:57 pm',
+      isMine: true,
+    },
+    {
+      id: 'msg_2',
+      senderId: 'user_renugopal',
+      senderName: 'Renugopal Y',
+      text: 'sir',
+      createdAt: '01:57 pm',
+      isMine: true,
+    },
+  ],
   tr_naveen: [
     {
       id: 'msg_1',
@@ -171,7 +189,7 @@ export const CustomerMessagesScreen: React.FC = () => {
   }, []);
 
   const fetchHistory = React.useCallback(async (trainerId: string) => {
-    if (!trainerId) return;
+    if (!trainerId || trainerId.startsWith('tr_')) return;
     try {
       const res = await api.get('/direct-messages/history/' + trainerId);
       if (res.data?.success && Array.isArray(res.data.messages)) {
@@ -266,7 +284,7 @@ export const CustomerMessagesScreen: React.FC = () => {
       }
 
       const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        mediaTypes: ['images', 'videos'],
         quality: 0.85,
         allowsEditing: false,
       });

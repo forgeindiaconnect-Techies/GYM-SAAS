@@ -215,20 +215,32 @@ export const getHistory = async (req: AuthRequest, res: Response): Promise<void>
       } as any);
       if (matchedUser) {
         resolvedOtherId = matchedUser._id.toString();
+      } else {
+        // If trainer not found in DB, return empty history gracefully with 200 OK (never 500 CastError!)
+        res.status(200).json({ success: true, messages: [] });
+        return;
       }
     }
+
+    if (!mongoose.Types.ObjectId.isValid(resolvedOtherId) || !mongoose.Types.ObjectId.isValid(currentUserId)) {
+      res.status(200).json({ success: true, messages: [] });
+      return;
+    }
+
+    const otherObjId = new mongoose.Types.ObjectId(resolvedOtherId);
+    const currentObjId = new mongoose.Types.ObjectId(currentUserId);
 
     // Fetch messages between these two users
     const messages = await DirectMessage.find({
       $or: [
-        { senderId: currentUserId, receiverId: resolvedOtherId },
-        { senderId: resolvedOtherId, receiverId: currentUserId }
+        { senderId: currentObjId, receiverId: otherObjId },
+        { senderId: otherObjId, receiverId: currentObjId }
       ]
     }).sort({ createdAt: 1 });
 
     // Mark messages sent by resolvedOtherId to currentUserId as read
     await DirectMessage.updateMany(
-      { senderId: resolvedOtherId, receiverId: currentUserId, read: false },
+      { senderId: otherObjId, receiverId: currentObjId, read: false },
       { read: true }
     );
 
