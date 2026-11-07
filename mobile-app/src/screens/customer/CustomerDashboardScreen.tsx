@@ -653,7 +653,9 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   kpiCard: {
-    width: '48.5%',
+    width: '48%',
+    flexGrow: 1,
+    maxWidth: '49%',
     backgroundColor: '#FFFFFF',
     borderWidth: 1,
     borderColor: '#E2E8F0',
@@ -711,7 +713,9 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   quickCard: {
-    width: '48.5%',
+    width: '48%',
+    flexGrow: 1,
+    maxWidth: '49%',
     backgroundColor: '#FFFFFF',
     borderWidth: 1,
     borderColor: '#E2E8F0',

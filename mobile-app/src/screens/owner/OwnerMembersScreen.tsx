@@ -2060,7 +2060,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: COLORS.white,
     padding: 6,
-    marginHorizontal: 14,
+    marginHorizontal: 16,
     marginTop: 10,
     marginBottom: 6,
     borderRadius: 14,

@@ -97,8 +97,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   iconContainer: {
-    padding: 4,
-    borderRadius: 12,
+    width: 44,
+    height: 28,
+    borderRadius: 14,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   iconActiveContainer: {
     backgroundColor: COLORS.primaryLight,
