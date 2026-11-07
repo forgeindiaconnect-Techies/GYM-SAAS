@@ -589,7 +589,7 @@ export const TrainerDashboardScreen: React.FC<{
         ) : (
           <View style={{ gap: 10 }}>
             {todaySessions.map((s, idx) => {
-              const custName = s.customerId?.name || s.clientName || 'Client';
+              const custName = s.customerId?.name || (s.customerId ? `${s.customerId.firstName || ''} ${s.customerId.lastName || ''}`.trim() : '') || s.clientName || 'Client';
               const time = s.timeSlot || s.startTime || 'Floor Slot';
               const phone = s.customerId?.phone || s.phone || '';
 

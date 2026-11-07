@@ -281,36 +281,36 @@ export const CustomerTrainingScreen: React.FC<{ initialSubTab?: string }> = ({ i
     if (!bookingTrainer) return;
     try {
       setSubmittingBooking(true);
-      await api.post('/trainer-sessions', {
-        trainerId: bookingTrainer._id,
-        date: new Date().toISOString(),
-        timeSlot: selectedTimeSlot,
-        mode: bookingMode,
-        notes: bookingNotes,
-      }).catch(() => null);
+      const slotParts = (selectedTimeSlot || '').split('-').map(s => s.trim());
+      const startTime = slotParts[0] || '10:00 AM';
+      const endTime = slotParts[1] || '11:00 AM';
+      const bookingDate = selectedDate === 'Today' 
+        ? new Date().toISOString().split('T')[0] 
+        : selectedDate;
 
-      const newSession = {
-        _id: `sess-${Date.now()}`,
-        trainerName: bookingTrainer.name,
-        trainerSpecialization: bookingTrainer.specialization,
+      const payload = {
+        trainerId: bookingTrainer._id,
         mode: bookingMode,
-        status: 'Upcoming',
-        date: new Date().toISOString().split('T')[0],
+        date: bookingDate,
+        startTime,
+        endTime,
+        duration: 60,
         timeSlot: selectedTimeSlot,
-        duration: '60 min',
-        attendance: 'Scheduled',
-        checkInTime: '--',
-        checkOutTime: '--',
-        rating: 0,
-        reviewText: '',
+        notes: bookingNotes,
       };
 
-      setSessions(prev => [newSession, ...prev]);
+      // Submit to backend session request API
+      await api.post('/trainer-sessions/request', payload).catch(() => api.post('/trainer-sessions', payload));
+
+      // Refresh real sessions from database
+      await fetchSessions();
+
       setBookingModalVisible(false);
       setBookingNotes('');
-      Alert.alert('Session Booked! 🎉', `Your ${bookingMode} training session with ${bookingTrainer.name} has been scheduled for ${selectedTimeSlot}.`);
+      Alert.alert('Session Requested! 🎉', `Your ${bookingMode} training session request with ${bookingTrainer.name} has been sent for ${selectedTimeSlot}. The trainer will confirm it.`);
       setActiveTab('my_bookings');
     } catch (err) {
+      console.warn('Booking session notice:', err);
       Alert.alert('Booking Notice', `Session booking request placed with ${bookingTrainer.name}.`);
       setBookingModalVisible(false);
     } finally {

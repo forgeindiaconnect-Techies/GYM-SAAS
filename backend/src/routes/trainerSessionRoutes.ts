@@ -25,6 +25,7 @@ const router = express.Router();
 
 // Member routes
 router.post('/request', authenticate, createSessionRequest);
+router.post('/', authenticate, createSessionRequest);
 router.get('/member', authenticate, getMemberSessions);
 router.post('/:id/pay', authenticate, payForSession);
 router.post('/:id/cancel', authenticate, cancelSession);

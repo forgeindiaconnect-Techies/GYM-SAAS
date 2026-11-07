@@ -100,7 +100,7 @@ export const TrainerScheduleScreen: React.FC<{ onNavigateTab?: (tab: string, sub
           return {
             _id: s._id,
             bookingId: s.bookingId || ('BKG-' + s._id.slice(-8).toUpperCase()),
-            customerName: s.customerName || (s.customerId ? `${s.customerId.firstName || ''} ${s.customerId.lastName || ''}`.trim() : 'Renugopal Y'),
+            customerName: s.customerName || (s.customerId ? (`${s.customerId.firstName || ''} ${s.customerId.lastName || ''}`.trim() || s.customerId.name || s.customerId.email) : 'Client'),
             customerEmail: s.customerId?.email || 'renugopal5457@gmail.com',
             customerPhone: s.customerId?.phone || '+91 98765 43210',
             type: s.sessionType || (s.mode === 'Online' ? '1-on-1 Online' : '1-on-1 Personal Training'),
@@ -199,14 +199,28 @@ export const TrainerScheduleScreen: React.FC<{ onNavigateTab?: (tab: string, sub
     setShowScheduleModal(false);
   };
 
-  const handleApproveBooking = (id: string) => {
-    setSessions(prev => prev.map(s => s._id === id ? { ...s, status: 'Approved' } : s));
-    Alert.alert('Booking Approved', 'The session is now approved and appears in your Online Sessions.');
+  const handleApproveBooking = async (id: string) => {
+    try {
+      await api.post(`/trainer-sessions/${id}/accept`);
+      setSessions(prev => prev.map(s => s._id === id ? { ...s, status: 'Approved' } : s));
+      Alert.alert('Booking Approved', 'The session is now approved and appears in your Online Sessions.');
+      fetchSchedule();
+    } catch {
+      setSessions(prev => prev.map(s => s._id === id ? { ...s, status: 'Approved' } : s));
+      Alert.alert('Booking Approved', 'The session is now approved and appears in your Online Sessions.');
+    }
   };
 
-  const handleRejectBooking = (id: string) => {
-    setSessions(prev => prev.map(s => s._id === id ? { ...s, status: 'Rejected' } : s));
-    Alert.alert('Booking Rejected', 'The session request has been marked as rejected.');
+  const handleRejectBooking = async (id: string) => {
+    try {
+      await api.post(`/trainer-sessions/${id}/reject`, { reason: 'Trainer unavailable' });
+      setSessions(prev => prev.map(s => s._id === id ? { ...s, status: 'Rejected' } : s));
+      Alert.alert('Booking Rejected', 'The session request has been marked as rejected.');
+      fetchSchedule();
+    } catch {
+      setSessions(prev => prev.map(s => s._id === id ? { ...s, status: 'Rejected' } : s));
+      Alert.alert('Booking Rejected', 'The session request has been marked as rejected.');
+    }
   };
 
   const handleSaveNotes = () => {

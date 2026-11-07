@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import mongoose from 'mongoose';
 import { AuthRequest } from '../middlewares/auth';
 import TrainerSession, { TrainerSessionStatus, TrainerSessionMode } from '../models/TrainerSession';
 import Trainer from '../models/Trainer';
@@ -15,9 +16,52 @@ export const createSessionRequest = async (req: AuthRequest, res: Response): Pro
       return;
     }
 
-    const { trainerId, mode, date, startTime, endTime, duration } = req.body;
+    const { trainerId, mode, date, startTime, endTime, duration, timeSlot, notes } = req.body;
 
-    const trainer = await Trainer.findById(trainerId);
+    // Parse timeSlot into startTime and endTime if not explicitly provided
+    let parsedStartTime = startTime;
+    let parsedEndTime = endTime;
+    if ((!parsedStartTime || !parsedEndTime) && timeSlot && typeof timeSlot === 'string') {
+      const parts = timeSlot.split('-').map(s => s.trim());
+      if (parts.length >= 2) {
+        parsedStartTime = parts[0];
+        parsedEndTime = parts[1];
+      } else {
+        parsedStartTime = timeSlot;
+        parsedEndTime = '';
+      }
+    }
+
+    // Resolve trainer by Trainer._id, Trainer.userId, or User._id
+    let trainer = null;
+    if (mongoose.Types.ObjectId.isValid(trainerId)) {
+      trainer = await Trainer.findById(trainerId);
+      if (!trainer) {
+        trainer = await Trainer.findOne({ userId: trainerId });
+      }
+    }
+    if (!trainer) {
+      trainer = await Trainer.findOne({ $or: [{ _id: trainerId }, { userId: trainerId }] });
+    }
+    if (!trainer && mongoose.Types.ObjectId.isValid(trainerId)) {
+      const userTrainer = await User.findById(trainerId);
+      if (userTrainer && String(userTrainer.role).toUpperCase() === 'TRAINER') {
+        trainer = await Trainer.findOne({ userId: userTrainer._id });
+        if (!trainer) {
+          trainer = await Trainer.create({
+            userId: userTrainer._id,
+            gymId: userTrainer.gymId,
+            name: `${userTrainer.firstName || ''} ${userTrainer.lastName || ''}`.trim() || userTrainer.email,
+            email: userTrainer.email,
+            phone: (userTrainer as any).mobile || (userTrainer as any).phone || '',
+            specialization: 'Personal Trainer',
+            status: 'Active',
+            trainingMode: 'both'
+          });
+        }
+      }
+    }
+
     if (!trainer) {
       res.status(404).json({ success: false, message: 'Trainer not found' });
       return;
@@ -34,27 +78,29 @@ export const createSessionRequest = async (req: AuthRequest, res: Response): Pro
 
     const session = new TrainerSession({
       customerId,
-      trainerId,
+      trainerId: trainer._id,
       gymId: trainer.gymId,
       mode: sessionMode,
-      date,
-      startTime,
-      endTime,
+      date: date || new Date().toISOString().split('T')[0],
+      startTime: parsedStartTime || '10:00 AM',
+      endTime: parsedEndTime || '11:00 AM',
       duration: duration || 60,
       fee: trainer.fee || 0,
       status: TrainerSessionStatus.PENDING,
-      bookingId: 'BKG-' + Math.random().toString(36).substr(2, 9).toUpperCase()
+      bookingId: 'BKG-' + Math.random().toString(36).substr(2, 9).toUpperCase(),
+      notes: notes || ''
     });
 
     await session.save();
 
     // Notify trainer
+    const recipientUserId = trainer.userId ? trainer.userId.toString() : trainer._id.toString();
     await notify({
-      recipientId: trainer.userId.toString(),
+      recipientId: recipientUserId,
       recipientRole: 'TRAINER',
       gymId: trainer.gymId ? trainer.gymId.toString() : '',
       title: 'New Session Request',
-      message: `You have a new ${mode} session request for ${date} at ${startTime}.`,
+      message: `You have a new ${sessionMode} session request for ${date || 'today'} at ${parsedStartTime || '10:00 AM'}.`,
       type: 'info',
       relatedRecordId: session.id,
       link: '/trainer/sessions'
@@ -62,6 +108,7 @@ export const createSessionRequest = async (req: AuthRequest, res: Response): Pro
 
     res.status(201).json({ success: true, message: 'Session request sent successfully', session });
   } catch (error: any) {
+    console.error('Error creating session request:', error);
     res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }
 };
@@ -508,19 +555,22 @@ export const getMemberSessions = async (req: AuthRequest, res: Response): Promis
 export const getTrainerSessions = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const trainerUserId = req.user?.id;
-    const trainer = await Trainer.findOne({ userId: trainerUserId });
-    if (!trainer) {
-      res.status(403).json({ success: false, message: 'Unauthorized' });
-      return;
+    let trainer = await Trainer.findOne({ userId: trainerUserId });
+    if (!trainer && trainerUserId && mongoose.Types.ObjectId.isValid(trainerUserId)) {
+      trainer = await Trainer.findById(trainerUserId);
     }
 
-    const sessions = await TrainerSession.find({ trainerId: trainer._id })
+    const trainerIds: any[] = [];
+    if (trainer?._id) trainerIds.push(trainer._id);
+    if (trainerUserId) trainerIds.push(trainerUserId);
+
+    const sessions = await TrainerSession.find({ trainerId: { $in: trainerIds } })
       .populate('customerId')
       .sort({ date: -1, startTime: -1 });
 
     const normalizedSessions = sessions.map(s => {
       const doc = s.toObject ? s.toObject() : s;
-      if (trainer.trainingMode === 'online') {
+      if (trainer && trainer.trainingMode === 'online') {
         doc.mode = TrainerSessionMode.ONLINE;
       }
       return doc;

@@ -52,12 +52,25 @@ export const CustomerTrainersScreen: React.FC = () => {
           text: 'Confirm Booking', 
           onPress: async () => {
             try {
-              const res = await api.post('/trainer-sessions', {
+              const res = await api.post('/trainer-sessions/request', {
                 trainerId: tid,
-                date: new Date().toISOString(),
+                date: new Date().toISOString().split('T')[0],
                 timeSlot: 'Today 05:00 PM - 06:00 PM',
+                startTime: '05:00 PM',
+                endTime: '06:00 PM',
+                mode: 'Offline',
+                duration: 60,
                 sessionType: '1-on-1 Personal Training',
-              }).catch(() => api.post('/trainer-plans/manual-request', { trainerId: tid }));
+              }).catch(() => api.post('/trainer-sessions', {
+                trainerId: tid,
+                date: new Date().toISOString().split('T')[0],
+                timeSlot: 'Today 05:00 PM - 06:00 PM',
+                startTime: '05:00 PM',
+                endTime: '06:00 PM',
+                mode: 'Offline',
+                duration: 60,
+                sessionType: '1-on-1 Personal Training',
+              }));
 
               setBookedIds(prev => new Set(prev).add(tid));
               Alert.alert('Session Requested', `Your coaching booking request has been sent to ${trainer.name}.`);
