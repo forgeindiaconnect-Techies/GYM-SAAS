@@ -197,6 +197,11 @@ export const CustomerMessagesScreen: React.FC = () => {
         const mappedMsgs: ChatMessage[] = res.data.messages.map((m: any) => {
           const sId = m.senderId?._id || m.senderId;
           const isMine = String(sId) === String(myUserId);
+          const hasAtt = Array.isArray(m.attachments) && m.attachments.length > 0;
+          const firstAtt = hasAtt ? m.attachments[0] : null;
+          const attUrl = firstAtt?.url || m.attachmentUrl;
+          const isImg = (firstAtt?.fileType === 'image') || (m.fileType === 'image') || (m.messageType === 'image') || (m.message === '📷 Photo attached');
+
           return {
             id: m._id || 'msg_' + Math.random(),
             senderId: sId,
@@ -205,11 +210,11 @@ export const CustomerMessagesScreen: React.FC = () => {
             createdAt: new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }).toLowerCase(),
             isMine,
             type: m.messageType || 'text',
-            attachment: m.attachments && m.attachments[0] ? {
-              name: m.attachments[0].fileName,
-              size: m.attachments[0].fileSize,
-              uri: m.attachments[0].url,
-              type: m.attachments[0].fileType || 'document'
+            attachment: (firstAtt || attUrl || isImg) ? {
+              name: firstAtt?.fileName || m.fileName || (isImg ? 'Photo.jpg' : 'Attachment'),
+              size: firstAtt?.fileSize || m.fileSize,
+              uri: attUrl || 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=600',
+              type: isImg ? 'image' : (firstAtt?.fileType || m.fileType || 'document'),
             } : undefined
           };
         });
@@ -397,19 +402,62 @@ export const CustomerMessagesScreen: React.FC = () => {
     // Attempt server send
     try {
       setSending(true);
+
+      let finalAttachmentUrl = currentAttachment?.uri || '';
+      let finalFileName = currentAttachment?.name || '';
+      let finalFileType = currentAttachment?.type || 'other';
+      let finalFileSize = currentAttachment?.size || 0;
+
+      // Upload file to backend Cloudinary storage so any phone and web can view it
+      if (currentAttachment && currentAttachment.uri) {
+        try {
+          const formData = new FormData();
+          const cleanFileName = currentAttachment.name || `photo_${Date.now()}.${currentAttachment.type === 'video' ? 'mp4' : currentAttachment.type === 'image' ? 'jpg' : 'pdf'}`;
+          const cleanMimeType = currentAttachment.mimeType || (
+            currentAttachment.type === 'image' ? 'image/jpeg' :
+            currentAttachment.type === 'video' ? 'video/mp4' :
+            'application/octet-stream'
+          );
+
+          formData.append('file', {
+            uri: currentAttachment.uri,
+            name: cleanFileName,
+            type: cleanMimeType,
+          } as any);
+
+          const uploadRes = await api.post('/direct-messages/upload', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+          });
+
+          if (uploadRes.data?.success && uploadRes.data?.attachment?.url) {
+            const serverAtt = uploadRes.data.attachment;
+            finalAttachmentUrl = serverAtt.url;
+            finalFileName = serverAtt.fileName || cleanFileName;
+            finalFileType = serverAtt.fileType || currentAttachment.type;
+            finalFileSize = serverAtt.fileSize || currentAttachment.size;
+          }
+        } catch (uploadErr) {
+          console.warn('[CustomerMessages] Attachment upload to Cloudinary warning (falling back to direct URI):', uploadErr);
+        }
+      }
+
       await api.post('/direct-messages/send', {
         receiverId: selectedTrainer._id || selectedTrainer.id,
         recipientId: selectedTrainer._id || selectedTrainer.id,
         message: displayContent,
         content: displayContent,
         messageType: currentAttachment ? (currentAttachment.type === 'image' ? 'image' : currentAttachment.type === 'video' ? 'video' : 'file') : 'text',
+        attachmentUrl: finalAttachmentUrl,
+        fileName: finalFileName,
+        fileType: finalFileType,
+        fileSize: finalFileSize,
         attachments: currentAttachment
           ? [
               {
-                url: currentAttachment.uri,
-                fileName: currentAttachment.name,
-                fileType: currentAttachment.type,
-                fileSize: currentAttachment.size,
+                url: finalAttachmentUrl,
+                fileName: finalFileName,
+                fileType: finalFileType,
+                fileSize: finalFileSize,
               },
             ]
           : [],
@@ -638,7 +686,7 @@ export const CustomerMessagesScreen: React.FC = () => {
                           )}
                         </View>
                       )}
-                      {!!msg.text && (
+                      {!!msg.text && msg.text !== '📷 Photo attached' && (
                         <Text style={styles.myMessageText}>{msg.text}</Text>
                       )}
                       <Text style={styles.myMessageTime}>{msg.createdAt}</Text>
@@ -681,7 +729,7 @@ export const CustomerMessagesScreen: React.FC = () => {
                           )}
                         </View>
                       )}
-                      {!!msg.text && (
+                      {!!msg.text && msg.text !== '📷 Photo attached' && (
                         <Text style={styles.trainerMessageText}>{msg.text}</Text>
                       )}
                       <Text style={styles.trainerMessageTime}>{msg.createdAt}</Text>

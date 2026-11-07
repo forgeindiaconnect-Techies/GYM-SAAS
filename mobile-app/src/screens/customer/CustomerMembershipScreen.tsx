@@ -17,6 +17,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../constants/theme';
 import { useAuth } from '../../context/AuthContext';
 import { api } from '../../api/client';
+import { FileDownloader } from '../../utils/fileDownloader';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -311,22 +312,50 @@ export const CustomerMembershipScreen: React.FC<{
     }
   };
 
+  const [downloadingReceipt, setDownloadingReceipt] = useState(false);
+
   const handleShareOrPrintReceipt = async () => {
-    const gymName = currentMembership.gymId?.name || 'Perfect Fitness Studio';
-    const recId = currentMembership.receiptNumber || 'REC-C0428ACD';
-    const memberName = `${user?.firstName || 'Renugopal'} ${user?.lastName || 'Y'}`.trim();
-    const planName = currentMembership.planName || 'Weight Loss';
-    const amount = currentMembership.finalAmount || 499;
-
-    const receiptText = `=== GYMORA OFFICIAL RECEIPT ===\nGym: ${gymName}\nReceipt #: ${recId}\nMember: ${memberName} (${user?.email || 'renugopal5457@gmail.com'})\nPlan: ${planName} (${currentMembership.duration || '1 Month'})\nTotal Paid: ₹${amount}\nPayment Status: Verified & Successful\nThank you for training with us!`;
-
+    if (downloadingReceipt) return;
     try {
-      await Share.share({
-        message: receiptText,
-        title: `Receipt - ${recId}`,
+      setDownloadingReceipt(true);
+      const gymName = currentMembership.gymId?.name || 'Perfect Fitness Studio';
+      const recId = currentMembership.receiptNumber || 'REC-C0428ACD';
+      const memberName = `${user?.firstName || 'Renugopal'} ${user?.lastName || 'Y'}`.trim();
+      const planName = currentMembership.planName || 'Weight Loss';
+      const amount = currentMembership.finalAmount || 499;
+
+      const startDateStr = currentMembership.startDate
+        ? new Date(currentMembership.startDate).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
+        : '21 Oct 2026';
+      const endDateStr = currentMembership.endDate
+        ? new Date(currentMembership.endDate).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
+        : '21 Nov 2026';
+
+      await FileDownloader.downloadReceiptPDF({
+        receiptNumber: recId,
+        gymName,
+        gymAddress: currentMembership.gymId?.address || 'Premier Fitness, Training & Wellness Club',
+        gymPhone: currentMembership.gymId?.phone || '+91 98765 43210',
+        customerName: memberName,
+        customerEmail: user?.email || 'renugopal5457@gmail.com',
+        customerPhone: user?.phone || '+91 98401 23456',
+        membershipId: currentMembership.membershipId || 'MEM-428ACD',
+        planName,
+        duration: currentMembership.duration || '1 Month',
+        amount,
+        subtotal: currentMembership.price || amount,
+        discount: currentMembership.discount || 0,
+        tax: currentMembership.tax || 0,
+        paymentMethod: currentMembership.paymentMethod || 'UPI',
+        paymentStatus: currentMembership.status || 'Active',
+        validFrom: startDateStr,
+        validTo: endDateStr,
       });
-    } catch (err) {
-      Alert.alert('Receipt Downloaded', `Receipt #${recId} details saved.`);
+    } catch (err: any) {
+      console.error('Error downloading receipt PDF:', err);
+      Alert.alert('Download Error', 'Unable to generate receipt PDF. Please try again.');
+    } finally {
+      setDownloadingReceipt(false);
     }
   };
 
@@ -851,12 +880,22 @@ export const CustomerMembershipScreen: React.FC<{
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={styles.modalPrintBtn}
+                style={[styles.modalPrintBtn, downloadingReceipt && { opacity: 0.7 }]}
                 onPress={handleShareOrPrintReceipt}
+                disabled={downloadingReceipt}
                 activeOpacity={0.8}
               >
-                <Ionicons name="print-outline" size={14} color="#EA580C" />
-                <Text style={styles.modalPrintBtnText}>Print Receipt</Text>
+                {downloadingReceipt ? (
+                  <>
+                    <ActivityIndicator size="small" color="#EA580C" />
+                    <Text style={styles.modalPrintBtnText}>Generating PDF...</Text>
+                  </>
+                ) : (
+                  <>
+                    <Ionicons name="print-outline" size={14} color="#EA580C" />
+                    <Text style={styles.modalPrintBtnText}>Print Receipt</Text>
+                  </>
+                )}
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -978,12 +1017,22 @@ export const CustomerMembershipScreen: React.FC<{
             {/* Receipt Modal Footer */}
             <View style={styles.modalFooterRow}>
               <TouchableOpacity
-                style={styles.modalPrintBtn}
+                style={[styles.modalPrintBtn, downloadingReceipt && { opacity: 0.7 }]}
                 onPress={handleShareOrPrintReceipt}
+                disabled={downloadingReceipt}
                 activeOpacity={0.8}
               >
-                <Ionicons name="download-outline" size={15} color="#EA580C" />
-                <Text style={styles.modalPrintBtnText}>Download Receipt</Text>
+                {downloadingReceipt ? (
+                  <>
+                    <ActivityIndicator size="small" color="#EA580C" />
+                    <Text style={styles.modalPrintBtnText}>Generating PDF...</Text>
+                  </>
+                ) : (
+                  <>
+                    <Ionicons name="download-outline" size={15} color="#EA580C" />
+                    <Text style={styles.modalPrintBtnText}>Download Receipt</Text>
+                  </>
+                )}
               </TouchableOpacity>
 
               <TouchableOpacity

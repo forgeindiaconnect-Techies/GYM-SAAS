@@ -688,18 +688,51 @@ export const TrainerMoreScreen: React.FC<{ initialSection?: TrainerMoreKey }> = 
           const res = await api.get('/direct-messages/contacts');
           if (res.data?.success && res.data.contacts?.length > 0) {
             setMsgContacts(res.data.contacts);
-            const active = res.data.contacts[0];
+            const active = (selectedMsgContact?.id && selectedMsgContact.id !== 'cust-1')
+              ? (res.data.contacts.find((c: any) => (c.id || c._id) === (selectedMsgContact.id || selectedMsgContact._id)) || res.data.contacts[0])
+              : res.data.contacts[0];
             setSelectedMsgContact(active);
             const histRes = await api.get('/direct-messages/history/' + (active.id || active._id));
-            if (histRes.data?.success && histRes.data.messages?.length > 0) {
-              setChatMessages(histRes.data.messages.map((m: any) => ({
-                _id: m._id,
-                senderId: m.senderId?._id || m.senderId,
-                senderName: (m.senderId?._id || m.senderId) === (user?._id || user?.id) ? 'You (Naveen )' : (active.name || 'Renugopal Y'),
-                message: m.message,
-                time: new Date(m.createdAt).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }).toLowerCase(),
-                isOutgoing: (m.senderId?._id || m.senderId) === (user?._id || user?.id)
-              })));
+            if (histRes.data?.success && Array.isArray(histRes.data.messages)) {
+              setChatMessages(histRes.data.messages.map((m: any) => {
+                const sId = m.senderId?._id || m.senderId;
+                const isOut = String(sId) === String(user?._id || user?.id);
+                const hasAtt = Array.isArray(m.attachments) && m.attachments.length > 0;
+                const firstAtt = hasAtt ? m.attachments[0] : null;
+                const attUrl = firstAtt?.url || m.attachmentUrl;
+                const isImg = (firstAtt?.fileType === 'image') || (m.fileType === 'image') || (m.messageType === 'image') || (m.message === '📷 Photo attached');
+
+                const mappedAttachments = hasAtt
+                  ? m.attachments.map((a: any) => ({
+                      fileName: a.fileName || m.fileName || 'Attachment',
+                      fileType: a.fileType || m.fileType || (isImg ? 'image' : 'document'),
+                      fileSize: a.fileSize || m.fileSize,
+                      url: a.url || attUrl,
+                      previewUrl: a.url || attUrl,
+                    }))
+                  : (attUrl || isImg)
+                  ? [{
+                      fileName: m.fileName || 'Photo.jpg',
+                      fileType: isImg ? 'image' : (m.fileType || 'document'),
+                      fileSize: m.fileSize,
+                      url: attUrl || 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=600',
+                      previewUrl: attUrl || 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=600',
+                    }]
+                  : [];
+
+                return {
+                  _id: m._id || 'msg_' + Math.random(),
+                  senderId: sId,
+                  senderName: isOut ? 'You (Naveen )' : (active.name || 'Renugopal Y'),
+                  message: m.message,
+                  time: new Date(m.createdAt).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }).toLowerCase(),
+                  isOutgoing: isOut,
+                  messageType: m.messageType || (isImg ? 'image' : 'text'),
+                  attachments: mappedAttachments,
+                  attachmentUrl: attUrl || (isImg ? (mappedAttachments[0]?.url || 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=600') : undefined),
+                  duration: m.duration,
+                };
+              }));
             }
           }
         } catch (e) {
@@ -3218,28 +3251,50 @@ export const TrainerMoreScreen: React.FC<{ initialSection?: TrainerMoreKey }> = 
                         </View>
                       ) : (
                         <View style={isOutgoing ? styles.outgoingMsgBubble : styles.receivedMsgBubble}>
-                          {msg.message ? (
+                          {msg.message && msg.message !== '📷 Photo attached' ? (
                             <Text style={isOutgoing ? styles.outgoingMsgText : styles.receivedMsgText}>
                               {msg.message}
                             </Text>
                           ) : null}
 
+                          {/* Fallback image when attachments array is empty but photo was sent */}
+                          {attachments.length === 0 && (msg.messageType === 'image' || msg.attachmentUrl || msg.message === '📷 Photo attached') && (
+                            <View style={{ marginTop: (msg.message && msg.message !== '📷 Photo attached') ? 8 : 0 }}>
+                              <TouchableOpacity 
+                                onPress={() => setSelectedImagePreview(msg.attachmentUrl || 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=600')}
+                                activeOpacity={0.9}
+                              >
+                                <Image 
+                                  source={{ uri: msg.attachmentUrl || 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=600' }}
+                                  style={styles.chatImagePreview}
+                                  resizeMode="cover"
+                                />
+                                <View style={styles.chatImageBadge}>
+                                  <Ionicons name="expand" size={11} color="#FFFFFF" />
+                                  <Text style={styles.chatImageBadgeText}>View Photo</Text>
+                                </View>
+                              </TouchableOpacity>
+                            </View>
+                          )}
+
                           {/* Render Attachments if any */}
                           {attachments.map((att: any, attIdx: number) => {
-                            const isImg = att.fileType === 'image';
+                            const isImg = att.fileType === 'image' || att.url?.match(/\.(jpg|jpeg|png|webp|gif)/i) || msg.messageType === 'image';
                             const isDoc = att.fileType === 'document' || att.fileName?.endsWith('.pdf');
                             const isVid = att.fileType === 'video';
+                            const imgUrl = att.previewUrl || att.url || msg.attachmentUrl || 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=600';
 
                             return (
-                              <View key={attIdx} style={{ marginTop: msg.message ? 8 : 0 }}>
+                              <View key={attIdx} style={{ marginTop: (msg.message && msg.message !== '📷 Photo attached') ? 8 : 0 }}>
                                 {isImg && (
                                   <TouchableOpacity 
-                                    onPress={() => setSelectedImagePreview(att.previewUrl || 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=600')}
+                                    onPress={() => setSelectedImagePreview(imgUrl)}
                                     activeOpacity={0.9}
                                   >
                                     <Image 
-                                      source={{ uri: att.previewUrl || 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=600' }}
+                                      source={{ uri: imgUrl }}
                                       style={styles.chatImagePreview}
+                                      resizeMode="cover"
                                     />
                                     <View style={styles.chatImageBadge}>
                                       <Ionicons name="expand" size={11} color="#FFFFFF" />
