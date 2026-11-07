@@ -20,6 +20,7 @@ import { api } from '../../api/client';
 import { useAuth } from '../../context/AuthContext';
 import { CustomerTrainerPlanScreen } from './CustomerTrainerPlanScreen';
 import { CustomerTrainerFeedbackScreen } from './CustomerTrainerFeedbackScreen';
+import { CustomerMessagesScreen } from './CustomerMessagesScreen';
 
 type TabType = 'find_trainers' | 'my_trainer' | 'trainer_plan' | 'trainer_feedback' | 'my_bookings' | 'online_sessions' | 'messages';
 
@@ -971,7 +972,7 @@ export const CustomerTrainingScreen: React.FC<{ initialSubTab?: string }> = ({ i
         {activeTab === 'trainer_feedback' && <CustomerTrainerFeedbackScreen />}
         {activeTab === 'my_bookings' && renderMyBookingsView()}
         {activeTab === 'online_sessions' && renderOnlineSessionsView()}
-        {activeTab === 'messages' && renderMessagesView()}
+        {activeTab === 'messages' && <CustomerMessagesScreen />}
       </View>
 
       {/* VIEW PROFILE MODAL - FULL PARITY WITH WEB APPLICATION (MemberFindTrainers.tsx) */}

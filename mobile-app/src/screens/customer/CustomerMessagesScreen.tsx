@@ -10,8 +10,12 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
+  Image,
+  Modal,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import * as DocumentPicker from 'expo-document-picker';
+import * as ImagePicker from 'expo-image-picker';
 import { useAuth } from '../../context/AuthContext';
 import { api } from '../../api/client';
 
@@ -27,6 +31,15 @@ interface TrainerContact {
   unreadCount?: number;
 }
 
+interface PendingAttachment {
+  id: string;
+  name: string;
+  size?: number;
+  uri: string;
+  mimeType?: string;
+  type: 'image' | 'document' | 'video' | 'audio' | 'other';
+}
+
 interface ChatMessage {
   id: string;
   senderId: string;
@@ -35,7 +48,21 @@ interface ChatMessage {
   createdAt: string;
   isMine: boolean;
   type?: 'text' | 'voice' | 'attachment';
+  attachment?: {
+    name: string;
+    size?: number;
+    uri?: string;
+    type: 'image' | 'document' | 'video' | 'audio' | 'other';
+  };
 }
+
+const formatFileSize = (bytes?: number) => {
+  if (!bytes || bytes === 0) return '';
+  const k = 1024;
+  const sizes = ['B', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(1))} ${sizes[i]}`;
+};
 
 const DEFAULT_TRAINERS: TrainerContact[] = [
   {
@@ -104,6 +131,8 @@ export const CustomerMessagesScreen: React.FC = () => {
   const [sending, setSending] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [recordingSeconds, setRecordingSeconds] = useState(0);
+  const [pendingAttachments, setPendingAttachments] = useState<PendingAttachment[]>([]);
+  const [attachmentModalVisible, setAttachmentModalVisible] = useState(false);
 
   const scrollViewRef = useRef<any>(null);
 
@@ -141,19 +170,149 @@ export const CustomerMessagesScreen: React.FC = () => {
 
   const currentMessages = conversations[selectedTrainer.id] || [];
 
+  const handlePickDocument = async () => {
+    setAttachmentModalVisible(false);
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: '*/*',
+        copyToCacheDirectory: true,
+        multiple: false,
+      });
+
+      if (!result.canceled && result.assets && result.assets.length > 0) {
+        const asset = result.assets[0];
+        if (asset.size && asset.size > 50 * 1024 * 1024) {
+          Alert.alert('File Too Large', 'Maximum file size allowed is 50MB.');
+          return;
+        }
+        let type: PendingAttachment['type'] = 'document';
+        const mime = (asset.mimeType || '').toLowerCase();
+        if (mime.startsWith('image/')) type = 'image';
+        else if (mime.startsWith('video/')) type = 'video';
+        else if (mime.startsWith('audio/')) type = 'audio';
+
+        setPendingAttachments([
+          {
+            id: 'att_' + Date.now(),
+            name: asset.name,
+            size: asset.size,
+            uri: asset.uri,
+            mimeType: asset.mimeType,
+            type,
+          },
+        ]);
+      }
+    } catch (err) {
+      console.warn('Document picker error:', err);
+      Alert.alert('Notice', 'Unable to open file picker.');
+    }
+  };
+
+  const handlePickFromGallery = async () => {
+    setAttachmentModalVisible(false);
+    try {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permission Required', 'Please enable gallery access in device settings to attach photos.');
+        return;
+      }
+
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        quality: 0.85,
+        allowsEditing: false,
+      });
+
+      if (!result.canceled && result.assets && result.assets.length > 0) {
+        const asset = result.assets[0];
+        if (asset.fileSize && asset.fileSize > 50 * 1024 * 1024) {
+          Alert.alert('File Too Large', 'Maximum file size allowed is 50MB.');
+          return;
+        }
+        const fileName = asset.fileName || `workout_${Date.now()}.${asset.type === 'video' ? 'mp4' : 'jpg'}`;
+        setPendingAttachments([
+          {
+            id: 'att_' + Date.now(),
+            name: fileName,
+            size: asset.fileSize,
+            uri: asset.uri,
+            mimeType: asset.mimeType || (asset.type === 'video' ? 'video/mp4' : 'image/jpeg'),
+            type: asset.type === 'video' ? 'video' : 'image',
+          },
+        ]);
+      }
+    } catch (err) {
+      console.warn('Gallery picker error:', err);
+      Alert.alert('Notice', 'Unable to open photo gallery.');
+    }
+  };
+
+  const handleTakePhoto = async () => {
+    setAttachmentModalVisible(false);
+    try {
+      const { status } = await ImagePicker.requestCameraPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permission Required', 'Please enable camera access in device settings.');
+        return;
+      }
+
+      const result = await ImagePicker.launchCameraAsync({
+        quality: 0.85,
+        allowsEditing: false,
+      });
+
+      if (!result.canceled && result.assets && result.assets.length > 0) {
+        const asset = result.assets[0];
+        const fileName = asset.fileName || `camera_${Date.now()}.jpg`;
+        setPendingAttachments([
+          {
+            id: 'att_' + Date.now(),
+            name: fileName,
+            size: asset.fileSize,
+            uri: asset.uri,
+            mimeType: asset.mimeType || 'image/jpeg',
+            type: 'image',
+          },
+        ]);
+      }
+    } catch (err) {
+      console.warn('Camera capture error:', err);
+      Alert.alert('Notice', 'Unable to launch camera.');
+    }
+  };
+
+  const handleRemoveAttachment = () => {
+    setPendingAttachments([]);
+  };
+
   const handleSendMessage = async (textOverride?: string) => {
+    const hasAttachment = pendingAttachments.length > 0;
+    const currentAttachment = hasAttachment ? pendingAttachments[0] : undefined;
     const textToSend = (textOverride || inputMessage).trim();
-    if (!textToSend || sending) return;
+
+    if (!textToSend && !hasAttachment) return;
+    if (sending) return;
 
     const nowTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }).toLowerCase();
+
+    const displayContent = textToSend || (currentAttachment?.type === 'image' ? '📷 Photo attached' : `📄 ${currentAttachment?.name}`);
 
     const newMsg: ChatMessage = {
       id: 'msg_' + Date.now(),
       senderId: user?._id || 'user_renugopal',
       senderName: userName,
-      text: textToSend,
+      text: displayContent,
       createdAt: nowTime,
       isMine: true,
+      type: hasAttachment ? 'attachment' : 'text',
+      attachment: currentAttachment
+        ? {
+            name: currentAttachment.name,
+            size: currentAttachment.size,
+            uri: currentAttachment.uri,
+            type: currentAttachment.type,
+          }
+        : undefined,
     };
 
     setConversations((prev) => ({
@@ -163,17 +322,25 @@ export const CustomerMessagesScreen: React.FC = () => {
 
     // Update trainer latest preview
     setTrainers((prev) =>
-      prev.map((t) => (t.id === selectedTrainer.id ? { ...t, lastMsg: textToSend, lastMsgTime: nowTime } : t))
+      prev.map((t) => (t.id === selectedTrainer.id ? { ...t, lastMsg: displayContent, lastMsgTime: nowTime } : t))
     );
 
     setInputMessage('');
+    setPendingAttachments([]);
 
     // Attempt server send
     try {
       setSending(true);
       await api.post('/direct-messages/send', {
         recipientId: selectedTrainer.id,
-        content: textToSend,
+        content: displayContent,
+        attachment: currentAttachment
+          ? {
+              name: currentAttachment.name,
+              size: currentAttachment.size,
+              type: currentAttachment.type,
+            }
+          : undefined,
       }).catch(() => {});
     } catch {
       // Offline fallback
@@ -194,7 +361,9 @@ export const CustomerMessagesScreen: React.FC = () => {
           id: 'reply_' + Date.now(),
           senderId: 'tr_naveen',
           senderName: 'Naveen',
-          text: 'Good afternoon Renugopal! How was today’s training session? Let me know if you need any adjustments.',
+          text: hasAttachment 
+            ? 'Received your attachment! I will review the file/photo and follow up shortly.'
+            : 'Good afternoon Renugopal! How was today’s training session? Let me know if you need any adjustments.',
           createdAt: replyTime,
           isMine: false,
         };
@@ -213,21 +382,7 @@ export const CustomerMessagesScreen: React.FC = () => {
   };
 
   const handlePickAttachment = () => {
-    Alert.alert('Send Attachment (Max 50MB)', 'Choose attachment type to send to ' + selectedTrainer.name, [
-      {
-        text: 'Photo of Workout / Meal',
-        onPress: () => {
-          handleSendMessage('📷 [Photo Attachment: workout_form_check.jpg]');
-        },
-      },
-      {
-        text: 'PDF / Fitness Report',
-        onPress: () => {
-          handleSendMessage('📄 [Document: body_composition_report.pdf (2.4MB)]');
-        },
-      },
-      { text: 'Cancel', style: 'cancel' },
-    ]);
+    setAttachmentModalVisible(true);
   };
 
   const handleToggleVoiceRecording = () => {
@@ -371,7 +526,47 @@ export const CustomerMessagesScreen: React.FC = () => {
                       </View>
                     </View>
                     <View style={styles.myMessageBubble}>
-                      <Text style={styles.myMessageText}>{msg.text}</Text>
+                      {/* Attached Image or File Preview */}
+                      {msg.attachment && (
+                        <View style={styles.attachmentInBubble}>
+                          {msg.attachment.type === 'image' && msg.attachment.uri ? (
+                            <Image
+                              source={{ uri: msg.attachment.uri }}
+                              style={styles.bubbleAttachmentImage}
+                              resizeMode="cover"
+                            />
+                          ) : (
+                            <View style={styles.bubbleFileCard}>
+                              <View style={styles.bubbleFileIconBadge}>
+                                <Ionicons
+                                  name={
+                                    msg.attachment.type === 'document'
+                                      ? 'document-text'
+                                      : msg.attachment.type === 'video'
+                                      ? 'videocam'
+                                      : 'attach'
+                                  }
+                                  size={18}
+                                  color="#EA580C"
+                                />
+                              </View>
+                              <View style={{ flex: 1 }}>
+                                <Text style={styles.bubbleFileName} numberOfLines={1}>
+                                  {msg.attachment.name}
+                                </Text>
+                                {!!msg.attachment.size && (
+                                  <Text style={styles.bubbleFileSize}>
+                                    {formatFileSize(msg.attachment.size)}
+                                  </Text>
+                                )}
+                              </View>
+                            </View>
+                          )}
+                        </View>
+                      )}
+                      {!!msg.text && (
+                        <Text style={styles.myMessageText}>{msg.text}</Text>
+                      )}
                       <Text style={styles.myMessageTime}>{msg.createdAt}</Text>
                     </View>
                   </View>
@@ -387,7 +582,34 @@ export const CustomerMessagesScreen: React.FC = () => {
                       <Text style={styles.trainerSenderLabel}>{selectedTrainer.name} ({selectedTrainer.role})</Text>
                     </View>
                     <View style={styles.trainerMessageBubble}>
-                      <Text style={styles.trainerMessageText}>{msg.text}</Text>
+                      {msg.attachment && (
+                        <View style={styles.attachmentInBubbleTrainer}>
+                          {msg.attachment.type === 'image' && msg.attachment.uri ? (
+                            <Image
+                              source={{ uri: msg.attachment.uri }}
+                              style={styles.bubbleAttachmentImage}
+                              resizeMode="cover"
+                            />
+                          ) : (
+                            <View style={styles.bubbleFileCardTrainer}>
+                              <Ionicons name="document-text" size={18} color="#EA580C" />
+                              <View style={{ flex: 1 }}>
+                                <Text style={styles.bubbleFileNameTrainer} numberOfLines={1}>
+                                  {msg.attachment.name}
+                                </Text>
+                                {!!msg.attachment.size && (
+                                  <Text style={styles.bubbleFileSizeTrainer}>
+                                    {formatFileSize(msg.attachment.size)}
+                                  </Text>
+                                )}
+                              </View>
+                            </View>
+                          )}
+                        </View>
+                      )}
+                      {!!msg.text && (
+                        <Text style={styles.trainerMessageText}>{msg.text}</Text>
+                      )}
                       <Text style={styles.trainerMessageTime}>{msg.createdAt}</Text>
                     </View>
                   </View>
@@ -404,6 +626,40 @@ export const CustomerMessagesScreen: React.FC = () => {
             <Text style={styles.recordingTimerText}>Recording Voice Note: {recordingSeconds}s</Text>
             <TouchableOpacity onPress={() => setIsRecording(false)} style={styles.recordingCancelBtn}>
               <Text style={styles.recordingCancelText}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
+        {/* Pending Attachment Preview Bar (Above Input) */}
+        {pendingAttachments.length > 0 && (
+          <View style={styles.pendingAttachmentCard}>
+            <View style={styles.pendingAttachmentIconBox}>
+              <Ionicons
+                name={
+                  pendingAttachments[0].type === 'image'
+                    ? 'image'
+                    : pendingAttachments[0].type === 'video'
+                    ? 'videocam'
+                    : 'document-text'
+                }
+                size={18}
+                color="#EA580C"
+              />
+            </View>
+            <View style={{ flex: 1, paddingHorizontal: 6 }}>
+              <Text style={styles.pendingAttachmentName} numberOfLines={1}>
+                {pendingAttachments[0].name}
+              </Text>
+              <Text style={styles.pendingAttachmentSize}>
+                {formatFileSize(pendingAttachments[0].size)} • Ready to send
+              </Text>
+            </View>
+            <TouchableOpacity
+              onPress={handleRemoveAttachment}
+              style={styles.pendingAttachmentRemoveBtn}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            >
+              <Ionicons name="close-circle" size={20} color="#94A3B8" />
             </TouchableOpacity>
           </View>
         )}
@@ -431,7 +687,11 @@ export const CustomerMessagesScreen: React.FC = () => {
           {/* Text Input */}
           <TextInput
             style={styles.messageTextInput}
-            placeholder={`Message ${selectedTrainer.name}...`}
+            placeholder={
+              pendingAttachments.length > 0
+                ? `Add caption for ${pendingAttachments[0].name}...`
+                : `Message ${selectedTrainer.name}...`
+            }
             placeholderTextColor="#94A3B8"
             value={inputMessage}
             onChangeText={setInputMessage}
@@ -442,9 +702,12 @@ export const CustomerMessagesScreen: React.FC = () => {
 
           {/* Orange Send Button */}
           <TouchableOpacity
-            style={[styles.sendBtn, !inputMessage.trim() && !isRecording && styles.sendBtnDisabled]}
+            style={[
+              styles.sendBtn,
+              !inputMessage.trim() && !isRecording && pendingAttachments.length === 0 && styles.sendBtnDisabled,
+            ]}
             onPress={() => (isRecording ? handleToggleVoiceRecording() : handleSendMessage())}
-            disabled={!inputMessage.trim() && !isRecording}
+            disabled={!inputMessage.trim() && !isRecording && pendingAttachments.length === 0}
             activeOpacity={0.8}
           >
             {sending ? (
@@ -455,6 +718,86 @@ export const CustomerMessagesScreen: React.FC = () => {
           </TouchableOpacity>
         </View>
       </View>
+
+      {/* ── 5. Native Attachment Picker Modal (Browse Files / Gallery / Camera) ──── */}
+      <Modal
+        visible={attachmentModalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setAttachmentModalVisible(false)}
+      >
+        <TouchableOpacity
+          style={styles.modalBackdrop}
+          activeOpacity={1}
+          onPress={() => setAttachmentModalVisible(false)}
+        >
+          <View style={styles.attachmentSheetCard}>
+            <View style={styles.sheetHandle} />
+            <View style={styles.sheetHeader}>
+              <Text style={styles.sheetTitle}>Send Attachment</Text>
+              <Text style={styles.sheetSubtitle}>Choose from your device files or photos (Max 50MB)</Text>
+            </View>
+
+            <View style={styles.sheetOptionsList}>
+              {/* Option 1: Native Document / File Picker */}
+              <TouchableOpacity
+                style={styles.sheetOptionBtn}
+                onPress={handlePickDocument}
+                activeOpacity={0.7}
+              >
+                <View style={[styles.sheetOptionIconBox, { backgroundColor: '#EFF6FF' }]}>
+                  <Ionicons name="folder-open" size={22} color="#2563EB" />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.sheetOptionTitle}>Browse Files & Documents</Text>
+                  <Text style={styles.sheetOptionDesc}>PDF, Word (.docx), Excel, Fitness Reports, any file</Text>
+                </View>
+                <Ionicons name="chevron-forward" size={18} color="#94A3B8" />
+              </TouchableOpacity>
+
+              {/* Option 2: Photo & Video Gallery */}
+              <TouchableOpacity
+                style={styles.sheetOptionBtn}
+                onPress={handlePickFromGallery}
+                activeOpacity={0.7}
+              >
+                <View style={[styles.sheetOptionIconBox, { backgroundColor: '#FFF7ED' }]}>
+                  <Ionicons name="images" size={22} color="#EA580C" />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.sheetOptionTitle}>Photo & Video Gallery</Text>
+                  <Text style={styles.sheetOptionDesc}>Select workout photos, meals, or progress pictures</Text>
+                </View>
+                <Ionicons name="chevron-forward" size={18} color="#94A3B8" />
+              </TouchableOpacity>
+
+              {/* Option 3: Camera */}
+              <TouchableOpacity
+                style={styles.sheetOptionBtn}
+                onPress={handleTakePhoto}
+                activeOpacity={0.7}
+              >
+                <View style={[styles.sheetOptionIconBox, { backgroundColor: '#F0FDF4' }]}>
+                  <Ionicons name="camera" size={22} color="#16A34A" />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.sheetOptionTitle}>Take Photo with Camera</Text>
+                  <Text style={styles.sheetOptionDesc}>Snap live photo to send directly to coach</Text>
+                </View>
+                <Ionicons name="chevron-forward" size={18} color="#94A3B8" />
+              </TouchableOpacity>
+            </View>
+
+            <TouchableOpacity
+              style={styles.sheetCancelBtn}
+              onPress={() => setAttachmentModalVisible(false)}
+              activeOpacity={0.7}
+            >
+              <Text style={styles.sheetCancelText}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </TouchableOpacity>
+      </Modal>
     </KeyboardAvoidingView>
   );
 };
@@ -885,5 +1228,188 @@ const styles = StyleSheet.create({
   },
   sendBtnDisabled: {
     backgroundColor: '#EA580C80',
+  },
+
+  /* Attachments in Message Bubble */
+  attachmentInBubble: {
+    marginBottom: 6,
+  },
+  attachmentInBubbleTrainer: {
+    marginBottom: 6,
+  },
+  bubbleAttachmentImage: {
+    width: 220,
+    height: 150,
+    borderRadius: 12,
+    backgroundColor: '#E2E8F0',
+    marginBottom: 4,
+  },
+  bubbleFileCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    borderRadius: 10,
+    padding: 8,
+    maxWidth: 220,
+  },
+  bubbleFileIconBadge: {
+    width: 32,
+    height: 32,
+    borderRadius: 8,
+    backgroundColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  bubbleFileName: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#FFFFFF',
+  },
+  bubbleFileSize: {
+    fontSize: 10,
+    color: '#FED7AA',
+    marginTop: 1,
+  },
+  bubbleFileCardTrainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 10,
+    padding: 8,
+    maxWidth: 220,
+  },
+  bubbleFileNameTrainer: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#111827',
+  },
+  bubbleFileSizeTrainer: {
+    fontSize: 10,
+    color: '#64748B',
+    marginTop: 1,
+  },
+
+  /* Pending Attachment Preview Bar */
+  pendingAttachmentCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFF7ED',
+    borderTopWidth: 1,
+    borderTopColor: '#FFEDD5',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    gap: 8,
+  },
+  pendingAttachmentIconBox: {
+    width: 32,
+    height: 32,
+    borderRadius: 8,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#FDBA74',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  pendingAttachmentName: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#111827',
+  },
+  pendingAttachmentSize: {
+    fontSize: 10,
+    fontWeight: '600',
+    color: '#EA580C',
+    marginTop: 1,
+  },
+  pendingAttachmentRemoveBtn: {
+    padding: 4,
+  },
+
+  /* Attachment Modal Sheet */
+  modalBackdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(15, 23, 42, 0.55)',
+    justifyContent: 'flex-end',
+  },
+  attachmentSheetCard: {
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    paddingHorizontal: 16,
+    paddingTop: 10,
+    paddingBottom: Platform.OS === 'ios' ? 34 : 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 20,
+  },
+  sheetHandle: {
+    width: 36,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: '#CBD5E1',
+    alignSelf: 'center',
+    marginBottom: 14,
+  },
+  sheetHeader: {
+    marginBottom: 16,
+  },
+  sheetTitle: {
+    fontSize: 17,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  sheetSubtitle: {
+    fontSize: 12,
+    color: '#64748B',
+    marginTop: 2,
+  },
+  sheetOptionsList: {
+    gap: 10,
+    marginBottom: 16,
+  },
+  sheetOptionBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 16,
+    padding: 12,
+  },
+  sheetOptionIconBox: {
+    width: 44,
+    height: 44,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  sheetOptionTitle: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#111827',
+  },
+  sheetOptionDesc: {
+    fontSize: 11,
+    color: '#64748B',
+    marginTop: 2,
+  },
+  sheetCancelBtn: {
+    backgroundColor: '#F1F5F9',
+    borderRadius: 14,
+    paddingVertical: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  sheetCancelText: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#475569',
   },
 });
