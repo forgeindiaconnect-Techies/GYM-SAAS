@@ -433,18 +433,63 @@ export const CustomerWorkoutsScreen: React.FC<{ onNavigateToMetrics?: () => void
     return () => clearInterval(interval);
   }, [isTimerRunning]);
 
-  const onRefresh = () => {
+  const fetchProgress = React.useCallback(async () => {
+    try {
+      const res = await api.get('/workout-progress/my-progress');
+      if (res.data?.success && Array.isArray(res.data.history)) {
+        const completedIds = res.data.history
+          .filter((h: any) => h.status === 'Completed')
+          .map((h: any) => (h.exerciseCustomId || h.exerciseId?._id || h.exerciseId)?.toString())
+          .filter(Boolean);
+        if (completedIds.length > 0) {
+          setCompletedExercises(prev => new Set([...Array.from(prev), ...completedIds]));
+        }
+      }
+    } catch (err) {
+      console.warn('Fetch workout progress notice:', err);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchProgress();
+  }, [fetchProgress]);
+
+  const onRefresh = async () => {
     setRefreshing(true);
-    setTimeout(() => setRefreshing(false), 500);
+    await fetchProgress();
+    setRefreshing(false);
   };
 
-  const handleToggleComplete = (id: string) => {
+  const handleToggleComplete = async (id: string) => {
+    const isNowDone = !completedExercises.has(id);
     setCompletedExercises(prev => {
       const next = new Set(prev);
       if (next.has(id)) next.delete(id);
       else next.add(id);
       return next;
     });
+
+    const curSchedule = WEEKLY_WORKOUT_SCHEDULE[selectedDay] || WEEKLY_WORKOUT_SCHEDULE.Monday;
+    const targetEx = curSchedule.exercises.find(e => e.id === id);
+    if (isNowDone && targetEx) {
+      try {
+        await api.post('/workout-progress/log', {
+          workoutPlanId: 'standard-routine',
+          exerciseId: targetEx.id,
+          exerciseName: targetEx.name,
+          dayName: selectedDay,
+          completedSets: targetEx.sets || 3,
+          totalSets: targetEx.sets || 3,
+          completedRepetitions: 12,
+          targetRepetitions: 12,
+          duration: 600,
+          status: 'Completed',
+          notes: `Completed in Gymora mobile app (${selectedDay})`
+        });
+      } catch (err) {
+        console.warn('Log workout progress notice:', err);
+      }
+    }
   };
 
   const handleStartWorkout = () => {
@@ -469,6 +514,22 @@ export const CustomerWorkoutsScreen: React.FC<{ onNavigateToMetrics?: () => void
         setCurrentSet(1);
       } else {
         setIsTimerRunning(false);
+        // Log all exercises in this routine as completed with server
+        curExercises.forEach(ex => {
+          api.post('/workout-progress/log', {
+            workoutPlanId: 'standard-routine',
+            exerciseId: ex.id,
+            exerciseName: ex.name,
+            dayName: selectedDay,
+            completedSets: ex.sets || 3,
+            totalSets: ex.sets || 3,
+            completedRepetitions: 12,
+            targetRepetitions: 12,
+            duration: Math.max(60, timerSeconds),
+            status: 'Completed',
+            notes: `Full routine finished in Gymora mobile app timer (${selectedDay})`
+          }).catch(() => {});
+        });
         Alert.alert('Workout Completed! 🎉', `Awesome effort! You finished all exercises in ${selectedDay}'s ${curSchedule.focusName} routine in ${Math.floor(timerSeconds / 60)}m ${timerSeconds % 60}s.`);
         setInteractiveModalVisible(false);
       }

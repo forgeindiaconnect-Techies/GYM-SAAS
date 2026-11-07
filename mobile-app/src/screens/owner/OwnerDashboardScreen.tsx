@@ -37,6 +37,7 @@ export const OwnerDashboardScreen: React.FC<{
 
   const [recentCheckins, setRecentCheckins] = useState<any[]>([]);
   const [expiringAlerts, setExpiringAlerts] = useState<any[]>([]);
+  const [workplanClients, setWorkplanClients] = useState<any[]>([]);
 
   // Scan Pass Modal
   const [scanModalVisible, setScanModalVisible] = useState(false);
@@ -64,13 +65,45 @@ export const OwnerDashboardScreen: React.FC<{
       const branchQuery = user?.branchId ? `?branchId=${user.branchId}` : '';
       const userBranchQuery = user?.branchId ? `&branchId=${user.branchId}` : '';
 
-      const [membershipsRes, usersRes, trainersRes, sessionsRes, salesRes] = await Promise.allSettled([
+      const [membershipsRes, usersRes, trainersRes, sessionsRes, salesRes, workoutProgressRes, dietProgressRes] = await Promise.allSettled([
         api.get(`/memberships/gym${branchQuery}`),
         api.get(`/users?role=MEMBER${userBranchQuery}`),
         api.get(`/trainers${branchQuery}`),
         api.get(`/trainer-sessions/gym${branchQuery}`),
-        api.get(`/store/admin/sales${branchQuery}`)
+        api.get(`/store/admin/sales${branchQuery}`),
+        api.get('/workout-progress/trainer/clients-overview'),
+        api.get('/diet-progress/trainer/clients-overview')
       ]);
+
+      // Workplan & Diet Client Progress
+      const wClients: any[] = workoutProgressRes.status === 'fulfilled' ? (workoutProgressRes.value.data?.clients || []) : [];
+      const dClients: any[] = dietProgressRes.status === 'fulfilled' ? (dietProgressRes.value.data?.clients || []) : [];
+      const mergedClientsMap = new Map<string, any>();
+
+      wClients.forEach(c => {
+        const id = c.customer?.id || c.customer?._id;
+        if (id) {
+          mergedClientsMap.set(id, { ...c });
+        }
+      });
+
+      dClients.forEach(c => {
+        const id = c.customer?.id || c.customer?._id;
+        if (id) {
+          if (mergedClientsMap.has(id)) {
+            const existing = mergedClientsMap.get(id);
+            existing.stats = {
+              ...existing.stats,
+              totalMealsCompleted: c.stats?.totalMealsCompleted || 0,
+              totalMealsPlanned: c.stats?.totalMealsPlanned || 0,
+            };
+          } else {
+            mergedClientsMap.set(id, { ...c });
+          }
+        }
+      });
+
+      setWorkplanClients(Array.from(mergedClientsMap.values()).slice(0, 6));
 
       // 1. Members count
       const membersList: any[] = usersRes.status === 'fulfilled' ? (usersRes.value.data?.users || []) : [];
@@ -478,6 +511,52 @@ export const OwnerDashboardScreen: React.FC<{
               </View>
             </View>
           ))
+        )}
+      </View>
+
+      {/* Member Workout & Diet Progress Activity */}
+      <View style={styles.sectionHeaderRow}>
+        <Text style={styles.sectionTitle}>Member Workout & Diet Progress</Text>
+        <TouchableOpacity onPress={() => onNavigateTab('members')}>
+          <Text style={styles.viewAllText}>Manage Members →</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.cardList}>
+        {workplanClients.length === 0 ? (
+          <View style={styles.emptyCardBox}>
+            <Ionicons name="barbell-outline" size={32} color={COLORS.textMuted} />
+            <Text style={styles.emptyCardText}>No member workout or diet completions logged yet.</Text>
+          </View>
+        ) : (
+          workplanClients.map((client: any, idx: number) => {
+            const pct = client.stats?.completionPercentage || 0;
+            return (
+              <View key={client.customer?.id || idx} style={styles.checkinRow}>
+                <View style={styles.checkinLeft}>
+                  <View style={[styles.checkinAvatar, { backgroundColor: '#FFF7ED', borderColor: '#FDBA74' }]}>
+                    <Text style={[styles.checkinAvatarText, { color: '#EA580C' }]}>
+                      {client.customer?.name?.charAt(0) || 'M'}
+                    </Text>
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.checkinName}>{client.customer?.name || 'Member'}</Text>
+                    <Text style={styles.checkinPlan}>
+                      {client.stats?.totalExercisesCompleted || 0} Exercises • {client.stats?.totalMealsCompleted || 0} Meals
+                    </Text>
+                  </View>
+                </View>
+                <View style={styles.checkinRight}>
+                  <View style={[styles.statusPill, { backgroundColor: '#ECFDF5', borderColor: '#A7F3D0' }]}>
+                    <Text style={[styles.statusText, { color: '#15803D' }]}>
+                      {pct}% Done
+                    </Text>
+                  </View>
+                  <Text style={styles.checkinTime}>{client.lastActive ? 'Active Today' : 'Scheduled'}</Text>
+                </View>
+              </View>
+            );
+          })
         )}
       </View>
 

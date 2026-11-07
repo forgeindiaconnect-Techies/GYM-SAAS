@@ -1514,16 +1514,16 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
           if (wRes.status === 'fulfilled' && wRes.value.data?.success && wRes.value.data.clients?.length > 0) {
             const validW = wRes.value.data.clients.filter((c: any) => {
               const name = (c.customer?.name || '').toLowerCase();
-              return !name.includes('arun') && !name.includes('naveen');
+              return !name.includes('arun');
             });
-            if (validW.length > 0) setCwpWorkoutClients(validW);
+            setCwpWorkoutClients(validW.length > 0 ? validW : wRes.value.data.clients);
           }
           if (dRes.status === 'fulfilled' && dRes.value.data?.success && dRes.value.data.clients?.length > 0) {
             const validD = dRes.value.data.clients.filter((c: any) => {
               const name = (c.customer?.name || '').toLowerCase();
-              return !name.includes('arun') && !name.includes('naveen');
+              return !name.includes('arun');
             });
-            if (validD.length > 0) setCwpDietClients(validD);
+            setCwpDietClients(validD.length > 0 ? validD : dRes.value.data.clients);
           }
         } catch (e) {
           console.log('[TrainerPrograms] Fetch workplans completed error:', e);

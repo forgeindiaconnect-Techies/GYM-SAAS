@@ -154,7 +154,7 @@ export const CustomerMessagesScreen: React.FC = () => {
     api.get('/direct-messages/contacts').then((res) => {
       const serverContacts = res.data?.contacts;
       if (Array.isArray(serverContacts) && serverContacts.length > 0) {
-        setTrainers(serverContacts.map((c: any) => ({
+        const mapped = serverContacts.map((c: any) => ({
           id: c._id || c.id,
           _id: c._id || c.id,
           name: c.name || 'Trainer',
@@ -163,10 +163,58 @@ export const CustomerMessagesScreen: React.FC = () => {
           lastMsg: c.lastMsg || 'Tap to chat',
           lastMsgTime: c.lastMsgTime ? new Date(c.lastMsgTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Now',
           avatarLetter: (c.name || 'T').charAt(0).toUpperCase(),
-        })));
+        }));
+        setTrainers(mapped);
+        setSelectedTrainer(mapped[0]);
       }
     }).catch(() => {});
   }, []);
+
+  const fetchHistory = React.useCallback(async (trainerId: string) => {
+    if (!trainerId) return;
+    try {
+      const res = await api.get('/direct-messages/history/' + trainerId);
+      if (res.data?.success && Array.isArray(res.data.messages)) {
+        const myUserId = user?._id || user?.id;
+        const mappedMsgs: ChatMessage[] = res.data.messages.map((m: any) => {
+          const sId = m.senderId?._id || m.senderId;
+          const isMine = String(sId) === String(myUserId);
+          return {
+            id: m._id || 'msg_' + Math.random(),
+            senderId: sId,
+            senderName: isMine ? userName : selectedTrainer.name,
+            text: m.message || '',
+            createdAt: new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }).toLowerCase(),
+            isMine,
+            type: m.messageType || 'text',
+            attachment: m.attachments && m.attachments[0] ? {
+              name: m.attachments[0].fileName,
+              size: m.attachments[0].fileSize,
+              uri: m.attachments[0].url,
+              type: m.attachments[0].fileType || 'document'
+            } : undefined
+          };
+        });
+        if (mappedMsgs.length > 0) {
+          setConversations(prev => ({
+            ...prev,
+            [trainerId]: mappedMsgs
+          }));
+          setTimeout(() => {
+            scrollViewRef.current?.scrollToEnd({ animated: true });
+          }, 150);
+        }
+      }
+    } catch (err) {
+      console.warn('Fetch history notice:', err);
+    }
+  }, [user, userName, selectedTrainer.name]);
+
+  useEffect(() => {
+    if (selectedTrainer?.id) {
+      fetchHistory(selectedTrainer.id);
+    }
+  }, [selectedTrainer?.id, fetchHistory]);
 
   const currentMessages = conversations[selectedTrainer.id] || [];
 
@@ -332,18 +380,26 @@ export const CustomerMessagesScreen: React.FC = () => {
     try {
       setSending(true);
       await api.post('/direct-messages/send', {
-        recipientId: selectedTrainer.id,
+        receiverId: selectedTrainer._id || selectedTrainer.id,
+        recipientId: selectedTrainer._id || selectedTrainer.id,
+        message: displayContent,
         content: displayContent,
-        attachment: currentAttachment
-          ? {
-              name: currentAttachment.name,
-              size: currentAttachment.size,
-              type: currentAttachment.type,
-            }
-          : undefined,
-      }).catch(() => {});
-    } catch {
-      // Offline fallback
+        messageType: currentAttachment ? (currentAttachment.type === 'image' ? 'image' : currentAttachment.type === 'video' ? 'video' : 'file') : 'text',
+        attachments: currentAttachment
+          ? [
+              {
+                url: currentAttachment.uri,
+                fileName: currentAttachment.name,
+                fileType: currentAttachment.type,
+                fileSize: currentAttachment.size,
+              },
+            ]
+          : [],
+      });
+      // Refresh history from server
+      fetchHistory(selectedTrainer.id);
+    } catch (err) {
+      console.warn('Send direct message notice:', err);
     } finally {
       setSending(false);
     }

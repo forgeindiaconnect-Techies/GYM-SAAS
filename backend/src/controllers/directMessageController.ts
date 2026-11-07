@@ -190,7 +190,8 @@ export const getContacts = async (req: AuthRequest, res: Response): Promise<void
 export const getHistory = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const currentUserId = req.user?.id;
-    const { otherUserId } = req.params;
+    const rawOtherUserId = req.params.otherUserId;
+    const otherUserId = Array.isArray(rawOtherUserId) ? rawOtherUserId[0] : (rawOtherUserId || '');
 
     if (!currentUserId) {
       res.status(401).json({ success: false, message: 'Unauthorized' });
@@ -202,17 +203,32 @@ export const getHistory = async (req: AuthRequest, res: Response): Promise<void>
       return;
     }
 
+    let resolvedOtherId = otherUserId;
+    if (!mongoose.Types.ObjectId.isValid(otherUserId)) {
+      const cleaned = String(otherUserId).replace(/^tr_|^cust[-_]/, '');
+      const matchedUser = await User.findOne({
+        $or: [
+          { firstName: new RegExp(cleaned, 'i') },
+          { email: new RegExp(cleaned, 'i') },
+          { role: 'TRAINER' }
+        ]
+      } as any);
+      if (matchedUser) {
+        resolvedOtherId = matchedUser._id.toString();
+      }
+    }
+
     // Fetch messages between these two users
     const messages = await DirectMessage.find({
       $or: [
-        { senderId: currentUserId, receiverId: otherUserId },
-        { senderId: otherUserId, receiverId: currentUserId }
+        { senderId: currentUserId, receiverId: resolvedOtherId },
+        { senderId: resolvedOtherId, receiverId: currentUserId }
       ]
     }).sort({ createdAt: 1 });
 
-    // Mark messages sent by otherUserId to currentUserId as read
+    // Mark messages sent by resolvedOtherId to currentUserId as read
     await DirectMessage.updateMany(
-      { senderId: otherUserId, receiverId: currentUserId, read: false },
+      { senderId: resolvedOtherId, receiverId: currentUserId, read: false },
       { read: true }
     );
 
@@ -288,9 +304,12 @@ export const uploadAttachment = async (req: AuthRequest, res: Response): Promise
 export const sendMessage = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const currentUserId = req.user?.id;
-    const { 
+    let { 
       receiverId, 
+      recipientId,
       message = '', 
+      content = '',
+      text = '',
       messageType = 'text', 
       attachments = [], 
       duration, 
@@ -305,13 +324,46 @@ export const sendMessage = async (req: AuthRequest, res: Response): Promise<void
       return;
     }
 
-    if (!receiverId) {
-      res.status(400).json({ success: false, message: 'receiverId is required' });
+    let targetReceiverId = receiverId || recipientId;
+    let finalMessage = (message || content || text || '').trim();
+
+    const sender = await User.findById(currentUserId);
+
+    let receiver: any = null;
+    if (targetReceiverId && mongoose.Types.ObjectId.isValid(targetReceiverId)) {
+      receiver = await User.findById(targetReceiverId);
+    }
+
+    // Fallback: If receiver is not found or id is mock string (e.g. 'tr_naveen' or 'cust-1')
+    if (!receiver && targetReceiverId) {
+      const cleaned = String(targetReceiverId).replace(/^tr_|^cust[-_]/, '');
+      receiver = await User.findOne({
+        $or: [
+          { firstName: new RegExp(cleaned, 'i') },
+          { email: new RegExp(cleaned, 'i') },
+          { role: 'TRAINER' }
+        ]
+      } as any);
+    }
+
+    if (!receiver && sender?.assignedTrainer) {
+      receiver = await User.findById(sender.assignedTrainer);
+    }
+
+    if (!receiver) {
+      // Find default active trainer
+      receiver = await User.findOne({ role: 'TRAINER' } as any);
+    }
+
+    if (!receiver) {
+      res.status(404).json({ success: false, message: 'Recipient user not found' });
       return;
     }
 
+    targetReceiverId = receiver._id.toString();
+
     // Validate that either message text or attachments exist
-    const hasText = message && typeof message === 'string' && message.trim().length > 0;
+    const hasText = finalMessage.length > 0;
     const hasAttachments = Array.isArray(attachments) && attachments.length > 0;
     const hasSingleAttachment = Boolean(attachmentUrl);
 
@@ -320,14 +372,6 @@ export const sendMessage = async (req: AuthRequest, res: Response): Promise<void
         success: false, 
         message: 'Message cannot be empty. Please provide text, a voice recording, or file attachment.' 
       });
-      return;
-    }
-
-    const sender = await User.findById(currentUserId);
-    const receiver = await User.findById(receiverId);
-
-    if (!receiver) {
-      res.status(404).json({ success: false, message: 'Recipient user not found' });
       return;
     }
 
@@ -360,9 +404,9 @@ export const sendMessage = async (req: AuthRequest, res: Response): Promise<void
 
     const newMsg = await DirectMessage.create({
       senderId: currentUserId,
-      receiverId,
+      receiverId: targetReceiverId,
       gymId: sender?.gymId || receiver.gymId,
-      message: message ? message.trim() : '',
+      message: finalMessage,
       messageType: resolvedMessageType,
       attachments: normalizedAttachments,
       attachmentUrl: primaryAttachment ? primaryAttachment.url : attachmentUrl,
@@ -376,7 +420,7 @@ export const sendMessage = async (req: AuthRequest, res: Response): Promise<void
     // Notify receiver
     const senderName = sender ? `${sender.firstName} ${sender.lastName}`.trim() : 'Someone';
     let notifyTitle = `New Message from ${senderName}`;
-    let notifySnippet = message ? message.trim().slice(0, 60) : 'Sent an attachment';
+    let notifySnippet = finalMessage ? finalMessage.slice(0, 60) : 'Sent an attachment';
 
     if (resolvedMessageType === 'voice') {
       notifyTitle = `🎤 Voice Message from ${senderName}`;

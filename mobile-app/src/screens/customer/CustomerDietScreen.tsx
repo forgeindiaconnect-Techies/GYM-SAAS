@@ -11,6 +11,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../constants/theme';
 import { useAuth } from '../../context/AuthContext';
+import { api } from '../../api/client';
 
 interface Meal {
   id: string;
@@ -544,31 +545,89 @@ export const CustomerDietScreen: React.FC = () => {
   const [completedMealIds, setCompletedMealIds] = useState<Set<string>>(new Set());
   const [refreshing, setRefreshing] = useState(false);
 
-  const onRefresh = () => {
+  const fetchDietProgress = useCallback(async () => {
+    try {
+      const res = await api.get('/diet-progress/my-progress');
+      if (res.data?.success && res.data.dayBreakdown && res.data.dayBreakdown[selectedDay]) {
+        const dayData = res.data.dayBreakdown[selectedDay];
+        if (Array.isArray(dayData.meals)) {
+          const doneIds = dayData.meals.filter((m: any) => m.isCompleted).map((m: any) => m.mealId || m._id || m.id);
+          if (doneIds.length > 0) {
+            setCompletedMealIds(new Set(doneIds));
+          }
+        }
+      }
+    } catch (err) {
+      console.warn('Fetch diet progress notice:', err);
+    }
+  }, [selectedDay]);
+
+  useEffect(() => {
+    fetchDietProgress();
+  }, [fetchDietProgress]);
+
+  const onRefresh = async () => {
     setRefreshing(true);
-    setTimeout(() => setRefreshing(false), 500);
+    await fetchDietProgress();
+    setRefreshing(false);
   };
 
   const currentSchedule = WEEKLY_DIET_SCHEDULE[selectedDay] || WEEKLY_DIET_SCHEDULE.Friday;
   const currentMeals = currentSchedule.meals;
 
-  const handleToggleMeal = (id: string) => {
+  const handleToggleMeal = async (id: string) => {
+    const isNowDone = !completedMealIds.has(id);
     setCompletedMealIds(prev => {
       const next = new Set(prev);
       if (next.has(id)) next.delete(id);
       else next.add(id);
       return next;
     });
+
+    const targetMeal = currentMeals.find(m => m.id === id);
+    if (targetMeal) {
+      try {
+        await api.post('/diet-progress/toggle-meal', {
+          dayName: selectedDay,
+          mealId: targetMeal.id,
+          mealType: targetMeal.name,
+          items: [targetMeal.name],
+          calories: targetMeal.cals,
+          protein: targetMeal.protein
+        });
+      } catch (err) {
+        console.warn('Toggle meal progress notice:', err);
+      }
+    }
   };
 
-  const handleMarkAllEaten = () => {
+  const handleMarkAllEaten = async () => {
     const all = new Set(currentMeals.map(m => m.id));
     setCompletedMealIds(all);
+    try {
+      await api.post('/diet-progress/batch-log', {
+        dayName: selectedDay,
+        meals: currentMeals.map(m => ({
+          mealId: m.id,
+          mealType: m.name,
+          items: [m.name],
+          calories: m.cals,
+          protein: m.protein
+        }))
+      });
+    } catch (err) {
+      console.warn('Batch log meals notice:', err);
+    }
     Alert.alert('All Meals Completed! 🥗', `Great job hitting all your meals for ${selectedDay}!`);
   };
 
-  const handleResetDay = () => {
+  const handleResetDay = async () => {
     setCompletedMealIds(new Set());
+    try {
+      await api.post('/diet-progress/reset-day', { dayName: selectedDay });
+    } catch (err) {
+      console.warn('Reset diet day notice:', err);
+    }
   };
 
   // Calculate consumed totals
