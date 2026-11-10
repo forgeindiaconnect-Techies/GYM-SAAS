@@ -14,6 +14,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../constants/theme';
 import { api } from '../../api/client';
 import { useAuth } from '../../context/AuthContext';
+import { MobileExerciseVideoPlayer } from '../../components/MobileExerciseVideoPlayer';
 
 type SubPlanTab = 'workout' | 'nutrition' | 'recovery' | 'notes' | 'analysis';
 
@@ -947,9 +948,9 @@ export const CustomerWorkoutsScreen: React.FC<{ onNavigateToMetrics?: () => void
       {/* ======================================================== */}
       {/* WATCH EXERCISE VIDEO / TECHNIQUE MODAL */}
       {/* ======================================================== */}
-      <Modal visible={!!previewExercise} transparent animationType="slide">
+      <Modal visible={!!previewExercise} transparent animationType="slide" onRequestClose={() => setPreviewExercise(null)}>
         <View style={styles.modalOverlay}>
-          <View style={styles.modalCard}>
+          <View style={[styles.modalCard, { maxHeight: '92%' }]}>
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>Exercise Technique</Text>
               <TouchableOpacity onPress={() => setPreviewExercise(null)}>
@@ -958,15 +959,17 @@ export const CustomerWorkoutsScreen: React.FC<{ onNavigateToMetrics?: () => void
             </View>
 
             {previewExercise && (
-              <ScrollView style={{ padding: 18 }}>
-                <View style={styles.videoPlaceholder}>
-                  <Ionicons name="barbell" size={48} color="#EA580C" />
-                  <Text style={styles.videoPlaceholderText}>{previewExercise.name}</Text>
-                  <View style={styles.playPill}>
-                    <Ionicons name="play" size={14} color="#FFFFFF" />
-                    <Text style={styles.playPillText}>Form Demo Animation</Text>
-                  </View>
-                </View>
+              <ScrollView style={{ padding: 16 }} showsVerticalScrollIndicator={false}>
+                {/* Full AI Animated Technique Video Player */}
+                <MobileExerciseVideoPlayer
+                  exerciseName={previewExercise.name}
+                  category={previewExercise.targetMuscles}
+                  targetMuscle={previewExercise.targetMuscles}
+                  difficulty={previewExercise.level}
+                  instructions={previewExercise.coachTip}
+                  coachTips={previewExercise.coachTip}
+                  duration={60}
+                />
 
                 <Text style={styles.modalExTitle}>{previewExercise.name}</Text>
                 <Text style={styles.modalExSub}>{previewExercise.level} • {previewExercise.targetMuscles}</Text>
@@ -1031,6 +1034,15 @@ export const CustomerWorkoutsScreen: React.FC<{ onNavigateToMetrics?: () => void
               {/* Current Exercise */}
               {DEFAULT_FRIDAY_EXERCISES[currentExerciseIndex] && (
                 <View style={styles.liveExCard}>
+                  <MobileExerciseVideoPlayer
+                    exerciseName={DEFAULT_FRIDAY_EXERCISES[currentExerciseIndex].name}
+                    category={DEFAULT_FRIDAY_EXERCISES[currentExerciseIndex].targetMuscles}
+                    targetMuscle={DEFAULT_FRIDAY_EXERCISES[currentExerciseIndex].targetMuscles}
+                    difficulty={DEFAULT_FRIDAY_EXERCISES[currentExerciseIndex].level}
+                    instructions={DEFAULT_FRIDAY_EXERCISES[currentExerciseIndex].coachTip}
+                    coachTips={DEFAULT_FRIDAY_EXERCISES[currentExerciseIndex].coachTip}
+                    duration={60}
+                  />
                   <Text style={styles.liveExStep}>
                     Exercise {currentExerciseIndex + 1} of {DEFAULT_FRIDAY_EXERCISES.length}
                   </Text>

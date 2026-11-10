@@ -161,12 +161,39 @@ const MainAppContent = () => {
   const handleOwnerNavigate = (tab, sub = null) => {
     if (tab === 'overview' || tab === 'home' || tab === 'dashboard') {
       navigateTo('overview', null);
-    } else if (tab === 'members' || tab === 'enquiries') {
-      navigateTo('members', sub || (tab === 'enquiries' ? 'enquiries' : 'members'));
-    } else if (tab === 'trainers' || tab === 'hiring') {
-      navigateTo('trainers', sub || (tab === 'hiring' ? 'hiring' : 'trainers'));
-    } else if (tab === 'finances' || tab === 'revenue' || tab === 'payments') {
-      navigateTo('finances', sub || (tab === 'payments' ? 'payments' : 'analytics'));
+    } else if (tab === 'members') {
+      navigateTo('members', sub || 'members');
+    } else if (tab === 'enquiries') {
+      navigateTo('members', 'enquiries');
+    } else if (tab === 'trainers') {
+      navigateTo('trainers', sub || 'trainers');
+    } else if (tab === 'hiring' || tab === 'trainer_hiring' || tab === 'jobs') {
+      navigateTo('trainers', 'hiring');
+    } else if (tab === 'finances' || tab === 'revenue') {
+      navigateTo('finances', sub || 'analytics');
+    } else if (tab === 'payments') {
+      navigateTo('finances', 'payments');
+    } else if (
+      tab === 'equipment' || 
+      tab === 'session_bookings' || 
+      tab === 'bookings' || 
+      tab === 'attendance' || 
+      tab === 'notifications' || 
+      tab === 'store_history' || 
+      tab === 'store_orders' || 
+      tab === 'store_products' || 
+      tab === 'store_inventory' || 
+      tab === 'store_overview' || 
+      tab === 'reviews' || 
+      tab === 'plans' || 
+      tab === 'branches' || 
+      tab === 'gym_profile' || 
+      tab === 'reports' || 
+      tab === 'rewards' || 
+      tab === 'referrals'
+    ) {
+      const subTarget = tab === 'bookings' ? 'session_bookings' : tab;
+      navigateTo('more', sub || subTarget);
     } else if (tab === 'more' || tab === 'settings' || tab === 'operations' || tab === 'store') {
       navigateTo('more', sub || null);
     } else {
@@ -177,6 +204,20 @@ const MainAppContent = () => {
   const handleBottomTabSelect = (tabKey) => {
     if (tabKey === activeTab && !activeSub) return;
     navigateTo(tabKey, null);
+  };
+
+  const handleGoMainPage = () => {
+    setCustomerQrVisible(false);
+    if (activeRole === 'GYM_OWNER') {
+      setActiveTab('overview');
+      setActiveSub(null);
+    } else if (activeRole === 'TRAINER') {
+      setActiveTab('home');
+      setActiveSub(null);
+    } else if (activeRole === 'CUSTOMER') {
+      setActiveTab('home');
+      setActiveSub('dashboard');
+    }
   };
 
   const renderActiveScreen = () => {
@@ -190,16 +231,25 @@ const MainAppContent = () => {
           return <OwnerMembersScreen initialSection={activeSub === 'enquiries' ? 'enquiries' : 'members'} />;
         case 'trainers':
         case 'hiring':
-          return <OwnerTrainersScreen initialTab={activeSub === 'hiring' ? 'hiring' : 'trainers'} />;
+        case 'trainer_hiring':
+          return <OwnerTrainersScreen initialTab={activeSub === 'hiring' || activeTab === 'trainer_hiring' ? 'hiring' : 'trainers'} />;
         case 'finances':
         case 'revenue':
         case 'payments':
           return <OwnerFinancesScreen initialTab={activeSub === 'payments' ? 'payments' : 'analytics'} />;
         case 'more':
         case 'settings':
+        case 'operations':
+        case 'store':
+        case 'equipment':
+        case 'session_bookings':
+        case 'attendance':
+        case 'notifications':
+        case 'store_history':
+        case 'store_orders':
           return (
             <OwnerMoreScreen 
-              initialSubPage={activeSub || undefined} 
+              initialSubPage={activeSub || (activeTab !== 'more' && activeTab !== 'settings' && activeTab !== 'operations' && activeTab !== 'store' ? activeTab : undefined)} 
               onCloseSubPage={() => setActiveSub(null)} 
               onNavigateTab={handleOwnerNavigate} 
             />
@@ -243,15 +293,24 @@ const MainAppContent = () => {
             />
           );
         case 'training':
-        case 'workouts':
         case 'trainers':
+          if (activeSub === 'workout' || activeSub === 'workout_plan' || activeSub === 'workouts') {
+            return <CustomerFitnessScreen initialSubTab="workout" />;
+          }
           return <CustomerTrainingScreen initialSubTab={activeSub || 'training'} />;
+        case 'workouts':
+        case 'workout':
+        case 'workout_plan':
         case 'fitness':
         case 'diet':
         case 'progress':
           return (
             <CustomerFitnessScreen 
-              initialSubTab={activeSub || (activeTab === 'diet' ? 'diet' : activeTab === 'progress' ? 'progress' : 'workout')} 
+              initialSubTab={
+                activeSub === 'workout' || activeSub === 'workout_plan' || activeSub === 'workouts' || activeTab === 'workouts' || activeTab === 'workout' || activeTab === 'workout_plan'
+                  ? 'workout'
+                  : (activeSub || (activeTab === 'diet' ? 'diet' : activeTab === 'progress' ? 'progress' : 'ai'))
+              } 
             />
           );
         case 'store':
@@ -292,6 +351,7 @@ const MainAppContent = () => {
     <SafeAreaView style={styles.safeArea}>
       <StatusBar style="dark" backgroundColor={COLORS.white} />
       <Header 
+        onPressBrand={handleGoMainPage}
         onOpenNotifications={() => {
           if (activeRole === 'GYM_OWNER') handleOwnerNavigate('more', 'notifications');
           else if (activeRole === 'TRAINER') handleTrainerNavigate('more', 'notifications');

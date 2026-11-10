@@ -16,6 +16,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../constants/theme';
 import { useAuth } from '../../context/AuthContext';
 import { api } from '../../api/client';
+import { MobileExerciseVideoPlayer } from '../../components/MobileExerciseVideoPlayer';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -1100,15 +1101,16 @@ export const CustomerAIFitnessScreen: React.FC = () => {
 
             {selectedExercise && (
               <ScrollView style={styles.modalScrollBody} showsVerticalScrollIndicator={false}>
-                {/* Simulated Animated Exercise Canvas */}
-                <View style={styles.exerciseGraphicBox}>
-                  <Ionicons name="fitness" size={48} color="#EA580C" />
-                  <Text style={styles.graphicTitle}>{selectedExercise.name}</Text>
-                  <View style={styles.graphicPill}>
-                    <Ionicons name="videocam" size={12} color="#15803D" />
-                    <Text style={styles.graphicPillText}>AI Animated Technique Guide</Text>
-                  </View>
-                </View>
+                {/* Full AI Animated Technique Video Player */}
+                <MobileExerciseVideoPlayer
+                  exerciseName={selectedExercise.name}
+                  category={selectedExercise.targetMuscleGroup}
+                  targetMuscle={selectedExercise.targetMuscleGroup}
+                  difficulty={selectedExercise.difficulty}
+                  instructions={selectedExercise.instructions}
+                  coachTips={selectedExercise.tips}
+                  duration={60}
+                />
 
                 {/* Specs Row */}
                 <View style={styles.modalSpecsRow}>

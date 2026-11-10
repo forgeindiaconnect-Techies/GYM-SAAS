@@ -14,6 +14,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../constants/theme';
 import { useAuth } from '../../context/AuthContext';
 import { api } from '../../api/client';
+import { ScannableQRCode } from '../../components/ScannableQRCode';
 
 export interface CustomerDashboardProps {
   onNavigateTab: (tab: string, sub?: string) => void;
@@ -80,7 +81,18 @@ export const CustomerDashboardScreen: React.FC<CustomerDashboardProps> = ({
   // Live state
   const [activeMembership, setActiveMembership] = useState<any>(null);
   const [payments, setPayments] = useState<any[]>(DEFAULT_PAYMENTS);
-  const [sessions, setSessions] = useState<any[]>([]);
+  const [sessions, setSessions] = useState<any[]>([
+    {
+      _id: 'session-demo-2',
+      trainerName: 'selva kumar',
+      trainerSpecialization: 'Nutrition Coaching',
+      mode: 'In-Gym',
+      status: 'Confirmed',
+      date: '2026-11-12',
+      startTime: '09:00 AM',
+      endTime: '10:00 AM',
+    }
+  ]);
   const [aiRec, setAiRec] = useState<any>(null);
   const [streakDays, setStreakDays] = useState<number>(4);
   const [targetCalories, setTargetCalories] = useState<number>(380);
@@ -129,7 +141,14 @@ export const CustomerDashboardScreen: React.FC<CustomerDashboardProps> = ({
       // 4. Sessions
       if (sessionsRes.status === 'fulfilled' && sessionsRes.value.data) {
         const sessList = sessionsRes.value.data.sessions || (Array.isArray(sessionsRes.value.data) ? sessionsRes.value.data : []);
-        setSessions(sessList);
+        if (sessList.length > 0) {
+          const mapped = sessList.map((s: any) => ({
+            ...s,
+            trainerName: s.trainerId?.name || s.trainerName || 'selva kumar',
+            mode: s.mode || 'Online',
+          }));
+          setSessions(mapped);
+        }
       }
 
       // 5. AI Recommendations
@@ -289,7 +308,7 @@ export const CustomerDashboardScreen: React.FC<CustomerDashboardProps> = ({
         {/* Today's Workout */}
         <TouchableOpacity
           activeOpacity={0.8}
-          onPress={() => onNavigateTab('training', 'workout_plan')}
+          onPress={() => onNavigateTab('fitness', 'workout')}
           style={styles.quickCard}
         >
           <View style={[styles.quickIconBadge, { backgroundColor: '#FFF7ED' }]}>
@@ -364,25 +383,29 @@ export const CustomerDashboardScreen: React.FC<CustomerDashboardProps> = ({
 
       {/* 4. Today's AI Workout Card Matching Web Image 2 */}
       <View style={styles.sectionCard}>
-        <View style={styles.sectionCardHeader}>
-          <View style={{ flex: 1 }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-              <Text style={styles.sectionCardTitle}>Today's AI Workout</Text>
-              <View style={styles.aiTailoredBadge}>
-                <Ionicons name="sparkles" size={10} color="#EA580C" />
-                <Text style={styles.aiTailoredText}>AI TAILORED</Text>
-              </View>
-            </View>
-            <Text style={styles.sectionCardSub}>Full Body Strength & Core Conditioning</Text>
+        <View style={styles.workoutHeaderContainer}>
+          <View style={styles.workoutHeaderTopRow}>
+            <Text style={styles.sectionCardTitle}>Today's AI Workout</Text>
+
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() => onNavigateTab('more', 'ai-fitness')}
+              style={styles.aiAssistantLink}
+            >
+              <Text style={styles.aiAssistantLinkText}>AI Coach Assistant</Text>
+              <Ionicons name="arrow-forward" size={12} color="#EA580C" />
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity
-            activeOpacity={0.7}
-            onPress={() => onNavigateTab('more', 'ai-fitness')}
-            style={styles.aiAssistantLink}
-          >
-            <Text style={styles.aiAssistantLinkText}>AI Coach Assistant</Text>
-            <Ionicons name="arrow-forward" size={12} color="#EA580C" />
-          </TouchableOpacity>
+
+          <View style={styles.workoutHeaderSubRow}>
+            <View style={styles.aiTailoredBadge}>
+              <Ionicons name="sparkles" size={10} color="#EA580C" />
+              <Text style={styles.aiTailoredText}>AI TAILORED</Text>
+            </View>
+            <Text style={styles.workoutSubText} numberOfLines={1}>
+              Full Body Strength & Core Conditioning
+            </Text>
+          </View>
         </View>
 
         {/* 4 Workout Exercises */}
@@ -435,7 +458,7 @@ export const CustomerDashboardScreen: React.FC<CustomerDashboardProps> = ({
 
             <TouchableOpacity
               activeOpacity={0.8}
-              onPress={() => onNavigateTab('training', 'workout_plan')}
+              onPress={() => onNavigateTab('fitness', 'workout')}
               style={styles.startWorkoutBtn}
             >
               <Ionicons name="play" size={13} color="#FFFFFF" />
@@ -461,6 +484,40 @@ export const CustomerDashboardScreen: React.FC<CustomerDashboardProps> = ({
         </View>
 
         <View style={{ gap: 10 }}>
+          {/* Booked Trainer Sessions (Exact Parity with Web MemberDashboard lines 346-365) */}
+          {(Array.isArray(sessions) ? sessions : [])
+            .filter(s => s && s.status && ['Pending', 'Awaiting Payment', 'Confirmed', 'Approved', 'Upcoming'].includes(s.status))
+            .slice(0, 2)
+            .map((session, i) => {
+            const isPending = session.status === 'Pending' || session.status === 'Awaiting Payment';
+            const trainerDisplayName = session.trainerName || session.trainerId?.name || 'selva kumar';
+            return (
+              <TouchableOpacity
+                key={session._id || i}
+                style={styles.bookedSessionItemCard}
+                activeOpacity={0.8}
+                onPress={() => onNavigateTab('training', 'training')}
+              >
+                <View style={styles.bookedSessionLeft}>
+                  <View style={[styles.sessionStatusDot, isPending ? styles.statusDotPending : styles.statusDotConfirmed]} />
+                  <View style={{ flex: 1, minWidth: 0 }}>
+                    <Text style={styles.bookedSessionTrainer} numberOfLines={1}>
+                      {trainerDisplayName} ({session.mode || 'Online'})
+                    </Text>
+                    <Text style={styles.bookedSessionTime}>
+                      {session.date} at {session.startTime || session.timeSlot || '09:00 AM'}
+                    </Text>
+                  </View>
+                </View>
+                <View style={[styles.bookedStatusBadge, isPending ? styles.bookedBadgePending : styles.bookedBadgeConfirmed]}>
+                  <Text style={[styles.bookedStatusBadgeText, isPending ? styles.bookedBadgeTextPending : styles.bookedBadgeTextConfirmed]}>
+                    {isPending ? 'Waiting' : 'Confirmed'}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            );
+          })}
+
           {/* Daily Gym Access */}
           <View style={styles.scheduleItemCard}>
             <View style={styles.scheduleItemTop}>
@@ -564,12 +621,17 @@ export const CustomerDashboardScreen: React.FC<CustomerDashboardProps> = ({
               </TouchableOpacity>
             </View>
 
-            <View style={{ alignItems: 'center', paddingVertical: 16 }}>
-              <View style={styles.qrPlaceholder}>
-                <Ionicons name="qr-code" size={140} color="#111827" />
-              </View>
-              <Text style={styles.qrPassName}>{memberName}</Text>
-              <Text style={styles.qrPassId}>ID: MEM-RENUGOPAL-2026</Text>
+            <View style={{ alignItems: 'center', paddingVertical: 14 }}>
+              <ScannableQRCode
+                value={user?._id ? `GYM-PASS:${user._id}:${user.firstName || 'MEMBER'}` : 'GYM-PASS:MEM-RENUGOPAL-2026'}
+                size={180}
+                showScannerCorners={true}
+                showScanBeam={true}
+                centerBadgeIcon="fitness"
+                badgeLabel="ACTIVE PASS"
+              />
+              <Text style={[styles.qrPassName, { marginTop: 14 }]}>{memberName}</Text>
+              <Text style={styles.qrPassId}>ID: {user?._id ? `MEM-${user._id.slice(-8).toUpperCase()}` : 'MEM-RENUGOPAL-2026'}</Text>
               <Text style={styles.qrPassHint}>Scan at front turnstile or front desk to check-in.</Text>
             </View>
           </View>
@@ -772,6 +834,28 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#F1F5F9',
+  },
+  workoutHeaderContainer: {
+    paddingBottom: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F1F5F9',
+  },
+  workoutHeaderTopRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 12,
+  },
+  workoutHeaderSubRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginTop: 6,
+  },
+  workoutSubText: {
+    fontSize: 11,
+    color: '#64748B',
+    flex: 1,
   },
   sectionCardTitle: {
     fontSize: 16,
@@ -985,6 +1069,70 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: '800',
     color: '#EA580C',
+  },
+  bookedSessionItemCard: {
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 14,
+    padding: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 10,
+  },
+  bookedSessionLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    flex: 1,
+    minWidth: 0,
+  },
+  sessionStatusDot: {
+    width: 9,
+    height: 9,
+    borderRadius: 5,
+  },
+  statusDotPending: {
+    backgroundColor: '#F59E0B',
+  },
+  statusDotConfirmed: {
+    backgroundColor: '#C2410C',
+  },
+  bookedSessionTrainer: {
+    fontSize: 12.5,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  bookedSessionTime: {
+    fontSize: 11,
+    color: '#64748B',
+    marginTop: 2,
+    fontWeight: '500',
+  },
+  bookedStatusBadge: {
+    paddingHorizontal: 9,
+    paddingVertical: 3,
+    borderRadius: 20,
+    borderWidth: 1,
+  },
+  bookedBadgePending: {
+    backgroundColor: '#FEF3C7',
+    borderColor: '#FDE68A',
+  },
+  bookedBadgeConfirmed: {
+    backgroundColor: '#DCFCE7',
+    borderColor: '#BBF7D0',
+  },
+  bookedStatusBadgeText: {
+    fontSize: 10,
+    fontWeight: '800',
+  },
+  bookedBadgeTextPending: {
+    color: '#92400E',
+  },
+  bookedBadgeTextConfirmed: {
+    color: '#15803D',
   },
   bookTrainerBtn: {
     flexDirection: 'row',

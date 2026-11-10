@@ -171,6 +171,15 @@ const PAYMENT_METHODS = [
   { id: 'Cash at Gym', label: 'Pay at Gym Counter', icon: 'cash-outline', desc: 'Pay directly when you visit gym' },
 ];
 
+const POPULAR_BANKS = [
+  'HDFC Bank',
+  'State Bank of India',
+  'ICICI Bank',
+  'Axis Bank',
+  'Kotak Mahindra Bank',
+  'Punjab National Bank',
+];
+
 export const CustomerMembershipScreen: React.FC<{
   onNavigateTab?: (tab: string, sub?: string) => void;
 }> = ({ onNavigateTab }) => {
@@ -189,10 +198,16 @@ export const CustomerMembershipScreen: React.FC<{
   // Checkout Modal State
   const [showCheckoutModal, setShowCheckoutModal] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<any | null>(null);
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('UPI');
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<'UPI' | 'Card' | 'Net Banking' | 'Cash at Gym' | 'Trial'>('Card');
+  const [cardDetails, setCardDetails] = useState({ name: '', number: '', expiry: '', cvv: '' });
+  const [upiId, setUpiId] = useState('');
+  const [bankName, setBankName] = useState('HDFC Bank');
   const [referralCode, setReferralCode] = useState('');
   const [appliedDiscount, setAppliedDiscount] = useState(0);
   const [referralApplied, setReferralApplied] = useState(false);
+  const [usePoints, setUsePoints] = useState(false);
+  const [pointsToRedeem, setPointsToRedeem] = useState(150);
+  const [userPointsBalance, setUserPointsBalance] = useState(150);
   const [isProcessing, setIsProcessing] = useState(false);
   const [resendingEmail, setResendingEmail] = useState(false);
 
@@ -232,36 +247,55 @@ export const CustomerMembershipScreen: React.FC<{
     setReferralCode('');
     setAppliedDiscount(0);
     setReferralApplied(false);
-    setSelectedPaymentMethod(plan.isTrial ? 'Trial' : 'UPI');
+    setUsePoints(false);
+    setPointsToRedeem(150);
+    setCardDetails({ name: '', number: '', expiry: '', cvv: '' });
+    setUpiId('');
+    setBankName('HDFC Bank');
+    setSelectedPaymentMethod(plan.isTrial ? 'Trial' : 'Card');
     setShowCheckoutModal(true);
   };
 
   const handleApplyReferral = () => {
     if (!referralCode.trim()) return;
-    if (referralCode.trim().toUpperCase() === 'FIT50' || referralCode.trim().toUpperCase().startsWith('REF')) {
+    const code = referralCode.trim().toUpperCase();
+    if (code === 'FIT50' || code.startsWith('REF') || code === 'DISCOUNT50') {
       const discountVal = 50;
       setAppliedDiscount(discountVal);
       setReferralApplied(true);
       Alert.alert('Referral Applied! 🎉', `₹${discountVal} promotional discount has been applied to your plan.`);
     } else {
-      Alert.alert('Invalid Code', 'Please enter a valid referral or discount code.');
+      Alert.alert('Invalid Code', 'Please enter a valid referral code (e.g. FIT50).');
     }
   };
+
+  // Pricing calculations matching web application
+  const checkoutPrice = Number(selectedPlan?.price) || 0;
+  const isCheckoutTrial = selectedPlan?.isTrial || checkoutPrice === 0;
+  const checkoutRefDiscount = isCheckoutTrial ? 0 : (referralApplied ? appliedDiscount : 0);
+  const checkoutPointsDiscount = isCheckoutTrial ? 0 : (usePoints ? Math.round(pointsToRedeem * 0.5) : 0);
+  const checkoutTotalDiscount = isCheckoutTrial ? 0 : Math.min(checkoutPrice, checkoutRefDiscount + checkoutPointsDiscount);
+  const checkoutDiscountedBase = Math.max(0, checkoutPrice - checkoutTotalDiscount);
+  const checkoutTax = isCheckoutTrial ? 0 : Math.round(checkoutDiscountedBase * 0.18);
+  const checkoutTotal = isCheckoutTrial ? 0 : Math.round(checkoutDiscountedBase + checkoutTax);
 
   const handleConfirmPayment = async () => {
     if (!selectedPlan) return;
     try {
       setIsProcessing(true);
-      const finalPrice = Math.max(0, (selectedPlan.price || 0) - appliedDiscount);
+      await new Promise(r => setTimeout(r, 600));
 
       // Attempt API call if endpoint exists
       await api.post('/memberships/checkout', {
         planName: selectedPlan.name,
         duration: selectedPlan.duration,
         price: selectedPlan.price,
-        finalAmount: finalPrice,
-        paymentMethod: selectedPaymentMethod,
-        discount: appliedDiscount,
+        finalAmount: checkoutTotal,
+        tax: checkoutTax,
+        discount: checkoutTotalDiscount,
+        paymentMethod: isCheckoutTrial ? 'Free Trial' : selectedPaymentMethod,
+        pointsRedeemed: usePoints ? pointsToRedeem : 0,
+        referralCode: referralApplied ? referralCode : undefined,
         gymId: currentMembership?.gymId?._id || 'gym_pfs_01',
       }).catch(() => {});
 
@@ -272,8 +306,10 @@ export const CustomerMembershipScreen: React.FC<{
         planName: selectedPlan.name,
         duration: selectedPlan.duration,
         price: selectedPlan.price,
-        finalAmount: finalPrice,
-        paymentMethod: selectedPaymentMethod,
+        finalAmount: checkoutTotal,
+        tax: checkoutTax,
+        discount: checkoutTotalDiscount,
+        paymentMethod: isCheckoutTrial ? 'Free Trial' : selectedPaymentMethod,
         status: 'Active',
         confirmationEmailStatus: 'Sent',
         startDate: new Date().toISOString(),
@@ -1213,21 +1249,23 @@ export const CustomerMembershipScreen: React.FC<{
       >
         <View style={styles.modalOverlay}>
           <View style={styles.checkoutModalContent}>
-            {/* Modal Header */}
-            <View style={styles.emailModalHeader}>
-              <View style={styles.modalHeaderTitleGroup}>
-                <View style={styles.modalEmailIconSquare}>
-                  <Ionicons name="cart-outline" size={18} color="#EA580C" />
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.modalTitleText}>
-                    {selectedPlan?.isTrial ? 'Activate Free Trial' : 'Subscribe to Membership'}
-                  </Text>
-                  <Text style={styles.modalSubtitleText}>
-                    {gymName} • Complete Membership Activation
-                  </Text>
-                </View>
+            {/* Modal Header Matching Web */}
+            <View style={styles.checkoutModalHeader}>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.checkoutMainTitle}>Checkout</Text>
+                <Text style={styles.checkoutMainSubtitle}>
+                  {isCheckoutTrial
+                    ? 'Activate your complimentary 1-week free trial'
+                    : `Complete payment to activate ${selectedPlan?.name || 'Membership'}`}
+                </Text>
               </View>
+              {selectedPlan && (
+                <View style={styles.checkoutPlanPillBadge}>
+                  <Text style={styles.checkoutPlanPillBadgeText}>
+                    {isCheckoutTrial ? 'FREE TRIAL' : `${selectedPlan.name.toUpperCase()} PLAN`}
+                  </Text>
+                </View>
+              )}
               <TouchableOpacity
                 onPress={() => setShowCheckoutModal(false)}
                 style={styles.modalCloseBtn}
@@ -1239,133 +1277,428 @@ export const CustomerMembershipScreen: React.FC<{
 
             {selectedPlan && (
               <ScrollView style={styles.modalScrollBody} showsVerticalScrollIndicator={false}>
-                {/* Plan Summary Banner */}
-                <View style={styles.checkoutPlanSummary}>
-                  <View>
-                    <Text style={styles.checkoutPlanName}>{selectedPlan.name}</Text>
-                    <Text style={styles.checkoutPlanDuration}>Duration: {selectedPlan.duration}</Text>
-                  </View>
-                  <View style={{ alignItems: 'flex-end' }}>
-                    <Text style={styles.checkoutPlanPrice}>
-                      {selectedPlan.isTrial ? '₹0' : `₹${selectedPlan.price}`}
-                    </Text>
-                    <Text style={styles.checkoutPlanPriceNote}>
-                      {selectedPlan.isTrial ? '1 Day Trial' : `Per ${selectedPlan.duration}`}
-                    </Text>
-                  </View>
-                </View>
-
-                {/* If Not Trial: Payment Method Selector */}
-                {!selectedPlan.isTrial && (
-                  <View style={styles.checkoutSection}>
-                    <Text style={styles.checkoutSectionHeading}>SELECT PAYMENT METHOD</Text>
-                    {PAYMENT_METHODS.map((pm) => {
-                      const isSelected = selectedPaymentMethod === pm.id;
-                      return (
-                        <TouchableOpacity
-                          key={pm.id}
-                          style={[
-                            styles.paymentMethodCard,
-                            isSelected && styles.paymentMethodCardSelected,
-                          ]}
-                          onPress={() => setSelectedPaymentMethod(pm.id)}
-                          activeOpacity={0.7}
-                        >
-                          <View
-                            style={[
-                              styles.paymentMethodRadio,
-                              isSelected && styles.paymentMethodRadioSelected,
-                            ]}
-                          >
-                            {isSelected && <View style={styles.paymentMethodRadioInner} />}
-                          </View>
-                          <Ionicons
-                            name={pm.icon as any}
-                            size={20}
-                            color={isSelected ? '#EA580C' : '#64748B'}
-                            style={{ marginHorizontal: 8 }}
-                          />
-                          <View style={{ flex: 1 }}>
-                            <Text
-                              style={[
-                                styles.paymentMethodLabel,
-                                isSelected && { color: '#111827', fontWeight: '800' },
-                              ]}
-                            >
-                              {pm.label}
-                            </Text>
-                            <Text style={styles.paymentMethodDesc}>{pm.desc}</Text>
-                          </View>
-                        </TouchableOpacity>
-                      );
-                    })}
-
-                    {/* Referral Code Box */}
-                    <Text style={[styles.checkoutSectionHeading, { marginTop: 14 }]}>
-                      PROMOTIONAL / REFERRAL CODE
-                    </Text>
-                    <View style={styles.referralInputRow}>
-                      <TextInput
-                        style={styles.referralInput}
-                        placeholder="Enter Code (e.g. FIT50)"
-                        placeholderTextColor="#94A3B8"
-                        value={referralCode}
-                        onChangeText={setReferralCode}
-                        autoCapitalize="characters"
-                        editable={!referralApplied}
-                      />
-                      <TouchableOpacity
-                        style={[
-                          styles.referralApplyBtn,
-                          referralApplied && { backgroundColor: '#15803D' },
-                        ]}
-                        onPress={handleApplyReferral}
-                        disabled={referralApplied}
-                        activeOpacity={0.8}
-                      >
-                        <Text style={styles.referralApplyBtnText}>
-                          {referralApplied ? 'Applied ✓' : 'Apply'}
-                        </Text>
-                      </TouchableOpacity>
-                    </View>
-
-                    {/* Price Breakdown */}
-                    <View style={styles.checkoutPriceBreakdown}>
-                      <View style={styles.breakdownRow}>
-                        <Text style={styles.breakdownLabel}>Base Plan Price</Text>
-                        <Text style={styles.breakdownValue}>₹{selectedPlan.price}</Text>
-                      </View>
-                      {appliedDiscount > 0 && (
-                        <View style={styles.breakdownRow}>
-                          <Text style={[styles.breakdownLabel, { color: '#16A34A' }]}>
-                            Referral Discount
-                          </Text>
-                          <Text style={[styles.breakdownValue, { color: '#16A34A' }]}>
-                            -₹{appliedDiscount}
-                          </Text>
-                        </View>
-                      )}
-                      <View style={[styles.breakdownRow, styles.breakdownTotalRow]}>
-                        <Text style={styles.breakdownTotalLabel}>Total Payable</Text>
-                        <Text style={styles.breakdownTotalValue}>
-                          ₹{Math.max(0, selectedPlan.price - appliedDiscount)}
-                        </Text>
-                      </View>
-                    </View>
-                  </View>
-                )}
-
                 {/* If Free Trial */}
-                {selectedPlan.isTrial && (
+                {isCheckoutTrial ? (
                   <View style={styles.freeTrialNoticeBox}>
                     <Ionicons name="sparkles" size={24} color="#EA580C" />
                     <View style={{ flex: 1, marginLeft: 10 }}>
-                      <Text style={styles.freeTrialNoticeTitle}>Instant Free Access</Text>
+                      <Text style={styles.freeTrialNoticeTitle}>1-Week Free Trial Access</Text>
                       <Text style={styles.freeTrialNoticeBody}>
-                        No credit card or upfront payment required. Your 1-Day pass unlocks full gym floor access, locker rooms, and the AI fitness coach.
+                        Enjoy 7 days of full gym floor access with zero upfront payment. You can upgrade to a regular membership at any time.
                       </Text>
                     </View>
                   </View>
+                ) : (
+                  <>
+                    {/* 1. SELECT PAYMENT METHOD */}
+                    <View style={styles.checkoutSectionCard}>
+                      <View style={styles.checkoutSectionHeaderRow}>
+                        <Ionicons name="card-outline" size={17} color="#EA580C" />
+                        <Text style={styles.checkoutSectionTitle}>Select Payment Method</Text>
+                      </View>
+
+                      {/* 2x2 Payment Method Grid */}
+                      <View style={styles.paymentGrid2x2}>
+                        {PAYMENT_METHODS.map((pm) => {
+                          const isSelected = selectedPaymentMethod === pm.id;
+                          return (
+                            <TouchableOpacity
+                              key={pm.id}
+                              style={[
+                                styles.paymentGridItem,
+                                isSelected && styles.paymentGridItemSelected,
+                              ]}
+                              onPress={() => setSelectedPaymentMethod(pm.id as any)}
+                              activeOpacity={0.7}
+                            >
+                              <View
+                                style={[
+                                  styles.paymentGridIconCircle,
+                                  isSelected && styles.paymentGridIconCircleSelected,
+                                ]}
+                              >
+                                <Ionicons
+                                  name={pm.icon as any}
+                                  size={16}
+                                  color={isSelected ? '#FFFFFF' : '#64748B'}
+                                />
+                              </View>
+                              <View style={{ flex: 1 }}>
+                                <Text
+                                  style={[
+                                    styles.paymentGridLabel,
+                                    isSelected && styles.paymentGridLabelSelected,
+                                  ]}
+                                  numberOfLines={1}
+                                >
+                                  {pm.label}
+                                </Text>
+                                <Text style={styles.paymentGridDesc} numberOfLines={2}>
+                                  {pm.desc}
+                                </Text>
+                              </View>
+                            </TouchableOpacity>
+                          );
+                        })}
+                      </View>
+
+                      {/* DYNAMIC RELATED CONTENT PER PAYMENT METHOD */}
+                      {/* CARD SUB-FORM */}
+                      {selectedPaymentMethod === 'Card' && (
+                        <View style={styles.methodDetailsContainer}>
+                          <View style={styles.inputGroup}>
+                            <Text style={styles.inputLabel}>Cardholder Name</Text>
+                            <TextInput
+                              style={styles.textInputField}
+                              placeholder="Name on card"
+                              placeholderTextColor="#94A3B8"
+                              value={cardDetails.name}
+                              onChangeText={(val) => setCardDetails((prev) => ({ ...prev, name: val }))}
+                            />
+                          </View>
+
+                          <View style={styles.inputGroup}>
+                            <Text style={styles.inputLabel}>Card Number</Text>
+                            <TextInput
+                              style={[styles.textInputField, { letterSpacing: 1.5 }]}
+                              placeholder="4532 •••• •••• 8901"
+                              placeholderTextColor="#94A3B8"
+                              keyboardType="numeric"
+                              maxLength={19}
+                              value={cardDetails.number}
+                              onChangeText={(val) => setCardDetails((prev) => ({ ...prev, number: val }))}
+                            />
+                          </View>
+
+                          <View style={styles.inputRow2}>
+                            <View style={[styles.inputGroup, { flex: 1 }]}>
+                              <Text style={styles.inputLabel}>Expiry Date</Text>
+                              <TextInput
+                                style={styles.textInputField}
+                                placeholder="MM/YY"
+                                placeholderTextColor="#94A3B8"
+                                maxLength={5}
+                                value={cardDetails.expiry}
+                                onChangeText={(val) => setCardDetails((prev) => ({ ...prev, expiry: val }))}
+                              />
+                            </View>
+                            <View style={[styles.inputGroup, { flex: 1 }]}>
+                              <Text style={styles.inputLabel}>CVV</Text>
+                              <TextInput
+                                style={styles.textInputField}
+                                placeholder="••••"
+                                placeholderTextColor="#94A3B8"
+                                keyboardType="numeric"
+                                secureTextEntry
+                                maxLength={4}
+                                value={cardDetails.cvv}
+                                onChangeText={(val) => setCardDetails((prev) => ({ ...prev, cvv: val }))}
+                              />
+                            </View>
+                          </View>
+                        </View>
+                      )}
+
+                      {/* UPI SUB-FORM */}
+                      {selectedPaymentMethod === 'UPI' && (
+                        <View style={styles.methodDetailsContainer}>
+                          <View style={styles.upiQrRow}>
+                            <View style={styles.upiQrBox}>
+                              <View style={styles.qrCornerTopLeft}>
+                                <View style={styles.qrCornerInner} />
+                              </View>
+                              <View style={styles.qrCornerTopRight}>
+                                <View style={styles.qrCornerInner} />
+                              </View>
+                              <View style={styles.qrCornerBottomLeft}>
+                                <View style={styles.qrCornerInner} />
+                              </View>
+                              <View style={styles.qrCenterBadge}>
+                                <Ionicons name="qr-code" size={14} color="#EA580C" />
+                              </View>
+                              <View style={styles.qrDotsGrid}>
+                                <View style={styles.qrDotRow}>
+                                  <View style={styles.qrDot} />
+                                  <View style={[styles.qrDot, { opacity: 0 }]} />
+                                  <View style={styles.qrDot} />
+                                  <View style={styles.qrDot} />
+                                </View>
+                                <View style={styles.qrDotRow}>
+                                  <View style={[styles.qrDot, { opacity: 0 }]} />
+                                  <View style={styles.qrDot} />
+                                  <View style={[styles.qrDot, { opacity: 0 }]} />
+                                  <View style={styles.qrDot} />
+                                </View>
+                                <View style={styles.qrDotRow}>
+                                  <View style={styles.qrDot} />
+                                  <View style={styles.qrDot} />
+                                  <View style={[styles.qrDot, { opacity: 0 }]} />
+                                  <View style={styles.qrDot} />
+                                </View>
+                              </View>
+                            </View>
+
+                            <View style={{ flex: 1, marginLeft: 12 }}>
+                              <Text style={styles.upiScanBadge}>SCAN QR CODE</Text>
+                              <Text style={styles.upiScanDesc}>
+                                Scan with Google Pay, PhonePe, Paytm, or BHIM to pay instantly.
+                              </Text>
+                              <View style={styles.upiIdTag}>
+                                <Text style={styles.upiIdTagText}>
+                                  UPI ID: <Text style={{ color: '#EA580C', fontWeight: '900' }}>aigym@icici</Text>
+                                </Text>
+                              </View>
+                            </View>
+                          </View>
+
+                          <View style={[styles.inputGroup, { marginTop: 10 }]}>
+                            <Text style={styles.inputLabel}>Or Enter Your UPI ID</Text>
+                            <TextInput
+                              style={styles.textInputField}
+                              placeholder="yourname@okhdfcbank"
+                              placeholderTextColor="#94A3B8"
+                              autoCapitalize="none"
+                              value={upiId}
+                              onChangeText={setUpiId}
+                            />
+                          </View>
+                        </View>
+                      )}
+
+                      {/* NET BANKING SUB-FORM */}
+                      {selectedPaymentMethod === 'Net Banking' && (
+                        <View style={styles.methodDetailsContainer}>
+                          <Text style={styles.inputLabel}>Select Bank</Text>
+                          <View style={styles.bankListGrid}>
+                            {POPULAR_BANKS.map((b) => {
+                              const isBankSelected = bankName === b;
+                              return (
+                                <TouchableOpacity
+                                  key={b}
+                                  style={[
+                                    styles.bankSelectChip,
+                                    isBankSelected && styles.bankSelectChipActive,
+                                  ]}
+                                  onPress={() => setBankName(b)}
+                                  activeOpacity={0.7}
+                                >
+                                  <Ionicons
+                                    name={isBankSelected ? 'radio-button-on' : 'radio-button-off'}
+                                    size={14}
+                                    color={isBankSelected ? '#EA580C' : '#94A3B8'}
+                                  />
+                                  <Text
+                                    style={[
+                                      styles.bankSelectChipText,
+                                      isBankSelected && styles.bankSelectChipTextActive,
+                                    ]}
+                                    numberOfLines={1}
+                                  >
+                                    {b}
+                                  </Text>
+                                </TouchableOpacity>
+                              );
+                            })}
+                          </View>
+                        </View>
+                      )}
+
+                      {/* CASH AT GYM SUB-FORM */}
+                      {selectedPaymentMethod === 'Cash at Gym' && (
+                        <View style={styles.cashNoticeBox}>
+                          <Ionicons name="storefront-outline" size={20} color="#EA580C" />
+                          <View style={{ flex: 1, marginLeft: 10 }}>
+                            <Text style={styles.cashNoticeTitle}>Pay At Gym Counter</Text>
+                            <Text style={styles.cashNoticeBody}>
+                              Your membership package will be pre-registered. You can pay via Cash, POS card machine, or UPI at the front desk upon arrival.
+                            </Text>
+                          </View>
+                        </View>
+                      )}
+                    </View>
+
+                    {/* 2. ORDER SUMMARY */}
+                    <View style={styles.checkoutOrderSummaryCard}>
+                      <View style={styles.checkoutSectionHeaderRow}>
+                        <Ionicons name="document-text-outline" size={17} color="#EA580C" />
+                        <Text style={styles.checkoutSectionTitle}>Order Summary</Text>
+                      </View>
+
+                      {/* Branch Info */}
+                      <View style={styles.summaryBranchRow}>
+                        <View style={styles.summaryBranchIconBox}>
+                          <Ionicons name="business" size={16} color="#EA580C" />
+                        </View>
+                        <View style={{ flex: 1 }}>
+                          <Text style={styles.summaryBranchGymName}>{gymName}</Text>
+                          <Text style={styles.summaryBranchLocation}>Krishnagiri • India</Text>
+                        </View>
+                      </View>
+
+                      {/* Plan Package Box */}
+                      <View style={styles.summaryPlanBox}>
+                        <View style={styles.summaryPlanTitleRow}>
+                          <Text style={styles.summaryPlanNameText}>{selectedPlan.name}</Text>
+                          <View style={styles.summaryPlanDurationPill}>
+                            <Text style={styles.summaryPlanDurationPillText}>
+                              {selectedPlan.duration || '1 Month'}
+                            </Text>
+                          </View>
+                        </View>
+                        <Text style={styles.summaryPlanFeaturesText} numberOfLines={2}>
+                          {Array.isArray(selectedPlan.features)
+                            ? selectedPlan.features.join(' • ')
+                            : selectedPlan.features || 'Fat-loss workout programs • Cardio training • Strength training • Weight and progress tracking'}
+                        </Text>
+                      </View>
+
+                      {/* Referral Code Box */}
+                      <View style={styles.summarySubSectionBox}>
+                        <View style={styles.subSectionTitleRow}>
+                          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                            <Ionicons name="gift-outline" size={14} color="#EA580C" />
+                            <Text style={styles.subSectionTitleText}>Referral Code</Text>
+                          </View>
+                          {referralApplied && (
+                            <View style={styles.appliedSuccessBadge}>
+                              <Text style={styles.appliedSuccessBadgeText}>Applied ✓</Text>
+                            </View>
+                          )}
+                        </View>
+
+                        <View style={styles.referralInputRow}>
+                          <TextInput
+                            style={styles.referralInput}
+                            placeholder="ENTER REFERRAL CODE"
+                            placeholderTextColor="#94A3B8"
+                            value={referralCode}
+                            onChangeText={setReferralCode}
+                            autoCapitalize="characters"
+                            editable={!referralApplied}
+                          />
+                          <TouchableOpacity
+                            style={[
+                              styles.referralApplyBtn,
+                              referralApplied && { backgroundColor: '#15803D' },
+                            ]}
+                            onPress={handleApplyReferral}
+                            disabled={referralApplied || !referralCode.trim()}
+                            activeOpacity={0.8}
+                          >
+                            <Text style={styles.referralApplyBtnText}>
+                              {referralApplied ? 'Applied' : 'Apply'}
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
+                        {referralApplied && (
+                          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 4 }}>
+                            <Ionicons name="sparkles" size={12} color="#15803D" />
+                            <Text style={{ fontSize: 11, color: '#15803D', fontWeight: '700' }}>
+                              ₹{appliedDiscount} discount applied from your referral code!
+                            </Text>
+                          </View>
+                        )}
+                      </View>
+
+                      {/* Redeem Referral Points Box */}
+                      <View style={styles.summarySubSectionBox}>
+                        <TouchableOpacity
+                          style={styles.pointsToggleRow}
+                          onPress={() => setUsePoints((prev) => !prev)}
+                          activeOpacity={0.7}
+                        >
+                          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, flex: 1 }}>
+                            <View
+                              style={[
+                                styles.pointsCheckbox,
+                                usePoints && styles.pointsCheckboxActive,
+                              ]}
+                            >
+                              {usePoints && <Ionicons name="checkmark" size={12} color="#FFFFFF" />}
+                            </View>
+                            <Ionicons name="sparkles-outline" size={15} color="#EA580C" />
+                            <Text style={styles.pointsToggleLabel}>Redeem Referral Points</Text>
+                          </View>
+                          <Text style={styles.pointsAvailableText}>
+                            {userPointsBalance} pts available
+                          </Text>
+                        </TouchableOpacity>
+
+                        {usePoints && (
+                          <View style={styles.pointsDetailsExpanded}>
+                            <View style={styles.pointsMetaRow}>
+                              <Text style={styles.pointsMetaLabel}>Points to Redeem:</Text>
+                              <Text style={styles.pointsMetaValBold}>{pointsToRedeem} pts</Text>
+                            </View>
+                            <View style={styles.pointsConversionRow}>
+                              <Text style={styles.pointsConversionText}>Conversion: 100 pts = ₹50</Text>
+                              <Text style={styles.pointsDiscountAppliedText}>
+                                ✨ Discount: ₹{checkoutPointsDiscount}
+                              </Text>
+                            </View>
+                          </View>
+                        )}
+                      </View>
+
+                      {/* Pricing Breakdown */}
+                      <View style={styles.priceBreakdownBox}>
+                        <View style={styles.priceLineRow}>
+                          <Text style={styles.priceLineLabel}>Package Price</Text>
+                          <Text style={styles.priceLineVal}>₹{checkoutPrice.toLocaleString('en-IN')}</Text>
+                        </View>
+
+                        {checkoutRefDiscount > 0 && (
+                          <View style={styles.priceLineRow}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                              <Ionicons name="pricetag-outline" size={12} color="#15803D" />
+                              <Text style={[styles.priceLineLabel, { color: '#15803D' }]}>
+                                Referral Discount
+                              </Text>
+                            </View>
+                            <Text style={[styles.priceLineVal, { color: '#15803D' }]}>
+                              - ₹{checkoutRefDiscount.toLocaleString('en-IN')}
+                            </Text>
+                          </View>
+                        )}
+
+                        {checkoutPointsDiscount > 0 && (
+                          <View style={styles.priceLineRow}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                              <Ionicons name="sparkles" size={12} color="#15803D" />
+                              <Text style={[styles.priceLineLabel, { color: '#15803D' }]}>
+                                Points Discount ({pointsToRedeem} pts)
+                              </Text>
+                            </View>
+                            <Text style={[styles.priceLineVal, { color: '#15803D' }]}>
+                              - ₹{checkoutPointsDiscount.toLocaleString('en-IN')}
+                            </Text>
+                          </View>
+                        )}
+
+                        <View style={styles.priceLineRow}>
+                          <Text style={styles.priceLineLabel}>Taxes (18% GST)</Text>
+                          <Text style={styles.priceLineVal}>₹{checkoutTax.toLocaleString('en-IN')}</Text>
+                        </View>
+
+                        {/* TOTAL PAYABLE */}
+                        <View style={styles.priceTotalDivider} />
+                        <View style={styles.priceTotalRow}>
+                          <Text style={styles.priceTotalLabel}>TOTAL PAYABLE</Text>
+                          <Text style={styles.priceTotalAmount}>
+                            ₹{checkoutTotal.toLocaleString('en-IN')}
+                          </Text>
+                        </View>
+                      </View>
+
+                      {/* Safe & Encrypted Badge */}
+                      <View style={styles.trustBadgeBox}>
+                        <Ionicons name="shield-checkmark" size={16} color="#15803D" style={{ marginTop: 1 }} />
+                        <Text style={styles.trustBadgeText}>
+                          Safe & Encrypted checkout. Instant membership activation with automated confirmation email.
+                        </Text>
+                      </View>
+                    </View>
+                  </>
                 )}
               </ScrollView>
             )}
@@ -1391,12 +1724,14 @@ export const CustomerMembershipScreen: React.FC<{
                 ) : (
                   <>
                     <Ionicons
-                      name={selectedPlan?.isTrial ? 'flash' : 'shield-checkmark'}
+                      name={isCheckoutTrial ? 'flash' : 'shield-checkmark'}
                       size={16}
                       color="#FFFFFF"
                     />
                     <Text style={styles.modalConfirmPayBtnText}>
-                      {selectedPlan?.isTrial ? 'Activate Free Trial' : 'Confirm & Pay'}
+                      {isCheckoutTrial
+                        ? 'Activate Free Trial'
+                        : `Pay ₹${checkoutTotal} & Confirm ${selectedPlan?.name || 'Plan'}`}
                     </Text>
                   </>
                 )}
@@ -2612,96 +2947,523 @@ const styles = StyleSheet.create({
     color: '#334155',
   },
 
-  /* Checkout Modal */
-  checkoutPlanSummary: {
-    backgroundColor: '#FFF7ED',
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: '#FFEDD5',
-    padding: 14,
+  /* Checkout Modal Matching Web */
+  checkoutModalHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 14,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F1F5F9',
+    gap: 8,
   },
-  checkoutPlanName: {
-    fontSize: 18,
+  checkoutMainTitle: {
+    fontSize: 20,
     fontWeight: '900',
     color: '#111827',
-    textTransform: 'capitalize',
   },
-  checkoutPlanDuration: {
+  checkoutMainSubtitle: {
     fontSize: 11,
     color: '#64748B',
     marginTop: 2,
   },
-  checkoutPlanPrice: {
-    fontSize: 22,
-    fontWeight: '900',
+  checkoutPlanPillBadge: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 999,
+    backgroundColor: '#FFF7ED',
+    borderWidth: 1,
+    borderColor: '#FFEDD5',
+  },
+  checkoutPlanPillBadgeText: {
+    fontSize: 10,
+    fontWeight: '800',
     color: '#EA580C',
+    textTransform: 'uppercase',
   },
-  checkoutPlanPriceNote: {
-    fontSize: 10,
-    color: '#64748B',
+  checkoutSectionCard: {
+    marginBottom: 16,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    padding: 14,
+    gap: 12,
   },
-  checkoutSection: {
-    gap: 8,
-  },
-  checkoutSectionHeading: {
-    fontSize: 10,
-    fontWeight: '900',
-    color: '#64748B',
-    letterSpacing: 0.8,
-  },
-  paymentMethodCard: {
+  checkoutSectionHeaderRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 6,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F1F5F9',
+    paddingBottom: 8,
+  },
+  checkoutSectionTitle: {
+    fontSize: 13,
+    fontWeight: '900',
+    color: '#111827',
+  },
+  paymentGrid2x2: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    justifyContent: 'space-between',
+  },
+  paymentGridItem: {
+    width: '48.5%',
+    flexDirection: 'row',
+    alignItems: 'flex-start',
     backgroundColor: '#F8FAFC',
     borderRadius: 12,
     borderWidth: 1,
     borderColor: '#E2E8F0',
     padding: 10,
+    gap: 8,
   },
-  paymentMethodCardSelected: {
+  paymentGridItemSelected: {
     borderColor: '#EA580C',
     backgroundColor: '#FFF7ED',
   },
-  paymentMethodRadio: {
-    width: 16,
-    height: 16,
+  paymentGridIconCircle: {
+    width: 28,
+    height: 28,
     borderRadius: 8,
-    borderWidth: 1.5,
-    borderColor: '#94A3B8',
+    backgroundColor: '#E2E8F0',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  paymentMethodRadioSelected: {
-    borderColor: '#EA580C',
-  },
-  paymentMethodRadioInner: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
+  paymentGridIconCircleSelected: {
     backgroundColor: '#EA580C',
   },
-  paymentMethodLabel: {
-    fontSize: 12,
-    fontWeight: '700',
+  paymentGridLabel: {
+    fontSize: 11,
+    fontWeight: '800',
     color: '#334155',
   },
-  paymentMethodDesc: {
+  paymentGridLabelSelected: {
+    color: '#EA580C',
+  },
+  paymentGridDesc: {
+    fontSize: 9,
+    color: '#64748B',
+    marginTop: 2,
+    lineHeight: 12,
+  },
+  methodDetailsContainer: {
+    backgroundColor: '#F8FAFC',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    padding: 12,
+    gap: 10,
+  },
+  inputGroup: {
+    gap: 4,
+  },
+  inputLabel: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#475569',
+  },
+  textInputField: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    fontSize: 12,
+    color: '#111827',
+  },
+  inputRow2: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  upiQrRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  upiQrBox: {
+    width: 88,
+    height: 88,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#CBD5E1',
+    padding: 8,
+    position: 'relative',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  qrCornerTopLeft: {
+    position: 'absolute',
+    top: 6,
+    left: 6,
+    width: 20,
+    height: 20,
+    borderWidth: 3,
+    borderColor: '#0F172A',
+    borderRadius: 4,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  qrCornerTopRight: {
+    position: 'absolute',
+    top: 6,
+    right: 6,
+    width: 20,
+    height: 20,
+    borderWidth: 3,
+    borderColor: '#0F172A',
+    borderRadius: 4,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  qrCornerBottomLeft: {
+    position: 'absolute',
+    bottom: 6,
+    left: 6,
+    width: 20,
+    height: 20,
+    borderWidth: 3,
+    borderColor: '#0F172A',
+    borderRadius: 4,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  qrCornerInner: {
+    width: 8,
+    height: 8,
+    backgroundColor: '#0F172A',
+    borderRadius: 2,
+  },
+  qrCenterBadge: {
+    position: 'absolute',
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    backgroundColor: '#FFF7ED',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#FFEDD5',
+    zIndex: 2,
+  },
+  qrDotsGrid: {
+    gap: 3,
+    opacity: 0.7,
+  },
+  qrDotRow: {
+    flexDirection: 'row',
+    gap: 4,
+  },
+  qrDot: {
+    width: 4,
+    height: 4,
+    backgroundColor: '#1E293B',
+    borderRadius: 1,
+  },
+  upiScanBadge: {
+    fontSize: 10,
+    fontWeight: '900',
+    color: '#EA580C',
+    letterSpacing: 0.5,
+  },
+  upiScanDesc: {
+    fontSize: 10,
+    color: '#64748B',
+    marginTop: 2,
+    lineHeight: 14,
+  },
+  upiIdTag: {
+    marginTop: 6,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    alignSelf: 'flex-start',
+  },
+  upiIdTagText: {
+    fontSize: 10,
+    color: '#334155',
+  },
+  bankListGrid: {
+    gap: 6,
+  },
+  bankSelectChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 9,
+  },
+  bankSelectChipActive: {
+    borderColor: '#EA580C',
+    backgroundColor: '#FFF7ED',
+  },
+  bankSelectChipText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#475569',
+  },
+  bankSelectChipTextActive: {
+    color: '#EA580C',
+    fontWeight: '800',
+  },
+  cashNoticeBox: {
+    flexDirection: 'row',
+    backgroundColor: '#FFF7ED',
+    borderWidth: 1,
+    borderColor: '#FFEDD5',
+    borderRadius: 12,
+    padding: 12,
+    alignItems: 'flex-start',
+  },
+  cashNoticeTitle: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: '#EA580C',
+  },
+  cashNoticeBody: {
+    fontSize: 11,
+    color: '#475569',
+    marginTop: 2,
+    lineHeight: 15,
+  },
+  checkoutOrderSummaryCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    padding: 14,
+    gap: 12,
+    marginBottom: 16,
+  },
+  summaryBranchRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  summaryBranchIconBox: {
+    width: 32,
+    height: 32,
+    borderRadius: 8,
+    backgroundColor: '#FFF7ED',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  summaryBranchGymName: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  summaryBranchLocation: {
     fontSize: 10,
     color: '#64748B',
     marginTop: 1,
   },
+  summaryPlanBox: {
+    backgroundColor: '#F8FAFC',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    padding: 12,
+    gap: 6,
+  },
+  summaryPlanTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  summaryPlanNameText: {
+    fontSize: 14,
+    fontWeight: '900',
+    color: '#111827',
+    textTransform: 'capitalize',
+  },
+  summaryPlanDurationPill: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 999,
+    backgroundColor: '#FFF7ED',
+    borderWidth: 1,
+    borderColor: '#FFEDD5',
+  },
+  summaryPlanDurationPillText: {
+    fontSize: 10,
+    fontWeight: '800',
+    color: '#EA580C',
+  },
+  summaryPlanFeaturesText: {
+    fontSize: 10,
+    color: '#64748B',
+    lineHeight: 14,
+  },
+  summarySubSectionBox: {
+    backgroundColor: '#F8FAFC',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    padding: 12,
+    gap: 8,
+  },
+  subSectionTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  subSectionTitleText: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  appliedSuccessBadge: {
+    backgroundColor: '#DCFCE7',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 6,
+  },
+  appliedSuccessBadgeText: {
+    fontSize: 9,
+    fontWeight: '800',
+    color: '#15803D',
+  },
+  pointsToggleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  pointsCheckbox: {
+    width: 18,
+    height: 18,
+    borderRadius: 5,
+    borderWidth: 1.5,
+    borderColor: '#CBD5E1',
+    backgroundColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  pointsCheckboxActive: {
+    backgroundColor: '#EA580C',
+    borderColor: '#EA580C',
+  },
+  pointsToggleLabel: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  pointsAvailableText: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#EA580C',
+  },
+  pointsDetailsExpanded: {
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: '#E2E8F0',
+    gap: 4,
+  },
+  pointsMetaRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  pointsMetaLabel: {
+    fontSize: 10,
+    color: '#64748B',
+  },
+  pointsMetaValBold: {
+    fontSize: 10,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  pointsConversionRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  pointsConversionText: {
+    fontSize: 10,
+    color: '#64748B',
+  },
+  pointsDiscountAppliedText: {
+    fontSize: 10,
+    fontWeight: '800',
+    color: '#15803D',
+  },
+  priceBreakdownBox: {
+    backgroundColor: '#F8FAFC',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    padding: 12,
+    gap: 8,
+  },
+  priceLineRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  priceLineLabel: {
+    fontSize: 11,
+    color: '#64748B',
+  },
+  priceLineVal: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  priceTotalDivider: {
+    height: 1,
+    borderTopWidth: 1,
+    borderStyle: 'dashed',
+    borderTopColor: '#CBD5E1',
+    marginVertical: 4,
+  },
+  priceTotalRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  priceTotalLabel: {
+    fontSize: 12,
+    fontWeight: '900',
+    color: '#64748B',
+    letterSpacing: 0.5,
+  },
+  priceTotalAmount: {
+    fontSize: 20,
+    fontWeight: '900',
+    color: '#EA580C',
+  },
+  trustBadgeBox: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    backgroundColor: '#F8FAFC',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    padding: 10,
+    gap: 8,
+  },
+  trustBadgeText: {
+    fontSize: 10,
+    color: '#64748B',
+    lineHeight: 14,
+    flex: 1,
+  },
   referralInputRow: {
     flexDirection: 'row',
     gap: 8,
-    marginBottom: 8,
+    marginBottom: 4,
   },
   referralInput: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: '#FFFFFF',
     borderWidth: 1,
     borderColor: '#E2E8F0',
     borderRadius: 10,
@@ -2722,45 +3484,6 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     color: '#FFFFFF',
   },
-  checkoutPriceBreakdown: {
-    backgroundColor: '#F8FAFC',
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-    padding: 12,
-    gap: 6,
-    marginTop: 4,
-  },
-  breakdownRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  breakdownLabel: {
-    fontSize: 11,
-    color: '#64748B',
-  },
-  breakdownValue: {
-    fontSize: 11,
-    fontWeight: '800',
-    color: '#111827',
-  },
-  breakdownTotalRow: {
-    paddingTop: 6,
-    borderTopWidth: 1,
-    borderTopColor: '#E2E8F0',
-    marginTop: 2,
-  },
-  breakdownTotalLabel: {
-    fontSize: 13,
-    fontWeight: '900',
-    color: '#111827',
-  },
-  breakdownTotalValue: {
-    fontSize: 16,
-    fontWeight: '900',
-    color: '#EA580C',
-  },
   freeTrialNoticeBox: {
     flexDirection: 'row',
     backgroundColor: '#FFF7ED',
@@ -2769,6 +3492,7 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     padding: 14,
     alignItems: 'center',
+    marginBottom: 14,
   },
   freeTrialNoticeTitle: {
     fontSize: 13,

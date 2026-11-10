@@ -18,6 +18,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../constants/theme';
 import { useAuth } from '../../context/AuthContext';
 import { api } from '../../api/client';
+import { ScannableQRCode } from '../../components/ScannableQRCode';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -319,10 +320,12 @@ export const CustomerReferralsScreen: React.FC<{
       setSendingInvite(true);
       setInviteFeedback(null);
       const res = await api.post('/referrals/invite', {
-        inviteeName: inviteName,
-        inviteeEmail: inviteEmail,
+        inviteeName: inviteName.trim(),
+        inviteeEmail: inviteEmail.trim(),
+        friendName: inviteName.trim(),
+        friendEmail: inviteEmail.trim(),
         personalMessage: inviteMessage,
-      }).catch(() => ({ data: { success: true } }));
+      });
 
       if (res.data?.success) {
         setInviteFeedback({
@@ -349,9 +352,12 @@ export const CustomerReferralsScreen: React.FC<{
         });
       }
     } catch (err: any) {
+      const serverMsg = err?.response?.data?.message || err?.response?.data?.error || err?.message;
       setInviteFeedback({
         type: 'error',
-        message: 'Invitation logged. You can also send via WhatsApp or Mail App directly.',
+        message: serverMsg
+          ? `Email delivery failed: ${serverMsg}`
+          : 'Unable to send email right now. Please share your referral link directly via WhatsApp or SMS.',
       });
     } finally {
       setSendingInvite(false);
@@ -382,52 +388,50 @@ export const CustomerReferralsScreen: React.FC<{
   return (
     <View style={styles.container}>
       {/* ========================================================================= */}
-      {/* SUB-TAB BAR & REDEEM POINTS ACTION                                        */}
+      {/* SUB-TAB BAR: FULL-WIDTH SEGMENTED CONTROL                                  */}
       {/* ========================================================================= */}
       <View style={styles.subTabBar}>
-        <View style={styles.tabsRow}>
+        <View style={styles.segmentedControl}>
           <TouchableOpacity
-            style={[styles.subTabBtn, activeSubTab === 'invite' && styles.subTabBtnActive]}
+            style={[styles.segmentBtn, activeSubTab === 'invite' && styles.segmentBtnActive]}
             onPress={() => setActiveSubTab('invite')}
             activeOpacity={0.8}
           >
             <Ionicons
-              name="gift-outline"
-              size={15}
+              name={activeSubTab === 'invite' ? 'gift' : 'gift-outline'}
+              size={14}
               color={activeSubTab === 'invite' ? '#FFFFFF' : '#64748B'}
             />
-            <Text style={[styles.subTabText, activeSubTab === 'invite' && styles.subTabTextActive]}>
-              Refer & Earn Friends
+            <Text
+              numberOfLines={1}
+              adjustsFontSizeToFit={true}
+              minimumFontScale={0.85}
+              style={[styles.segmentText, activeSubTab === 'invite' && styles.segmentTextActive]}
+            >
+              Refer & Earn
             </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[styles.subTabBtn, activeSubTab === 'redemption' && styles.subTabBtnActive]}
+            style={[styles.segmentBtn, activeSubTab === 'redemption' && styles.segmentBtnActive]}
             onPress={() => setActiveSubTab('redemption')}
             activeOpacity={0.8}
           >
             <Ionicons
-              name="cash-outline"
-              size={15}
+              name={activeSubTab === 'redemption' ? 'cash' : 'cash-outline'}
+              size={14}
               color={activeSubTab === 'redemption' ? '#FFFFFF' : '#64748B'}
             />
-            <Text style={[styles.subTabText, activeSubTab === 'redemption' && styles.subTabTextActive]}>
-              Points & Redemption ({wallet.currentBalance} Pts)
+            <Text
+              numberOfLines={1}
+              adjustsFontSizeToFit={true}
+              minimumFontScale={0.85}
+              style={[styles.segmentText, activeSubTab === 'redemption' && styles.segmentTextActive]}
+            >
+              Points ({wallet.currentBalance} Pts)
             </Text>
           </TouchableOpacity>
         </View>
-
-        <TouchableOpacity
-          style={styles.headerRedeemBtn}
-          onPress={() => {
-            setShowRedeemModal(true);
-            setRedeemModalTab('membership');
-          }}
-          activeOpacity={0.8}
-        >
-          <Ionicons name="sparkles" size={14} color="#FFFFFF" />
-          <Text style={styles.headerRedeemBtnText}>Redeem Points</Text>
-        </TouchableOpacity>
       </View>
 
       <ScrollView
@@ -453,6 +457,27 @@ export const CustomerReferralsScreen: React.FC<{
                 Give your friends an exclusive gym membership discount at <Text style={{ fontWeight: '700', color: '#111827' }}>{gymName}</Text>, 
                 and earn referral points for every friend who joins and activates a membership!
               </Text>
+
+              {/* Quick Balance & Redeem Strip */}
+              <View style={styles.inviteQuickStrip}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                  <Ionicons name="sparkles" size={14} color="#EA580C" />
+                  <Text style={styles.inviteQuickStripText}>
+                    Wallet: <Text style={{ fontWeight: '800', color: '#111827' }}>{wallet.currentBalance} Pts</Text>
+                    <Text style={{ color: '#64748B' }}> (₹{(wallet.currentBalance * 0.5).toFixed(0)})</Text>
+                  </Text>
+                </View>
+                <TouchableOpacity
+                  style={styles.inviteQuickRedeemBtn}
+                  onPress={() => {
+                    setShowRedeemModal(true);
+                    setRedeemModalTab('membership');
+                  }}
+                  activeOpacity={0.8}
+                >
+                  <Text style={styles.inviteQuickRedeemBtnText}>Redeem Points &rarr;</Text>
+                </TouchableOpacity>
+              </View>
             </View>
 
             {/* 2. Your Unique Referral Invite */}
@@ -942,7 +967,7 @@ export const CustomerReferralsScreen: React.FC<{
             {/* 3. Available Redemption Channels */}
             <View style={styles.card}>
               <View style={styles.cardHeaderBetween}>
-                <View>
+                <View style={{ flex: 1, paddingRight: 8 }}>
                   <Text style={styles.cardTitle}>Available Redemption Channels</Text>
                   <Text style={styles.cardSubtitle}>Choose how to use your referral points today.</Text>
                 </View>
@@ -1090,7 +1115,7 @@ export const CustomerReferralsScreen: React.FC<{
             {/* 5. Points Transaction History */}
             <View style={styles.card}>
               <View style={styles.cardHeaderBetween}>
-                <View>
+                <View style={{ flex: 1, paddingRight: 8 }}>
                   <Text style={styles.cardTitle}>Points Transaction History</Text>
                   <Text style={styles.cardSubtitle}>Complete ledger of earned, redeemed, and adjusted points.</Text>
                 </View>
@@ -1155,13 +1180,31 @@ export const CustomerReferralsScreen: React.FC<{
               </TouchableOpacity>
             </View>
 
-            <View style={{ alignItems: 'center', paddingVertical: 18 }}>
-              <View style={styles.qrBox}>
-                <Ionicons name="qr-code" size={130} color="#111827" />
+            <View style={{ alignItems: 'center', paddingVertical: 14 }}>
+              <ScannableQRCode
+                value={shareLink || `http://localhost:5173/register/customer?ref=${referralCode}`}
+                size={190}
+                showScannerCorners={true}
+                showScanBeam={true}
+                centerBadgeIcon="gift"
+                badgeLabel="READY TO SCAN"
+              />
+
+              <View style={styles.qrCodeBadgeContainer}>
+                <Text style={styles.qrCodeValue}>{referralCode}</Text>
+                <TouchableOpacity onPress={handleCopyCode} style={styles.qrMiniCopyBtn} activeOpacity={0.7}>
+                  <Ionicons name={copiedCode ? 'checkmark-circle' : 'copy-outline'} size={14} color="#EA580C" />
+                  <Text style={styles.qrMiniCopyText}>{copiedCode ? 'Copied' : 'Copy'}</Text>
+                </TouchableOpacity>
               </View>
-              <Text style={styles.qrCodeValue}>{referralCode}</Text>
+
+              <View style={styles.qrDiscountPill}>
+                <Ionicons name="sparkles" size={13} color="#16A34A" />
+                <Text style={styles.qrDiscountPillText}>Instant ₹200 Referral Discount Applied</Text>
+              </View>
+
               <Text style={styles.qrSubText}>
-                Show this code or QR to your friend at the gym front desk or during registration to apply ₹200 discount.
+                Point any phone camera, Google Lens, or QR scanner at this code to automatically open registration and claim the ₹200 reward.
               </Text>
             </View>
 
@@ -1422,53 +1465,69 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#E2E8F0',
     backgroundColor: '#FFFFFF',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: 8,
-    flexWrap: 'wrap',
   },
-  tabsRow: {
+  segmentedControl: {
     flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  subTabBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    backgroundColor: '#F1F5F9',
     borderRadius: 14,
-    backgroundColor: '#FFFFFF',
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
+    padding: 3,
+    gap: 4,
   },
-  subTabBtnActive: {
+  segmentBtn: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    paddingVertical: 9,
+    paddingHorizontal: 8,
+    borderRadius: 11,
+  },
+  segmentBtnActive: {
     backgroundColor: '#C2410C',
-    borderColor: '#C2410C',
+    shadowColor: '#C2410C',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 2,
   },
-  subTabText: {
+  segmentText: {
     fontSize: 12,
     fontWeight: '700',
     color: '#64748B',
   },
-  subTabTextActive: {
+  segmentTextActive: {
     color: '#FFFFFF',
+    fontWeight: '800',
   },
-  headerRedeemBtn: {
+  inviteQuickStrip: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
-    backgroundColor: '#C2410C',
-    paddingHorizontal: 14,
+    justifyContent: 'space-between',
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#FED7AA',
+    borderRadius: 12,
+    paddingHorizontal: 12,
     paddingVertical: 8,
-    borderRadius: 14,
+    marginTop: 14,
   },
-  headerRedeemBtnText: {
+  inviteQuickStripText: {
     fontSize: 12,
+    color: '#64748B',
+  },
+  inviteQuickRedeemBtn: {
+    backgroundColor: '#FFF7ED',
+    borderWidth: 1,
+    borderColor: '#EA580C',
+    paddingHorizontal: 10,
+    paddingVertical: 4.5,
+    borderRadius: 8,
+  },
+  inviteQuickRedeemBtnText: {
+    fontSize: 11,
     fontWeight: '800',
-    color: '#FFFFFF',
+    color: '#EA580C',
   },
   scroll: {
     flex: 1,
@@ -1890,15 +1949,19 @@ const styles = StyleSheet.create({
     color: '#64748B',
   },
   badgeOrange: {
-    backgroundColor: '#C2410C',
+    backgroundColor: '#FFF7ED',
+    borderWidth: 1,
+    borderColor: '#FED7AA',
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: 12,
+    flexShrink: 0,
+    alignSelf: 'flex-start',
   },
   badgeOrangeText: {
     fontSize: 10,
     fontWeight: '800',
-    color: '#FFFFFF',
+    color: '#EA580C',
   },
   inviteItemCard: {
     backgroundColor: '#FAFAFA',
@@ -2122,6 +2185,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: 12,
+    flexShrink: 0,
+    alignSelf: 'flex-start',
   },
   badgeGrayText: {
     fontSize: 10,
@@ -2209,20 +2274,65 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#E2E8F0',
   },
+  qrCodeBadgeContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginTop: 14,
+    backgroundColor: '#FFF7ED',
+    borderWidth: 1,
+    borderColor: '#FED7AA',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 10,
+  },
+  qrMiniCopyBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 3,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#EA580C',
+    paddingHorizontal: 7,
+    paddingVertical: 2.5,
+    borderRadius: 6,
+  },
+  qrMiniCopyText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#EA580C',
+  },
+  qrDiscountPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    backgroundColor: '#F0FDF4',
+    borderWidth: 1,
+    borderColor: '#BBF7D0',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 8,
+    marginTop: 8,
+  },
+  qrDiscountPillText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#15803D',
+  },
   qrCodeValue: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: '900',
     fontFamily: 'monospace',
     color: '#EA580C',
-    marginTop: 10,
+    letterSpacing: 1.5,
   },
   qrSubText: {
     fontSize: 11,
     color: '#64748B',
     textAlign: 'center',
-    marginTop: 6,
+    marginTop: 8,
     lineHeight: 16,
-    paddingHorizontal: 12,
+    paddingHorizontal: 14,
   },
   modalBtn: {
     flex: 1,

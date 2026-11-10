@@ -343,6 +343,71 @@ const generateReportHTML = (rep: ReportDetails): string => {
 };
 
 /**
+ * Universal Mobile & Web PDF Saver / Downloader
+ * Saves or downloads the PDF directly to device storage / Downloads folder!
+ */
+async function savePDFFile(html: string, safeFilename: string, dialogTitle: string): Promise<void> {
+  // 1. Web: Browser print or download
+  if (Platform.OS === 'web') {
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      printWindow.document.write(html);
+      printWindow.document.close();
+      printWindow.focus();
+      setTimeout(() => {
+        printWindow.print();
+      }, 300);
+    } else {
+      Alert.alert('Download Ready', `${safeFilename} rendered successfully.`);
+    }
+    return;
+  }
+
+  // 2. Native Mobile (Android & iOS):
+  try {
+    // Generate valid PDF file with in-memory base64 to avoid unreadable cache file IO exceptions
+    const { uri: tempUri, base64 } = await Print.printToFileAsync({ html, base64: true });
+
+    // Target permanent file path with proper .pdf extension in documentDirectory
+    const baseDir = FileSystem.documentDirectory || FileSystem.cacheDirectory || '';
+    const cleanDir = baseDir.endsWith('/') ? baseDir : `${baseDir}/`;
+    const permanentUri = `${cleanDir}${safeFilename}`;
+
+    if (base64) {
+      await FileSystem.writeAsStringAsync(permanentUri, base64, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+    }
+
+    const fileInfo = await FileSystem.getInfoAsync(permanentUri).catch(() => null);
+    const validUri = fileInfo && fileInfo.exists ? permanentUri : tempUri;
+    const finalFileUri = validUri.startsWith('file://') ? validUri : `file://${validUri}`;
+
+    // On Android & iOS, ExpoSharing requires a local 'file://' URI (NEVER a 'content://' URI).
+    // It automatically invokes the native system Save & Share sheet, allowing users to:
+    // - Save directly to Downloads / Internal Storage / Files
+    // - Save to Google Drive
+    // - Open directly with any PDF Reader (Drive PDF, Adobe Acrobat, Mi/Samsung PDF)
+    const isSharingAvailable = await Sharing.isAvailableAsync();
+    if (isSharingAvailable) {
+      await Sharing.shareAsync(finalFileUri, {
+        UTI: 'com.adobe.pdf',
+        mimeType: 'application/pdf',
+        dialogTitle: dialogTitle || `Download ${safeFilename}`,
+      });
+    } else {
+      Alert.alert(
+        'PDF Saved Successfully! ✅',
+        `"${safeFilename}" has been saved to your device storage.`
+      );
+    }
+  } catch (fileErr: any) {
+    console.error('[FileDownloader] Failed to save PDF:', fileErr);
+    Alert.alert('Download Error', fileErr?.message || 'Unable to download PDF.');
+  }
+}
+
+/**
  * Universal Mobile & Web Downloader / Exporter
  */
 export const FileDownloader = {
@@ -353,44 +418,10 @@ export const FileDownloader = {
     try {
       const html = generateInvoiceHTML(invoice);
       const safeFilename = `Invoice_${invoice.invoiceNumber.replace(/[^a-zA-Z0-9_-]/g, '_')}.pdf`;
-
-      if (Platform.OS === 'web') {
-        const printWindow = window.open('', '_blank');
-        if (printWindow) {
-          printWindow.document.write(html);
-          printWindow.document.close();
-          printWindow.focus();
-          setTimeout(() => {
-            printWindow.print();
-          }, 300);
-        } else {
-          Alert.alert('Download Ready', `Invoice ${invoice.invoiceNumber} rendered successfully.`);
-        }
-        return;
-      }
-
-      // Native iOS / Android: Generate PDF file
-      const { uri } = await Print.printToFileAsync({ html });
-      const safeUri = uri.startsWith('file://') ? uri : `file://${uri}`;
-
-      const isSharingAvailable = await Sharing.isAvailableAsync();
-      if (isSharingAvailable) {
-        try {
-          await Sharing.shareAsync(safeUri, {
-            UTI: '.pdf',
-            mimeType: 'application/pdf',
-            dialogTitle: `Download Invoice ${invoice.invoiceNumber}`,
-          });
-        } catch (shareErr) {
-          console.warn('[FileDownloader] Sharing.shareAsync fallback to Print.printAsync:', shareErr);
-          await Print.printAsync({ html });
-        }
-      } else {
-        await Print.printAsync({ html });
-      }
+      await savePDFFile(html, safeFilename, `Download Invoice ${invoice.invoiceNumber}`);
     } catch (err: any) {
       console.error('[FileDownloader] Failed to generate invoice:', err);
-      Alert.alert('Export Failed', err?.message || 'Unable to generate PDF invoice.');
+      Alert.alert('Download Error', err?.message || 'Unable to download PDF invoice.');
     }
   },
 
@@ -401,36 +432,10 @@ export const FileDownloader = {
     try {
       const html = generateReportHTML(report);
       const safeName = `${filenamePrefix}_${new Date().toISOString().slice(0, 10)}.pdf`;
-
-      if (Platform.OS === 'web') {
-        const printWindow = window.open('', '_blank');
-        if (printWindow) {
-          printWindow.document.write(html);
-          printWindow.document.close();
-          printWindow.focus();
-          setTimeout(() => {
-            printWindow.print();
-          }, 300);
-        } else {
-          Alert.alert('Report Ready', `${report.title} report ready.`);
-        }
-        return;
-      }
-
-      const { uri } = await Print.printToFileAsync({ html });
-      const isSharingAvailable = await Sharing.isAvailableAsync();
-      if (isSharingAvailable) {
-        await Sharing.shareAsync(uri, {
-          UTI: '.pdf',
-          mimeType: 'application/pdf',
-          dialogTitle: `Save or Share ${report.title}`,
-        });
-      } else {
-        Alert.alert('Report Generated', `Saved to ${uri}`);
-      }
+      await savePDFFile(html, safeName, `Download ${report.title}`);
     } catch (err: any) {
       console.error('[FileDownloader] Failed to generate report PDF:', err);
-      Alert.alert('Export Failed', err?.message || 'Unable to generate PDF report.');
+      Alert.alert('Download Error', err?.message || 'Unable to download PDF report.');
     }
   },
 
@@ -581,45 +586,76 @@ export const FileDownloader = {
       const html = generateInvoiceHTML(inv);
       const cleanRecId = receipt.receiptNumber.replace(/[^a-zA-Z0-9_-]/g, '_');
       const safeFilename = `Receipt_${cleanRecId}.pdf`;
-
-      if (Platform.OS === 'web') {
-        const printWindow = window.open('', '_blank');
-        if (printWindow) {
-          printWindow.document.write(html);
-          printWindow.document.close();
-          printWindow.focus();
-          setTimeout(() => {
-            printWindow.print();
-          }, 300);
-        } else {
-          Alert.alert('Receipt Ready', `Receipt #${receipt.receiptNumber} ready.`);
-        }
-        return;
-      }
-
-      // Native iOS / Android: Generate real PDF file
-      const { uri } = await Print.printToFileAsync({ html });
-      const safeUri = uri.startsWith('file://') ? uri : `file://${uri}`;
-
-      const isSharingAvailable = await Sharing.isAvailableAsync();
-      if (isSharingAvailable) {
-        try {
-          await Sharing.shareAsync(safeUri, {
-            UTI: '.pdf',
-            mimeType: 'application/pdf',
-            dialogTitle: `Download Receipt - ${receipt.receiptNumber}`,
-          });
-        } catch (shareErr) {
-          console.warn('[FileDownloader] Sharing.shareAsync fallback to Print.printAsync:', shareErr);
-          // Seamless fallback: directly open native Android Print / Save as PDF
-          await Print.printAsync({ html });
-        }
-      } else {
-        await Print.printAsync({ html });
-      }
+      await savePDFFile(html, safeFilename, `Download Receipt - ${receipt.receiptNumber}`);
     } catch (err: any) {
       console.error('[FileDownloader] Failed to generate receipt PDF:', err);
       Alert.alert('Download Error', err?.message || 'Unable to generate receipt PDF.');
+    }
+  },
+
+  /**
+   * Download Official Gym Store Order / Payment Receipt as real PDF file
+   */
+  async downloadStoreReceiptPDF(order: {
+    orderNumber: string;
+    gymName?: string;
+    gymAddress?: string;
+    gymPhone?: string;
+    customerName?: string;
+    customerEmail?: string;
+    customerPhone?: string;
+    dateDisplay?: string;
+    paymentMethod?: string;
+    paymentStatus?: string;
+    fulfilmentType?: string;
+    items?: Array<{ name: string; quantity: number; price: number; attributes?: string }>;
+    subtotal?: number;
+    discount?: number;
+    tax?: number;
+    total: number;
+    shippingAddress?: string;
+  }): Promise<void> {
+    const rawItems = order.items && order.items.length > 0 
+      ? order.items.map(it => ({
+          description: it.attributes ? `${it.name} (${it.attributes})` : it.name,
+          quantity: it.quantity || 1,
+          amount: (it.price || 0) * (it.quantity || 1),
+        }))
+      : [
+          {
+            description: `Store Order Items (${order.fulfilmentType || 'Delivery'})`,
+            quantity: 1,
+            amount: order.total,
+          }
+        ];
+
+    const inv: InvoiceDetails = {
+      invoiceNumber: order.orderNumber,
+      invoiceDate: order.dateDisplay || new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }),
+      gymName: order.gymName || 'AI Gym Store',
+      gymAddress: order.gymAddress || 'Premier Fitness, Training & Wellness Club',
+      gymPhone: order.gymPhone || '+91 98765 43210',
+      customerName: order.customerName || 'Valued Member',
+      customerEmail: order.customerEmail,
+      customerPhone: order.customerPhone,
+      items: rawItems,
+      subtotal: order.subtotal || order.total,
+      discount: order.discount || 0,
+      tax: order.tax || 0,
+      total: order.total,
+      paymentMethod: order.paymentMethod || 'UPI',
+      paymentStatus: (order.paymentStatus || 'PAID').toUpperCase(),
+      notes: `Fulfilment: ${order.fulfilmentType || 'Store Delivery'}. ${order.shippingAddress ? `Address: ${order.shippingAddress}. ` : ''}Thank you for your purchase from Gym Store! Generated electronically via Gymora Platform.`
+    };
+
+    try {
+      const html = generateInvoiceHTML(inv);
+      const cleanNum = order.orderNumber.replace(/[^a-zA-Z0-9_-]/g, '_');
+      const safeFilename = `Invoice_${cleanNum}.pdf`;
+      await savePDFFile(html, safeFilename, `Download Invoice - ${order.orderNumber}`);
+    } catch (err: any) {
+      console.error('[FileDownloader] Failed to generate store invoice PDF:', err);
+      Alert.alert('Download Error', err?.message || 'Unable to generate store invoice PDF.');
     }
   }
 };

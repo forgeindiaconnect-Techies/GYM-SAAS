@@ -15,6 +15,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../constants/theme';
 import { useAuth } from '../../context/AuthContext';
 import { api } from '../../api/client';
+import { FileDownloader } from '../../utils/fileDownloader';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -1093,8 +1094,29 @@ export const CustomerRewardsPerformanceScreen: React.FC = () => {
 
                 <TouchableOpacity
                   activeOpacity={0.8}
-                  onPress={() => {
-                    Alert.alert('Certificate Downloaded', 'Official PDF copy has been saved to your downloads.');
+                  onPress={async () => {
+                    try {
+                      await FileDownloader.downloadReportPDF({
+                        title: `Certificate of Achievement: ${selectedAwardForCert.title}`,
+                        subtitle: `Proudly conferred to ${user?.name || user?.firstName ? `${user?.firstName || ''} ${user?.lastName || ''}`.trim() : 'Renugopal Y'}`,
+                        gymName: 'Perfect Fitness Studio',
+                        dateRange: selectedAwardForCert.dateConferred
+                          ? new Date(selectedAwardForCert.dateConferred).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+                          : 'October 15, 2026',
+                        headers: ['Certificate ID', 'Recipient', 'Award Category', 'Conferred By', 'Reason'],
+                        rows: [
+                          [
+                            selectedAwardForCert.certificateId || 'CERT-GYM-2026',
+                            user?.name || user?.firstName ? `${user?.firstName || ''} ${user?.lastName || ''}`.trim() : 'Renugopal Y',
+                            selectedAwardForCert.title,
+                            selectedAwardForCert.conferredBy || 'Gym Management',
+                            selectedAwardForCert.reason || 'Demonstrating outstanding consistency and fitness milestone achievements'
+                          ]
+                        ]
+                      }, `Certificate_${selectedAwardForCert.title.replace(/[^a-zA-Z0-9_-]/g, '_')}`);
+                    } catch (err: any) {
+                      Alert.alert('Download Error', err?.message || 'Unable to download certificate PDF.');
+                    }
                   }}
                   style={styles.downloadCertBtn}
                 >

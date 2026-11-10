@@ -17,6 +17,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../constants/theme';
 import { api } from '../../api/client';
 import { useAuth } from '../../context/AuthContext';
+import { FileDownloader } from '../../utils/fileDownloader';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -293,6 +294,48 @@ export const CustomerStoreScreen: React.FC<{ initialSubTab?: string }> = ({ init
   const [selectedPaymentForReceipt, setSelectedPaymentForReceipt] = useState<any | null>(null);
   const [pdfReceiptModal, setPdfReceiptModal] = useState<any | null>(null);
   const [ordersLoading, setOrdersLoading] = useState(false);
+  const [downloadingPdfId, setDownloadingPdfId] = useState<string | null>(null);
+
+  // Download PDF Invoice / Payment Receipt for Store Order
+  const handleDownloadInvoice = async (paymentOrOrder: any) => {
+    if (!paymentOrOrder) return;
+    try {
+      const targetId = paymentOrOrder._id || paymentOrOrder.orderNumber;
+      setDownloadingPdfId(targetId);
+
+      const customerFullName = [user?.firstName, user?.lastName].filter(Boolean).join(' ') || (user as any)?.name || 'Valued Member';
+      const gymName = (user as any)?.gymName || (user as any)?.gymId?.name || 'AI Gym Store';
+
+      await FileDownloader.downloadStoreReceiptPDF({
+        orderNumber: paymentOrOrder.orderNumber || `ORD-${Date.now()}`,
+        gymName,
+        gymAddress: 'Premier Fitness, Training & Wellness Club',
+        customerName: customerFullName,
+        customerEmail: user?.email,
+        customerPhone: user?.phone,
+        dateDisplay: paymentOrOrder.dateDisplay || (paymentOrOrder.createdAt ? new Date(paymentOrOrder.createdAt).toLocaleString() : new Date().toLocaleString()),
+        paymentMethod: paymentOrOrder.paymentMethod || 'UPI',
+        paymentStatus: (paymentOrOrder.paymentStatus || paymentOrOrder.status || 'PAID').toUpperCase(),
+        fulfilmentType: paymentOrOrder.fulfilmentType || 'Store Delivery',
+        items: paymentOrOrder.items && paymentOrOrder.items.length > 0 ? paymentOrOrder.items : undefined,
+        subtotal: paymentOrOrder.subtotal || paymentOrOrder.total || 0,
+        discount: paymentOrOrder.discount || 0,
+        tax: paymentOrOrder.tax || 0,
+        total: paymentOrOrder.total || 0,
+        shippingAddress: paymentOrOrder.deliveryDetails ? 
+          [paymentOrOrder.deliveryDetails.address, paymentOrOrder.deliveryDetails.city, paymentOrOrder.deliveryDetails.pincode].filter(Boolean).join(', ') 
+          : undefined,
+      });
+
+      setSelectedPaymentForReceipt(null);
+      setPdfReceiptModal(null);
+    } catch (err: any) {
+      console.error('Failed to download invoice PDF:', err);
+      Alert.alert('Download Error', 'Unable to generate invoice PDF. Please try again.');
+    } finally {
+      setDownloadingPdfId(null);
+    }
+  };
 
   // Load Real Customer Orders
   const loadOrders = useCallback(async () => {
@@ -1046,7 +1089,7 @@ export const CustomerStoreScreen: React.FC<{ initialSubTab?: string }> = ({ init
                     </View>
                   </View>
 
-                  {/* Buttons: View Details & Track Order */}
+                  {/* Buttons: View Details, Track Order, and Download PDF */}
                   <View style={styles.orderWebActionRow}>
                     <TouchableOpacity
                       style={styles.orderWebDetailsBtn}
@@ -1055,6 +1098,22 @@ export const CustomerStoreScreen: React.FC<{ initialSubTab?: string }> = ({ init
                     >
                       <Ionicons name="eye-outline" size={14} color="#475569" />
                       <Text style={styles.orderWebDetailsBtnText}>View Details</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      style={styles.paymentPdfBtn}
+                      onPress={() => handleDownloadInvoice(order)}
+                      activeOpacity={0.8}
+                      disabled={downloadingPdfId === (order._id || order.orderNumber)}
+                    >
+                      {downloadingPdfId === (order._id || order.orderNumber) ? (
+                        <ActivityIndicator size="small" color="#FFFFFF" style={{ transform: [{ scale: 0.75 }] }} />
+                      ) : (
+                        <>
+                          <Ionicons name="download-outline" size={13} color="#FFFFFF" />
+                          <Text style={styles.paymentPdfBtnText}>Download PDF</Text>
+                        </>
+                      )}
                     </TouchableOpacity>
 
                     <TouchableOpacity
@@ -1154,11 +1213,18 @@ export const CustomerStoreScreen: React.FC<{ initialSubTab?: string }> = ({ init
 
                       <TouchableOpacity
                         style={styles.paymentPdfBtn}
-                        onPress={() => setPdfReceiptModal(p)}
+                        onPress={() => handleDownloadInvoice(p)}
                         activeOpacity={0.8}
+                        disabled={downloadingPdfId === (p._id || p.orderNumber)}
                       >
-                        <Ionicons name="document-text-outline" size={13} color="#FFFFFF" />
-                        <Text style={styles.paymentPdfBtnText}>PDF</Text>
+                        {downloadingPdfId === (p._id || p.orderNumber) ? (
+                          <ActivityIndicator size="small" color="#FFFFFF" style={{ transform: [{ scale: 0.75 }] }} />
+                        ) : (
+                          <>
+                            <Ionicons name="download-outline" size={13} color="#FFFFFF" />
+                            <Text style={styles.paymentPdfBtnText}>Download PDF</Text>
+                          </>
+                        )}
                       </TouchableOpacity>
                     </View>
                   </View>
@@ -1479,12 +1545,13 @@ export const CustomerStoreScreen: React.FC<{ initialSubTab?: string }> = ({ init
               </ScrollView>
             )}
 
-            <View style={styles.modalFooter}>
+            <View style={styles.modalFooterSingleBtn}>
               <TouchableOpacity 
-                style={styles.modalCloseBtn}
+                style={styles.modalClosePrimaryBtn}
                 onPress={() => setSelectedOrderForDetails(null)}
+                activeOpacity={0.7}
               >
-                <Text style={styles.modalCloseBtnText}>Close</Text>
+                <Text style={styles.modalClosePrimaryBtnText}>Close</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -1499,7 +1566,7 @@ export const CustomerStoreScreen: React.FC<{ initialSubTab?: string }> = ({ init
           <View style={styles.modalCard}>
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>
-                {pdfReceiptModal ? 'Tax Invoice Receipt (PDF)' : 'Payment Receipt'}
+                {pdfReceiptModal ? 'Tax Invoice Receipt' : 'Payment Receipt'}
               </Text>
               <TouchableOpacity onPress={() => { setSelectedPaymentForReceipt(null); setPdfReceiptModal(null); }}>
                 <Ionicons name="close" size={24} color="#64748B" />
@@ -1539,12 +1606,13 @@ export const CustomerStoreScreen: React.FC<{ initialSubTab?: string }> = ({ init
               </ScrollView>
             )}
 
-            <View style={styles.modalFooter}>
+            <View style={styles.modalFooterSingleBtn}>
               <TouchableOpacity 
-                style={styles.modalCloseBtn}
+                style={styles.modalClosePrimaryBtn}
                 onPress={() => { setSelectedPaymentForReceipt(null); setPdfReceiptModal(null); }}
+                activeOpacity={0.7}
               >
-                <Text style={styles.modalCloseBtnText}>Close Receipt</Text>
+                <Text style={styles.modalClosePrimaryBtnText}>Close</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -2304,6 +2372,64 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '700',
     color: '#64748B',
+  },
+  modalFooterSingleBtn: {
+    padding: 16,
+    borderTopWidth: 1,
+    borderTopColor: '#E2E8F0',
+    backgroundColor: '#FFFFFF',
+  },
+  modalClosePrimaryBtn: {
+    width: '100%',
+    paddingVertical: 12,
+    borderRadius: 12,
+    backgroundColor: '#F1F5F9',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  modalClosePrimaryBtnText: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#334155',
+  },
+  modalFooterTwoBtns: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    padding: 16,
+    borderTopWidth: 1,
+    borderTopColor: '#E2E8F0',
+    backgroundColor: '#FFFFFF',
+  },
+  modalDownloadPdfBtn: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    backgroundColor: '#EA580C',
+    paddingVertical: 12,
+    borderRadius: 12,
+  },
+  modalDownloadPdfBtnText: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: '#FFFFFF',
+  },
+  modalCloseSecondaryBtn: {
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 12,
+    backgroundColor: '#F1F5F9',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  modalCloseSecondaryBtnText: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#475569',
   },
   modalSectionLabel: {
     fontSize: 10,

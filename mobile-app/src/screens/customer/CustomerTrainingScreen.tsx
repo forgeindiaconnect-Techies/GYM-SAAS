@@ -6,23 +6,21 @@ import {
   ScrollView,
   TouchableOpacity,
   TextInput,
-  Modal,
   Alert,
   ActivityIndicator,
   RefreshControl,
   FlatList,
   KeyboardAvoidingView,
   Platform,
+  Linking,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../constants/theme';
 import { api } from '../../api/client';
 import { useAuth } from '../../context/AuthContext';
-import { CustomerTrainerPlanScreen } from './CustomerTrainerPlanScreen';
-import { CustomerTrainerFeedbackScreen } from './CustomerTrainerFeedbackScreen';
 import { CustomerMessagesScreen } from './CustomerMessagesScreen';
 
-type TabType = 'find_trainers' | 'my_trainer' | 'trainer_plan' | 'trainer_feedback' | 'my_bookings' | 'online_sessions' | 'messages';
+type TabType = 'find_trainers' | 'my_trainer' | 'my_bookings' | 'online_sessions' | 'messages';
 
 interface Trainer {
   _id: string;
@@ -49,6 +47,7 @@ interface Trainer {
   availableEndTime?: string;
   availableSlot?: string | number;
   availableSlots?: number;
+  duration?: number | string;
 }
 
 const DEFAULT_TRAINERS: Trainer[] = [
@@ -70,6 +69,7 @@ const DEFAULT_TRAINERS: Trainer[] = [
     expertise: 'Strength & Conditioning, Hypertrophy, Weight Loss, Bodybuilding, Fat Loss, Powerlifting',
     fee: 750,
     hourlyRate: 750,
+    duration: 60,
     paymentType: 'Per Session',
     availableDays: 'Monday - Saturday',
     availableStartTime: '06:00 AM',
@@ -82,7 +82,7 @@ const DEFAULT_TRAINERS: Trainer[] = [
     name: 'selva kumar',
     email: 'selvakumar@gymora.com',
     phone: '+91 98765 12345',
-    specialization: 'Nutrition Coaching & Diet Specialist',
+    specialization: 'Nutrition Coaching',
     rating: 5.0,
     reviewsCount: 12,
     experience: '8 Years',
@@ -93,13 +93,14 @@ const DEFAULT_TRAINERS: Trainer[] = [
     qualifications: 'M.Sc Clinical Nutrition, ISSA Certified Nutritionist',
     certifications: 'ISSA Master Trainer, Certified Sports Dietitian',
     expertise: 'Weight Loss, Nutrition, Diet Planning, Functional Training, Calorie Deficit',
-    fee: 500,
-    hourlyRate: 500,
+    fee: 0,
+    hourlyRate: 0,
+    duration: 60,
     paymentType: 'Per Session',
     availableDays: 'Monday - Friday',
     availableStartTime: '08:00 AM',
     availableEndTime: '07:00 PM',
-    availableSlot: '45 Mins',
+    availableSlot: '60 Mins',
     availableSlots: 3,
   },
 ];
@@ -130,8 +131,6 @@ export const CustomerTrainingScreen: React.FC<{ initialSubTab?: string }> = ({ i
   // Resolve initial tab safely
   const resolveTab = (tab: string): TabType => {
     if (tab === 'trainer' || tab === 'my_trainer') return 'my_trainer';
-    if (tab === 'trainer-plan' || tab === 'trainer_plan' || tab === 'plan') return 'trainer_plan';
-    if (tab === 'trainer-feedback' || tab === 'trainer_feedback' || tab === 'feedback' || tab === 'review') return 'trainer_feedback';
     if (tab === 'bookings' || tab === 'my_bookings') return 'my_bookings';
     if (tab === 'online-sessions' || tab === 'online_sessions') return 'online_sessions';
     if (tab === 'chat' || tab === 'messages') return 'messages';
@@ -139,6 +138,12 @@ export const CustomerTrainingScreen: React.FC<{ initialSubTab?: string }> = ({ i
   };
 
   const [activeTab, setActiveTab] = useState<TabType>(resolveTab(initialSubTab));
+
+  useEffect(() => {
+    if (initialSubTab) {
+      setActiveTab(resolveTab(initialSubTab));
+    }
+  }, [initialSubTab]);
   const [trainers, setTrainers] = useState<Trainer[]>(DEFAULT_TRAINERS);
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -147,34 +152,275 @@ export const CustomerTrainingScreen: React.FC<{ initialSubTab?: string }> = ({ i
   // Selected trainer for profile modal
   const [selectedTrainer, setSelectedTrainer] = useState<Trainer | null>(null);
 
-  // Booking Modal State
+  // Booking Modal State Matching Web MemberBookSession (Image 2 & 3)
   const [bookingModalVisible, setBookingModalVisible] = useState(false);
   const [bookingTrainer, setBookingTrainer] = useState<Trainer | null>(null);
-  const [selectedDate, setSelectedDate] = useState('Today');
-  const [selectedTimeSlot, setSelectedTimeSlot] = useState('10:00 AM - 11:00 AM');
-  const [bookingMode, setBookingMode] = useState<'Online' | 'Gym'>('Online');
-  const [bookingNotes, setBookingNotes] = useState('');
+  const [bookingMode, setBookingMode] = useState<'In-Gym' | 'Online'>('Online');
+  const [selectedDateDisplay, setSelectedDateDisplay] = useState(''); // e.g. "mm/dd/yyyy" placeholder or "11/10/2026"
+  const [selectedDateValue, setSelectedDateValue] = useState(''); // e.g. "2026-11-10"
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState(''); // e.g. "Choose a slot" placeholder or "09:00 AM"
+  const [showDatePickerModal, setShowDatePickerModal] = useState(false);
+  const [showTimeSlotModal, setShowTimeSlotModal] = useState(false);
   const [submittingBooking, setSubmittingBooking] = useState(false);
+
+  // Calendar State & Handlers (Exact Parity with Image 3)
+  const [calendarDate, setCalendarDate] = useState<Date>(() => new Date(2026, 10, 10));
+  const MONTH_NAMES = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
+  const WEEKDAYS = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+
+  // Manual Time Input States (User Request)
+  const [timeSlots, setTimeSlots] = useState<string[]>([
+    '09:00 AM',
+    '10:00 AM',
+    '11:00 AM',
+    '04:00 PM',
+    '05:00 PM',
+    '06:00 PM',
+  ]);
+  const [showManualTimeSection, setShowManualTimeSection] = useState(false);
+  const [manualHour, setManualHour] = useState('10');
+  const [manualMinute, setManualMinute] = useState('00');
+  const [manualPeriod, setManualPeriod] = useState<'AM' | 'PM'>('AM');
+  const [manualCustomInput, setManualCustomInput] = useState('');
+
+  const getCalendarDays = (currentDate: Date) => {
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+
+    const firstDayIndex = new Date(year, month, 1).getDay(); // 0 for Sunday
+    const daysInCurrentMonth = new Date(year, month + 1, 0).getDate();
+    const daysInPrevMonth = new Date(year, month, 0).getDate();
+
+    const days: Array<{
+      day: number;
+      isCurrentMonth: boolean;
+      dateString: string;
+      isoString: string;
+      dateObj: Date;
+    }> = [];
+
+    // Previous month trailing days
+    for (let i = firstDayIndex - 1; i >= 0; i--) {
+      const d = daysInPrevMonth - i;
+      const prevM = month === 0 ? 11 : month - 1;
+      const prevY = month === 0 ? year - 1 : year;
+      const dateObj = new Date(prevY, prevM, d);
+      const mm = String(prevM + 1).padStart(2, '0');
+      const dd = String(d).padStart(2, '0');
+      days.push({
+        day: d,
+        isCurrentMonth: false,
+        dateString: `${mm}/${dd}/${prevY}`,
+        isoString: `${prevY}-${mm}-${dd}`,
+        dateObj,
+      });
+    }
+
+    // Current month days
+    for (let d = 1; d <= daysInCurrentMonth; d++) {
+      const dateObj = new Date(year, month, d);
+      const mm = String(month + 1).padStart(2, '0');
+      const dd = String(d).padStart(2, '0');
+      days.push({
+        day: d,
+        isCurrentMonth: true,
+        dateString: `${mm}/${dd}/${year}`,
+        isoString: `${year}-${mm}-${dd}`,
+        dateObj,
+      });
+    }
+
+    // Next month leading days to complete full grid of 35 or 42
+    const totalCells = days.length > 35 ? 42 : 35;
+    const remaining = totalCells - days.length;
+    for (let d = 1; d <= remaining; d++) {
+      const nextM = month === 11 ? 0 : month + 1;
+      const nextY = month === 11 ? year + 1 : year;
+      const dateObj = new Date(nextY, nextM, d);
+      const mm = String(nextM + 1).padStart(2, '0');
+      const dd = String(d).padStart(2, '0');
+      days.push({
+        day: d,
+        isCurrentMonth: false,
+        dateString: `${mm}/${dd}/${nextY}`,
+        isoString: `${nextY}-${mm}-${dd}`,
+        dateObj,
+      });
+    }
+
+    return days;
+  };
+
+  const handlePrevMonth = () => {
+    setCalendarDate(prev => new Date(prev.getFullYear(), prev.getMonth() - 1, 1));
+  };
+
+  const handleNextMonth = () => {
+    setCalendarDate(prev => new Date(prev.getFullYear(), prev.getMonth() + 1, 1));
+  };
+
+  const handleSelectDay = (dayItem: { dateString: string; isoString: string; dateObj: Date }) => {
+    setSelectedDateDisplay(dayItem.dateString);
+    setSelectedDateValue(dayItem.isoString);
+    setCalendarDate(dayItem.dateObj);
+    setShowDatePickerModal(false);
+  };
+
+  const handleClearDate = () => {
+    setSelectedDateDisplay('');
+    setSelectedDateValue('');
+    setShowDatePickerModal(false);
+  };
+
+  const handleSelectToday = () => {
+    const today = new Date();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    const yyyy = today.getFullYear();
+    setSelectedDateDisplay(`${mm}/${dd}/${yyyy}`);
+    setSelectedDateValue(`${yyyy}-${mm}-${dd}`);
+    setCalendarDate(today);
+    setShowDatePickerModal(false);
+  };
+
+  const handleApplyManualTime = () => {
+    let finalTime = '';
+    if (manualCustomInput.trim()) {
+      let val = manualCustomInput.trim();
+      if (!val.toUpperCase().includes('AM') && !val.toUpperCase().includes('PM')) {
+        val = `${val} ${manualPeriod}`;
+      }
+      finalTime = val.toUpperCase();
+    } else {
+      finalTime = `${manualHour.padStart(2, '0')}:${manualMinute.padStart(2, '0')} ${manualPeriod}`;
+    }
+
+    if (!timeSlots.includes(finalTime)) {
+      setTimeSlots(prev => [...prev, finalTime]);
+    }
+    setSelectedTimeSlot(finalTime);
+    setShowManualTimeSection(false);
+    setShowTimeSlotModal(false);
+  };
 
   // Bookings state
   const [bookingSubTab, setBookingSubTab] = useState<'booked' | 'history'>('booked');
+  const [selectedSessionForDetails, setSelectedSessionForDetails] = useState<any | null>(null);
   const [sessions, setSessions] = useState<any[]>([
     {
+      _id: 'session-demo-2',
+      bookingId: 'BK-90215',
+      trainerName: 'selva kumar',
+      trainerSpecialization: 'Nutrition Coaching',
+      mode: 'In-Gym',
+      status: 'Confirmed',
+      date: '2026-11-12',
+      startTime: '09:00 AM',
+      endTime: '10:00 AM',
+      timeSlot: '09:00 AM - 10:00 AM',
+      duration: '60 min',
+      fee: 0,
+      attendance: 'Scheduled',
+      checkInTime: null,
+      checkOutTime: null,
+      meetingLink: null,
+      customerRating: null,
+      customerReview: null,
+      sessionNotes: null,
+    },
+    {
       _id: 'session-demo-1',
+      bookingId: 'BK-89421',
       trainerName: 'Naveen',
-      trainerSpecialization: 'ALL',
+      trainerSpecialization: 'Personal Trainer & Strength Coach',
       mode: 'Online',
       status: 'Completed',
       date: '2026-10-15',
+      startTime: '10:00 AM',
+      endTime: '11:00 AM',
       timeSlot: '10:00 AM - 11:00 AM',
       duration: '60 min',
+      fee: 750,
       attendance: 'Present',
       checkInTime: '10:02 AM',
       checkOutTime: '10:58 AM',
-      rating: 3,
-      reviewText: 'Great coach Naveen, very disciplined workout guidance.',
-    }
+      rating: 5,
+      customerRating: 5,
+      customerReview: 'Great coach Naveen, very disciplined workout guidance and form correction.',
+      reviewText: 'Great coach Naveen, very disciplined workout guidance and form correction.',
+      meetingLink: 'https://meet.jit.si/aigym-session-89421',
+      sessionNotes: {
+        exercisesCompleted: 'Barbell Squats 4x10, Incline Dumbbell Press 4x12, Cable Rows 3x15, Plank 3x60s',
+        customerPerformance: 'Excellent form on squats with progressive overload. Good endurance maintained.',
+        dietRecommendations: 'Increase protein intake to 140g/day. Hydrate with 3.5L water.',
+        nextSessionFocus: 'Deadlifts form analysis and hamstring mobility drills.',
+      },
+    },
   ]);
+
+  const getStatusDisplay = (status: string) => {
+    switch (status) {
+      case 'Pending':
+        return { label: 'Waiting for Trainer Approval', color: '#92400E', bg: '#FEF3C7', border: '#FDE68A' };
+      case 'Confirmed':
+      case 'Approved':
+      case 'Upcoming':
+        return { label: 'Trainer Approved', color: '#EA580C', bg: '#FFF7ED', border: '#FFEDD5' };
+      case 'In Progress':
+        return { label: 'In Progress', color: '#EA580C', bg: '#FFF7ED', border: '#FFEDD5' };
+      case 'Rejected':
+        return { label: 'Trainer Rejected', color: '#9F1239', bg: '#FFE4E6', border: '#FECDD3' };
+      case 'Completed':
+        return { label: 'Session Completed', color: '#166534', bg: '#DCFCE7', border: '#BBF7D0' };
+      case 'Cancelled':
+        return { label: 'Booking Cancelled', color: '#475569', bg: '#F1F5F9', border: '#E2E8F0' };
+      case 'Awaiting Payment':
+        return { label: 'Awaiting Payment', color: '#EA580C', bg: '#FFF7ED', border: '#FFEDD5' };
+      default:
+        return { label: status, color: '#111827', bg: '#F8FAFC', border: '#E2E8F0' };
+    }
+  };
+
+  const formatSessionDate = (dateVal: any) => {
+    if (!dateVal) return 'N/A';
+    try {
+      const d = new Date(dateVal);
+      if (isNaN(d.getTime())) return String(dateVal);
+      return d.toLocaleDateString('en-IN', { weekday: 'long', day: '2-digit', month: 'short', year: 'numeric' });
+    } catch {
+      return String(dateVal);
+    }
+  };
+
+  const safeParseDateStr = (dateVal: any, fallback = '2026-10-15'): string => {
+    if (!dateVal) return fallback;
+    try {
+      const d = new Date(dateVal);
+      if (!isNaN(d.getTime())) {
+        return d.toISOString().split('T')[0];
+      }
+      return String(dateVal);
+    } catch {
+      return String(dateVal);
+    }
+  };
+
+  const safeParseTimeStr = (timeVal: any): string | null => {
+    if (!timeVal) return null;
+    if (typeof timeVal === 'string' && !timeVal.includes('T')) return timeVal;
+    try {
+      const d = new Date(timeVal);
+      if (!isNaN(d.getTime())) {
+        return d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+      }
+      return String(timeVal);
+    } catch {
+      return String(timeVal);
+    }
+  };
 
   // Messages / Chat state
   const [chatMessages, setChatMessages] = useState<Array<{ id: string; sender: 'me' | 'coach'; text: string; time: string }>>([
@@ -200,7 +446,7 @@ export const CustomerTrainingScreen: React.FC<{ initialSubTab?: string }> = ({ i
             name: t.name || `${t.firstName || ''} ${t.lastName || ''}`.trim() || (isNaveen ? 'Naveen' : (isSelva ? 'selva kumar' : 'Fitness Coach')),
             email: t.email || (isNaveen ? 'naveen.trainer@gymora.com' : (isSelva ? 'selvakumar@gymora.com' : 'coach@gymora.com')),
             phone: t.phone || (isNaveen ? '+91 98765 43210' : (isSelva ? '+91 98765 12345' : '+91 98765 00000')),
-            specialization: t.specialization || (isNaveen ? 'Personal Trainer & Strength Coach' : (isSelva ? 'Nutrition Coaching & Diet Specialist' : 'General Fitness')),
+            specialization: t.specialization || (isNaveen ? 'Personal Trainer & Strength Coach' : (isSelva ? 'Nutrition Coaching' : 'General Fitness')),
             rating: t.rating || t.averageRating || (isSelva ? 5.0 : 4.9),
             reviewsCount: t.reviewsCount || t.totalReviews || t.reviews || (isSelva ? 12 : 24),
             experience: t.experience ? (typeof t.experience === 'number' ? `${t.experience} Years` : t.experience) : (isNaveen ? '15 Years' : '8 Years'),
@@ -213,13 +459,14 @@ export const CustomerTrainingScreen: React.FC<{ initialSubTab?: string }> = ({ i
             qualifications: t.qualifications || (isSelva ? 'M.Sc Clinical Nutrition, ISSA Certified Nutritionist' : 'B.Sc Fitness & Sports Science, ACE Certified Master Coach'),
             certifications: t.certifications || (isSelva ? 'ISSA Master Trainer, Certified Sports Dietitian' : 'ACE Certified, CSCS Strength Specialist, CPR/AED Certified'),
             expertise: t.expertise || (isSelva ? 'Weight Loss, Nutrition, Diet Planning, Functional Training, Calorie Deficit' : 'Strength & Conditioning, Hypertrophy, Weight Loss, Bodybuilding, Fat Loss, Powerlifting'),
-            fee: t.fee || t.hourlyRate || (isSelva ? 500 : 750),
-            hourlyRate: t.hourlyRate || t.fee || (isSelva ? 500 : 750),
+            fee: t.fee !== undefined ? t.fee : (isSelva ? 0 : 750),
+            hourlyRate: t.hourlyRate !== undefined ? t.hourlyRate : (isSelva ? 0 : 750),
+            duration: t.duration || 60,
             paymentType: t.paymentType || 'Per Session',
             availableDays: t.availableDays || (isSelva ? 'Monday - Friday' : 'Monday - Saturday'),
             availableStartTime: t.availableStartTime || (isSelva ? '08:00 AM' : '06:00 AM'),
             availableEndTime: t.availableEndTime || (isSelva ? '07:00 PM' : '09:00 PM'),
-            availableSlot: t.availableSlot ? (typeof t.availableSlot === 'number' ? `${t.availableSlot} Mins` : t.availableSlot) : (isSelva ? '45 Mins' : '60 Mins'),
+            availableSlot: t.availableSlot ? (typeof t.availableSlot === 'number' ? `${t.availableSlot} Mins` : t.availableSlot) : (isSelva ? '60 Mins' : '60 Mins'),
             availableSlots: t.availableSlots || (isSelva ? 3 : 5),
           };
         });
@@ -240,18 +487,28 @@ export const CustomerTrainingScreen: React.FC<{ initialSubTab?: string }> = ({ i
       if (res?.data?.sessions && res.data.sessions.length > 0) {
         const mapped = res.data.sessions.map((s: any) => ({
           _id: s._id || s.id,
+          bookingId: s.bookingId || `#${(s._id || s.id || '').slice(-8)}`,
+          trainerId: s.trainerId,
           trainerName: s.trainerId?.name || s.trainerName || 'Naveen',
-          trainerSpecialization: s.trainerId?.specialization || 'ALL',
-          mode: s.mode || 'Online',
-          status: s.status || 'Completed',
-          date: s.date ? new Date(s.date).toISOString().split('T')[0] : '2026-10-15',
-          timeSlot: s.timeSlot || '10:00 AM - 11:00 AM',
+          trainerSpecialization: s.trainerId?.specialization || 'Personal Trainer',
+          mode: s.mode || (s.trainingMode === 'Offline' ? 'In-Gym' : 'Online'),
+          status: s.status || 'Confirmed',
+          date: safeParseDateStr(s.date, '2026-10-15'),
+          startTime: s.startTime || '10:00 AM',
+          endTime: s.endTime || '11:00 AM',
+          timeSlot: s.timeSlot || `${s.startTime || '10:00 AM'} - ${s.endTime || '11:00 AM'}`,
           duration: s.duration ? `${s.duration} min` : '60 min',
-          attendance: s.attendance || 'Present',
-          checkInTime: s.checkInTime || '10:02 AM',
-          checkOutTime: s.checkOutTime || '10:58 AM',
-          rating: s.rating || 3,
-          reviewText: s.reviewText || 'Great session and form correction.',
+          fee: s.fee !== undefined ? s.fee : (s.hourlyRate || 0),
+          attendance: s.attendance || s.attendanceStatus || (s.checkInTime ? 'Present' : 'Scheduled'),
+          attendanceStatus: s.attendanceStatus,
+          checkInTime: safeParseTimeStr(s.checkInTime),
+          checkOutTime: safeParseTimeStr(s.checkOutTime),
+          customerRating: s.customerRating || s.rating,
+          customerReview: s.customerReview || s.reviewText,
+          rating: s.customerRating || s.rating,
+          reviewText: s.customerReview || s.reviewText,
+          meetingLink: s.meetingLink || (s.mode === 'Online' ? `https://meet.jit.si/aigym-session-${(s._id || '').slice(-6)}` : null),
+          sessionNotes: s.sessionNotes,
         }));
         setSessions(mapped);
       }
@@ -271,44 +528,95 @@ export const CustomerTrainingScreen: React.FC<{ initialSubTab?: string }> = ({ i
     fetchSessions();
   };
 
-  // Open booking modal
+  // Open booking modal matching Web MemberBookSession (Image 2)
   const handleOpenBooking = (trainer: Trainer) => {
     setBookingTrainer(trainer);
+    setBookingMode('Online'); // Default to Online matching Image 2
+    setSelectedDateDisplay(''); // Shows mm/dd/yyyy placeholder matching Image 2
+    setSelectedDateValue('');
+    setSelectedTimeSlot(''); // Shows Choose a slot placeholder matching Image 2
+    setCalendarDate(new Date(2026, 10, 10));
+    setShowManualTimeSection(false);
+    setManualCustomInput('');
     setBookingModalVisible(true);
   };
 
-  // Submit booking
+  // Submit booking matching Web MemberBookSession
   const handleConfirmBooking = async () => {
     if (!bookingTrainer) return;
+
+    if (!selectedDateDisplay) {
+      Alert.alert('Select Date', 'Please select a session date.');
+      return;
+    }
+
+    if (!selectedTimeSlot) {
+      Alert.alert('Select Time', 'Please choose a session time slot.');
+      return;
+    }
+
     try {
       setSubmittingBooking(true);
-      const slotParts = (selectedTimeSlot || '').split('-').map(s => s.trim());
-      const startTime = slotParts[0] || '10:00 AM';
-      const endTime = slotParts[1] || '11:00 AM';
-      const bookingDate = selectedDate === 'Today' 
-        ? new Date().toISOString().split('T')[0] 
-        : selectedDate;
+      const startParts = selectedTimeSlot.split(':');
+      let hour = parseInt(startParts[0]);
+      const minAMPM = (startParts[1] || '00 AM').split(' ');
+      const min = parseInt(minAMPM[0] || '0');
+      const ampm = minAMPM[1] || 'AM';
+      
+      let endHour = hour + 1;
+      let endAmpm = ampm;
+      if (endHour === 12) {
+        endAmpm = ampm === 'AM' ? 'PM' : 'AM';
+      } else if (endHour > 12) {
+        endHour -= 12;
+      }
+      
+      const computedEndTime = `${endHour.toString().padStart(2, '0')}:${min.toString().padStart(2, '0')} ${endAmpm}`;
+      const bookingDate = selectedDateValue || new Date().toISOString().split('T')[0];
+      const mode = bookingMode === 'In-Gym' ? 'Offline' : 'Online';
 
       const payload = {
         trainerId: bookingTrainer._id,
-        mode: bookingMode,
+        mode,
         date: bookingDate,
-        startTime,
-        endTime,
+        startTime: selectedTimeSlot,
+        endTime: computedEndTime,
         duration: 60,
-        timeSlot: selectedTimeSlot,
-        notes: bookingNotes,
       };
 
-      // Submit to backend session request API
+      // Submit to backend session request API matching Web MemberBookSession
       await api.post('/trainer-sessions/request', payload).catch(() => api.post('/trainer-sessions', payload));
+
+      const newBooking = {
+        _id: 'bkg-' + Date.now(),
+        bookingId: 'BK-' + Math.floor(10000 + Math.random() * 90000),
+        trainerId: bookingTrainer._id,
+        trainerName: bookingTrainer.name,
+        trainerSpecialization: bookingTrainer.specialization,
+        mode: bookingMode === 'In-Gym' ? 'In-Gym' : 'Online',
+        status: 'Pending',
+        date: bookingDate,
+        startTime: selectedTimeSlot,
+        endTime: computedEndTime,
+        timeSlot: `${selectedTimeSlot} – ${computedEndTime}`,
+        duration: '60 min',
+        fee: bookingTrainer.fee || 0,
+        attendance: 'Scheduled',
+        checkInTime: null,
+        checkOutTime: null,
+        meetingLink: bookingMode === 'Online' ? `https://meet.jit.si/aigym-session-${Math.floor(100000 + Math.random() * 900000)}` : null,
+        customerRating: null,
+        customerReview: null,
+        sessionNotes: null,
+      };
+
+      setSessions(prev => [newBooking, ...prev.filter(s => s._id !== newBooking._id)]);
 
       // Refresh real sessions from database
       await fetchSessions();
 
       setBookingModalVisible(false);
-      setBookingNotes('');
-      Alert.alert('Session Requested! 🎉', `Your ${bookingMode} training session request with ${bookingTrainer.name} has been sent for ${selectedTimeSlot}. The trainer will confirm it.`);
+      Alert.alert('Booking Confirmed! 🎉', `Your ${mode} session request with ${bookingTrainer.name} on ${selectedDateDisplay} at ${selectedTimeSlot} has been sent.`);
       setActiveTab('my_bookings');
     } catch (err) {
       console.warn('Booking session notice:', err);
@@ -345,8 +653,13 @@ export const CustomerTrainingScreen: React.FC<{ initialSubTab?: string }> = ({ i
     }, 1200);
   };
 
-  // Active trainer for "My Trainer" view (default to Naveen or first trainer)
-  const myTrainer = trainers.find(t => t.name.toLowerCase().includes('naveen')) || trainers[0] || DEFAULT_TRAINERS[1];
+  // Active trainer for "My Trainer" view (dynamically resolves to booked trainer)
+  const bookedTrainerName = sessions.find(s => ['Pending', 'Confirmed', 'Approved', 'Upcoming'].includes(s.status))?.trainerName;
+  const myTrainer = (bookedTrainerName && trainers.find(t => t.name.toLowerCase() === bookedTrainerName.toLowerCase()))
+    || trainers.find(t => t.name.toLowerCase().includes('selva'))
+    || trainers.find(t => t.name.toLowerCase().includes('naveen'))
+    || trainers[0]
+    || DEFAULT_TRAINERS[1];
 
   // Filtered trainers for "Find Trainers"
   const filteredTrainers = trainers.filter(t => {
@@ -492,27 +805,27 @@ export const CustomerTrainingScreen: React.FC<{ initialSubTab?: string }> = ({ i
         <View style={styles.myTrainerAvatarSection}>
           <View style={styles.myTrainerAvatarLarge}>
             <Text style={styles.myTrainerAvatarTextLarge}>
-              {myTrainer.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
+              {(myTrainer?.name || 'Selva Kumar').split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()}
             </Text>
             <View style={styles.awardBadge}>
               <Ionicons name="trophy" size={14} color="#FFFFFF" />
             </View>
           </View>
-          <Text style={styles.myTrainerNameLarge}>{myTrainer.name}</Text>
-          <Text style={styles.myTrainerSpecLarge}>{myTrainer.specialization}</Text>
+          <Text style={styles.myTrainerNameLarge}>{myTrainer?.name || 'selva kumar'}</Text>
+          <Text style={styles.myTrainerSpecLarge}>{myTrainer?.specialization || 'Nutrition Coaching'}</Text>
           <View style={styles.myTrainerRatingRow}>
             <Ionicons name="star" size={16} color="#F59E0B" />
-            <Text style={styles.myTrainerRatingVal}>{myTrainer.rating}</Text>
-            <Text style={styles.myTrainerRatingReviews}>({myTrainer.reviewsCount} Reviews)</Text>
+            <Text style={styles.myTrainerRatingVal}>{myTrainer?.rating || 5.0}</Text>
+            <Text style={styles.myTrainerRatingReviews}>({myTrainer?.reviewsCount || 12} Reviews)</Text>
           </View>
         </View>
       </View>
 
       {/* About Section Matching Web Image 2 */}
       <View style={styles.sectionCard}>
-        <Text style={styles.sectionHeading}>About {myTrainer.name.split(' ')[0]}</Text>
+        <Text style={styles.sectionHeading}>About {(myTrainer?.name || 'Coach').split(' ')[0]}</Text>
         <Text style={styles.sectionBodyText}>
-          {myTrainer.bio}
+          {myTrainer?.bio || 'Dedicated nutrition and functional fitness coach.'}
         </Text>
 
         <View style={styles.metaInfoGrid}>
@@ -581,8 +894,9 @@ export const CustomerTrainingScreen: React.FC<{ initialSubTab?: string }> = ({ i
   // VIEW 3: MY BOOKINGS & SESSIONS
   // ==========================================
   const renderMyBookingsView = () => {
-    const bookedSessions = sessions.filter(s => s.status === 'Upcoming' || s.status === 'Pending' || s.status === 'Confirmed');
-    const historySessions = sessions.filter(s => s.status === 'Completed' || s.status === 'Cancelled');
+    const bookedStatuses = ['Pending', 'Awaiting Payment', 'Confirmed', 'Approved', 'Upcoming', 'In Progress', 'Reschedule Requested', 'Rescheduled'];
+    const bookedSessions = sessions.filter(s => bookedStatuses.includes(s.status));
+    const historySessions = sessions.filter(s => !bookedStatuses.includes(s.status));
     const displayed = bookingSubTab === 'booked' ? bookedSessions : historySessions;
 
     return (
@@ -601,7 +915,12 @@ export const CustomerTrainingScreen: React.FC<{ initialSubTab?: string }> = ({ i
           </View>
           <TouchableOpacity 
             style={styles.headerActionBtn}
-            onPress={() => handleOpenBooking(myTrainer)}
+            onPress={() => {
+              const trainerToBook = trainers.find(t => t.name.toLowerCase().includes('selva')) || myTrainer || trainers[0];
+              if (trainerToBook) {
+                handleOpenBooking(trainerToBook);
+              }
+            }}
             activeOpacity={0.7}
           >
             <Ionicons name="add" size={16} color="#FFFFFF" />
@@ -636,57 +955,116 @@ export const CustomerTrainingScreen: React.FC<{ initialSubTab?: string }> = ({ i
         {displayed.length === 0 ? (
           <View style={styles.delEmptyCard}>
             <Ionicons name="calendar-outline" size={48} color="#CBD5E1" style={{ marginBottom: 8 }} />
-            <Text style={styles.delEmptyTitle}>No booked sessions found</Text>
-            <Text style={styles.delEmptySub}>
-              You don’t have any active booked coaching sessions scheduled.
+            <Text style={styles.delEmptyTitle}>
+              {bookingSubTab === 'booked' ? 'No booked sessions found' : 'No session history found'}
             </Text>
-            <TouchableOpacity 
-              style={[styles.bookSessionBtn, { marginTop: 16 }]}
-              onPress={() => handleOpenBooking(myTrainer)}
-            >
-              <Ionicons name="add" size={16} color="#FFFFFF" />
-              <Text style={styles.bookSessionText}>Book New Session</Text>
-            </TouchableOpacity>
+            <Text style={styles.delEmptySub}>
+              {bookingSubTab === 'booked'
+                ? 'You don’t have any active booked coaching sessions scheduled.'
+                : 'You have not completed any coaching sessions yet.'}
+            </Text>
+            {bookingSubTab === 'booked' && (
+              <TouchableOpacity 
+                style={[styles.bookSessionBtn, { marginTop: 16 }]}
+                onPress={() => {
+                  const trainerToBook = trainers.find(t => t.name.toLowerCase().includes('selva')) || myTrainer || trainers[0];
+                  if (trainerToBook) {
+                    handleOpenBooking(trainerToBook);
+                  }
+                }}
+              >
+                <Ionicons name="add" size={16} color="#FFFFFF" />
+                <Text style={styles.bookSessionText}>Book New Session</Text>
+              </TouchableOpacity>
+            )}
           </View>
         ) : (
-          displayed.map(s => (
-            <View key={s._id} style={styles.bookingCard}>
-              <View style={styles.bookingTopRow}>
-                <View>
-                  <Text style={styles.bookingTrainerName}>{s.trainerName}</Text>
-                  <Text style={styles.bookingTrainerSpec}>{s.trainerSpecialization} • {s.mode}</Text>
-                </View>
-                <View style={[
-                  styles.statusPill, 
-                  s.status === 'Completed' ? styles.statusCompleted : styles.statusUpcoming
-                ]}>
-                  <Text style={[
-                    styles.statusPillText, 
-                    s.status === 'Completed' ? styles.statusCompletedText : styles.statusUpcomingText
+          displayed.map(s => {
+            const statusConfig = getStatusDisplay(s.status);
+            return (
+              <View key={s._id} style={styles.bookingCard}>
+                <View style={styles.bookingTopRow}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, flex: 1, marginRight: 8 }}>
+                    <View style={styles.bookingMiniAvatar}>
+                      <Text style={styles.bookingMiniAvatarText}>
+                        {(s.trainerName || 'T').charAt(0).toUpperCase()}
+                      </Text>
+                    </View>
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.bookingTrainerName}>{s.trainerName}</Text>
+                      <Text style={styles.bookingTrainerSpec}>{s.trainerSpecialization} • {s.mode}</Text>
+                    </View>
+                  </View>
+                  <View style={[
+                    styles.statusPill, 
+                    { backgroundColor: statusConfig.bg, borderColor: statusConfig.border, borderWidth: 1 }
                   ]}>
-                    {s.status}
-                  </Text>
+                    <Text style={[styles.statusPillText, { color: statusConfig.color }]}>
+                      {statusConfig.label}
+                    </Text>
+                  </View>
+                </View>
+
+                {s.bookingId && (
+                  <View style={{ marginBottom: 8, flexDirection: 'row' }}>
+                    <Text style={styles.bookingCardIdBadge}>{s.bookingId}</Text>
+                  </View>
+                )}
+
+                <View style={styles.bookingScheduleRow}>
+                  <View style={styles.scheduleItem}>
+                    <Ionicons name="calendar-outline" size={14} color="#EA580C" />
+                    <Text style={styles.scheduleText}>{formatSessionDate(s.date)}</Text>
+                  </View>
+                  <View style={styles.scheduleItem}>
+                    <Ionicons name="time-outline" size={14} color="#EA580C" />
+                    <Text style={styles.scheduleText}>{s.timeSlot || `${s.startTime || ''} – ${s.endTime || ''}`}</Text>
+                  </View>
+                </View>
+
+                {/* Rating badge if rated */}
+                {(s.customerRating || s.rating) && (
+                  <View style={styles.bookingRatingPill}>
+                    <Ionicons name="star" size={13} color="#B45309" />
+                    <Text style={styles.bookingRatingPillText}>★ {s.customerRating || s.rating}/5 Rated</Text>
+                  </View>
+                )}
+
+                {/* Review note if available */}
+                {(s.customerReview || s.reviewText) ? (
+                  <View style={styles.bookingReviewBox}>
+                    <Text style={styles.bookingReviewNote}>"{s.customerReview || s.reviewText}"</Text>
+                  </View>
+                ) : null}
+
+                {/* Action Buttons Row with View Details Button */}
+                <View style={styles.bookingActionsRow}>
+                  <TouchableOpacity
+                    style={styles.viewDetailsBtn}
+                    onPress={() => setSelectedSessionForDetails(s)}
+                    activeOpacity={0.7}
+                  >
+                    <Ionicons name="eye-outline" size={14} color="#111827" />
+                    <Text style={styles.viewDetailsBtnText}>View Details</Text>
+                  </TouchableOpacity>
+
+                  {s.mode === 'Online' && ['Confirmed', 'Approved', 'Upcoming', 'In Progress'].includes(s.status) && (
+                    <TouchableOpacity
+                      style={styles.joinOnlineBtn}
+                      onPress={() => {
+                        const link = s.meetingLink || `https://meet.jit.si/aigym-session-${(s._id || '').slice(-6)}`;
+                        Linking.openURL(link).catch(() => Alert.alert('Error', 'Could not open meeting link.'));
+                      }}
+                      activeOpacity={0.7}
+                    >
+                      <Ionicons name="videocam" size={13} color="#FFFFFF" />
+                      <Text style={styles.joinOnlineBtnText}>Join Session</Text>
+                    </TouchableOpacity>
+                  )}
                 </View>
               </View>
-
-              <View style={styles.bookingScheduleRow}>
-                <View style={styles.scheduleItem}>
-                  <Ionicons name="calendar" size={14} color="#64748B" />
-                  <Text style={styles.scheduleText}>{s.date}</Text>
-                </View>
-                <View style={styles.scheduleItem}>
-                  <Ionicons name="time" size={14} color="#64748B" />
-                  <Text style={styles.scheduleText}>{s.timeSlot}</Text>
-                </View>
-              </View>
-
-              {s.reviewText ? (
-                <View style={styles.bookingReviewBox}>
-                  <Text style={styles.bookingReviewNote}>"{s.reviewText}"</Text>
-                </View>
-              ) : null}
-            </View>
-          ))
+            );
+          })
         )}
       </ScrollView>
     );
@@ -711,7 +1089,14 @@ export const CustomerTrainingScreen: React.FC<{ initialSubTab?: string }> = ({ i
         </View>
         <TouchableOpacity 
           style={styles.bookSessionLinkBtn}
-          onPress={() => handleOpenBooking(myTrainer)}
+          onPress={() => {
+            const trainerToBook = trainers.find(t => t.name.toLowerCase().includes('selva')) || myTrainer || trainers[0];
+            if (trainerToBook) {
+              handleOpenBooking(trainerToBook);
+            } else {
+              setActiveTab('find_trainers');
+            }
+          }}
           activeOpacity={0.7}
         >
           <Text style={styles.bookSessionLinkText}>Book Session &gt;</Text>
@@ -774,6 +1159,18 @@ export const CustomerTrainingScreen: React.FC<{ initialSubTab?: string }> = ({ i
           {s.reviewText ? (
             <Text style={styles.onlineReviewQuote}>"{s.reviewText}"</Text>
           ) : null}
+
+          {/* Action Row with View Details Button */}
+          <View style={[styles.bookingActionsRow, { marginTop: 10 }]}>
+            <TouchableOpacity
+              style={styles.viewDetailsBtn}
+              onPress={() => setSelectedSessionForDetails(s)}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="eye-outline" size={14} color="#111827" />
+              <Text style={styles.viewDetailsBtnText}>View Details</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       ))}
     </ScrollView>
@@ -888,36 +1285,6 @@ export const CustomerTrainingScreen: React.FC<{ initialSubTab?: string }> = ({ i
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[styles.subTabBtn, activeTab === 'trainer_plan' && styles.subTabBtnActive]}
-            onPress={() => setActiveTab('trainer_plan')}
-            activeOpacity={0.7}
-          >
-            <Ionicons 
-              name="clipboard-outline" 
-              size={14} 
-              color={activeTab === 'trainer_plan' ? '#FFFFFF' : '#64748B'} 
-            />
-            <Text style={[styles.subTabText, activeTab === 'trainer_plan' && styles.subTabTextActive]}>
-              Trainer's Plan
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.subTabBtn, activeTab === 'trainer_feedback' && styles.subTabBtnActive]}
-            onPress={() => setActiveTab('trainer_feedback')}
-            activeOpacity={0.7}
-          >
-            <Ionicons 
-              name="chatbox-ellipses-outline" 
-              size={14} 
-              color={activeTab === 'trainer_feedback' ? '#FFFFFF' : '#64748B'} 
-            />
-            <Text style={[styles.subTabText, activeTab === 'trainer_feedback' && styles.subTabTextActive]}>
-              Feedback
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
             style={[styles.subTabBtn, activeTab === 'my_bookings' && styles.subTabBtnActive]}
             onPress={() => setActiveTab('my_bookings')}
             activeOpacity={0.7}
@@ -968,41 +1335,35 @@ export const CustomerTrainingScreen: React.FC<{ initialSubTab?: string }> = ({ i
       <View style={styles.content}>
         {activeTab === 'find_trainers' && renderFindTrainersView()}
         {activeTab === 'my_trainer' && renderMyTrainerView()}
-        {activeTab === 'trainer_plan' && <CustomerTrainerPlanScreen />}
-        {activeTab === 'trainer_feedback' && <CustomerTrainerFeedbackScreen />}
         {activeTab === 'my_bookings' && renderMyBookingsView()}
         {activeTab === 'online_sessions' && renderOnlineSessionsView()}
         {activeTab === 'messages' && <CustomerMessagesScreen />}
       </View>
 
       {/* VIEW PROFILE MODAL - FULL PARITY WITH WEB APPLICATION (MemberFindTrainers.tsx) */}
-      <Modal 
-        visible={!!selectedTrainer} 
-        transparent 
-        animationType="slide"
-        onRequestClose={() => setSelectedTrainer(null)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.profileModalCard}>
-            {/* Header */}
-            <View style={styles.modalHeader}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                <View style={styles.modalHeaderIconBadge}>
-                  <Ionicons name="person" size={16} color="#EA580C" />
+      {!!selectedTrainer && (
+        <View style={[StyleSheet.absoluteFill, { zIndex: 1000 }]}>
+          <View style={styles.modalOverlay}>
+            <View style={styles.profileModalCard}>
+              {/* Header */}
+              <View style={styles.modalHeader}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                  <View style={styles.modalHeaderIconBadge}>
+                    <Ionicons name="person" size={16} color="#EA580C" />
+                  </View>
+                  <View>
+                    <Text style={styles.modalTitle}>Trainer Profile</Text>
+                    <Text style={styles.modalSubTitle}>Complete Coach Credentials & Availability</Text>
+                  </View>
                 </View>
-                <View>
-                  <Text style={styles.modalTitle}>Trainer Profile</Text>
-                  <Text style={styles.modalSubTitle}>Complete Coach Credentials & Availability</Text>
-                </View>
+                <TouchableOpacity 
+                  onPress={() => setSelectedTrainer(null)}
+                  style={styles.modalCloseIconBtn}
+                  hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+                >
+                  <Ionicons name="close" size={20} color="#64748B" />
+                </TouchableOpacity>
               </View>
-              <TouchableOpacity 
-                onPress={() => setSelectedTrainer(null)}
-                style={styles.modalCloseIconBtn}
-                hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
-              >
-                <Ionicons name="close" size={20} color="#64748B" />
-              </TouchableOpacity>
-            </View>
 
             {selectedTrainer && (
               <ScrollView 
@@ -1188,116 +1549,652 @@ export const CustomerTrainingScreen: React.FC<{ initialSubTab?: string }> = ({ i
             </View>
           </View>
         </View>
-      </Modal>
+      </View>
+      )}
 
-      {/* BOOK SESSION MODAL */}
-      <Modal visible={bookingModalVisible} transparent animationType="slide">
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalCard}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Book Training Session</Text>
-              <TouchableOpacity onPress={() => setBookingModalVisible(false)}>
-                <Ionicons name="close" size={22} color="#64748B" />
-              </TouchableOpacity>
+      {/* BOOK SESSION SCREEN - FULL PARITY WITH WEB REFERENCE (IMAGE 2) */}
+      {bookingModalVisible && (
+        <View style={[StyleSheet.absoluteFill, { backgroundColor: '#F8FAFC', paddingTop: Platform.OS === 'android' ? 25 : 44, zIndex: 1050 }]}>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+            style={{ flex: 1 }}
+          >
+            <ScrollView 
+              contentContainerStyle={{ padding: 16, paddingBottom: 40 }}
+              showsVerticalScrollIndicator={false}
+            >
+              {/* Header Matching Image 2 */}
+              <View style={styles.webBookHeader}>
+                <TouchableOpacity 
+                  onPress={() => setBookingModalVisible(false)}
+                  style={styles.webBookBackBtn}
+                  activeOpacity={0.7}
+                >
+                  <Ionicons name="arrow-back" size={22} color="#111827" />
+                </TouchableOpacity>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.webBookTitle}>Book a Session</Text>
+                  <Text style={styles.webBookSubtitle}>Schedule your next training session with an expert.</Text>
+                </View>
+              </View>
+
+              {bookingTrainer && (
+                <View style={styles.webBookCard}>
+                  {/* Selected Trainer */}
+                  <Text style={styles.webBookFieldLabel}>Selected Trainer</Text>
+                  <View style={styles.webBookTrainerCard}>
+                    <View style={styles.webBookTrainerLeft}>
+                      <View style={styles.webBookAvatar}>
+                        <Text style={styles.webBookAvatarText}>
+                          {bookingTrainer.name ? bookingTrainer.name.trim().charAt(0).toLowerCase() : 's'}
+                        </Text>
+                      </View>
+                      <View style={{ flex: 1 }}>
+                        <Text style={styles.webBookTrainerName} numberOfLines={1}>
+                          {bookingTrainer.name}
+                        </Text>
+                        <Text style={styles.webBookTrainerSpec} numberOfLines={1}>
+                          {bookingTrainer.specialization || 'Nutrition Coaching'}
+                        </Text>
+                      </View>
+                    </View>
+
+                    <View style={styles.webBookTrainerRight}>
+                      <Text style={styles.webBookFee}>
+                        ₹{bookingTrainer.fee !== undefined && bookingTrainer.fee !== null ? bookingTrainer.fee : 0}
+                      </Text>
+                      <Text style={styles.webBookDuration}>
+                        {bookingTrainer.duration || 60} mins/session
+                      </Text>
+                    </View>
+                  </View>
+
+                  {/* Session Type */}
+                  <Text style={styles.webBookFieldLabel}>Session Type</Text>
+                  <View style={styles.webBookTypeRow}>
+                    <TouchableOpacity
+                      style={[
+                        styles.webBookTypeCard,
+                        bookingMode === 'In-Gym' && styles.webBookTypeCardActive
+                      ]}
+                      onPress={() => setBookingMode('In-Gym')}
+                      activeOpacity={0.8}
+                    >
+                      <Ionicons 
+                        name="location-outline" 
+                        size={24} 
+                        color={bookingMode === 'In-Gym' ? '#EA580C' : '#64748B'} 
+                        style={{ marginBottom: 6 }}
+                      />
+                      <Text style={[
+                        styles.webBookTypeText,
+                        bookingMode === 'In-Gym' && styles.webBookTypeTextActive
+                      ]}>
+                        In-Gym
+                      </Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      style={[
+                        styles.webBookTypeCard,
+                        bookingMode === 'Online' && styles.webBookTypeCardActive
+                      ]}
+                      onPress={() => setBookingMode('Online')}
+                      activeOpacity={0.8}
+                    >
+                      <Ionicons 
+                        name="videocam-outline" 
+                        size={24} 
+                        color={bookingMode === 'Online' ? '#EA580C' : '#64748B'} 
+                        style={{ marginBottom: 6 }}
+                      />
+                      <Text style={[
+                        styles.webBookTypeText,
+                        bookingMode === 'Online' && styles.webBookTypeTextActive
+                      ]}>
+                        Online
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+
+                  {/* Select Date */}
+                  <View style={styles.webBookInputHeaderRow}>
+                    <Ionicons name="calendar-outline" size={16} color="#64748B" />
+                    <Text style={styles.webBookInputLabel}>Select Date</Text>
+                  </View>
+                  <TouchableOpacity
+                    style={styles.webBookInputBox}
+                    onPress={() => setShowDatePickerModal(true)}
+                    activeOpacity={0.8}
+                  >
+                    <Text style={[
+                      styles.webBookInputVal,
+                      !selectedDateDisplay && styles.webBookInputPlaceholder
+                    ]}>
+                      {selectedDateDisplay || 'mm/dd/yyyy'}
+                    </Text>
+                    <Ionicons name="calendar-outline" size={18} color="#64748B" />
+                  </TouchableOpacity>
+
+                  {/* Select Time */}
+                  <View style={styles.webBookInputHeaderRow}>
+                    <Ionicons name="time-outline" size={16} color="#64748B" />
+                    <Text style={styles.webBookInputLabel}>Select Time</Text>
+                  </View>
+                  <TouchableOpacity
+                    style={styles.webBookInputBox}
+                    onPress={() => setShowTimeSlotModal(true)}
+                    activeOpacity={0.8}
+                  >
+                    <Text style={[
+                      styles.webBookInputVal,
+                      !selectedTimeSlot && styles.webBookInputPlaceholder
+                    ]}>
+                      {selectedTimeSlot || 'Choose a slot'}
+                    </Text>
+                    <Ionicons name="chevron-down" size={18} color="#64748B" />
+                  </TouchableOpacity>
+
+                  {/* Send Booking Request Button */}
+                  <TouchableOpacity
+                    style={styles.webBookSubmitBtn}
+                    onPress={handleConfirmBooking}
+                    disabled={submittingBooking}
+                    activeOpacity={0.85}
+                  >
+                    {submittingBooking ? (
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                        <ActivityIndicator size="small" color="#FFFFFF" />
+                        <Text style={styles.webBookSubmitBtnText}>Sending Request...</Text>
+                      </View>
+                    ) : (
+                      <Text style={styles.webBookSubmitBtnText}>
+                        Send Booking Request
+                      </Text>
+                    )}
+                  </TouchableOpacity>
+                </View>
+              )}
+            </ScrollView>
+          </KeyboardAvoidingView>
+        </View>
+      )}
+
+      {/* DATE PICKER OVERLAY - EXACT PARITY WITH IMAGE 3 */}
+      {showDatePickerModal && (
+        <View style={[StyleSheet.absoluteFill, { zIndex: 1100 }]}>
+          <TouchableOpacity 
+            style={styles.pickerModalBackdrop} 
+            activeOpacity={1} 
+            onPress={() => setShowDatePickerModal(false)}
+          >
+          <View style={styles.calendarCard}>
+            {/* Calendar Header matching Image 3: Month Year + Up/Down arrows */}
+            <View style={styles.calendarHeaderRow}>
+              <View style={styles.calendarMonthTitleBtn}>
+                <Text style={styles.calendarMonthTitle}>
+                  {MONTH_NAMES[calendarDate.getMonth()]} {calendarDate.getFullYear()}
+                </Text>
+                <Ionicons name="caret-down" size={13} color="#111827" style={{ marginLeft: 4 }} />
+              </View>
+
+              <View style={styles.calendarArrowsRow}>
+                <TouchableOpacity 
+                  style={styles.calendarArrowBtn} 
+                  onPress={handlePrevMonth}
+                  activeOpacity={0.7}
+                >
+                  <Ionicons name="arrow-up" size={18} color="#475569" />
+                </TouchableOpacity>
+                <TouchableOpacity 
+                  style={styles.calendarArrowBtn} 
+                  onPress={handleNextMonth}
+                  activeOpacity={0.7}
+                >
+                  <Ionicons name="arrow-down" size={18} color="#475569" />
+                </TouchableOpacity>
+              </View>
             </View>
 
-            {bookingTrainer && (
-              <ScrollView style={{ padding: 16 }}>
-                <View style={styles.bookingTrainerSummary}>
-                  <Text style={styles.trainerSummaryName}>{bookingTrainer.name}</Text>
-                  <Text style={styles.trainerSummarySpec}>{bookingTrainer.specialization} • ₹{bookingTrainer.hourlyRate}/session</Text>
-                </View>
+            {/* Days of Week Header matching Image 3: Su Mo Tu We Th Fr Sa */}
+            <View style={styles.calendarWeekdaysRow}>
+              {WEEKDAYS.map(w => (
+                <Text key={w} style={styles.calendarWeekdayText}>{w}</Text>
+              ))}
+            </View>
 
-                {/* Session Mode Selector */}
-                <Text style={styles.modalInputLabel}>Session Mode</Text>
-                <View style={styles.modeSelectorRow}>
+            {/* Calendar Days Grid matching Image 3 */}
+            <View style={styles.calendarGrid}>
+              {getCalendarDays(calendarDate).map((dayItem, idx) => {
+                const isSelected = selectedDateValue === dayItem.isoString;
+                return (
                   <TouchableOpacity
-                    style={[styles.modeSelectorBtn, bookingMode === 'Online' && styles.modeSelectorBtnActive]}
-                    onPress={() => setBookingMode('Online')}
+                    key={`${dayItem.isoString}-${idx}`}
+                    style={styles.calendarDayCell}
+                    onPress={() => handleSelectDay(dayItem)}
+                    activeOpacity={0.7}
                   >
-                    <Ionicons name="videocam-outline" size={16} color={bookingMode === 'Online' ? '#FFFFFF' : '#64748B'} />
-                    <Text style={[styles.modeSelectorText, bookingMode === 'Online' && styles.modeSelectorTextActive]}>
-                      Online Live
-                    </Text>
+                    {isSelected ? (
+                      <View style={styles.calendarSelectedDayBox}>
+                        <Text style={styles.calendarSelectedDayText}>{dayItem.day}</Text>
+                      </View>
+                    ) : (
+                      <Text style={[
+                        styles.calendarDayText,
+                        !dayItem.isCurrentMonth && styles.calendarDayTextMuted,
+                      ]}>
+                        {dayItem.day}
+                      </Text>
+                    )}
                   </TouchableOpacity>
+                );
+              })}
+            </View>
 
-                  <TouchableOpacity
-                    style={[styles.modeSelectorBtn, bookingMode === 'Gym' && styles.modeSelectorBtnActive]}
-                    onPress={() => setBookingMode('Gym')}
-                  >
-                    <Ionicons name="barbell-outline" size={16} color={bookingMode === 'Gym' ? '#FFFFFF' : '#64748B'} />
-                    <Text style={[styles.modeSelectorText, bookingMode === 'Gym' && styles.modeSelectorTextActive]}>
-                      In-Gym Floor
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-
-                {/* Select Date */}
-                <Text style={styles.modalInputLabel}>Select Date</Text>
-                <View style={styles.slotsSelectorRow}>
-                  {['Today', 'Tomorrow', 'This Friday'].map(d => (
-                    <TouchableOpacity
-                      key={d}
-                      style={[styles.slotPill, selectedDate === d && styles.slotPillActive]}
-                      onPress={() => setSelectedDate(d)}
-                    >
-                      <Text style={[styles.slotPillText, selectedDate === d && styles.slotPillTextActive]}>{d}</Text>
-                    </TouchableOpacity>
-                  ))}
-                </View>
-
-                {/* Select Time Slot */}
-                <Text style={styles.modalInputLabel}>Select Time Slot</Text>
-                <View style={styles.slotsSelectorRow}>
-                  {['10:00 AM - 11:00 AM', '04:00 PM - 05:00 PM', '06:00 PM - 07:00 PM'].map(slot => (
-                    <TouchableOpacity
-                      key={slot}
-                      style={[styles.slotPill, selectedTimeSlot === slot && styles.slotPillActive]}
-                      onPress={() => setSelectedTimeSlot(slot)}
-                    >
-                      <Text style={[styles.slotPillText, selectedTimeSlot === slot && styles.slotPillTextActive]}>{slot}</Text>
-                    </TouchableOpacity>
-                  ))}
-                </View>
-
-                {/* Optional Notes */}
-                <Text style={styles.modalInputLabel}>Training Focus or Message</Text>
-                <TextInput
-                  style={styles.modalTextInput}
-                  placeholder="e.g. Form check on squats, diet plan review..."
-                  placeholderTextColor="#94A3B8"
-                  value={bookingNotes}
-                  onChangeText={setBookingNotes}
-                />
-              </ScrollView>
-            )}
-
-            <View style={styles.modalFooter}>
-              <TouchableOpacity 
-                style={styles.modalCloseBtn}
-                onPress={() => setBookingModalVisible(false)}
-              >
-                <Text style={styles.modalCloseBtnText}>Cancel</Text>
+            {/* Bottom Row matching Image 3: Clear on left, Today on right */}
+            <View style={styles.calendarBottomRow}>
+              <TouchableOpacity onPress={handleClearDate} activeOpacity={0.7} style={{ padding: 6 }}>
+                <Text style={styles.calendarActionText}>Clear</Text>
               </TouchableOpacity>
-
-              <TouchableOpacity 
-                style={styles.modalActionBtn}
-                onPress={handleConfirmBooking}
-                disabled={submittingBooking}
-              >
-                {submittingBooking ? (
-                  <ActivityIndicator size="small" color="#FFFFFF" />
-                ) : (
-                  <>
-                    <Ionicons name="checkmark-circle" size={16} color="#FFFFFF" />
-                    <Text style={styles.modalActionBtnText}>Confirm Booking</Text>
-                  </>
-                )}
+              <TouchableOpacity onPress={handleSelectToday} activeOpacity={0.7} style={{ padding: 6 }}>
+                <Text style={styles.calendarActionText}>Today</Text>
               </TouchableOpacity>
             </View>
           </View>
+        </TouchableOpacity>
+      </View>
+      )}
+
+      {/* TIME SLOT DROPDOWN OVERLAY WITH MANUALLY ADD TIME BUTTON */}
+      {showTimeSlotModal && (
+        <View style={[StyleSheet.absoluteFill, { zIndex: 1100 }]}>
+          <TouchableOpacity 
+            style={styles.pickerModalBackdrop} 
+            activeOpacity={1} 
+            onPress={() => setShowTimeSlotModal(false)}
+          >
+          <View style={styles.pickerCard}>
+            <View style={styles.pickerHeader}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                <Ionicons name="time" size={18} color="#EA580C" />
+                <Text style={styles.pickerTitle}>Select Time Slot</Text>
+              </View>
+              <TouchableOpacity onPress={() => setShowTimeSlotModal(false)}>
+                <Ionicons name="close" size={20} color="#64748B" />
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView style={{ maxHeight: 380 }} showsVerticalScrollIndicator={false}>
+              {timeSlots.map(slot => {
+                const isSelected = selectedTimeSlot === slot;
+                return (
+                  <TouchableOpacity
+                    key={slot}
+                    style={[styles.pickerItem, isSelected && styles.pickerItemActive]}
+                    onPress={() => {
+                      setSelectedTimeSlot(slot);
+                      setShowTimeSlotModal(false);
+                    }}
+                    activeOpacity={0.7}
+                  >
+                    <Text style={[styles.pickerItemText, isSelected && styles.pickerItemTextActive]}>
+                      {slot}
+                    </Text>
+                    {isSelected && <Ionicons name="checkmark-circle" size={18} color="#EA580C" />}
+                  </TouchableOpacity>
+                );
+              })}
+
+              {/* + Manually Add Time Button */}
+              <TouchableOpacity
+                style={styles.manualTimeToggleBtn}
+                onPress={() => setShowManualTimeSection(prev => !prev)}
+                activeOpacity={0.7}
+              >
+                <Ionicons 
+                  name={showManualTimeSection ? "remove-circle-outline" : "add-circle-outline"} 
+                  size={18} 
+                  color="#EA580C" 
+                />
+                <Text style={styles.manualTimeToggleText}>
+                  {showManualTimeSection ? 'Hide Manual Time' : '+ Manually Add Time'}
+                </Text>
+              </TouchableOpacity>
+
+              {/* Manually Add Time Form */}
+              {showManualTimeSection && (
+                <View style={styles.manualTimeFormCard}>
+                  <Text style={styles.manualTimeFormTitle}>Enter Custom Session Time</Text>
+                  
+                  {/* Hour Selector */}
+                  <View>
+                    <Text style={styles.manualFieldLabel}>Select Hour</Text>
+                    <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 6, paddingVertical: 4 }}>
+                      {['05', '06', '07', '08', '09', '10', '11', '12', '01', '02', '03', '04'].map((h, idx) => (
+                        <TouchableOpacity
+                          key={`hour-${h}-${idx}`}
+                          style={[styles.timeChip, manualHour === h && styles.timeChipActive]}
+                          onPress={() => {
+                            setManualHour(h);
+                            setManualCustomInput('');
+                          }}
+                        >
+                          <Text style={[styles.timeChipText, manualHour === h && styles.timeChipTextActive]}>{h}</Text>
+                        </TouchableOpacity>
+                      ))}
+                    </ScrollView>
+                  </View>
+
+                  {/* Minute & AM/PM Selector */}
+                  <View style={{ flexDirection: 'row', gap: 10, marginTop: 4 }}>
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.manualFieldLabel}>Minute</Text>
+                      <View style={{ flexDirection: 'row', gap: 6 }}>
+                        {['00', '15', '30', '45'].map((m, idx) => (
+                          <TouchableOpacity
+                            key={`min-${m}-${idx}`}
+                            style={[styles.timeChip, manualMinute === m && styles.timeChipActive, { flex: 1, alignItems: 'center' }]}
+                            onPress={() => {
+                              setManualMinute(m);
+                              setManualCustomInput('');
+                            }}
+                          >
+                            <Text style={[styles.timeChipText, manualMinute === m && styles.timeChipTextActive]}>:{m}</Text>
+                          </TouchableOpacity>
+                        ))}
+                      </View>
+                    </View>
+
+                    <View style={{ width: 105 }}>
+                      <Text style={styles.manualFieldLabel}>Period</Text>
+                      <View style={{ flexDirection: 'row', gap: 6 }}>
+                        {(['AM', 'PM'] as const).map((p, idx) => (
+                          <TouchableOpacity
+                            key={`period-${p}-${idx}`}
+                            style={[styles.timeChip, manualPeriod === p && styles.timeChipActive, { flex: 1, alignItems: 'center' }]}
+                            onPress={() => {
+                              setManualPeriod(p);
+                              setManualCustomInput('');
+                            }}
+                          >
+                            <Text style={[styles.timeChipText, manualPeriod === p && styles.timeChipTextActive]}>{p}</Text>
+                          </TouchableOpacity>
+                        ))}
+                      </View>
+                    </View>
+                  </View>
+
+                  {/* Type Custom Time Directly */}
+                  <View style={{ marginTop: 6 }}>
+                    <Text style={styles.manualFieldLabel}>Or Type Exact Time</Text>
+                    <TextInput
+                      style={styles.manualTextInput}
+                      placeholder="e.g. 07:30 AM or 05:45 PM"
+                      placeholderTextColor="#94A3B8"
+                      value={manualCustomInput}
+                      onChangeText={setManualCustomInput}
+                    />
+                  </View>
+
+                  {/* Preview & Submit */}
+                  <View style={styles.manualPreviewRow}>
+                    <Text style={styles.manualPreviewLabel}>Selected Slot:</Text>
+                    <Text style={styles.manualPreviewTime}>
+                      {manualCustomInput.trim() || `${manualHour}:${manualMinute} ${manualPeriod}`}
+                    </Text>
+                  </View>
+
+                  <TouchableOpacity
+                    style={styles.applyManualTimeBtn}
+                    onPress={handleApplyManualTime}
+                    activeOpacity={0.8}
+                  >
+                    <Ionicons name="checkmark-circle" size={16} color="#FFFFFF" />
+                    <Text style={styles.applyManualTimeBtnText}>Confirm Custom Time</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+            </ScrollView>
+          </View>
+        </TouchableOpacity>
+      </View>
+      )}
+
+      {/* SESSION DETAILS OVERLAY - EXACT PARITY WITH WEB (MemberMyBookings.tsx lines 356-495) */}
+      {!!selectedSessionForDetails && (
+        <View style={[StyleSheet.absoluteFill, { zIndex: 1000 }]}>
+          <TouchableOpacity 
+            style={styles.sessionDetailsOverlay}
+            activeOpacity={1}
+            onPress={() => setSelectedSessionForDetails(null)}
+          >
+            <TouchableOpacity 
+              activeOpacity={1} 
+              style={styles.sessionDetailsModalCard}
+              onPress={(e) => e.stopPropagation?.()}
+            >
+            {/* Header: Trainer Avatar, Name, Specialization, Close Button */}
+            <View style={styles.sessionDetailsHeader}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, flex: 1 }}>
+                <View style={styles.sessionTrainerAvatar}>
+                  <Text style={styles.sessionTrainerAvatarText}>
+                    {(selectedSessionForDetails?.trainerName || 'T').charAt(0).toUpperCase()}
+                  </Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.sessionTrainerName} numberOfLines={1}>
+                    {selectedSessionForDetails?.trainerName || 'Assigned Trainer'}
+                  </Text>
+                  <Text style={styles.sessionTrainerSpec} numberOfLines={1}>
+                    {selectedSessionForDetails?.trainerSpecialization || 'Personal Trainer'}
+                  </Text>
+                </View>
+              </View>
+              <TouchableOpacity
+                onPress={() => setSelectedSessionForDetails(null)}
+                style={styles.modalCloseIconBtn}
+                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+              >
+                <Ionicons name="close" size={20} color="#64748B" />
+              </TouchableOpacity>
+            </View>
+
+            {/* Scrollable Body */}
+            <ScrollView 
+              style={styles.sessionDetailsBody} 
+              contentContainerStyle={{ padding: 16, gap: 14 }}
+              showsVerticalScrollIndicator={false}
+            >
+              {/* 1. Booking Identifier & Status */}
+              <View style={styles.bookingIdRow}>
+                <View>
+                  <Text style={styles.bookingIdLabel}>Booking Identifier</Text>
+                  <Text style={styles.bookingIdValue}>
+                    {selectedSessionForDetails?.bookingId || `#${(selectedSessionForDetails?._id || '').slice(-8)}`}
+                  </Text>
+                </View>
+                {selectedSessionForDetails && (
+                  <View style={[
+                    styles.detailsStatusBadge,
+                    { 
+                      backgroundColor: getStatusDisplay(selectedSessionForDetails.status).bg,
+                      borderColor: getStatusDisplay(selectedSessionForDetails.status).border,
+                    }
+                  ]}>
+                    <Text style={[
+                      styles.detailsStatusText,
+                      { color: getStatusDisplay(selectedSessionForDetails.status).color }
+                    ]}>
+                      {getStatusDisplay(selectedSessionForDetails.status).label}
+                    </Text>
+                  </View>
+                )}
+              </View>
+
+              {/* 2. Session Schedule & Details */}
+              <View style={{ gap: 6 }}>
+                <Text style={styles.sectionHeaderTitle}>Session Schedule & Details</Text>
+                <View style={styles.detailsSectionCard}>
+                  {/* Date */}
+                  <View style={styles.detailRow}>
+                    <View style={styles.detailRowLabel}>
+                      <Ionicons name="calendar-outline" size={15} color="#EA580C" />
+                      <Text style={styles.detailLabelText}>Date</Text>
+                    </View>
+                    <Text style={styles.detailValueText}>
+                      {formatSessionDate(selectedSessionForDetails?.date)}
+                    </Text>
+                  </View>
+
+                  {/* Time Slot */}
+                  <View style={styles.detailRow}>
+                    <View style={styles.detailRowLabel}>
+                      <Ionicons name="time-outline" size={15} color="#EA580C" />
+                      <Text style={styles.detailLabelText}>Time Slot</Text>
+                    </View>
+                    <Text style={styles.detailValueText}>
+                      {selectedSessionForDetails?.timeSlot || `${selectedSessionForDetails?.startTime || ''} – ${selectedSessionForDetails?.endTime || ''}`}
+                    </Text>
+                  </View>
+
+                  {/* Training Mode */}
+                  <View style={styles.detailRow}>
+                    <View style={styles.detailRowLabel}>
+                      <Ionicons name="videocam-outline" size={15} color="#EA580C" />
+                      <Text style={styles.detailLabelText}>Training Mode</Text>
+                    </View>
+                    <Text style={[styles.detailValueText, { color: '#EA580C', fontWeight: '700' }]}>
+                      {selectedSessionForDetails?.mode === 'Online' || selectedSessionForDetails?.mode?.includes('Online') ? 'Online Virtual Session' : 'In-Gym Session'}
+                    </Text>
+                  </View>
+
+                  {/* Session Fee if > 0 */}
+                  {selectedSessionForDetails?.fee !== undefined && selectedSessionForDetails.fee > 0 && (
+                    <View style={[styles.detailRow, { paddingTop: 8, borderTopWidth: 1, borderTopColor: '#E2E8F0' }]}>
+                      <Text style={styles.detailLabelText}>Session Fee</Text>
+                      <Text style={[styles.detailValueText, { color: '#EA580C', fontWeight: '800' }]}>
+                        ₹{selectedSessionForDetails.fee}
+                      </Text>
+                    </View>
+                  )}
+                </View>
+              </View>
+
+              {/* 3. Attendance Activity (if checkInTime or checkOutTime) */}
+              {(selectedSessionForDetails?.checkInTime || selectedSessionForDetails?.checkOutTime) && (
+                <View style={{ gap: 6 }}>
+                  <Text style={styles.sectionHeaderTitle}>Attendance Activity</Text>
+                  <View style={styles.attendanceGrid}>
+                    {selectedSessionForDetails?.checkInTime && (
+                      <View style={styles.attendanceCol}>
+                        <Text style={styles.attendanceColLabel}>Checked In</Text>
+                        <Text style={styles.attendanceColTime}>
+                          {selectedSessionForDetails.checkInTime}
+                        </Text>
+                      </View>
+                    )}
+                    {selectedSessionForDetails?.checkOutTime && (
+                      <View style={styles.attendanceCol}>
+                        <Text style={styles.attendanceColLabel}>Checked Out</Text>
+                        <Text style={styles.attendanceColTime}>
+                          {selectedSessionForDetails.checkOutTime}
+                        </Text>
+                      </View>
+                    )}
+                  </View>
+                </View>
+              )}
+
+              {/* 4. Virtual Meeting Room (if Online) */}
+              {(selectedSessionForDetails?.mode === 'Online' || selectedSessionForDetails?.mode?.includes('Online')) && (
+                <View style={{ gap: 6 }}>
+                  <Text style={styles.sectionHeaderTitle}>Virtual Meeting Room</Text>
+                  <View style={styles.meetingRoomCard}>
+                    <Text style={styles.meetingRoomLink} numberOfLines={1}>
+                      {selectedSessionForDetails?.meetingLink || `meet.jit.si/aigym-session-${(selectedSessionForDetails?._id || '').slice(-6)}`}
+                    </Text>
+                    <TouchableOpacity
+                      style={styles.joinNowBtn}
+                      onPress={() => {
+                        const url = selectedSessionForDetails?.meetingLink || `https://meet.jit.si/aigym-session-${(selectedSessionForDetails?._id || '').slice(-6)}`;
+                        Linking.openURL(url).catch(() => Alert.alert('Error', 'Unable to open meeting URL.'));
+                      }}
+                      activeOpacity={0.7}
+                    >
+                      <Text style={styles.joinNowBtnText}>Join Now</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              )}
+
+              {/* 5. Your Rating & Review (if rated) */}
+              {(selectedSessionForDetails?.customerRating || selectedSessionForDetails?.rating) && (
+                <View style={{ gap: 6 }}>
+                  <Text style={styles.sectionHeaderTitle}>Your Rating & Review</Text>
+                  <View style={styles.ratingBox}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+                      <Ionicons name="star" size={16} color="#B45309" />
+                      <Text style={styles.ratingNumber}>
+                        {selectedSessionForDetails.customerRating || selectedSessionForDetails.rating} / 5
+                      </Text>
+                    </View>
+                    {(selectedSessionForDetails?.customerReview || selectedSessionForDetails?.reviewText) && (
+                      <Text style={styles.reviewQuote}>
+                        "{selectedSessionForDetails.customerReview || selectedSessionForDetails.reviewText}"
+                      </Text>
+                    )}
+                  </View>
+                </View>
+              )}
+
+              {/* 6. Trainer Notes (if sessionNotes exists) */}
+              {selectedSessionForDetails?.sessionNotes && (
+                <View style={{ gap: 6 }}>
+                  <Text style={styles.sectionHeaderTitle}>Trainer Notes</Text>
+                  <View style={styles.notesCard}>
+                    {selectedSessionForDetails.sessionNotes.exercisesCompleted && (
+                      <Text style={styles.noteLine}>
+                        <Text style={styles.noteBold}>Exercises: </Text>
+                        {selectedSessionForDetails.sessionNotes.exercisesCompleted}
+                      </Text>
+                    )}
+                    {selectedSessionForDetails.sessionNotes.customerPerformance && (
+                      <Text style={styles.noteLine}>
+                        <Text style={styles.noteBold}>Performance: </Text>
+                        {selectedSessionForDetails.sessionNotes.customerPerformance}
+                      </Text>
+                    )}
+                    {selectedSessionForDetails.sessionNotes.dietRecommendations && (
+                      <Text style={styles.noteLine}>
+                        <Text style={styles.noteBold}>Diet: </Text>
+                        {selectedSessionForDetails.sessionNotes.dietRecommendations}
+                      </Text>
+                    )}
+                    {selectedSessionForDetails.sessionNotes.nextSessionFocus && (
+                      <Text style={styles.noteLine}>
+                        <Text style={styles.noteBold}>Next Focus: </Text>
+                        {selectedSessionForDetails.sessionNotes.nextSessionFocus}
+                      </Text>
+                    )}
+                  </View>
+                </View>
+              )}
+            </ScrollView>
+
+            {/* Sticky Bottom Close Button */}
+            <View style={styles.sessionDetailsFooter}>
+              <TouchableOpacity
+                style={styles.closeFooterBtn}
+                onPress={() => setSelectedSessionForDetails(null)}
+                activeOpacity={0.7}
+              >
+                <Text style={styles.closeFooterBtnText}>Close</Text>
+              </TouchableOpacity>
+            </View>
+            </TouchableOpacity>
+          </TouchableOpacity>
         </View>
-      </Modal>
+      )}
     </View>
   );
 };
@@ -1931,6 +2828,326 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontStyle: 'italic',
     color: '#475569',
+  },
+  bookingMiniAvatar: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: '#FFF7ED',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  bookingMiniAvatarText: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: '#EA580C',
+  },
+  bookingCardIdBadge: {
+    fontSize: 10,
+    fontWeight: '700',
+    backgroundColor: '#F1F5F9',
+    color: '#475569',
+    paddingHorizontal: 7,
+    paddingVertical: 2,
+    borderRadius: 4,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  bookingRatingPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: '#FEF3C7',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+    alignSelf: 'flex-start',
+    marginTop: 8,
+    borderWidth: 1,
+    borderColor: '#FDE68A',
+  },
+  bookingRatingPillText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#92400E',
+  },
+  bookingActionsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginTop: 10,
+    paddingTop: 10,
+    borderTopWidth: 1,
+    borderTopColor: '#F1F5F9',
+  },
+  viewDetailsBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+    borderRadius: 10,
+  },
+  viewDetailsBtnText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#111827',
+  },
+  joinOnlineBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: '#C2410C',
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+    borderRadius: 10,
+  },
+  joinOnlineBtnText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#FFFFFF',
+  },
+
+  // Session Details Modal Styles (Exact Parity with Web MemberMyBookings.tsx)
+  sessionDetailsOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.65)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
+  },
+  sessionDetailsModalCard: {
+    width: '100%',
+    maxWidth: 420,
+    maxHeight: '84%',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.2,
+    shadowRadius: 20,
+    elevation: 12,
+  },
+  sessionDetailsHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E2E8F0',
+    backgroundColor: '#FFFFFF',
+  },
+  sessionTrainerAvatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#FFF7ED',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  sessionTrainerAvatarText: {
+    fontSize: 16,
+    fontWeight: '800',
+    color: '#EA580C',
+  },
+  sessionTrainerName: {
+    fontSize: 15,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  sessionTrainerSpec: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#64748B',
+    marginTop: 1,
+  },
+  sessionDetailsBody: {
+    flexShrink: 1,
+  },
+  bookingIdRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#F8FAFC',
+    padding: 12,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#E8EAED',
+  },
+  bookingIdLabel: {
+    fontSize: 11,
+    color: '#64748B',
+    fontWeight: '500',
+  },
+  bookingIdValue: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: '#111827',
+    marginTop: 2,
+  },
+  detailsStatusBadge: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
+    borderWidth: 1,
+  },
+  detailsStatusText: {
+    fontSize: 11,
+    fontWeight: '800',
+  },
+  sectionHeaderTitle: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#64748B',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  detailsSectionCard: {
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 12,
+    padding: 12,
+    gap: 10,
+  },
+  detailRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  detailRowLabel: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  detailLabelText: {
+    fontSize: 12,
+    color: '#64748B',
+    fontWeight: '600',
+  },
+  detailValueText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#111827',
+  },
+  attendanceGrid: {
+    flexDirection: 'row',
+    gap: 10,
+  },
+  attendanceCol: {
+    flex: 1,
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 10,
+    padding: 10,
+  },
+  attendanceColLabel: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#EA580C',
+  },
+  attendanceColTime: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: '#EA580C',
+    marginTop: 3,
+  },
+  meetingRoomCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 12,
+    padding: 10,
+    gap: 8,
+  },
+  meetingRoomLink: {
+    flex: 1,
+    fontSize: 11,
+    color: '#EA580C',
+    fontWeight: '600',
+  },
+  joinNowBtn: {
+    backgroundColor: '#C2410C',
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 8,
+  },
+  joinNowBtnText: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontWeight: '800',
+  },
+  ratingBox: {
+    backgroundColor: '#FEF3C7',
+    borderWidth: 1,
+    borderColor: '#FDE68A',
+    borderRadius: 12,
+    padding: 12,
+    gap: 6,
+  },
+  ratingNumber: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: '#92400E',
+  },
+  reviewQuote: {
+    fontSize: 12,
+    fontStyle: 'italic',
+    color: '#92400E',
+    fontWeight: '500',
+    lineHeight: 17,
+  },
+  notesCard: {
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 12,
+    padding: 12,
+    gap: 6,
+  },
+  noteLine: {
+    fontSize: 12,
+    color: '#111827',
+    lineHeight: 18,
+  },
+  noteBold: {
+    fontWeight: '800',
+    color: '#64748B',
+  },
+  sessionDetailsFooter: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderTopWidth: 1,
+    borderTopColor: '#E2E8F0',
+    backgroundColor: '#FFFFFF',
+  },
+  closeFooterBtn: {
+    backgroundColor: '#C2410C',
+    paddingHorizontal: 20,
+    paddingVertical: 9,
+    borderRadius: 12,
+  },
+  closeFooterBtnText: {
+    color: '#FFFFFF',
+    fontSize: 13,
+    fontWeight: '800',
   },
 
   // Online Sessions Cards
@@ -2575,5 +3792,456 @@ const styles = StyleSheet.create({
     color: '#94A3B8',
     textAlign: 'center',
     marginTop: 4,
+  },
+
+  // Web Parity Book a Session Styles Matching Image 2
+  webBookHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+    gap: 14,
+  },
+  webBookBackBtn: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: '#FFF7ED',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  webBookTitle: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#111827',
+    letterSpacing: -0.3,
+  },
+  webBookSubtitle: {
+    fontSize: 13,
+    color: '#64748B',
+    marginTop: 2,
+  },
+  webBookCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.05,
+    shadowRadius: 10,
+    elevation: 2,
+  },
+  webBookFieldLabel: {
+    fontSize: 13,
+    fontWeight: '500',
+    color: '#64748B',
+    marginBottom: 8,
+    marginTop: 6,
+  },
+  webBookTrainerCard: {
+    backgroundColor: '#FFF7ED',
+    borderWidth: 1,
+    borderColor: '#FDBA74',
+    borderRadius: 14,
+    padding: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+  },
+  webBookTrainerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+    marginRight: 10,
+  },
+  webBookAvatar: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#FED7AA',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+  },
+  webBookAvatarText: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#EA580C',
+  },
+  webBookTrainerName: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#111827',
+  },
+  webBookTrainerSpec: {
+    fontSize: 13,
+    fontWeight: '500',
+    color: '#64748B',
+    marginTop: 2,
+  },
+  webBookTrainerRight: {
+    alignItems: 'flex-end',
+  },
+  webBookFee: {
+    fontSize: 18,
+    fontWeight: '800',
+    color: '#EA580C',
+  },
+  webBookDuration: {
+    fontSize: 11,
+    color: '#64748B',
+    marginTop: 2,
+  },
+  webBookTypeRow: {
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 16,
+  },
+  webBookTypeCard: {
+    flex: 1,
+    paddingVertical: 18,
+    paddingHorizontal: 12,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    backgroundColor: '#F8FAFC',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  webBookTypeCardActive: {
+    borderColor: '#FDBA74',
+    backgroundColor: '#FFF7ED',
+  },
+  webBookTypeText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#64748B',
+  },
+  webBookTypeTextActive: {
+    color: '#EA580C',
+  },
+  webBookInputHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginBottom: 8,
+  },
+  webBookInputLabel: {
+    fontSize: 13,
+    fontWeight: '500',
+    color: '#64748B',
+  },
+  webBookInputBox: {
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 18,
+  },
+  webBookInputVal: {
+    fontSize: 14,
+    color: '#111827',
+    fontWeight: '500',
+  },
+  webBookInputPlaceholder: {
+    color: '#94A3B8',
+    fontWeight: '400',
+  },
+  webBookSubmitBtn: {
+    marginTop: 8,
+    backgroundColor: '#D98A6C', // Warm terracotta matching Image 2
+    borderRadius: 14,
+    paddingVertical: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#C2410C',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  webBookSubmitBtnText: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: '#FFFFFF',
+  },
+  pickerModalBackdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  pickerCard: {
+    width: '100%',
+    maxWidth: 360,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 18,
+    padding: 18,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 4,
+  },
+  pickerHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingBottom: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F1F5F9',
+    marginBottom: 8,
+  },
+  pickerTitle: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: '#111827',
+  },
+  pickerItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 12,
+    paddingHorizontal: 12,
+    borderRadius: 10,
+    marginVertical: 2,
+  },
+  pickerItemActive: {
+    backgroundColor: '#FFF7ED',
+  },
+  pickerItemText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#334155',
+  },
+  pickerItemTextActive: {
+    fontWeight: '700',
+    color: '#EA580C',
+  },
+  pickerItemSub: {
+    fontSize: 11,
+    color: '#94A3B8',
+    marginTop: 1,
+  },
+  pickerItemSubActive: {
+    color: '#F97316',
+  },
+
+  // Full Month Calendar Styles (Exact Parity with Image 3)
+  calendarCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 14,
+    padding: 16,
+    width: '90%',
+    maxWidth: 340,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.15,
+    shadowRadius: 14,
+    elevation: 8,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  calendarHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+  },
+  calendarMonthTitleBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  calendarMonthTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#111827',
+  },
+  calendarArrowsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  calendarArrowBtn: {
+    padding: 4,
+    borderRadius: 6,
+  },
+  calendarWeekdaysRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 8,
+  },
+  calendarWeekdayText: {
+    width: 38,
+    textAlign: 'center',
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#1E293B',
+  },
+  calendarGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  calendarDayCell: {
+    width: '14.28%',
+    height: 38,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 1,
+  },
+  calendarDayText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#1E293B',
+  },
+  calendarDayTextMuted: {
+    color: '#CBD5E1',
+    fontWeight: '400',
+  },
+  calendarSelectedDayBox: {
+    width: 32,
+    height: 32,
+    backgroundColor: '#334155',
+    borderRadius: 4,
+    borderWidth: 1,
+    borderColor: '#1E293B',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  calendarSelectedDayText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '700',
+  },
+  calendarBottomRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 14,
+    paddingTop: 10,
+    borderTopWidth: 1,
+    borderTopColor: '#F1F5F9',
+  },
+  calendarActionText: {
+    color: '#0284C7',
+    fontSize: 15,
+    fontWeight: '600',
+  },
+
+  // Manual Time Input Styles (User Request)
+  manualTimeToggleBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    backgroundColor: '#FFF7ED',
+    borderWidth: 1,
+    borderColor: '#FFEDD5',
+    borderRadius: 12,
+    paddingVertical: 10,
+    marginTop: 10,
+  },
+  manualTimeToggleText: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#EA580C',
+  },
+  manualTimeFormCard: {
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 12,
+    padding: 12,
+    marginTop: 10,
+    gap: 8,
+  },
+  manualTimeFormTitle: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  manualFieldLabel: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#64748B',
+    marginBottom: 4,
+  },
+  timeChip: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+  },
+  timeChipActive: {
+    backgroundColor: '#FFF7ED',
+    borderColor: '#EA580C',
+  },
+  timeChipText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#475569',
+  },
+  timeChipTextActive: {
+    color: '#EA580C',
+    fontWeight: '800',
+  },
+  manualTextInput: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#CBD5E1',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    fontSize: 13,
+    color: '#111827',
+  },
+  manualPreviewRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#FFFFFF',
+    padding: 8,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    marginTop: 4,
+  },
+  manualPreviewLabel: {
+    fontSize: 12,
+    color: '#64748B',
+    fontWeight: '600',
+  },
+  manualPreviewTime: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: '#EA580C',
+  },
+  applyManualTimeBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    backgroundColor: '#C2410C',
+    paddingVertical: 9,
+    borderRadius: 8,
+    marginTop: 4,
+  },
+  applyManualTimeBtnText: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontWeight: '800',
   },
 });

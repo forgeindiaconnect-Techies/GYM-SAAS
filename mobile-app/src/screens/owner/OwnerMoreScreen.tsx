@@ -23,6 +23,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../constants/theme';
 import { useAuth } from '../../context/AuthContext';
 import { api } from '../../api/client';
+import * as ImagePicker from 'expo-image-picker';
 import { FileDownloader } from '../../utils/fileDownloader';
 import { OwnerTrainersScreen } from './OwnerTrainersScreen';
 import { OwnerMembersScreen } from './OwnerMembersScreen';
@@ -1639,9 +1640,40 @@ export const OwnerMoreScreen: React.FC<{
     lowStockThreshold: '5',
     status: 'Active',
     availability: 'Both',
-    fulfilmentType: 'Both',
+    fulfilmentType: 'Gym Pickup',
     hasVariants: false,
   });
+
+  const [storeSelectPickerModal, setStoreSelectPickerModal] = useState<{
+    title: string;
+    options: Array<{ label: string; value: string; sub?: string }>;
+    selectedValue: string;
+    onSelect: (val: string) => void;
+  } | null>(null);
+
+  const handlePickProductImage = async () => {
+    try {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permission Required', 'Camera roll access is needed to select and upload product images.');
+        return;
+      }
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.8,
+        base64: true,
+      });
+      if (!result.canceled && result.assets && result.assets.length > 0) {
+        const asset = result.assets[0];
+        const imageUri = asset.base64 ? `data:image/jpeg;base64,${asset.base64}` : asset.uri;
+        setStoreProductForm(f => ({ ...f, image: imageUri }));
+      }
+    } catch (err: any) {
+      Alert.alert('Image Error', err?.message || 'Failed to select image.');
+    }
+  };
 
   // Sales History State (Matching Web /admin/store/sales)
   const [salesFilter, setSalesFilter] = useState<'all' | 'online' | 'offline'>('all');
@@ -12282,7 +12314,7 @@ const renderPackagePlansView = () => {
       lowStockThreshold: '5',
       status: 'Active',
       availability: 'Both',
-      fulfilmentType: 'Both',
+      fulfilmentType: 'Gym Pickup',
       hasVariants: false,
     });
     setShowAddStoreProductModal(true);
@@ -17349,6 +17381,20 @@ const renderAddStoreProductModal = () => {
                 />
               </View>
 
+              {/* Description */}
+              <View style={styles.prodFormGroup}>
+                <Text style={styles.prodFormLabel}>Description</Text>
+                <TextInput
+                  style={[styles.prodFormInput, { height: 60, textAlignVertical: 'top' }]}
+                  placeholder="Product description, benefits, ingredients, etc."
+                  placeholderTextColor={COLORS.textMuted}
+                  multiline={true}
+                  numberOfLines={2}
+                  value={storeProductForm.description}
+                  onChangeText={txt => setStoreProductForm(f => ({ ...f, description: txt }))}
+                />
+              </View>
+
               {/* Prices (Selling Price & Discount Price) */}
               <View style={styles.prodFormRow}>
                 <View style={{ flex: 1 }}>
@@ -17401,109 +17447,158 @@ const renderAddStoreProductModal = () => {
                 </View>
               </View>
 
-              {/* Channels / Availability */}
-              <View style={styles.prodFormGroup}>
-                <Text style={styles.prodFormLabel}>Sales Channel</Text>
-                <View style={{ flexDirection: 'row', gap: 8, marginTop: 4 }}>
-                  {['Both', 'Online', 'Offline'].map(ch => {
-                    const sel = storeProductForm.availability === ch;
-                    return (
-                      <TouchableOpacity
-                        key={ch}
-                        style={[styles.prodPillSelect, sel && styles.prodPillSelectActive]}
-                        onPress={() => setStoreProductForm(f => ({ ...f, availability: ch }))}
-                      >
-                        <Text style={[styles.prodPillSelectText, sel && styles.prodPillSelectTextActive]}>{ch}</Text>
-                      </TouchableOpacity>
-                    );
-                  })}
+              {/* SALES SETTINGS (Matching Web Application Image 1) */}
+              <View style={styles.prodWebSection}>
+                <Text style={styles.prodWebSectionTitle}>SALES SETTINGS</Text>
+                <View style={styles.prodWebDropdownRow}>
+                  {/* STATUS */}
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.prodWebFieldLabel}>STATUS</Text>
+                    <TouchableOpacity
+                      style={styles.prodWebSelectBox}
+                      onPress={() => {
+                        setStoreSelectPickerModal({
+                          title: 'Select Status',
+                          selectedValue: storeProductForm.status,
+                          options: [
+                            { label: 'Active', value: 'Active', sub: 'Visible in store & available for purchase' },
+                            { label: 'Inactive', value: 'Inactive', sub: 'Hidden from store catalog' },
+                          ],
+                          onSelect: (val) => setStoreProductForm(f => ({ ...f, status: val })),
+                        });
+                      }}
+                      activeOpacity={0.7}
+                    >
+                      <Text style={styles.prodWebSelectBoxText} numberOfLines={1}>
+                        {storeProductForm.status === 'Inactive' ? 'Inactive' : 'Active'}
+                      </Text>
+                      <Ionicons name="chevron-down" size={13} color="#64748B" />
+                    </TouchableOpacity>
+                  </View>
+
+                  {/* SELL ONLINE */}
+                  <View style={{ flex: 1.45 }}>
+                    <Text style={styles.prodWebFieldLabel}>SELL ONLINE</Text>
+                    <TouchableOpacity
+                      style={styles.prodWebSelectBox}
+                      onPress={() => {
+                        setStoreSelectPickerModal({
+                          title: 'Select Sell Online Channel',
+                          selectedValue: storeProductForm.availability,
+                          options: [
+                            { label: 'Both Online & In-Gym', value: 'Both', sub: 'Available both on mobile app & reception' },
+                            { label: 'Online Only', value: 'Online', sub: 'Purchasable only in mobile app store' },
+                            { label: 'In-Gym Only', value: 'Offline', sub: 'Purchasable only in-person at gym reception' },
+                          ],
+                          onSelect: (val) => setStoreProductForm(f => ({ ...f, availability: val })),
+                        });
+                      }}
+                      activeOpacity={0.7}
+                    >
+                      <Text style={styles.prodWebSelectBoxText} numberOfLines={1}>
+                        {storeProductForm.availability === 'Online'
+                          ? 'Online Only'
+                          : storeProductForm.availability === 'Offline'
+                          ? 'In-Gym Only'
+                          : 'Both Online & In-Gym'}
+                      </Text>
+                      <Ionicons name="chevron-down" size={13} color="#64748B" />
+                    </TouchableOpacity>
+                  </View>
+
+                  {/* FULFILMENT */}
+                  <View style={{ flex: 1.25 }}>
+                    <Text style={styles.prodWebFieldLabel}>FULFILMENT</Text>
+                    <TouchableOpacity
+                      style={styles.prodWebSelectBox}
+                      onPress={() => {
+                        setStoreSelectPickerModal({
+                          title: 'Select Fulfilment Method',
+                          selectedValue: storeProductForm.fulfilmentType,
+                          options: [
+                            { label: 'Gym Pickup', value: 'Gym Pickup', sub: 'Member collects items at gym front desk' },
+                            { label: 'Delivery', value: 'Delivery', sub: 'Direct shipment to customer home address' },
+                            { label: 'Pickup & Delivery', value: 'Both', sub: 'Both gym pickup and home delivery supported' },
+                          ],
+                          onSelect: (val) => setStoreProductForm(f => ({ ...f, fulfilmentType: val })),
+                        });
+                      }}
+                      activeOpacity={0.7}
+                    >
+                      <Text style={styles.prodWebSelectBoxText} numberOfLines={1}>
+                        {storeProductForm.fulfilmentType === 'Delivery'
+                          ? 'Delivery'
+                          : storeProductForm.fulfilmentType === 'Both'
+                          ? 'Both'
+                          : 'Gym Pickup'}
+                      </Text>
+                      <Ionicons name="chevron-down" size={13} color="#64748B" />
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </View>
 
-              {/* Fulfilment */}
-              <View style={styles.prodFormGroup}>
-                <Text style={styles.prodFormLabel}>Fulfilment Type</Text>
-                <View style={{ flexDirection: 'row', gap: 8, marginTop: 4 }}>
-                  {['Both', 'Gym Pickup', 'Delivery'].map(fu => {
-                    const sel = storeProductForm.fulfilmentType === fu;
-                    return (
-                      <TouchableOpacity
-                        key={fu}
-                        style={[styles.prodPillSelect, sel && styles.prodPillSelectActive]}
-                        onPress={() => setStoreProductForm(f => ({ ...f, fulfilmentType: fu }))}
-                      >
-                        <Text style={[styles.prodPillSelectText, sel && styles.prodPillSelectTextActive]}>{fu}</Text>
-                      </TouchableOpacity>
-                    );
-                  })}
+              {/* PRODUCT IMAGE (Matching Web Application Image 1) */}
+              <View style={styles.prodWebSection}>
+                <Text style={styles.prodWebSectionTitle}>PRODUCT IMAGE</Text>
+                <View style={styles.prodWebImageRow}>
+                  {/* Square Image Box */}
+                  <View style={styles.prodWebImageSquareBox}>
+                    {storeProductForm.image ? (
+                      <Image
+                        source={{ uri: storeProductForm.image }}
+                        style={styles.prodWebImagePreview}
+                        resizeMode="cover"
+                      />
+                    ) : (
+                      <Ionicons name="image-outline" size={24} color="#EA580C" style={{ opacity: 0.35 }} />
+                    )}
+                  </View>
+
+                  {/* Upload Image Button & Paste URL Input */}
+                  <View style={styles.prodWebImageInputCol}>
+                    <TouchableOpacity
+                      style={styles.prodWebUploadBtn}
+                      onPress={handlePickProductImage}
+                      activeOpacity={0.7}
+                    >
+                      <Ionicons name="cloud-upload-outline" size={14} color="#EA580C" />
+                      <Text style={styles.prodWebUploadBtnText}>Upload Image</Text>
+                    </TouchableOpacity>
+
+                    <TextInput
+                      style={styles.prodWebImageUrlInput}
+                      placeholder="or paste an image URL"
+                      placeholderTextColor="#94A3B8"
+                      value={storeProductForm.image}
+                      onChangeText={txt => setStoreProductForm(f => ({ ...f, image: txt }))}
+                    />
+                  </View>
                 </View>
-              </View>
-
-              {/* Status */}
-              <View style={styles.prodFormGroup}>
-                <Text style={styles.prodFormLabel}>Status</Text>
-                <View style={{ flexDirection: 'row', gap: 8, marginTop: 4 }}>
-                  {['Active', 'Draft'].map(st => {
-                    const sel = storeProductForm.status === st;
-                    return (
-                      <TouchableOpacity
-                        key={st}
-                        style={[styles.prodPillSelect, sel && styles.prodPillSelectActive]}
-                        onPress={() => setStoreProductForm(f => ({ ...f, status: st }))}
-                      >
-                        <Text style={[styles.prodPillSelectText, sel && styles.prodPillSelectTextActive]}>{st}</Text>
-                      </TouchableOpacity>
-                    );
-                  })}
-                </View>
-              </View>
-
-              {/* Image URL */}
-              <View style={styles.prodFormGroup}>
-                <Text style={styles.prodFormLabel}>Image URL</Text>
-                <TextInput
-                  style={styles.prodFormInput}
-                  placeholder="https://images.unsplash.com/..."
-                  placeholderTextColor={COLORS.textMuted}
-                  value={storeProductForm.image}
-                  onChangeText={txt => setStoreProductForm(f => ({ ...f, image: txt }))}
-                />
-              </View>
-
-              {/* Description */}
-              <View style={[styles.prodFormGroup, { marginBottom: 20 }]}>
-                <Text style={styles.prodFormLabel}>Description</Text>
-                <TextInput
-                  style={[styles.prodFormInput, { height: 70, textAlignVertical: 'top' }]}
-                  placeholder="Product description, benefits, ingredients, etc."
-                  placeholderTextColor={COLORS.textMuted}
-                  multiline={true}
-                  numberOfLines={3}
-                  value={storeProductForm.description}
-                  onChangeText={txt => setStoreProductForm(f => ({ ...f, description: txt }))}
-                />
               </View>
             </ScrollView>
 
             {/* Modal Actions */}
-            <View style={styles.prodModalFooter}>
+            <View style={styles.prodModalFooterWeb}>
               <TouchableOpacity
-                style={styles.prodModalCancelBtn}
+                style={styles.prodModalCancelBtnWeb}
                 onPress={() => setShowAddStoreProductModal(false)}
+                activeOpacity={0.8}
               >
-                <Text style={styles.prodModalCancelText}>Cancel</Text>
+                <Text style={styles.prodModalCancelTextWeb}>Cancel</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={styles.prodModalSubmitBtn}
+                style={styles.prodModalCreateProductBtnWeb}
                 onPress={() => handleSaveStoreProduct(false)}
                 disabled={isStoreProductSaving}
+                activeOpacity={0.8}
               >
                 {isStoreProductSaving ? (
                   <ActivityIndicator color="#FFFFFF" size="small" />
                 ) : (
                   <>
-                    <Ionicons name="checkmark-circle" size={16} color="#FFFFFF" />
-                    <Text style={styles.prodModalSubmitText}>Add Product</Text>
+                    <Ionicons name="sync-outline" size={16} color="#FFFFFF" />
+                    <Text style={styles.prodModalCreateProductBtnTextWeb}>Create Product</Text>
                   </>
                 )}
               </TouchableOpacity>
@@ -17617,6 +17712,20 @@ const renderAddStoreProductModal = () => {
                 />
               </View>
 
+              {/* Description */}
+              <View style={styles.prodFormGroup}>
+                <Text style={styles.prodFormLabel}>Description</Text>
+                <TextInput
+                  style={[styles.prodFormInput, { height: 60, textAlignVertical: 'top' }]}
+                  placeholder="Product description, benefits, ingredients, etc."
+                  placeholderTextColor={COLORS.textMuted}
+                  multiline={true}
+                  numberOfLines={2}
+                  value={storeProductForm.description}
+                  onChangeText={txt => setStoreProductForm(f => ({ ...f, description: txt }))}
+                />
+              </View>
+
               {/* Prices */}
               <View style={styles.prodFormRow}>
                 <View style={{ flex: 1 }}>
@@ -17669,115 +17778,223 @@ const renderAddStoreProductModal = () => {
                 </View>
               </View>
 
-              {/* Channels */}
-              <View style={styles.prodFormGroup}>
-                <Text style={styles.prodFormLabel}>Sales Channel</Text>
-                <View style={{ flexDirection: 'row', gap: 8, marginTop: 4 }}>
-                  {['Both', 'Online', 'Offline'].map(ch => {
-                    const sel = storeProductForm.availability === ch;
-                    return (
-                      <TouchableOpacity
-                        key={ch}
-                        style={[styles.prodPillSelect, sel && styles.prodPillSelectActive]}
-                        onPress={() => setStoreProductForm(f => ({ ...f, availability: ch }))}
-                      >
-                        <Text style={[styles.prodPillSelectText, sel && styles.prodPillSelectTextActive]}>{ch}</Text>
-                      </TouchableOpacity>
-                    );
-                  })}
+              {/* SALES SETTINGS (Matching Web Application Image 1) */}
+              <View style={styles.prodWebSection}>
+                <Text style={styles.prodWebSectionTitle}>SALES SETTINGS</Text>
+                <View style={styles.prodWebDropdownRow}>
+                  {/* STATUS */}
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.prodWebFieldLabel}>STATUS</Text>
+                    <TouchableOpacity
+                      style={styles.prodWebSelectBox}
+                      onPress={() => {
+                        setStoreSelectPickerModal({
+                          title: 'Select Status',
+                          selectedValue: storeProductForm.status,
+                          options: [
+                            { label: 'Active', value: 'Active', sub: 'Visible in store & available for purchase' },
+                            { label: 'Inactive', value: 'Inactive', sub: 'Hidden from store catalog' },
+                          ],
+                          onSelect: (val) => setStoreProductForm(f => ({ ...f, status: val })),
+                        });
+                      }}
+                      activeOpacity={0.7}
+                    >
+                      <Text style={styles.prodWebSelectBoxText} numberOfLines={1}>
+                        {storeProductForm.status === 'Inactive' ? 'Inactive' : 'Active'}
+                      </Text>
+                      <Ionicons name="chevron-down" size={13} color="#64748B" />
+                    </TouchableOpacity>
+                  </View>
+
+                  {/* SELL ONLINE */}
+                  <View style={{ flex: 1.45 }}>
+                    <Text style={styles.prodWebFieldLabel}>SELL ONLINE</Text>
+                    <TouchableOpacity
+                      style={styles.prodWebSelectBox}
+                      onPress={() => {
+                        setStoreSelectPickerModal({
+                          title: 'Select Sell Online Channel',
+                          selectedValue: storeProductForm.availability,
+                          options: [
+                            { label: 'Both Online & In-Gym', value: 'Both', sub: 'Available both on mobile app & reception' },
+                            { label: 'Online Only', value: 'Online', sub: 'Purchasable only in mobile app store' },
+                            { label: 'In-Gym Only', value: 'Offline', sub: 'Purchasable only in-person at gym reception' },
+                          ],
+                          onSelect: (val) => setStoreProductForm(f => ({ ...f, availability: val })),
+                        });
+                      }}
+                      activeOpacity={0.7}
+                    >
+                      <Text style={styles.prodWebSelectBoxText} numberOfLines={1}>
+                        {storeProductForm.availability === 'Online'
+                          ? 'Online Only'
+                          : storeProductForm.availability === 'Offline'
+                          ? 'In-Gym Only'
+                          : 'Both Online & In-Gym'}
+                      </Text>
+                      <Ionicons name="chevron-down" size={13} color="#64748B" />
+                    </TouchableOpacity>
+                  </View>
+
+                  {/* FULFILMENT */}
+                  <View style={{ flex: 1.25 }}>
+                    <Text style={styles.prodWebFieldLabel}>FULFILMENT</Text>
+                    <TouchableOpacity
+                      style={styles.prodWebSelectBox}
+                      onPress={() => {
+                        setStoreSelectPickerModal({
+                          title: 'Select Fulfilment Method',
+                          selectedValue: storeProductForm.fulfilmentType,
+                          options: [
+                            { label: 'Gym Pickup', value: 'Gym Pickup', sub: 'Member collects items at gym front desk' },
+                            { label: 'Delivery', value: 'Delivery', sub: 'Direct shipment to customer home address' },
+                            { label: 'Pickup & Delivery', value: 'Both', sub: 'Both gym pickup and home delivery supported' },
+                          ],
+                          onSelect: (val) => setStoreProductForm(f => ({ ...f, fulfilmentType: val })),
+                        });
+                      }}
+                      activeOpacity={0.7}
+                    >
+                      <Text style={styles.prodWebSelectBoxText} numberOfLines={1}>
+                        {storeProductForm.fulfilmentType === 'Delivery'
+                          ? 'Delivery'
+                          : storeProductForm.fulfilmentType === 'Both'
+                          ? 'Both'
+                          : 'Gym Pickup'}
+                      </Text>
+                      <Ionicons name="chevron-down" size={13} color="#64748B" />
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </View>
 
-              {/* Fulfilment */}
-              <View style={styles.prodFormGroup}>
-                <Text style={styles.prodFormLabel}>Fulfilment Type</Text>
-                <View style={{ flexDirection: 'row', gap: 8, marginTop: 4 }}>
-                  {['Both', 'Gym Pickup', 'Delivery'].map(fu => {
-                    const sel = storeProductForm.fulfilmentType === fu;
-                    return (
-                      <TouchableOpacity
-                        key={fu}
-                        style={[styles.prodPillSelect, sel && styles.prodPillSelectActive]}
-                        onPress={() => setStoreProductForm(f => ({ ...f, fulfilmentType: fu }))}
-                      >
-                        <Text style={[styles.prodPillSelectText, sel && styles.prodPillSelectTextActive]}>{fu}</Text>
-                      </TouchableOpacity>
-                    );
-                  })}
+              {/* PRODUCT IMAGE (Matching Web Application Image 1) */}
+              <View style={styles.prodWebSection}>
+                <Text style={styles.prodWebSectionTitle}>PRODUCT IMAGE</Text>
+                <View style={styles.prodWebImageRow}>
+                  {/* Square Image Box */}
+                  <View style={styles.prodWebImageSquareBox}>
+                    {storeProductForm.image ? (
+                      <Image
+                        source={{ uri: storeProductForm.image }}
+                        style={styles.prodWebImagePreview}
+                        resizeMode="cover"
+                      />
+                    ) : (
+                      <Ionicons name="image-outline" size={24} color="#EA580C" style={{ opacity: 0.35 }} />
+                    )}
+                  </View>
+
+                  {/* Upload Image Button & Paste URL Input */}
+                  <View style={styles.prodWebImageInputCol}>
+                    <TouchableOpacity
+                      style={styles.prodWebUploadBtn}
+                      onPress={handlePickProductImage}
+                      activeOpacity={0.7}
+                    >
+                      <Ionicons name="cloud-upload-outline" size={14} color="#EA580C" />
+                      <Text style={styles.prodWebUploadBtnText}>Upload Image</Text>
+                    </TouchableOpacity>
+
+                    <TextInput
+                      style={styles.prodWebImageUrlInput}
+                      placeholder="or paste an image URL"
+                      placeholderTextColor="#94A3B8"
+                      value={storeProductForm.image}
+                      onChangeText={txt => setStoreProductForm(f => ({ ...f, image: txt }))}
+                    />
+                  </View>
                 </View>
-              </View>
-
-              {/* Status */}
-              <View style={styles.prodFormGroup}>
-                <Text style={styles.prodFormLabel}>Status</Text>
-                <View style={{ flexDirection: 'row', gap: 8, marginTop: 4 }}>
-                  {['Active', 'Draft', 'Archived'].map(st => {
-                    const sel = storeProductForm.status === st;
-                    return (
-                      <TouchableOpacity
-                        key={st}
-                        style={[styles.prodPillSelect, sel && styles.prodPillSelectActive]}
-                        onPress={() => setStoreProductForm(f => ({ ...f, status: st }))}
-                      >
-                        <Text style={[styles.prodPillSelectText, sel && styles.prodPillSelectTextActive]}>{st}</Text>
-                      </TouchableOpacity>
-                    );
-                  })}
-                </View>
-              </View>
-
-              {/* Image URL */}
-              <View style={styles.prodFormGroup}>
-                <Text style={styles.prodFormLabel}>Image URL</Text>
-                <TextInput
-                  style={styles.prodFormInput}
-                  placeholder="https://images.unsplash.com/..."
-                  placeholderTextColor={COLORS.textMuted}
-                  value={storeProductForm.image}
-                  onChangeText={txt => setStoreProductForm(f => ({ ...f, image: txt }))}
-                />
-              </View>
-
-              {/* Description */}
-              <View style={[styles.prodFormGroup, { marginBottom: 20 }]}>
-                <Text style={styles.prodFormLabel}>Description</Text>
-                <TextInput
-                  style={[styles.prodFormInput, { height: 70, textAlignVertical: 'top' }]}
-                  placeholder="Product description, benefits, ingredients, etc."
-                  placeholderTextColor={COLORS.textMuted}
-                  multiline={true}
-                  numberOfLines={3}
-                  value={storeProductForm.description}
-                  onChangeText={txt => setStoreProductForm(f => ({ ...f, description: txt }))}
-                />
               </View>
             </ScrollView>
 
             {/* Modal Actions */}
-            <View style={styles.prodModalFooter}>
+            <View style={styles.prodModalFooterWeb}>
               <TouchableOpacity
-                style={styles.prodModalCancelBtn}
+                style={styles.prodModalCancelBtnWeb}
                 onPress={() => setShowEditStoreProductModal(false)}
+                activeOpacity={0.8}
               >
-                <Text style={styles.prodModalCancelText}>Cancel</Text>
+                <Text style={styles.prodModalCancelTextWeb}>Cancel</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={styles.prodModalSubmitBtn}
+                style={styles.prodModalCreateProductBtnWeb}
                 onPress={() => handleSaveStoreProduct(true)}
                 disabled={isStoreProductSaving}
+                activeOpacity={0.8}
               >
                 {isStoreProductSaving ? (
                   <ActivityIndicator color="#FFFFFF" size="small" />
                 ) : (
                   <>
-                    <Ionicons name="checkmark-circle" size={16} color="#FFFFFF" />
-                    <Text style={styles.prodModalSubmitText}>Update Product</Text>
+                    <Ionicons name="sync-outline" size={16} color="#FFFFFF" />
+                    <Text style={styles.prodModalCreateProductBtnTextWeb}>Update Product</Text>
                   </>
                 )}
               </TouchableOpacity>
             </View>
           </View>
         </KeyboardAvoidingView>
+      </Modal>
+    );
+  };
+
+  const renderStoreSelectPickerModal = () => {
+    if (!storeSelectPickerModal) return null;
+
+    return (
+      <Modal
+        visible={Boolean(storeSelectPickerModal)}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setStoreSelectPickerModal(null)}
+      >
+        <TouchableOpacity
+          style={styles.pickerModalBackdrop}
+          activeOpacity={1}
+          onPress={() => setStoreSelectPickerModal(null)}
+        >
+          <View style={styles.pickerModalCard} onStartShouldSetResponder={() => true}>
+            <View style={styles.pickerModalHeader}>
+              <Text style={styles.pickerModalTitle}>{storeSelectPickerModal.title}</Text>
+              <TouchableOpacity onPress={() => setStoreSelectPickerModal(null)} style={styles.pickerModalClose}>
+                <Ionicons name="close" size={20} color="#64748B" />
+              </TouchableOpacity>
+            </View>
+
+            <View style={{ paddingVertical: 8 }}>
+              {storeSelectPickerModal.options.map((opt) => {
+                const isSelected = storeSelectPickerModal.selectedValue === opt.value;
+                return (
+                  <TouchableOpacity
+                    key={opt.value}
+                    style={[styles.pickerOptionRow, isSelected && styles.pickerOptionRowSelected]}
+                    onPress={() => {
+                      storeSelectPickerModal.onSelect(opt.value);
+                      setStoreSelectPickerModal(null);
+                    }}
+                    activeOpacity={0.7}
+                  >
+                    <View style={{ flex: 1 }}>
+                      <Text style={[styles.pickerOptionText, isSelected && styles.pickerOptionTextSelected]}>
+                        {opt.label}
+                      </Text>
+                      {opt.sub ? (
+                        <Text style={styles.pickerOptionSubText}>{opt.sub}</Text>
+                      ) : null}
+                    </View>
+                    {isSelected ? (
+                      <Ionicons name="checkmark-circle" size={20} color="#EA580C" />
+                    ) : (
+                      <View style={styles.pickerOptionRadioUnchecked} />
+                    )}
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          </View>
+        </TouchableOpacity>
       </Modal>
     );
   };
@@ -18113,6 +18330,7 @@ return (
       {renderPosCustomerPickerModal()}
       {renderUpdateOrderStatusModal()}
       {renderEditStoreProductModal()}
+      {renderStoreSelectPickerModal()}
       {renderReportTimeframeModal()}
       {renderSubPaymentModal()}
       {renderSubInvoiceModal()}
@@ -25070,6 +25288,218 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '800',
     color: '#FFFFFF',
+  },
+
+  // Web-Matched Sales Settings & Product Image Styles
+  prodWebSection: {
+    paddingTop: 16,
+    borderTopWidth: 1,
+    borderTopColor: '#E2E8F0',
+    marginBottom: 16,
+  },
+  prodWebSectionTitle: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#111827',
+    textTransform: 'uppercase',
+    letterSpacing: 0.6,
+    marginBottom: 10,
+  },
+  prodWebDropdownRow: {
+    flexDirection: 'row',
+    gap: 8,
+    alignItems: 'flex-start',
+  },
+  prodWebFieldLabel: {
+    fontSize: 10,
+    fontWeight: '800',
+    color: '#64748B',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+    marginBottom: 5,
+  },
+  prodWebSelectBox: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#CBD5E1',
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 9,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    minHeight: 38,
+  },
+  prodWebSelectBoxText: {
+    fontSize: 11.5,
+    fontWeight: '500',
+    color: '#0F172A',
+    flex: 1,
+    marginRight: 4,
+  },
+  prodWebImageRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  prodWebImageSquareBox: {
+    width: 62,
+    height: 62,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    backgroundColor: '#F8FAFC',
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+  },
+  prodWebImagePreview: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 10,
+  },
+  prodWebImageInputCol: {
+    flex: 1,
+    gap: 8,
+  },
+  prodWebUploadBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 8,
+    alignSelf: 'flex-start',
+  },
+  prodWebUploadBtnText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#EA580C',
+  },
+  prodWebImageUrlInput: {
+    height: 38,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#CBD5E1',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    fontSize: 12,
+    color: '#0F172A',
+  },
+  prodModalFooterWeb: {
+    flexDirection: 'row',
+    gap: 10,
+    paddingHorizontal: 18,
+    paddingTop: 14,
+    paddingBottom: 4,
+    borderTopWidth: 1,
+    borderTopColor: '#E2E8F0',
+  },
+  prodModalCancelBtnWeb: {
+    flex: 1,
+    paddingVertical: 12,
+    borderRadius: 12,
+    backgroundColor: '#F8FAFC',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  prodModalCancelTextWeb: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#64748B',
+  },
+  prodModalCreateProductBtnWeb: {
+    flex: 1.35,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    paddingVertical: 12,
+    borderRadius: 12,
+    backgroundColor: '#EA580C',
+    shadowColor: '#EA580C',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  prodModalCreateProductBtnTextWeb: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#FFFFFF',
+  },
+  pickerModalBackdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.45)',
+    justifyContent: 'flex-end',
+  },
+  pickerModalCard: {
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    paddingHorizontal: 20,
+    paddingTop: 16,
+    paddingBottom: 32,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 8,
+  },
+  pickerModalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingBottom: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F1F5F9',
+  },
+  pickerModalTitle: {
+    fontSize: 16,
+    fontWeight: '800',
+    color: '#0F172A',
+  },
+  pickerModalClose: {
+    padding: 4,
+  },
+  pickerOptionRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 13,
+    paddingHorizontal: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F8FAFC',
+    borderRadius: 10,
+  },
+  pickerOptionRowSelected: {
+    backgroundColor: '#FFF7ED',
+  },
+  pickerOptionText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#1E293B',
+  },
+  pickerOptionTextSelected: {
+    color: '#EA580C',
+    fontWeight: '700',
+  },
+  pickerOptionSubText: {
+    fontSize: 11,
+    color: '#64748B',
+    marginTop: 2,
+  },
+  pickerOptionRadioUnchecked: {
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    borderWidth: 1.5,
+    borderColor: '#CBD5E1',
   },
 
 

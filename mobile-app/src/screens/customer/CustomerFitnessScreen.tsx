@@ -9,14 +9,20 @@ import { CustomerProgressTrackingScreen } from './CustomerProgressTrackingScreen
 import { CustomerAttendanceScreen } from './CustomerAttendanceScreen';
 
 export const CustomerFitnessScreen: React.FC<{ initialSubTab?: string }> = ({ initialSubTab = 'ai' }) => {
+  const normalizeSubTab = (tab?: string): 'ai' | 'workout' | 'diet' | 'progress' | 'attendance' => {
+    if (tab === 'workout' || tab === 'workout_plan' || tab === 'workouts') return 'workout';
+    if (tab === 'diet' || tab === 'nutrition') return 'diet';
+    if (tab === 'progress' || tab === 'metrics') return 'progress';
+    if (tab === 'attendance') return 'attendance';
+    return 'ai';
+  };
+
   const [activeSubTab, setActiveSubTab] = useState<'ai' | 'workout' | 'diet' | 'progress' | 'attendance'>(
-    initialSubTab === 'workout' ? 'workout' : initialSubTab === 'diet' ? 'diet' : initialSubTab === 'attendance' ? 'attendance' : initialSubTab === 'progress' ? 'progress' : 'ai'
+    normalizeSubTab(initialSubTab)
   );
 
   useEffect(() => {
-    if (initialSubTab === 'ai' || initialSubTab === 'workout' || initialSubTab === 'diet' || initialSubTab === 'attendance' || initialSubTab === 'progress') {
-      setActiveSubTab(initialSubTab);
-    }
+    setActiveSubTab(normalizeSubTab(initialSubTab));
   }, [initialSubTab]);
 
   return (

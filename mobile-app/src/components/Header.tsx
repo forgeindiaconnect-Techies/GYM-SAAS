@@ -8,7 +8,8 @@ export const Header: React.FC<{
   title?: string; 
   subtitle?: string;
   onOpenNotifications?: () => void;
-}> = ({ title, subtitle, onOpenNotifications }) => {
+  onPressBrand?: () => void;
+}> = ({ title, subtitle, onOpenNotifications, onPressBrand }) => {
   const { user, activeRole, logout } = useAuth();
 
   const getRoleLabel = (role: UserRole | null) => {
@@ -38,18 +39,24 @@ export const Header: React.FC<{
   return (
     <View style={styles.container}>
       <View style={styles.topRow}>
-        {/* Brand & Subtitle */}
-        <View style={styles.brandRow}>
+        {/* Brand & Subtitle (Tapping Gymora navigates to the main page) */}
+        <TouchableOpacity 
+          style={styles.brandRow}
+          onPress={onPressBrand}
+          activeOpacity={onPressBrand ? 0.7 : 1}
+          accessibilityLabel="Go to main page"
+          accessibilityRole="button"
+        >
           <View style={styles.logoBadge}>
             <Ionicons name="fitness" size={18} color={COLORS.white} />
           </View>
-          <View>
+          <View style={{ flexShrink: 1 }}>
             <Text style={styles.brandName}>Gymora</Text>
             <Text style={styles.brandSub} numberOfLines={1}>
               {subtitle || user?.gymName || user?.name || 'Mobile Platform'}
             </Text>
           </View>
-        </View>
+        </TouchableOpacity>
 
         {/* Action Controls: Authenticated Role Badge + Notification + Logout (Safe clearance from floating dev menu) */}
         <View style={styles.controlsRow}>

@@ -224,6 +224,151 @@ export const StickFigureAnimation: React.FC<StickFigureProps> = ({
     );
   }
 
+  if (isBench) {
+    // Bench Press: Lying on bench pad, pressing barbell vertically with chest glow
+    const pressY = anim.interpolate({
+      inputRange: [0, 1],
+      outputRange: [0, 16],
+    });
+    const chestGlow = anim.interpolate({
+      inputRange: [0, 1],
+      outputRange: [1, 1.4],
+    });
+
+    return (
+      <View style={[styles.container, { transform: [{ scale }] }]}>
+        <View style={styles.floorLine} />
+        <View style={[styles.benchLeg, { left: 24 }]} />
+        <View style={[styles.benchLeg, { left: 70 }]} />
+        <View style={styles.benchPad} />
+
+        <View style={styles.benchHead} />
+        <View style={styles.benchTorso} />
+        <Animated.View style={[styles.benchChestGlow, { transform: [{ scale: chestGlow }] }]} />
+        <View style={styles.benchHips} />
+        <View style={styles.benchLegThigh} />
+        <View style={styles.benchLegShin} />
+
+        <Animated.View style={[styles.benchBarbellGroup, { transform: [{ translateY: pressY }] }]}>
+          <View style={[styles.benchArm, { left: 34 }]} />
+          <View style={[styles.benchArm, { left: 54 }]} />
+          <View style={styles.benchBarbellBar} />
+          <View style={[styles.benchBarbellPlate, { left: 10 }]} />
+          <View style={[styles.benchBarbellPlate, { right: 10 }]} />
+        </Animated.View>
+      </View>
+    );
+  }
+
+  if (isOverhead) {
+    // Overhead Press: Pressing barbell overhead with deltoid glows
+    const pressY = anim.interpolate({
+      inputRange: [0, 1],
+      outputRange: [0, -18],
+    });
+    const deltGlow = anim.interpolate({
+      inputRange: [0, 1],
+      outputRange: [1, 1.35],
+    });
+
+    return (
+      <View style={[styles.container, { transform: [{ scale }] }]}>
+        <View style={styles.head} />
+        <View style={styles.neck} />
+        <View style={styles.torso} />
+        <Animated.View style={[styles.deltGlowLeft, { transform: [{ scale: deltGlow }] }]} />
+        <Animated.View style={[styles.deltGlowRight, { transform: [{ scale: deltGlow }] }]} />
+
+        <Animated.View style={[styles.overheadGroup, { transform: [{ translateY: pressY }] }]}>
+          <View style={[styles.overheadArm, { left: 28 }]} />
+          <View style={[styles.overheadArm, { right: 28 }]} />
+          <View style={styles.overheadBar} />
+          <View style={[styles.rdlBarbellPlate, { left: 14, top: 4 }]} />
+          <View style={[styles.rdlBarbellPlate, { right: 14, top: 4 }]} />
+        </Animated.View>
+
+        <View style={styles.hips} />
+        <View style={[styles.leg, { left: 32 }]} />
+        <View style={[styles.leg, { right: 32 }]} />
+        <View style={styles.floorLine} />
+      </View>
+    );
+  }
+
+  if (isPushup) {
+    // Push-up: Horizontal plank lowering to floor with glowing chest
+    const pushY = anim.interpolate({
+      inputRange: [0, 1],
+      outputRange: [0, 14],
+    });
+    const chestGlow = anim.interpolate({
+      inputRange: [0, 1],
+      outputRange: [1, 1.4],
+    });
+
+    return (
+      <View style={[styles.container, { transform: [{ scale }] }]}>
+        <View style={styles.floorLine} />
+        <Animated.View style={{ width: 90, height: 60, transform: [{ translateY: pushY }] }}>
+          <View style={styles.pushupHead} />
+          <View style={styles.pushupTorso} />
+          <Animated.View style={[styles.pushupChestGlow, { transform: [{ scale: chestGlow }] }]} />
+          <View style={styles.pushupArmUpper} />
+          <View style={styles.pushupArmForearm} />
+          <View style={styles.pushupLegs} />
+        </Animated.View>
+      </View>
+    );
+  }
+
+  if (isPlank) {
+    // Plank: Solid core bridge with pulsing aura
+    const corePulse = anim.interpolate({
+      inputRange: [0, 0.5, 1],
+      outputRange: [1, 1.3, 1],
+    });
+
+    return (
+      <View style={[styles.container, { transform: [{ scale }] }]}>
+        <View style={styles.floorLine} />
+        <View style={{ width: 90, height: 60 }}>
+          <View style={styles.pushupHead} />
+          <View style={styles.pushupTorso} />
+          <Animated.View style={[styles.pushupChestGlow, { transform: [{ scale: corePulse }] }]} />
+          <View style={styles.pushupArmForearm} />
+          <View style={styles.pushupLegs} />
+        </View>
+      </View>
+    );
+  }
+
+  if (isLunge) {
+    // Lunges: Lowering split squat with glowing quads
+    const lungeY = anim.interpolate({
+      inputRange: [0, 1],
+      outputRange: [0, 14],
+    });
+    const quadGlow = anim.interpolate({
+      inputRange: [0, 1],
+      outputRange: [1, 1.35],
+    });
+
+    return (
+      <View style={[styles.container, { transform: [{ scale }] }]}>
+        <View style={styles.floorLine} />
+        <Animated.View style={{ alignItems: 'center', transform: [{ translateY: lungeY }] }}>
+          <View style={styles.head} />
+          <View style={styles.neck} />
+          <View style={styles.torso} />
+          <View style={styles.hips} />
+          <Animated.View style={[styles.quadGlowBox, { top: 32, transform: [{ scale: quadGlow }] }]} />
+          <View style={[styles.leg, { left: 42, top: 48, transform: [{ rotate: '20deg' }] }]} />
+          <View style={[styles.leg, { left: 24, top: 48, transform: [{ rotate: '-20deg' }] }]} />
+        </Animated.View>
+      </View>
+    );
+  }
+
   // Default Generic Biomechanical Exercise Animation (Bench/Pushup/Press/Plank/Twist/etc.)
   const defaultTranslate = anim.interpolate({
     inputRange: [0, 1],
@@ -365,7 +510,6 @@ const styles = StyleSheet.create({
     left: 20,
     width: 50,
     height: 46,
-    transformOrigin: 'bottom center' as any,
     zIndex: 8,
   },
   rdlBarbellGroup: {
@@ -485,6 +629,226 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
     elevation: 4,
   },
+  // Bench Press
+  benchLeg: {
+    position: 'absolute',
+    bottom: 2,
+    width: 3.5,
+    height: 20,
+    backgroundColor: '#475569',
+    borderRadius: 1,
+  },
+  benchPad: {
+    position: 'absolute',
+    bottom: 22,
+    left: 16,
+    width: 68,
+    height: 6,
+    backgroundColor: '#475569',
+    borderRadius: 3,
+  },
+  benchHead: {
+    position: 'absolute',
+    bottom: 28,
+    left: 14,
+    width: 14,
+    height: 14,
+    borderRadius: 7,
+    backgroundColor: '#E0F2FE',
+    borderWidth: 2,
+    borderColor: '#0284C7',
+    zIndex: 10,
+  },
+  benchTorso: {
+    position: 'absolute',
+    bottom: 28,
+    left: 28,
+    width: 36,
+    height: 4.5,
+    backgroundColor: '#0284C7',
+    borderRadius: 2,
+    zIndex: 9,
+  },
+  benchChestGlow: {
+    position: 'absolute',
+    bottom: 27,
+    left: 36,
+    width: 14,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: '#22C55E',
+    opacity: 0.85,
+    zIndex: 11,
+  },
+  benchHips: {
+    position: 'absolute',
+    bottom: 27,
+    left: 62,
+    width: 8,
+    height: 6,
+    backgroundColor: '#0284C7',
+    borderRadius: 2,
+  },
+  benchLegThigh: {
+    position: 'absolute',
+    bottom: 14,
+    left: 68,
+    width: 4,
+    height: 14,
+    backgroundColor: '#0284C7',
+    borderRadius: 2,
+    transform: [{ rotate: '-30deg' }],
+  },
+  benchLegShin: {
+    position: 'absolute',
+    bottom: 2,
+    left: 76,
+    width: 3.5,
+    height: 14,
+    backgroundColor: '#0284C7',
+    borderRadius: 1.5,
+  },
+  benchBarbellGroup: {
+    position: 'absolute',
+    bottom: 30,
+    left: 10,
+    width: 80,
+    height: 24,
+    alignItems: 'center',
+    zIndex: 12,
+  },
+  benchArm: {
+    position: 'absolute',
+    bottom: 0,
+    width: 3,
+    height: 16,
+    backgroundColor: '#0284C7',
+    borderRadius: 1.5,
+  },
+  benchBarbellBar: {
+    position: 'absolute',
+    top: 2,
+    width: 76,
+    height: 3.5,
+    backgroundColor: '#CBD5E1',
+    borderRadius: 1.5,
+  },
+  benchBarbellPlate: {
+    position: 'absolute',
+    top: -5,
+    width: 5,
+    height: 18,
+    backgroundColor: '#EF4444',
+    borderRadius: 2,
+    borderWidth: 1,
+    borderColor: '#B91C1C',
+  },
+
+  // Overhead
+  deltGlowLeft: {
+    position: 'absolute',
+    left: 20,
+    top: 24,
+    width: 14,
+    height: 14,
+    borderRadius: 7,
+    backgroundColor: '#22C55E',
+    opacity: 0.85,
+  },
+  deltGlowRight: {
+    position: 'absolute',
+    right: 20,
+    top: 24,
+    width: 14,
+    height: 14,
+    borderRadius: 7,
+    backgroundColor: '#22C55E',
+    opacity: 0.85,
+  },
+  overheadGroup: {
+    position: 'absolute',
+    top: 10,
+    width: 90,
+    height: 28,
+    alignItems: 'center',
+    zIndex: 12,
+  },
+  overheadArm: {
+    position: 'absolute',
+    bottom: 0,
+    width: 3.5,
+    height: 18,
+    backgroundColor: '#0284C7',
+    borderRadius: 1.5,
+  },
+  overheadBar: {
+    position: 'absolute',
+    top: 4,
+    width: 70,
+    height: 3.5,
+    backgroundColor: '#CBD5E1',
+    borderRadius: 1.5,
+  },
+
+  // Pushup
+  pushupHead: {
+    position: 'absolute',
+    left: 8,
+    top: 24,
+    width: 14,
+    height: 14,
+    borderRadius: 7,
+    backgroundColor: '#E0F2FE',
+    borderWidth: 2,
+    borderColor: '#0284C7',
+  },
+  pushupTorso: {
+    position: 'absolute',
+    left: 22,
+    top: 27,
+    width: 36,
+    height: 4.5,
+    backgroundColor: '#0284C7',
+    borderRadius: 2,
+  },
+  pushupChestGlow: {
+    position: 'absolute',
+    left: 26,
+    top: 24,
+    width: 14,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: '#22C55E',
+    opacity: 0.85,
+  },
+  pushupArmUpper: {
+    position: 'absolute',
+    left: 28,
+    top: 28,
+    width: 3.5,
+    height: 14,
+    backgroundColor: '#0284C7',
+    borderRadius: 1.5,
+  },
+  pushupArmForearm: {
+    position: 'absolute',
+    left: 28,
+    top: 40,
+    width: 3.5,
+    height: 14,
+    backgroundColor: '#64748B',
+    borderRadius: 1.5,
+  },
+  pushupLegs: {
+    position: 'absolute',
+    left: 56,
+    top: 28,
+    width: 32,
+    height: 4,
+    backgroundColor: '#0284C7',
+    borderRadius: 2,
+  },
+
   // Generic
   genericMuscleGlow: {
     position: 'absolute',

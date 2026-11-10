@@ -377,8 +377,8 @@ const AIAssistantView: React.FC<{ user: any }> = ({ user }) => {
         color: '#15803D',
         actionLabel: 'View Workout Plan',
         btnText: 'View Plan',
-        targetTab: 'training',
-        targetSub: 'workout_plan',
+        targetTab: 'fitness',
+        targetSub: 'workout',
       };
     }
     if (text.includes('diet') || text.includes('meal') || text.includes('nutrition') || text.includes('calorie')) {
@@ -495,15 +495,6 @@ const AIAssistantView: React.FC<{ user: any }> = ({ user }) => {
                   <View style={styles.notifInfo}>
                     <View style={styles.notifTopRow}>
                       <Text style={styles.notifTitle} numberOfLines={1}>{n.title}</Text>
-                      <TouchableOpacity
-                        style={[styles.notifPillBtn, { borderColor: meta.color, backgroundColor: meta.color + '10' }]}
-                        onPress={() => handleNotificationAction(n)}
-                        activeOpacity={0.8}
-                      >
-                        <Text style={[styles.notifPillBtnText, { color: meta.color }]}>
-                          {meta.btnText} ›
-                        </Text>
-                      </TouchableOpacity>
                     </View>
                     <Text style={styles.notifBody}>{n.message || n.body}</Text>
                     <Text style={styles.notifTime}>
@@ -594,18 +585,7 @@ const AIAssistantView: React.FC<{ user: any }> = ({ user }) => {
                     Received: {selectedNotif.createdAt ? new Date(selectedNotif.createdAt).toLocaleString() : 'Recently'}
                   </Text>
 
-                  <View style={styles.notifModalActionsRow}>
-                    <TouchableOpacity
-                      style={[styles.notifPrimaryActionBtn, { backgroundColor: selectedMeta.color }]}
-                      onPress={() => handleNotificationAction(selectedNotif)}
-                      activeOpacity={0.8}
-                    >
-                      <Ionicons name="arrow-forward-circle-outline" size={16} color="#FFFFFF" />
-                      <Text style={styles.notifPrimaryActionBtnText}>
-                        {selectedMeta.actionLabel}
-                      </Text>
-                    </TouchableOpacity>
-
+                  <View style={{ marginTop: 14 }}>
                     <TouchableOpacity
                       style={styles.notifDismissBtn}
                       onPress={() => setSelectedNotif(null)}
@@ -635,8 +615,8 @@ const AIAssistantView: React.FC<{ user: any }> = ({ user }) => {
             onPress={() => setActiveSection('none')}
             activeOpacity={0.7}
           >
-            <Ionicons name="arrow-back" size={20} color={COLORS.textDark} />
-            <Text style={styles.backBtnText}>More</Text>
+            <Ionicons name={activeSection === 'notifications' ? "close" : "arrow-back"} size={20} color={COLORS.textDark} />
+            <Text style={styles.backBtnText}>{activeSection === 'notifications' ? 'Close' : 'More'}</Text>
           </TouchableOpacity>
           <Text style={styles.subHeaderTitle} numberOfLines={1}>{activeItem?.title}</Text>
         </View>

@@ -3589,86 +3589,31 @@ export const TrainerMoreScreen: React.FC<{ initialSection?: TrainerMoreKey }> = 
               </View>
             </View>
 
-            {/* Unread Pill & Mark All Read Action */}
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 12, borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,0.15)', paddingTop: 10 }}>
+            {/* Unread Pill */}
+            <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginTop: 12, borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,0.15)', paddingTop: 10 }}>
               <View style={{ backgroundColor: 'rgba(255,255,255,0.2)', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 12 }}>
                 <Text style={{ fontSize: 11, fontWeight: '800', color: '#FFFFFF' }}>{unreadCount} Unread</Text>
               </View>
-
-              <TouchableOpacity
-                style={{ flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: '#FFFFFF', paddingHorizontal: 10, paddingVertical: 5, borderRadius: 8 }}
-                onPress={markAllAsRead}
-                disabled={unreadCount === 0}
-                activeOpacity={0.8}
-              >
-                <Ionicons name="checkmark-done" size={14} color="#EA580C" />
-                <Text style={{ fontSize: 11, fontWeight: '700', color: '#111827' }}>Mark all read</Text>
-              </TouchableOpacity>
             </View>
           </View>
 
           {/* =========================================================================
-              FILTER TABS BAR (All, Unread, Clients, Alerts)
-              ========================================================================= */}
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, paddingVertical: 2 }}>
-            <TouchableOpacity
-              style={[styles.notifFilterPill, notificationFilter === 'all' && styles.notifFilterPillActive]}
-              onPress={() => setNotificationFilter('all')}
-              activeOpacity={0.8}
-            >
-              <Text style={[styles.notifFilterPillText, notificationFilter === 'all' && styles.notifFilterPillTextActive]}>
-                All ({notifications.length})
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.notifFilterPill, notificationFilter === 'unread' && styles.notifFilterPillActive]}
-              onPress={() => setNotificationFilter('unread')}
-              activeOpacity={0.8}
-            >
-              <Text style={[styles.notifFilterPillText, notificationFilter === 'unread' && styles.notifFilterPillTextActive]}>
-                Unread ({unreadCount})
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.notifFilterPill, notificationFilter === 'clients' && styles.notifFilterPillActive]}
-              onPress={() => setNotificationFilter('clients')}
-              activeOpacity={0.8}
-            >
-              <Text style={[styles.notifFilterPillText, notificationFilter === 'clients' && styles.notifFilterPillTextActive]}>
-                Clients
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.notifFilterPill, notificationFilter === 'alerts' && styles.notifFilterPillActive]}
-              onPress={() => setNotificationFilter('alerts')}
-              activeOpacity={0.8}
-            >
-              <Text style={[styles.notifFilterPillText, notificationFilter === 'alerts' && styles.notifFilterPillTextActive]}>
-                Alerts
-              </Text>
-            </TouchableOpacity>
-          </ScrollView>
-
-          {/* =========================================================================
-              NOTIFICATIONS LIST (Clickable items that open the user's exact modal)
+              NOTIFICATIONS LIST
               ========================================================================= */}
           {loading && !refreshing ? (
             <ActivityIndicator size="small" color={COLORS.primary} style={{ marginTop: 20 }} />
-          ) : filteredNotifications.length === 0 ? (
+          ) : notifications.length === 0 ? (
             <View style={styles.cardContainer}>
               <View style={{ padding: 36, alignItems: 'center' }}>
                 <Ionicons name="notifications-outline" size={40} color="#CBD5E1" />
                 <Text style={{ fontSize: 16, fontWeight: '700', color: '#111827', marginTop: 10 }}>No Notifications</Text>
                 <Text style={{ fontSize: 12, color: '#64748B', textAlign: 'center', marginTop: 4 }}>
-                  You have no notifications in this category.
+                  You have no notifications at this time.
                 </Text>
               </View>
             </View>
           ) : (
-            filteredNotifications.map((n, i) => {
+            notifications.map((n, i) => {
               const isUnread = !n.isRead;
               const typeIcon = n.type === 'success' ? 'checkmark-circle' : n.type === 'alert' ? 'alert-circle' : 'information-circle';
               const typeColor = n.type === 'success' ? '#16A34A' : n.type === 'alert' ? '#DC2626' : '#EA580C';
@@ -3704,10 +3649,6 @@ export const TrainerMoreScreen: React.FC<{ initialSection?: TrainerMoreKey }> = 
                         <Text style={styles.notifTime}>
                           {n.createdAt ? new Date(n.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' }) + ', ' + new Date(n.createdAt).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }).toLowerCase() : '31 Oct, 10:14 am'}
                         </Text>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 2 }}>
-                          <Text style={{ fontSize: 11, fontWeight: '700', color: '#EA580C' }}>View</Text>
-                          <Ionicons name="chevron-forward" size={12} color="#EA580C" />
-                        </View>
                       </View>
                     </View>
                   </View>
@@ -3784,38 +3725,13 @@ export const TrainerMoreScreen: React.FC<{ initialSection?: TrainerMoreKey }> = 
                   </View>
                 </View>
 
-                {/* Go to Related Page Button */}
+                {/* Close Button Only */}
                 <TouchableOpacity
                   style={styles.notifGoToPageBtn}
-                  onPress={() => {
-                    const link = (selectedNotification?.link || '').toLowerCase();
-                    const related = (selectedNotification?.relatedSection || '').toLowerCase();
-                    const titleText = (selectedNotification?.title || '').toLowerCase();
-                    const msgText = (selectedNotification?.message || '').toLowerCase();
-                    setSelectedNotification(null);
-
-                    if (related === 'applications' || link.includes('application') || titleText.includes('application') || msgText.includes('application')) {
-                      setActiveSection('applications');
-                    } else if (related === 'jobs' || link.includes('job') || titleText.includes('job') || msgText.includes('hiring') || msgText.includes('vacancy')) {
-                      setActiveSection('jobs');
-                    } else if (related === 'financials' || link.includes('fee') || link.includes('payment') || titleText.includes('payment') || titleText.includes('fee') || msgText.includes('payout')) {
-                      setActiveSection('financials');
-                    } else if (related === 'messages' || link.includes('message') || titleText.includes('message') || msgText.includes('chat') || msgText.includes('message')) {
-                      setActiveSection('messages');
-                    } else if (link.includes('review') || titleText.includes('review') || titleText.includes('rating') || msgText.includes('review') || msgText.includes('rating')) {
-                      setActiveSection('reviews');
-                    } else if (titleText.includes('reward') || titleText.includes('award') || titleText.includes('performance')) {
-                      setActiveSection('rewards');
-                    } else if (titleText.includes('feedback') || msgText.includes('feedback')) {
-                      setActiveSection('feedback');
-                    } else {
-                      setActiveSection('applications');
-                    }
-                  }}
+                  onPress={() => setSelectedNotification(null)}
                   activeOpacity={0.8}
                 >
-                  <Text style={styles.notifGoToPageBtnText}>Go to Related Page</Text>
-                  <Ionicons name="open-outline" size={15} color="#FFFFFF" />
+                  <Text style={styles.notifGoToPageBtnText}>Close</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -4812,8 +4728,8 @@ export const TrainerMoreScreen: React.FC<{ initialSection?: TrainerMoreKey }> = 
             onPress={() => setActiveSection('none')}
             activeOpacity={0.7}
           >
-            <Ionicons name="arrow-back" size={20} color={COLORS.textDark} />
-            <Text style={styles.backBtnText}>More</Text>
+            <Ionicons name={activeSection === 'notifications' ? "close" : "arrow-back"} size={20} color={COLORS.textDark} />
+            <Text style={styles.backBtnText}>{activeSection === 'notifications' ? 'Close' : 'More'}</Text>
           </TouchableOpacity>
           <Text style={styles.subNavTitle} numberOfLines={1}>{activeMod?.title}</Text>
           <View style={{ width: 60 }} />

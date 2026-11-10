@@ -17,6 +17,8 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { api } from '../../api/client';
 import { COLORS } from '../../constants/theme';
+import { MobileExerciseVideoPlayer } from '../../components/MobileExerciseVideoPlayer';
+import { StickFigureAnimation } from '../../components/StickFigureAnimation';
 
 export interface ExerciseVideoItem {
   id: string;
@@ -164,9 +166,9 @@ const DEFAULT_ANIMATED_EXERCISES = [
     equipment: 'Dumbbells',
     defaultSets: 3,
     defaultRepetitions: 12,
-    defaultRest: 45,
-    description: 'Targeted arm builder focusing on bicep peak contraction, supinating wrists, and eccentric control.',
-    instructions: 'Pin elbows to sides, curl dumbbells upward while turning palms up, squeeze bicep peak, and lower slowly.'
+    defaultRest: 30,
+    description: 'Isolation arm builder creating bicep peak, arm thickness, and elbow flexor endurance.',
+    instructions: 'Pin elbows to your ribs. Curl weights smoothly upward with supination at the top, lower with a 2-second negative.'
   },
   {
     id: 'ex2',
@@ -183,6 +185,32 @@ const DEFAULT_ANIMATED_EXERCISES = [
   },
   {
     id: 'ex3',
+    name: 'Pull-ups',
+    category: 'Back',
+    targetMuscle: 'Latissimus Dorsi',
+    difficulty: 'Intermediate',
+    equipment: 'Pull-up Bar',
+    defaultSets: 3,
+    defaultRepetitions: 8,
+    defaultRest: 60,
+    description: 'Supreme vertical pulling exercise for a wide V-taper back, powerful biceps, and grip strength.',
+    instructions: 'Overhand grip wider than shoulders. Pull chest towards bar while driving elbows down. Lower with control to dead hang.'
+  },
+  {
+    id: 'ex4',
+    name: 'Barbell Bench Press',
+    category: 'Chest',
+    targetMuscle: 'Pectoralis Major, Triceps',
+    difficulty: 'Intermediate',
+    equipment: 'Barbell & Flat Bench',
+    defaultSets: 4,
+    defaultRepetitions: 10,
+    defaultRest: 60,
+    description: 'Compound upper-body power movement maximizing chest hypertrophy and pushing strength.',
+    instructions: 'Lie flat on bench, eyes under bar. Grip bar shoulder-width, lower to mid-chest with control, press upward smoothly.'
+  },
+  {
+    id: 'ex5',
     name: 'Barbell Back Squats',
     category: 'Legs',
     targetMuscle: 'Quadriceps, Glutes',
@@ -195,20 +223,20 @@ const DEFAULT_ANIMATED_EXERCISES = [
     instructions: 'Position bar across upper traps. Hinge hips back and descend until thighs are parallel to ground. Drive through mid-foot.'
   },
   {
-    id: 'ex4',
-    name: 'Barbell Bench Press',
+    id: 'ex6',
+    name: 'Push-ups',
     category: 'Chest',
     targetMuscle: 'Pectoralis Major, Triceps',
-    difficulty: 'Intermediate',
-    equipment: 'Barbell & Flat Bench',
-    defaultSets: 4,
-    defaultRepetitions: 10,
-    defaultRest: 60,
-    description: 'Compound upper-body power movement maximizing chest hypertrophy and pressing strength.',
-    instructions: 'Lie flat on bench. Grip bar shoulder-width, lower with control to mid-chest, press upward smoothly.'
+    difficulty: 'Beginner',
+    equipment: 'Bodyweight',
+    defaultSets: 3,
+    defaultRepetitions: 12,
+    defaultRest: 45,
+    description: 'Fundamental horizontal pressing movement building chest and core endurance.',
+    instructions: 'Plank position with hands shoulder-width. Lower until chest is 2 inches off floor. Press up firmly into floor.'
   },
   {
-    id: 'ex5',
+    id: 'ex7',
     name: 'Overhead Shoulder Press',
     category: 'Shoulders',
     targetMuscle: 'Deltoids, Triceps',
@@ -221,7 +249,7 @@ const DEFAULT_ANIMATED_EXERCISES = [
     instructions: 'Press dumbbells vertically overhead until locked out. Lower under control to chin level.'
   },
   {
-    id: 'ex6',
+    id: 'ex8',
     name: 'Plank Hold',
     category: 'Core',
     targetMuscle: 'Rectus Abdominis, Core',
@@ -232,6 +260,32 @@ const DEFAULT_ANIMATED_EXERCISES = [
     defaultRest: 45,
     description: 'Isometric core strength and spinal stabilization exercise.',
     instructions: 'Hold straight forearm plank line from heels to head. Brace abs and glutes firmly.'
+  },
+  {
+    id: 'ex9',
+    name: 'Dumbbell Walking Lunges',
+    category: 'Legs',
+    targetMuscle: 'Quadriceps, Glutes',
+    difficulty: 'Beginner',
+    equipment: 'Dumbbells',
+    defaultSets: 3,
+    defaultRepetitions: 12,
+    defaultRest: 60,
+    description: 'Unilateral leg strength, balance, and athletic conditioning.',
+    instructions: 'Step forward into 90-degree knee bend. Push through front heel to step through to next leg.'
+  },
+  {
+    id: 'ex10',
+    name: 'Russian Twists',
+    category: 'Core',
+    targetMuscle: 'Obliques, Abdominals',
+    difficulty: 'Beginner',
+    equipment: 'Bodyweight / Plate',
+    defaultSets: 3,
+    defaultRepetitions: 20,
+    defaultRest: 45,
+    description: 'Rotational core power and oblique definition.',
+    instructions: 'Sit on floor, lean back 45 degrees with feet elevated. Rotate torso side to side touching hands to floor.'
   }
 ];
 
@@ -1033,7 +1087,7 @@ export const CustomerTrainerPlanScreen: React.FC = () => {
                   </View>
                 </View>
 
-                {/* Animated Cards Grid */}
+                {/* Animated Cards Grid Matching Web (100% Identical) */}
                 <View style={styles.cardsGrid}>
                   {filteredExercises.map(ex => (
                     <TouchableOpacity
@@ -1042,39 +1096,70 @@ export const CustomerTrainerPlanScreen: React.FC = () => {
                       onPress={() => setSelectedExerciseModal(ex)}
                       activeOpacity={0.9}
                     >
-                      {/* Animated Simulation Banner */}
+                      {/* Animated Simulation Banner matching Web Image 2 & 3 */}
                       <View style={styles.exerciseAnimatedBox}>
-                        <View style={styles.animatedFigure}>
-                          <Ionicons name="body-outline" size={36} color="#EA580C" />
+                        {/* Live Biomechanical Stick Figure Simulation */}
+                        <View style={styles.stickFigureWrapper}>
+                          <StickFigureAnimation exerciseName={ex.name} category={ex.category} />
                         </View>
-                        <View style={styles.animatedTopRow}>
+
+                        {/* Top-Left Category & Difficulty Badges */}
+                        <View style={styles.cardTopBadgesLeft}>
                           <View style={styles.animatedCatPill}>
                             <Text style={styles.animatedCatText}>{ex.category}</Text>
                           </View>
-                          <View style={styles.animatedDiffPill}>
-                            <Text style={styles.animatedDiffText}>{ex.difficulty || 'Beginner'}</Text>
+                          <View style={[
+                            styles.animatedDiffPill,
+                            ex.difficulty === 'Intermediate' && styles.diffIntermediatePill,
+                            ex.difficulty === 'Advanced' && styles.diffAdvancedPill,
+                          ]}>
+                            <Text style={[
+                              styles.animatedDiffText,
+                              ex.difficulty === 'Intermediate' && styles.diffIntermediateText,
+                              ex.difficulty === 'Advanced' && styles.diffAdvancedText,
+                            ]}>
+                              {ex.difficulty || 'Beginner'}
+                            </Text>
                           </View>
+                        </View>
+
+                        {/* Top-Right Animated Badge */}
+                        <View style={styles.cardTopBadgesRight}>
                           <View style={styles.sparkleBadge}>
                             <Ionicons name="sparkles" size={10} color="#FFFFFF" />
                             <Text style={styles.sparkleBadgeText}>Animated</Text>
                           </View>
                         </View>
+
+                        {/* Bottom-Left 1-MIN FORM DEMO Pill */}
+                        <View style={styles.formDemoPill}>
+                          <View style={styles.formDemoDot} />
+                          <Text style={styles.formDemoText}>1-MIN FORM DEMO</Text>
+                        </View>
+
+                        {/* Bottom-Right Circular Play Button */}
                         <View style={styles.animatedPlayBtn}>
-                          <Ionicons name="play" size={14} color="#FFFFFF" />
+                          <Ionicons name="play" size={16} color="#FFFFFF" style={{ marginLeft: 2 }} />
                         </View>
                       </View>
 
-                      {/* Content */}
+                      {/* Content Matching Web Card Structure */}
                       <View style={styles.exerciseCardBody}>
+                        {/* Row with Orange Category on left, Target Muscle on right */}
                         <View style={styles.exerciseMuscleHeader}>
+                          <Text style={styles.cardCategoryLabel}>{ex.category}</Text>
                           <Text style={styles.muscleTargetText}>{ex.targetMuscle}</Text>
                         </View>
+
+                        {/* Exercise Name */}
                         <Text style={styles.exerciseLibraryName}>{ex.name}</Text>
+
+                        {/* Description */}
                         <Text style={styles.exerciseLibraryDesc} numberOfLines={2}>
                           {ex.description || ex.instructions}
                         </Text>
 
-                        {/* Sets & Reps specs */}
+                        {/* Sets, Reps, Rest Specs Box */}
                         <View style={styles.setsRepsRow}>
                           <View style={styles.setCol}>
                             <Text style={styles.setColLabel}>SETS</Text>
@@ -1090,15 +1175,20 @@ export const CustomerTrainerPlanScreen: React.FC = () => {
                           </View>
                         </View>
 
-                        {/* Watch button */}
-                        <TouchableOpacity
-                          style={styles.watchAnimatedBtn}
-                          onPress={() => setSelectedExerciseModal(ex)}
-                          activeOpacity={0.8}
-                        >
-                          <Ionicons name="play" size={12} color="#EA580C" />
-                          <Text style={styles.watchAnimatedBtnText}>Watch Animated Guide</Text>
-                        </TouchableOpacity>
+                        {/* Bottom Bar: Equipment on left, Watch button on right */}
+                        <View style={styles.cardBottomBar}>
+                          <Text style={styles.cardEquipmentText} numberOfLines={1}>
+                            {ex.equipment || 'Gym Equipment'}
+                          </Text>
+                          <TouchableOpacity
+                            style={styles.watchAnimatedBtn}
+                            onPress={() => setSelectedExerciseModal(ex)}
+                            activeOpacity={0.8}
+                          >
+                            <Ionicons name="play" size={12} color="#C2410C" />
+                            <Text style={styles.watchAnimatedBtnText}>Watch Animated Guide</Text>
+                          </TouchableOpacity>
+                        </View>
                       </View>
                     </TouchableOpacity>
                   ))}
@@ -1433,40 +1523,49 @@ export const CustomerTrainerPlanScreen: React.FC = () => {
       </Modal>
 
       {/* ════════════════════════════════════════════════════════════ */}
-      {/* ANIMATED EXERCISE DETAIL MODAL                               */}
+      {/* ANIMATED EXERCISE DETAIL MODAL (Centered & Formatted)        */}
       {/* ════════════════════════════════════════════════════════════ */}
       <Modal
         visible={Boolean(selectedExerciseModal)}
-        animationType="slide"
+        animationType="fade"
         transparent={true}
         onRequestClose={() => setSelectedExerciseModal(null)}
       >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
+        <TouchableOpacity
+          style={styles.exerciseModalOverlay}
+          activeOpacity={1}
+          onPress={() => setSelectedExerciseModal(null)}
+        >
+          <TouchableOpacity
+            style={styles.exerciseModalCard}
+            activeOpacity={1}
+            onPress={(e) => e.stopPropagation?.()}
+          >
             {selectedExerciseModal && (
               <>
-                <View style={styles.modalHeader}>
+                <View style={styles.exerciseModalHeader}>
                   <View style={{ flex: 1, paddingRight: 8 }}>
                     <Text style={styles.modalTitle}>{selectedExerciseModal.name}</Text>
-                    <Text style={{ fontSize: 11, color: '#EA580C', fontWeight: '700' }}>
+                    <Text style={{ fontSize: 11, color: '#EA580C', fontWeight: '700', marginTop: 2 }}>
                       {selectedExerciseModal.category} • {selectedExerciseModal.difficulty || 'All Levels'}
                     </Text>
                   </View>
                   <TouchableOpacity onPress={() => setSelectedExerciseModal(null)} style={styles.closeBtn}>
-                    <Ionicons name="close" size={20} color="#64748B" />
+                    <Ionicons name="close" size={22} color="#64748B" />
                   </TouchableOpacity>
                 </View>
 
-                <ScrollView style={styles.modalScroll} showsVerticalScrollIndicator={false}>
-                  {/* Animation Visualizer Box */}
-                  <View style={styles.modalAnimatedBox}>
-                    <Ionicons name="barbell" size={48} color="#EA580C" />
-                    <Text style={styles.modalAnimatedTitle}>{selectedExerciseModal.name}</Text>
-                    <View style={styles.modalAnimatedBadge}>
-                      <Ionicons name="sparkles" size={12} color="#FFFFFF" />
-                      <Text style={styles.modalAnimatedBadgeText}>Procedural Animated Demonstration</Text>
-                    </View>
-                  </View>
+                <ScrollView style={styles.exerciseModalScroll} showsVerticalScrollIndicator={false}>
+                  {/* Full AI Animated Technique Video Player */}
+                  <MobileExerciseVideoPlayer
+                    exerciseName={selectedExerciseModal.name}
+                    category={selectedExerciseModal.category || selectedExerciseModal.targetMuscle}
+                    targetMuscle={selectedExerciseModal.targetMuscle || selectedExerciseModal.category}
+                    difficulty={selectedExerciseModal.difficulty || 'All Levels'}
+                    instructions={selectedExerciseModal.instructions || selectedExerciseModal.description}
+                    coachTips={selectedExerciseModal.instructions || selectedExerciseModal.description}
+                    duration={60}
+                  />
 
                   <View style={styles.modalSpecsCard}>
                     <Text style={styles.modalSpecsHeading}>Execution Instructions</Text>
@@ -1492,11 +1591,12 @@ export const CustomerTrainerPlanScreen: React.FC = () => {
                       </View>
                     </View>
                   </View>
+                  <View style={{ height: 16 }} />
                 </ScrollView>
               </>
             )}
-          </View>
-        </View>
+          </TouchableOpacity>
+        </TouchableOpacity>
       </Modal>
     </View>
   );
@@ -2271,157 +2371,238 @@ const styles = StyleSheet.create({
   },
   exerciseLibraryCard: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 18,
+    borderRadius: 22,
     borderWidth: 1,
     borderColor: '#E2E8F0',
     overflow: 'hidden',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.04,
-    shadowRadius: 5,
+    shadowOpacity: 0.05,
+    shadowRadius: 6,
     elevation: 2,
+    marginBottom: 16,
   },
   exerciseAnimatedBox: {
-    height: 120,
-    backgroundColor: '#F8FAFC',
+    height: 155,
+    backgroundColor: '#E2E8F0',
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
+    overflow: 'hidden',
     borderBottomWidth: 1,
-    borderBottomColor: '#E2E8F0',
+    borderBottomColor: '#CBD5E1',
   },
-  animatedFigure: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: '#FFF7ED',
+  stickFigureWrapper: {
+    width: '100%',
+    height: '100%',
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: '#FFEDD5',
   },
-  animatedTopRow: {
+  cardTopBadgesLeft: {
     position: 'absolute',
-    top: 8,
-    left: 8,
-    right: 8,
+    top: 10,
+    left: 10,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    gap: 6,
+    zIndex: 10,
+  },
+  cardTopBadgesRight: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    zIndex: 10,
   },
   animatedCatPill: {
     backgroundColor: 'rgba(0,0,0,0.75)',
-    paddingHorizontal: 7,
-    paddingVertical: 2,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
     borderRadius: 6,
   },
   animatedCatText: {
-    fontSize: 9.5,
+    fontSize: 10,
     fontWeight: '800',
     color: '#FFFFFF',
+    textTransform: 'uppercase',
   },
   animatedDiffPill: {
     backgroundColor: '#FFF7ED',
     borderWidth: 1,
     borderColor: '#FFEDD5',
-    paddingHorizontal: 7,
-    paddingVertical: 2,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
     borderRadius: 6,
   },
   animatedDiffText: {
-    fontSize: 9.5,
+    fontSize: 10,
     fontWeight: '800',
-    color: '#EA580C',
+    color: '#C2410C',
+    textTransform: 'uppercase',
+  },
+  diffIntermediatePill: {
+    backgroundColor: '#D97706',
+    borderWidth: 0,
+  },
+  diffIntermediateText: {
+    color: '#FFFFFF',
+  },
+  diffAdvancedPill: {
+    backgroundColor: '#E11D48',
+    borderWidth: 0,
+  },
+  diffAdvancedText: {
+    color: '#FFFFFF',
   },
   sparkleBadge: {
-    backgroundColor: '#EA580C',
+    backgroundColor: '#C2410C',
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 3,
-    paddingHorizontal: 6,
-    paddingVertical: 2,
+    gap: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
     borderRadius: 6,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.15,
+    shadowRadius: 2,
+    elevation: 2,
   },
   sparkleBadgeText: {
-    fontSize: 9,
+    fontSize: 10,
     fontWeight: '800',
     color: '#FFFFFF',
   },
+  formDemoPill: {
+    position: 'absolute',
+    bottom: 10,
+    left: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    backgroundColor: 'rgba(0,0,0,0.65)',
+    paddingHorizontal: 8,
+    paddingVertical: 3.5,
+    borderRadius: 6,
+    zIndex: 10,
+  },
+  formDemoDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: '#EF4444',
+  },
+  formDemoText: {
+    fontSize: 9.5,
+    fontWeight: '800',
+    color: '#FFFFFF',
+    letterSpacing: 0.5,
+  },
   animatedPlayBtn: {
     position: 'absolute',
-    bottom: 8,
-    right: 8,
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: '#EA580C',
+    bottom: 10,
+    right: 10,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#C2410C',
     alignItems: 'center',
     justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3,
+    elevation: 3,
+    zIndex: 10,
   },
   exerciseCardBody: {
-    padding: 14,
-    gap: 6,
+    padding: 16,
+    gap: 4,
   },
   exerciseMuscleHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    marginBottom: 2,
+  },
+  cardCategoryLabel: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#EA580C',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
   },
   muscleTargetText: {
     fontSize: 11,
-    fontWeight: '700',
+    fontWeight: '600',
     color: '#64748B',
   },
   exerciseLibraryName: {
-    fontSize: 15,
-    fontWeight: '900',
+    fontSize: 18,
+    fontWeight: '800',
     color: '#111827',
   },
   exerciseLibraryDesc: {
-    fontSize: 11.5,
+    fontSize: 12,
     color: '#64748B',
-    lineHeight: 16,
+    lineHeight: 17,
+    marginTop: 2,
   },
   setsRepsRow: {
     flexDirection: 'row',
     backgroundColor: '#F8FAFC',
-    borderRadius: 10,
+    borderRadius: 12,
     borderWidth: 1,
     borderColor: '#E2E8F0',
-    paddingVertical: 8,
-    marginVertical: 4,
+    paddingVertical: 9,
+    marginTop: 10,
   },
   setCol: {
     flex: 1,
     alignItems: 'center',
   },
   setColLabel: {
-    fontSize: 9,
+    fontSize: 9.5,
     fontWeight: '800',
     color: '#64748B',
+    textTransform: 'uppercase',
   },
   setColVal: {
-    fontSize: 11.5,
-    fontWeight: '900',
+    fontSize: 13,
+    fontWeight: '800',
     color: '#111827',
-    marginTop: 1,
+    marginTop: 2,
+  },
+  cardBottomBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderTopWidth: 1,
+    borderTopColor: '#E2E8F0',
+    paddingTop: 12,
+    marginTop: 10,
+  },
+  cardEquipmentText: {
+    fontSize: 12,
+    color: '#64748B',
+    fontWeight: '500',
+    flex: 1,
+    marginRight: 8,
   },
   watchAnimatedBtn: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    gap: 6,
-    backgroundColor: '#FFF7ED',
+    gap: 5,
+    backgroundColor: '#F8FAFC',
     borderWidth: 1,
-    borderColor: '#FFEDD5',
-    paddingVertical: 8,
-    borderRadius: 10,
-    marginTop: 2,
+    borderColor: '#E2E8F0',
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+    borderRadius: 12,
   },
   watchAnimatedBtnText: {
-    fontSize: 12,
-    fontWeight: '800',
-    color: '#EA580C',
+    fontSize: 11.5,
+    fontWeight: '700',
+    color: '#C2410C',
   },
 
   /* ── Tab 5: Gym Equipments (Matching Web Screenshot 1 & 4) ── */
@@ -2648,6 +2829,39 @@ const styles = StyleSheet.create({
   },
 
   /* ── Modals ── */
+  exerciseModalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
+  },
+  exerciseModalCard: {
+    width: '100%',
+    maxWidth: 420,
+    maxHeight: '88%',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 22,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.2,
+    shadowRadius: 16,
+    elevation: 12,
+  },
+  exerciseModalHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F1F5F9',
+  },
+  exerciseModalScroll: {
+    padding: 14,
+  },
   modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.6)',
