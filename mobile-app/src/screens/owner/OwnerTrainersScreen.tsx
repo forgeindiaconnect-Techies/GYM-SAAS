@@ -248,25 +248,29 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
   });
   const [updatingTrainer, setUpdatingTrainer] = useState(false);
 
-  // Form state for Post Job (Matching Web Images 1 & 2)
+  // Form state for Post Job (Matching Web GymAdminPostJob.tsx)
+  const [editingJobId, setEditingJobId] = useState<string | null>(null);
+  const [customExpertiseInput, setCustomExpertiseInput] = useState('');
+  const [gymData, setGymData] = useState<any>(null);
   const [postJobForm, setPostJobForm] = useState({
     title: '',
-    gymName: user?.gymName || 'Perfect Fitness Studio',
+    gymName: user?.gymName || 'Your Gym',
     employmentType: 'Full-time',
     trainingMode: 'Offline' as 'Offline' | 'Online' | 'Hybrid',
     experience: '1-2 Years',
     vacanciesCount: '1',
-    salaryMin: '25000',
-    salaryMax: '45000',
+    salaryMin: '',
+    salaryMax: '',
     salaryType: 'Monthly',
     isSalaryNegotiable: false,
-    paymentFrequency: 'Per Month',
-    location: 'RK Towers, Rayakottai Rd, opposite to HF',
-    workingHours: '6:00 AM - 2:00 PM or Flexible',
-    deadline: '11/30/2026',
+    location: '',
+    workingHours: '',
+    deadline: '',
     description: '',
     responsibilities: '',
-    expertise: ['Strength & Conditioning', 'Functional Training'] as string[]
+    qualifications: '',
+    certifications: '',
+    expertise: [] as string[]
   });
   const [publishingJob, setPublishingJob] = useState(false);
 
@@ -313,14 +317,26 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
       setLoading(true);
       const branchParam = user?.branchId ? `?branchId=${user.branchId}` : '';
 
-      const [trainersRes, jobsRes, appsRes, hiredRes, feesRes, historyRes] = await Promise.allSettled([
+      const [trainersRes, jobsRes, appsRes, hiredRes, feesRes, historyRes, gymRes] = await Promise.allSettled([
         api.get(`/trainers${branchParam}`),
         api.get(`/hiring/owner/jobs${branchParam}`).catch(() => api.get(`/hiring/jobs${branchParam}`)),
         api.get(`/hiring/admin/applications${branchParam}`).catch(() => api.get(`/hiring/applications${branchParam}`)),
         api.get(`/hiring/owner/hired${branchParam}`).catch(() => api.get(`/hiring/hired${branchParam}`)),
         api.get(`/trainer-payments/fees${branchParam}`),
-        api.get(`/trainer-payments/history${branchParam}`)
+        api.get(`/trainer-payments/history${branchParam}`),
+        user?.gymId ? api.get(`/gyms/${user.gymId}`) : Promise.resolve(null as any)
       ]);
+
+      if (gymRes.status === 'fulfilled' && gymRes.value?.data?.gym) {
+        const g = gymRes.value.data.gym;
+        setGymData(g);
+        const gymLoc = g.location?.address || g.location?.city || g.address || '';
+        setPostJobForm((prev) => ({
+          ...prev,
+          gymName: g.name || prev.gymName,
+          location: prev.location || gymLoc,
+        }));
+      }
 
       let mergedTrainersList: any[] = [];
       let feeList: any[] = [];
@@ -1035,13 +1051,86 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
     }
   };
 
+  const getDefaultGymLocation = () =>
+    gymData?.location?.address || gymData?.location?.city || gymData?.address || '';
+
+  const resetPostJobForm = () => {
+    setEditingJobId(null);
+    setCustomExpertiseInput('');
+    setPostJobForm({
+      title: '',
+      gymName: gymData?.name || user?.gymName || 'Your Gym',
+      employmentType: 'Full-time',
+      trainingMode: 'Offline',
+      experience: '1-2 Years',
+      vacanciesCount: '1',
+      salaryMin: '',
+      salaryMax: '',
+      salaryType: 'Monthly',
+      isSalaryNegotiable: false,
+      location: getDefaultGymLocation(),
+      workingHours: '',
+      deadline: '',
+      description: '',
+      responsibilities: '',
+      qualifications: '',
+      certifications: '',
+      expertise: []
+    });
+  };
+
+  const parseDeadlineDate = (raw: string): Date | undefined => {
+    const trimmed = raw.trim();
+    if (!trimmed) return undefined;
+    if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) {
+      const d = new Date(`${trimmed}T00:00:00`);
+      return Number.isNaN(d.getTime()) ? undefined : d;
+    }
+    const slashMatch = trimmed.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+    if (slashMatch) {
+      const d = new Date(`${slashMatch[3]}-${slashMatch[1].padStart(2, '0')}-${slashMatch[2].padStart(2, '0')}T00:00:00`);
+      return Number.isNaN(d.getTime()) ? undefined : d;
+    }
+    const parsed = new Date(trimmed);
+    return Number.isNaN(parsed.getTime()) ? undefined : parsed;
+  };
+
+  const isDeadlineExpired = (raw?: string | Date): boolean => {
+    if (!raw) return false;
+    const d = raw instanceof Date ? new Date(raw.getTime()) : parseDeadlineDate(String(raw));
+    if (!d) return false;
+    d.setHours(23, 59, 59, 999);
+    return d.getTime() < Date.now();
+  };
+
+  const handleAddCustomExpertise = () => {
+    const val = customExpertiseInput.trim();
+    if (!val) return;
+    if (!postJobForm.expertise.includes(val)) {
+      setPostJobForm(prev => ({
+        ...prev,
+        expertise: [...prev.expertise, val]
+      }));
+    }
+    setCustomExpertiseInput('');
+  };
+
   const handlePublishJob = async (status: 'Published' | 'Draft' = 'Published') => {
     if (!postJobForm.title.trim()) {
-      Alert.alert('Required', 'Please enter a job vacancy title.');
+      Alert.alert('Required', 'Please enter a job title.');
+      return;
+    }
+    if (!postJobForm.description.trim()) {
+      Alert.alert('Required', 'Please enter a job description.');
+      return;
+    }
+    if (!postJobForm.location.trim()) {
+      Alert.alert('Required', 'Please enter a work location.');
       return;
     }
     try {
       setPublishingJob(true);
+      const parsedDeadline = parseDeadlineDate(postJobForm.deadline);
       const payload = {
         title: postJobForm.title.trim(),
         employmentType: postJobForm.employmentType,
@@ -1050,41 +1139,34 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
         salaryMin: postJobForm.salaryMin ? Number(postJobForm.salaryMin) : undefined,
         salaryMax: postJobForm.salaryMax ? Number(postJobForm.salaryMax) : undefined,
         salaryType: postJobForm.salaryType,
+        isSalaryNegotiable: Boolean(postJobForm.isSalaryNegotiable),
         location: postJobForm.location.trim(),
-        vacanciesCount: Number(postJobForm.vacanciesCount) || 1,
-        description: postJobForm.description.trim() || 'Join our team as a certified coach.',
+        workingHours: postJobForm.workingHours.trim(),
+        deadline: parsedDeadline,
+        vacanciesCount: Math.max(1, Number(postJobForm.vacanciesCount) || 1),
+        description: postJobForm.description.trim(),
         responsibilities: postJobForm.responsibilities.trim(),
+        qualifications: postJobForm.qualifications.trim(),
+        certifications: postJobForm.certifications.trim(),
         expertise: postJobForm.expertise,
         status: status,
         gymId: user?.gymId,
         branchId: user?.branchId
       };
 
-      const res = await api.post('/hiring/owner/jobs', payload).catch(() => api.post('/hiring/jobs', payload));
-      Alert.alert('Success', `Job vacancy ${status === 'Draft' ? 'saved as Draft' : 'published to candidate board'}!`);
-      setPostJobForm({
-        title: '',
-        gymName: user?.gymName || 'Perfect Fitness Studio',
-        employmentType: 'Full-time',
-        trainingMode: 'Offline',
-        experience: '1-2 Years',
-        vacanciesCount: '1',
-        salaryMin: '25000',
-        salaryMax: '45000',
-        salaryType: 'Monthly',
-        isSalaryNegotiable: false,
-        paymentFrequency: 'Per Month',
-        location: 'RK Towers, Rayakottai Rd, opposite to HF',
-        workingHours: '6:00 AM - 2:00 PM or Flexible',
-        deadline: '11/30/2026',
-        description: '',
-        responsibilities: '',
-        expertise: ['Strength & Conditioning', 'Functional Training']
-      });
+      if (editingJobId) {
+        await api.put(`/hiring/owner/jobs/${editingJobId}`, payload);
+        Alert.alert('Success', 'Job vacancy updated successfully!');
+      } else {
+        await api.post('/hiring/owner/jobs', payload).catch(() => api.post('/hiring/jobs', payload));
+        Alert.alert('Success', status === 'Draft' ? 'Job saved as draft!' : 'Job vacancy published successfully!');
+      }
+
+      resetPostJobForm();
       setHiringSubTab('jobs');
       fetchData();
     } catch (err: any) {
-      Alert.alert('Post Failed', err.response?.data?.message || 'Failed to create job vacancy.');
+      Alert.alert('Post Failed', err.response?.data?.message || 'Failed to save job vacancy.');
     } finally {
       setPublishingJob(false);
     }
@@ -1982,11 +2064,11 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
              TRAINER HIRING SECTION (MATCHING WEB ADMIN HIRING)
              ======================================================= */
           <>
-            {/* SUB-TABS: Post a Job | Manage Jobs | Job Applications | Hired Trainers */}
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.subTabsScroll} contentContainerStyle={styles.subTabsContainer}>
+            {/* SUB-TABS: Manage Jobs | + Post a Job | Applications | Hired */}
+            <View style={styles.subTabsWrapGrid}>
               {[
                 { key: 'jobs', label: `Manage Jobs (${jobs.length})`, icon: 'briefcase' },
-                { key: 'post', label: '+ Post a Job', icon: 'add-circle' },
+                { key: 'post', label: editingJobId ? 'Edit Job' : '+ Post a Job', icon: editingJobId ? 'create' : 'add-circle' },
                 { key: 'applications', label: `Applications (${applications.length})`, icon: 'people' },
                 { key: 'hired', label: `Hired (${hiredTrainers.length})`, icon: 'ribbon' },
               ].map((tab) => {
@@ -1995,7 +2077,12 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
                   <TouchableOpacity
                     key={tab.key}
                     style={[styles.subTabPill, isActive && styles.subTabPillActive]}
-                    onPress={() => setHiringSubTab(tab.key as any)}
+                    onPress={() => {
+                      if (tab.key === 'post' && hiringSubTab !== 'post') {
+                        resetPostJobForm();
+                      }
+                      setHiringSubTab(tab.key as any);
+                    }}
                     activeOpacity={0.7}
                   >
                     <Ionicons 
@@ -2009,7 +2096,7 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
                   </TouchableOpacity>
                 );
               })}
-            </ScrollView>
+            </View>
 
             {/* WEB-MATCHING PAGE HEADER */}
             <View style={styles.pageHeaderRow}>
@@ -2113,20 +2200,20 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
                     </View>
                   ) : (
                     filteredJobs.map((job) => {
-                      const isClosed = job.status === 'Closed' || (job.deadline && new Date(job.deadline) < new Date());
+                      const deadlinePassed = isDeadlineExpired(job.deadline);
+                      const isClosed = job.status === 'Closed' || deadlinePassed;
                       const isPublished = job.status === 'Published' && !isClosed;
-                      const isDraft = job.status === 'Draft';
                       const salaryDisplay = job.salaryMin && job.salaryMax
                         ? `₹${Number(job.salaryMin).toLocaleString('en-IN')} - ₹${Number(job.salaryMax).toLocaleString('en-IN')} / ${job.salaryType || 'Monthly'}`
-                        : (job.salary || '₹20,000 - ₹40,000 / Monthly');
+                        : (job.salaryMin ? `From ₹${Number(job.salaryMin).toLocaleString('en-IN')} / ${job.salaryType || 'Monthly'}` : 'Competitive / Negotiable');
                       const expDisplay = job.experience ? `Experience: ${job.experience}` : 'Experience: 1-2 Years';
                       const deadlineDisplay = job.deadline 
-                        ? `Deadline: ${new Date(job.deadline).toLocaleDateString('en-US')}${isClosed ? ' (Job Vacancy Over)' : ''}`
+                        ? `Deadline: ${new Date(job.deadline).toLocaleDateString()}${deadlinePassed ? ' (Job Vacancy Over)' : ''}`
                         : 'Deadline: Ongoing';
 
                       return (
                         <View key={job._id || job.id} style={styles.jobCard}>
-                          {/* Top Tag Row (Matching Web Image 3) */}
+                          {/* Top Tag Row (Matching Web GymAdminManageJobs.tsx) */}
                           <View style={styles.jobTopTagsRow}>
                             <View style={[
                               styles.jobVacancyStatusPill,
@@ -2140,19 +2227,31 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
                                 styles.jobVacancyStatusText,
                                 isClosed ? styles.jobVacancyOverText : isPublished ? styles.jobVacancyPublishedText : styles.jobVacancyDraftText
                               ]}>
-                                {isClosed ? 'Job Vacancy Over' : isPublished ? 'Active Published' : 'Draft'}
+                                {deadlinePassed ? 'Job Vacancy Over' : isClosed ? 'Closed' : isPublished ? 'Active Published' : 'Draft'}
                               </Text>
                             </View>
 
                             <View style={styles.jobEmploymentPill}>
                               <Ionicons name="time-outline" size={12} color="#64748B" />
-                              <Text style={styles.jobEmploymentText}>{job.employmentType || 'Part-time'}</Text>
+                              <Text style={styles.jobEmploymentText}>{job.employmentType || 'Full-time'}</Text>
                             </View>
+
+                            {job.trainingMode && (
+                              <View style={styles.jobEmploymentPill}>
+                                <Text style={styles.jobEmploymentText}>{job.trainingMode}</Text>
+                              </View>
+                            )}
 
                             <View style={styles.jobLocationPill}>
                               <Ionicons name="location-sharp" size={12} color="#EA580C" />
                               <Text style={styles.jobLocationText} numberOfLines={1}>{job.location || 'Main Arena'}</Text>
                             </View>
+
+                            {(job.vacanciesCount || 1) > 1 && (
+                              <View style={styles.vacanciesCountPill}>
+                                <Text style={styles.vacanciesCountPillText}>{job.vacanciesCount} Openings</Text>
+                              </View>
+                            )}
                           </View>
 
                           {/* Job Title */}
@@ -2216,24 +2315,27 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
                               <TouchableOpacity 
                                 style={styles.jobActionIconBtn}
                                 onPress={() => {
+                                  setEditingJobId(job._id || job.id || null);
+                                  setCustomExpertiseInput('');
                                   setPostJobForm({
                                     title: job.title || '',
-                                    gymName: user?.gymName || 'Perfect Fitness Studio',
+                                    gymName: gymData?.name || user?.gymName || 'Your Gym',
                                     employmentType: job.employmentType || 'Full-time',
                                     trainingMode: (job.trainingMode as any) || 'Offline',
                                     experience: job.experience || '1-2 Years',
                                     vacanciesCount: String(job.vacanciesCount || 1),
-                                    salaryMin: String(job.salaryMin || 25000),
-                                    salaryMax: String(job.salaryMax || 45000),
+                                    salaryMin: job.salaryMin ? String(job.salaryMin) : '',
+                                    salaryMax: job.salaryMax ? String(job.salaryMax) : '',
                                     salaryType: job.salaryType || 'Monthly',
-                                    isSalaryNegotiable: !!job.isSalaryNegotiable,
-                                    paymentFrequency: 'Per Month',
-                                    location: job.location || 'RK Towers, Rayakottai Rd',
-                                    workingHours: job.workingHours || '6:00 AM - 2:00 PM',
-                                    deadline: job.deadline ? new Date(job.deadline).toISOString().split('T')[0] : '11/30/2026',
+                                    isSalaryNegotiable: Boolean(job.isSalaryNegotiable),
+                                    location: job.location || getDefaultGymLocation(),
+                                    workingHours: job.workingHours || '',
+                                    deadline: job.deadline ? new Date(job.deadline).toISOString().split('T')[0] : '',
                                     description: job.description || '',
                                     responsibilities: job.responsibilities || '',
-                                    expertise: job.expertise || ['Strength & Conditioning']
+                                    qualifications: job.qualifications || '',
+                                    certifications: job.certifications || '',
+                                    expertise: Array.isArray(job.expertise) ? job.expertise : []
                                   });
                                   setHiringSubTab('post');
                                 }}
@@ -2257,29 +2359,36 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
               </>
             )}
 
-            {/* SUB-VIEW 2: POST A JOB FORM (MATCHING WEB IMAGES 1 & 2) */}
+            {/* SUB-VIEW 2: POST A JOB FORM (1:1 PARITY & ALIGNMENT WITH WEB GymAdminPostJob) */}
             {hiringSubTab === 'post' && (
               <View style={styles.postJobWrapper}>
                 {/* Back to Manage Vacancies Bar */}
                 <View style={styles.postBackHeaderRow}>
                   <TouchableOpacity 
                     style={styles.postBackBtn}
-                    onPress={() => setHiringSubTab('jobs')}
+                    onPress={() => {
+                      resetPostJobForm();
+                      setHiringSubTab('jobs');
+                    }}
                   >
                     <Ionicons name="arrow-back" size={16} color="#0F172A" />
                     <Text style={styles.postBackBtnText}>Back to Manage Vacancies</Text>
                   </TouchableOpacity>
-                  <Text style={styles.postGymTagText}>Gym: <Text style={{ fontWeight: '700', color: '#0F172A' }}>{postJobForm.gymName}</Text></Text>
+                  <Text style={styles.postGymTagText} numberOfLines={1}>
+                    Gym: <Text style={{ fontWeight: '700', color: '#0F172A' }}>{postJobForm.gymName}</Text>
+                  </Text>
                 </View>
 
                 <View style={styles.postJobCard}>
-                  {/* Card Title Header with Orange Icon */}
+                  {/* Card Title Header */}
                   <View style={styles.postFormHeaderRow}>
                     <View style={styles.postFormIconBox}>
                       <Ionicons name="briefcase" size={20} color={COLORS.primary} />
                     </View>
                     <View style={{ flex: 1 }}>
-                      <Text style={styles.postFormTitle}>Post a Trainer Job Vacancy</Text>
+                      <Text style={styles.postFormTitle}>
+                        {editingJobId ? 'Edit Trainer Vacancy' : 'Post a Trainer Job Vacancy'}
+                      </Text>
                       <Text style={styles.postFormSub}>
                         Fill in the job details, qualifications, and salary expectations to attract certified coaches.
                       </Text>
@@ -2287,7 +2396,7 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
                   </View>
 
                   {/* 1. Job Title */}
-                  <Text style={styles.inputLabel}>Job Title *</Text>
+                  <Text style={styles.inputLabel}>Job Title <Text style={styles.requiredStar}>*</Text></Text>
                   <TextInput
                     style={styles.modalInput}
                     placeholder="e.g. Senior Strength & Conditioning Coach"
@@ -2296,12 +2405,12 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
                     onChangeText={(v) => setPostJobForm({ ...postJobForm, title: v })}
                   />
 
-                  {/* 2. Gym / Facility Name (Read-only verified badge) */}
+                  {/* 2. Gym / Facility Name */}
                   <Text style={styles.inputLabel}>Gym / Facility Name</Text>
                   <View style={styles.verifiedGymBox}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, flex: 1, marginRight: 8 }}>
                       <Ionicons name="business" size={16} color={COLORS.primary} />
-                      <Text style={styles.verifiedGymNameText}>{postJobForm.gymName}</Text>
+                      <Text style={styles.verifiedGymNameText} numberOfLines={1}>{postJobForm.gymName}</Text>
                     </View>
                     <View style={styles.verifiedGymBadge}>
                       <Ionicons name="checkmark-circle" size={12} color="#059669" />
@@ -2309,55 +2418,70 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
                     </View>
                   </View>
 
-                  {/* 3. Employment Type & Required Experience & Vacancies */}
-                  <View style={styles.threeColRow}>
-                    <View style={{ flex: 1 }}>
-                      <Text style={styles.inputLabel}>Employment Type *</Text>
-                      <View style={styles.typeSelectorRow}>
-                        {['Full-time', 'Part-time'].map((t) => (
-                          <TouchableOpacity
-                            key={t}
-                            style={[styles.typeChipSmall, postJobForm.employmentType === t && styles.typeChipSmallActive]}
-                            onPress={() => setPostJobForm({ ...postJobForm, employmentType: t })}
-                          >
-                            <Text style={[styles.typeChipSmallText, postJobForm.employmentType === t && styles.typeChipSmallTextActive]}>
-                              {t}
-                            </Text>
-                          </TouchableOpacity>
-                        ))}
-                      </View>
-                    </View>
-
-                    <View style={{ flex: 1 }}>
-                      <Text style={styles.inputLabel}>Required Experience *</Text>
-                      <TextInput
-                        style={styles.modalInput}
-                        placeholder="1-2 Years"
-                        placeholderTextColor={COLORS.textMuted}
-                        value={postJobForm.experience}
-                        onChangeText={(v) => setPostJobForm({ ...postJobForm, experience: v })}
-                      />
-                    </View>
-
-                    <View style={{ width: 80 }}>
-                      <Text style={styles.inputLabel}>Vacancies *</Text>
-                      <TextInput
-                        style={styles.modalInput}
-                        placeholder="1"
-                        placeholderTextColor={COLORS.textMuted}
-                        value={postJobForm.vacanciesCount}
-                        onChangeText={(v) => setPostJobForm({ ...postJobForm, vacanciesCount: v })}
-                        keyboardType="numeric"
-                      />
-                    </View>
+                  {/* 3. Employment Type */}
+                  <Text style={styles.inputLabel}>Employment Type <Text style={styles.requiredStar}>*</Text></Text>
+                  <View style={styles.threeChipRow}>
+                    {['Full-time', 'Part-time', 'Contract'].map((t) => {
+                      const active = postJobForm.employmentType === t;
+                      return (
+                        <TouchableOpacity
+                          key={t}
+                          style={[styles.equalChoiceChip, active && styles.equalChoiceChipActive]}
+                          onPress={() => setPostJobForm({ ...postJobForm, employmentType: t })}
+                        >
+                          <Text style={[styles.equalChoiceChipText, active && styles.equalChoiceChipTextActive]}>
+                            {t}
+                          </Text>
+                        </TouchableOpacity>
+                      );
+                    })}
                   </View>
 
-                  {/* 4. Coaching Domains & Expertise (All 14 Web Tags) */}
+                  {/* 4. Required Experience */}
+                  <Text style={styles.inputLabel}>Required Experience <Text style={styles.requiredStar}>*</Text></Text>
+                  <View style={styles.wrapChoiceGrid}>
+                    {[
+                      'Fresher / Entry Level',
+                      '1-2 Years',
+                      '3-5 Years',
+                      '5-8 Years',
+                      '8+ Years (Master Trainer)',
+                    ].map((exp) => {
+                      const active = postJobForm.experience === exp;
+                      return (
+                        <TouchableOpacity
+                          key={exp}
+                          style={[styles.wrapChoiceChip, active && styles.wrapChoiceChipActive]}
+                          onPress={() => setPostJobForm({ ...postJobForm, experience: exp })}
+                        >
+                          <Text style={[styles.wrapChoiceChipText, active && styles.wrapChoiceChipTextActive]}>
+                            {exp}
+                          </Text>
+                        </TouchableOpacity>
+                      );
+                    })}
+                  </View>
+
+                  {/* 5. Number of Vacancies */}
+                  <Text style={styles.inputLabel}>Number of Vacancies <Text style={styles.requiredStar}>*</Text></Text>
+                  <View style={styles.vacancyRow}>
+                    <TextInput
+                      style={[styles.modalInput, { flex: 1 }]}
+                      placeholder="1"
+                      placeholderTextColor={COLORS.textMuted}
+                      value={postJobForm.vacanciesCount}
+                      onChangeText={(v) => setPostJobForm({ ...postJobForm, vacanciesCount: v.replace(/\D/g, '') })}
+                      keyboardType="numeric"
+                    />
+                    <Text style={styles.vacancyHintPill}>1 – 50 Positions</Text>
+                  </View>
+
+                  {/* 6. Coaching Domains & Expertise (All 14 Web Tags + Custom Input) */}
                   <View style={{ marginTop: 8 }}>
                     <Text style={styles.inputLabel}>Coaching Domains & Expertise</Text>
                     <Text style={styles.fieldHintSub}>Select all specializations you are looking for in this trainer.</Text>
                     <View style={styles.skillsTagCloud}>
-                      {COMMON_EXPERTISE.map((skill) => {
+                      {[...COMMON_EXPERTISE, ...postJobForm.expertise.filter((s) => !COMMON_EXPERTISE.includes(s))].map((skill) => {
                         const isSelected = postJobForm.expertise.includes(skill);
                         return (
                           <TouchableOpacity
@@ -2372,11 +2496,26 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
                         );
                       })}
                     </View>
+                    <View style={styles.customSkillRow}>
+                      <TextInput
+                        style={[styles.modalInput, { flex: 1 }]}
+                        placeholder="Type other custom skill and tap Add..."
+                        placeholderTextColor={COLORS.textMuted}
+                        value={customExpertiseInput}
+                        onChangeText={setCustomExpertiseInput}
+                        onSubmitEditing={handleAddCustomExpertise}
+                        returnKeyType="done"
+                      />
+                      <TouchableOpacity style={styles.customSkillAddBtn} onPress={handleAddCustomExpertise}>
+                        <Ionicons name="add" size={16} color={COLORS.white} />
+                        <Text style={styles.customSkillAddBtnText}>Add</Text>
+                      </TouchableOpacity>
+                    </View>
                   </View>
 
-                  {/* 5. Training Mode (3 Big Visual Cards Matching Web Image 2) */}
+                  {/* 7. Training Mode */}
                   <View style={{ marginTop: 10 }}>
-                    <Text style={styles.inputLabel}>Training Mode</Text>
+                    <Text style={styles.inputLabel}>Training Mode <Text style={styles.requiredStar}>*</Text></Text>
                     <Text style={styles.fieldHintSub}>Select how the trainer will conduct sessions.</Text>
                     <View style={styles.trainingModeCardsRow}>
                       {[
@@ -2412,7 +2551,7 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
                     </View>
                   </View>
 
-                  {/* 6. Salary & Compensation Structure */}
+                  {/* 8. Salary & Compensation Structure */}
                   <View style={styles.salarySectionBox}>
                     <View style={styles.salarySectionTopRow}>
                       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
@@ -2432,82 +2571,102 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
                       </TouchableOpacity>
                     </View>
 
-                    <View style={styles.threeColRow}>
+                    <View style={styles.twoColRow}>
                       <View style={{ flex: 1 }}>
-                        <Text style={styles.inputLabel}>Min Salary (₹)</Text>
+                        <Text style={styles.salaryFieldLabel}>Min Salary (₹)</Text>
                         <TextInput
-                          style={styles.modalInput}
+                          style={styles.salaryInput}
                           placeholder="e.g. 25000"
                           placeholderTextColor={COLORS.textMuted}
                           value={postJobForm.salaryMin}
-                          onChangeText={(v) => setPostJobForm({ ...postJobForm, salaryMin: v })}
+                          onChangeText={(v) => setPostJobForm({ ...postJobForm, salaryMin: v.replace(/\D/g, '') })}
                           keyboardType="numeric"
                         />
                       </View>
                       <View style={{ flex: 1 }}>
-                        <Text style={styles.inputLabel}>Max Salary (₹)</Text>
+                        <Text style={styles.salaryFieldLabel}>Max Salary (₹)</Text>
                         <TextInput
-                          style={styles.modalInput}
+                          style={styles.salaryInput}
                           placeholder="e.g. 45000"
                           placeholderTextColor={COLORS.textMuted}
                           value={postJobForm.salaryMax}
-                          onChangeText={(v) => setPostJobForm({ ...postJobForm, salaryMax: v })}
+                          onChangeText={(v) => setPostJobForm({ ...postJobForm, salaryMax: v.replace(/\D/g, '') })}
                           keyboardType="numeric"
                         />
                       </View>
-                      <View style={{ flex: 1 }}>
-                        <Text style={styles.inputLabel}>Payment Frequency</Text>
-                        <TextInput
-                          style={styles.modalInput}
-                          placeholder="Per Month"
-                          placeholderTextColor={COLORS.textMuted}
-                          value={postJobForm.paymentFrequency}
-                          onChangeText={(v) => setPostJobForm({ ...postJobForm, paymentFrequency: v })}
-                        />
-                      </View>
+                    </View>
+
+                    <Text style={styles.salaryFieldLabel}>Payment Frequency</Text>
+                    <View style={styles.wrapChoiceGrid}>
+                      {[
+                        { value: 'Monthly', label: 'Per Month' },
+                        { value: 'Hourly', label: 'Per Hour' },
+                        { value: 'Per Session', label: 'Per Session' },
+                        { value: 'Annual', label: 'Per Annum (CTC)' },
+                      ].map((freq) => {
+                        const active = postJobForm.salaryType === freq.value;
+                        return (
+                          <TouchableOpacity
+                            key={freq.value}
+                            style={[styles.freqChoiceChip, active && styles.wrapChoiceChipActive]}
+                            onPress={() => setPostJobForm({ ...postJobForm, salaryType: freq.value })}
+                          >
+                            <Text style={[styles.wrapChoiceChipText, active && styles.wrapChoiceChipTextActive]}>
+                              {freq.label}
+                            </Text>
+                          </TouchableOpacity>
+                        );
+                      })}
                     </View>
                   </View>
 
-                  {/* 7. Location, Working Hours & Application Deadline */}
-                  <Text style={styles.inputLabel}>Location *</Text>
+                  {/* 9. Location, Working Hours & Application Deadline (Full-width aligned to prevent clipping) */}
+                  <Text style={styles.inputLabel}>
+                    <Ionicons name="location-outline" size={13} color={COLORS.primary} /> Location <Text style={styles.requiredStar}>*</Text>
+                  </Text>
                   <TextInput
                     style={styles.modalInput}
-                    placeholder="RK Towers, Rayakottai Rd, opposite to HF"
+                    placeholder="e.g. Indiranagar, Bangalore"
                     placeholderTextColor={COLORS.textMuted}
                     value={postJobForm.location}
                     onChangeText={(v) => setPostJobForm({ ...postJobForm, location: v })}
                   />
 
-                  <View style={styles.twoColRow}>
-                    <View style={{ flex: 1 }}>
-                      <Text style={styles.inputLabel}>Working Hours / Shift</Text>
-                      <TextInput
-                        style={styles.modalInput}
-                        placeholder="e.g. 6:00 AM - 2:00 PM or Flexible"
-                        placeholderTextColor={COLORS.textMuted}
-                        value={postJobForm.workingHours}
-                        onChangeText={(v) => setPostJobForm({ ...postJobForm, workingHours: v })}
-                      />
-                    </View>
-                    <View style={{ flex: 1 }}>
-                      <Text style={styles.inputLabel}>Application Deadline</Text>
-                      <TextInput
-                        style={styles.modalInput}
-                        placeholder="mm/dd/yyyy"
-                        placeholderTextColor={COLORS.textMuted}
-                        value={postJobForm.deadline}
-                        onChangeText={(v) => setPostJobForm({ ...postJobForm, deadline: v })}
-                      />
-                    </View>
-                  </View>
-                  <Text style={styles.deadlineHintText}>
-                    Once this deadline is completed, the job vacancy will automatically be shown as over.
+                  <Text style={styles.inputLabel}>
+                    <Ionicons name="time-outline" size={13} color={COLORS.primary} /> Working Hours / Shift
                   </Text>
-
-                  {/* 8. Job Description */}
-                  <Text style={styles.inputLabel}>Job Description *</Text>
                   <TextInput
-                    style={[styles.modalInput, { height: 90, textAlignVertical: 'top' }]}
+                    style={styles.modalInput}
+                    placeholder="e.g. 6:00 AM - 2:00 PM or Flexible"
+                    placeholderTextColor={COLORS.textMuted}
+                    value={postJobForm.workingHours}
+                    onChangeText={(v) => setPostJobForm({ ...postJobForm, workingHours: v })}
+                  />
+
+                  <Text style={styles.inputLabel}>
+                    <Ionicons name="calendar-outline" size={13} color={COLORS.primary} /> Application Deadline
+                  </Text>
+                  <TextInput
+                    style={styles.modalInput}
+                    placeholder="YYYY-MM-DD (e.g. 2026-11-30)"
+                    placeholderTextColor={COLORS.textMuted}
+                    value={postJobForm.deadline}
+                    onChangeText={(v) => setPostJobForm({ ...postJobForm, deadline: v })}
+                  />
+                  {isDeadlineExpired(postJobForm.deadline) ? (
+                    <Text style={styles.deadlineExpiredText}>
+                      Deadline expired: This job vacancy will be shown as over.
+                    </Text>
+                  ) : (
+                    <Text style={styles.deadlineHintText}>
+                      Once this deadline is completed, the job vacancy will automatically be shown as over.
+                    </Text>
+                  )}
+
+                  {/* 10. Job Description */}
+                  <Text style={styles.inputLabel}>Job Description <Text style={styles.requiredStar}>*</Text></Text>
+                  <TextInput
+                    style={[styles.modalInput, { minHeight: 96, textAlignVertical: 'top' }]}
                     placeholder="Provide a compelling overview of this role, the gym environment, and what makes your fitness community unique..."
                     placeholderTextColor={COLORS.textMuted}
                     value={postJobForm.description}
@@ -2515,18 +2674,62 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
                     multiline
                   />
 
-                  {/* 9. Publish & Draft Action Buttons */}
-                  <View style={styles.formActionButtonsRow}>
-                    <TouchableOpacity 
-                      style={styles.saveDraftBtn}
-                      onPress={() => handlePublishJob('Draft')}
-                      disabled={publishingJob}
-                    >
-                      <Text style={styles.saveDraftBtnText}>Save Draft</Text>
-                    </TouchableOpacity>
+                  {/* 11. Key Responsibilities */}
+                  <Text style={styles.inputLabel}>Key Responsibilities</Text>
+                  <TextInput
+                    style={[styles.modalInput, { minHeight: 84, textAlignVertical: 'top' }]}
+                    placeholder={'• Conduct client fitness assessments and 1-on-1 personal training sessions.\n• Guide members on proper posture, breathing, and safe machine usage.\n• Design customized strength and cardio programs using Gymora AI tools.'}
+                    placeholderTextColor={COLORS.textMuted}
+                    value={postJobForm.responsibilities}
+                    onChangeText={(v) => setPostJobForm({ ...postJobForm, responsibilities: v })}
+                    multiline
+                  />
+
+                  {/* 12. Required Qualifications & Preferred Certifications */}
+                  <Text style={styles.inputLabel}>Required Qualifications</Text>
+                  <TextInput
+                    style={styles.modalInput}
+                    placeholder="e.g. Degree in Physical Education or Sports Science"
+                    placeholderTextColor={COLORS.textMuted}
+                    value={postJobForm.qualifications}
+                    onChangeText={(v) => setPostJobForm({ ...postJobForm, qualifications: v })}
+                  />
+
+                  <Text style={styles.inputLabel}>Preferred Certifications</Text>
+                  <TextInput
+                    style={styles.modalInput}
+                    placeholder="e.g. ACE, NASM, ISSA, CSCS, CPR / AED"
+                    placeholderTextColor={COLORS.textMuted}
+                    value={postJobForm.certifications}
+                    onChangeText={(v) => setPostJobForm({ ...postJobForm, certifications: v })}
+                  />
+
+                  {/* 13. Cancel, Save as Draft & Publish / Update Action Buttons */}
+                  <View style={styles.formActionStack}>
+                    <View style={styles.formActionTopRow}>
+                      <TouchableOpacity
+                        style={styles.cancelFormBtn}
+                        onPress={() => {
+                          resetPostJobForm();
+                          setHiringSubTab('jobs');
+                        }}
+                        disabled={publishingJob}
+                      >
+                        <Text style={styles.cancelFormBtnText}>Cancel</Text>
+                      </TouchableOpacity>
+
+                      <TouchableOpacity 
+                        style={styles.saveDraftBtn}
+                        onPress={() => handlePublishJob('Draft')}
+                        disabled={publishingJob}
+                      >
+                        <Ionicons name="bookmark-outline" size={14} color={COLORS.primary} />
+                        <Text style={styles.saveDraftBtnText}>Save as Draft</Text>
+                      </TouchableOpacity>
+                    </View>
 
                     <TouchableOpacity 
-                      style={styles.publishBtn}
+                      style={styles.publishBtnFull}
                       onPress={() => handlePublishJob('Published')}
                       disabled={publishingJob}
                     >
@@ -2535,7 +2738,9 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
                       ) : (
                         <>
                           <Ionicons name="send" size={15} color={COLORS.white} />
-                          <Text style={styles.publishBtnText}>Publish Job</Text>
+                          <Text style={styles.publishBtnText}>
+                            {editingJobId ? 'Save & Update Vacancy' : 'Publish Vacancy Live'}
+                          </Text>
                         </>
                       )}
                     </TouchableOpacity>
@@ -4370,9 +4575,12 @@ const styles = StyleSheet.create({
   },
   saveDraftBtn: {
     flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
     paddingVertical: 11,
     borderRadius: 12,
-    alignItems: 'center',
     backgroundColor: '#F8FAFC',
     borderWidth: 1,
     borderColor: '#E2E8F0',
@@ -4808,8 +5016,10 @@ const styles = StyleSheet.create({
   },
   postBackHeaderRow: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     justifyContent: 'space-between',
     alignItems: 'center',
+    gap: 8,
     backgroundColor: '#FFFFFF',
     padding: 12,
     borderRadius: 12,
@@ -5339,5 +5549,185 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 14,
     marginBottom: 4,
+  },
+  subTabsWrapGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginBottom: 12,
+  },
+  vacanciesCountPill: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  vacanciesCountPillText: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: '#EA580C',
+  },
+  requiredStar: {
+    color: '#B91C1C',
+  },
+  threeChipRow: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  equalChoiceChip: {
+    flex: 1,
+    paddingVertical: 9,
+    borderRadius: 10,
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  equalChoiceChipActive: {
+    backgroundColor: '#C2410C',
+    borderColor: '#C2410C',
+  },
+  equalChoiceChipText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#64748B',
+  },
+  equalChoiceChipTextActive: {
+    color: '#FFFFFF',
+  },
+  wrapChoiceGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  wrapChoiceChip: {
+    paddingHorizontal: 11,
+    paddingVertical: 8,
+    borderRadius: 10,
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  wrapChoiceChipActive: {
+    backgroundColor: '#FFF7ED',
+    borderColor: '#EA580C',
+  },
+  wrapChoiceChipText: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#64748B',
+  },
+  wrapChoiceChipTextActive: {
+    color: '#EA580C',
+    fontWeight: '700',
+  },
+  freqChoiceChip: {
+    width: '48%',
+    paddingHorizontal: 10,
+    paddingVertical: 9,
+    borderRadius: 10,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  vacancyRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  vacancyHintPill: {
+    paddingHorizontal: 10,
+    paddingVertical: 9,
+    borderRadius: 10,
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#64748B',
+  },
+  customSkillRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginTop: 4,
+  },
+  customSkillAddBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    borderRadius: 10,
+    backgroundColor: '#C2410C',
+  },
+  customSkillAddBtnText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#FFFFFF',
+  },
+  salaryFieldLabel: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#475569',
+    marginBottom: 4,
+    marginTop: 4,
+  },
+  salaryInput: {
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 9,
+    fontSize: 12,
+    color: '#111827',
+    backgroundColor: '#FFFFFF',
+  },
+  deadlineExpiredText: {
+    fontSize: 11,
+    color: '#B91C1C',
+    fontWeight: '700',
+    marginTop: 4,
+    marginBottom: 4,
+  },
+  formActionStack: {
+    marginTop: 16,
+    paddingTop: 14,
+    borderTopWidth: 1,
+    borderTopColor: '#E2E8F0',
+    gap: 10,
+  },
+  formActionTopRow: {
+    flexDirection: 'row',
+    gap: 10,
+  },
+  cancelFormBtn: {
+    flex: 1,
+    paddingVertical: 11,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  cancelFormBtnText: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#64748B',
+  },
+  publishBtnFull: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    backgroundColor: '#C2410C',
+    paddingVertical: 13,
+    borderRadius: 12,
   },
 });

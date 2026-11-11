@@ -1,16 +1,16 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useState, useEffect, useCallback } from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  ScrollView, 
-  TouchableOpacity, 
-  Alert, 
-  TextInput, 
-  Modal, 
-  Switch, 
-  BackHandler, 
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Alert,
+  TextInput,
+  Modal,
+  Switch,
+  BackHandler,
   Platform,
   ActivityIndicator,
   RefreshControl,
@@ -22,7 +22,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../constants/theme';
 import { useAuth } from '../../context/AuthContext';
-import { api } from '../../api/client';
+import { api, resolveMediaUrl } from '../../api/client';
 import * as ImagePicker from 'expo-image-picker';
 import { FileDownloader } from '../../utils/fileDownloader';
 import { OwnerTrainersScreen } from './OwnerTrainersScreen';
@@ -185,6 +185,39 @@ const DEFAULT_REVIEWS_DATA: any = {
   ],
 };
 
+// Shared helper matching Web GymStoreProducts.tsx & Backend store.controller.ts
+// Note: DB field `discountPrice` stores the Discount Amount (₹) subtracted from sellingPrice/price.
+const computeStoreProductPricing = (prod: any) => {
+  let totalStock = Number(prod?.stock ?? 0);
+  let originalPrice = Number(prod?.sellingPrice ?? prod?.price ?? 0);
+  const discountAmt = Number(prod?.discountPrice) || 0;
+  let displayPrice = Math.max(0, originalPrice - discountAmt);
+  let hasDiscount = discountAmt > 0 && originalPrice > discountAmt;
+
+  if (prod?.hasVariants && Array.isArray(prod?.variants) && prod.variants.length > 0) {
+    totalStock = prod.variants.reduce((acc: number, v: any) => acc + (Number(v?.stock) || 0), 0);
+    const minVariant = prod.variants.reduce((prev: any, curr: any) => {
+      const prevDisplay = Math.max(0, (Number(prev?.price) || 0) - (Number(prev?.discountPrice) || 0));
+      const currDisplay = Math.max(0, (Number(curr?.price) || 0) - (Number(curr?.discountPrice) || 0));
+      return currDisplay < prevDisplay ? curr : prev;
+    }, prod.variants[0]);
+
+    if (minVariant) {
+      const vPrice = Number(minVariant?.price) || 0;
+      const vDiscount = Number(minVariant?.discountPrice) || 0;
+      displayPrice = Math.max(0, vPrice - vDiscount);
+      originalPrice = vPrice;
+      hasDiscount = vDiscount > 0 && vPrice > vDiscount;
+    }
+  }
+
+  const discountPercent = hasDiscount && originalPrice > 0
+    ? Math.max(1, Math.round(((originalPrice - displayPrice) / originalPrice) * 100))
+    : 0;
+
+  return { totalStock, originalPrice, discountAmt, displayPrice, hasDiscount, discountPercent };
+};
+
 const DEFAULT_STORE_PRODUCTS: any[] = [
   {
     _id: 'prod_1',
@@ -195,7 +228,7 @@ const DEFAULT_STORE_PRODUCTS: any[] = [
     image: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=600&auto=format&fit=crop&q=80',
     stock: 13,
     sellingPrice: 199,
-    discountPrice: 140,
+    discountPrice: 59,
     status: 'Active',
     availability: 'Both',
     fulfilmentType: 'Both',
@@ -213,14 +246,14 @@ const DEFAULT_STORE_PRODUCTS: any[] = [
     image: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=600&auto=format&fit=crop&q=80',
     stock: 9,
     sellingPrice: 4500,
-    discountPrice: 4000,
+    discountPrice: 500,
     status: 'Active',
     availability: 'Both',
     fulfilmentType: 'Gym Pickup',
     hasVariants: true,
     variants: [
-      { sku: 'TSH-M-BLK', attributes: { size: 'M', color: 'Black' }, price: 4500, discountPrice: 4000, stock: 4 },
-      { sku: 'TSH-L-BLK', attributes: { size: 'L', color: 'Black' }, price: 4500, discountPrice: 4000, stock: 5 },
+      { sku: 'TSH-M-BLK', attributes: { size: 'M', color: 'Black' }, price: 4500, discountPrice: 500, stock: 4 },
+      { sku: 'TSH-L-BLK', attributes: { size: 'L', color: 'Black' }, price: 4500, discountPrice: 500, stock: 5 },
     ],
     lowStockThreshold: 5,
     description: 'Breathable dry-fit polyester performance gym athletic t-shirt.',
@@ -234,14 +267,14 @@ const DEFAULT_STORE_PRODUCTS: any[] = [
     image: 'https://images.unsplash.com/photo-1579722821273-0f6c7d44362f?w=600&auto=format&fit=crop&q=80',
     stock: 20,
     sellingPrice: 1299,
-    discountPrice: 999,
+    discountPrice: 300,
     status: 'Active',
     availability: 'Both',
     fulfilmentType: 'Both',
     hasVariants: true,
     variants: [
-      { sku: 'ON-WPI-1KG', attributes: { flavour: 'Chocolate', weight: '1kg' }, price: 1299, discountPrice: 999, stock: 10 },
-      { sku: 'ON-WPI-2KG', attributes: { flavour: 'Vanilla', weight: '2kg' }, price: 2499, discountPrice: 1999, stock: 10 },
+      { sku: 'ON-WPI-1KG', attributes: { flavour: 'Chocolate', weight: '1kg' }, price: 1299, discountPrice: 300, stock: 10 },
+      { sku: 'ON-WPI-2KG', attributes: { flavour: 'Vanilla', weight: '2kg' }, price: 2499, discountPrice: 500, stock: 10 },
     ],
     lowStockThreshold: 5,
     description: 'Premium ultra-filtered 100% whey protein isolate powder.',
@@ -692,8 +725,8 @@ interface MoreItem {
   group: 'operations' | 'store' | 'scheduling' | 'rewards' | 'settings';
 }
 
-export const OwnerMoreScreen: React.FC<{ 
-  initialSubPage?: string; 
+export const OwnerMoreScreen: React.FC<{
+  initialSubPage?: string;
   onCloseSubPage?: () => void;
   onNavigateTab?: (tab: string, sub?: string) => void;
 }> = ({ initialSubPage, onCloseSubPage, onNavigateTab }) => {
@@ -708,11 +741,11 @@ export const OwnerMoreScreen: React.FC<{
   const [videos, setVideos] = useState<any[]>([]);
   const [equipmentList, setEquipmentList] = useState<any[]>([]);
   const [packages, setPackages] = useState<any[]>([]);
-  
+
   // Orders Module State (Matching Web /admin/store/orders)
-  
+
   // Offline Sales POS State (Matching Web /admin/store/offline-sales)
-  
+
   // Branch Management State (Matching Web /admin/branches and /admin/add-branch)
   const [showAddBranchModal, setShowAddBranchModal] = useState(false);
   const [isSubmittingBranch, setIsSubmittingBranch] = useState(false);
@@ -887,7 +920,7 @@ export const OwnerMoreScreen: React.FC<{
           onPress: async () => {
             try {
               if (record.type === 'Member' && record.originalId) {
-                await api.patch(`/users/${record.originalId}/status`, { status: 'APPROVED' }).catch(() => {});
+                await api.patch(`/users/${record.originalId}/status`, { status: 'APPROVED' }).catch(() => { });
               }
               const updated = deletedRecords.filter(item => item.id !== record.id && item.originalId !== record.originalId);
               setDeletedRecords(updated);
@@ -908,7 +941,7 @@ export const OwnerMoreScreen: React.FC<{
   // Rewards & Performance State (Matching Web /admin/rewards-performance - Images 2 & 3)
   const [rewardsMainTab, setRewardsMainTab] = useState<'performance-overview' | 'customer-rewards' | 'trainer-rewards' | 'awards-recognition' | 'claims-history'>('performance-overview');
   const [perfSubTab, setPerfSubTab] = useState<'customer' | 'trainer' | 'calendar'>('customer');
-  
+
   const [perfCustomers, setPerfCustomers] = useState<any[]>([
     {
       customerId: 'cust-001',
@@ -1601,7 +1634,7 @@ export const OwnerMoreScreen: React.FC<{
   const [selectedPackageDetail, setSelectedPackageDetail] = useState<any | null>(null);
   const [isPackageSubmitting, setIsPackageSubmitting] = useState(false);
 
-    const initialPackageForm: PackageFormState = {
+  const initialPackageForm: PackageFormState = {
     name: '',
     goal: 'Strength',
     fitnessGoal: 'Strength',
@@ -1634,7 +1667,7 @@ export const OwnerMoreScreen: React.FC<{
   const [showAddManualVideoModal, setShowAddManualVideoModal] = useState(false);
   const [isSubmittingVideoForm, setIsSubmittingVideoForm] = useState(false);
 
-    const initialVideoForm: VideoFormState = {
+  const initialVideoForm: VideoFormState = {
     title: '',
     titleTamil: '',
     category: 'Chest',
@@ -1812,6 +1845,7 @@ export const OwnerMoreScreen: React.FC<{
   const [showEditStoreProductModal, setShowEditStoreProductModal] = useState(false);
   const [editingStoreProduct, setEditingStoreProduct] = useState<any | null>(null);
   const [isStoreProductSaving, setIsStoreProductSaving] = useState(false);
+  const [failedStoreImgKeys, setFailedStoreImgKeys] = useState<Record<string, boolean>>({});
   const [storeProductForm, setStoreProductForm] = useState<{
     name: string;
     description: string;
@@ -1890,7 +1924,7 @@ export const OwnerMoreScreen: React.FC<{
   // Sales History State (Matching Web /admin/store/sales)
   const [salesFilter, setSalesFilter] = useState<'all' | 'online' | 'offline'>('all');
   const [salesSearchQuery, setSalesSearchQuery] = useState('');
-  
+
   const [selectedSaleDetail, setSelectedSaleDetail] = useState<any | null>(null);
   const [salesFromDate, setSalesFromDate] = useState('');
   const [salesToDate, setSalesToDate] = useState('');
@@ -2017,7 +2051,7 @@ export const OwnerMoreScreen: React.FC<{
               list = myRes.data.gym.equipment;
             }
           }
-        } catch (e) {}
+        } catch (e) { }
         if (list.length === 0) {
           const res = await api.get('/equipment').catch(() => api.get('/trainer-plans/equipments/customer')).catch(() => ({ data: [] }));
           list = res.data?.equipment || res.data?.equipments || (Array.isArray(res.data) ? res.data : []);
@@ -2481,10 +2515,10 @@ export const OwnerMoreScreen: React.FC<{
       'Are you sure you want to log out of your Gym Owner account?',
       [
         { text: 'Cancel', style: 'cancel' },
-        { 
-          text: 'Sign Out', 
-          style: 'destructive', 
-          onPress: () => logout() 
+        {
+          text: 'Sign Out',
+          style: 'destructive',
+          onPress: () => logout()
         }
       ]
     );
@@ -2547,7 +2581,7 @@ export const OwnerMoreScreen: React.FC<{
         <View style={styles.storeSectionCard}>
           <View style={styles.storeSectionHeader}>
             <Text style={styles.storeSectionTitle}>Recent Orders</Text>
-            <TouchableOpacity 
+            <TouchableOpacity
               onPress={() => setActiveDetailItem('store_history')}
               style={{ flexDirection: 'row', alignItems: 'center', gap: 2 }}
             >
@@ -2563,8 +2597,8 @@ export const OwnerMoreScreen: React.FC<{
           ) : (
             <View>
               {recentOrders.map((o: any, idx: number) => {
-                const customerName = o.customerId 
-                  ? `${o.customerId.firstName || ''} ${o.customerId.lastName || ''}`.trim() 
+                const customerName = o.customerId
+                  ? `${o.customerId.firstName || ''} ${o.customerId.lastName || ''}`.trim()
                   : (o.customer ? `${o.customer.firstName || ''} ${o.customer.lastName || ''}`.trim() : 'Walk-in Member');
                 const orderId = o.orderNumber || o.recordNumber || o._id || `ORD-${idx + 1}`;
                 const dateStr = o.createdAt || o.date ? new Date(o.createdAt || o.date).toLocaleDateString('en-IN', { month: 'short', day: 'numeric' }) : 'Recent';
@@ -2626,7 +2660,7 @@ export const OwnerMoreScreen: React.FC<{
   };
 
   // 2. Gym Store Sales History (Matching Web /admin/store/sales)
-  
+
   const handleUpdateOrderStatus = (orderId: string, nextStatus: string, reason?: string) => {
     const targetOrder =
       storeOrders.find(o => o._id === orderId) ||
@@ -2645,11 +2679,11 @@ export const OwnerMoreScreen: React.FC<{
       list.map(o =>
         o._id === orderId
           ? {
-              ...o,
-              status: nextStatus,
-              ...(nextStatus === 'Completed' && o.paymentStatus === 'Pending' ? { paymentStatus: 'Paid' } : {}),
-              ...(nextStatus === 'Refunded' ? { paymentStatus: 'Refunded' } : {}),
-            }
+            ...o,
+            status: nextStatus,
+            ...(nextStatus === 'Completed' && o.paymentStatus === 'Pending' ? { paymentStatus: 'Paid' } : {}),
+            ...(nextStatus === 'Refunded' ? { paymentStatus: 'Refunded' } : {}),
+          }
           : o
       );
 
@@ -2662,11 +2696,11 @@ export const OwnerMoreScreen: React.FC<{
       setSelectedOrderDetail((prev: any) =>
         prev
           ? {
-              ...prev,
-              status: nextStatus,
-              ...(nextStatus === 'Completed' && prev.paymentStatus === 'Pending' ? { paymentStatus: 'Paid' } : {}),
-              ...(nextStatus === 'Refunded' ? { paymentStatus: 'Refunded' } : {}),
-            }
+            ...prev,
+            status: nextStatus,
+            ...(nextStatus === 'Completed' && prev.paymentStatus === 'Pending' ? { paymentStatus: 'Paid' } : {}),
+            ...(nextStatus === 'Refunded' ? { paymentStatus: 'Refunded' } : {}),
+          }
           : prev
       );
     }
@@ -2825,7 +2859,7 @@ export const OwnerMoreScreen: React.FC<{
             filtered.map((o: any) => {
               const stStyle = ORDER_STATUS_COLORS[o.status] || { bg: '#F8FAFC', text: '#64748B', border: '#E2E8F0' };
               const pmStyle = ORDER_PAYMENT_COLORS[o.paymentStatus] || { bg: '#F8FAFC', text: '#64748B' };
-              const custName = o.customerId 
+              const custName = o.customerId
                 ? `${o.customerId.firstName || ''} ${o.customerId.lastName || ''}`.trim() || 'Unknown Customer'
                 : 'Unknown Customer';
               const itemCount = (o.items || []).reduce((acc: number, it: any) => acc + (it.quantity || 1), 0);
@@ -2938,7 +2972,7 @@ export const OwnerMoreScreen: React.FC<{
     const availableProds = Array.isArray(storeProducts) && storeProducts.length > 0 ? storeProducts : DEFAULT_STORE_PRODUCTS;
     const subtotal = validLines.reduce((acc, l) => {
       const p = availableProds.find((prod: any) => prod._id === l.productId);
-      const price = p ? (Number(p.discountPrice || p.sellingPrice || 0)) : 0;
+      const price = p ? computeStoreProductPricing(p).displayPrice : 0;
       return acc + (price * (Number(l.quantity) || 1));
     }, 0);
 
@@ -2980,11 +3014,12 @@ export const OwnerMoreScreen: React.FC<{
         customer: customerObj ? { firstName: customerObj.name.split(' ')[0], lastName: customerObj.name.split(' ')[1] || '' } : { firstName: 'Walk-in', lastName: '' },
         items: validLines.map(l => {
           const p = availableProds.find((prod: any) => prod._id === l.productId);
+          const uPrice = p ? computeStoreProductPricing(p).displayPrice : 0;
           return {
             productName: p?.name || 'Store Item',
             quantity: Number(l.quantity) || 1,
-            unitPrice: p ? Number(p.discountPrice || p.sellingPrice || 0) : 0,
-            total: p ? Number(p.discountPrice || p.sellingPrice || 0) * (Number(l.quantity) || 1) : 0,
+            unitPrice: uPrice,
+            total: uPrice * (Number(l.quantity) || 1),
           };
         }),
         total,
@@ -3028,7 +3063,7 @@ export const OwnerMoreScreen: React.FC<{
 
     const subtotal = posLines.reduce((acc, l) => {
       const p = availableProds.find((prod: any) => prod._id === l.productId);
-      const price = p ? Number(p.discountPrice || p.sellingPrice || 0) : 0;
+      const price = p ? computeStoreProductPricing(p).displayPrice : 0;
       return acc + (price * (Number(l.quantity) || 1));
     }, 0);
 
@@ -3155,8 +3190,8 @@ export const OwnerMoreScreen: React.FC<{
                   color={numCash >= total ? '#15803D' : '#D97706'}
                 />
                 <Text style={[styles.posChangeText, { color: numCash >= total ? '#15803D' : '#D97706' }]}>
-                  {numCash >= total 
-                    ? `Change to Return: ₹${changeToReturn}` 
+                  {numCash >= total
+                    ? `Change to Return: ₹${changeToReturn}`
                     : `Remaining Due: ₹${total - numCash}`}
                 </Text>
               </View>
@@ -3223,7 +3258,8 @@ export const OwnerMoreScreen: React.FC<{
 
           {posLines.map((line, index) => {
             const p = availableProds.find((prod: any) => prod._id === line.productId) || availableProds[0];
-            const unitPrice = p ? Number(p.discountPrice || p.sellingPrice || 0) : 0;
+            const pricing = p ? computeStoreProductPricing(p) : null;
+            const unitPrice = pricing ? pricing.displayPrice : 0;
             const lineTotal = unitPrice * (Number(line.quantity) || 1);
 
             return (
@@ -3239,7 +3275,7 @@ export const OwnerMoreScreen: React.FC<{
                       {p?.name || 'Select Product...'}
                     </Text>
                     <Text style={styles.posProductTriggerMeta}>
-                      ₹{unitPrice} · {p?.stock || 0} in stock
+                      ₹{unitPrice} · {pricing ? pricing.totalStock : 0} in stock
                     </Text>
                   </View>
                   <Ionicons name="chevron-down" size={14} color="#64748B" />
@@ -3363,7 +3399,7 @@ export const OwnerMoreScreen: React.FC<{
   };
 
 
-const renderSalesHistoryView = () => {
+  const renderSalesHistoryView = () => {
     const rawSales = Array.isArray(storeSales)
       ? storeSales
       : (Array.isArray(storeSales?.sales) ? storeSales.sales : []);
@@ -3411,8 +3447,8 @@ const renderSalesHistoryView = () => {
             <Text style={styles.salesTitle}>Sales History</Text>
             <Text style={styles.salesSubtitle}>Every online order and offline sale in one place.</Text>
           </View>
-          <TouchableOpacity 
-            style={styles.salesExportBtn} 
+          <TouchableOpacity
+            style={styles.salesExportBtn}
             activeOpacity={0.7}
             onPress={async () => {
               try {
@@ -3643,14 +3679,14 @@ const renderSalesHistoryView = () => {
 
             const formattedDate = sale.date
               ? new Date(sale.date).toLocaleString('en-IN', {
-                  month: '2-digit',
-                  day: '2-digit',
-                  year: 'numeric',
-                  hour: '2-digit',
-                  minute: '2-digit',
-                  second: '2-digit',
-                  hour12: true,
-                })
+                month: '2-digit',
+                day: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: true,
+              })
               : 'Recent';
 
             return (
@@ -3763,7 +3799,7 @@ const renderSalesHistoryView = () => {
         const monthName = months[parseInt(m) - 1] || m;
         return `${d} ${monthName} ${y}`;
       }
-    } catch (e) {}
+    } catch (e) { }
     return dateStr;
   };
 
@@ -4029,8 +4065,8 @@ const renderSalesHistoryView = () => {
         s.category.toLowerCase().includes(q);
       const matchesStatus =
         onlineSessionFilter === 'All' ? true :
-        onlineSessionFilter === 'Upcoming' ? (s.status === 'Upcoming' || s.status === 'Live Now') :
-        s.status === 'Completed';
+          onlineSessionFilter === 'Upcoming' ? (s.status === 'Upcoming' || s.status === 'Live Now') :
+            s.status === 'Completed';
       return matchesSearch && matchesStatus;
     });
 
@@ -4381,22 +4417,22 @@ const renderSalesHistoryView = () => {
     const sessionsList = schedulesLoadedFromApi
       ? (Array.isArray(gymSessions) ? gymSessions : [])
       : (Array.isArray(gymSessions) && gymSessions.length > 0 ? gymSessions : [
-          {
-            _id: 'bkg-9f5kmz5t9',
-            bookingId: 'BKG-9F5KMZ5T9',
-            title: 'Online Session',
-            trainerId: { _id: 'tr-naveen', name: 'Naveen' },
-            customerId: { firstName: 'Renugopal', lastName: 'Y', email: 'renugopal5457@gmail.com' },
-            date: '2026-10-15',
-            startTime: '10:00 AM',
-            endTime: '11:00 AM',
-            duration: 60,
-            mode: 'Online',
-            fee: 25000,
-            status: 'Confirmed',
-            meetingLink: 'https://meet.jit.si/aigym-session-naveen-001'
-          }
-        ]);
+        {
+          _id: 'bkg-9f5kmz5t9',
+          bookingId: 'BKG-9F5KMZ5T9',
+          title: 'Online Session',
+          trainerId: { _id: 'tr-naveen', name: 'Naveen' },
+          customerId: { firstName: 'Renugopal', lastName: 'Y', email: 'renugopal5457@gmail.com' },
+          date: '2026-10-15',
+          startTime: '10:00 AM',
+          endTime: '11:00 AM',
+          duration: 60,
+          mode: 'Online',
+          fee: 25000,
+          status: 'Confirmed',
+          meetingLink: 'https://meet.jit.si/aigym-session-naveen-001'
+        }
+      ]);
 
     const allItems = sessionsList.map((s: any) => {
       const rawTrainerObj = s.trainerId && typeof s.trainerId === 'object' ? s.trainerId : null;
@@ -5178,8 +5214,8 @@ const renderSalesHistoryView = () => {
 
     const timeframeLabel =
       attendanceTimeframe === 'perday' ? 'Per Day' :
-      attendanceTimeframe === 'weekly' ? 'Weekly' :
-      attendanceTimeframe === 'monthly' ? 'Monthly' : 'Annual';
+        attendanceTimeframe === 'weekly' ? 'Weekly' :
+          attendanceTimeframe === 'monthly' ? 'Monthly' : 'Annual';
     const timeframeTag = timeframeLabel.toUpperCase();
 
     const filterByTimeframe = <T extends { isoDate?: string; date?: string }>(items: T[], perDayFallback: number, weeklyFallback: number, monthlyFallback: number): T[] => {
@@ -5506,17 +5542,17 @@ const renderSalesHistoryView = () => {
 
     const kpiCards = isCustomerTab
       ? [
-          { icon: 'people' as const, bg: '#FFF7ED', color: '#EA580C', title: customerMetrics.card1Title, value: customerMetrics.card1Value, sub: customerMetrics.card1Sub, positive: false },
-          { icon: 'person-add' as const, bg: '#F0FDF4', color: '#16A34A', title: customerMetrics.card2Title, value: customerMetrics.card2Value, sub: customerMetrics.card2Sub, positive: true },
-          { icon: 'time' as const, bg: '#FFF7ED', color: '#EA580C', title: customerMetrics.card3Title, value: customerMetrics.card3Value, sub: customerMetrics.card3Sub, positive: false },
-          { icon: 'person-remove' as const, bg: '#FEE2E2', color: '#DC2626', title: customerMetrics.card4Title, value: customerMetrics.card4Value, sub: customerMetrics.card4Sub, positive: false },
-        ]
+        { icon: 'people' as const, bg: '#FFF7ED', color: '#EA580C', title: customerMetrics.card1Title, value: customerMetrics.card1Value, sub: customerMetrics.card1Sub, positive: false },
+        { icon: 'person-add' as const, bg: '#F0FDF4', color: '#16A34A', title: customerMetrics.card2Title, value: customerMetrics.card2Value, sub: customerMetrics.card2Sub, positive: true },
+        { icon: 'time' as const, bg: '#FFF7ED', color: '#EA580C', title: customerMetrics.card3Title, value: customerMetrics.card3Value, sub: customerMetrics.card3Sub, positive: false },
+        { icon: 'person-remove' as const, bg: '#FEE2E2', color: '#DC2626', title: customerMetrics.card4Title, value: customerMetrics.card4Value, sub: customerMetrics.card4Sub, positive: false },
+      ]
       : [
-          { icon: 'barbell' as const, bg: '#FFF7ED', color: '#EA580C', title: trainerMetrics.card1Title, value: trainerMetrics.card1Value, sub: trainerMetrics.card1Sub, positive: false },
-          { icon: 'checkmark-done' as const, bg: '#F0FDF4', color: '#16A34A', title: trainerMetrics.card2Title, value: trainerMetrics.card2Value, sub: trainerMetrics.card2Sub, positive: false },
-          { icon: 'calendar' as const, bg: '#FFFBEB', color: '#D97706', title: trainerMetrics.card3Title, value: trainerMetrics.card3Value, sub: trainerMetrics.card3Sub, positive: false },
-          { icon: 'speedometer' as const, bg: '#F0FDF4', color: '#16A34A', title: trainerMetrics.card4Title, value: trainerMetrics.card4Value, sub: trainerMetrics.card4Sub, positive: true },
-        ];
+        { icon: 'barbell' as const, bg: '#FFF7ED', color: '#EA580C', title: trainerMetrics.card1Title, value: trainerMetrics.card1Value, sub: trainerMetrics.card1Sub, positive: false },
+        { icon: 'checkmark-done' as const, bg: '#F0FDF4', color: '#16A34A', title: trainerMetrics.card2Title, value: trainerMetrics.card2Value, sub: trainerMetrics.card2Sub, positive: false },
+        { icon: 'calendar' as const, bg: '#FFFBEB', color: '#D97706', title: trainerMetrics.card3Title, value: trainerMetrics.card3Value, sub: trainerMetrics.card3Sub, positive: false },
+        { icon: 'speedometer' as const, bg: '#F0FDF4', color: '#16A34A', title: trainerMetrics.card4Title, value: trainerMetrics.card4Value, sub: trainerMetrics.card4Sub, positive: true },
+      ];
 
     const handleDownloadAttendancePDF = async () => {
       if (isDownloadingAttendancePdf) return;
@@ -6105,7 +6141,7 @@ const renderSalesHistoryView = () => {
   };
 
   // 4. Branches View
-  
+
   const handleOpenAddBranch = () => {
     const currentPlan = (user as any)?.subscriptionPlan || 'SILVER';
     const limit = PLAN_BRANCH_LIMITS[currentPlan] || 1;
@@ -6219,7 +6255,7 @@ const renderSalesHistoryView = () => {
   };
 
 
-const renderBranchesView = () => {
+  const renderBranchesView = () => {
     const currentPlan = (user as any)?.subscriptionPlan || 'SILVER';
     const branchLimit = PLAN_BRANCH_LIMITS[currentPlan] || 1;
     const currentCount = branches.length;
@@ -6279,11 +6315,11 @@ const renderBranchesView = () => {
           branches.map((b, i) => {
             const bName = b.branchName || b.name || 'Studio Branch';
             const bCode = b.branchCode || `BR-0${i + 1}`;
-            const bAddr = b.location?.address 
+            const bAddr = b.location?.address
               ? `${b.location.address}, ${b.location.city || ''}`
               : (b.address || 'Flagship Facility Center');
             const bPhone = b.phone || (user as any)?.mobile || '9876543210';
-            const bHours = b.operatingHours 
+            const bHours = b.operatingHours
               ? `${b.operatingHours.openingTime || '06:00 AM'} - ${b.operatingHours.closingTime || '10:00 PM'}`
               : '06:00 AM - 10:00 PM';
             const bStatus = b.status || 'Active';
@@ -6999,59 +7035,59 @@ const renderBranchesView = () => {
             <ScrollView style={{ maxHeight: 340 }} showsVerticalScrollIndicator={false}>
               {perfTrainerModalTab === 'handled-customers' && (
                 clients.length === 0 ? <Text style={styles.perfCellMutedVal}>No customer clients assigned.</Text> :
-                clients.map((cl: any, i: number) => (
-                  <View key={cl.customerId || i} style={[styles.perfMemberCard, { marginBottom: 8 }]}>
-                    <Text style={styles.perfMemberName}>{cl.name}</Text>
-                    <Text style={styles.perfMemberContact}>{cl.email} • Sessions: {cl.sessionsCount || 0}</Text>
-                  </View>
-                ))
+                  clients.map((cl: any, i: number) => (
+                    <View key={cl.customerId || i} style={[styles.perfMemberCard, { marginBottom: 8 }]}>
+                      <Text style={styles.perfMemberName}>{cl.name}</Text>
+                      <Text style={styles.perfMemberContact}>{cl.email} • Sessions: {cl.sessionsCount || 0}</Text>
+                    </View>
+                  ))
               )}
               {perfTrainerModalTab === 'workout-tracking' && (
                 workoutsList.length === 0 ? <Text style={styles.perfCellMutedVal}>No completed workouts recorded.</Text> :
-                workoutsList.slice(0, 25).map((w: any, i: number) => (
-                  <View key={w._id || i} style={[styles.perfMemberCard, { marginBottom: 8 }]}>
-                    <Text style={styles.perfMemberName}>{w.clientName || 'Member'} — {w.exerciseName || w.dayName}</Text>
-                    <Text style={styles.perfMemberContact}>{w.completedSets || 0} sets • {w.completedAt ? new Date(w.completedAt).toLocaleDateString() : 'Recorded'}</Text>
-                  </View>
-                ))
+                  workoutsList.slice(0, 25).map((w: any, i: number) => (
+                    <View key={w._id || i} style={[styles.perfMemberCard, { marginBottom: 8 }]}>
+                      <Text style={styles.perfMemberName}>{w.clientName || 'Member'} — {w.exerciseName || w.dayName}</Text>
+                      <Text style={styles.perfMemberContact}>{w.completedSets || 0} sets • {w.completedAt ? new Date(w.completedAt).toLocaleDateString() : 'Recorded'}</Text>
+                    </View>
+                  ))
               )}
               {perfTrainerModalTab === 'diet-tracking' && (
                 mealsList.length === 0 ? <Text style={styles.perfCellMutedVal}>No completed meal check-ins recorded.</Text> :
-                mealsList.slice(0, 25).map((m: any, i: number) => (
-                  <View key={m._id || i} style={[styles.perfMemberCard, { marginBottom: 8 }]}>
-                    <Text style={styles.perfMemberName}>{m.clientName || 'Member'} — {m.mealType}</Text>
-                    <Text style={styles.perfMemberContact}>{m.calories || 0} kcal • {m.protein || 0}g protein</Text>
-                  </View>
-                ))
+                  mealsList.slice(0, 25).map((m: any, i: number) => (
+                    <View key={m._id || i} style={[styles.perfMemberCard, { marginBottom: 8 }]}>
+                      <Text style={styles.perfMemberName}>{m.clientName || 'Member'} — {m.mealType}</Text>
+                      <Text style={styles.perfMemberContact}>{m.calories || 0} kcal • {m.protein || 0}g protein</Text>
+                    </View>
+                  ))
               )}
               {perfTrainerModalTab === 'sessions' && (
                 sessionsList.length === 0 ? <Text style={styles.perfCellMutedVal}>No completed training sessions recorded.</Text> :
-                sessionsList.slice(0, 25).map((s: any, i: number) => (
-                  <View key={s._id || i} style={[styles.perfMemberCard, { marginBottom: 8 }]}>
-                    <Text style={styles.perfMemberName}>{s.clientName || 'Member'} • {s.mode || 'In-Person'}</Text>
-                    <Text style={styles.perfMemberContact}>{s.date || 'Session'} {s.time ? `• ${s.time}` : ''}</Text>
-                  </View>
-                ))
+                  sessionsList.slice(0, 25).map((s: any, i: number) => (
+                    <View key={s._id || i} style={[styles.perfMemberCard, { marginBottom: 8 }]}>
+                      <Text style={styles.perfMemberName}>{s.clientName || 'Member'} • {s.mode || 'In-Person'}</Text>
+                      <Text style={styles.perfMemberContact}>{s.date || 'Session'} {s.time ? `• ${s.time}` : ''}</Text>
+                    </View>
+                  ))
               )}
               {perfTrainerModalTab === 'reviews' && (
                 reviewsList.length === 0 ? <Text style={styles.perfCellMutedVal}>No customer reviews recorded yet.</Text> :
-                reviewsList.map((rev: any, i: number) => (
-                  <View key={i} style={[styles.perfMemberCard, { marginBottom: 8 }]}>
-                    <Text style={styles.perfMemberName}>{rev.clientName || 'Gym Member'} • {rev.rating} ⭐</Text>
-                    <Text style={styles.perfMemberContact}>"{rev.review}"</Text>
-                  </View>
-                ))
+                  reviewsList.map((rev: any, i: number) => (
+                    <View key={i} style={[styles.perfMemberCard, { marginBottom: 8 }]}>
+                      <Text style={styles.perfMemberName}>{rev.clientName || 'Gym Member'} • {rev.rating} ⭐</Text>
+                      <Text style={styles.perfMemberContact}>"{rev.review}"</Text>
+                    </View>
+                  ))
               )}
               {perfTrainerModalTab === 'rewards' && (
                 bonusesList.length === 0 ? <Text style={styles.perfCellMutedVal}>No trainer bonus programs evaluated.</Text> :
-                bonusesList.map((rw: any, i: number) => (
-                  <View key={rw.rewardId || i} style={[styles.perfMemberCard, { marginBottom: 8 }]}>
-                    <Text style={styles.perfMemberName}>{rw.title}</Text>
-                    <Text style={styles.perfMemberContact}>
-                      {rw.bonusAmount > 0 ? `₹${rw.bonusAmount} Bonus • ` : ''}{rw.alreadyClaimed ? 'Claimed' : rw.isEligible ? 'Eligible' : 'In Progress'}
-                    </Text>
-                  </View>
-                ))
+                  bonusesList.map((rw: any, i: number) => (
+                    <View key={rw.rewardId || i} style={[styles.perfMemberCard, { marginBottom: 8 }]}>
+                      <Text style={styles.perfMemberName}>{rw.title}</Text>
+                      <Text style={styles.perfMemberContact}>
+                        {rw.bonusAmount > 0 ? `₹${rw.bonusAmount} Bonus • ` : ''}{rw.alreadyClaimed ? 'Claimed' : rw.isEligible ? 'Eligible' : 'In Progress'}
+                      </Text>
+                    </View>
+                  ))
               )}
             </ScrollView>
 
@@ -7310,9 +7346,9 @@ const renderBranchesView = () => {
                       placeholder="Target threshold count"
                       value={String(
                         perfRewardForm.achievementCondition === 'workouts' ? perfRewardForm.minWorkoutCompletions :
-                        perfRewardForm.achievementCondition === 'streak' ? perfRewardForm.minStreakDays :
-                        perfRewardForm.achievementCondition === 'goals' ? perfRewardForm.minDietAdherenceDays :
-                        perfRewardForm.minVerifiedVisits
+                          perfRewardForm.achievementCondition === 'streak' ? perfRewardForm.minStreakDays :
+                            perfRewardForm.achievementCondition === 'goals' ? perfRewardForm.minDietAdherenceDays :
+                              perfRewardForm.minVerifiedVisits
                       )}
                       onChangeText={v => {
                         const num = Number(v) || 0;
@@ -8366,14 +8402,14 @@ const renderBranchesView = () => {
         const backendMethod = subPaymentMethod === 'Card' ? 'Credit/Debit Card' : subPaymentMethod;
         const res = subActionType === 'RENEWAL'
           ? await api.post('/subscriptions/renew', {
-              billingCycle: subIsAnnual ? 'annual' : 'monthly',
-              paymentMethod: backendMethod,
-            })
+            billingCycle: subIsAnnual ? 'annual' : 'monthly',
+            paymentMethod: backendMethod,
+          })
           : await api.post('/subscriptions/upgrade', {
-              targetPlan: subPaymentStep,
-              billingCycle: subIsAnnual ? 'annual' : 'monthly',
-              paymentMethod: backendMethod,
-            });
+            targetPlan: subPaymentStep,
+            billingCycle: subIsAnnual ? 'annual' : 'monthly',
+            paymentMethod: backendMethod,
+          });
 
         if (res?.data?.success) {
           if (res.data.subscription) {
@@ -9302,9 +9338,9 @@ const renderBranchesView = () => {
     const membersList = hasLiveMembers
       ? reportMembers
       : [
-          { _id: 'm1', name: 'Renugopal Y', approvalStatus: 'APPROVED', status: 'Active', subscriptionStatus: 'ACTIVE', subscriptionPlan: 'Weight Loss', createdAt: new Date(2026, 9, 14).toISOString() },
-          { _id: 'm2', name: 'Vijay Kumar', approvalStatus: 'PENDING', status: 'Inactive', subscriptionStatus: 'EXPIRED', subscriptionPlan: 'Weight Loss', createdAt: new Date(2026, 9, 20).toISOString() }
-        ];
+        { _id: 'm1', name: 'Renugopal Y', approvalStatus: 'APPROVED', status: 'Active', subscriptionStatus: 'ACTIVE', subscriptionPlan: 'Weight Loss', createdAt: new Date(2026, 9, 14).toISOString() },
+        { _id: 'm2', name: 'Vijay Kumar', approvalStatus: 'PENDING', status: 'Inactive', subscriptionStatus: 'EXPIRED', subscriptionPlan: 'Weight Loss', createdAt: new Date(2026, 9, 20).toISOString() }
+      ];
 
     const totalMembers = membersList.length;
     const activeMembers = membersList.filter(
@@ -9333,10 +9369,10 @@ const renderBranchesView = () => {
     const allStoreSales = rawSales.length > 0
       ? rawSales
       : [
-          { total: 800, date: new Date(2026, 9, 14).toISOString() },
-          { total: 140, date: new Date(2026, 9, 14).toISOString() },
-          { total: 140, date: new Date(2026, 9, 24).toISOString() }
-        ];
+        { total: 800, date: new Date(2026, 9, 14).toISOString() },
+        { total: 140, date: new Date(2026, 9, 14).toISOString() },
+        { total: 140, date: new Date(2026, 9, 24).toISOString() }
+      ];
 
     const periodStoreSales = allStoreSales.filter((s: any) => {
       const d = new Date(s.createdAt || s.date || s.orderDate || 0);
@@ -9417,11 +9453,11 @@ const renderBranchesView = () => {
         `Gym Center — Analytics & Reports\nPeriod: ${timeframeLabel}\n\n• New Members: ${newMembersInPeriod}\n• Retention Rate: ${retentionRate}%\n• Churn Rate: ${churnRate}%\n• Period Revenue: ₹${periodTotalRevenue.toLocaleString('en-IN')}\n• All-Time Revenue: ₹${totalRevenue.toLocaleString('en-IN')}\n\nPDF document generated and ready to share.`,
         [
           { text: 'Cancel', style: 'cancel' },
-          { 
-            text: 'Share / Save PDF', 
+          {
+            text: 'Share / Save PDF',
             onPress: () => {
               Alert.alert('Report Saved', `Analytics_Report_${new Date().toISOString().slice(0, 10)}.pdf saved to downloads.`);
-            } 
+            }
           }
         ]
       );
@@ -9537,8 +9573,8 @@ const renderBranchesView = () => {
                 idx === 0
                   ? { left: -4, right: -52, alignItems: 'flex-start' as const }
                   : idx === monthlyGrowth.length - 1
-                  ? { left: -52, right: -4, alignItems: 'flex-end' as const }
-                  : { left: -28, right: -28, alignItems: 'center' as const };
+                    ? { left: -52, right: -4, alignItems: 'flex-end' as const }
+                    : { left: -28, right: -28, alignItems: 'center' as const };
               return (
                 <TouchableOpacity
                   key={idx}
@@ -12716,7 +12752,7 @@ const renderBranchesView = () => {
         amount: signedAmount,
         reason: adjustPointsReason.trim() || (adjustPointsMode === 'ADD' ? 'Owner manual bonus points' : 'Owner manual deduction')
       });
-      
+
       // Update local customer
       setReferralCustomers(prev => prev.map(c => {
         if (c._id === selectedAdjustCustomer._id) {
@@ -14059,9 +14095,9 @@ const renderBranchesView = () => {
                 {/* Default Configuration Chips: Sets • Reps • Work • Rest */}
                 <View style={styles.exMetricsRow}>
                   <Text style={styles.exMetricsText}>
-                    <Text style={styles.exMetricsBold}>{ex.defaultSets || 3}</Text> Sets  •  
-                    <Text style={styles.exMetricsBold}> {ex.defaultRepetitions || 12}</Text> Reps  •  
-                    <Text style={styles.exMetricsBold}> {ex.defaultDuration || 60}s</Text> Work  •  
+                    <Text style={styles.exMetricsBold}>{ex.defaultSets || 3}</Text> Sets  •
+                    <Text style={styles.exMetricsBold}> {ex.defaultRepetitions || 12}</Text> Reps  •
+                    <Text style={styles.exMetricsBold}> {ex.defaultDuration || 60}s</Text> Work  •
                     <Text style={styles.exMetricsBold}> {ex.defaultRest || 30}s</Text> Rest
                   </Text>
                 </View>
@@ -14731,7 +14767,7 @@ const renderBranchesView = () => {
     );
   };
 
-const renderPackagePlansView = () => {
+  const renderPackagePlansView = () => {
     const filteredPackages = packages.filter((pkg: any) => {
       if (packageGoalFilter && pkg.fitnessGoal !== packageGoalFilter && pkg.name !== packageGoalFilter) {
         return false;
@@ -15107,7 +15143,7 @@ const renderPackagePlansView = () => {
 
     setIsSubmittingVideoApproval(true);
     try {
-      const finalUrl = approveModalVideo.videoUrl 
+      const finalUrl = approveModalVideo.videoUrl
         || (approveModalVideo.youtubeId ? `https://www.youtube.com/watch?v=${approveModalVideo.youtubeId}` : '');
 
       await api.post('/trainer-plans/trainer/approve-and-assign', {
@@ -15314,7 +15350,7 @@ const renderPackagePlansView = () => {
                   onPress={() => handleWatchVideo(video)}
                 >
                   <Image source={{ uri: thumb }} style={styles.vidThumbImage} resizeMode="cover" />
-                  
+
                   {/* Language Pill (Top-Left) */}
                   <View style={[styles.vidLangBadge, isTamil ? styles.vidLangBadgeTamil : styles.vidLangBadgeEng]}>
                     <Text style={styles.vidLangBadgeText}>
@@ -15450,12 +15486,12 @@ const renderPackagePlansView = () => {
       attributes: parsedAttrs,
       variants: Array.isArray(prod.variants)
         ? prod.variants.map((v: any) => ({
-            sku: v.sku || '',
-            attributes: v.attributes || {},
-            price: String(v.price ?? ''),
-            discountPrice: v.discountPrice !== undefined && v.discountPrice !== null ? String(v.discountPrice) : '',
-            stock: String(v.stock ?? 0),
-          }))
+          sku: v.sku || '',
+          attributes: v.attributes || {},
+          price: String(v.price ?? ''),
+          discountPrice: v.discountPrice !== undefined && v.discountPrice !== null ? String(v.discountPrice) : '',
+          stock: String(v.stock ?? 0),
+        }))
         : [],
     });
     setShowEditStoreProductModal(true);
@@ -15504,12 +15540,12 @@ const renderPackagePlansView = () => {
       setIsStoreProductSaving(true);
       const formattedVariants = storeProductForm.hasVariants
         ? storeProductForm.variants.map((v) => ({
-            sku: v.sku?.trim() || undefined,
-            attributes: v.attributes || {},
-            price: Number(v.price) || 0,
-            discountPrice: v.discountPrice.trim() !== '' ? Number(v.discountPrice) : undefined,
-            stock: Number(v.stock) || 0,
-          }))
+          sku: v.sku?.trim() || undefined,
+          attributes: v.attributes || {},
+          price: Number(v.price) || 0,
+          discountPrice: v.discountPrice.trim() !== '' ? Number(v.discountPrice) : undefined,
+          stock: Number(v.stock) || 0,
+        }))
         : [];
 
       const totalVariantStock = formattedVariants.reduce((sum, v) => sum + v.stock, 0);
@@ -15535,12 +15571,14 @@ const renderPackagePlansView = () => {
       };
 
       if (isEdit && editingStoreProduct) {
-        await api.put(`/store/admin/products/${editingStoreProduct._id}`, payload).catch(() => null);
-        setStoreProducts(prev => prev.map(p => p._id === editingStoreProduct._id ? { ...p, ...payload, price: sellPrice } : p));
+        const res = await api.put(`/store/admin/products/${editingStoreProduct._id}`, payload);
+        const updatedProd = res?.data?.product || { ...editingStoreProduct, ...payload, price: sellPrice };
+        setStoreProducts(prev => prev.map(p => p._id === editingStoreProduct._id ? updatedProd : p));
         setShowEditStoreProductModal(false);
+        await fetchDetailData('store_products');
         Alert.alert('Success', `Product "${payload.name}" updated successfully.`);
       } else {
-        const res = await api.post('/store/admin/products', payload).catch(() => null);
+        const res = await api.post('/store/admin/products', payload);
         const newProd = res?.data?.product || {
           ...payload,
           _id: `prod_${Date.now()}`,
@@ -15548,6 +15586,7 @@ const renderPackagePlansView = () => {
         };
         setStoreProducts(prev => [newProd, ...prev]);
         setShowAddStoreProductModal(false);
+        await fetchDetailData('store_products');
         Alert.alert('Success', `Product "${payload.name}" added successfully.`);
       }
     } catch (err: any) {
@@ -15732,31 +15771,40 @@ const renderPackagePlansView = () => {
           </View>
         ) : (
           filtered.map((prod: any, idx: number) => {
-            const stock = Number(prod.stock ?? 0);
+            const {
+              totalStock: stock,
+              originalPrice: sellingPrice,
+              displayPrice,
+              hasDiscount,
+              discountPercent,
+            } = computeStoreProductPricing(prod);
             const isOutOfStock = stock <= 0;
-            const sellingPrice = Number(prod.sellingPrice ?? prod.price ?? 0);
-            const discountPrice = prod.discountPrice !== undefined && prod.discountPrice !== null && prod.discountPrice !== ''
-              ? Number(prod.discountPrice)
-              : null;
-            const hasDiscount = discountPrice !== null && discountPrice < sellingPrice;
-            const discountPercent = hasDiscount && sellingPrice > 0
-              ? Math.round(((sellingPrice - discountPrice) / sellingPrice) * 100)
-              : null;
+            const lowThreshold = Number(prod.lowStockThreshold) || 5;
+            const isLow = stock > 0 && stock <= lowThreshold;
 
-            const categoryDisplay = (prod.categoryName || prod.category || prod.productType || 'GENERAL').toUpperCase();
-            const brandDisplay = prod.brand || '--';
+            const categoryDisplay = (prod.productType || prod.categoryName || prod.category || 'Product').toUpperCase();
+            const brandDisplay = prod.brand || '';
             const statusDisplay = prod.status || 'Active';
-            const hasVariants = Boolean(prod.hasVariants || (prod.variants && prod.variants.length > 0));
-            const variantCount = prod.variants?.length || 2;
+            const hasVariants = Boolean(prod.hasVariants && Array.isArray(prod.variants) && prod.variants.length > 0);
+            const variantCount = prod.variants?.length || 0;
             const channels = prod.availability || 'Both';
-            const fulfil = prod.fulfilmentType || 'Both';
+            const fulfil = prod.fulfilmentType || 'Gym Pickup';
+
+            const imgUri = resolveMediaUrl(prod.image);
+            const imgKey = `${prod._id || idx}:${imgUri || ''}`;
+            const showImg = Boolean(imgUri) && !failedStoreImgKeys[imgKey];
 
             return (
               <View key={prod._id || idx} style={styles.prodCard}>
                 {/* Image Container with Badges */}
                 <View style={styles.prodImageContainer}>
-                  {prod.image ? (
-                    <Image source={{ uri: prod.image }} style={styles.prodImage} resizeMode="cover" />
+                  {showImg ? (
+                    <Image
+                      source={{ uri: imgUri }}
+                      style={styles.prodImage}
+                      resizeMode="cover"
+                      onError={() => setFailedStoreImgKeys((prev) => ({ ...prev, [imgKey]: true }))}
+                    />
                   ) : (
                     <View style={styles.prodImageFallback}>
                       <Ionicons name="cube" size={44} color={COLORS.primary} />
@@ -15766,12 +15814,12 @@ const renderPackagePlansView = () => {
                   {/* Top-Left Stock Badge */}
                   <View style={[styles.prodStockBadge, isOutOfStock && styles.prodStockBadgeOut]}>
                     <Text style={[styles.prodStockBadgeText, isOutOfStock && styles.prodStockBadgeTextOut]}>
-                      {isOutOfStock ? 'Out of stock' : `In stock (${stock})`}
+                      {isOutOfStock ? 'Out of stock' : isLow ? `Low (${stock})` : `In stock (${stock})`}
                     </Text>
                   </View>
 
                   {/* Top-Right Discount Badge */}
-                  {hasDiscount && discountPercent && discountPercent > 0 && (
+                  {hasDiscount && discountPercent > 0 && (
                     <View style={styles.prodDiscountBadge}>
                       <Text style={styles.prodDiscountBadgeText}>
                         {discountPercent}% off
@@ -15804,28 +15852,37 @@ const renderPackagePlansView = () => {
                   </Text>
 
                   {/* Brand */}
-                  <Text style={styles.prodBrandText}>
-                    {brandDisplay}
-                  </Text>
+                  {brandDisplay ? (
+                    <Text style={styles.prodBrandText}>
+                      {brandDisplay}
+                    </Text>
+                  ) : null}
 
-                  {/* Price Row */}
+                  {/* Price Row (Matching Web GymStoreProducts.tsx: final = sellingPrice - discountAmt) */}
                   <View style={styles.prodPriceRow}>
                     {hasVariants ? (
-                      <Text style={styles.prodPriceMain}>
-                        From ₹{Number(discountPrice || sellingPrice).toLocaleString('en-IN')}
-                      </Text>
+                      <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 6 }}>
+                        <Text style={styles.prodPriceMain}>
+                          From ₹{displayPrice.toLocaleString('en-IN')}
+                        </Text>
+                        {hasDiscount && sellingPrice > 0 && (
+                          <Text style={styles.prodPriceOriginal}>
+                            ₹{sellingPrice.toLocaleString('en-IN')}
+                          </Text>
+                        )}
+                      </View>
                     ) : hasDiscount ? (
                       <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 6 }}>
                         <Text style={styles.prodPriceMain}>
-                          ₹{Number(discountPrice).toLocaleString('en-IN')}
+                          ₹{displayPrice.toLocaleString('en-IN')}
                         </Text>
                         <Text style={styles.prodPriceOriginal}>
-                          ₹{Number(sellingPrice).toLocaleString('en-IN')}
+                          ₹{sellingPrice.toLocaleString('en-IN')}
                         </Text>
                       </View>
                     ) : (
                       <Text style={styles.prodPriceMain}>
-                        ₹{Number(sellingPrice).toLocaleString('en-IN')}
+                        ₹{sellingPrice.toLocaleString('en-IN')}
                       </Text>
                     )}
                   </View>
@@ -16401,7 +16458,7 @@ const renderPackagePlansView = () => {
   };
 
   const renderGroup = (
-    title: string, 
+    title: string,
     groupKey: 'operations' | 'store' | 'scheduling' | 'rewards' | 'settings'
   ) => {
     const items = allItems.filter(i => {
@@ -17796,7 +17853,7 @@ const renderPackagePlansView = () => {
                       onPress={() => {
                         setBranchForm(prev => ({
                           ...prev,
-                          workingDays: isSelected 
+                          workingDays: isSelected
                             ? prev.workingDays.filter(d => d !== day)
                             : [...prev.workingDays, day]
                         }));
@@ -18107,7 +18164,7 @@ const renderPackagePlansView = () => {
 
             <ScrollView style={{ padding: 14 }}>
               {availableProds.map((prod: any) => {
-                const price = Number(prod.discountPrice || prod.sellingPrice || 0);
+                const { displayPrice: price, totalStock } = computeStoreProductPricing(prod);
                 return (
                   <TouchableOpacity
                     key={prod._id}
@@ -18123,7 +18180,7 @@ const renderPackagePlansView = () => {
                     </View>
                     <View style={{ flex: 1 }}>
                       <Text style={styles.posPickerItemName}>{prod.name}</Text>
-                      <Text style={styles.posPickerItemMeta}>Stock: {prod.stock || 0} units · {prod.categoryName || prod.category || 'General'}</Text>
+                      <Text style={styles.posPickerItemMeta}>Stock: {totalStock} units · {prod.categoryName || prod.category || 'General'}</Text>
                     </View>
                     <Text style={styles.posPickerItemPrice}>₹{price}</Text>
                   </TouchableOpacity>
@@ -18193,7 +18250,7 @@ const renderPackagePlansView = () => {
     const o = selectedOrderDetail;
     const stStyle = ORDER_STATUS_COLORS[o.status] || { bg: '#F8FAFC', text: '#64748B', border: '#E2E8F0' };
     const pmStyle = ORDER_PAYMENT_COLORS[o.paymentStatus] || { bg: '#F8FAFC', text: '#64748B' };
-    const custName = o.customerId 
+    const custName = o.customerId
       ? `${o.customerId.firstName || ''} ${o.customerId.lastName || ''}`.trim() || 'Unknown Customer'
       : 'Unknown Customer';
 
@@ -18403,7 +18460,7 @@ const renderPackagePlansView = () => {
   };
 
 
-const renderExercisePreviewModal = () => {
+  const renderExercisePreviewModal = () => {
     if (!previewExercise) return null;
 
     return (
@@ -18803,7 +18860,7 @@ const renderExercisePreviewModal = () => {
     );
   };
 
-const renderAddEquipmentModal = () => {
+  const renderAddEquipmentModal = () => {
     if (!showAddEquipmentModal) return null;
 
     return (
@@ -19230,7 +19287,7 @@ const renderAddEquipmentModal = () => {
     );
   };
 
-const renderAddPackageModal = () => {
+  const renderAddPackageModal = () => {
     if (!showAddPackageModal) return null;
 
     return (
@@ -19820,7 +19877,7 @@ const renderAddPackageModal = () => {
     );
   };
 
-const renderWatchVideoModal = () => {
+  const renderWatchVideoModal = () => {
     if (!activeWatchVideo) return null;
     const video = activeWatchVideo;
     const thumb = video.thumbnailUrl || (video.youtubeId ? `https://img.youtube.com/vi/${video.youtubeId}/hqdefault.jpg` : 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=600&q=80');
@@ -20316,7 +20373,7 @@ const renderWatchVideoModal = () => {
     );
   };
 
-const renderAdjustStockModal = () => {
+  const renderAdjustStockModal = () => {
     if (!showAdjustStockModal || !adjustingProduct) return null;
     const currentStock = Number(adjustingProduct.stock || 0);
     const num = Number(adjustQty) || 0;
@@ -20769,13 +20826,13 @@ const renderAdjustStockModal = () => {
           </View>
         ) : (
           <>
-            {/* Prices (Selling Price & Discount Price) */}
+            {/* Prices (Selling Price & Discount Amount) */}
             <View style={styles.prodFormRow}>
               <View style={{ flex: 1 }}>
                 <Text style={styles.prodFormLabel}>Selling Price (₹) *</Text>
                 <TextInput
                   style={styles.prodFormInput}
-                  placeholder="e.g. 199"
+                  placeholder="0"
                   keyboardType="numeric"
                   placeholderTextColor={COLORS.textMuted}
                   value={storeProductForm.sellingPrice}
@@ -20783,10 +20840,10 @@ const renderAdjustStockModal = () => {
                 />
               </View>
               <View style={{ flex: 1 }}>
-                <Text style={styles.prodFormLabel}>Discount Price (₹)</Text>
+                <Text style={styles.prodFormLabel}>Discount Amount (₹)</Text>
                 <TextInput
                   style={styles.prodFormInput}
-                  placeholder="e.g. 140 (optional)"
+                  placeholder="Optional"
                   keyboardType="numeric"
                   placeholderTextColor={COLORS.textMuted}
                   value={storeProductForm.discountPrice}
@@ -20875,8 +20932,8 @@ const renderAdjustStockModal = () => {
                   {storeProductForm.availability === 'Online'
                     ? 'Online Only'
                     : storeProductForm.availability === 'Offline'
-                    ? 'In-Gym Only'
-                    : 'Both Online & In-Gym'}
+                      ? 'In-Gym Only'
+                      : 'Both Online & In-Gym'}
                 </Text>
                 <Ionicons name="chevron-down" size={13} color="#64748B" />
               </TouchableOpacity>
@@ -20905,8 +20962,8 @@ const renderAdjustStockModal = () => {
                   {storeProductForm.fulfilmentType === 'Delivery'
                     ? 'Delivery'
                     : storeProductForm.fulfilmentType === 'Both'
-                    ? 'Both'
-                    : 'Gym Pickup'}
+                      ? 'Both'
+                      : 'Gym Pickup'}
                 </Text>
                 <Ionicons name="chevron-down" size={13} color="#64748B" />
               </TouchableOpacity>
@@ -20919,9 +20976,9 @@ const renderAdjustStockModal = () => {
           <Text style={styles.prodWebSectionTitle}>PRODUCT IMAGE</Text>
           <View style={styles.prodWebImageRow}>
             <View style={styles.prodWebImageSquareBox}>
-              {storeProductForm.image ? (
+              {resolveMediaUrl(storeProductForm.image) ? (
                 <Image
-                  source={{ uri: storeProductForm.image }}
+                  source={{ uri: resolveMediaUrl(storeProductForm.image) }}
                   style={styles.prodWebImagePreview}
                   resizeMode="cover"
                 />
@@ -20954,7 +21011,7 @@ const renderAdjustStockModal = () => {
     );
   };
 
-const renderAddStoreProductModal = () => {
+  const renderAddStoreProductModal = () => {
     if (!showAddStoreProductModal) return null;
 
     return (
@@ -21143,10 +21200,10 @@ const renderAddStoreProductModal = () => {
     );
   };
 
-return (
+  return (
     <View style={styles.container}>
-      <ScrollView 
-        style={styles.scrollArea} 
+      <ScrollView
+        style={styles.scrollArea}
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
       >
@@ -21198,8 +21255,8 @@ return (
         {renderGroup('Gym & Account Settings', 'settings')}
 
         {/* Sign Out Button */}
-        <TouchableOpacity 
-          style={styles.logoutBtn} 
+        <TouchableOpacity
+          style={styles.logoutBtn}
           onPress={handleLogout}
           activeOpacity={0.8}
         >
@@ -21214,7 +21271,7 @@ return (
           <View style={styles.modalOverlay}>
             <View style={styles.modalCard}>
               <View style={styles.modalHeaderRow}>
-                <TouchableOpacity 
+                <TouchableOpacity
                   style={styles.modalBackBtn}
                   onPress={() => {
                     setActiveDetailItem(null);
@@ -21224,7 +21281,7 @@ return (
                   <Ionicons name="arrow-back" size={20} color={COLORS.textDark} />
                   <Text style={styles.modalBackText}>Back to More</Text>
                 </TouchableOpacity>
-                <TouchableOpacity 
+                <TouchableOpacity
                   onPress={() => {
                     setActiveDetailItem(null);
                     if (onCloseSubPage) onCloseSubPage();
@@ -21234,15 +21291,15 @@ return (
                 </TouchableOpacity>
               </View>
 
-              <ScrollView 
-                style={styles.modalScrollArea} 
+              <ScrollView
+                style={styles.modalScrollArea}
                 contentContainerStyle={{ paddingBottom: 60 }}
                 showsVerticalScrollIndicator={false}
                 refreshControl={
-                  <RefreshControl 
-                    refreshing={refreshing} 
-                    onRefresh={onRefreshDetail} 
-                    tintColor={COLORS.primary} 
+                  <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={onRefreshDetail}
+                    tintColor={COLORS.primary}
                   />
                 }
               >
@@ -21289,7 +21346,7 @@ return (
               <View style={styles.invoiceCustomerBox}>
                 <Text style={styles.invoiceSectionTitle}>CUSTOMER DETAILS</Text>
                 <Text style={styles.invoiceCustName}>
-                  {selectedInvoiceSale?.customer 
+                  {selectedInvoiceSale?.customer
                     ? `${selectedInvoiceSale.customer.firstName || ''} ${selectedInvoiceSale.customer.lastName || ''}`.trim()
                     : 'Walk-in Counter Customer'}
                 </Text>
@@ -21323,13 +21380,13 @@ return (
             </ScrollView>
 
             <View style={styles.invoiceActionsRow}>
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={styles.invoiceCloseActionBtn}
                 onPress={() => setShowInvoiceModal(false)}
               >
                 <Text style={styles.invoiceCloseActionText}>Close</Text>
               </TouchableOpacity>
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={styles.invoicePrintActionBtn}
                 onPress={async () => {
                   try {
@@ -21385,7 +21442,7 @@ return (
               <View style={styles.sessionModalRow}>
                 <Text style={styles.sessionModalLabel}>Member Name:</Text>
                 <Text style={styles.sessionModalValue}>
-                  {selectedBookingModal?.customerId 
+                  {selectedBookingModal?.customerId
                     ? `${selectedBookingModal.customerId.firstName || ''} ${selectedBookingModal.customerId.lastName || ''}`.trim()
                     : 'Unknown Member'}
                 </Text>
@@ -21441,7 +21498,7 @@ return (
 
       {/* EXERCISE MODALS */}
       {renderExerciseAddEditModal()}
-      
+
       {/* EXERCISE LIBRARY MODALS */}
       {renderExercisePreviewModal()}
       {renderExerciseAddEditModal()}
@@ -21511,8 +21568,8 @@ return (
       {renderCreateCampaignModal()}
 
       {/* SALES RECEIPT & BOOKING DETAILS MODALS */}
-      
-      
+
+
 
     </View>
   );
@@ -22605,14 +22662,17 @@ const styles = StyleSheet.create({
   },
   invoiceCloseActionBtn: {
     paddingHorizontal: 14,
-    paddingVertical: 8,
+    paddingVertical: 10,
     borderRadius: 8,
     backgroundColor: '#F1F5F9',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   invoiceCloseActionText: {
     fontSize: 12,
     fontWeight: '700',
     color: '#64748B',
+    textAlign: 'center',
   },
   invoicePrintActionBtn: {
     flexDirection: 'row',
@@ -25761,7 +25821,7 @@ const styles = StyleSheet.create({
   },
 
   // Additional styles from chunks
-    branchStatusToggleText: {
+  branchStatusToggleText: {
     fontSize: 11,
     fontWeight: '700',
     color: COLORS.primary,
@@ -26435,8 +26495,8 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     color: COLORS.white,
   },
-    
-    
+
+
   // Equipment & Machinery Styles (Matching Web /admin/equipment)
   eqHeaderBtnsRow: {
     flexDirection: 'row',
@@ -26798,7 +26858,7 @@ const styles = StyleSheet.create({
     color: COLORS.textDark,
     marginTop: 2,
   },
-    
+
 
   // Membership Package Plans Styles (Matching Web /admin/membership-plans)
   pkgAddBtn: {
@@ -27357,7 +27417,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#E2E8F0',
   },
 
-// Gym Exercise Videos Styles (Matching Web /admin/exercise-videos)
+  // Gym Exercise Videos Styles (Matching Web /admin/exercise-videos)
   vidBannerCard: {
     backgroundColor: '#FFF7ED',
     borderRadius: 20,
@@ -27941,7 +28001,7 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
 
-// Gym Store Inventory Styles (Matching Web /admin/store/inventory)
+  // Gym Store Inventory Styles (Matching Web /admin/store/inventory)
   invKpiGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',

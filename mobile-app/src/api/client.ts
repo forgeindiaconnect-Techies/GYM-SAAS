@@ -152,4 +152,31 @@ export const checkBackendHealth = async (): Promise<boolean> => {
   }
 };
 
+export const getActiveServerOrigin = (): string => {
+  return getActiveBaseUrl().replace(/\/api\/?$/, '');
+};
+
+export const resolveMediaUrl = (url?: string | null): string | undefined => {
+  if (!url || typeof url !== 'string') return undefined;
+  const trimmed = url.trim();
+  if (!trimmed) return undefined;
+
+  if (/^(data|file|content|ph|asset):/i.test(trimmed)) {
+    return trimmed;
+  }
+
+  const origin = getActiveServerOrigin();
+
+  if (trimmed.startsWith('/')) {
+    return `${origin}${trimmed}`;
+  }
+
+  const localMatch = trimmed.match(/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?(\/.*)$/i);
+  if (localMatch) {
+    return `${origin}${localMatch[3]}`;
+  }
+
+  return trimmed;
+};
+
 export default api;

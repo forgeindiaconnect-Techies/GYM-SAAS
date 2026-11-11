@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../constants/theme';
-import { api } from '../../api/client';
+import { api, resolveMediaUrl } from '../../api/client';
 import { useAuth } from '../../context/AuthContext';
 import { FileDownloader } from '../../utils/fileDownloader';
 
@@ -223,6 +223,7 @@ export const CustomerStoreScreen: React.FC<{ initialSubTab?: string }> = ({ init
   const [selectedVariant, setSelectedVariant] = useState<any | null>(null);
   const [modalQty, setModalQty] = useState(1);
   const [addingToCartId, setAddingToCartId] = useState<string | null>(null);
+  const [failedProductImgKeys, setFailedProductImgKeys] = useState<Record<string, boolean>>({});
 
   // Cart state (default matching Web Page 3)
   const [cart, setCart] = useState<CartItem[]>([
@@ -400,7 +401,52 @@ export const CustomerStoreScreen: React.FC<{ initialSubTab?: string }> = ({ init
       setLoading(true);
       const res = await api.get('/store/customer/products').catch(() => null);
       if (res?.data?.products && res.data.products.length > 0) {
-        setProducts(res.data.products);
+        const normalized = res.data.products.map((p: any) => {
+          let totalStock = Number(p?.stock ?? 0);
+          let origPrice = Number(p?.sellingPrice ?? 0);
+          let discAmt = Number(p?.discountPrice) || 0;
+          let displayPrice = Math.max(0, origPrice - discAmt);
+          let hasDisc = discAmt > 0 && origPrice > discAmt;
+          let mappedVariants = p?.variants;
+
+          if (p?.hasVariants && Array.isArray(p?.variants) && p.variants.length > 0) {
+            totalStock = p.variants.reduce((acc: number, v: any) => acc + (Number(v?.stock) || 0), 0);
+            mappedVariants = p.variants.map((v: any) => {
+              const vp = Number(v?.price) || 0;
+              const vd = Number(v?.discountPrice) || 0;
+              return {
+                ...v,
+                originalPrice: vp,
+                finalPrice: Math.max(0, vp - vd),
+              };
+            });
+            const minV = mappedVariants.reduce((prev: any, curr: any) =>
+              curr.finalPrice < prev.finalPrice ? curr : prev
+            , mappedVariants[0]);
+            if (minV) {
+              origPrice = minV.originalPrice;
+              displayPrice = minV.finalPrice;
+              const vDisc = Number(minV.discountPrice) || 0;
+              hasDisc = vDisc > 0 && origPrice > vDisc;
+            }
+          }
+
+          const discountPct = hasDisc && origPrice > 0
+            ? Math.max(1, Math.round(((origPrice - displayPrice) / origPrice) * 100))
+            : null;
+
+          return {
+            ...p,
+            image: resolveMediaUrl(p?.image),
+            stock: totalStock,
+            sellingPrice: origPrice,
+            displayPrice,
+            discountPct,
+            isFromPrice: Boolean(p?.hasVariants && mappedVariants?.length > 0),
+            variants: mappedVariants,
+          };
+        });
+        setProducts(normalized);
       } else {
         // Fallback default matching Web Image 1 exactly
         setProducts([
@@ -487,8 +533,10 @@ export const CustomerStoreScreen: React.FC<{ initialSubTab?: string }> = ({ init
 
   // Cart Management
   const handleAddToCart = (product: any, qty: number = 1, variant?: any) => {
-    const itemPrice = variant ? variant.price : (product.displayPrice || product.sellingPrice || 140);
-    const itemName = variant ? `${product.name} (${variant.name})` : product.name;
+    const itemPrice = variant
+      ? (variant.finalPrice ?? Math.max(0, Number(variant.price || 0) - Number(variant.discountPrice || 0)))
+      : (product.displayPrice ?? Math.max(0, Number(product.sellingPrice || 0) - Number(product.discountPrice || 0)));
+    const itemName = variant ? `${product.name} (${variant.name || Object.values(variant.attributes || {}).join(' ') || 'Variant'})` : product.name;
 
     setCart(prev => {
       const existing = prev.find(i => i.productId === product._id && (!variant || i.variantId === variant._id));
@@ -778,14 +826,19 @@ export const CustomerStoreScreen: React.FC<{ initialSubTab?: string }> = ({ init
           ) : (
             <View style={styles.productsGrid}>
               {filteredProducts.map((p) => {
-                const stock = p.stock || 10;
+                const stock = Number(p.stock ?? 0);
                 const isOutOfStock = stock <= 0;
                 return (
                   <View key={p._id} style={styles.productCard}>
                     {/* Image / Fallback Container */}
                     <View style={styles.productImageContainer}>
-                      {p.image ? (
-                        <Image source={{ uri: p.image }} style={styles.productImage} resizeMode="cover" />
+                      {p.image && !failedProductImgKeys[`${p._id}:${p.image}`] ? (
+                        <Image
+                          source={{ uri: resolveMediaUrl(p.image) }}
+                          style={styles.productImage}
+                          resizeMode="cover"
+                          onError={() => setFailedProductImgKeys((prev) => ({ ...prev, [`${p._id}:${p.image}`]: true }))}
+                        />
                       ) : (
                         <View style={styles.productFallback}>
                           <Ionicons name="image-outline" size={32} color="#CBD5E1" />
@@ -801,11 +854,11 @@ export const CustomerStoreScreen: React.FC<{ initialSubTab?: string }> = ({ init
                       </View>
 
                       {/* Discount Badge Top Right */}
-                      {p.discountPct && (
+                      {p.discountPct ? (
                         <View style={styles.discountBadge}>
                           <Text style={styles.discountBadgeText}>{p.discountPct}% off</Text>
                         </View>
-                      )}
+                      ) : null}
                     </View>
 
                     {/* Content */}
@@ -1251,8 +1304,18 @@ export const CustomerStoreScreen: React.FC<{ initialSubTab?: string }> = ({ init
             {selectedProduct && (
               <ScrollView style={{ padding: 16 }}>
                 <View style={styles.productModalImgBox}>
-                  {selectedProduct.image ? (
-                    <Image source={{ uri: selectedProduct.image }} style={styles.productModalImg} resizeMode="contain" />
+                  {resolveMediaUrl(selectedProduct.image) && !failedProductImgKeys[`${selectedProduct._id}:${selectedProduct.image}`] ? (
+                    <Image
+                      source={{ uri: resolveMediaUrl(selectedProduct.image) }}
+                      style={styles.productModalImg}
+                      resizeMode="contain"
+                      onError={() =>
+                        setFailedProductImgKeys((prev) => ({
+                          ...prev,
+                          [`${selectedProduct._id}:${selectedProduct.image}`]: true,
+                        }))
+                      }
+                    />
                   ) : (
                     <Ionicons name="cube-outline" size={54} color="#CBD5E1" />
                   )}
@@ -1264,11 +1327,18 @@ export const CustomerStoreScreen: React.FC<{ initialSubTab?: string }> = ({ init
 
                 <View style={styles.productModalPriceRow}>
                   <Text style={styles.productModalPriceMain}>
-                    ₹{(selectedVariant ? selectedVariant.price : (selectedProduct.displayPrice || selectedProduct.sellingPrice)).toLocaleString('en-IN')}
+                    ₹{(selectedVariant
+                      ? (selectedVariant.finalPrice ?? Math.max(0, Number(selectedVariant.price || 0) - Number(selectedVariant.discountPrice || 0)))
+                      : (selectedProduct.displayPrice ?? selectedProduct.sellingPrice)
+                    ).toLocaleString('en-IN')}
                   </Text>
-                  {selectedProduct.discountPrice && (
-                    <Text style={styles.productModalPriceStrike}>₹{selectedProduct.sellingPrice}</Text>
-                  )}
+                  {selectedVariant ? (
+                    Number(selectedVariant.discountPrice || 0) > 0 && (
+                      <Text style={styles.productModalPriceStrike}>₹{Number(selectedVariant.price || 0).toLocaleString('en-IN')}</Text>
+                    )
+                  ) : selectedProduct.discountPrice && selectedProduct.sellingPrice > (selectedProduct.displayPrice ?? selectedProduct.sellingPrice) ? (
+                    <Text style={styles.productModalPriceStrike}>₹{Number(selectedProduct.sellingPrice).toLocaleString('en-IN')}</Text>
+                  ) : null}
                 </View>
 
                 {/* Variants Selector if clothing/merch */}
@@ -1278,14 +1348,16 @@ export const CustomerStoreScreen: React.FC<{ initialSubTab?: string }> = ({ init
                     <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginTop: 6 }}>
                       {selectedProduct.variants?.map((v: any) => {
                         const isVSelected = selectedVariant?._id === v._id;
+                        const vDisplayPrice = v.finalPrice ?? Math.max(0, Number(v.price || 0) - Number(v.discountPrice || 0));
+                        const vLabel = v.name || Object.values(v.attributes || {}).join(' / ') || v.sku || 'Variant';
                         return (
                           <TouchableOpacity
-                            key={v._id}
+                            key={v._id || vLabel}
                             style={[styles.variantPill, isVSelected && styles.variantPillActive]}
                             onPress={() => setSelectedVariant(v)}
                           >
                             <Text style={[styles.variantPillText, isVSelected && styles.variantPillTextActive]}>
-                              {v.name} (₹{v.price})
+                              {vLabel} (₹{vDisplayPrice})
                             </Text>
                           </TouchableOpacity>
                         );
