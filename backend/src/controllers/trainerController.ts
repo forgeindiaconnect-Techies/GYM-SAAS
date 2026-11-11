@@ -9,6 +9,18 @@ import TrainerInvitation from '../models/TrainerInvitation';
 import Gym from '../models/Gym';
 import JobApplication from '../models/JobApplication';
 import mongoose from 'mongoose';
+import TrainerSession from '../models/TrainerSession';
+import WorkoutPlan from '../models/WorkoutPlan';
+import TrainerPlanRequest from '../models/TrainerPlanRequest';
+import TrainerPayment from '../models/TrainerPayment';
+import DirectMessage from '../models/DirectMessage';
+import Notification from '../models/Notification';
+import {
+  generateUniqueTrainerId,
+  normalizeTrainerStatus,
+  resolveTrainerContext,
+  getTrainerAssignedCustomerIds,
+} from '../utils/trainerIsolation';
 
 const isAuthorizedStaff = (role?: string) => {
   const r = (role || '').toUpperCase().trim();
@@ -81,41 +93,35 @@ export const manualAddTrainer = async (req: AuthRequest, res: Response): Promise
     // Check if user already exists
     let existingUser = await User.findOne({ email: effectiveEmail });
     let userId: any;
+    const normalizedStatus = normalizeTrainerStatus(status) || 'Active';
 
     if (existingUser) {
+      if (existingUser.role !== Role.TRAINER) {
+        res.status(400).json({
+          success: false,
+          message: `This email is already registered under a ${existingUser.role} account and cannot be duplicated as a trainer.`,
+        });
+        return;
+      }
+
       userId = existingUser._id;
-      // Ensure user is assigned to this gym if not already
+      // Avoid overwriting another gym's trainer record: scope check strictly by (userId/email, resolvedGymId)
+      const duplicateInGym = await Trainer.findOne({
+        gymId: resolvedGymId,
+        $or: [{ userId: existingUser._id }, { email: effectiveEmail }],
+      });
+
+      if (duplicateInGym) {
+        res.status(409).json({
+          success: false,
+          message: `Trainer with email ${effectiveEmail} already exists in this gym (${duplicateInGym.trainerId || duplicateInGym._id}).`,
+        });
+        return;
+      }
+
       if (!existingUser.gymId && resolvedGymId) {
         existingUser.gymId = resolvedGymId as any;
         await existingUser.save();
-      }
-
-      // Check if Trainer profile already exists for this user or email
-      let existingTrainer = await Trainer.findOne({ 
-        $or: [{ userId: existingUser._id }, { email: effectiveEmail }] 
-      });
-
-      if (existingTrainer) {
-        existingTrainer.gymId = resolvedGymId as any;
-        existingTrainer.name = effectiveName;
-        existingTrainer.phone = effectivePhone;
-        existingTrainer.specialization = effectiveSpecialization;
-        existingTrainer.experience = parsedExperience;
-        existingTrainer.trainingMode = effectiveMode as any;
-        existingTrainer.fee = parsedFee;
-        existingTrainer.status = status || 'Active';
-        if (bio) existingTrainer.bio = bio;
-        if (qualifications || qualification) existingTrainer.qualifications = effectiveQualifications;
-        if (certifications) existingTrainer.certifications = certifications;
-        if (branchId && branchId !== 'main') existingTrainer.branchId = branchId;
-        await existingTrainer.save();
-
-        res.status(200).json({ 
-          success: true, 
-          message: `${effectiveName} successfully updated and added to gym roster!`, 
-          trainer: existingTrainer 
-        });
-        return;
       }
     } else {
       // Create new user account for trainer
@@ -134,15 +140,23 @@ export const manualAddTrainer = async (req: AuthRequest, res: Response): Promise
         passwordHash,
         role: Role.TRAINER,
         gymId: resolvedGymId,
-        isActive: true,
-        approvalStatus: ApprovalStatus.APPROVED
+        isActive: normalizedStatus === 'Active',
+        approvalStatus:
+          normalizedStatus === 'Pending'
+            ? ApprovalStatus.PENDING
+            : normalizedStatus === 'Inactive' || normalizedStatus === 'Suspended'
+            ? ApprovalStatus.SUSPENDED
+            : ApprovalStatus.APPROVED
       });
 
       await user.save();
       userId = user._id;
     }
 
+    const uniqueTrainerCode = await generateUniqueTrainerId();
+
     const trainer = new Trainer({
+      trainerId: uniqueTrainerCode,
       gymId: resolvedGymId,
       branchId: branchId && branchId !== 'main' ? branchId : undefined,
       userId,
@@ -163,7 +177,9 @@ export const manualAddTrainer = async (req: AuthRequest, res: Response): Promise
       availableSlot: availableSlot || 10,
       fee: parsedFee,
       paymentType: paymentType || 'Per Month',
-      status: status || 'Active'
+      status: normalizedStatus,
+      averageRating: 0,
+      totalReviews: 0
     });
 
     await trainer.save();
@@ -357,7 +373,9 @@ export const completeProfile = async (req: AuthRequest, res: Response): Promise<
       return;
     }
 
+    const uniqueTrainerCode = await generateUniqueTrainerId();
     const trainer = new Trainer({
+      trainerId: uniqueTrainerCode,
       gymId: user.gymId,
       userId: user._id,
       name: `${user.firstName} ${user.lastName}`,
@@ -372,7 +390,9 @@ export const completeProfile = async (req: AuthRequest, res: Response): Promise<
       expertise,
       bio,
       availability,
-      status: 'Pending'
+      status: 'Pending',
+      averageRating: 0,
+      totalReviews: 0
     });
 
     await trainer.save();
@@ -536,6 +556,31 @@ export const getTrainerById = async (req: AuthRequest, res: Response): Promise<v
       res.status(404).json({ success: false, message: 'Trainer not found' });
       return;
     }
+
+    const role = (req.user?.role || '').toUpperCase();
+    if (role === 'TRAINER') {
+      if (String(trainer.userId) !== String(req.user?.id)) {
+        res.status(403).json({ success: false, message: 'Unauthorized: cannot access another trainer profile' });
+        return;
+      }
+    } else if (role === 'GYM_OWNER' || role === 'GYM_MANAGER') {
+      const ownerGymId = req.user?.gymId || (await resolveGymId(req));
+      if (ownerGymId && trainer.gymId && String(trainer.gymId) !== String(ownerGymId)) {
+        res.status(403).json({ success: false, message: 'Unauthorized: trainer belongs to another gym' });
+        return;
+      }
+    } else if (role === 'MEMBER') {
+      const userGymId = req.user?.gymId;
+      if (!userGymId || !trainer.gymId || String(trainer.gymId) !== String(userGymId)) {
+        res.status(403).json({ success: false, message: 'Unauthorized: trainer does not belong to your selected gym' });
+        return;
+      }
+      if (trainer.status !== 'Active') {
+        res.status(404).json({ success: false, message: 'Trainer not available' });
+        return;
+      }
+    }
+
     res.status(200).json({ success: true, trainer });
   } catch (error: any) {
     res.status(500).json({ success: false, message: 'Server error', error: error.message });
@@ -552,32 +597,54 @@ export const updateTrainerStatus = async (req: AuthRequest, res: Response): Prom
 
     const { id } = req.params;
     const { status, reason } = req.body;
+    const normalizedStatus = normalizeTrainerStatus(status);
+    if (!normalizedStatus) {
+      res.status(400).json({ success: false, message: 'Invalid trainer status' });
+      return;
+    }
+
     const resolvedGymId = (await resolveGymId(req)) || gymOwner.gymId;
     const trainerQuery: any = { _id: id };
     if (resolvedGymId) trainerQuery.gymId = resolvedGymId;
-    
+
     const trainer = await Trainer.findOne(trainerQuery);
     if (!trainer) {
       res.status(404).json({ success: false, message: 'Trainer not found' });
       return;
     }
 
-    trainer.status = status;
+    trainer.status = normalizedStatus;
+    if (!trainer.trainerId) {
+      trainer.trainerId = await generateUniqueTrainerId();
+    }
     await trainer.save();
 
-    // Sync with User model
+    // Sync with User model (only overwrite if user has no active profile in another gym)
     const user = await User.findById(trainer.userId);
     if (user) {
-      if (status === 'Active') {
+      if (normalizedStatus === 'Active') {
         user.isActive = true;
         user.approvalStatus = ApprovalStatus.APPROVED;
-      } else if (status === 'Rejected') {
-        user.isActive = false;
-        user.approvalStatus = ApprovalStatus.REJECTED;
-        user.rejectionReason = reason;
-      } else if (status === 'Suspended') {
-        user.isActive = false;
-        user.approvalStatus = ApprovalStatus.SUSPENDED;
+      } else {
+        const otherActiveGymProfile = await Trainer.exists({
+          userId: trainer.userId,
+          _id: { $ne: trainer._id },
+          status: 'Active',
+        });
+        if (!otherActiveGymProfile) {
+          if (normalizedStatus === 'Pending') {
+            user.isActive = false;
+            user.approvalStatus = ApprovalStatus.PENDING;
+          } else if (normalizedStatus === 'Rejected') {
+            user.isActive = false;
+            user.approvalStatus = ApprovalStatus.REJECTED;
+            user.rejectionReason = reason;
+          } else if (normalizedStatus === 'Suspended' || normalizedStatus === 'Inactive') {
+            user.isActive = false;
+            user.approvalStatus = ApprovalStatus.SUSPENDED;
+            (user as any).suspensionReason = reason || normalizedStatus;
+          }
+        }
       }
       await user.save();
     }
@@ -760,7 +827,20 @@ export const updateTrainer = async (req: AuthRequest, res: Response): Promise<vo
 
 export const getOnlineTrainers = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const gymId = req.user?.gymId || (await resolveGymId(req));
+    const role = String(req.user?.role || '').toUpperCase();
+    const gymId = role === 'MEMBER'
+      ? req.user?.gymId
+      : (req.user?.gymId || (await resolveGymId(req)));
+
+    if (role === 'MEMBER' && !gymId) {
+      res.status(200).json({
+        success: true,
+        trainers: [],
+        message: 'Please select a gym first to view available trainers.'
+      });
+      return;
+    }
+
     const filter: any = {
       status: 'Active'
     };
@@ -793,6 +873,260 @@ export const toggleTrainerAvailability = async (req: AuthRequest, res: Response)
     await trainer.save();
     res.status(200).json({ success: true, message: 'Availability status updated', trainer });
   } catch (error: any) {
+    res.status(500).json({ success: false, message: 'Server error', error: error.message });
+  }
+};
+
+// 13. Trainer Dashboard Summary (strictly scoped by trainerId + gymId, real DB records only)
+export const getTrainerDashboardSummary = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const requestedGymId = (req.query.gymId as string) || (req.headers['x-gym-id'] as string);
+    const ctx = await resolveTrainerContext(req.user, { requestedGymId });
+    if (!ctx) {
+      res.status(403).json({ success: false, message: 'Active trainer context required' });
+      return;
+    }
+
+    const gymObjectId = new mongoose.Types.ObjectId(ctx.gymId);
+    const assignedCustomerIds = await getTrainerAssignedCustomerIds(ctx);
+
+    const [
+      activeClientsCount,
+      upcomingSessionsCount,
+      completedSessionsCount,
+      workoutPlansCount,
+      approvedWorkoutRequestsCount,
+      dietPlansCount,
+      ratedSessions,
+      messagesCount,
+      unreadMessagesCount,
+      notificationsCount,
+      unreadNotificationsCount,
+      gymDoc,
+      paidPayments,
+      completedSessionEarnings,
+    ] = await Promise.all([
+      assignedCustomerIds.length > 0
+        ? User.countDocuments({
+            _id: { $in: assignedCustomerIds },
+            gymId: gymObjectId,
+            role: Role.MEMBER,
+            isActive: { $ne: false },
+            approvalStatus: { $ne: ApprovalStatus.DELETED },
+          } as any)
+        : Promise.resolve(0),
+      TrainerSession.countDocuments({
+        gymId: gymObjectId,
+        trainerId: { $in: ctx.trainerObjectIds },
+        status: {
+          $in: [
+            'Pending',
+            'Awaiting Payment',
+            'Confirmed',
+            'Upcoming',
+            'In Progress',
+            'Reschedule Requested',
+            'Rescheduled',
+          ] as any,
+        },
+      }),
+      TrainerSession.countDocuments({
+        gymId: gymObjectId,
+        trainerId: { $in: ctx.trainerObjectIds },
+        status: 'Completed' as any,
+      }),
+      WorkoutPlan.countDocuments({
+        gymId: gymObjectId,
+        trainerId: { $in: ctx.trainerObjectIds },
+      }),
+      TrainerPlanRequest.countDocuments({
+        gymId: gymObjectId,
+        trainerId: { $in: ctx.trainerObjectIds },
+        planType: 'Workout Plan',
+        status: 'Approved',
+      }),
+      TrainerPlanRequest.countDocuments({
+        gymId: gymObjectId,
+        trainerId: { $in: ctx.trainerObjectIds },
+        planType: 'Diet Plan',
+        status: { $in: ['Pending', 'Approved'] },
+      }),
+      TrainerSession.find({
+        gymId: gymObjectId,
+        trainerId: { $in: ctx.trainerObjectIds },
+        customerRating: { $exists: true, $gt: 0 },
+      })
+        .select('customerRating customerReview customerId createdAt date')
+        .lean(),
+      DirectMessage.countDocuments({
+        $or: [{ senderId: ctx.user._id }, { receiverId: ctx.user._id }],
+      }),
+      DirectMessage.countDocuments({
+        receiverId: ctx.user._id,
+        read: false,
+      }),
+      Notification.countDocuments({
+        gymId: gymObjectId,
+        recipientId: { $in: ctx.trainerObjectIds },
+      }),
+      Notification.countDocuments({
+        gymId: gymObjectId,
+        recipientId: { $in: ctx.trainerObjectIds },
+        isRead: false,
+      }),
+      Gym.findById(gymObjectId).select('name').lean(),
+      TrainerPayment.aggregate([
+        {
+          $match: {
+            gymId: gymObjectId,
+            trainerId: new mongoose.Types.ObjectId(ctx.trainerDocId),
+            paymentStatus: 'Paid',
+          },
+        },
+        { $group: { _id: null, total: { $sum: '$amount' } } },
+      ]),
+      TrainerSession.aggregate([
+        {
+          $match: {
+            gymId: gymObjectId,
+            trainerId: { $in: ctx.trainerObjectIds },
+            status: 'Completed',
+            paymentStatus: 'Paid',
+          },
+        },
+        { $group: { _id: null, total: { $sum: '$fee' } } },
+      ]),
+    ]);
+
+    const reviewsCount = ratedSessions.length;
+    const averageRating =
+      reviewsCount > 0
+        ? Number((ratedSessions.reduce((sum: number, s: any) => sum + Number(s.customerRating || 0), 0) / reviewsCount).toFixed(1))
+        : 0;
+
+    const paidTotal = Number(paidPayments?.[0]?.total || 0);
+    const sessionTotal = Number(completedSessionEarnings?.[0]?.total || 0);
+    const trainerTotalEarnings = Math.max(Number(ctx.trainer.totalEarnings || 0), paidTotal + sessionTotal);
+
+    // Lazy backfill trainerId if older record lacked one
+    let trainerCode = ctx.trainerCode;
+    if (!trainerCode) {
+      trainerCode = await generateUniqueTrainerId();
+      await Trainer.updateOne({ _id: ctx.trainer._id }, { $set: { trainerId: trainerCode } });
+    }
+
+    res.status(200).json({
+      success: true,
+      trainer: {
+        id: ctx.trainerDocId,
+        trainerId: trainerCode,
+        userId: ctx.userId,
+        name: ctx.trainer.name,
+        email: ctx.trainer.email,
+        specialization: ctx.trainer.specialization,
+        status: ctx.trainer.status,
+        gymId: ctx.gymId,
+        gymName: (gymDoc as any)?.name || '',
+      },
+      summary: {
+        totalClients: assignedCustomerIds.length,
+        activeClients: activeClientsCount,
+        upcomingSessions: upcomingSessionsCount,
+        completedSessions: completedSessionsCount,
+        earnings: trainerTotalEarnings,
+        availableBalance: Number(ctx.trainer.availableBalance || 0),
+        workoutPlansCount: workoutPlansCount > 0 ? workoutPlansCount : approvedWorkoutRequestsCount,
+        dietPlansCount,
+        reviewsCount,
+        averageRating,
+        messagesCount,
+        unreadMessagesCount,
+        notificationsCount,
+        unreadNotificationsCount,
+      },
+    });
+  } catch (error: any) {
+    console.error('Error in getTrainerDashboardSummary:', error);
+    res.status(500).json({ success: false, message: 'Server error', error: error.message });
+  }
+};
+
+// 14. Assigned Clients List for Logged-In Trainer (strictly isolated by trainerId + gymId)
+export const getMyAssignedClients = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const requestedGymId = (req.query.gymId as string) || (req.headers['x-gym-id'] as string);
+    const ctx = await resolveTrainerContext(req.user, { requestedGymId });
+    if (!ctx) {
+      res.status(403).json({ success: false, message: 'Active trainer context required' });
+      return;
+    }
+
+    const assignedIds = await getTrainerAssignedCustomerIds(ctx);
+    if (assignedIds.length === 0) {
+      res.status(200).json({ success: true, clients: [] });
+      return;
+    }
+
+    const gymObjectId = new mongoose.Types.ObjectId(ctx.gymId);
+    const [members, sessions] = await Promise.all([
+      User.find({
+        _id: { $in: assignedIds },
+        gymId: gymObjectId,
+        role: Role.MEMBER,
+        approvalStatus: { $ne: ApprovalStatus.DELETED },
+      } as any)
+        .select('firstName lastName email mobile profilePhoto fitnessGoal subscriptionStatus subscriptionPlan isActive assignedTrainer createdAt')
+        .sort({ firstName: 1 })
+        .lean(),
+      TrainerSession.find({
+        gymId: gymObjectId,
+        trainerId: { $in: ctx.trainerObjectIds },
+        customerId: { $in: assignedIds },
+      })
+        .select('customerId sessionDate status createdAt')
+        .sort({ createdAt: -1 })
+        .lean(),
+    ]);
+
+    const sessionStatsMap = new Map<string, { total: number; completed: number; upcoming: number; lastDate?: string }>();
+    sessions.forEach((s: any) => {
+      const cid = String(s.customerId);
+      const curr = sessionStatsMap.get(cid) || { total: 0, completed: 0, upcoming: 0 };
+      curr.total += 1;
+      if (s.status === 'Completed') curr.completed += 1;
+      if (['Pending', 'Accepted', 'Confirmed', 'Paid'].includes(s.status)) curr.upcoming += 1;
+      if (!curr.lastDate) curr.lastDate = s.sessionDate || (s.createdAt ? new Date(s.createdAt).toISOString() : undefined);
+      sessionStatsMap.set(cid, curr);
+    });
+
+    const clients = members.map((m: any) => {
+      const sStats = sessionStatsMap.get(String(m._id)) || { total: 0, completed: 0, upcoming: 0 };
+      return {
+        id: String(m._id),
+        _id: m._id,
+        firstName: m.firstName,
+        lastName: m.lastName,
+        name: `${m.firstName || ''} ${m.lastName || ''}`.trim() || m.email,
+        email: m.email,
+        phone: m.mobile || '',
+        mobile: m.mobile || '',
+        profilePhoto: m.profilePhoto || '',
+        goal: m.fitnessGoal || 'General Fitness',
+        subscriptionPlan: m.subscriptionPlan || 'Member',
+        subscriptionStatus: m.subscriptionStatus || 'Active',
+        isActive: m.isActive !== false,
+        directlyAssigned: Boolean(m.assignedTrainer && ctx.trainerIdStrings.includes(String(m.assignedTrainer))),
+        totalSessions: sStats.total,
+        completedSessions: sStats.completed,
+        upcomingSessions: sStats.upcoming,
+        lastSession: sStats.lastDate || null,
+        createdAt: m.createdAt,
+      };
+    });
+
+    res.status(200).json({ success: true, clients });
+  } catch (error: any) {
+    console.error('Error in getMyAssignedClients:', error);
     res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }
 };

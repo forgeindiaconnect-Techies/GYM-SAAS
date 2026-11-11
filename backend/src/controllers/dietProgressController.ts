@@ -468,60 +468,40 @@ export const getTrainerDietClientsOverview = async (req: AuthRequest, res: Respo
       // non-blocking
     }
 
-    let gymId: any = user.gymId;
-    if (!gymId) {
-      try {
-        const u = await User.findById(user.id);
-        gymId = u?.gymId;
-      } catch (err) {
-        // non-blocking
-      }
+    const { resolveTrainerContext, getTrainerAssignedCustomerIds, isCustomerAssignedToTrainer } = await import('../utils/trainerIsolation');
+    const trainerCtx = await resolveTrainerContext(req.user);
+    if (!trainerCtx) {
+      res.status(403).json({ success: false, message: 'Active trainer context required' });
+      return;
     }
 
-    // 1) Assigned users (only role: MEMBER)
-    const assignedUsers = await User.find({
-      role: Role.MEMBER,
-      $or: [
-        { assignedTrainer: { $in: trainerIds } },
-        ...(gymId ? [{ gymId }] : [])
-      ]
-    } as any).select('firstName lastName email profilePhoto fitnessGoal assignedTrainer role');
+    const assignedCustomerIds = await getTrainerAssignedCustomerIds(trainerCtx);
+    const validMembers = assignedCustomerIds.length > 0
+      ? await User.find({
+          _id: { $in: assignedCustomerIds },
+          role: Role.MEMBER,
+          gymId: trainerCtx.gymId,
+        } as any).select('firstName lastName email profilePhoto fitnessGoal assignedTrainer role')
+      : [];
 
-    // 2) DietProgress logs
-    const dietLogs = await DietProgress.find({
-      $or: [
-        { trainerId: { $in: trainerIds } },
-        ...(gymId ? [{ gymId }] : [])
-      ]
-    }).select('customerId completedAt dayName mealType mealId calories protein items completed');
-
-    const customerIdSet = new Set<string>();
-    assignedUsers.forEach(u => customerIdSet.add(u._id.toString()));
-    dietLogs.forEach(dl => dl.customerId && customerIdSet.add(dl.customerId.toString()));
-
-    if (customerIdSet.size === 0) {
-      const anyMembers = await User.find({ role: Role.MEMBER } as any).limit(25);
-      anyMembers.forEach(m => customerIdSet.add(m._id.toString()));
-    }
-
-    // Verify all candidates have role: Role.MEMBER and are not Arun or Naveen
-    const validMembers = await User.find({
-      _id: { $in: Array.from(customerIdSet) },
-      role: Role.MEMBER
-    }).select('firstName lastName email profilePhoto fitnessGoal assignedTrainer role');
+    const dietLogs = assignedCustomerIds.length > 0
+      ? await DietProgress.find({
+          customerId: { $in: assignedCustomerIds },
+          gymId: trainerCtx.gymId,
+          trainerId: { $in: trainerCtx.trainerObjectIds },
+        }).select('customerId completedAt dayName mealType mealId calories protein items completed')
+      : [];
 
     const memberMap = new Map(validMembers.map(m => [m._id.toString(), m]));
 
     const clients = (await Promise.all(
       Array.from(memberMap.keys()).map(async cid => {
         const userDoc = memberMap.get(cid);
-        const name = `${userDoc?.firstName || ''} ${userDoc?.lastName || ''}`.toLowerCase();
-        if (name.includes('arun') || name.includes('naveen')) return null;
         return buildCustomerDietOverview(cid, userDoc);
       })
     )).filter(Boolean) as any[];
 
-    // Build Recent Activity (only for members)
+    // Build Recent Activity (only for members assigned to this trainer)
     const recentActivity = (await Promise.all(
       dietLogs
         .filter(l => l.completed)
@@ -529,8 +509,6 @@ export const getTrainerDietClientsOverview = async (req: AuthRequest, res: Respo
         .map(async (l: any) => {
           const u = memberMap.get(l.customerId?.toString());
           if (!u) return null;
-          const uName = `${u.firstName || ''} ${u.lastName || ''}`.trim();
-          if (uName.toLowerCase().includes('arun') || uName.toLowerCase().includes('naveen')) return null;
           return {
             id: String(l._id),
             customerId: l.customerId,
@@ -575,6 +553,18 @@ export const getCustomerDietProgress = async (req: AuthRequest, res: Response): 
     const customerId = String(req.params.customerId);
     if (!customerId) {
       res.status(400).json({ success: false, message: 'customerId is required' });
+      return;
+    }
+
+    if (req.user?.role === Role.TRAINER) {
+      const { resolveTrainerContext, isCustomerAssignedToTrainer } = await import('../utils/trainerIsolation');
+      const trainerCtx = await resolveTrainerContext(req.user);
+      if (!trainerCtx || !(await isCustomerAssignedToTrainer(trainerCtx, customerId))) {
+        res.status(403).json({ success: false, message: 'Unauthorized: customer is not assigned to you' });
+        return;
+      }
+    } else if (req.user?.role === Role.MEMBER && String(req.user.id) !== customerId) {
+      res.status(403).json({ success: false, message: 'Unauthorized' });
       return;
     }
 

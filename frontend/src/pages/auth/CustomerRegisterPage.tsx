@@ -370,13 +370,12 @@ const CustomerRegisterPage = () => {
           }
         }
 
-        navigate('/status?type=pending');
+        navigate('/member/dashboard', { replace: true });
       } else {
         sessionStorage.removeItem('customer_reg_step');
         sessionStorage.removeItem('customer_reg_form');
         sessionStorage.removeItem('customer_reg_otp');
-        alert('Registration successful!');
-        navigate('/pending');
+        navigate('/login', { replace: true });
       }
     } catch (err: any) {
       setApiError(err.response?.data?.message || 'Registration failed. Please try again.');

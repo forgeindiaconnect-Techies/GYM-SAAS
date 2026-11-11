@@ -207,7 +207,7 @@ const TrainerReviewsRatings = () => {
           <div className="w-16 h-16 bg-[#F8FAFC] rounded-2xl flex items-center justify-center mx-auto mb-4">
             <Star size={32} className="text-[#64748B]" />
           </div>
-          <h3 className="text-lg font-bold text-[#64748B] mb-2">No Reviews Yet</h3>
+          <h3 className="text-lg font-bold text-[#64748B] mb-2">No reviews yet.</h3>
           <p className="text-[#64748B] text-sm max-w-sm mx-auto">
             Once customers complete a session and leave a rating, it will appear here.
           </p>

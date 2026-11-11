@@ -4,6 +4,7 @@ import {
   Flame, Droplets, Leaf, Sparkles, Sun, Check, RotateCcw, Calendar
 } from 'lucide-react';
 import api from '../../utils/api';
+import { useAuth } from '../../contexts/AuthContext';
 import { getUnifiedWeeklyDiet } from '../../utils/aiFitnessPlans';
 
 interface Meal {
@@ -602,6 +603,9 @@ const DEFAULT_WEEKLY_DIET: Record<DayName, DayDietPlan> = {
 };
 
 const MemberDietPlan = () => {
+  const { user } = useAuth();
+  const storageKey = `member_weekly_diet_completed_${user?.id || 'guest'}`;
+
   // Determine initial day based on today's calendar day
   const getTodayDayName = (): DayName => {
     const dayIndex = new Date().getDay(); // 0 = Sunday, 1 = Monday, ...
@@ -613,11 +617,12 @@ const MemberDietPlan = () => {
   const [selectedDay, setSelectedDay] = useState<DayName>(todayDayName);
   const [approvedDietPlan, setApprovedDietPlan] = useState<any | null>(null);
   const [aiRecommendation, setAiRecommendation] = useState<any | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  // Store completed meal IDs per day in state and localStorage
+  // Store completed meal IDs per day in state and localStorage (scoped per customer)
   const [completedMap, setCompletedMap] = useState<Record<string, number[]>>(() => {
     try {
-      const saved = localStorage.getItem('member_weekly_diet_completed');
+      const saved = localStorage.getItem(storageKey);
       if (saved) return JSON.parse(saved);
     } catch (e) {
       console.error(e);
@@ -627,16 +632,17 @@ const MemberDietPlan = () => {
 
   useEffect(() => {
     try {
-      localStorage.setItem('member_weekly_diet_completed', JSON.stringify(completedMap));
+      localStorage.setItem(storageKey, JSON.stringify(completedMap));
     } catch (e) {
       console.error(e);
     }
-  }, [completedMap]);
+  }, [completedMap, storageKey]);
 
   // Fetch Trainer approved diet plan & AI recommendation
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
         const [trainerRes, aiRes, dietProgressRes] = await Promise.allSettled([
           api.get('/trainer-plans/customer'),
           api.get('/ai/member/latest'),
@@ -662,6 +668,8 @@ const MemberDietPlan = () => {
         }
       } catch (err) {
         console.error('Failed to load diet plans:', err);
+      } finally {
+        setLoading(false);
       }
     };
     fetchData();
@@ -839,6 +847,36 @@ const MemberDietPlan = () => {
       default: return <Utensils size={24} />;
     }
   };
+
+  if (loading) {
+    return (
+      <div className="p-8 max-w-7xl mx-auto text-center py-20 text-[#64748B]">
+        Loading your diet plan...
+      </div>
+    );
+  }
+
+  if (!approvedDietPlan && !aiRecommendation) {
+    return (
+      <div className="p-4 md:p-8 max-w-4xl mx-auto">
+        <div className="bg-white border border-[#E2E8F0] rounded-3xl p-10 text-center space-y-3 shadow-xs">
+          <Utensils size={30} className="mx-auto text-[#EA580C]" />
+          <h1 className="text-xl font-black text-[#111827]">No diet plan generated yet.</h1>
+          <p className="text-sm text-[#64748B] max-w-md mx-auto">
+            Complete your AI Fitness Analysis or request a custom diet plan from your trainer to view your daily meals and macro targets.
+          </p>
+          <div className="pt-2">
+            <a
+              href="/member/ai-assistant"
+              className="inline-block px-5 py-2.5 rounded-xl bg-[#EA580C] hover:bg-[#C2410C] text-white font-bold text-xs shadow-sm"
+            >
+              Start AI Fitness Analysis
+            </a>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-6 animate-fade-in">

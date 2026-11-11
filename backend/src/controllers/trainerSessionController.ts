@@ -10,9 +10,27 @@ import { notify } from '../utils/notificationUtils';
 // 1. Create a Booking Request
 export const createSessionRequest = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const customerId = req.body.customerId || req.user?.id;
-    if (!customerId) {
+    const authUserId = req.user?.id;
+    const authRole = String(req.user?.role || '').toUpperCase();
+    if (!authUserId) {
       res.status(401).json({ success: false, message: 'Unauthorized' });
+      return;
+    }
+
+    if (authRole === 'MEMBER' && req.body.customerId && String(req.body.customerId) !== String(authUserId)) {
+      res.status(403).json({ success: false, message: 'Forbidden: cannot create booking for another customer.' });
+      return;
+    }
+
+    const customerId = authRole === 'MEMBER' ? authUserId : (req.body.customerId || authUserId);
+    const customerUser = await User.findById(customerId).select('gymId role').lean();
+    if (!customerUser) {
+      res.status(404).json({ success: false, message: 'Customer account not found' });
+      return;
+    }
+
+    if (authRole === 'MEMBER' && !customerUser.gymId) {
+      res.status(400).json({ success: false, message: 'Please select a gym first before booking a trainer session.' });
       return;
     }
 
@@ -64,6 +82,22 @@ export const createSessionRequest = async (req: AuthRequest, res: Response): Pro
 
     if (!trainer) {
       res.status(404).json({ success: false, message: 'Trainer not found' });
+      return;
+    }
+
+    if (trainer.status !== 'Active') {
+      res.status(403).json({ success: false, message: 'This trainer is currently inactive and cannot accept bookings.' });
+      return;
+    }
+
+    if (
+      authRole === 'MEMBER' &&
+      (!customerUser.gymId || !trainer.gymId || String(trainer.gymId) !== String(customerUser.gymId))
+    ) {
+      res.status(403).json({
+        success: false,
+        message: 'Unauthorized: you can only book active trainers from your selected gym.'
+      });
       return;
     }
 
@@ -224,7 +258,7 @@ export const payForSession = async (req: AuthRequest, res: Response): Promise<vo
     session.status = TrainerSessionStatus.CONFIRMED;
     session.paymentStatus = 'Paid';
     session.sessionId = 'SESS-' + Math.random().toString(36).substr(2, 9).toUpperCase();
-    
+
     if (session.mode === TrainerSessionMode.ONLINE) {
       session.meetingId = Math.floor(100000000 + Math.random() * 900000000).toString();
       session.meetingLink = `https://meet.jit.si/aigym-${session.meetingId}`;
@@ -232,8 +266,9 @@ export const payForSession = async (req: AuthRequest, res: Response): Promise<vo
 
     await session.save();
 
+    const trainerOwner = await Trainer.findById(session.trainerId).select('userId').lean();
     await notify({
-      recipientId: session.trainerId.toString(),
+      recipientId: (trainerOwner?.userId || session.trainerId).toString(),
       recipientRole: 'TRAINER',
       gymId: session.gymId.toString(),
       title: 'Session Confirmed',
@@ -248,6 +283,23 @@ export const payForSession = async (req: AuthRequest, res: Response): Promise<vo
   }
 };
 
+const verifySessionAccess = async (req: AuthRequest, session: any): Promise<boolean> => {
+  const role = (req.user?.role || '').toUpperCase();
+  if (role === 'SUPER_ADMIN' || role === 'ADMIN') return true;
+  if (role === 'GYM_OWNER' || role === 'GYM_MANAGER') {
+    return !req.user?.gymId || String(session.gymId) === String(req.user.gymId);
+  }
+  if (role === 'TRAINER') {
+    const { resolveTrainerContext, matchesTrainerContext } = await import('../utils/trainerIsolation');
+    const ctx = await resolveTrainerContext(req.user);
+    return Boolean(ctx && String(session.gymId) === ctx.gymId && matchesTrainerContext(ctx, session.trainerId));
+  }
+  if (role === 'MEMBER') {
+    return String(session.customerId) === String(req.user?.id);
+  }
+  return false;
+};
+
 // 5. Cancel Session
 export const cancelSession = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
@@ -260,14 +312,24 @@ export const cancelSession = async (req: AuthRequest, res: Response): Promise<vo
       res.status(404).json({ success: false, message: 'Session not found' });
       return;
     }
+    if (!(await verifySessionAccess(req, session))) {
+      res.status(403).json({ success: false, message: 'Unauthorized' });
+      return;
+    }
+
+
+    if (!(await verifySessionAccess(req, session))) {
+      res.status(403).json({ success: false, message: 'Unauthorized: cannot cancel another trainer or gym session' });
+      return;
+    }
 
     const isCustomer = session.customerId.toString() === userId;
-    
+
     session.status = TrainerSessionStatus.CANCELLED;
     session.cancelledBy = isCustomer ? 'Customer' : 'Trainer';
     session.cancellationReason = reason || 'User cancelled';
     session.cancelledAt = new Date();
-    
+
     if (session.paymentStatus === 'Paid') {
       session.refundEligible = true;
       session.refundAmount = session.fee;
@@ -276,11 +338,15 @@ export const cancelSession = async (req: AuthRequest, res: Response): Promise<vo
 
     await session.save();
 
-    const recipientId = isCustomer ? session.trainerId : session.customerId;
+    let recipientId = isCustomer ? session.trainerId.toString() : session.customerId.toString();
+    if (isCustomer) {
+      const trainerOwner = await Trainer.findById(session.trainerId).select('userId').lean();
+      if (trainerOwner?.userId) recipientId = trainerOwner.userId.toString();
+    }
     const role = isCustomer ? 'TRAINER' : 'MEMBER';
 
     await notify({
-      recipientId: recipientId.toString(),
+      recipientId,
       recipientRole: role,
       gymId: session.gymId.toString(),
       title: 'Session Cancelled',
@@ -307,6 +373,16 @@ export const rescheduleSession = async (req: AuthRequest, res: Response): Promis
       res.status(404).json({ success: false, message: 'Session not found' });
       return;
     }
+    if (!(await verifySessionAccess(req, session))) {
+      res.status(403).json({ success: false, message: 'Unauthorized' });
+      return;
+    }
+
+
+    if (!(await verifySessionAccess(req, session))) {
+      res.status(403).json({ success: false, message: 'Unauthorized: cannot reschedule this session' });
+      return;
+    }
 
     session.originalDate = session.date;
     session.originalStartTime = session.startTime;
@@ -316,9 +392,9 @@ export const rescheduleSession = async (req: AuthRequest, res: Response): Promis
     session.rescheduleReason = reason;
     session.rescheduleRequestedBy = session.customerId.toString() === userId ? 'Customer' : 'Trainer';
     session.rescheduleTimestamp = new Date();
-    
+
     if (session.status === TrainerSessionStatus.CONFIRMED || session.status === TrainerSessionStatus.UPCOMING) {
-        session.status = TrainerSessionStatus.RESCHEDULE_REQUESTED;
+      session.status = TrainerSessionStatus.RESCHEDULE_REQUESTED;
     }
 
     await session.save();
@@ -335,6 +411,16 @@ export const completeSession = async (req: AuthRequest, res: Response): Promise<
     const session = await TrainerSession.findById(id);
     if (!session) {
       res.status(404).json({ success: false, message: 'Session not found' });
+      return;
+    }
+    if (!(await verifySessionAccess(req, session))) {
+      res.status(403).json({ success: false, message: 'Unauthorized' });
+      return;
+    }
+
+
+    if (!(await verifySessionAccess(req, session))) {
+      res.status(403).json({ success: false, message: 'Unauthorized: cannot complete this session' });
       return;
     }
 
@@ -363,10 +449,15 @@ export const rateSession = async (req: AuthRequest, res: Response): Promise<void
   try {
     const { id } = req.params;
     const { rating, review } = req.body;
-    
+
     const session = await TrainerSession.findById(id);
     if (!session || (session.status !== TrainerSessionStatus.COMPLETED && session.status !== TrainerSessionStatus.CONFIRMED)) {
       res.status(400).json({ success: false, message: 'Session not eligible for rating' });
+      return;
+    }
+
+    if (req.user?.role === 'MEMBER' && String(session.customerId) !== String(req.user.id)) {
+      res.status(403).json({ success: false, message: 'Unauthorized: only the session customer can submit a rating' });
       return;
     }
 
@@ -380,7 +471,7 @@ export const rateSession = async (req: AuthRequest, res: Response): Promise<void
       const ratedSessions = await TrainerSession.find({ trainerId: trainer._id, customerRating: { $gt: 0 } });
       const totalReviews = ratedSessions.length;
       const sumRatings = ratedSessions.reduce((acc, s) => acc + (s.customerRating || 0), 0);
-      const avg = totalReviews > 0 ? Number((sumRatings / totalReviews).toFixed(1)) : 5.0;
+      const avg = totalReviews > 0 ? Number((sumRatings / totalReviews).toFixed(1)) : 0;
       trainer.averageRating = avg;
       trainer.totalReviews = totalReviews;
       await trainer.save();
@@ -398,6 +489,15 @@ export const checkInSession = async (req: AuthRequest, res: Response): Promise<v
     const session = await TrainerSession.findById(id);
     if (!session) {
       res.status(404).json({ success: false, message: 'Session not found' });
+      return;
+    }
+    if (!(await verifySessionAccess(req, session))) {
+      res.status(403).json({ success: false, message: 'Unauthorized' });
+      return;
+    }
+
+    if (!(await verifySessionAccess(req, session))) {
+      res.status(403).json({ success: false, message: 'Unauthorized' });
       return;
     }
 
@@ -419,6 +519,15 @@ export const checkOutSession = async (req: AuthRequest, res: Response): Promise<
     const session = await TrainerSession.findById(id);
     if (!session) {
       res.status(404).json({ success: false, message: 'Session not found' });
+      return;
+    }
+    if (!(await verifySessionAccess(req, session))) {
+      res.status(403).json({ success: false, message: 'Unauthorized' });
+      return;
+    }
+
+    if (!(await verifySessionAccess(req, session))) {
+      res.status(403).json({ success: false, message: 'Unauthorized' });
       return;
     }
 
@@ -486,6 +595,11 @@ export const submitSessionNotes = async (req: AuthRequest, res: Response): Promi
       res.status(404).json({ success: false, message: 'Session not found' });
       return;
     }
+    if (!(await verifySessionAccess(req, session))) {
+      res.status(403).json({ success: false, message: 'Unauthorized' });
+      return;
+    }
+
 
     session.sessionNotes = {
       exercisesCompleted,
@@ -554,17 +668,18 @@ export const getMemberSessions = async (req: AuthRequest, res: Response): Promis
 // 10. Get Trainer Sessions
 export const getTrainerSessions = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const trainerUserId = req.user?.id;
-    let trainer = await Trainer.findOne({ userId: trainerUserId });
-    if (!trainer && trainerUserId && mongoose.Types.ObjectId.isValid(trainerUserId)) {
-      trainer = await Trainer.findById(trainerUserId);
+    const { resolveTrainerContext } = await import('../utils/trainerIsolation');
+    const ctx = await resolveTrainerContext(req.user);
+    if (!ctx) {
+      res.status(403).json({ success: false, message: 'Active trainer context required' });
+      return;
     }
 
-    const trainerIds: any[] = [];
-    if (trainer?._id) trainerIds.push(trainer._id);
-    if (trainerUserId) trainerIds.push(trainerUserId);
-
-    const sessions = await TrainerSession.find({ trainerId: { $in: trainerIds } })
+    const trainer = ctx.trainer;
+    const sessions = await TrainerSession.find({
+      trainerId: { $in: ctx.trainerObjectIds },
+      gymId: ctx.gymId,
+    })
       .populate('customerId')
       .sort({ date: -1, startTime: -1 });
 
@@ -626,6 +741,11 @@ export const refundSession = async (req: AuthRequest, res: Response): Promise<vo
       res.status(404).json({ success: false, message: 'Session not found' });
       return;
     }
+    if (!(await verifySessionAccess(req, session))) {
+      res.status(403).json({ success: false, message: 'Unauthorized' });
+      return;
+    }
+
 
     if (session.paymentStatus !== 'Paid') {
       res.status(400).json({ success: false, message: 'Session is not paid' });
@@ -664,6 +784,11 @@ export const updateAdminSessionStatus = async (req: AuthRequest, res: Response):
       res.status(404).json({ success: false, message: 'Session not found' });
       return;
     }
+    if (!(await verifySessionAccess(req, session))) {
+      res.status(403).json({ success: false, message: 'Unauthorized' });
+      return;
+    }
+
 
     if (status) session.status = status;
     if (mode) session.mode = mode;
@@ -703,6 +828,11 @@ export const updateSessionAttendance = async (req: AuthRequest, res: Response): 
       res.status(404).json({ success: false, message: 'Session not found' });
       return;
     }
+    if (!(await verifySessionAccess(req, session))) {
+      res.status(403).json({ success: false, message: 'Unauthorized' });
+      return;
+    }
+
 
     if (attendanceStatus) {
       session.attendanceStatus = attendanceStatus;
@@ -729,23 +859,16 @@ export const updateSessionAttendance = async (req: AuthRequest, res: Response): 
 // Get all reviews/ratings for a trainer
 export const getTrainerReviews = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const trainerId = (req.user as any)?.trainerId || req.user?.id;
-    if (!trainerId) {
-      res.status(401).json({ success: false, message: 'Unauthorized' });
-      return;
-    }
-
-    // Find trainer document
-    const trainer = await Trainer.findOne({
-      $or: [{ _id: trainerId }, { userId: trainerId }]
-    });
-    if (!trainer) {
-      res.status(404).json({ success: false, message: 'Trainer not found' });
+    const { resolveTrainerContext } = await import('../utils/trainerIsolation');
+    const ctx = await resolveTrainerContext(req.user);
+    if (!ctx) {
+      res.status(403).json({ success: false, message: 'Active trainer context required' });
       return;
     }
 
     const sessions = await TrainerSession.find({
-      trainerId: trainer._id,
+      trainerId: { $in: ctx.trainerObjectIds },
+      gymId: ctx.gymId,
       customerRating: { $exists: true, $gt: 0 }
     })
       .populate('customerId', 'firstName lastName email profileImage')

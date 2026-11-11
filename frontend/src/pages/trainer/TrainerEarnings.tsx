@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { TrendingUp, IndianRupee, CheckCircle, ArrowDownRight, ArrowDownLeft } from 'lucide-react';
 import api from '../../utils/api';
 import TrainerFinancialsTabs from '../../components/Trainer/TrainerFinancialsTabs';
@@ -120,11 +120,29 @@ const TrainerEarnings = () => {
 
         </div>
       ) : (
-        /* Empty state */
-        <div className="bg-[#FFFFFF] border border-[#F8FAFC] rounded-2xl p-12 text-center shadow-sm">
-          <TrendingUp size={40} className="mx-auto text-[#E2E8F0] mb-4" />
-          <h3 className="text-lg font-semibold text-[#64748B]">No Fee Configured</h3>
-          <p className="text-[#64748B] text-sm mt-2">Your Gym Owner needs to configure your fee before earnings can be calculated.</p>
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-5 shadow-sm">
+              <p className="text-xs font-bold text-[#64748B] uppercase tracking-wider">Total Earnings</p>
+              <p className="text-3xl font-bold text-[#111827] mt-2">₹{(data?.trainer?.totalEarnings || 0).toLocaleString('en-IN')}</p>
+              <p className="text-xs text-[#64748B] mt-1">All time payments received</p>
+            </div>
+            <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-5 shadow-sm">
+              <p className="text-xs font-bold text-[#64748B] uppercase tracking-wider">Available Balance</p>
+              <p className="text-3xl font-bold text-[#111827] mt-2">₹{(data?.trainer?.availableBalance || 0).toLocaleString('en-IN')}</p>
+              <p className="text-xs text-[#64748B] mt-1">Ready to withdraw</p>
+            </div>
+            <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-5 shadow-sm">
+              <p className="text-xs font-bold text-[#64748B] uppercase tracking-wider">Pending Earnings</p>
+              <p className="text-3xl font-bold text-[#111827] mt-2">₹{(data?.trainer?.pendingBalance || 0).toLocaleString('en-IN')}</p>
+              <p className="text-xs text-[#64748B] mt-1">Awaiting settlement</p>
+            </div>
+          </div>
+          <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-10 text-center shadow-sm">
+            <TrendingUp size={40} className="mx-auto text-[#CBD5E1] mb-3" />
+            <h3 className="text-base font-semibold text-[#111827]">No Fee Configured</h3>
+            <p className="text-[#64748B] text-sm mt-1">No fee schedule or earnings recorded yet.</p>
+          </div>
         </div>
       )}
     </div>

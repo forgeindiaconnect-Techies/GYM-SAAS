@@ -28,11 +28,16 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Handle 401 globally — clear token and redirect to login
+// Handle 401 and deactivated account 403 globally — clear token and redirect to login
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    const status = error.response?.status;
+    const errorCode = error.response?.data?.errorCode;
+    if (
+      status === 401 ||
+      (status === 403 && (errorCode === 'ACCOUNT_INACTIVE' || errorCode === 'TRAINER_INACTIVE' || errorCode === 'TRAINER_NOT_FOUND'))
+    ) {
       // Clear auth tokens but preserve sessionStorage (e.g. checkout_intent)
       localStorage.removeItem('aigym_token');
       localStorage.removeItem('aigym_user');

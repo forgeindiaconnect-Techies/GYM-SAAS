@@ -1,11 +1,13 @@
-﻿import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect, useCallback } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import {
   Building2, MapPin, Phone, Mail, Globe, CheckCircle2, Calendar, Dumbbell,
   Wind, Star, Navigation, ExternalLink, Target, Zap, Activity, Crown,
-  Leaf, TrendingUp, Users, Cpu
+  Leaf, TrendingUp, Users, Cpu, RefreshCw
 } from 'lucide-react';
 import api from '../../utils/api';
+import { useAuth } from '../../contexts/AuthContext';
+import GymSelectorModal from '../../components/Member/GymSelectorModal';
 
 const BADGE_CONFIG: Record<string, { icon: any; accent: string; bg: string }> = {
   'Weight Loss':       { icon: Target,    accent: '#B91C1C', bg: 'rgba(248, 113, 113,0.1)'   },
@@ -19,69 +21,33 @@ const BADGE_CONFIG: Record<string, { icon: any; accent: string; bg: string }> = 
   'Online Coaching':   { icon: Cpu,       accent: '#0EA5E9', bg: 'rgba(14,165,233,0.1)'  },
 };
 
-const defaultPackages = [
-  {
-    _id: 'default-pkg-strength',
-    name: 'Strength',
-    fitnessGoal: 'Strength',
-    description: 'Improve your physical strength, power, and performance through resistance training and progressive overload.',
-    trainingType: 'Offline',
-    duration: '1 Month',
-    monthlyPrice: 399,
-    features: [
-      'Strength-focused workout programs',
-      'Progressive resistance training',
-      'Strength performance tracking'
-    ]
-  },
-  {
-    _id: 'default-pkg-muscle',
-    name: 'Muscle Gain',
-    fitnessGoal: 'Muscle Gain',
-    description: 'Build muscle mass and improve your physique with targeted strength training and progressive workouts.',
-    trainingType: 'Online',
-    duration: '1 Month',
-    monthlyPrice: 599,
-    features: [
-      'Muscle-building workout programs',
-      'Strength training',
-      'Progressive overload training',
-      'Muscle development progress tracking'
-    ]
-  },
-  {
-    _id: 'default-pkg-weightloss',
-    name: 'weight Loss',
-    fitnessGoal: 'Weight Loss',
-    description: 'Focus on burning calories, reducing body fat, and improving overall fitness through structured workouts.',
-    trainingType: 'Hybrid',
-    duration: '1 Month',
-    monthlyPrice: 499,
-    features: [
-      'Fat-loss workout programs',
-      'Cardio training',
-      'Strength training',
-      'Weight and progress tracking'
-    ]
-  }
-];
-
 const MemberGymProfile = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [gym, setGym] = useState<any>(null);
   const [packages, setPackages] = useState<any[]>([]);
+  const [trainers, setTrainers] = useState<any[]>([]);
   const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
+  const [isSelectorOpen, setIsSelectorOpen] = useState(false);
 
-  useEffect(() => {
-    const fetchGym = async () => {
-      try {
-        const res = await api.get('/gyms/my-gym');
-        const gymData = res.data.gym;
-        setGym(gymData);
+  const fetchGym = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      setError('');
+      const res = await api.get('/gyms/my-gym');
+      const gymData = res.data?.gym || null;
+      setGym(gymData);
+      setTrainers(Array.isArray(res.data?.trainers) ? res.data.trainers : []);
 
-        if (gymData?._id) {
+      if (gymData?._id) {
+        const inlinePackages = Array.isArray(res.data?.packages) ? res.data.packages : null;
+        if (inlinePackages && inlinePackages.length > 0) {
+          setPackages(inlinePackages);
+          const pop = inlinePackages.find((p: any) => p.isPopular) || inlinePackages[0];
+          setSelectedPlanId(pop._id);
+        } else {
           try {
             const pkgRes = await api.get('/gym-packages/public', { params: { gymId: gymData._id } });
             if (pkgRes.data?.success && Array.isArray(pkgRes.data.packages) && pkgRes.data.packages.length > 0) {
@@ -89,21 +55,34 @@ const MemberGymProfile = () => {
               const pop = pkgRes.data.packages.find((p: any) => p.isPopular) || pkgRes.data.packages[0];
               setSelectedPlanId(pop._id);
             } else {
-              setSelectedPlanId(defaultPackages[0]._id);
+              setPackages([]);
+              setSelectedPlanId(null);
             }
           } catch (pkgErr) {
             console.warn('Could not load gym packages:', pkgErr);
-            setSelectedPlanId(defaultPackages[0]._id);
+            setPackages([]);
           }
         }
-      } catch (err: any) {
-        setError(err.response?.data?.message || 'Failed to fetch gym details');
-      } finally {
-        setIsLoading(false);
+      } else {
+        setPackages([]);
+        setSelectedPlanId(null);
       }
-    };
-    fetchGym();
+    } catch (err: any) {
+      if (err.response?.status === 404) {
+        setGym(null);
+        setPackages([]);
+        setTrainers([]);
+      } else {
+        setError(err.response?.data?.message || 'Failed to fetch gym details');
+      }
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchGym();
+  }, [fetchGym, user?.gymId]);
 
   if (isLoading) {
     return <div className="flex justify-center py-20 text-[#64748B]">Loading gym details...</div>;
@@ -118,7 +97,37 @@ const MemberGymProfile = () => {
   }
 
   if (!gym) {
-    return <div className="text-center py-20 text-[#64748B]">You are not assigned to any specific gym yet.</div>;
+    return (
+      <div className="max-w-3xl mx-auto py-12 px-4">
+        <div className="bg-white border border-[#E2E8F0] rounded-3xl p-8 md:p-10 text-center space-y-4 shadow-xs">
+          <div className="w-16 h-16 mx-auto rounded-2xl bg-[#FFF7ED] border border-[#FFEDD5] flex items-center justify-center text-[#EA580C]">
+            <Building2 size={30} />
+          </div>
+          <h1 className="text-2xl font-black text-[#111827]">No Gym Selected Yet</h1>
+          <p className="text-sm text-[#64748B] max-w-md mx-auto leading-relaxed">
+            Explore active gyms to inspect their facilities, equipment, membership packages, and trainers, then choose the gym that fits you best.
+          </p>
+          <button
+            type="button"
+            onClick={() => setIsSelectorOpen(true)}
+            className="inline-flex items-center gap-2 px-6 py-3 bg-[#EA580C] hover:bg-[#C2410C] text-white font-bold text-sm rounded-xl shadow-sm transition-colors cursor-pointer"
+          >
+            <Building2 size={16} /> Find a Gym / Choose a Gym
+          </button>
+        </div>
+
+        <GymSelectorModal
+          isOpen={isSelectorOpen}
+          onClose={() => setIsSelectorOpen(false)}
+          currentGymId={null}
+          onGymSelected={({ gym: selectedGym, trainers: gymTrainers, packages: gymPkgs }) => {
+            setGym(selectedGym);
+            setTrainers(gymTrainers || []);
+            setPackages(gymPkgs || []);
+          }}
+        />
+      </div>
+    );
   }
 
   // Combine services and facilities, removing duplicates
@@ -166,19 +175,28 @@ const MemberGymProfile = () => {
                   )}
                 </div>
               </div>
-              {gym.location?.city && (
-                <a
-                  href={memberMapUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 text-xs font-bold text-[#EA580C] bg-[#FFF7ED] hover:bg-[#C2410C] hover:text-[#FFFFFF] font-bold border border-[#FFEDD5] px-3.5 py-2 rounded-xl transition-all self-center sm:self-start shadow-2xs"
-                  title="Click to open location in Google Maps"
+              <div className="flex flex-wrap items-center gap-2 self-center sm:self-start">
+                {gym.location?.city && (
+                  <a
+                    href={memberMapUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1.5 text-xs font-bold text-[#EA580C] bg-[#FFF7ED] hover:bg-[#C2410C] hover:text-[#FFFFFF] border border-[#FFEDD5] px-3.5 py-2 rounded-xl transition-all shadow-2xs"
+                    title="Click to open location in Google Maps"
+                  >
+                    <MapPin size={14} />
+                    <span>{gym.location.city}{gym.location.state ? `, ${gym.location.state}` : ''}</span>
+                    <ExternalLink size={11} className="ml-0.5" />
+                  </a>
+                )}
+                <button
+                  type="button"
+                  onClick={() => setIsSelectorOpen(true)}
+                  className="flex items-center gap-1.5 text-xs font-bold text-[#334155] bg-[#F8FAFC] hover:bg-[#FFF7ED] hover:text-[#EA580C] border border-[#E2E8F0] px-3.5 py-2 rounded-xl transition-all cursor-pointer shadow-2xs"
                 >
-                  <MapPin size={14} />
-                  <span>{gym.location.city}{gym.location.state ? `, ${gym.location.state}` : ''}</span>
-                  <ExternalLink size={11} className="ml-0.5" />
-                </a>
-              )}
+                  <RefreshCw size={13} /> Change Gym
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -332,8 +350,14 @@ const MemberGymProfile = () => {
               <Calendar className="text-[#EA580C]" size={20} />
               Available Plans
             </h2>
+            {packages.length === 0 ? (
+              <div className="bg-[#F8FAFC] border border-dashed border-[#CBD5E1] rounded-2xl p-8 text-center">
+                <p className="font-bold text-[#111827] text-sm">No membership packages published by this gym yet.</p>
+                <p className="text-xs text-[#64748B] mt-1">Contact the gym or check back later for membership plans.</p>
+              </div>
+            ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {(packages.length > 0 ? packages : defaultPackages).map((pkg: any) => {
+              {packages.map((pkg: any) => {
                 const badge = BADGE_CONFIG[pkg.fitnessGoal] || BADGE_CONFIG['General Fitness'] || { icon: Dumbbell, accent: '#F97316', bg: 'rgba(183,110,121,0.1)' };
                 const Icon = badge.icon;
                 const price = pkg.monthlyPrice ?? pkg.price ?? 0;
@@ -438,6 +462,51 @@ const MemberGymProfile = () => {
                 );
               })}
             </div>
+            )}
+          </div>
+
+          {/* Active Trainers Belonging to Selected Gym */}
+          <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-xs">
+            <div className="flex items-center justify-between gap-3 mb-5">
+              <h2 className="text-xl font-bold flex items-center gap-2 text-[#111827]">
+                <Users className="text-[#EA580C]" size={20} />
+                Available Trainers ({trainers.length})
+              </h2>
+              <Link to="/member/find-trainers" className="text-xs font-bold text-[#EA580C] hover:underline">
+                View All Trainers →
+              </Link>
+            </div>
+            {trainers.length === 0 ? (
+              <div className="bg-[#F8FAFC] border border-dashed border-[#CBD5E1] rounded-2xl p-6 text-center">
+                <p className="font-bold text-sm text-[#111827]">No active trainers available at this gym yet.</p>
+                <p className="text-xs text-[#64748B] mt-1">Once trainers are activated by {gym.name}, they will appear here.</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {trainers.map((tr: any) => (
+                  <div key={tr._id} className="p-4 rounded-2xl border border-[#E2E8F0] bg-[#F8FAFC] flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="w-12 h-12 rounded-full bg-white border border-[#E2E8F0] flex items-center justify-center font-bold text-[#EA580C] overflow-hidden shrink-0">
+                        {tr.profilePhoto ? <img src={tr.profilePhoto} alt={tr.name} className="w-full h-full object-cover" /> : (tr.name?.[0] || 'T')}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="font-bold text-sm text-[#111827] truncate">{tr.name}</p>
+                        <p className="text-xs text-[#EA580C] font-semibold truncate">{tr.specialization || 'Certified Trainer'}</p>
+                        <p className="text-[11px] text-[#64748B]">
+                          {tr.experience ? `${tr.experience} yrs exp` : 'Coach'} • {tr.availabilityStatus || 'Available'}
+                        </p>
+                      </div>
+                    </div>
+                    <Link
+                      to={`/member/book-session?trainerId=${tr._id}`}
+                      className="px-3 py-1.5 rounded-xl bg-[#C2410C] hover:bg-[#9A3412] text-white text-xs font-bold shrink-0"
+                    >
+                      Book
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
@@ -514,6 +583,18 @@ const MemberGymProfile = () => {
           </div>
         </div>
       </div>
+
+      <GymSelectorModal
+        isOpen={isSelectorOpen}
+        onClose={() => setIsSelectorOpen(false)}
+        currentGymId={gym?._id}
+        onGymSelected={({ gym: selectedGym, trainers: gymTrainers, packages: gymPkgs }) => {
+          setGym(selectedGym);
+          setTrainers(gymTrainers || []);
+          setPackages(gymPkgs || []);
+          setSelectedPlanId(gymPkgs?.[0]?._id || null);
+        }}
+      />
     </div>
   );
 };

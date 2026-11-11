@@ -865,8 +865,9 @@ export const getTrainerCustomerProgress = async (req: AuthRequest, res: Response
 
     // Get participants matching these customerIds or all active gym challenges if no specific assignments yet
     let query: any = { gymId };
-    if (customerIds.length > 0) {
-      query.customerId = { $in: customerIds };
+    if (customerIds.length === 0) {
+      res.status(200).json({ success: true, challenges: [], participants: [] });
+      return;
     }
 
     const participants = await ChallengeParticipant.find(query)

@@ -1,33 +1,49 @@
-import { useState, useEffect } from 'react';
-import { Search, Star, Calendar, Eye, X } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect, useCallback } from 'react';
+import { Search, Star, Calendar, Eye, X, Building2 } from 'lucide-react';
+import { Link, useSearchParams } from 'react-router-dom';
 import api from '../../utils/api';
+import { useAuth } from '../../contexts/AuthContext';
 import MemberTrainingTabs from '../../components/Member/MemberTrainingTabs';
+import GymSelectorModal from '../../components/Member/GymSelectorModal';
 
 const MemberFindTrainers = () => {
+  const { user } = useAuth();
+  const [searchParams] = useSearchParams();
   const [trainers, setTrainers] = useState<any[]>([]);
   const [search, setSearch] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [selectedTrainer, setSelectedTrainer] = useState<any | null>(null);
+  const [isGymSelectorOpen, setIsGymSelectorOpen] = useState(false);
+
+  const fetchTrainers = useCallback(async () => {
+    if (!user?.gymId) {
+      setTrainers([]);
+      setIsLoading(false);
+      return;
+    }
+    try {
+      setIsLoading(true);
+      const response = await api.get('/trainers/my-gym');
+      if (response.data?.success) {
+        const list = response.data.trainers || [];
+        setTrainers(list);
+        const queryTrainerId = searchParams.get('trainerId');
+        if (queryTrainerId) {
+          const found = list.find((t: any) => String(t._id) === queryTrainerId || String(t.userId) === queryTrainerId);
+          if (found) setSelectedTrainer(found);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to fetch trainers:', error);
+      setTrainers([]);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [user?.gymId, searchParams]);
 
   useEffect(() => {
-    const fetchTrainers = async () => {
-      try {
-        const response = await api.get('/trainers/online-available');
-        if (response.data.success && response.data.trainers?.length > 0) {
-          setTrainers(response.data.trainers);
-        } else {
-          const fallback = await api.get('/trainers/my-gym');
-          if (fallback.data.success) setTrainers(fallback.data.trainers);
-        }
-      } catch (error) {
-        console.error("Failed to fetch trainers:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
     fetchTrainers();
-  }, []);
+  }, [fetchTrainers]);
 
   const filtered = trainers.filter(t => {
     const n = t.name || '';
@@ -56,8 +72,25 @@ const MemberFindTrainers = () => {
         </div>
       </div>
 
-      {isLoading ? (
-        <div className="text-center py-12 text-[#64748B]">Loading online trainers...</div>
+      {!user?.gymId ? (
+        <div className="bg-white border border-[#E2E8F0] rounded-3xl p-10 text-center space-y-4">
+          <div className="w-14 h-14 mx-auto rounded-2xl bg-[#FFF7ED] border border-[#FFEDD5] flex items-center justify-center text-[#EA580C]">
+            <Building2 size={26} />
+          </div>
+          <h2 className="text-xl font-black text-[#111827]">Select a Gym First</h2>
+          <p className="text-sm text-[#64748B] max-w-md mx-auto">
+            Choose a gym to view active trainers belonging exclusively to your selected gym.
+          </p>
+          <button
+            type="button"
+            onClick={() => setIsGymSelectorOpen(true)}
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#EA580C] hover:bg-[#C2410C] text-white font-bold text-sm rounded-xl transition-colors cursor-pointer"
+          >
+            <Building2 size={16} /> Find a Gym / Choose a Gym
+          </button>
+        </div>
+      ) : isLoading ? (
+        <div className="text-center py-12 text-[#64748B]">Loading trainers for your selected gym...</div>
       ) : (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -72,7 +105,7 @@ const MemberFindTrainers = () => {
                     {trainer.availabilityStatus || 'Available'}
                   </span>
                   <span className="text-xs font-semibold text-[#EA580C] bg-[#FFF7ED] border border-[#FFEDD5] px-2 py-0.5 rounded-md capitalize">
-                    {trainer.trainingMode === 'both' ? 'Online & Gym' : (trainer.trainingMode || 'Online')}
+                    {trainer.trainingMode === 'both' ? 'Online & Gym' : (trainer.trainingMode || 'In-Person & Online')}
                   </span>
                 </div>
 
@@ -86,23 +119,37 @@ const MemberFindTrainers = () => {
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="text-lg font-bold text-[#111827] truncate">{trainer.name}</h3>
-                    <p className="text-sm text-[#EA580C] font-semibold truncate">{trainer.specialization || 'Fitness Specialist'}</p>
+                    <p className="text-sm text-[#EA580C] font-semibold truncate">{trainer.specialization || 'Certified Trainer'}</p>
                     <div className="flex items-center space-x-1 mt-1 text-[#64748B] text-xs">
                       <Star size={13} className="text-[#B45309] fill-amber-400 shrink-0" />
-                      <span className="font-bold text-[#111827]">{trainer.averageRating || trainer.rating || '5.0'}</span>
-                      <span className="text-[#64748B]">({trainer.totalReviews || trainer.reviewCount || '12'} reviews)</span>
+                      {Number(trainer.totalReviews || 0) > 0 ? (
+                        <>
+                          <span className="font-bold text-[#111827]">{trainer.averageRating || trainer.rating || 0}</span>
+                          <span className="text-[#64748B]">({trainer.totalReviews} reviews)</span>
+                        </>
+                      ) : (
+                        <span className="text-[#64748B]">No reviews yet</span>
+                      )}
                     </div>
                   </div>
                 </div>
                 
                 <div className="mt-4 pt-4 border-t border-[#E2E8F0] space-y-2 text-sm text-[#111827] flex-1">
-                  <p><span className="text-[#111827] font-semibold">Experience:</span> {trainer.experience ? `${trainer.experience} years` : '3+ years'}</p>
+                  <p><span className="text-[#111827] font-semibold">Experience:</span> {trainer.experience ? `${trainer.experience} years` : 'Not specified'}</p>
                   <p><span className="text-[#111827] font-semibold">Expertise:</span> {
-                    typeof trainer.expertise === 'string'
+                    typeof trainer.expertise === 'string' && trainer.expertise.trim()
                       ? trainer.expertise.split('\n').filter(Boolean).join(' • ')
-                      : (Array.isArray(trainer.expertise) ? trainer.expertise.join(' • ') : (trainer.expertise || trainer.specialization || 'Strength & Conditioning'))
+                      : (Array.isArray(trainer.expertise) && trainer.expertise.length > 0
+                        ? trainer.expertise.join(' • ')
+                        : (trainer.specialization || 'General Coaching'))
                   }</p>
-                  <p><span className="text-[#111827] font-semibold">Available Slots:</span> {trainer.availableSlot || 5} per day ({trainer.availableStartTime || '09:00 AM'} - {trainer.availableEndTime || '06:00 PM'})</p>
+                  <p><span className="text-[#111827] font-semibold">Availability:</span> {
+                    trainer.availableDays
+                      ? `${trainer.availableDays}${trainer.availableStartTime ? ` (${trainer.availableStartTime} - ${trainer.availableEndTime || ''})` : ''}`
+                      : (Array.isArray(trainer.availability) && trainer.availability.length > 0
+                        ? trainer.availability.map((a: any) => `${a.day}: ${a.slots?.join(', ') || 'Open'}`).slice(0, 2).join(' | ')
+                        : (trainer.availabilityStatus || 'Available'))
+                  }</p>
                 </div>
                 
                 <div className="mt-6 flex items-center gap-2">
@@ -115,7 +162,7 @@ const MemberFindTrainers = () => {
                   </button>
                   <Link 
                     to={`/member/book-session?trainerId=${trainer._id}`} 
-                    className="flex-1 py-2.5 px-3 bg-[#C2410C] text-white font-bold rounded-xl font-bold text-xs sm:text-sm hover:bg-[#9A3412] transition-all flex items-center justify-center gap-1.5 whitespace-nowrap shadow-xs min-w-0 cursor-pointer"
+                    className="flex-1 py-2.5 px-3 bg-[#C2410C] text-white font-bold rounded-xl text-xs sm:text-sm hover:bg-[#9A3412] transition-all flex items-center justify-center gap-1.5 whitespace-nowrap shadow-xs min-w-0 cursor-pointer"
                   >
                     <Calendar size={15} className="shrink-0" />
                     <span className="whitespace-nowrap truncate">Book Session</span>
@@ -127,7 +174,10 @@ const MemberFindTrainers = () => {
           
           {filtered.length === 0 && (
             <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-12 text-center">
-              <p className="text-[#64748B] text-lg">No trainers found matching your search.</p>
+              <p className="text-[#111827] font-bold text-base">No active trainers available</p>
+              <p className="text-[#64748B] text-sm mt-1">
+                {search ? 'No trainers found matching your search in this gym.' : 'Your selected gym currently has no active trainers listed.'}
+              </p>
             </div>
           )}
         </>
@@ -160,7 +210,11 @@ const MemberFindTrainers = () => {
                   <div className="flex flex-wrap justify-center md:justify-start gap-3">
                     <div className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-500/15 text-[#B45309] rounded-xl text-sm font-semibold border border-amber-500/30">
                       <Star size={16} className="fill-amber-400 text-[#B45309]" />
-                      <span>{selectedTrainer.rating || '4.8'} Rating</span>
+                      <span>
+                        {Number(selectedTrainer.totalReviews || 0) > 0
+                          ? `${selectedTrainer.averageRating || selectedTrainer.rating || 0} Rating (${selectedTrainer.totalReviews} reviews)`
+                          : 'No reviews yet'}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -287,6 +341,15 @@ const MemberFindTrainers = () => {
           </div>
         </div>
       )}
+
+      <GymSelectorModal
+        isOpen={isGymSelectorOpen}
+        onClose={() => setIsGymSelectorOpen(false)}
+        currentGymId={user?.gymId}
+        onGymSelected={({ trainers: nextTrainers }) => {
+          setTrainers(nextTrainers || []);
+        }}
+      />
     </div>
   );
 };

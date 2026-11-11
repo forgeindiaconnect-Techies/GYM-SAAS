@@ -216,35 +216,70 @@ export const getAssignedCustomersWithAI = async (req: any, res: any) => {
       return res.status(404).json({ success: false, message: 'Trainer profile not found' });
     }
 
-    // Fetch members of trainer's gym
-    const members = await User.find({ gymId: trainer.gymId, role: 'MEMBER' } as any).sort({ updatedAt: -1 });
+    const { resolveTrainerContext, getTrainerAssignedCustomerIds } = await import('../utils/trainerIsolation');
+    const trainerCtx = await resolveTrainerContext(req.user);
+    if (!trainerCtx) {
+      return res.status(403).json({ success: false, message: 'Active trainer context required' });
+    }
 
-    const customersWithAI = await Promise.all(members.map(async (member) => {
-      const latestAI = await AIRecommendation.findOne({ customerId: member._id })
-        .populate('trainerId', 'name')
-        .sort({ createdAt: -1 });
+    const assignedCustomerIds = await getTrainerAssignedCustomerIds(trainerCtx);
+    const aiAssignedCustomerIds = await AIRecommendation.distinct('customerId', {
+      gymId: trainerCtx.gymId,
+      trainerId: { $in: trainerCtx.trainerObjectIds },
+    });
+    const combinedCustomerIds = Array.from(
+      new Set([...assignedCustomerIds, ...aiAssignedCustomerIds.map((id: any) => String(id))])
+    );
 
-      const isAssignedToThisTrainer = 
-        (latestAI?.trainerId as any)?._id?.toString() === trainer._id.toString() ||
-        member.assignedTrainer?.toString() === trainer._id.toString();
+    if (combinedCustomerIds.length === 0) {
+      return res.status(200).json({
+        success: true,
+        customers: [],
+        trainerAvailability: trainer.availabilityStatus || 'Online',
+        trainerName: trainer.name,
+      });
+    }
 
-      return {
-        _id: member._id,
-        firstName: member.firstName,
-        lastName: member.lastName,
-        email: member.email,
-        mobile: member.mobile,
-        profilePhoto: member.profilePhoto,
-        goal: latestAI?.fitnessProfile?.fitnessGoal || member.fitnessGoal || 'General Fitness',
-        level: latestAI?.fitnessProfile?.currentFitnessLevel || latestAI?.fitnessProfile?.experienceLevel || member.experienceLevel || 'Beginner',
-        aiStatus: latestAI ? latestAI.status : 'No Data',
-        lastUpdated: latestAI ? latestAI.updatedAt : member.updatedAt,
-        latestRecommendationId: latestAI ? latestAI._id : null,
-        isAssignedToMe: isAssignedToThisTrainer,
-        hasPendingReview: latestAI?.status === 'Pending Trainer Review' || latestAI?.status === 'Under Trainer Review',
-        assessmentData: latestAI?.fitnessProfile || null
-      };
-    }));
+    // Fetch strictly assigned/matched members of THIS trainer's gym
+    const members = await User.find({
+      _id: { $in: combinedCustomerIds },
+      gymId: trainerCtx.gymId,
+      role: 'MEMBER',
+    } as any).sort({ updatedAt: -1 });
+
+    const customersWithAI = (
+      await Promise.all(
+        members.map(async (member) => {
+          const latestAI = await AIRecommendation.findOne({ customerId: member._id })
+            .populate('trainerId', 'name')
+            .sort({ createdAt: -1 });
+
+          const isAssignedToThisTrainer =
+            (latestAI?.trainerId as any)?._id?.toString() === trainer._id.toString() ||
+            (member.assignedTrainer ? trainerCtx.trainerIdStrings.includes(String(member.assignedTrainer)) : false) ||
+            assignedCustomerIds.includes(String(member._id));
+
+          if (!isAssignedToThisTrainer) return null;
+
+          return {
+            _id: member._id,
+            firstName: member.firstName,
+            lastName: member.lastName,
+            email: member.email,
+            mobile: member.mobile,
+            profilePhoto: member.profilePhoto,
+            goal: latestAI?.fitnessProfile?.fitnessGoal || member.fitnessGoal || 'General Fitness',
+            level: latestAI?.fitnessProfile?.currentFitnessLevel || latestAI?.fitnessProfile?.experienceLevel || member.experienceLevel || 'Beginner',
+            aiStatus: latestAI ? latestAI.status : 'No Data',
+            lastUpdated: latestAI ? latestAI.updatedAt : member.updatedAt,
+            latestRecommendationId: latestAI ? latestAI._id : null,
+            isAssignedToMe: isAssignedToThisTrainer,
+            hasPendingReview: latestAI?.status === 'Pending Trainer Review' || latestAI?.status === 'Under Trainer Review',
+            assessmentData: latestAI?.fitnessProfile || null
+          };
+        })
+      )
+    ).filter(Boolean);
 
     res.status(200).json({
       success: true,

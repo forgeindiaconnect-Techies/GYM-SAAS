@@ -9,6 +9,7 @@ import {
   deleteGym,
   getPublicGyms,
   getPublicGymById,
+  selectCustomerGym,
   updatePaymentSettings,
   getCommunityTestimonials,
   updateGymLocation,
@@ -27,6 +28,8 @@ router.get('/public/:id', getPublicGymById);
 router.post('/public/:id/reviews', authenticate, addGymReview);
 router.post('/:id/reviews', authenticate, addGymReview);
 router.get('/my-gym', authenticate, getMyGym);
+router.post('/select', authenticate, selectCustomerGym);
+router.put('/select', authenticate, selectCustomerGym);
 router.get('/owner/reviews', authenticate, getGymOwnerReviews);
 router.put('/my-gym/location', authenticate, updateGymLocation);
 router.get('/:id', getGymById);

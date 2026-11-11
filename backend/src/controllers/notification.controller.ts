@@ -32,7 +32,18 @@ const getNotificationQuery = (user: any, branchQuery?: string) => {
       conditions.push({ gymId: gymMatch, recipientRole: 'GYM_OWNER' });
     }
   } else if (gymId && role === 'TRAINER') {
-    conditions.push({ gymId: gymMatch, recipientRole: 'TRAINER' });
+    // Strict trainer + gym isolation: never broadcast gym-wide TRAINER notifications without matching recipientId.
+    const idVariants: any[] = [...userIds];
+    if (user.trainerId) {
+      idVariants.push(String(user.trainerId));
+      if (mongoose.Types.ObjectId.isValid(String(user.trainerId))) {
+        idVariants.push(new mongoose.Types.ObjectId(String(user.trainerId)));
+      }
+    }
+    return {
+      recipientId: { $in: idVariants },
+      $or: [{ gymId: gymMatch }, { gymId: { $exists: false } }, { gymId: null }],
+    };
   } else if (gymId && (role === 'MEMBER' || role === 'CUSTOMER')) {
     conditions.push({ gymId: gymMatch, recipientRole: 'MEMBER' });
   }

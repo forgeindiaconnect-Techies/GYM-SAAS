@@ -1,6 +1,7 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
 export interface ITrainer extends Document {
+  trainerId?: string;
   gymId?: mongoose.Types.ObjectId;
   branchId?: mongoose.Types.ObjectId;
   userId: mongoose.Types.ObjectId;
@@ -29,7 +30,7 @@ export interface ITrainer extends Document {
   availableBalance: number;
   withdrawnAmount: number;
   pendingWithdrawal: number;
-  status: 'Pending' | 'Active' | 'Rejected' | 'Suspended';
+  status: 'Pending' | 'Active' | 'Inactive' | 'Rejected' | 'Suspended';
   availabilityStatus?: 'Online' | 'Offline' | 'Busy';
   averageRating?: number;
   totalReviews?: number;
@@ -52,6 +53,7 @@ export interface ITrainer extends Document {
 }
 
 const trainerSchema = new Schema<ITrainer>({
+  trainerId: { type: String, unique: true, sparse: true, trim: true, index: true },
   gymId: { type: Schema.Types.ObjectId, ref: 'Gym', required: false },
   branchId: { type: Schema.Types.ObjectId, ref: 'Branch' },
   userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
@@ -80,9 +82,9 @@ const trainerSchema = new Schema<ITrainer>({
   availableBalance: { type: Number, default: 0 },
   withdrawnAmount: { type: Number, default: 0 },
   pendingWithdrawal: { type: Number, default: 0 },
-  status: { type: String, enum: ['Pending', 'Active', 'Rejected', 'Suspended'], default: 'Pending' },
+  status: { type: String, enum: ['Pending', 'Active', 'Inactive', 'Rejected', 'Suspended'], default: 'Pending' },
   availabilityStatus: { type: String, enum: ['Online', 'Offline', 'Busy'], default: 'Online' },
-  averageRating: { type: Number, default: 5.0 },
+  averageRating: { type: Number, default: 0 },
   totalReviews: { type: Number, default: 0 },
   // Recruitment & Direct Hiring Fields
   isPublicRecruitment: { type: Boolean, default: true, index: true },

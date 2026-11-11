@@ -4,7 +4,7 @@ import {
   Loader2, Bot, CheckCircle2, Eye,
   Activity, Dumbbell, TrendingUp,
   MessageSquare, Check, X, Clock, FileText,
-  Award
+  Award, Bell, Star, UtensilsCrossed
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
@@ -19,6 +19,8 @@ const TrainerDashboard = () => {
   const [planRequests, setPlanRequests] = useState<any[]>([]);
   const [approvingId, setApprovingId] = useState<string | null>(null);
   const [approvalFeedback, setApprovalFeedback] = useState<Record<string, string>>({});
+  const [dashboardSummary, setDashboardSummary] = useState<any>(null);
+  const [trainerProfile, setTrainerProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -28,12 +30,18 @@ const TrainerDashboard = () => {
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      const [sessionsRes, aiRes, progressRes, planRequestsRes] = await Promise.allSettled([
+      const [summaryRes, sessionsRes, aiRes, progressRes, planRequestsRes] = await Promise.allSettled([
+        api.get('/trainers/dashboard-summary'),
         api.get('/trainer-sessions/trainer'),
         api.get('/ai/trainer/customers'),
         api.get('/workout-progress/trainer/clients-overview'),
         api.get('/trainer-plans/trainer-requests')
       ]);
+
+      if (summaryRes.status === 'fulfilled' && summaryRes.value.data?.success) {
+        setDashboardSummary(summaryRes.value.data.summary || null);
+        setTrainerProfile(summaryRes.value.data.trainer || null);
+      }
 
       if (sessionsRes.status === 'fulfilled' && sessionsRes.value.data?.success) {
         setSessions(sessionsRes.value.data.sessions || []);
@@ -103,6 +111,11 @@ const TrainerDashboard = () => {
     .reduce((acc, curr) => acc + (curr.fee || 0), 0);
 
   const totalExercisesDone = clientProgress.reduce((acc, curr) => acc + (curr.stats?.totalExercisesCompleted || 0), 0) || recentCompletedExercises.length;
+  const totalClientsCount = dashboardSummary?.totalClients ?? uniqueClients;
+  const activeClientsCount = dashboardSummary?.activeClients ?? uniqueClients;
+  const upcomingSessionsCount = dashboardSummary?.upcomingSessions ?? sessions.filter(s => ['Pending', 'Awaiting Payment', 'Confirmed', 'Upcoming', 'Rescheduled', 'In Progress'].includes(s.status)).length;
+  const completedSessionsCount = dashboardSummary?.completedSessions ?? sessions.filter(s => s.status === 'Completed').length;
+  const totalEarningsAmount = dashboardSummary?.earnings ?? thisMonthEarnings;
 
   const upcomingSessions = sessions
     .filter(s => ['Pending', 'Awaiting Payment', 'Confirmed', 'Upcoming'].includes(s.status))
@@ -121,6 +134,20 @@ const TrainerDashboard = () => {
       {/* Welcome Bar */}
       <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-3xl p-6 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
+          {(trainerProfile?.trainerId || user?.trainerCode || trainerProfile?.gymName) && (
+            <div className="flex flex-wrap items-center gap-2 mb-1.5">
+              {(trainerProfile?.trainerId || user?.trainerCode) && (
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5]">
+                  ID: {trainerProfile?.trainerId || user?.trainerCode}
+                </span>
+              )}
+              {trainerProfile?.gymName && (
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#F8FAFC] text-[#64748B] border border-[#E2E8F0]">
+                  {trainerProfile.gymName}
+                </span>
+              )}
+            </div>
+          )}
           <h1 className="text-3xl font-bold text-[#111827] tracking-tight">
             Welcome back, <span className="text-[#EA580C]">{user?.firstName || 'Trainer'}!</span>
           </h1>
@@ -146,12 +173,12 @@ const TrainerDashboard = () => {
           {/* Key Stat Cards */}
           <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-3.5 sm:gap-4">
             {[
-              { label: 'Active Clients', value: uniqueClients.toString(), icon: Users, color: 'text-[#111827]', bg: 'bg-[#F8FAFC]' },
-              { label: 'Completed Exercises', value: totalExercisesDone.toString(), icon: Dumbbell, color: 'text-[#15803D]', bg: 'bg-[#15803D]/10' },
-              { label: 'Pending AI Reviews', value: pendingAiReviews.length.toString(), icon: Bot, color: 'text-[#EA580C]', bg: 'bg-[#FFF7ED]' },
-              { label: "Today's Sessions", value: todaySessions.toString(), icon: Calendar, color: 'text-[#111827]', bg: 'bg-[#F8FAFC]' },
-              { label: 'Total Earnings', value: `₹${thisMonthEarnings.toLocaleString('en-IN')}`, icon: IndianRupee, color: 'text-[#111827]', bg: 'bg-[#F8FAFC]' },
-              { label: 'Rewards & Honors', value: 'Perks', icon: Award, color: 'text-amber-700', bg: 'bg-amber-50', link: '/trainer/rewards' },
+              { label: 'Total Clients', value: totalClientsCount.toString(), icon: Users, color: 'text-[#111827]', bg: 'bg-[#F8FAFC]', link: '/trainer/members' },
+              { label: 'Active Clients', value: activeClientsCount.toString(), icon: Dumbbell, color: 'text-[#15803D]', bg: 'bg-[#15803D]/10', link: '/trainer/assigned-users' },
+              { label: 'Upcoming Sessions', value: upcomingSessionsCount.toString(), icon: Calendar, color: 'text-[#111827]', bg: 'bg-[#F8FAFC]', link: '/trainer/sessions' },
+              { label: 'Completed Sessions', value: completedSessionsCount.toString(), icon: CheckCircle2, color: 'text-[#15803D]', bg: 'bg-[#15803D]/10', link: '/trainer/sessions' },
+              { label: 'Earnings', value: `₹${totalEarningsAmount.toLocaleString('en-IN')}`, icon: IndianRupee, color: 'text-[#111827]', bg: 'bg-[#F8FAFC]', link: '/trainer/earnings' },
+              { label: 'Pending AI Reviews', value: pendingAiReviews.length.toString(), icon: Bot, color: 'text-[#EA580C]', bg: 'bg-[#FFF7ED]', link: '/trainer/ai-recommendations' },
             ].map((stat, i) => (
               <Link
                 key={i}
@@ -680,6 +707,81 @@ const TrainerDashboard = () => {
                   Provide welcoming motivation and hydration advice before finalizing the plan.
                 </div>
               </div>
+            </div>
+          </div>
+
+          {/* SECTION 3: Module Status & Activity */}
+          <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-3xl p-6 shadow-sm space-y-4">
+            <div className="flex items-center justify-between border-b border-[#F8FAFC] pb-3">
+              <div>
+                <h2 className="text-lg font-bold text-[#111827]">Module Status &amp; Activity</h2>
+                <p className="text-xs text-[#64748B]">Live summary across your plans, reviews, messages, notifications, and workouts ({totalExercisesDone} completed exercises, {todaySessions} sessions today).</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5">
+              {[
+                {
+                  title: 'Workout Plans',
+                  status: (dashboardSummary?.workoutPlansCount || 0) > 0
+                    ? `${dashboardSummary.workoutPlansCount} workout plan${dashboardSummary.workoutPlansCount === 1 ? '' : 's'} assigned`
+                    : 'No workout plans assigned.',
+                  icon: Dumbbell,
+                  link: '/trainer/workout-plans',
+                  active: (dashboardSummary?.workoutPlansCount || 0) > 0,
+                },
+                {
+                  title: 'Diet Plans',
+                  status: (dashboardSummary?.dietPlansCount || 0) > 0
+                    ? `${dashboardSummary.dietPlansCount} diet plan${dashboardSummary.dietPlansCount === 1 ? '' : 's'} assigned`
+                    : 'No diet plans assigned.',
+                  icon: UtensilsCrossed,
+                  link: '/trainer/diet-plans',
+                  active: (dashboardSummary?.dietPlansCount || 0) > 0,
+                },
+                {
+                  title: 'Reviews & Ratings',
+                  status: (dashboardSummary?.reviewsCount || 0) > 0
+                    ? `${Number(dashboardSummary.averageRating || 0).toFixed(1)} ★ (${dashboardSummary.reviewsCount} review${dashboardSummary.reviewsCount === 1 ? '' : 's'})`
+                    : 'No reviews yet.',
+                  icon: Star,
+                  link: '/trainer/reviews',
+                  active: (dashboardSummary?.reviewsCount || 0) > 0,
+                },
+                {
+                  title: 'Messages',
+                  status: (dashboardSummary?.messagesCount || 0) > 0
+                    ? `${dashboardSummary.messagesCount} message${dashboardSummary.messagesCount === 1 ? '' : 's'}${(dashboardSummary.unreadMessagesCount || 0) > 0 ? ` (${dashboardSummary.unreadMessagesCount} unread)` : ''}`
+                    : 'No messages yet.',
+                  icon: MessageSquare,
+                  link: '/trainer/messages',
+                  active: (dashboardSummary?.messagesCount || 0) > 0,
+                },
+                {
+                  title: 'Notifications',
+                  status: (dashboardSummary?.notificationsCount || 0) > 0
+                    ? `${dashboardSummary.notificationsCount} notification${dashboardSummary.notificationsCount === 1 ? '' : 's'}${(dashboardSummary.unreadNotificationsCount || 0) > 0 ? ` (${dashboardSummary.unreadNotificationsCount} unread)` : ''}`
+                    : 'No notifications yet.',
+                  icon: Bell,
+                  link: '/trainer/notifications',
+                  active: (dashboardSummary?.notificationsCount || 0) > 0,
+                },
+              ].map((mod) => (
+                <Link
+                  key={mod.title}
+                  to={mod.link}
+                  className="p-4 rounded-2xl border border-[#E2E8F0] bg-[#F8FAFC] hover:bg-[#FFF7ED] hover:border-[#FDBA74] transition-all flex flex-col justify-between gap-2"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${mod.active ? 'bg-[#EA580C]/10 text-[#EA580C]' : 'bg-white text-[#64748B] border border-[#E2E8F0]'}`}>
+                      <mod.icon size={16} />
+                    </div>
+                    <span className="text-xs font-bold text-[#111827]">{mod.title}</span>
+                  </div>
+                  <p className={`text-xs ${mod.active ? 'text-[#111827] font-semibold' : 'text-[#64748B]'}`}>
+                    {mod.status}
+                  </p>
+                </Link>
+              ))}
             </div>
           </div>
         </>

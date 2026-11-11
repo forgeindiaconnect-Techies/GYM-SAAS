@@ -46,11 +46,29 @@ export const getMyPublishedPlan = async (req: AuthRequest, res: Response): Promi
   }
 };
 
-// 2. Get All Plans for a Customer (Trainer view)
+// 2. Get All Plans for a Customer (Trainer view - strictly isolated)
 export const getCustomerWorkoutPlans = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const { customerId } = req.params;
-    const plans = await WorkoutPlan.find({ customerId })
+    const customerId = String(req.params.customerId || '');
+    const query: any = { customerId };
+
+    if (req.user?.role === 'TRAINER') {
+      const { resolveTrainerContext, isCustomerAssignedToTrainer } = await import('../utils/trainerIsolation');
+      const ctx = await resolveTrainerContext(req.user);
+      if (!ctx || !(await isCustomerAssignedToTrainer(ctx, customerId))) {
+        res.status(403).json({ success: false, message: 'Unauthorized: customer is not assigned to you' });
+        return;
+      }
+      query.trainerId = { $in: ctx.trainerObjectIds };
+      query.gymId = ctx.gymId;
+    } else if (req.user?.role === 'GYM_OWNER' || req.user?.role === 'GYM_MANAGER') {
+      if (req.user.gymId) query.gymId = req.user.gymId;
+    } else if (req.user?.role === 'MEMBER' && String(req.user.id) !== customerId) {
+      res.status(403).json({ success: false, message: 'Unauthorized' });
+      return;
+    }
+
+    const plans = await WorkoutPlan.find(query)
       .populate({
         path: 'workoutDays.exercises.exerciseId',
         model: 'Exercise'
@@ -67,14 +85,19 @@ export const getCustomerWorkoutPlans = async (req: AuthRequest, res: Response): 
 // 3. Get Trainer's Created Workout Plans
 export const getTrainerWorkoutPlans = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const trainerId = req.user?.id;
-    const gymId = (await resolveGymId(req)) || req.user?.gymId;
-
     const query: any = {};
     if (req.user?.role === 'TRAINER') {
-      query.trainerId = trainerId;
-    } else if (gymId) {
-      query.gymId = gymId;
+      const { resolveTrainerContext } = await import('../utils/trainerIsolation');
+      const ctx = await resolveTrainerContext(req.user);
+      if (!ctx) {
+        res.status(403).json({ success: false, message: 'Active trainer context required' });
+        return;
+      }
+      query.trainerId = { $in: ctx.trainerObjectIds };
+      query.gymId = ctx.gymId;
+    } else {
+      const gymId = (await resolveGymId(req)) || req.user?.gymId;
+      if (gymId) query.gymId = gymId;
     }
 
     const plans = await WorkoutPlan.find(query)
@@ -92,7 +115,7 @@ export const getTrainerWorkoutPlans = async (req: AuthRequest, res: Response): P
   }
 };
 
-// 4. Get Single Workout Plan by ID
+// 4. Get Single Workout Plan by ID (ownership enforced)
 export const getWorkoutPlanById = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
@@ -107,6 +130,26 @@ export const getWorkoutPlanById = async (req: AuthRequest, res: Response): Promi
     if (!plan) {
       res.status(404).json({ success: false, message: 'Workout plan not found' });
       return;
+    }
+
+    if (req.user?.role === 'TRAINER') {
+      const { resolveTrainerContext, matchesTrainerContext } = await import('../utils/trainerIsolation');
+      const ctx = await resolveTrainerContext(req.user);
+      if (!ctx || String(plan.gymId) !== ctx.gymId || !matchesTrainerContext(ctx, plan.trainerId)) {
+        res.status(403).json({ success: false, message: 'Unauthorized: plan belongs to another trainer or gym' });
+        return;
+      }
+    } else if (req.user?.role === 'MEMBER') {
+      const custId = (plan.customerId as any)?._id ? String((plan.customerId as any)._id) : String(plan.customerId);
+      if (custId !== String(req.user.id)) {
+        res.status(403).json({ success: false, message: 'Unauthorized' });
+        return;
+      }
+    } else if ((req.user?.role === 'GYM_OWNER' || req.user?.role === 'GYM_MANAGER') && req.user.gymId) {
+      if (String(plan.gymId) !== String(req.user.gymId)) {
+        res.status(403).json({ success: false, message: 'Unauthorized: plan belongs to another gym' });
+        return;
+      }
     }
 
     res.status(200).json({ success: true, plan });
@@ -203,6 +246,18 @@ export const updateWorkoutPlan = async (req: AuthRequest, res: Response): Promis
       return;
     }
 
+    if (user.role === 'TRAINER') {
+      const { resolveTrainerContext, matchesTrainerContext } = await import('../utils/trainerIsolation');
+      const ctx = await resolveTrainerContext(user);
+      if (!ctx || String(plan.gymId) !== ctx.gymId || !matchesTrainerContext(ctx, plan.trainerId)) {
+        res.status(403).json({ success: false, message: 'Unauthorized: cannot modify another trainer plan' });
+        return;
+      }
+    } else if (user.role === 'GYM_OWNER' && user.gymId && String(plan.gymId) !== String(user.gymId)) {
+      res.status(403).json({ success: false, message: 'Unauthorized: plan belongs to another gym' });
+      return;
+    }
+
     const {
       planName,
       description,
@@ -252,6 +307,18 @@ export const publishWorkoutPlan = async (req: AuthRequest, res: Response): Promi
       return;
     }
 
+    if (req.user?.role === 'TRAINER') {
+      const { resolveTrainerContext, matchesTrainerContext } = await import('../utils/trainerIsolation');
+      const ctx = await resolveTrainerContext(req.user);
+      if (!ctx || String(plan.gymId) !== ctx.gymId || !matchesTrainerContext(ctx, plan.trainerId)) {
+        res.status(403).json({ success: false, message: 'Unauthorized: cannot publish another trainer plan' });
+        return;
+      }
+    } else if (req.user?.role === 'GYM_OWNER' && req.user.gymId && String(plan.gymId) !== String(req.user.gymId)) {
+      res.status(403).json({ success: false, message: 'Unauthorized: plan belongs to another gym' });
+      return;
+    }
+
     // Archive previous published plans for this customer
     await WorkoutPlan.updateMany(
       { customerId: plan.customerId, _id: { $ne: plan._id }, status: 'Published' },
@@ -272,11 +339,25 @@ export const publishWorkoutPlan = async (req: AuthRequest, res: Response): Promi
 export const deleteWorkoutPlan = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
-    const plan = await WorkoutPlan.findByIdAndDelete(id);
+    const plan = await WorkoutPlan.findById(id);
     if (!plan) {
       res.status(404).json({ success: false, message: 'Workout plan not found' });
       return;
     }
+
+    if (req.user?.role === 'TRAINER') {
+      const { resolveTrainerContext, matchesTrainerContext } = await import('../utils/trainerIsolation');
+      const ctx = await resolveTrainerContext(req.user);
+      if (!ctx || String(plan.gymId) !== ctx.gymId || !matchesTrainerContext(ctx, plan.trainerId)) {
+        res.status(403).json({ success: false, message: 'Unauthorized: cannot delete another trainer plan' });
+        return;
+      }
+    } else if (req.user?.role === 'GYM_OWNER' && req.user.gymId && String(plan.gymId) !== String(req.user.gymId)) {
+      res.status(403).json({ success: false, message: 'Unauthorized: plan belongs to another gym' });
+      return;
+    }
+
+    await WorkoutPlan.findByIdAndDelete(id);
     res.status(200).json({ success: true, message: 'Workout plan deleted successfully' });
   } catch (error: any) {
     res.status(500).json({ success: false, message: 'Server error', error: error.message });

@@ -85,89 +85,21 @@ const MemberSubscription = () => {
 
   const isTrialCompleted = isTrial && (isCurrentExpired || memberships.some(m => m.status === 'Active' && (!m.endDate || new Date(m.endDate) >= now)));
 
-  // Synthesize history list including Free Trial if not explicitly in CustomerMembership collection
+  // Real membership history from DB only
   const allHistory = [...memberships];
-  const hasTrialRecord = allHistory.some(m => m.status === 'Free Trial' || m.paymentMethod === 'Trial' || m.price === 0);
 
-  if (!hasTrialRecord && (user?.subscriptionStatus === 'Free Trial' || user?.createdAt)) {
-    const trialStartDate = user?.createdAt ? new Date(user.createdAt) : new Date();
-    const trialEndDate = new Date(trialStartDate);
-    trialEndDate.setDate(trialEndDate.getDate() + 1);
-
-    allHistory.push({
-      _id: 'derived-free-trial',
-      planName: user?.subscriptionPlan || 'Free Trial',
-      duration: '1 Day',
-      price: 0,
-      finalAmount: 0,
-      paymentMethod: 'Trial',
-      status: 'Free Trial',
-      startDate: trialStartDate,
-      endDate: trialEndDate,
-      isSynthesizedTrial: true,
-      gymId: currentMembership?.gymId
-    });
-  }
-
-  // Available Package Plans from Gym (Strength, Muscle Gain, Weight Loss, etc.)
-  let rawPlans: any[] = [];
-  if (gymPackages && gymPackages.length > 0) {
-    rawPlans = gymPackages.map((pkg: any) => ({
-      _id: pkg._id,
-      name: pkg.name,
-      price: pkg.monthlyPrice ?? pkg.price ?? 0,
-      duration: pkg.duration || '1 Month',
-      features: pkg.features,
-      fitnessGoal: pkg.fitnessGoal,
-      trainingType: pkg.trainingType,
-      description: pkg.description,
-      isPopular: pkg.isPopular
-    }));
-  } else {
-    rawPlans = [
-      {
-        _id: 'default-pkg-strength',
-        name: 'Strength',
-        price: 399,
-        duration: '1 Month',
-        trainingType: 'Offline',
-        fitnessGoal: 'Strength',
-        features: ['Strength-focused workout programs', 'Progressive resistance training', 'Strength performance tracking']
-      },
-      {
-        _id: 'default-pkg-muscle',
-        name: 'Muscle Gain',
-        price: 599,
-        duration: '1 Month',
-        trainingType: 'Online',
-        fitnessGoal: 'Muscle Gain',
-        features: ['Muscle-building workout programs', 'Strength training', 'Progressive overload training', 'Muscle development progress tracking']
-      },
-      {
-        _id: 'default-pkg-weightloss',
-        name: 'weight Loss',
-        price: 499,
-        duration: '1 Month',
-        trainingType: 'Hybrid',
-        fitnessGoal: 'Weight Loss',
-        features: ['Fat-loss workout programs', 'Cardio training', 'Strength training', 'Weight and progress tracking']
-      }
-    ];
-  }
-
-  // Ensure Free Trial is included as the first plan option
-  const hasTrialInRaw = rawPlans.some((p: any) => p.name?.toLowerCase().includes('trial') || Number(p.price) === 0);
-  if (!hasTrialInRaw) {
-    rawPlans = [
-      {
-        name: 'Free Trial',
-        price: 0,
-        duration: '1 Day',
-        features: ['1 Day Gym Access', 'AI Fitness Assistant', 'Locker Room Access', 'Diet Plan Generator']
-      },
-      ...rawPlans
-    ];
-  }
+  // Available Package Plans strictly from Gym DB
+  const rawPlans: any[] = (gymPackages || []).map((pkg: any) => ({
+    _id: pkg._id,
+    name: pkg.name,
+    price: pkg.monthlyPrice ?? pkg.price ?? 0,
+    duration: pkg.duration || '1 Month',
+    features: pkg.features,
+    fitnessGoal: pkg.fitnessGoal,
+    trainingType: pkg.trainingType,
+    description: pkg.description,
+    isPopular: pkg.isPopular
+  }));
 
   const availablePlans = rawPlans;
 

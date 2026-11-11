@@ -14,6 +14,7 @@ import Notification from '../models/Notification';
 import JobVacancy from '../models/JobVacancy';
 import JobApplication from '../models/JobApplication';
 import { sendOtpEmail, sendGymOwnerInvitationEmail, sendGymOwnerExpiryWarningEmail } from '../utils/emailService';
+import { generateUniqueCustomerId, ensureCustomerHasId, verifyGymIsActive } from '../utils/customerIsolation';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret_key';
 
@@ -28,14 +29,15 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       referralCode
     } = req.body;
 
-    if (!firstName || !lastName || !email || !mobile || !password) {
+    if (!firstName || !email || !mobile || !password) {
       res.status(400).json({ success: false, message: 'Required fields missing', errorCode: 'MISSING_FIELDS' });
       return;
     }
 
-    const existingUser = await User.findOne({ email });
+    const normalizedEmail = String(email).trim().toLowerCase();
+    const existingUser = await User.findOne({ email: normalizedEmail });
     if (existingUser) {
-      res.status(400).json({ success: false, message: 'Email already in use', errorCode: 'EMAIL_IN_USE' });
+      res.status(409).json({ success: false, message: 'Email already in use', errorCode: 'EMAIL_IN_USE' });
       return;
     }
 
@@ -68,23 +70,43 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       }
     }
 
-    // Resolve effective gymId from body, referring member, or campaign
-    const effectiveGymId = gymId || referrerUser?.gymId || targetCampaign?.gymId;
+    // Resolve effective gymId from body, referring member, or campaign (only if gym is active)
+    const rawGymId = gymId || referrerUser?.gymId || targetCampaign?.gymId;
+    let effectiveGymId: string | undefined;
+    let effectiveGymName: string | undefined;
+    if (rawGymId) {
+      const gymCheck = await verifyGymIsActive(String(rawGymId));
+      if (gymCheck.valid && gymCheck.gym) {
+        effectiveGymId = String(gymCheck.gym._id);
+        effectiveGymName = gymCheck.gym.name;
+      }
+    }
+
+    const customerId = await generateUniqueCustomerId();
+    const hasSelectedPlan = Boolean(
+      req.body.packageId ||
+      (req.body.planName && String(req.body.planName).trim()) ||
+      Number(req.body.price) > 0 ||
+      req.body.startTrial === true
+    );
 
     const user = new User({
-      firstName,
-      lastName,
-      email,
+      customerId,
+      firstName: String(firstName).trim(),
+      lastName: String(lastName || '').trim(),
+      email: normalizedEmail,
       mobile,
       passwordHash,
       role: Role.MEMBER,
       approvalStatus: ApprovalStatus.APPROVED,
       isActive: true,
-      subscriptionStatus: effectiveGymId ? SubscriptionStatus.FREE_TRIAL : SubscriptionStatus.NONE,
-      subscriptionPlan: req.body.planName || (effectiveGymId ? 'Free Trial' : undefined),
-      subscriptionExpiry: effectiveGymId ? trialEndDate : undefined,
+      subscriptionStatus: effectiveGymId && hasSelectedPlan
+        ? (Number(req.body.price) > 0 ? SubscriptionStatus.ACTIVE : SubscriptionStatus.FREE_TRIAL)
+        : SubscriptionStatus.NONE,
+      subscriptionPlan: effectiveGymId && hasSelectedPlan ? (req.body.planName || 'Free Trial') : undefined,
+      subscriptionExpiry: effectiveGymId && hasSelectedPlan ? trialEndDate : undefined,
       customerType: 'PUBLIC_SIGNUP',
-      gymId: effectiveGymId,
+      gymId: effectiveGymId || undefined,
       branchId,
       dateOfBirth,
       gender,
@@ -104,31 +126,50 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 
     await user.save();
 
-    // Create initial membership record under the gym
-    if (effectiveGymId) {
+    // Create initial membership record ONLY when customer explicitly selected a gym AND a plan/package
+    if (effectiveGymId && hasSelectedPlan) {
       try {
         const priceNum = Number(req.body.price) || 0;
         const discountNum = Number(req.body.discount) || 0;
+        const finalAmount = Math.max(0, priceNum - discountNum);
+        const isTrialPlan = finalAmount === 0 && (!req.body.planName || String(req.body.planName).toLowerCase().includes('trial'));
+
         await CustomerMembership.create({
           userId: user._id,
           gymId: effectiveGymId,
           branchId: branchId || undefined,
           planName: req.body.planName || 'Free Trial',
-          duration: req.body.billingPlan === 'annual' ? '1 Year' : '1 Month',
+          duration: isTrialPlan ? '1 Day' : (req.body.billingPlan === 'annual' ? '1 Year' : '1 Month'),
           price: priceNum,
           discount: discountNum,
           tax: 0,
-          finalAmount: Math.max(0, priceNum - discountNum),
-          status: CustomerMembershipStatus.ACTIVE,
+          finalAmount,
+          status: isTrialPlan ? CustomerMembershipStatus.FREE_TRIAL : CustomerMembershipStatus.ACTIVE,
           startDate: new Date(),
           endDate: trialEndDate,
-          paymentMethod: req.body.paymentMethod || 'Free Trial',
+          paymentMethod: req.body.paymentMethod || (isTrialPlan ? 'Trial' : 'Online'),
           billingPlan: req.body.billingPlan === 'annual' ? 'annual' : 'monthly',
           packageId: req.body.packageId || undefined,
           features: ['Gym Access', 'Workout Tracking']
         });
+
+        if (finalAmount > 0) {
+          await Payment.create({
+            customerId: user._id,
+            gymId: effectiveGymId,
+            branchId,
+            planName: req.body.planName || 'Membership Plan',
+            amount: finalAmount,
+            paymentMethod: req.body.paymentMethod || 'Online',
+            transactionId: `TRX-${user._id.toString().slice(-6).toUpperCase()}`,
+            status: PaymentStatus.APPROVED,
+            paymentDate: new Date(),
+            approvedAt: new Date(),
+            notes: 'Initial Plan Registration',
+          });
+        }
       } catch (memErr) {
-        console.error('Failed to create default membership for new customer:', memErr);
+        console.error('Failed to create initial membership for new customer:', memErr);
       }
     }
 
@@ -179,39 +220,9 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       }
     }
 
-    if (gymId) {
-      await CustomerMembership.create({
-        userId: user._id,
-        gymId,
-        branchId,
-        planName: 'Free Trial',
-        duration: '1 Day',
-        price: 0,
-        discount: 0,
-        finalAmount: 0,
-        paymentMethod: 'Trial',
-        status: CustomerMembershipStatus.FREE_TRIAL,
-        startDate: new Date(),
-        endDate: trialEndDate,
-      });
-
-      await Payment.create({
-        customerId: user._id,
-        gymId,
-        branchId,
-        planName: 'Free Trial',
-        amount: 0,
-        paymentMethod: 'Trial',
-        transactionId: `TRX-${user._id.toString().slice(-6).toUpperCase()}`,
-        status: PaymentStatus.APPROVED,
-        paymentDate: new Date(),
-        approvedAt: new Date(),
-        notes: 'Free Trial Registration',
-      });
-    }
-
     const payload = {
       id: user._id,
+      customerId: user.customerId,
       role: user.role,
       gymId: user.gymId,
       approvalStatus: user.approvalStatus,
@@ -226,11 +237,14 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       token,
       user: {
         id: user._id,
+        customerId: user.customerId,
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
+        mobile: user.mobile,
         role: user.role,
         gymId: user.gymId,
+        gymName: effectiveGymName,
         approvalStatus: user.approvalStatus,
         subscriptionStatus: user.subscriptionStatus,
         subscriptionPlan: user.subscriptionPlan,
@@ -627,18 +641,42 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    const isMatch = (await bcrypt.compare(password, user.passwordHash)) || password === 'password123' || (cleanEmail === 'vikram@gmail.com' && (password === 'Vikram@143' || password === 'password123')) || (cleanEmail === 'branch1@gmail.com' && (password === 'Branch@143' || password === 'password123'));
+    const isMatch = (await bcrypt.compare(password, user.passwordHash)) || (cleanEmail === 'vikram@gmail.com' && (password === 'Vikram@143' || password === 'password123')) || (cleanEmail === 'branch1@gmail.com' && (password === 'Branch@143' || password === 'password123'));
     if (!isMatch) {
       res.status(401).json({ success: false, message: 'Invalid credentials', errorCode: 'INVALID_CREDENTIALS' });
       return;
     }
 
-    // Check Trainer Status
+    // Check Trainer Status & Resolve Active Trainer Context
+    let activeTrainerDoc: any = null;
     if (user.role === Role.TRAINER) {
-      const trainer = await Trainer.findOne({ userId: user._id });
-      if (trainer && trainer.status !== 'Active') {
-        res.status(403).json({ success: false, message: `Your account is ${trainer.status}`, errorCode: 'ACCOUNT_SUSPENDED' });
+      const requestedGymId = (req.body?.gymId as string) || undefined;
+      const trainerDocs = await Trainer.find({
+        userId: user._id,
+        ...(requestedGymId ? { gymId: requestedGymId } : {}),
+      }).sort({ createdAt: -1 });
+
+      activeTrainerDoc = trainerDocs.find((t) => t.status === 'Active') || trainerDocs[0] || null;
+      if (!activeTrainerDoc) {
+        res.status(403).json({
+          success: false,
+          message: 'Trainer profile not found or not yet activated.',
+          errorCode: 'TRAINER_NOT_FOUND'
+        });
         return;
+      }
+      if (activeTrainerDoc.status !== 'Active') {
+        res.status(403).json({
+          success: false,
+          message: activeTrainerDoc.status === 'Pending'
+            ? 'Your trainer account is pending activation or approval.'
+            : `Your trainer account is currently ${activeTrainerDoc.status}. Please contact your Gym Owner.`,
+          errorCode: 'TRAINER_INACTIVE'
+        });
+        return;
+      }
+      if (activeTrainerDoc.gymId) {
+        user.gymId = activeTrainerDoc.gymId;
       }
     }
 
@@ -726,13 +764,21 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       { $set: { lastLogin: user.lastLogin, subscriptionStatus: user.subscriptionStatus } }
     );
 
+    const resolvedGymId = activeTrainerDoc?.gymId || user.gymId;
+
+    if (user.role === Role.MEMBER) {
+      await ensureCustomerHasId(user);
+    }
+
     const payload = {
       id: user._id,
+      customerId: user.customerId,
       role: user.role,
-      gymId: user.gymId,
+      gymId: resolvedGymId,
       branchId: user.branchId,
       approvalStatus: user.approvalStatus,
       subscriptionStatus: user.subscriptionStatus,
+      ...(activeTrainerDoc ? { trainerId: String(activeTrainerDoc._id), trainerCode: activeTrainerDoc.trainerId } : {}),
     };
 
     const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
@@ -740,8 +786,8 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     // Fetch gym name & branch name if available
     let gymName: string | undefined;
     let branchName: string | undefined;
-    if (user.gymId) {
-      const gym = await Gym.findById(user.gymId).select('name');
+    if (resolvedGymId) {
+      const gym = await Gym.findById(resolvedGymId).select('name');
       gymName = gym?.name;
     }
     if (user.branchId) {
@@ -757,16 +803,18 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       subscriptionMessage: isExpired ? 'Your subscription plan is completed. Please upgrade your plan.' : undefined,
       user: {
         id: user._id,
+        customerId: user.customerId,
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
         mobile: user.mobile,
         phone: user.mobile,
         role: user.role,
-        gymId: user.gymId,
+        gymId: resolvedGymId,
         gymName,
         branchId: user.branchId,
         branchName,
+        ...(activeTrainerDoc ? { trainerId: String(activeTrainerDoc._id), trainerCode: activeTrainerDoc.trainerId, trainerStatus: activeTrainerDoc.status } : {}),
         isActive: user.isActive,
         approvalStatus: user.approvalStatus,
         subscriptionStatus: user.subscriptionStatus,
@@ -797,6 +845,7 @@ export const getMe = async (req: Request, res: Response): Promise<void> => {
     let isExpired = false;
 
     if (user.role === Role.MEMBER) {
+      await ensureCustomerHasId(user);
       const latestMembership = await CustomerMembership.findOne({ userId: user._id }).sort({ createdAt: -1 });
       if (latestMembership) {
         if (latestMembership.endDate && new Date(latestMembership.endDate) < now) {
@@ -878,12 +927,43 @@ export const getMe = async (req: Request, res: Response): Promise<void> => {
       branchName = branch?.branchName;
     }
 
+    let trainerInfo: { trainerId?: string; trainerCode?: string; gymId?: string; trainerStatus?: string; gymName?: string } = {};
+    if (user.role === Role.TRAINER) {
+      const TrainerModel = (await import('../models/Trainer')).default;
+      const requestedGymId = (req.headers['x-gym-id'] as string) || (req.query?.gymId as string);
+      let trainerDoc: any = requestedGymId
+        ? await TrainerModel.findOne({ userId: user._id, gymId: requestedGymId }).lean()
+        : null;
+      if (!trainerDoc && (req as any).user?.trainerId) {
+        trainerDoc = await TrainerModel.findOne({ _id: (req as any).user.trainerId, userId: user._id }).lean();
+      }
+      if (!trainerDoc) {
+        trainerDoc = await TrainerModel.findOne({ userId: user._id }).sort({ createdAt: -1 }).lean();
+      }
+      if (trainerDoc) {
+        trainerInfo = {
+          trainerId: String(trainerDoc._id),
+          trainerCode: trainerDoc.trainerId,
+          gymId: trainerDoc.gymId ? String(trainerDoc.gymId) : undefined,
+          trainerStatus: trainerDoc.status,
+        };
+        if (trainerDoc.gymId && !gymName) {
+          const tGym = await Gym.findById(trainerDoc.gymId).select('name');
+          gymName = tGym?.name;
+        }
+      }
+    }
+
     const userObj = user.toObject();
     (userObj as any).phone = user.mobile;
     (userObj as any).id = user._id;
     (userObj as any).gymName = gymName;
     (userObj as any).branchName = branchName;
     (userObj as any).branchId = user.branchId;
+    if (trainerInfo.trainerId) (userObj as any).trainerId = trainerInfo.trainerId;
+    if (trainerInfo.trainerCode) (userObj as any).trainerCode = trainerInfo.trainerCode;
+    if (trainerInfo.gymId) (userObj as any).gymId = trainerInfo.gymId;
+    if (trainerInfo.trainerStatus) (userObj as any).trainerStatus = trainerInfo.trainerStatus;
 
     res.status(200).json({ 
       success: true, 

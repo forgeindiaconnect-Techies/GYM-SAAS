@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 
 export interface AuthUser {
   id: string;
+  customerId?: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -11,6 +12,9 @@ export interface AuthUser {
   gymName?: string;
   branchId?: string;
   branchName?: string;
+  trainerId?: string;
+  trainerCode?: string;
+  trainerStatus?: string;
   approvalStatus: string;
   subscriptionStatus: string;
   subscriptionPlan?: string;

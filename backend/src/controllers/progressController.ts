@@ -78,7 +78,16 @@ export const logProgressMetric = async (req: AuthRequest, res: Response): Promis
 // Get Customer Progress Logs
 export const getCustomerProgressLogs = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const customerId = req.params.customerId || req.user?.id;
+    const requestedCustomerId = req.params.customerId;
+    if (
+      String(req.user?.role || '').toUpperCase() === 'MEMBER' &&
+      requestedCustomerId &&
+      String(requestedCustomerId) !== String(req.user?.id)
+    ) {
+      res.status(403).json({ success: false, message: 'Forbidden: cannot access another customer progress data' });
+      return;
+    }
+    const customerId = requestedCustomerId || req.user?.id;
     const logs = await ProgressLog.find({ customerId }).sort({ loggedDate: -1 });
     res.status(200).json({ success: true, logs });
   } catch (error: any) {
@@ -89,7 +98,16 @@ export const getCustomerProgressLogs = async (req: AuthRequest, res: Response): 
 // AI Re-analysis trigger
 export const triggerAIReanalysis = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const customerId = req.params.customerId || req.user?.id;
+    const requestedCustomerId = req.params.customerId;
+    if (
+      String(req.user?.role || '').toUpperCase() === 'MEMBER' &&
+      requestedCustomerId &&
+      String(requestedCustomerId) !== String(req.user?.id)
+    ) {
+      res.status(403).json({ success: false, message: 'Forbidden: cannot trigger re-analysis for another customer' });
+      return;
+    }
+    const customerId = requestedCustomerId || req.user?.id;
     const gymId = req.user?.gymId;
 
     // Get initial recommendation

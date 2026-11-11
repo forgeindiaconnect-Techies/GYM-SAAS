@@ -248,9 +248,23 @@ export const approveTrainerPlanRequest = async (req: AuthRequest, res: Response)
     const { id } = req.params;
     const { trainerFeedback } = req.body;
 
+    const { resolveTrainerContext, matchesTrainerContext } = await import('../utils/trainerIsolation');
+    const trainerCtx = await resolveTrainerContext(req.user);
+    if (!trainerCtx) {
+      res.status(403).json({ success: false, message: 'Active trainer context required' });
+      return;
+    }
+
     const request = await TrainerPlanRequest.findById(id);
     if (!request) {
       res.status(404).json({ success: false, message: 'Plan request not found' });
+      return;
+    }
+    if (
+      String(request.gymId) !== trainerCtx.gymId ||
+      !matchesTrainerContext(trainerCtx, request.trainerId)
+    ) {
+      res.status(403).json({ success: false, message: 'Unauthorized: plan request belongs to another trainer or gym' });
       return;
     }
 
@@ -396,9 +410,23 @@ export const rejectTrainerPlanRequest = async (req: AuthRequest, res: Response):
     const { id } = req.params;
     const { trainerFeedback } = req.body;
 
+    const { resolveTrainerContext, matchesTrainerContext } = await import('../utils/trainerIsolation');
+    const trainerCtx = await resolveTrainerContext(req.user);
+    if (!trainerCtx) {
+      res.status(403).json({ success: false, message: 'Active trainer context required' });
+      return;
+    }
+
     const request = await TrainerPlanRequest.findById(id);
     if (!request) {
       res.status(404).json({ success: false, message: 'Plan request not found' });
+      return;
+    }
+    if (
+      String(request.gymId) !== trainerCtx.gymId ||
+      !matchesTrainerContext(trainerCtx, request.trainerId)
+    ) {
+      res.status(403).json({ success: false, message: 'Unauthorized: plan request belongs to another trainer or gym' });
       return;
     }
 
@@ -647,23 +675,28 @@ export const approveAndAssignDirectly = async (req: AuthRequest, res: Response):
 // 8. Get clients/members list for trainers
 export const getTrainerClientsList = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const gymId = req.user?.gymId;
-    const query: any = { role: 'MEMBER' };
-    if (gymId) {
-      query.gymId = gymId;
+    const { resolveTrainerContext, getTrainerAssignedCustomerIds } = await import('../utils/trainerIsolation');
+    const trainerCtx = await resolveTrainerContext(req.user);
+    if (!trainerCtx) {
+      res.status(403).json({ success: false, message: 'Active trainer context required' });
+      return;
     }
 
-    let clients = await User.find(query)
+    const assignedIds = await getTrainerAssignedCustomerIds(trainerCtx);
+    if (assignedIds.length === 0) {
+      res.status(200).json({ success: true, clients: [] });
+      return;
+    }
+
+    const clients = await User.find({
+      _id: { $in: assignedIds },
+      role: 'MEMBER',
+      gymId: trainerCtx.gymId,
+      approvalStatus: { $ne: 'DELETED' }
+    } as any)
       .select('firstName lastName email mobile profilePhoto fitnessGoal gymId')
       .sort({ firstName: 1 })
       .lean();
-
-    if (clients.length === 0) {
-      clients = await (User as any).find({ role: 'MEMBER' })
-        .select('firstName lastName email mobile profilePhoto fitnessGoal gymId')
-        .limit(50)
-        .lean();
-    }
 
     res.status(200).json({ success: true, clients });
   } catch (error: any) {
@@ -745,10 +778,7 @@ export const getTrainerEquipments = async (req: AuthRequest, res: Response): Pro
       gymId = trainerDoc?.gymId;
     }
 
-    let gym = gymId ? await Gym.findById(gymId) : null;
-    if (!gym) {
-      gym = await Gym.findOne().sort({ createdAt: -1 });
-    }
+    const gym = gymId ? await Gym.findById(gymId) : null;
 
     if (!gym) {
       res.status(200).json({ success: true, gymName: 'Gym', equipment: [] });
@@ -857,10 +887,7 @@ export const getCustomerEquipments = async (req: AuthRequest, res: Response): Pr
       gymId = g?._id;
     }
 
-    let gym = gymId ? await Gym.findById(gymId) : null;
-    if (!gym) {
-      gym = await Gym.findOne().sort({ createdAt: -1 });
-    }
+    const gym = gymId ? await Gym.findById(gymId) : null;
 
     if (gym && (!gym.equipment || gym.equipment.length === 0)) {
       gym.equipment = DEFAULT_GYM_EQUIPMENTS as any;

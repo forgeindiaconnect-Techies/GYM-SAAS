@@ -30,6 +30,7 @@ export enum SubscriptionStatus {
 }
 
 export interface IUser extends Document {
+  customerId?: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -104,6 +105,7 @@ export interface IUser extends Document {
 
 const userSchema = new Schema<IUser>(
   {
+    customerId: { type: String, unique: true, sparse: true, trim: true, index: true },
     firstName: { type: String, required: true },
     lastName: { type: String, default: '' },
     email: { type: String, required: true, unique: true, lowercase: true },

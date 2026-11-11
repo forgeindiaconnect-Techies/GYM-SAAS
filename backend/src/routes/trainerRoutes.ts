@@ -14,7 +14,9 @@ import {
   getMyGymTrainers,
   updateTrainer,
   getOnlineTrainers,
-  toggleTrainerAvailability
+  toggleTrainerAvailability,
+  getTrainerDashboardSummary,
+  getMyAssignedClients
 } from '../controllers/trainerController';
 import { authenticate } from '../middlewares/auth';
 
@@ -25,7 +27,9 @@ router.get('/invitation/:token', verifyInvitation);
 router.post('/invitation/:token/accept', acceptInvitation);
 router.post('/profile', completeProfile); // Completes profile, sets to pending
 
-// Trainer self-profile routes
+// Trainer self-profile & isolated dashboard routes
+router.get('/dashboard-summary', authenticate, getTrainerDashboardSummary);
+router.get('/my-clients', authenticate, getMyAssignedClients);
 router.get('/my-profile', authenticate, getMyProfile);
 router.patch('/my-profile', authenticate, updateMyProfile);
 router.patch('/availability', authenticate, toggleTrainerAvailability);

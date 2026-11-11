@@ -459,12 +459,13 @@ export const getMyTrainerFee = async (req: AuthRequest, res: Response) => {
 
 export const getMyPendingPayments = async (req: AuthRequest, res: Response) => {
   try {
-    const { id: userId } = req.user!;
-    const trainer = await Trainer.findOne({ userId });
-    if (!trainer) return res.status(404).json({ success: false, message: 'Trainer profile not found' });
+    const { resolveTrainerContext } = await import('../utils/trainerIsolation');
+    const ctx = await resolveTrainerContext(req.user);
+    if (!ctx) return res.status(403).json({ success: false, message: 'Active trainer context required' });
+    const trainer = ctx.trainer;
 
-    // Fetch active fees for this trainer to represent 'pending' future cycles
-    const activeFees = await TrainerFee.find({ trainerId: trainer._id, status: { $in: ['Active', 'Pending', 'Rejected'] } })
+    // Fetch active fees strictly for this trainer in this gym
+    const activeFees = await TrainerFee.find({ trainerId: trainer._id, gymId: ctx.gymId, status: { $in: ['Active', 'Pending', 'Rejected'] } })
       .populate('gymId', 'name')
       .populate('branchId', 'name');
 
@@ -514,14 +515,14 @@ export const getMyPendingPayments = async (req: AuthRequest, res: Response) => {
 
 export const getMyEarnings = async (req: AuthRequest, res: Response) => {
   try {
-    const { id: userId } = req.user!;
-    
-    const trainer = await Trainer.findOne({ userId });
-    if (!trainer) {
-      return res.status(404).json({ success: false, message: 'Trainer profile not found' });
+    const { resolveTrainerContext } = await import('../utils/trainerIsolation');
+    const ctx = await resolveTrainerContext(req.user);
+    if (!ctx) {
+      return res.status(403).json({ success: false, message: 'Active trainer context required' });
     }
+    const trainer = ctx.trainer;
 
-    const payments = await TrainerPayment.find({ trainerId: trainer._id, paymentStatus: 'Paid' });
+    const payments = await TrainerPayment.find({ trainerId: trainer._id, gymId: ctx.gymId, paymentStatus: 'Paid' });
     const totalEarnings = payments.reduce((sum, p) => sum + p.amount, 0);
 
     const withdrawals = await TrainerWithdrawal.find({ trainerId: trainer._id });
@@ -580,14 +581,13 @@ export const getMyEarnings = async (req: AuthRequest, res: Response) => {
 
 export const getMyPaymentHistory = async (req: AuthRequest, res: Response) => {
   try {
-    const { id: userId } = req.user!;
-    
-    const trainer = await Trainer.findOne({ userId });
-    if (!trainer) {
-      return res.status(404).json({ success: false, message: 'Trainer profile not found' });
+    const { resolveTrainerContext } = await import('../utils/trainerIsolation');
+    const ctx = await resolveTrainerContext(req.user);
+    if (!ctx) {
+      return res.status(403).json({ success: false, message: 'Active trainer context required' });
     }
 
-    const payments = await TrainerPayment.find({ trainerId: trainer._id })
+    const payments = await TrainerPayment.find({ trainerId: ctx.trainer._id, gymId: ctx.gymId })
       .populate('trainerFeeId', 'trainingType feeAmount billingCycle commissionType commissionValue netAmount')
       .populate('gymId', 'name')
       .sort({ paymentDate: -1, createdAt: -1 });
@@ -601,14 +601,13 @@ export const getMyPaymentHistory = async (req: AuthRequest, res: Response) => {
 
 export const getMyWithdrawalHistory = async (req: AuthRequest, res: Response) => {
   try {
-    const { id: userId } = req.user!;
-    
-    const trainer = await Trainer.findOne({ userId });
-    if (!trainer) {
-      return res.status(404).json({ success: false, message: 'Trainer profile not found' });
+    const { resolveTrainerContext } = await import('../utils/trainerIsolation');
+    const ctx = await resolveTrainerContext(req.user);
+    if (!ctx) {
+      return res.status(403).json({ success: false, message: 'Active trainer context required' });
     }
 
-    const withdrawals = await TrainerWithdrawal.find({ trainerId: trainer._id })
+    const withdrawals = await TrainerWithdrawal.find({ trainerId: ctx.trainer._id, gymId: ctx.gymId })
       .sort({ requestedAt: -1 });
     
     res.status(200).json({ success: true, withdrawals });

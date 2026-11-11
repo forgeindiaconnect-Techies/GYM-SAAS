@@ -75,50 +75,54 @@ export const getContacts = async (req: AuthRequest, res: Response): Promise<void
     });
 
     // 2. Gather role-specific contacts
+    let activeTrainerCtx: any = null;
     if (currentUser.role === 'TRAINER') {
-      // Find customers who booked sessions with this trainer
-      const sessions = await TrainerSession.find({ trainerId: currentUserId }).select('customerId');
-      sessions.forEach((s) => {
-        if (s.customerId) contactIdsSet.add(s.customerId.toString());
-      });
-
-      // Find customers assigned to this trainer
-      const assignedCustomers = await User.find({ assignedTrainer: currentUserId }).select('_id');
-      assignedCustomers.forEach((c) => contactIdsSet.add(c._id.toString()));
-
-      // If set is still empty, include members in the same gym
-      if (contactIdsSet.size === 0 && currentUser.gymId) {
-        const gymMembers = await User.find({
-          gymId: currentUser.gymId,
-          role: 'MEMBER',
-          _id: { $ne: currentUserId }
-        } as any).limit(20).select('_id');
-        gymMembers.forEach((m) => contactIdsSet.add(m._id.toString()));
+      const { resolveTrainerContext, getTrainerAssignedCustomerIds } = await import('../utils/trainerIsolation');
+      activeTrainerCtx = await resolveTrainerContext(req.user);
+      if (!activeTrainerCtx) {
+        res.status(403).json({ success: false, message: 'Active trainer context required' });
+        return;
       }
+      const assignedIds = await getTrainerAssignedCustomerIds(activeTrainerCtx);
+      assignedIds.forEach((id) => contactIdsSet.add(id));
     } else {
       // Customer / Member side:
-      // Find assigned trainer
+      const Trainer = (await import('../models/Trainer')).default;
       if (currentUser.assignedTrainer) {
-        contactIdsSet.add(currentUser.assignedTrainer.toString());
+        const assignedTrainerDoc: any = await Trainer.findById(currentUser.assignedTrainer).select('userId').lean();
+        contactIdsSet.add(String(assignedTrainerDoc?.userId || currentUser.assignedTrainer));
       }
 
       // Find trainers from booked sessions
-      const sessions = await TrainerSession.find({ customerId: currentUserId }).select('trainerId');
-      sessions.forEach((s) => {
-        if (s.trainerId) contactIdsSet.add(s.trainerId.toString());
-      });
+      const sessions = await TrainerSession.find({ customerId: currentUserId }).select('trainerId').lean();
+      for (const s of sessions) {
+        if (s.trainerId) {
+          const tDoc: any = await Trainer.findById(s.trainerId).select('userId').lean();
+          contactIdsSet.add(String(tDoc?.userId || s.trainerId));
+        }
+      }
 
-      // Include all trainers in current gym
-      const gymTrainers = await User.find({
-        role: 'TRAINER',
-        _id: { $ne: currentUserId }
-      } as any).limit(20).select('_id');
-      gymTrainers.forEach((t) => contactIdsSet.add(t._id.toString()));
+      // Include trainers in the same gym
+      if (currentUser.gymId) {
+        const gymTrainers = await Trainer.find({ gymId: currentUser.gymId, status: 'Active' }).select('userId').lean();
+        gymTrainers.forEach((t: any) => {
+          if (t.userId && String(t.userId) !== currentUserId) {
+            contactIdsSet.add(String(t.userId));
+          }
+        });
+      }
     }
 
-    const contactIds = Array.from(contactIdsSet);
-    const users = await User.find({ _id: { $in: contactIds } })
-      .select('firstName lastName email profilePhoto role specialization isActive');
+    const contactIds = Array.from(contactIdsSet).filter((id) => mongoose.Types.ObjectId.isValid(id) && id !== currentUserId);
+    const userFilter: any = { _id: { $in: contactIds } };
+    if (activeTrainerCtx) {
+      userFilter.gymId = activeTrainerCtx.gymId;
+    } else if (currentUser.gymId) {
+      userFilter.gymId = currentUser.gymId;
+    }
+    const users = contactIds.length > 0
+      ? await User.find(userFilter).select('firstName lastName email profilePhoto role specialization isActive')
+      : [];
 
     // Build contacts payload with last message info & unread count
     const contactsPayload = await Promise.all(
@@ -203,32 +207,47 @@ export const getHistory = async (req: AuthRequest, res: Response): Promise<void>
       return;
     }
 
-    let resolvedOtherId = otherUserId;
     if (!mongoose.Types.ObjectId.isValid(otherUserId)) {
-      const cleaned = String(otherUserId).replace(/^tr_|^cust[-_]/, '');
-      const matchedUser = await User.findOne({
-        $or: [
-          { firstName: new RegExp(cleaned, 'i') },
-          { email: new RegExp(cleaned, 'i') },
-          { role: 'TRAINER' }
-        ]
-      } as any);
-      if (matchedUser) {
-        resolvedOtherId = matchedUser._id.toString();
-      } else {
-        // If trainer not found in DB, return empty history gracefully with 200 OK (never 500 CastError!)
-        res.status(200).json({ success: true, messages: [] });
-        return;
-      }
+      res.status(400).json({ success: false, message: 'Invalid user ID' });
+      return;
     }
 
-    if (!mongoose.Types.ObjectId.isValid(resolvedOtherId) || !mongoose.Types.ObjectId.isValid(currentUserId)) {
-      res.status(200).json({ success: true, messages: [] });
+    const resolvedOtherId = otherUserId;
+    if (!mongoose.Types.ObjectId.isValid(currentUserId)) {
+      res.status(401).json({ success: false, message: 'Unauthorized' });
       return;
     }
 
     const otherObjId = new mongoose.Types.ObjectId(resolvedOtherId);
     const currentObjId = new mongoose.Types.ObjectId(currentUserId);
+
+    // Enforce trainer-wise and gym-wise isolation on message history
+    if (req.user?.role === 'TRAINER') {
+      const { resolveTrainerContext, isCustomerAssignedToTrainer } = await import('../utils/trainerIsolation');
+      const trainerCtx = await resolveTrainerContext(req.user);
+      if (!trainerCtx) {
+        res.status(403).json({ success: false, message: 'Active trainer context required' });
+        return;
+      }
+      const otherUser: any = await User.findById(otherObjId).select('role gymId').lean();
+      if (!otherUser || (otherUser.gymId && String(otherUser.gymId) !== trainerCtx.gymId)) {
+        res.status(403).json({ success: false, message: 'Unauthorized: cross-gym access denied' });
+        return;
+      }
+      if (otherUser.role === 'MEMBER') {
+        const assigned = await isCustomerAssignedToTrainer(trainerCtx, resolvedOtherId);
+        const hasPriorMsg = await DirectMessage.exists({
+          $or: [
+            { senderId: currentObjId, receiverId: otherObjId },
+            { senderId: otherObjId, receiverId: currentObjId }
+          ]
+        });
+        if (!assigned && !hasPriorMsg) {
+          res.status(403).json({ success: false, message: 'Unauthorized: customer is not assigned to you' });
+          return;
+        }
+      }
+    }
 
     // Fetch messages between these two users
     const messages = await DirectMessage.find({
@@ -344,31 +363,69 @@ export const sendMessage = async (req: AuthRequest, res: Response): Promise<void
     let receiver: any = null;
     if (targetReceiverId && mongoose.Types.ObjectId.isValid(targetReceiverId)) {
       receiver = await User.findById(targetReceiverId);
+      if (!receiver) {
+        // Support passing Trainer._id when customer messages a trainer
+        const Trainer = (await import('../models/Trainer')).default;
+        const trainerDoc: any = await Trainer.findById(targetReceiverId).select('userId gymId').lean();
+        if (trainerDoc?.userId) {
+          receiver = await User.findById(trainerDoc.userId);
+        }
+      }
     }
 
-    // Fallback: If receiver is not found or id is mock string (e.g. 'tr_naveen' or 'cust-1')
-    if (!receiver && targetReceiverId) {
-      const cleaned = String(targetReceiverId).replace(/^tr_|^cust[-_]/, '');
-      receiver = await User.findOne({
-        $or: [
-          { firstName: new RegExp(cleaned, 'i') },
-          { email: new RegExp(cleaned, 'i') },
-          { role: 'TRAINER' }
-        ]
-      } as any);
-    }
-
-    if (!receiver && sender?.assignedTrainer) {
-      receiver = await User.findById(sender.assignedTrainer);
-    }
-
-    if (!receiver) {
-      // Find default active trainer
-      receiver = await User.findOne({ role: 'TRAINER' } as any);
+    if (!receiver && sender?.role === 'MEMBER' && sender?.assignedTrainer) {
+      const Trainer = (await import('../models/Trainer')).default;
+      const trainerDoc: any = await Trainer.findById(sender.assignedTrainer).select('userId').lean();
+      receiver = await User.findById(trainerDoc?.userId || sender.assignedTrainer);
     }
 
     if (!receiver) {
       res.status(404).json({ success: false, message: 'Recipient user not found' });
+      return;
+    }
+
+    // Strict gym & trainer isolation on sendMessage
+    if (sender?.role === 'TRAINER') {
+      const { resolveTrainerContext, isCustomerAssignedToTrainer } = await import('../utils/trainerIsolation');
+      const trainerCtx = await resolveTrainerContext(req.user);
+      if (!trainerCtx) {
+        res.status(403).json({ success: false, message: 'Active trainer context required' });
+        return;
+      }
+      if (receiver.gymId && String(receiver.gymId) !== trainerCtx.gymId) {
+        res.status(403).json({ success: false, message: 'Unauthorized: cannot message users outside your gym' });
+        return;
+      }
+      if (receiver.role === 'MEMBER') {
+        const assigned = await isCustomerAssignedToTrainer(trainerCtx, String(receiver._id));
+        if (!assigned) {
+          res.status(403).json({ success: false, message: 'Unauthorized: customer is not assigned to you' });
+          return;
+        }
+      }
+    } else if (sender?.role === 'MEMBER') {
+      if (!sender.gymId) {
+        res.status(403).json({ success: false, message: 'Please select a gym first to message trainers.' });
+        return;
+      }
+      if (!receiver.gymId || String(sender.gymId) !== String(receiver.gymId)) {
+        res.status(403).json({ success: false, message: 'Unauthorized: cannot message users outside your selected gym' });
+        return;
+      }
+      if (receiver.role === 'MEMBER') {
+        res.status(403).json({ success: false, message: 'Unauthorized: customers can only message gym trainers or staff' });
+        return;
+      }
+      if (receiver.role === 'TRAINER') {
+        const { verifyTrainerBelongsToCustomerGym } = await import('../utils/customerIsolation');
+        const check = await verifyTrainerBelongsToCustomerGym(String(receiver._id), sender.gymId);
+        if (!check.valid) {
+          res.status(403).json({ success: false, message: check.message || 'Unauthorized: trainer not active in your selected gym' });
+          return;
+        }
+      }
+    } else if (sender?.gymId && receiver.gymId && String(sender.gymId) !== String(receiver.gymId)) {
+      res.status(403).json({ success: false, message: 'Unauthorized: cannot message users outside your gym' });
       return;
     }
 

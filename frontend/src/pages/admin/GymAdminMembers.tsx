@@ -69,6 +69,7 @@ const getPlanBadge = (planName: string, isSmall = false) => {
 const GymAdminMembers = () => {
   const { user } = useAuth();
   const [members, setMembers] = useState<any[]>([]);
+  const [trainers, setTrainers] = useState<any[]>([]);
   
   useEffect(() => {
     fetchMembers();
@@ -78,10 +79,14 @@ const GymAdminMembers = () => {
     try {
       const branchParam = user?.branchId ? `?branchId=${user.branchId}` : '';
       const userBranchParam = user?.branchId ? `&branchId=${user.branchId}` : '';
-      const [usersRes, membershipsRes] = await Promise.all([
+      const [usersRes, membershipsRes, trainersRes] = await Promise.all([
         api.get(`/users?role=MEMBER${userBranchParam}`),
         api.get(`/memberships/gym${branchParam}`).catch(() => ({ data: { memberships: [] } })),
+        api.get('/trainers').catch(() => ({ data: { trainers: [] } })),
       ]);
+      if (trainersRes.data?.trainers) {
+        setTrainers(trainersRes.data.trainers.filter((t: any) => t.status === 'Active' || t.status === 'Pending'));
+      }
       if (usersRes.data.success) {
         // Build maps: latest membership and full membership history per user
         const membershipMap: Record<string, any> = {};
@@ -149,6 +154,8 @@ const GymAdminMembers = () => {
             gender: u.gender,
             dob: u.dateOfBirth,
             fitnessGoal: u.fitnessGoal,
+            assignedTrainer: u.assignedTrainer?._id || u.assignedTrainer || '',
+            trainer: u.assignedTrainer?.name || '',
             emergencyName: u.emergencyContact?.name,
             emergencyPhone: u.emergencyContact?.mobile,
             emergencyRelation: u.emergencyContact?.relationship,
@@ -297,12 +304,38 @@ const GymAdminMembers = () => {
     setEditForm({ ...member });
   };
 
-  const handleEditSave = (e: React.FormEvent) => {
+  const handleEditSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    updateItem('members', editForm.id, editForm);
-    setMembers(members.map(m => m.id === editForm.id ? { ...editForm } : m));
-    setEditMember(null);
-    setEditForm(null);
+    try {
+      const nameParts = (editForm.name || '').trim().split(/\s+/);
+      const firstName = nameParts[0] || editForm.originalUser?.firstName || 'Member';
+      const lastName = nameParts.slice(1).join(' ') || editForm.originalUser?.lastName || '-';
+      const res = await api.put(`/users/${editForm.id}`, {
+        firstName,
+        lastName,
+        email: editForm.email,
+        mobile: editForm.phone,
+        gender: editForm.gender,
+        fitnessGoal: editForm.fitnessGoal,
+        assignedTrainer: editForm.assignedTrainer || null,
+      });
+      if (res.data?.success) {
+        const selectedTrainer = trainers.find((t: any) => t._id === editForm.assignedTrainer);
+        const trainerName = res.data.user?.assignedTrainer?.name || selectedTrainer?.name || '';
+        const updatedMember = {
+          ...editForm,
+          trainer: trainerName,
+          assignedTrainer: editForm.assignedTrainer || '',
+        };
+        updateItem('members', editForm.id, updatedMember);
+        setMembers(members.map(m => m.id === editForm.id ? updatedMember : m));
+        setEditMember(null);
+        setEditForm(null);
+      }
+    } catch (err: any) {
+      console.error('Failed to update member:', err);
+      alert(err.response?.data?.message || 'Failed to save member changes.');
+    }
   };
 
   const handleAddNew = (data: any) => {
@@ -1017,7 +1050,21 @@ const GymAdminMembers = () => {
                     </div>
                     <div>
                       <label className="block text-xs font-bold text-[#64748B] mb-1">Assigned Trainer</label>
-                      <input value={editForm.trainer || ''} onChange={e => setEditForm({...editForm, trainer: e.target.value})} className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-2.5 outline-none focus:border-[#FDBA74] text-sm" placeholder="Trainer Name" />
+                      <select
+                        value={editForm.assignedTrainer || ''}
+                        onChange={e => {
+                          const selected = trainers.find((t: any) => t._id === e.target.value);
+                          setEditForm({ ...editForm, assignedTrainer: e.target.value, trainer: selected?.name || '' });
+                        }}
+                        className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-2.5 outline-none focus:border-[#FDBA74] text-sm text-[#111827]"
+                      >
+                        <option value="">Unassigned</option>
+                        {trainers.map((t: any) => (
+                          <option key={t._id} value={t._id}>
+                            {t.name}{t.trainerId ? ` (${t.trainerId})` : ''}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                   </div>
                 </div>

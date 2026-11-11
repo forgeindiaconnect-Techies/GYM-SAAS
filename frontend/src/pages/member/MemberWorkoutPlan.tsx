@@ -225,6 +225,28 @@ const MemberWorkoutPlan: React.FC = () => {
           <div className="w-10 h-10 border-4 border-[#FDBA74] border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
           <p className="font-semibold text-sm">Loading your official fitness plan...</p>
         </div>
+      ) : (!activePlan && !aiRec) ? (
+        <div className="bg-white border border-[#E2E8F0] rounded-3xl p-10 text-center space-y-3 shadow-xs">
+          <Sparkles size={30} className="mx-auto text-[#EA580C]" />
+          <h2 className="text-xl font-black text-[#111827]">No workout plan generated yet.</h2>
+          <p className="text-sm text-[#64748B] max-w-md mx-auto">
+            My Routine: No routine available. Complete your AI Fitness Analysis or book a trainer to get a personalized workout schedule.
+          </p>
+          <div className="pt-2 flex flex-wrap justify-center gap-3">
+            <Link
+              to="/member/ai-assistant"
+              className="px-5 py-2.5 rounded-xl bg-[#EA580C] hover:bg-[#C2410C] text-white font-bold text-xs shadow-sm"
+            >
+              Start AI Fitness Analysis
+            </Link>
+            <Link
+              to="/member/find-trainers"
+              className="px-5 py-2.5 rounded-xl bg-[#F8FAFC] hover:bg-[#FFF7ED] border border-[#E2E8F0] text-[#111827] font-bold text-xs"
+            >
+              Find a Trainer
+            </Link>
+          </div>
+        </div>
       ) : (
         <div className="space-y-6">
           {/* Informative Status Banner for Under Review */}

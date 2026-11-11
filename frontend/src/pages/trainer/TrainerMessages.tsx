@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { 
   Send, Search, Loader2, MessageSquare, RefreshCw, 
@@ -399,7 +399,7 @@ const TrainerMessages = () => {
               </div>
             ) : filteredContacts.length === 0 ? (
               <div className="p-8 text-center text-sm text-[#64748B]">
-                No clients found
+                No messages yet.
               </div>
             ) : (
               filteredContacts.map((contact) => {

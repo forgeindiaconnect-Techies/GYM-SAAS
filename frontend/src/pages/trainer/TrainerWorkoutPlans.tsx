@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Plus, Search, Dumbbell, X, Edit, Trash2,
   Calendar, ArrowUp, ArrowDown, Send, Save,
@@ -561,7 +561,7 @@ const TrainerWorkoutPlans: React.FC = () => {
       ) : filteredPlans.length === 0 ? (
         <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-12 text-center">
           <Dumbbell size={48} className="mx-auto text-[#64748B] mb-3" />
-          <h3 className="text-base font-bold text-[#111827]">No workout plans found</h3>
+          <h3 className="text-base font-bold text-[#111827]">No workout plans assigned.</h3>
           <p className="text-xs text-[#64748B] mt-1 mb-4">
             Create a personalized workout plan for your clients or select exercises from the library.
           </p>
@@ -723,7 +723,7 @@ const TrainerWorkoutPlans: React.FC = () => {
                     </select>
                   ) : (
                     <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-800">
-                      No clients found in current gym. You can still test with sample client ID.
+                      No clients assigned to you in this gym yet. Ask the Gym Owner to assign members to you first.
                     </div>
                   )}
                 </div>

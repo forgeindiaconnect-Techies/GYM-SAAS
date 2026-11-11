@@ -5,7 +5,9 @@ import Gym, { GymStatus } from '../models/Gym';
 import User, { Role, ApprovalStatus } from '../models/User';
 import Trainer from '../models/Trainer';
 import TrainerSession from '../models/TrainerSession';
+import GymPackage from '../models/GymPackage';
 import { AuthRequest } from '../middlewares/auth';
+import { ensureCustomerHasId, verifyGymIsActive } from '../utils/customerIsolation';
 
 export const createGym = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -139,21 +141,52 @@ export const getGymById = async (req: Request, res: Response): Promise<void> => 
 export const getMyGym = async (req: Request, res: Response): Promise<void> => {
   try {
     const userId = (req as any).user?._id || (req as any).user?.id;
-    const userGymId = (req as any).user?.gymId;
+    const userRole = String((req as any).user?.role || '').toUpperCase();
+    const userDoc = userId ? await User.findById(userId) : null;
+    let targetGymId = userDoc?.gymId || (req as any).user?.gymId;
 
-    let targetGymId = userGymId;
-    if (!targetGymId && userId) {
-      const userDoc = await User.findById(userId);
-      if (userDoc?.gymId) {
-        targetGymId = userDoc.gymId;
+    // For a customer/member, NEVER auto-assign or leak an arbitrary gym when gymId is unset
+    if (userRole === 'MEMBER') {
+      if (!targetGymId) {
+        res.status(200).json({
+          success: true,
+          gym: null,
+          packages: [],
+          trainers: [],
+          selected: false,
+          message: 'No gym selected yet'
+        });
+        return;
       }
-    }
-    if (!targetGymId && userId) {
-      const CustomerMembership = require('../models/CustomerMembership').default;
-      const membership = await CustomerMembership.findOne({ customerId: userId }).sort({ createdAt: -1 });
-      if (membership?.gymId) {
-        targetGymId = membership.gymId;
+      const gym = await Gym.findById(targetGymId).populate('ownerId', 'firstName lastName email mobile');
+      if (!gym) {
+        res.status(200).json({
+          success: true,
+          gym: null,
+          packages: [],
+          trainers: [],
+          selected: false,
+          message: 'Selected gym not found'
+        });
+        return;
       }
+
+      const [packages, trainers] = await Promise.all([
+        GymPackage.find({ gymId: gym._id, status: { $ne: 'Inactive' } }).sort({ monthlyPrice: 1, price: 1 }).lean(),
+        Trainer.find({ gymId: gym._id, status: 'Active' })
+          .select('trainerId name email phone specialization experience trainingMode expertise bio availability availabilityStatus profilePhoto averageRating totalReviews')
+          .sort({ createdAt: -1 })
+          .lean()
+      ]);
+
+      res.status(200).json({
+        success: true,
+        gym,
+        packages,
+        trainers,
+        selected: true
+      });
+      return;
     }
 
     let gym;
@@ -162,9 +195,6 @@ export const getMyGym = async (req: Request, res: Response): Promise<void> => {
     }
     if (!gym && userId) {
       gym = await Gym.findOne({ ownerId: userId }).populate('ownerId', 'firstName lastName email mobile');
-    }
-    if (!gym) {
-      gym = await Gym.findOne({ status: GymStatus.ACTIVE } as any).populate('ownerId', 'firstName lastName email mobile');
     }
 
     if (!gym) {
@@ -300,8 +330,8 @@ export const deleteGym = async (req: Request, res: Response): Promise<void> => {
 export const getPublicGyms = async (req: Request, res: Response): Promise<void> => {
   try {
     const { city, pinCode, search, gymType } = req.query;
-    // Show gyms that are ACTIVE, APPROVED, Active, or PENDING (for testing)
-    let filter: any = { status: { $in: ['ACTIVE', 'APPROVED', 'Active', 'PENDING', 'Pending'] } };
+    // Show strictly ACTIVE / APPROVED gyms
+    let filter: any = { status: { $in: ['ACTIVE', 'APPROVED', 'Active'] } };
     
     if (city) filter['location.city'] = { $regex: new RegExp(city as string, 'i') };
     if (pinCode) filter['location.pinCode'] = pinCode;
@@ -310,6 +340,8 @@ export const getPublicGyms = async (req: Request, res: Response): Promise<void> 
       const searchRegex = new RegExp(search as string, 'i');
       filter.$or = [
         { name: searchRegex },
+        { description: searchRegex },
+        { 'location.address': searchRegex },
         { 'location.city': searchRegex },
         { 'location.area': searchRegex },
         { 'location.state': searchRegex },
@@ -318,21 +350,39 @@ export const getPublicGyms = async (req: Request, res: Response): Promise<void> 
       ];
     }
 
-    const gyms = await Gym.find(filter).select('-subscription').sort({ createdAt: -1 }).lean();
+    const gyms = await Gym.find(filter)
+      .select('-subscription')
+      .populate('ownerId', 'firstName lastName email mobile')
+      .sort({ createdAt: -1 })
+      .lean();
     
-    // Fetch branches for these gyms
-    const mongoose = require('mongoose');
     const Branch = mongoose.model('Branch');
     const gymIds = gyms.map(g => g._id);
-    const branches = await Branch.find({ gymId: { $in: gymIds }, status: 'ACTIVE' }).lean();
-    
-    // Attach branches to gyms
-    const gymsWithBranches = gyms.map(gym => ({
-      ...gym,
-      branches: branches.filter((b: any) => b.gymId.toString() === gym._id.toString())
-    }));
+    const [branches, packages, trainerCounts] = await Promise.all([
+      Branch.find({ gymId: { $in: gymIds }, status: 'ACTIVE' }).lean(),
+      GymPackage.find({ gymId: { $in: gymIds }, status: { $ne: 'Inactive' } }).sort({ monthlyPrice: 1, price: 1 }).lean(),
+      Trainer.aggregate([
+        { $match: { gymId: { $in: gymIds }, status: 'Active' } },
+        { $group: { _id: '$gymId', count: { $sum: 1 } } }
+      ])
+    ]);
 
-    res.status(200).json({ success: true, gyms: gymsWithBranches });
+    const trainerCountMap = new Map<string, number>();
+    trainerCounts.forEach((tc: any) => {
+      if (tc._id) trainerCountMap.set(String(tc._id), tc.count || 0);
+    });
+    
+    const gymsWithDetails = gyms.map(gym => {
+      const gid = String(gym._id);
+      return {
+        ...gym,
+        branches: branches.filter((b: any) => String(b.gymId) === gid),
+        packages: packages.filter((p: any) => String(p.gymId) === gid),
+        activeTrainerCount: trainerCountMap.get(gid) || 0,
+      };
+    });
+
+    res.status(200).json({ success: true, gyms: gymsWithDetails });
   } catch (error: any) {
     res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }
@@ -355,43 +405,60 @@ export const getPublicGymById = async (req: Request, res: Response): Promise<voi
       return;
     }
     
-    // Fetch trainer profiles from Trainer model
-    const trainerProfiles = await Trainer.find({
-      $or: [
-        { gymId: gym._id },
-        { gymId: gym._id.toString() }
-      ]
-    }).lean();
+    // Fetch strictly ACTIVE trainers belonging to this gym
+    const [trainerProfiles, allGymTrainers, packages] = await Promise.all([
+      Trainer.find({
+        $or: [{ gymId: gym._id }, { gymId: gym._id.toString() }],
+        status: 'Active'
+      }).lean(),
+      Trainer.find({
+        $or: [{ gymId: gym._id }, { gymId: gym._id.toString() }]
+      }).select('userId email status').lean(),
+      GymPackage.find({ gymId: gym._id, status: { $ne: 'Inactive' } }).sort({ monthlyPrice: 1, price: 1 }).lean()
+    ]);
 
-    // Also fetch trainers from User model
+    const nonActiveTrainerUserIds = new Set(
+      allGymTrainers
+        .filter((t: any) => t.status !== 'Active' && t.userId)
+        .map((t: any) => String(t.userId))
+    );
+
     const userTrainers = await User.find({
       $or: [
         { gymId: gym._id.toString(), role: 'TRAINER' },
         { gymId: gym._id, role: 'TRAINER' }
       ],
-      isActive: true
-    } as any).select('firstName lastName specialization experienceYears profilePhoto bio').lean();
+      isActive: true,
+      approvalStatus: ApprovalStatus.APPROVED
+    } as any).select('firstName lastName email specialization experienceYears profilePhoto bio').lean();
 
-    // Unify trainers
+    // Unify active trainers
     const unifiedTrainersMap = new Map<string, any>();
     trainerProfiles.forEach((tp: any) => {
       const idKey = tp._id.toString();
       unifiedTrainersMap.set(idKey, {
         _id: tp._id,
+        trainerId: tp.trainerId,
         userId: tp.userId,
         name: tp.name || 'Trainer',
         firstName: tp.name ? tp.name.split(' ')[0] : 'Trainer',
         lastName: tp.name ? tp.name.split(' ').slice(1).join(' ') : '',
-        specialization: tp.specialization || 'Fitness Coach',
-        experienceYears: tp.experience || 1,
+        specialization: tp.specialization || '',
+        experience: tp.experience || 0,
+        experienceYears: tp.experience || 0,
+        trainingMode: tp.trainingMode || 'both',
+        expertise: tp.expertise || [],
+        availability: tp.availability || [],
+        availabilityStatus: tp.availabilityStatus || 'Online',
         profilePhoto: tp.profilePhoto || '',
         bio: tp.bio || '',
-        averageRating: tp.averageRating || 5,
+        averageRating: typeof tp.averageRating === 'number' ? tp.averageRating : 0,
         totalReviews: tp.totalReviews || 0
       });
     });
 
     userTrainers.forEach((ut: any) => {
+      if (nonActiveTrainerUserIds.has(ut._id.toString())) return;
       const matchInProfiles = trainerProfiles.find((tp: any) => tp.userId?.toString() === ut._id.toString() || tp.email?.toLowerCase() === ut.email?.toLowerCase());
       if (!matchInProfiles) {
         unifiedTrainersMap.set(ut._id.toString(), {
@@ -400,11 +467,12 @@ export const getPublicGymById = async (req: Request, res: Response): Promise<voi
           name: `${ut.firstName || ''} ${ut.lastName || ''}`.trim() || 'Trainer',
           firstName: ut.firstName || 'Trainer',
           lastName: ut.lastName || '',
-          specialization: ut.specialization || 'Fitness Coach',
-          experienceYears: ut.experienceYears || 1,
+          specialization: ut.specialization || '',
+          experience: ut.experienceYears || 0,
+          experienceYears: ut.experienceYears || 0,
           profilePhoto: ut.profilePhoto || '',
           bio: ut.bio || '',
-          averageRating: 5,
+          averageRating: 0,
           totalReviews: 0
         });
       }
@@ -473,8 +541,8 @@ export const getPublicGymById = async (req: Request, res: Response): Promise<voi
     );
 
     const totalReviews = allReviews.length;
-    const sumRatings = allReviews.reduce((sum, r) => sum + (Number(r.rating) || 5), 0);
-    const averageRating = totalReviews > 0 ? Number((sumRatings / totalReviews).toFixed(1)) : (gym.rating || 4.5);
+    const sumRatings = allReviews.reduce((sum, r) => sum + (Number(r.rating) || 0), 0);
+    const averageRating = totalReviews > 0 ? Number((sumRatings / totalReviews).toFixed(1)) : (gym.rating || 0);
     const ratingBreakdown = {
       5: allReviews.filter(r => Math.round(Number(r.rating)) === 5).length,
       4: allReviews.filter(r => Math.round(Number(r.rating)) === 4).length,
@@ -491,12 +559,85 @@ export const getPublicGymById = async (req: Request, res: Response): Promise<voi
       success: true, 
       gym: gymData, 
       trainers: unifiedTrainers, 
+      packages,
       branches,
       reviews: allReviews,
       ratingStats: {
         averageRating,
         totalReviews,
         ratingBreakdown
+      }
+    });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: 'Server error', error: error.message });
+  }
+};
+
+export const selectCustomerGym = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const userId = req.user?.id;
+    const userRole = String(req.user?.role || '').toUpperCase();
+    if (!userId || userRole !== 'MEMBER') {
+      res.status(403).json({ success: false, message: 'Only customers can select a gym.' });
+      return;
+    }
+
+    const { gymId } = req.body;
+    const gymCheck = await verifyGymIsActive(String(gymId || ''));
+    if (!gymCheck.valid || !gymCheck.gym) {
+      res.status(400).json({ success: false, message: gymCheck.message || 'Active gym is required.' });
+      return;
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      res.status(404).json({ success: false, message: 'Customer account not found.' });
+      return;
+    }
+
+    await ensureCustomerHasId(user);
+
+    const previousGymId = user.gymId ? String(user.gymId) : null;
+    const nextGymId = String(gymCheck.gym._id);
+    const isGymChanged = Boolean(previousGymId && previousGymId !== nextGymId);
+
+    user.gymId = gymCheck.gym._id;
+    // If customer switches to another gym, detach previous gym's trainer pointer while keeping ALL historical records intact
+    if (isGymChanged) {
+      user.assignedTrainer = undefined;
+    }
+    await user.save();
+
+    const [trainers, packages] = await Promise.all([
+      Trainer.find({ gymId: gymCheck.gym._id, status: 'Active' })
+        .select('trainerId name email phone specialization experience trainingMode expertise bio availability availabilityStatus profilePhoto averageRating totalReviews')
+        .sort({ createdAt: -1 })
+        .lean(),
+      GymPackage.find({ gymId: gymCheck.gym._id, status: { $ne: 'Inactive' } }).sort({ monthlyPrice: 1, price: 1 }).lean()
+    ]);
+
+    res.status(200).json({
+      success: true,
+      message: isGymChanged
+        ? `Switched to ${gymCheck.gym.name}. Your historical records remain safely preserved.`
+        : `Selected ${gymCheck.gym.name} successfully.`,
+      isGymChanged,
+      gym: gymCheck.gym,
+      trainers,
+      packages,
+      user: {
+        id: user._id,
+        customerId: user.customerId,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        mobile: user.mobile,
+        role: user.role,
+        gymId: String(gymCheck.gym._id),
+        gymName: gymCheck.gym.name,
+        approvalStatus: user.approvalStatus,
+        subscriptionStatus: user.subscriptionStatus,
+        subscriptionPlan: user.subscriptionPlan,
       }
     });
   } catch (error: any) {

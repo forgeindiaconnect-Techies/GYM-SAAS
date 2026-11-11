@@ -14,52 +14,74 @@ const TrainerMembers = () => {
   useEffect(() => {
     const fetchClients = async () => {
       try {
-        const res = await api.get('/trainer-sessions/trainer');
-        if (res.data.success) {
-          const sessions = res.data.sessions || [];
-          
-          // Group sessions by customer
-          const customerMap = new Map();
-          
+        const [clientsRes, sessionsRes] = await Promise.allSettled([
+          api.get('/trainers/my-clients'),
+          api.get('/trainer-sessions/trainer'),
+        ]);
+
+        const customerMap = new Map();
+
+        if (clientsRes.status === 'fulfilled' && clientsRes.value.data?.success) {
+          const assignedClients = clientsRes.value.data.clients || [];
+          assignedClients.forEach((c: any) => {
+            const cid = c._id || c.id;
+            if (!cid) return;
+            customerMap.set(cid, {
+              id: cid,
+              name: c.name || `${c.firstName || ''} ${c.lastName || ''}`.trim() || 'Member',
+              goal: c.fitnessGoal || c.goal || 'General Fitness',
+              status: c.isActive === false ? 'Inactive' : 'Active',
+              isAssigned: true,
+              email: c.email || '',
+              phone: c.mobile || c.phone || '—',
+              profilePhoto: c.profilePhoto,
+              originalUser: c,
+              sessions: [],
+            });
+          });
+        }
+
+        if (sessionsRes.status === 'fulfilled' && sessionsRes.value.data?.success) {
+          const sessions = sessionsRes.value.data.sessions || [];
           sessions.forEach((s: any) => {
             if (!s.customerId) return;
             const cid = s.customerId._id;
-            
+            if (!cid) return;
             if (!customerMap.has(cid)) {
               customerMap.set(cid, {
                 id: cid,
                 name: `${s.customerId.firstName || ''} ${s.customerId.lastName || ''}`.trim() || 'Member',
                 goal: s.customerId.fitnessGoal || 'General Fitness',
                 status: 'Active',
+                isAssigned: false,
                 email: s.customerId.email || '',
-                phone: s.customerId.phone || '+91 9876543210',
+                phone: s.customerId.mobile || s.customerId.phone || '—',
                 profilePhoto: s.customerId.profilePhoto,
                 originalUser: s.customerId,
-                sessions: []
+                sessions: [],
               });
             }
             customerMap.get(cid).sessions.push(s);
           });
-          
-          // Process next session
-          const formatted = Array.from(customerMap.values()).map(client => {
-            const upcoming = client.sessions
-              .filter((s: any) => ['Pending', 'Awaiting Payment', 'Confirmed', 'Upcoming'].includes(s.status))
-              .sort((a: any, b: any) => new Date(a.date).getTime() - new Date(b.date).getTime());
-              
-            const nextSession = upcoming.length > 0 
-              ? `${new Date(upcoming[0].date).toLocaleDateString()} at ${upcoming[0].startTime}`
-              : 'No upcoming sessions';
-              
-            return {
-              ...client,
-              nextSession,
-              status: upcoming.length > 0 ? 'Active' : 'Inactive'
-            };
-          });
-          
-          setClients(formatted);
         }
+
+        const formatted = Array.from(customerMap.values()).map(client => {
+          const upcoming = client.sessions
+            .filter((s: any) => ['Pending', 'Awaiting Payment', 'Confirmed', 'Upcoming'].includes(s.status))
+            .sort((a: any, b: any) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+          const nextSession = upcoming.length > 0
+            ? `${new Date(upcoming[0].date).toLocaleDateString()} at ${upcoming[0].startTime}`
+            : (client.isAssigned ? 'Assigned — No upcoming sessions' : 'No upcoming sessions');
+
+          return {
+            ...client,
+            nextSession,
+            status: (upcoming.length > 0 || (client.isAssigned && client.status !== 'Inactive')) ? 'Active' : 'Inactive',
+          };
+        });
+
+        setClients(formatted);
       } catch (e) {
         console.error('Failed to load members', e);
       } finally {
@@ -164,7 +186,7 @@ const TrainerMembers = () => {
       ) : filteredClients.length === 0 ? (
         <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-12 text-center">
           <Users size={48} className="mx-auto text-[#64748B] mb-3" />
-          <h3 className="text-lg font-bold text-[#111827]">No clients found</h3>
+          <h3 className="text-lg font-bold text-[#111827]">No clients assigned yet</h3>
           <p className="text-sm text-[#64748B] mt-1">
             {searchTerm ? `No active clients matching "${searchTerm}".` : 'You have no assigned clients yet.'}
           </p>

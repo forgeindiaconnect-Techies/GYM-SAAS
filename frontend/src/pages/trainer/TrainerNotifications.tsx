@@ -132,7 +132,7 @@ const TrainerNotifications: React.FC = () => {
       ) : notifications.length === 0 ? (
         <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-3xl py-16 text-center shadow-xl">
           <Bell size={40} className="mx-auto text-zinc-600 mb-3" />
-          <p className="text-[#111827] font-bold text-base">No notifications found</p>
+          <p className="text-[#111827] font-bold text-base">No notifications yet.</p>
           <p className="text-[#64748B] text-xs mt-1">
             Client workout submissions and updates will appear here.
           </p>

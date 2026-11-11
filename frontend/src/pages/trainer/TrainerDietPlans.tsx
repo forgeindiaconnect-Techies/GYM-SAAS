@@ -39,82 +39,7 @@ interface DietPlan {
   guidelines?: string[];
 }
 
-const initialPlans: DietPlan[] = [
-  { 
-    name: 'Lean Muscle Builder', 
-    cals: '2800', 
-    p: '180g', 
-    c: '300g', 
-    f: '80g', 
-    type: 'High Protein',
-    targetGoal: 'Hypertrophy & Lean Mass Gain',
-    hydration: '3.5 - 4.0 Liters / day',
-    description: 'A scientifically structured high-protein diet engineered for maximum muscle protein synthesis, quick workout recovery, and controlled body fat retention.',
-    meals: [
-      { mealName: 'Breakfast (8:00 AM)', time: '08:00 AM', items: '6 Egg Whites + 2 Whole Eggs, 100g Rolled Oats with berries, 1 Banana, 10 Almonds', cals: '720 kcal', protein: '45g' },
-      { mealName: 'Mid-Morning Snack (11:00 AM)', time: '11:00 AM', items: '1 Scoop Whey Isolate in Skimmed Milk or Water, 1 Apple, 1 tbsp Peanut Butter', cals: '320 kcal', protein: '28g' },
-      { mealName: 'Lunch (1:30 PM)', time: '01:30 PM', items: '200g Grilled Chicken Breast / Paneer, 150g Brown Rice, Steamed Broccoli & Asparagus with olive oil', cals: '750 kcal', protein: '55g' },
-      { mealName: 'Pre-Workout Fuel (5:00 PM)', time: '05:00 PM', items: '2 Slices Whole Wheat Toast, 1 Banana, 1 cup Espresso / Black Coffee', cals: '280 kcal', protein: '10g' },
-      { mealName: 'Post-Workout Dinner (8:30 PM)', time: '08:30 PM', items: '180g Grilled Salmon or Cottage Cheese, 1 Baked Sweet Potato, Large Mixed Green Salad', cals: '650 kcal', protein: '42g' },
-      { mealName: 'Bedtime (10:30 PM)', time: '10:30 PM', items: '1 Cup Warm Milk with pinch of Turmeric or 150g Low-fat Greek Yogurt', cals: '120 kcal', protein: '10g' }
-    ],
-    guidelines: [
-      'Drink 500ml of water immediately upon waking up',
-      'Take 5g Creatine Monohydrate with your post-workout meal',
-      'Maintain consistent meal timings within a 30-minute variance',
-      'Prioritize 7-8 hours of sleep for optimum growth hormone release'
-    ]
-  },
-  { 
-    name: 'Aggressive Fat Loss', 
-    cals: '1800', 
-    p: '160g', 
-    c: '120g', 
-    f: '60g', 
-    type: 'Low Carb',
-    targetGoal: 'Subcutaneous Fat Shredding & Caloric Deficit',
-    hydration: '4.0 Liters / day',
-    description: 'Optimized deficit protocol maximizing high thermic effect of protein while moderating carbohydrate intake to accelerate metabolic fat burn without losing lean muscle mass.',
-    meals: [
-      { mealName: 'Breakfast (8:30 AM)', time: '08:30 AM', items: '4 Egg Whites + 1 Whole Egg Omelette with baby spinach and mushrooms, 1 cup Green Tea', cals: '320 kcal', protein: '30g' },
-      { mealName: 'Mid-Day Fuel (12:00 PM)', time: '12:00 PM', items: '150g Boiled Chickpeas or Grilled Tofu salad with lemon dressing, 1 Cucumber', cals: '250 kcal', protein: '18g' },
-      { mealName: 'Lunch (2:00 PM)', time: '02:00 PM', items: '180g Grilled Chicken Breast or Soya Chunks, Large Raw Vegetable Salad with 1 tsp Flaxseed oil', cals: '480 kcal', protein: '48g' },
-      { mealName: 'Pre-Workout (5:30 PM)', time: '05:30 PM', items: '1 Cup Strong Black Coffee, 8 Soaked Almonds, 1 Rice Cake', cals: '140 kcal', protein: '4g' },
-      { mealName: 'Dinner (8:00 PM)', time: '08:00 PM', items: '160g Pan-seared White Fish / Paneer Tikka, Sautéed Bell Peppers & Zucchini in extra virgin olive oil', cals: '450 kcal', protein: '40g' },
-      { mealName: 'Night Calmer (10:00 PM)', time: '10:00 PM', items: 'Chamomile Tea or Warm Cinnamon Infused Water', cals: '10 kcal', protein: '0g' }
-    ],
-    guidelines: [
-      'Maintain a 16:8 intermittent fasting window if compatible with routine',
-      'Strictly avoid refined sugars, syrups, and sweetened beverages',
-      'Increase fibrous leafy greens to maintain satiety throughout the day',
-      'Keep sodium intake controlled to avoid unnecessary water retention'
-    ]
-  },
-  { 
-    name: 'Maintenance Phase', 
-    cals: '2400', 
-    p: '150g', 
-    c: '250g', 
-    f: '75g', 
-    type: 'Balanced',
-    targetGoal: 'Weight Maintenance & Peak Athletic Energy',
-    hydration: '3.0 - 3.5 Liters / day',
-    description: 'Equilibrium macronutrient split engineered to sustain current body weight, balance hormonal vitality, and deliver peak energy for high-intensity training sessions.',
-    meals: [
-      { mealName: 'Breakfast (8:00 AM)', time: '08:00 AM', items: '3 Scrambled Eggs, 2 Slices Multigrain Toast, 1 small cup Greek Yogurt with mixed seeds', cals: '580 kcal', protein: '35g' },
-      { mealName: 'Morning Snack (11:30 AM)', time: '11:30 AM', items: '1 Seasonal Fresh Fruit (Apple/Orange), Handful of Walnuts & Roasted Pumpkin Seeds', cals: '220 kcal', protein: '6g' },
-      { mealName: 'Lunch (1:30 PM)', time: '01:30 PM', items: '150g Grilled Chicken / Dal & Paneer, 1.5 Cups Basmati or Brown Rice, Steamed Veggies', cals: '680 kcal', protein: '45g' },
-      { mealName: 'Evening Snack (5:00 PM)', time: '05:00 PM', items: 'Roasted Makhana (Foxnuts) or Boiled Sprouts Chaat, 1 Scoop Whey Protein', cals: '300 kcal', protein: '28g' },
-      { mealName: 'Dinner (8:30 PM)', time: '08:30 PM', items: '150g Grilled Fish or Cottage Cheese with Garlic Herbs, 1 Chapati / Quinoa, Mixed Greens', cals: '520 kcal', protein: '36g' }
-    ],
-    guidelines: [
-      'Monitor body weight once a week (same morning, fasted) to confirm maintenance range within ±1 kg',
-      'Include healthy fats (olive oil, nuts, seeds) for optimal joint health',
-      'Hydrate with electrolyte-rich water on intense strength & cardio days',
-      'Allow 1 flexible / mindful meal per week without exceeding daily caloric equilibrium'
-    ]
-  },
-];
+const initialPlans: DietPlan[] = [];
 
 const TrainerDietPlans = () => {
   const [plans, setPlans] = useState<DietPlan[]>(initialPlans);
@@ -155,6 +80,30 @@ const TrainerDietPlans = () => {
           (r: any) => r.planType === 'Diet Plan' && r.status === 'Pending'
         );
         setPendingDietRequests(dietReqs);
+
+        const approvedDietPlans: DietPlan[] = res.data.requests
+          .filter((r: any) => r.planType === 'Diet Plan' && r.status === 'Approved')
+          .map((r: any) => ({
+            id: r._id,
+            name: r.title || 'Custom Diet Plan',
+            cals: String(r.dietDetails?.dailyCalories || '2000'),
+            p: String(r.dietDetails?.protein || '120g'),
+            c: String(r.dietDetails?.carbs || '200g'),
+            f: String(r.dietDetails?.fats || '60g'),
+            type: r.goal || 'Customized',
+            targetGoal: r.customerId ? `Assigned to ${r.customerId.firstName || ''} ${r.customerId.lastName || ''}`.trim() : r.goal || '',
+            description: r.trainerFeedback || r.customerMessage || '',
+            hydration: r.dietDetails?.hydration || '3.0 Liters / day',
+            meals: (r.dietDetails?.meals || []).map((m: any) => ({
+              mealName: m.mealName,
+              time: m.time || '',
+              items: m.items,
+              cals: m.calories || '',
+              protein: m.protein || '',
+            })),
+            guidelines: r.dietDetails?.guidelines || [],
+          }));
+        setPlans(approvedDietPlans);
       }
     } catch (err) {
       console.error('Failed to load pending diet requests:', err);
@@ -340,71 +289,83 @@ const TrainerDietPlans = () => {
       )}
 
       {/* Diet Plan Cards */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {plans.map((plan, i) => (
-          <div 
-            key={i} 
-            className="bg-[#FFFFFF] border border-[#E2E8F0] hover:border-[#FFEDD5] transition-all rounded-2xl p-6 shadow-lg hover:shadow-xl flex flex-col justify-between"
-          >
-            <div>
-              <div className="flex justify-between items-start mb-4">
-                <div className="w-11 h-11 bg-[#FFF7ED] rounded-xl flex items-center justify-center text-[#EA580C] font-bold">
-                  <Utensils size={22} />
-                </div>
-                <span className="text-xs font-semibold px-2.5 py-1 bg-[#F8FAFC] border border-[#E2E8F0] rounded-full text-[#64748B]">
-                  {plan.type}
-                </span>
-              </div>
-              
-              <h3 className="font-bold text-xl text-[#111827] mb-1">{plan.name}</h3>
-              {plan.targetGoal && (
-                <p className="text-xs text-[#64748B] mb-4">{plan.targetGoal}</p>
-              )}
-              
-              <div className="flex items-baseline gap-2 mb-6">
-                <span className="text-3xl font-extrabold text-[#EA580C]">{plan.cals}</span>
-                <span className="text-sm font-medium text-[#64748B]">kcal/day</span>
-              </div>
-
-              {/* Macro Breakdown */}
-              <div className="grid grid-cols-3 gap-2 border-t border-[#E2E8F0] pt-4">
-                <div className="text-center p-2.5 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0]/60">
-                  <Leaf size={15} className="mx-auto text-[#EA580C] mb-1" />
-                  <div className="font-bold text-sm text-[#111827]">{plan.p}</div>
-                  <div className="text-[10px] font-semibold text-[#64748B] uppercase tracking-wider">PROTEIN</div>
-                </div>
-                <div className="text-center p-2.5 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0]/60">
-                  <Flame size={15} className="mx-auto text-[#EA580C] mb-1" />
-                  <div className="font-bold text-sm text-[#111827]">{plan.c}</div>
-                  <div className="text-[10px] font-semibold text-[#64748B] uppercase tracking-wider">CARBS</div>
-                </div>
-                <div className="text-center p-2.5 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0]/60">
-                  <Droplets size={15} className="mx-auto text-amber-500 mb-1" />
-                  <div className="font-bold text-sm text-[#111827]">{plan.f}</div>
-                  <div className="text-[10px] font-semibold text-[#64748B] uppercase tracking-wider">FATS</div>
-                </div>
-              </div>
-            </div>
-            
-            {/* Card Buttons: View Details & Approval */}
-            <div className="flex items-center gap-2 mt-6">
-              <button 
-                onClick={() => setSelectedPlan(plan)}
-                className="flex-1 py-2.5 border border-[#E2E8F0] hover:border-[#FDBA74] hover:bg-[#FFF7ED]/50 text-[#111827] rounded-xl text-xs font-bold transition-all shadow-sm active:scale-98"
-              >
-                View Details
-              </button>
-              <button 
-                onClick={() => openApproveModalForPlan(plan)}
-                className="flex-1 py-2.5 bg-gradient-to-r from-[#EA580C] to-[#C2410C] hover:from-emerald-700 hover:to-[#C2410C] text-[#FFFFFF] font-bold rounded-xl text-xs font-bold transition-all shadow-sm flex items-center justify-center gap-1.5 active:scale-98 shadow-emerald-600/20"
-                title="Approve this plan directly to a customer dashboard"
-              >
-                <CheckCircle2 size={14} /> Approval
-              </button>
-            </div>
+      {plans.length === 0 ? (
+        <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-12 text-center shadow-sm">
+          <div className="w-14 h-14 mx-auto mb-4 rounded-2xl bg-[#FFF7ED] text-[#EA580C] flex items-center justify-center">
+            <Utensils size={28} />
           </div>
-        ))}
-      </div>
+          <h3 className="text-lg font-bold text-[#111827]">No diet plans assigned.</h3>
+          <p className="text-sm text-[#64748B] mt-1 max-w-md mx-auto">
+            Diet plans assigned to your clients or approved from client requests will appear here.
+          </p>
+        </div>
+      ) : (
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {plans.map((plan, i) => (
+            <div 
+              key={i} 
+              className="bg-[#FFFFFF] border border-[#E2E8F0] hover:border-[#FFEDD5] transition-all rounded-2xl p-6 shadow-lg hover:shadow-xl flex flex-col justify-between"
+            >
+              <div>
+                <div className="flex justify-between items-start mb-4">
+                  <div className="w-11 h-11 bg-[#FFF7ED] rounded-xl flex items-center justify-center text-[#EA580C] font-bold">
+                    <Utensils size={22} />
+                  </div>
+                  <span className="text-xs font-semibold px-2.5 py-1 bg-[#F8FAFC] border border-[#E2E8F0] rounded-full text-[#64748B]">
+                    {plan.type}
+                  </span>
+                </div>
+                
+                <h3 className="font-bold text-xl text-[#111827] mb-1">{plan.name}</h3>
+                {plan.targetGoal && (
+                  <p className="text-xs text-[#64748B] mb-4">{plan.targetGoal}</p>
+                )}
+                
+                <div className="flex items-baseline gap-2 mb-6">
+                  <span className="text-3xl font-extrabold text-[#EA580C]">{plan.cals}</span>
+                  <span className="text-sm font-medium text-[#64748B]">kcal/day</span>
+                </div>
+
+                {/* Macro Breakdown */}
+                <div className="grid grid-cols-3 gap-2 border-t border-[#E2E8F0] pt-4">
+                  <div className="text-center p-2.5 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0]/60">
+                    <Leaf size={15} className="mx-auto text-[#EA580C] mb-1" />
+                    <div className="font-bold text-sm text-[#111827]">{plan.p}</div>
+                    <div className="text-[10px] font-semibold text-[#64748B] uppercase tracking-wider">PROTEIN</div>
+                  </div>
+                  <div className="text-center p-2.5 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0]/60">
+                    <Flame size={15} className="mx-auto text-[#EA580C] mb-1" />
+                    <div className="font-bold text-sm text-[#111827]">{plan.c}</div>
+                    <div className="text-[10px] font-semibold text-[#64748B] uppercase tracking-wider">CARBS</div>
+                  </div>
+                  <div className="text-center p-2.5 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0]/60">
+                    <Droplets size={15} className="mx-auto text-amber-500 mb-1" />
+                    <div className="font-bold text-sm text-[#111827]">{plan.f}</div>
+                    <div className="text-[10px] font-semibold text-[#64748B] uppercase tracking-wider">FATS</div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Card Buttons: View Details & Approval */}
+              <div className="flex items-center gap-2 mt-6">
+                <button 
+                  onClick={() => setSelectedPlan(plan)}
+                  className="flex-1 py-2.5 border border-[#E2E8F0] hover:border-[#FDBA74] hover:bg-[#FFF7ED]/50 text-[#111827] rounded-xl text-xs font-bold transition-all shadow-sm active:scale-98"
+                >
+                  View Details
+                </button>
+                <button 
+                  onClick={() => openApproveModalForPlan(plan)}
+                  className="flex-1 py-2.5 bg-gradient-to-r from-[#EA580C] to-[#C2410C] hover:from-emerald-700 hover:to-[#C2410C] text-[#FFFFFF] font-bold rounded-xl text-xs font-bold transition-all shadow-sm flex items-center justify-center gap-1.5 active:scale-98 shadow-emerald-600/20"
+                  title="Approve this plan directly to a customer dashboard"
+                >
+                  <CheckCircle2 size={14} /> Approval
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* ===================== VIEW DETAILS MODAL ===================== */}
       {selectedPlan && (

@@ -174,7 +174,7 @@ export const logWorkoutProgress = async (req: AuthRequest, res: Response): Promi
 
     const isExerciseObjectId = exerciseId && mongoose.Types.ObjectId.isValid(exerciseId);
     const finalExerciseId = exercise?._id || (isExerciseObjectId ? new mongoose.Types.ObjectId(exerciseId) : undefined);
-    
+
     const isPlanObjectId = workoutPlanId && mongoose.Types.ObjectId.isValid(workoutPlanId);
     const finalPlanId = plan?._id || (isPlanObjectId ? new mongoose.Types.ObjectId(workoutPlanId) : undefined);
     const resolvedExerciseName = exercise?.name || exerciseName || 'Exercise';
@@ -627,6 +627,10 @@ const getCustomerWorkoutDays = async (customerId: string) => {
 export const getCustomerProgress = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const customerId = Array.isArray(req.params.customerId) ? req.params.customerId[0] : (req.params.customerId || '');
+    if (String(req.user?.role || '').toUpperCase() === 'MEMBER' && customerId !== String(req.user?.id)) {
+      res.status(403).json({ success: false, message: 'Forbidden: cannot access another customer workout progress' });
+      return;
+    }
 
     let customerUser: any = null;
     if (customerId && mongoose.Types.ObjectId.isValid(customerId)) {
@@ -851,72 +855,27 @@ export const getTrainerClientsOverview = async (req: AuthRequest, res: Response)
       // non-blocking
     }
 
-    const trainerIds: string[] = [trainerUser.id];
-    if (trainerDoc?._id) trainerIds.push(trainerDoc._id.toString());
-    if (trainerDoc?.userId) trainerIds.push(trainerDoc.userId.toString());
-    const gymId = trainerUser.gymId || trainerDoc?.gymId;
-
-    const validTrainerIds = trainerIds
-      .filter(id => id && mongoose.Types.ObjectId.isValid(id))
-      .map(id => new mongoose.Types.ObjectId(id));
-    const validGymId = gymId && mongoose.Types.ObjectId.isValid(String(gymId)) ? new mongoose.Types.ObjectId(String(gymId)) : null;
-
-    // Build conditions safely without empty $or
-    const userOrConditions: any[] = [];
-    if (validTrainerIds.length > 0) {
-      userOrConditions.push({ assignedTrainer: { $in: validTrainerIds } });
-    }
-    if (validGymId) {
-      userOrConditions.push({ gymId: validGymId });
+    const { resolveTrainerContext, getTrainerAssignedCustomerIds } = await import('../utils/trainerIsolation');
+    const trainerCtx = await resolveTrainerContext(req.user);
+    if (!trainerCtx) {
+      res.status(403).json({ success: false, message: 'Active trainer context required' });
+      return;
     }
 
-    const userQuery: any = { role: Role.MEMBER };
-    if (userOrConditions.length > 0) {
-      userQuery.$or = userOrConditions;
+    const validGymId = new mongoose.Types.ObjectId(trainerCtx.gymId);
+    const validTrainerIds = trainerCtx.trainerObjectIds;
+    const customerIds = await getTrainerAssignedCustomerIds(trainerCtx);
+
+    if (customerIds.length === 0) {
+      res.status(200).json({ success: true, clients: [], recentActivity: [] });
+      return;
     }
 
-    const assignedUsers = await User.find(userQuery)
-      .select('firstName lastName email profilePhoto fitnessGoal assignedTrainer role');
-
-    // Safe query conditions for related collections
-    const relConditions: any[] = [];
-    if (validTrainerIds.length > 0) {
-      relConditions.push({ trainerId: { $in: validTrainerIds } });
-    }
-    if (validGymId) {
-      relConditions.push({ gymId: validGymId });
-    }
-
-    let aiRecs: any[] = [];
-    let plans: any[] = [];
-    let progressLogs: any[] = [];
-
-    if (relConditions.length > 0) {
-      try {
-        [aiRecs, plans, progressLogs] = await Promise.all([
-          AIRecommendation.find({ $or: relConditions }).select('customerId trainerId'),
-          WorkoutPlan.find({ $or: relConditions }).select('customerId trainerId'),
-          WorkoutProgress.find({ $or: relConditions }).select('customerId')
-        ]);
-      } catch (err) {
-        console.warn('Trainer client overview related collections query notice:', err);
-      }
-    }
-
-    // Aggregate unique customer IDs
-    const customerIdSet = new Set<string>();
-    assignedUsers.forEach(u => customerIdSet.add(u._id.toString()));
-    aiRecs.forEach(r => r.customerId && customerIdSet.add(r.customerId.toString()));
-    plans.forEach(p => p.customerId && customerIdSet.add(p.customerId.toString()));
-    progressLogs.forEach(pl => pl.customerId && customerIdSet.add(pl.customerId.toString()));
-
-    // Fallback: If still empty, include members so trainer has visibility
-    if (customerIdSet.size === 0) {
-      const anyMembers = await User.find({ role: Role.MEMBER }).limit(25);
-      anyMembers.forEach(m => customerIdSet.add(m._id.toString()));
-    }
-
-    const customerIds = Array.from(customerIdSet);
+    const assignedUsers = await User.find({
+      _id: { $in: customerIds },
+      role: Role.MEMBER,
+      gymId: validGymId,
+    } as any).select('firstName lastName email profilePhoto fitnessGoal assignedTrainer role');
 
     // Build client progress list for each customer with per-client try/catch
     const clientProgressList = (await Promise.all(
@@ -1079,14 +1038,16 @@ export const getTrainerClientsOverview = async (req: AuthRequest, res: Response)
       })
     )).filter(Boolean);
 
-    // Fetch real-time recent completed exercise logs safely
-    const activityQuery: any = { status: 'Completed' };
-    const actOr: any[] = [];
+    // Fetch real-time recent completed exercise logs strictly for this trainer's assigned customers
     const validCids = customerIds.filter(id => mongoose.Types.ObjectId.isValid(id)).map(id => new mongoose.Types.ObjectId(id));
-    if (validCids.length > 0) actOr.push({ customerId: { $in: validCids } });
-    if (validTrainerIds.length > 0) actOr.push({ trainerId: { $in: validTrainerIds } });
-    if (validGymId) actOr.push({ gymId: validGymId });
-    if (actOr.length > 0) activityQuery.$or = actOr;
+    const activityQuery: any = {
+      status: 'Completed',
+      gymId: validGymId,
+      $or: [
+        ...(validCids.length > 0 ? [{ customerId: { $in: validCids } }] : []),
+        { trainerId: { $in: validTrainerIds } },
+      ],
+    };
 
     const rawRecent = await WorkoutProgress.find(activityQuery)
       .sort({ completedAt: -1 })
@@ -1126,20 +1087,24 @@ export const getTrainerClientsOverview = async (req: AuthRequest, res: Response)
 // 5. Get Real-Time Recent Activity Feed for Trainer
 export const getTrainerRecentActivity = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const trainerId = req.user?.id;
-    const gymId = req.user?.gymId;
+    const { resolveTrainerContext, getTrainerAssignedCustomerIds } = await import('../utils/trainerIsolation');
+    const trainerCtx = await resolveTrainerContext(req.user);
+    if (!trainerCtx) {
+      res.status(403).json({ success: false, message: 'Active trainer context required' });
+      return;
+    }
 
-    const query: any = { status: 'Completed' };
-    const orConds: any[] = [];
-    if (trainerId && mongoose.Types.ObjectId.isValid(trainerId)) {
-      orConds.push({ trainerId: new mongoose.Types.ObjectId(trainerId) });
-    }
-    if (gymId && mongoose.Types.ObjectId.isValid(gymId)) {
-      orConds.push({ gymId: new mongoose.Types.ObjectId(gymId) });
-    }
-    if (orConds.length > 0) {
-      query.$or = orConds;
-    }
+    const assignedIds = await getTrainerAssignedCustomerIds(trainerCtx);
+    const validCids = assignedIds.filter(id => mongoose.Types.ObjectId.isValid(id)).map(id => new mongoose.Types.ObjectId(id));
+
+    const query: any = {
+      status: 'Completed',
+      gymId: new mongoose.Types.ObjectId(trainerCtx.gymId),
+      $or: [
+        { trainerId: { $in: trainerCtx.trainerObjectIds } },
+        ...(validCids.length > 0 ? [{ customerId: { $in: validCids } }] : []),
+      ],
+    };
 
     const rawActivity = await WorkoutProgress.find(query)
       .sort({ completedAt: -1 })

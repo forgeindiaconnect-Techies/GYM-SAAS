@@ -816,11 +816,6 @@ export const getGymTrainersPerformance = async (req: AuthRequest, res: Response)
         new Set([...directAssignedClients, ...clientIdsFromSessions, ...clientIdsFromRequests, ...clientIdsFromWorkoutPlans])
       );
 
-      // If no explicit link in DB but gym members exist, assign the member to the trainer for holistic tracking
-      if (allAssignedClientIds.length === 0 && allMembers.length > 0) {
-        allAssignedClientIds = [allMembers[0]._id.toString()];
-      }
-
       // 2. Handled Clients Detailed Tracking Array
       const handledClientsList: any[] = [];
       for (const cId of allAssignedClientIds) {

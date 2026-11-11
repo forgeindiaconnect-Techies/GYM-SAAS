@@ -23,7 +23,7 @@ const GymAdminTrainers = () => {
   const [editForm, setEditForm] = useState({ name: '', email: '', phone: '', profilePhoto: '', specialization: '', experience: '', trainingMode: 'offline', qualifications: '', certifications: '', expertise: '', bio: '', fee: '', paymentType: 'Per Month', availableDays: 'Monday to Friday', availableStartTime: '06:00 AM', availableEndTime: '08:00 PM', availableSlot: '' });
   const navigate = useNavigate();
   
-  const [manualForm, setManualForm] = useState({ name: '', email: '', phone: '', profilePhoto: '', specialization: '', experience: '', trainingMode: 'offline', qualifications: '', certifications: '', expertise: '', bio: '', fee: '', paymentType: 'Per Month', availableDays: 'Monday to Friday', availableStartTime: '06:00 AM', availableEndTime: '08:00 PM', availableSlot: '', password: '', confirmPassword: '' });
+  const [manualForm, setManualForm] = useState({ name: '', email: '', phone: '', profilePhoto: '', specialization: '', experience: '', trainingMode: 'offline', qualifications: '', certifications: '', expertise: '', bio: '', fee: '', paymentType: 'Per Month', status: 'Active', availableDays: 'Monday to Friday', availableStartTime: '06:00 AM', availableEndTime: '08:00 PM', availableSlot: '', password: '', confirmPassword: '' });
   const [inviteForm, setInviteForm] = useState({ trainerName: '', email: '', phone: '', specialization: '', trainingMode: 'offline', personalMessage: '' });
 
   const [otpSent, setOtpSent] = useState(false);
@@ -105,7 +105,7 @@ const GymAdminTrainers = () => {
       alert('Trainer added successfully!');
       setShowHireModal(false);
       setHireMethod(null);
-      setManualForm({ name: '', email: '', phone: '', profilePhoto: '', specialization: '', experience: '', trainingMode: 'offline', qualifications: '', certifications: '', expertise: '', bio: '', fee: '', paymentType: 'Per Month', availableDays: 'Monday to Friday', availableStartTime: '06:00 AM', availableEndTime: '08:00 PM', availableSlot: '', password: '', confirmPassword: '' });
+      setManualForm({ name: '', email: '', phone: '', profilePhoto: '', specialization: '', experience: '', trainingMode: 'offline', qualifications: '', certifications: '', expertise: '', bio: '', fee: '', paymentType: 'Per Month', status: 'Active', availableDays: 'Monday to Friday', availableStartTime: '06:00 AM', availableEndTime: '08:00 PM', availableSlot: '', password: '', confirmPassword: '' });
       setOtpSent(false);
       setOtpVerified(false);
       setOtpInput('');
@@ -292,7 +292,14 @@ const GymAdminTrainers = () => {
                 {trainers.map(trainer => (
                   <tr key={trainer._id} className="hover:bg-[#FFF7ED] transition-colors">
                     <td className="px-6 py-4">
-                      <div className="font-bold text-[#111827]">{trainer.name}</div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-[#111827]">{trainer.name}</span>
+                        {trainer.trainerId && (
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5]">
+                            {trainer.trainerId}
+                          </span>
+                        )}
+                      </div>
                       <div className="text-xs text-[#64748B]">{trainer.email}</div>
                       {trainer.phone && <div className="text-xs text-[#64748B]">{trainer.phone}</div>}
                     </td>
@@ -341,7 +348,7 @@ const GymAdminTrainers = () => {
                         <button onClick={() => handleSetStatus(trainer._id, 'Active')} className={`transition-colors ${trainer.status === 'Active' ? 'text-[#EA580C]' : 'text-[#64748B] hover:text-[#EA580C]'}`} title="Set Active">
                           <CheckCircle size={18} />
                         </button>
-                        <button onClick={() => handleSetStatus(trainer._id, 'Suspended')} className={`transition-colors ${trainer.status === 'Suspended' ? 'text-[#EA580C]' : 'text-[#64748B] hover:text-[#EA580C]'}`} title="Set Inactive (Suspend)">
+                        <button onClick={() => handleSetStatus(trainer._id, 'Inactive')} className={`transition-colors ${trainer.status === 'Inactive' || trainer.status === 'Suspended' ? 'text-[#EA580C]' : 'text-[#64748B] hover:text-[#EA580C]'}`} title="Set Inactive">
                           <PauseCircle size={18} />
                         </button>
                         <button onClick={() => handleSetStatus(trainer._id, 'Pending')} className={`transition-colors ${trainer.status === 'Pending' ? 'text-[#EA580C]' : 'text-[#64748B] hover:text-[#EA580C]'}`} title="Set Pending">
@@ -723,7 +730,7 @@ const GymAdminTrainers = () => {
 
                   <section>
                     <h3 className="text-lg font-bold text-[#111827] mb-4 border-b pb-2">Employment / Payment</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div>
                         <label className="block text-sm font-bold text-[#64748B] mb-1">Trainer Fee</label>
                         <input type="number" value={manualForm.fee} onChange={e => setManualForm({...manualForm, fee: e.target.value})} className="w-full border border-[#E2E8F0] rounded-lg px-4 py-2 outline-none focus:border-[#FDBA74]" />
@@ -733,6 +740,14 @@ const GymAdminTrainers = () => {
                         <select value={manualForm.paymentType} onChange={e => setManualForm({...manualForm, paymentType: e.target.value})} className="w-full border border-[#E2E8F0] rounded-lg px-4 py-2 outline-none focus:border-[#FDBA74]">
                           <option value="Per Week">Per Week</option>
                           <option value="Per Month">Per Month</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-bold text-[#64748B] mb-1">Employment Status</label>
+                        <select value={manualForm.status} onChange={e => setManualForm({...manualForm, status: e.target.value})} className="w-full border border-[#E2E8F0] rounded-lg px-4 py-2 outline-none focus:border-[#FDBA74]">
+                          <option value="Active">Active</option>
+                          <option value="Pending">Pending</option>
+                          <option value="Inactive">Inactive</option>
                         </select>
                       </div>
                     </div>
@@ -840,7 +855,14 @@ const GymAdminTrainers = () => {
                   </div>
                 )}
                 <div>
-                  <h3 className="text-2xl font-bold text-[#111827]">{selectedTrainer.name}</h3>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-2xl font-bold text-[#111827]">{selectedTrainer.name}</h3>
+                    {selectedTrainer.trainerId && (
+                      <span className="text-xs font-bold px-2.5 py-0.5 rounded-lg bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5]">
+                        {selectedTrainer.trainerId}
+                      </span>
+                    )}
+                  </div>
                   <p className="text-[#64748B] text-sm mt-0.5">{selectedTrainer.specialization}</p>
                   <span className={`mt-2 inline-block px-3 py-1 rounded-full text-xs font-bold border ${selectedTrainer.status === 'Active' ? 'bg-[#FFF7ED] text-[#EA580C] border-[#FFEDD5]' : selectedTrainer.status === 'Pending' ? 'bg-[#FFF7ED] text-[#EA580C] border-[#E2E8F0]/20' : 'bg-red-50 text-rose-600 border-red-500/20'}`}>
                     {selectedTrainer.status}

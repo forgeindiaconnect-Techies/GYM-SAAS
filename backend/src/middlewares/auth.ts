@@ -9,12 +9,15 @@ export interface AuthRequest extends Request {
     role: string;
     gymId?: string;
     branchId?: string;
+    customerId?: string;
+    trainerId?: string;
+    trainerCode?: string;
     approvalStatus?: string;
     subscriptionStatus?: string;
   };
 }
 
-export const authenticate = (req: AuthRequest, res: Response, next: NextFunction): void => {
+export const authenticate = async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     res.status(401).json({ success: false, message: 'Unauthorized', errorCode: 'MISSING_TOKEN' });
@@ -25,7 +28,85 @@ export const authenticate = (req: AuthRequest, res: Response, next: NextFunction
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET) as any;
-    req.user = decoded;
+    const { default: User, ApprovalStatus, Role } = await import('../models/User');
+    const { default: Trainer } = await import('../models/Trainer');
+    const { isTrainerStatusActive } = await import('../utils/trainerIsolation');
+
+    const dbUser: any = await User.findById(decoded.id)
+      .select('role gymId branchId customerId isActive approvalStatus subscriptionStatus')
+      .lean();
+
+    if (!dbUser || dbUser.approvalStatus === ApprovalStatus.DELETED) {
+      res.status(401).json({ success: false, message: 'Account not found or deleted', errorCode: 'ACCOUNT_NOT_FOUND' });
+      return;
+    }
+
+    if (
+      dbUser.isActive === false ||
+      dbUser.approvalStatus === ApprovalStatus.SUSPENDED ||
+      dbUser.approvalStatus === ApprovalStatus.REJECTED
+    ) {
+      res.status(403).json({
+        success: false,
+        message: 'Your account has been deactivated or suspended. Please contact your administrator.',
+        errorCode: 'ACCOUNT_INACTIVE'
+      });
+      return;
+    }
+
+    let resolvedGymId = dbUser.gymId ? String(dbUser.gymId) : decoded.gymId;
+    let resolvedTrainerId = decoded.trainerId;
+    let resolvedTrainerCode = decoded.trainerCode;
+
+    if (dbUser.role === Role.TRAINER) {
+      const requestedGymId = (req.headers['x-gym-id'] as string) || (req.query?.gymId as string);
+      let trainerDoc: any = null;
+
+      if (requestedGymId) {
+        trainerDoc = await Trainer.findOne({ userId: dbUser._id, gymId: requestedGymId }).lean();
+      } else if (decoded.trainerId) {
+        trainerDoc = await Trainer.findOne({ _id: decoded.trainerId, userId: dbUser._id }).lean();
+      }
+
+      if (!trainerDoc) {
+        trainerDoc = await Trainer.findOne({ userId: dbUser._id }).sort({ createdAt: -1 }).lean();
+      }
+
+      if (!trainerDoc) {
+        res.status(403).json({
+          success: false,
+          message: 'Trainer profile not found for this account.',
+          errorCode: 'TRAINER_NOT_FOUND'
+        });
+        return;
+      }
+
+      if (!isTrainerStatusActive(trainerDoc.status)) {
+        res.status(403).json({
+          success: false,
+          message: `Your trainer account is currently ${trainerDoc.status}. Access restricted.`,
+          errorCode: 'TRAINER_INACTIVE'
+        });
+        return;
+      }
+
+      resolvedGymId = trainerDoc.gymId ? String(trainerDoc.gymId) : resolvedGymId;
+      resolvedTrainerId = String(trainerDoc._id);
+      resolvedTrainerCode = trainerDoc.trainerId || resolvedTrainerCode;
+    }
+
+    req.user = {
+      ...decoded,
+      id: String(dbUser._id),
+      role: dbUser.role,
+      gymId: resolvedGymId,
+      branchId: dbUser.branchId ? String(dbUser.branchId) : decoded.branchId,
+      customerId: dbUser.customerId || decoded.customerId,
+      approvalStatus: dbUser.approvalStatus,
+      subscriptionStatus: dbUser.subscriptionStatus,
+      ...(resolvedTrainerId ? { trainerId: resolvedTrainerId } : {}),
+      ...(resolvedTrainerCode ? { trainerCode: resolvedTrainerCode } : {}),
+    };
     next();
   } catch (error) {
     res.status(401).json({ success: false, message: 'Invalid or expired token', errorCode: 'INVALID_TOKEN' });

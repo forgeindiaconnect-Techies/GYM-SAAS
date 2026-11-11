@@ -109,15 +109,15 @@ const MemberLayout = () => {
   }, [user?.subscriptionExpiry]);
 
   useEffect(() => {
-    if (user?.gymId) {
-      import('../utils/api').then(({ default: api }) => {
-        api.get(`/gyms/${user.gymId}`)
-          .then(res => setGym(res.data.gym))
-          .catch(err => console.error('Failed to fetch gym', err));
-      });
-    }
-
     import('../utils/api').then(({ default: api }) => {
+      if (user?.gymId) {
+        api.get('/gyms/my-gym')
+          .then(res => setGym(res.data?.gym || null))
+          .catch(() => setGym(null));
+      } else {
+        setGym(null);
+      }
+
       Promise.all([
         api.get('/memberships/my').catch(() => ({ data: { memberships: [] } })),
         api.get('/payments/my-history').catch(() => ({ data: { payments: [] } }))
@@ -125,14 +125,12 @@ const MemberLayout = () => {
         const mems = memRes.data?.memberships || [];
         const now = new Date();
 
-        // 1. Check for active PAID membership (status === 'Active' and positive price/finalAmount and not expired)
-        const activePaid = mems.find((m: any) => 
+        const activePaid = mems.find((m: any) =>
           (m.status === 'Active' || m.status === 'APPROVED') &&
           Number(m.finalAmount || m.price || 0) > 0 &&
           (!m.endDate || new Date(m.endDate) >= now)
         );
 
-        // 2. Check for active FREE TRIAL (status === 'Active' or 'Free Trial', amount === 0, endDate in future)
         const activeTrial = mems.find((m: any) =>
           (m.status === 'Free Trial' || (m.status === 'Active' && (Number(m.finalAmount || 0) === 0 || m.planName?.toLowerCase().includes('trial')))) &&
           m.endDate && new Date(m.endDate) >= now
@@ -140,12 +138,12 @@ const MemberLayout = () => {
 
         const isUserExpired = user?.subscriptionStatus === 'Expired' || user?.subscriptionStatus === 'EXPIRED';
 
-        if (activePaid) {
+        // New customers without any membership records yet must NOT be locked out or redirected to subscription
+        if (mems.length === 0 && !isUserExpired) {
           setIsExpired(false);
-        } else if (activeTrial && !isUserExpired) {
+        } else if (activePaid || (activeTrial && !isUserExpired)) {
           setIsExpired(false);
         } else {
-          // Free trial completed, expired, or unpaid membership
           setIsExpired(true);
         }
       }).catch(err => {
@@ -255,11 +253,17 @@ const MemberLayout = () => {
           </div>
           <div className="flex-1 overflow-hidden">
             <p className="font-semibold text-sm text-[#111827] truncate">{user?.firstName} {user?.lastName}</p>
-            <div className="flex items-center gap-1.5 mt-0.5">
-              <span className="text-xs text-[#64748B] font-medium truncate capitalize">
-                {isExpired ? 'Free Trial Completed' : `${user?.subscriptionPlan || 'Member'} Plan`}
+            <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
+              <span className="text-xs text-[#64748B] font-medium truncate">
+                {isExpired
+                  ? 'Membership Expired'
+                  : (user?.subscriptionPlan ? `${user.subscriptionPlan} Plan` : (gym?.name || 'No Gym Selected'))}
               </span>
-              <span className="px-1.5 py-0.5 bg-[#FFF7ED] text-[#C2410C] border border-[#FFEDD5] rounded text-[9px] font-bold uppercase tracking-wider">MEMBER</span>
+              {user?.customerId && (
+                <span className="px-1.5 py-0.5 bg-[#FFF7ED] text-[#C2410C] border border-[#FFEDD5] rounded text-[9px] font-bold uppercase tracking-wider">
+                  {user.customerId}
+                </span>
+              )}
             </div>
           </div>
         </div>

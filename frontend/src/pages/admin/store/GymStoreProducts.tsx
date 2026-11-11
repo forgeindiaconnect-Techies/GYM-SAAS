@@ -1,10 +1,56 @@
-﻿import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   Plus, Search, Loader2, Pencil, Trash2, ImageIcon, Package,
   RefreshCw, X, Upload
 } from 'lucide-react';
 import api from '../../../utils/api';
 import { useAuth } from '../../../contexts/AuthContext';
+
+const getApiOrigin = (): string => {
+  return String(api.defaults.baseURL || '').replace(/\/api\/?$/, '');
+};
+
+const resolveWebMediaUrl = (url?: string): string => {
+  if (!url || typeof url !== 'string') return '';
+  const trimmed = url.trim();
+  if (!trimmed) return '';
+  if (/^(data|blob):/i.test(trimmed)) return trimmed;
+  const origin = getApiOrigin();
+  if (trimmed.startsWith('/')) return `${origin}${trimmed}`;
+  const localMatch = trimmed.match(/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?(\/.*)$/i);
+  if (localMatch && origin) return `${origin}${localMatch[3]}`;
+  return trimmed;
+};
+
+const compressImageToDataUrl = (file: File, maxDim = 720, quality = 0.78): Promise<string> =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error('Failed to read image file'));
+    reader.onload = () => {
+      const src = String(reader.result || '');
+      const img = new Image();
+      img.onerror = () => reject(new Error('Invalid image format'));
+      img.onload = () => {
+        const scale = Math.min(1, maxDim / Math.max(img.width || 1, img.height || 1));
+        const width = Math.max(1, Math.round((img.width || 1) * scale));
+        const height = Math.max(1, Math.round((img.height || 1) * scale));
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          resolve(src);
+          return;
+        }
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, width, height);
+        ctx.drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.src = src;
+    };
+    reader.readAsDataURL(file);
+  });
 
 const PRODUCT_TYPE_CONFIG: Record<string, {
   hasVariants: boolean;
@@ -208,19 +254,27 @@ const GymStoreProducts = () => {
         stock: v.stock
       })),
     });
-    setPreviewUrl(p.image || '');
+    setPreviewUrl(resolveWebMediaUrl(p.image || ''));
     setModalOpen(true);
   };
 
   const onFileUpload = async (e: any) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const fd = new FormData();
-    fd.append('image', file);
     try {
       setUploadingImg(true);
+      try {
+        const dataUrl = await compressImageToDataUrl(file);
+        setForm((f: any) => ({ ...f, image: dataUrl }));
+        setPreviewUrl(dataUrl);
+        return;
+      } catch {
+        // Fallback to backend upload endpoint when browser canvas conversion fails
+      }
+      const fd = new FormData();
+      fd.append('image', file);
       const res = await api.post('/store/upload', fd, { headers: { 'Content-Type': 'multipart/form-data' } });
-      const url = `http://localhost:5600${res.data.url}`;
+      const url = resolveWebMediaUrl(res.data.url);
       setForm((f: any) => ({ ...f, image: url }));
       setPreviewUrl(url);
     } catch (err: any) {
@@ -435,7 +489,7 @@ const GymStoreProducts = () => {
               <div key={p._id} className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl overflow-hidden hover:shadow-md transition-shadow flex flex-col">
                 <div className="h-40 bg-[#F8FAFC] relative">
                   {p.image ? (
-                    <img src={p.image} alt={p.name} className="w-full h-full object-cover" />
+                    <img src={resolveWebMediaUrl(p.image)} alt={p.name} className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-[#EA580C]/30"><ImageIcon size={48} /></div>
                   )}
