@@ -50,7 +50,7 @@ export const Header: React.FC<{
           <View style={styles.logoBadge}>
             <Ionicons name="fitness" size={18} color={COLORS.white} />
           </View>
-          <View style={{ flexShrink: 1 }}>
+          <View style={styles.brandTextWrap}>
             <Text style={styles.brandName}>Gymora</Text>
             <Text style={styles.brandSub} numberOfLines={1}>
               {subtitle || user?.gymName || user?.name || 'Mobile Platform'}
@@ -58,7 +58,7 @@ export const Header: React.FC<{
           </View>
         </TouchableOpacity>
 
-        {/* Action Controls: Authenticated Role Badge + Notification + Logout (Safe clearance from floating dev menu) */}
+        {/* Action Controls: Authenticated Role Badge + Notification + Logout */}
         <View style={styles.controlsRow}>
 
           {/* Authenticated Role Badge */}
@@ -103,7 +103,7 @@ export const Header: React.FC<{
 const styles = StyleSheet.create({
   container: {
     backgroundColor: COLORS.white,
-    paddingHorizontal: 12,
+    paddingHorizontal: 16,
     paddingTop: 10,
     paddingBottom: 10,
     borderBottomWidth: 1,
@@ -118,6 +118,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
+    flex: 1,
+    flexShrink: 1,
+    marginRight: 10,
+  },
+  brandTextWrap: {
     flex: 1,
     flexShrink: 1,
   },
@@ -141,14 +146,12 @@ const styles = StyleSheet.create({
     color: COLORS.textMuted,
     fontWeight: '500',
     lineHeight: 13,
-    maxWidth: 110,
   },
   controlsRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 5,
-    // Safe clearance to ensure floating developer gear (Expo Go / Android overlay) never covers buttons
-    marginRight: 68,
+    gap: 6,
+    flexShrink: 0,
   },
   roleBadge: {
     height: 32,
@@ -157,7 +160,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 5,
     backgroundColor: COLORS.primaryLight,
-    paddingHorizontal: 8,
+    paddingHorizontal: 10,
     borderRadius: 8,
     borderWidth: 1,
     borderColor: COLORS.primaryBorder,

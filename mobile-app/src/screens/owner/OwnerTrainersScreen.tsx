@@ -21,6 +21,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../constants/theme';
 import { useAuth } from '../../context/AuthContext';
+import { sanitizeTenDigitPhone } from '../../utils/phoneUtils';
 import { api } from '../../api/client';
 import { FileDownloader } from '../../utils/fileDownloader';
 
@@ -3004,11 +3005,8 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
                     placeholder="e.g. 9876543210"
                     placeholderTextColor={COLORS.textMuted}
                     value={manualForm.phone}
-                    onChangeText={(v) => {
-                      const digits = v.replace(/\D/g, '').slice(0, 10);
-                      setManualForm({ ...manualForm, phone: digits });
-                    }}
-                    keyboardType="phone-pad"
+                    onChangeText={(v) => setManualForm({ ...manualForm, phone: sanitizeTenDigitPhone(v) })}
+                    keyboardType="number-pad"
                     maxLength={10}
                   />
 
@@ -3098,11 +3096,8 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
                     placeholder="e.g. 9876543210"
                     placeholderTextColor={COLORS.textMuted}
                     value={inviteForm.phone}
-                    onChangeText={(v) => {
-                      const digits = v.replace(/\D/g, '').slice(0, 10);
-                      setInviteForm({ ...inviteForm, phone: digits });
-                    }}
-                    keyboardType="phone-pad"
+                    onChangeText={(v) => setInviteForm({ ...inviteForm, phone: sanitizeTenDigitPhone(v) })}
+                    keyboardType="number-pad"
                     maxLength={10}
                   />
 
@@ -3309,11 +3304,8 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
                 placeholder="e.g. 9876543210"
                 placeholderTextColor={COLORS.textMuted}
                 value={editForm.phone}
-                onChangeText={(v) => {
-                  const digits = v.replace(/\D/g, '').slice(0, 10);
-                  setEditForm({ ...editForm, phone: digits });
-                }}
-                keyboardType="phone-pad"
+                onChangeText={(v) => setEditForm({ ...editForm, phone: sanitizeTenDigitPhone(v) })}
+                keyboardType="number-pad"
                 maxLength={10}
               />
 

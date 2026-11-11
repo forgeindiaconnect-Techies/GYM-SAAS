@@ -18,8 +18,24 @@ import { COLORS } from '../../constants/theme';
 import { api, resolveMediaUrl } from '../../api/client';
 import { useAuth } from '../../context/AuthContext';
 import { FileDownloader } from '../../utils/fileDownloader';
+import { ScannableQRCode } from '../../components/ScannableQRCode';
+import { sanitizeTenDigitPhone, isValidTenDigitPhone } from '../../utils/phoneUtils';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
+
+const CHECKOUT_PAYMENT_METHODS = ['UPI', 'Credit / Debit Card', 'Net Banking', 'Cash at Gym'] as const;
+const UPI_APPS = ['Google Pay', 'PhonePe', 'Paytm', 'BHIM'];
+const NET_BANKING_BANKS = [
+  'State Bank of India (SBI)',
+  'HDFC Bank',
+  'ICICI Bank',
+  'Axis Bank',
+  'Kotak Mahindra Bank',
+  'Punjab National Bank (PNB)',
+  'Bank of Baroda',
+  'Canara Bank',
+  'Other Banks',
+];
 
 export const ALL_STORE_CATEGORIES = [
   'All Categories',
@@ -40,6 +56,7 @@ interface CartItem {
   name: string;
   category?: string;
   attributes?: string;
+  fulfilmentType?: string;
   price: number;
   quantity: number;
   image?: string;
@@ -207,7 +224,7 @@ export const getMobileTrackingTimeline = (order: any) => {
 
 export const CustomerStoreScreen: React.FC<{ initialSubTab?: string }> = ({ initialSubTab = 'store' }) => {
   const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState<'store' | 'cart' | 'orders' | 'payments'>(
+  const [activeTab, setActiveTab] = useState<'store' | 'cart' | 'checkout' | 'orders' | 'payments'>(
     initialSubTab === 'cart' ? 'cart' : initialSubTab === 'orders' ? 'orders' : initialSubTab === 'payments' ? 'payments' : 'store'
   );
 
@@ -237,11 +254,22 @@ export const CustomerStoreScreen: React.FC<{ initialSubTab?: string }> = ({ init
       image: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=600&auto=format&fit=crop&q=80',
     }
   ]);
-  const [showCheckoutModal, setShowCheckoutModal] = useState(false);
   const [fulfilmentType, setFulfilmentType] = useState<'Gym Pickup' | 'Delivery'>('Gym Pickup');
-  const [paymentMethod, setPaymentMethod] = useState<'UPI' | 'Card' | 'Desk'>('UPI');
-  const [deliveryAddress, setDeliveryAddress] = useState('RK Towers, Rayakottai Rd, Krishnagiri');
+  const [paymentMethod, setPaymentMethod] = useState<'UPI' | 'Credit / Debit Card' | 'Net Banking' | 'Cash at Gym'>('UPI');
+  const [selectedUpiApp, setSelectedUpiApp] = useState<string>('');
+  const [upiId, setUpiId] = useState<string>('');
+  const [cardDetails, setCardDetails] = useState({ number: '', name: '', expiry: '', cvv: '' });
+  const [bankName, setBankName] = useState<string>('');
+  const [showBankPicker, setShowBankPicker] = useState<boolean>(false);
+  const [delivery, setDelivery] = useState({ name: '', phone: '', address: '', city: '', state: '', pinCode: '' });
+  const [placedOrder, setPlacedOrder] = useState<any | null>(null);
   const [isCheckingOut, setIsCheckingOut] = useState(false);
+
+  // Rewards & Points State (Matching Web MemberCheckout.tsx)
+  const [pointsBalance, setPointsBalance] = useState<number>(0);
+  const [rewardSettings, setRewardSettings] = useState<any>(null);
+  const [usePoints, setUsePoints] = useState<boolean>(false);
+  const [pointsToRedeem, setPointsToRedeem] = useState<number>(0);
 
   // Orders State (default matching Web Page 5)
   const [orderFilter, setOrderFilter] = useState<string>('All Orders');
@@ -510,33 +538,115 @@ export const CustomerStoreScreen: React.FC<{ initialSubTab?: string }> = ({ init
     }
   }, []);
 
+  const loadCart = useCallback(async () => {
+    try {
+      const res = await api.get('/store/customer/cart').catch(() => null);
+      if (res?.data?.success && Array.isArray(res.data.cart)) {
+        const mapped: CartItem[] = res.data.cart.map((row: any, idx: number) => {
+          const p = row.product || {};
+          const v = row.variant || null;
+          const unitPrice = v
+            ? (v.price - (v.discountPrice || 0))
+            : (p.sellingPrice - (p.discountPrice || 0));
+          const attrs = v?.attributes
+            ? Object.values(v.attributes).join(' / ')
+            : (p.attributes ? Object.values(p.attributes).slice(0, 2).join(' / ') : '');
+          return {
+            _id: `${p._id || idx}_${v?._id || 'base'}`,
+            productId: p._id,
+            variantId: v?._id,
+            name: p.name || 'Product',
+            category: p.categoryName || 'Store Product',
+            attributes: attrs,
+            fulfilmentType: p.fulfilmentType,
+            price: Math.max(0, Number(unitPrice) || 0),
+            quantity: Number(row.quantity) || 1,
+            image: resolveMediaUrl(p.image),
+          };
+        });
+        setCart(mapped);
+        if (mapped.length > 0 && mapped.every((row) => row.fulfilmentType === 'Delivery')) {
+          setFulfilmentType('Delivery');
+        }
+      }
+    } catch (err) {
+      console.log('[CustomerStore] Load cart note:', err);
+    }
+  }, []);
+
+  const loadRewards = useCallback(async () => {
+    try {
+      const [walletRes, settingsRes] = await Promise.all([
+        api.get('/referrals/my-rewards-ledger').catch(() => ({ data: { pointsBalance: 0 } })),
+        api.get('/referrals/settings').catch(() => ({ data: { settings: null } })),
+      ]);
+      const pts = Number(walletRes?.data?.pointsBalance || 0);
+      setPointsBalance(pts);
+      const st = settingsRes?.data?.settings || null;
+      setRewardSettings(st);
+      if (st && st.enableStorePurchase && pts >= (st.minPointsForRedemption || 100)) {
+        setPointsToRedeem(pts);
+      } else {
+        setUsePoints(false);
+        setPointsToRedeem(0);
+      }
+    } catch (err) {
+      console.log('[CustomerStore] Load rewards note:', err);
+    }
+  }, []);
+
   useEffect(() => {
     loadProducts();
+    loadCart();
+    loadRewards();
     loadOrders();
-  }, [loadProducts, loadOrders]);
+  }, [loadProducts, loadCart, loadRewards, loadOrders]);
 
   useEffect(() => {
     if (activeTab === 'orders') {
       loadOrders();
+    } else if (activeTab === 'cart' || activeTab === 'checkout') {
+      loadCart();
+      loadRewards();
     }
-  }, [activeTab, loadOrders]);
+  }, [activeTab, loadOrders, loadCart, loadRewards]);
+
+  useEffect(() => {
+    if (fulfilmentType === 'Delivery' && paymentMethod === 'Cash at Gym') {
+      setPaymentMethod('UPI');
+    }
+  }, [fulfilmentType, paymentMethod]);
 
   const onRefresh = () => {
     setRefreshing(true);
     loadProducts();
+    loadCart();
+    loadRewards();
     loadOrders();
   };
 
-  // Cart Calculations
+  // Cart & Checkout Totals (Matching Web MemberCheckout.tsx)
   const cartSubtotal = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
   const cartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
+  const isPremium = Boolean((user as any)?.subscriptionPlan?.toLowerCase?.().includes('premium'));
+  const discountAmount = isPremium ? Math.round(cartSubtotal * 0.3) : 0;
+  const convUnit = rewardSettings?.pointsPerConversionUnit || 100;
+  const rupeeUnit = rewardSettings?.currencyValuePerUnit || 50;
+  const rate = rupeeUnit / convUnit;
+  const maxPossibleDiscount = Math.max(0, cartSubtotal - discountAmount);
+  const rawPointsDiscount = usePoints ? Math.round(pointsToRedeem * rate) : 0;
+  const pointsDiscount = Math.min(rawPointsDiscount, maxPossibleDiscount);
+  const finalTotal = Math.max(0, cartSubtotal - discountAmount - pointsDiscount);
 
   // Cart Management
-  const handleAddToCart = (product: any, qty: number = 1, variant?: any) => {
+  const handleAddToCart = async (product: any, qty: number = 1, variant?: any) => {
     const itemPrice = variant
       ? (variant.finalPrice ?? Math.max(0, Number(variant.price || 0) - Number(variant.discountPrice || 0)))
       : (product.displayPrice ?? Math.max(0, Number(product.sellingPrice || 0) - Number(product.discountPrice || 0)));
     const itemName = variant ? `${product.name} (${variant.name || Object.values(variant.attributes || {}).join(' ') || 'Variant'})` : product.name;
+    const itemAttrs = variant?.attributes
+      ? Object.values(variant.attributes).join(' / ')
+      : (product.attributes ? Object.values(product.attributes).slice(0, 2).join(' / ') : '');
 
     setCart(prev => {
       const existing = prev.find(i => i.productId === product._id && (!variant || i.variantId === variant._id));
@@ -546,12 +656,13 @@ export const CustomerStoreScreen: React.FC<{ initialSubTab?: string }> = ({ init
       return [
         ...prev,
         {
-          _id: `cart_${Date.now()}`,
+          _id: `${product._id}_${variant?._id || 'base'}`,
           productId: product._id,
           variantId: variant?._id,
-          name: itemName,
+          name: product.name,
           category: product.categoryName || 'Store Product',
-          attributes: product.attributes ? Object.values(product.attributes).join(' • ') : '',
+          attributes: itemAttrs,
+          fulfilmentType: product.fulfilmentType,
           price: itemPrice,
           quantity: qty,
           image: product.image,
@@ -559,22 +670,71 @@ export const CustomerStoreScreen: React.FC<{ initialSubTab?: string }> = ({ init
       ];
     });
 
+    if (product._id && !String(product._id).startsWith('prod_')) {
+      try {
+        await api.post('/store/customer/cart', {
+          productId: product._id,
+          variantId: variant?._id,
+          quantity: qty,
+        });
+        await loadCart();
+      } catch (err: any) {
+        const msg = err?.response?.data?.message;
+        if (msg) {
+          Alert.alert('Cart Notice', msg);
+          await loadCart();
+          return;
+        }
+      }
+    }
+
     setSelectedProduct(null);
     Alert.alert('Added to Cart! 🛒', `"${itemName}" (${qty}x) has been added to your shopping cart.`);
   };
 
-  const handleUpdateQty = (itemId: string, delta: number) => {
+  const handleUpdateQty = async (itemId: string, delta: number) => {
+    const target = cart.find(item => item._id === itemId);
+    if (!target) return;
+    const newQty = target.quantity + delta;
+
     setCart(prev => prev.map(item => {
       if (item._id === itemId) {
-        const newQty = item.quantity + delta;
         return newQty > 0 ? { ...item, quantity: newQty } : null;
       }
       return item;
     }).filter(Boolean) as CartItem[]);
+
+    if (target.productId && !String(target.productId).startsWith('prod_')) {
+      try {
+        if (newQty > 0) {
+          await api.put('/store/customer/cart/items', {
+            productId: target.productId,
+            variantId: target.variantId,
+            quantity: newQty,
+          });
+        } else {
+          const q = target.variantId ? `?variantId=${encodeURIComponent(target.variantId)}` : '';
+          await api.delete(`/store/customer/cart/items/${target.productId}${q}`);
+        }
+        await loadCart();
+      } catch (err: any) {
+        if (err?.response?.data?.message) {
+          Alert.alert('Cart Notice', err.response.data.message);
+        }
+        await loadCart();
+      }
+    }
   };
 
-  const handleRemoveCartItem = (itemId: string) => {
+  const handleRemoveCartItem = async (itemId: string) => {
+    const target = cart.find(i => i._id === itemId);
     setCart(prev => prev.filter(i => i._id !== itemId));
+    if (target?.productId && !String(target.productId).startsWith('prod_')) {
+      try {
+        const q = target.variantId ? `?variantId=${encodeURIComponent(target.variantId)}` : '';
+        await api.delete(`/store/customer/cart/items/${target.productId}${q}`);
+      } catch {}
+    }
   };
 
   const handleClearCart = () => {
@@ -586,86 +746,113 @@ export const CustomerStoreScreen: React.FC<{ initialSubTab?: string }> = ({ init
         { 
           text: 'Clear All', 
           style: 'destructive', 
-          onPress: () => setCart([]) 
+          onPress: async () => {
+            setCart([]);
+            await api.delete('/store/customer/cart').catch(() => {});
+          }
         }
       ]
     );
   };
 
-  // Checkout Submission
+  // Checkout Submission (Matching Web MemberCheckout.tsx)
   const handleProceedToCheckout = () => {
     if (cart.length === 0) {
       Alert.alert('Cart Empty', 'Please add products to your cart before proceeding to checkout.');
       return;
     }
-    setShowCheckoutModal(true);
+    setPlacedOrder(null);
+    if (cart.every((row) => row.fulfilmentType === 'Delivery')) {
+      setFulfilmentType('Delivery');
+    }
+    loadRewards();
+    setActiveTab('checkout');
   };
 
   const handleConfirmOrder = async () => {
+    if (cart.length === 0) {
+      Alert.alert('Cart Empty', 'Your cart is empty.');
+      return;
+    }
+    if (fulfilmentType === 'Delivery') {
+      const missingField = (['name', 'phone', 'address', 'city', 'state', 'pinCode'] as const).find(
+        (key) => !delivery[key].trim()
+      );
+      if (missingField) {
+        Alert.alert(
+          'Missing Delivery Details',
+          `Please fill in the delivery ${missingField === 'pinCode' ? 'pincode' : missingField}.`
+        );
+        return;
+      }
+      if (!isValidTenDigitPhone(delivery.phone)) {
+        Alert.alert('Invalid Phone', 'Please enter a valid 10-digit mobile number for delivery.');
+        return;
+      }
+      if (!/^\d{6}$/.test(delivery.pinCode.trim())) {
+        Alert.alert('Invalid Pincode', 'Please enter a valid 6-digit pincode.');
+        return;
+      }
+    }
+    if (paymentMethod === 'Net Banking' && !bankName) {
+      Alert.alert('Select Bank', 'Please select a bank to continue with Net Banking.');
+      return;
+    }
+
     setIsCheckingOut(true);
     try {
       const payload = {
-        items: cart.map(i => ({
-          productId: i.productId?._id || i.productId || i._id,
-          variantId: i.variantId,
-          quantity: i.quantity,
-          price: i.price,
-        })),
         fulfilmentType,
+        deliveryDetails: fulfilmentType === 'Delivery' ? delivery : undefined,
         paymentMethod,
-        shippingAddress: {
-          line1: '123 Fitness Ave',
-          city: 'Krishnagiri',
-          state: 'Tamil Nadu',
-          postalCode: '635001',
-          country: 'India',
-        },
+        bankName: paymentMethod === 'Net Banking' ? bankName : undefined,
+        discount: discountAmount,
+        pointsToRedeem: usePoints ? pointsToRedeem : 0,
       };
-      const res = await api.post('/store/customer/checkout', payload).catch(() => null);
+      const res = await api.post('/store/customer/checkout', payload);
       if (res?.data?.order) {
+        setPlacedOrder(res.data.order);
         setCart([]);
         setIsCheckingOut(false);
-        setShowCheckoutModal(false);
         await loadOrders();
-        Alert.alert('Order Confirmed! 🎉', `Your order ${res.data.order.orderNumber} (₹${res.data.order.total}) has been placed successfully via ${paymentMethod}.`);
-        setActiveTab('orders');
+        await loadRewards();
         return;
       }
-    } catch {
-      // Fallback to local optimistic order
+    } catch (err: any) {
+      setIsCheckingOut(false);
+      if (err?.response) {
+        Alert.alert('Checkout Failed', err.response?.data?.message || 'Checkout failed. Please try again.');
+        return;
+      }
     }
 
-    // Local fallback order
-    setTimeout(() => {
-      const newOrder = {
-        _id: `ord_${Date.now()}`,
-        orderNumber: `ORD-MVM${Math.random().toString(36).substring(2, 7).toUpperCase()}KD`,
-        itemCount: cart.length,
-        createdAt: new Date().toISOString(),
-        dateDisplay: new Date().toLocaleString(),
-        fulfilmentType: fulfilmentType,
-        total: cartSubtotal,
-        status: 'Preparing',
-        paymentStatus: 'Paid',
-        paymentMethod: paymentMethod,
-        items: cart.map(i => ({ name: i.name, quantity: i.quantity, price: i.price, attributes: i.attributes })),
-        statusHistory: [
-          { status: 'Pending', at: new Date().toISOString(), note: 'Order placed and payment received' },
-          { status: 'Preparing', at: new Date().toISOString(), note: 'Order is being packed at gym store' },
-        ],
-        trackingTimeline: [
-          { status: 'Pending', time: new Date().toLocaleTimeString(), note: 'Order placed and payment received', completed: true },
-          { status: 'Preparing', time: 'Just now', note: 'Order is being packed at gym store', completed: true },
-        ]
-      };
+    // Offline fallback order only when server is unreachable
+    const newOrder = {
+      _id: `ord_${Date.now()}`,
+      orderNumber: `ORD-MVM${Math.random().toString(36).substring(2, 7).toUpperCase()}KD`,
+      itemCount: cart.length,
+      createdAt: new Date().toISOString(),
+      dateDisplay: new Date().toLocaleString(),
+      fulfilmentType,
+      total: finalTotal,
+      status: 'Preparing',
+      paymentStatus: 'Paid',
+      paymentMethod,
+      items: cart.map(i => ({ name: i.name, quantity: i.quantity, price: i.price, attributes: i.attributes })),
+      statusHistory: [
+        { status: 'Pending', at: new Date().toISOString(), note: 'Order placed and payment received' },
+        { status: 'Preparing', at: new Date().toISOString(), note: 'Order is being packed at gym store' },
+      ],
+      trackingTimeline: [
+        { status: 'Pending', time: new Date().toLocaleTimeString(), note: 'Order placed and payment received', completed: true },
+        { status: 'Preparing', time: 'Just now', note: 'Order is being packed at gym store', completed: true },
+      ]
+    };
 
-      setOrders(prev => [newOrder, ...prev]);
-      setCart([]);
-      setIsCheckingOut(false);
-      setShowCheckoutModal(false);
-      Alert.alert('Order Confirmed! 🎉', `Your order ${newOrder.orderNumber} (₹${newOrder.total}) has been placed via ${paymentMethod}.`);
-      setActiveTab('orders');
-    }, 800);
+    setOrders(prev => [newOrder, ...prev]);
+    setCart([]);
+    setPlacedOrder(newOrder);
+    setIsCheckingOut(false);
   };
 
   // Filtered Products
@@ -711,15 +898,15 @@ export const CustomerStoreScreen: React.FC<{ initialSubTab?: string }> = ({ init
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[styles.subTabBtn, activeTab === 'cart' && styles.subTabBtnActive]}
-            onPress={() => setActiveTab('cart')}
+            style={[styles.subTabBtn, (activeTab === 'cart' || activeTab === 'checkout') && styles.subTabBtnActive]}
+            onPress={() => { setPlacedOrder(null); setActiveTab('cart'); }}
             activeOpacity={0.7}
           >
-            <Ionicons name="cart-outline" size={14} color={activeTab === 'cart' ? '#FFFFFF' : '#64748B'} />
-            <Text style={[styles.subTabText, activeTab === 'cart' && styles.subTabTextActive]}>My Cart</Text>
+            <Ionicons name="cart-outline" size={14} color={(activeTab === 'cart' || activeTab === 'checkout') ? '#FFFFFF' : '#64748B'} />
+            <Text style={[styles.subTabText, (activeTab === 'cart' || activeTab === 'checkout') && styles.subTabTextActive]}>My Cart</Text>
             {cartCount > 0 && (
-              <View style={[styles.cartBadgePill, activeTab === 'cart' && { backgroundColor: '#FFFFFF' }]}>
-                <Text style={[styles.cartBadgePillText, activeTab === 'cart' && { color: '#EA580C' }]}>
+              <View style={[styles.cartBadgePill, (activeTab === 'cart' || activeTab === 'checkout') && { backgroundColor: '#FFFFFF' }]}>
+                <Text style={[styles.cartBadgePillText, (activeTab === 'cart' || activeTab === 'checkout') && { color: '#EA580C' }]}>
                   {cartCount}
                 </Text>
               </View>
@@ -1065,6 +1252,500 @@ export const CustomerStoreScreen: React.FC<{ initialSubTab?: string }> = ({ init
       )}
 
       {/* ======================================================== */}
+      {/* 2B. CHECKOUT PAGE (1:1 Parity with Web MemberCheckout)   */}
+      {/* ======================================================== */}
+      {activeTab === 'checkout' && (
+        <ScrollView
+          style={styles.contentScroll}
+          contentContainerStyle={{ padding: 14, paddingBottom: 110 }}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+        >
+          {placedOrder ? (
+            <View style={styles.checkoutSuccessCard}>
+              <Ionicons name="checkmark-circle" size={64} color="#EA580C" />
+              <Text style={styles.checkoutSuccessTitle}>Order Placed!</Text>
+              <Text style={styles.checkoutSuccessSub}>
+                Order <Text style={{ fontWeight: '800', color: '#111827' }}>{placedOrder.orderNumber}</Text> is confirmed.
+              </Text>
+              <Text style={styles.checkoutSuccessSub}>
+                Paid <Text style={{ fontWeight: '900', color: '#EA580C' }}>₹{placedOrder.total}</Text> via {placedOrder.paymentMethod}. Track it under My Orders.
+              </Text>
+              <TouchableOpacity
+                style={styles.proceedCheckoutBtn}
+                onPress={() => {
+                  setPlacedOrder(null);
+                  setActiveTab('orders');
+                }}
+                activeOpacity={0.85}
+              >
+                <Text style={styles.proceedCheckoutBtnText}>Go to My Orders</Text>
+              </TouchableOpacity>
+            </View>
+          ) : cart.length === 0 ? (
+            <View style={styles.emptyCard}>
+              <Ionicons name="cart-outline" size={44} color="#CBD5E1" />
+              <Text style={styles.emptyTitle}>Nothing to checkout</Text>
+              <Text style={styles.emptySub}>Your cart is empty.</Text>
+              <TouchableOpacity
+                style={styles.continueShopButton}
+                onPress={() => setActiveTab('store')}
+                activeOpacity={0.8}
+              >
+                <Text style={styles.continueShopButtonText}>← Browse Store</Text>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <View style={{ gap: 16 }}>
+              {/* Top Back link & Checkout Title */}
+              <View>
+                <TouchableOpacity
+                  style={styles.checkoutBackBtn}
+                  onPress={() => setActiveTab('cart')}
+                  activeOpacity={0.7}
+                >
+                  <Ionicons name="arrow-back" size={15} color="#9A3412" />
+                  <Text style={styles.checkoutBackText}>Back to cart</Text>
+                </TouchableOpacity>
+                <Text style={styles.checkoutPageTitle}>Checkout</Text>
+                <Text style={styles.webHeaderSub}>Confirm your order and payment.</Text>
+              </View>
+
+              {/* Card 1: Fulfilment (How would you like to receive it?) */}
+              <View style={styles.checkoutCard}>
+                <Text style={styles.checkoutCardHeading}>How would you like to receive it?</Text>
+
+                <View style={{ flexDirection: 'row', gap: 10 }}>
+                  <TouchableOpacity
+                    style={[styles.fulfilmentCard, fulfilmentType === 'Gym Pickup' && styles.fulfilmentCardActive]}
+                    onPress={() => setFulfilmentType('Gym Pickup')}
+                    activeOpacity={0.8}
+                  >
+                    <Ionicons name="location-outline" size={22} color="#EA580C" />
+                    <Text style={styles.fulfilmentCardTitle}>Gym Pickup</Text>
+                    <Text style={styles.fulfilmentCardDesc}>Collect from the gym at your convenience.</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={[styles.fulfilmentCard, fulfilmentType === 'Delivery' && styles.fulfilmentCardActive]}
+                    onPress={() => setFulfilmentType('Delivery')}
+                    activeOpacity={0.8}
+                  >
+                    <Ionicons name="car-outline" size={22} color="#EA580C" />
+                    <Text style={styles.fulfilmentCardTitle}>Delivery</Text>
+                    <Text style={styles.fulfilmentCardDesc}>Get it delivered to your address.</Text>
+                  </TouchableOpacity>
+                </View>
+
+                {fulfilmentType === 'Delivery' && (
+                  <View style={styles.deliveryFormWrap}>
+                    <View style={styles.deliveryRow2}>
+                      <View style={{ flex: 1 }}>
+                        <Text style={styles.deliveryFieldLabel}>FULL NAME *</Text>
+                        <TextInput
+                          style={styles.deliveryInput}
+                          value={delivery.name}
+                          onChangeText={(txt) => setDelivery(prev => ({ ...prev, name: txt }))}
+                          placeholder="Receiver name"
+                          placeholderTextColor="#94A3B8"
+                        />
+                      </View>
+                      <View style={{ flex: 1 }}>
+                        <Text style={styles.deliveryFieldLabel}>PHONE *</Text>
+                        <TextInput
+                          style={styles.deliveryInput}
+                          value={delivery.phone}
+                          onChangeText={(txt) => setDelivery(prev => ({ ...prev, phone: sanitizeTenDigitPhone(txt) }))}
+                          placeholder="10-digit mobile"
+                          placeholderTextColor="#94A3B8"
+                          keyboardType="number-pad"
+                          maxLength={10}
+                        />
+                      </View>
+                    </View>
+
+                    <View>
+                      <Text style={styles.deliveryFieldLabel}>ADDRESS *</Text>
+                      <TextInput
+                        style={styles.deliveryInput}
+                        value={delivery.address}
+                        onChangeText={(txt) => setDelivery(prev => ({ ...prev, address: txt }))}
+                        placeholder="House no, street, area"
+                        placeholderTextColor="#94A3B8"
+                      />
+                    </View>
+
+                    <View style={styles.deliveryRow2}>
+                      <View style={{ flex: 1 }}>
+                        <Text style={styles.deliveryFieldLabel}>CITY *</Text>
+                        <TextInput
+                          style={styles.deliveryInput}
+                          value={delivery.city}
+                          onChangeText={(txt) => setDelivery(prev => ({ ...prev, city: txt }))}
+                          placeholder="City"
+                          placeholderTextColor="#94A3B8"
+                        />
+                      </View>
+                      <View style={{ flex: 1 }}>
+                        <Text style={styles.deliveryFieldLabel}>STATE *</Text>
+                        <TextInput
+                          style={styles.deliveryInput}
+                          value={delivery.state}
+                          onChangeText={(txt) => setDelivery(prev => ({ ...prev, state: txt }))}
+                          placeholder="State"
+                          placeholderTextColor="#94A3B8"
+                        />
+                      </View>
+                    </View>
+
+                    <View style={{ width: '50%', paddingRight: 5 }}>
+                      <Text style={styles.deliveryFieldLabel}>PINCODE *</Text>
+                      <TextInput
+                        style={styles.deliveryInput}
+                        value={delivery.pinCode}
+                        onChangeText={(txt) => setDelivery(prev => ({ ...prev, pinCode: txt.replace(/\D/g, '').slice(0, 6) }))}
+                        placeholder="6-digit pincode"
+                        placeholderTextColor="#94A3B8"
+                        keyboardType="number-pad"
+                        maxLength={6}
+                      />
+                    </View>
+                  </View>
+                )}
+              </View>
+
+              {/* Card 2: Payment Method */}
+              <View style={styles.checkoutCard}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+                  <Ionicons name="card-outline" size={19} color="#EA580C" />
+                  <Text style={[styles.checkoutCardHeading, { marginBottom: 0 }]}>Payment Method</Text>
+                </View>
+
+                <View style={styles.payGrid}>
+                  {CHECKOUT_PAYMENT_METHODS.filter(m => fulfilmentType === 'Delivery' ? m !== 'Cash at Gym' : true).map((method) => {
+                    const isSelected = paymentMethod === method;
+                    return (
+                      <TouchableOpacity
+                        key={method}
+                        style={[styles.payGridCard, isSelected && styles.payGridCardActive]}
+                        onPress={() => setPaymentMethod(method)}
+                        activeOpacity={0.8}
+                      >
+                        <Text style={[styles.payGridLabel, isSelected && styles.payGridLabelActive]} numberOfLines={1}>
+                          {method}
+                        </Text>
+                        <View style={[styles.radioCircle, isSelected && styles.radioCircleActive]}>
+                          {isSelected && <View style={styles.radioDotInner} />}
+                        </View>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+
+                {/* Dynamic Payment Method Sub-panel */}
+                <View style={styles.paymentDetailBox}>
+                  {paymentMethod === 'UPI' && (
+                    <View style={{ gap: 14 }}>
+                      <View style={{ gap: 10 }}>
+                        <Text style={styles.paymentSubHeading}>Pay using UPI App</Text>
+                        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+                          {UPI_APPS.map((app) => {
+                            const activeApp = selectedUpiApp === app;
+                            return (
+                              <TouchableOpacity
+                                key={app}
+                                style={[styles.upiAppPill, activeApp && styles.upiAppPillActive]}
+                                onPress={() => setSelectedUpiApp(app)}
+                                activeOpacity={0.75}
+                              >
+                                <Text style={[styles.upiAppPillText, activeApp && styles.upiAppPillTextActive]}>{app}</Text>
+                              </TouchableOpacity>
+                            );
+                          })}
+                        </View>
+
+                        <View style={styles.orDividerRow}>
+                          <View style={styles.orDividerLine} />
+                          <Text style={styles.orDividerText}>OR</Text>
+                          <View style={styles.orDividerLine} />
+                        </View>
+
+                        <View>
+                          <Text style={styles.deliveryFieldLabel}>ENTER UPI ID</Text>
+                          <TextInput
+                            style={[styles.deliveryInput, { backgroundColor: '#FFFFFF' }]}
+                            value={upiId}
+                            onChangeText={setUpiId}
+                            placeholder="e.g. yourname@bank"
+                            placeholderTextColor="#94A3B8"
+                            autoCapitalize="none"
+                          />
+                        </View>
+                      </View>
+
+                      <View style={styles.qrSectionBox}>
+                        <ScannableQRCode
+                          value={`upi://pay?pa=aigymstore@ybl&pn=AI%20Gym%20Store&am=${finalTotal}&cu=INR`}
+                          size={104}
+                          showScannerCorners={true}
+                          showScanBeam={false}
+                          centerBadgeIcon=""
+                        />
+                        <Text style={styles.qrScanTitle}>Scan QR to Pay</Text>
+                        <Text style={styles.qrScanSub}>ANY UPI APP</Text>
+                      </View>
+                    </View>
+                  )}
+
+                  {paymentMethod === 'Credit / Debit Card' && (
+                    <View style={{ gap: 10 }}>
+                      <Text style={styles.paymentSubHeading}>Enter Card Details</Text>
+                      <View>
+                        <Text style={styles.deliveryFieldLabel}>CARD NUMBER</Text>
+                        <TextInput
+                          style={[styles.deliveryInput, { backgroundColor: '#FFFFFF' }]}
+                          value={cardDetails.number}
+                          onChangeText={(txt) => setCardDetails(prev => ({ ...prev, number: txt.slice(0, 19) }))}
+                          placeholder="XXXX XXXX XXXX XXXX"
+                          placeholderTextColor="#94A3B8"
+                          keyboardType="number-pad"
+                          maxLength={19}
+                        />
+                      </View>
+                      <View>
+                        <Text style={styles.deliveryFieldLabel}>NAME ON CARD</Text>
+                        <TextInput
+                          style={[styles.deliveryInput, { backgroundColor: '#FFFFFF' }]}
+                          value={cardDetails.name}
+                          onChangeText={(txt) => setCardDetails(prev => ({ ...prev, name: txt }))}
+                          placeholder="John Doe"
+                          placeholderTextColor="#94A3B8"
+                        />
+                      </View>
+                      <View style={styles.deliveryRow2}>
+                        <View style={{ flex: 1 }}>
+                          <Text style={styles.deliveryFieldLabel}>EXPIRY (MM/YY)</Text>
+                          <TextInput
+                            style={[styles.deliveryInput, { backgroundColor: '#FFFFFF' }]}
+                            value={cardDetails.expiry}
+                            onChangeText={(txt) => setCardDetails(prev => ({ ...prev, expiry: txt.slice(0, 5) }))}
+                            placeholder="MM/YY"
+                            placeholderTextColor="#94A3B8"
+                            maxLength={5}
+                          />
+                        </View>
+                        <View style={{ flex: 1 }}>
+                          <Text style={styles.deliveryFieldLabel}>CVV</Text>
+                          <TextInput
+                            style={[styles.deliveryInput, { backgroundColor: '#FFFFFF' }]}
+                            value={cardDetails.cvv}
+                            onChangeText={(txt) => setCardDetails(prev => ({ ...prev, cvv: txt.replace(/\D/g, '').slice(0, 4) }))}
+                            placeholder="***"
+                            placeholderTextColor="#94A3B8"
+                            keyboardType="number-pad"
+                            secureTextEntry
+                            maxLength={4}
+                          />
+                        </View>
+                      </View>
+                    </View>
+                  )}
+
+                  {paymentMethod === 'Net Banking' && (
+                    <View style={{ gap: 10 }}>
+                      <Text style={styles.paymentSubHeading}>Select your Bank</Text>
+                      <TouchableOpacity
+                        style={styles.bankPickerBtn}
+                        onPress={() => setShowBankPicker(prev => !prev)}
+                        activeOpacity={0.8}
+                      >
+                        <Text style={[styles.bankPickerBtnText, !bankName && { color: '#64748B' }]}>
+                          {bankName || 'Choose a bank...'}
+                        </Text>
+                        <Ionicons name={showBankPicker ? 'chevron-up' : 'chevron-down'} size={16} color="#64748B" />
+                      </TouchableOpacity>
+
+                      {showBankPicker && (
+                        <View style={styles.bankDropdownList}>
+                          {NET_BANKING_BANKS.map((bank) => (
+                            <TouchableOpacity
+                              key={bank}
+                              style={[styles.bankOptionRow, bankName === bank && styles.bankOptionRowActive]}
+                              onPress={() => {
+                                setBankName(bank);
+                                setShowBankPicker(false);
+                              }}
+                              activeOpacity={0.75}
+                            >
+                              <Text style={[styles.bankOptionText, bankName === bank && { color: '#EA580C', fontWeight: '800' }]}>
+                                {bank}
+                              </Text>
+                              {bankName === bank && <Ionicons name="checkmark" size={16} color="#EA580C" />}
+                            </TouchableOpacity>
+                          ))}
+                        </View>
+                      )}
+
+                      {!bankName && (
+                        <Text style={styles.bankWarningText}>Please select a bank to continue</Text>
+                      )}
+                    </View>
+                  )}
+
+                  {paymentMethod === 'Cash at Gym' && (
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+                      <View style={styles.cashIconCircle}>
+                        <Ionicons name="checkmark-circle-outline" size={20} color="#EA580C" />
+                      </View>
+                      <View style={{ flex: 1 }}>
+                        <Text style={styles.paymentSubHeading}>Pay at Front Desk</Text>
+                        <Text style={styles.cashSubDesc}>
+                          Your order will be reserved. Please pay by cash or card when you pick up your items.
+                        </Text>
+                      </View>
+                    </View>
+                  )}
+                </View>
+              </View>
+
+              {/* Card 3: Order Summary */}
+              <View style={styles.checkoutCard}>
+                <Text style={styles.checkoutCardHeading}>Order Summary</Text>
+
+                {/* Itemized Lines */}
+                <View style={{ gap: 10 }}>
+                  {cart.map((item, idx) => (
+                    <View key={`${item._id || item.productId}-${idx}`} style={styles.checkoutItemLine}>
+                      <Text style={styles.checkoutItemLineName} numberOfLines={2}>
+                        {item.name}
+                        {item.attributes ? ` (${item.attributes})` : item.category ? ` (${item.category})` : ''} × {item.quantity}
+                      </Text>
+                      <Text style={styles.checkoutItemLinePrice}>₹{item.price * item.quantity}</Text>
+                    </View>
+                  ))}
+                </View>
+
+                {/* Referral Points Redemption Box */}
+                {rewardSettings?.enableStorePurchase && pointsBalance > 0 && (
+                  <View style={styles.referralBox}>
+                    <TouchableOpacity
+                      style={styles.referralHeaderRow}
+                      onPress={() => setUsePoints(prev => !prev)}
+                      activeOpacity={0.8}
+                    >
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                        <View style={[styles.checkboxSquare, usePoints && styles.checkboxSquareActive]}>
+                          {usePoints && <Ionicons name="checkmark" size={12} color="#FFFFFF" />}
+                        </View>
+                        <Ionicons name="cash-outline" size={14} color="#EA580C" />
+                        <Text style={styles.referralTitle}>Use Referral Points</Text>
+                      </View>
+                      <Text style={styles.referralAvailableText}>{pointsBalance} pts available</Text>
+                    </TouchableOpacity>
+
+                    {usePoints && (
+                      <View style={styles.referralExpanded}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <Text style={styles.referralMetaText}>Points to Redeem:</Text>
+                          <Text style={[styles.referralMetaText, { fontWeight: '800', color: '#111827' }]}>
+                            {pointsToRedeem} pts
+                          </Text>
+                        </View>
+
+                        <View style={styles.pointsStepperRow}>
+                          <TouchableOpacity
+                            style={styles.pointsStepBtn}
+                            onPress={() => {
+                              const minPts = Math.min(rewardSettings.minPointsForRedemption || 100, pointsBalance);
+                              setPointsToRedeem(prev => Math.max(minPts, prev - 10));
+                            }}
+                          >
+                            <Text style={styles.pointsStepBtnText}>-10</Text>
+                          </TouchableOpacity>
+                          <View style={styles.pointsTrackBg}>
+                            <View
+                              style={[
+                                styles.pointsTrackFill,
+                                { width: `${Math.min(100, Math.round((pointsToRedeem / Math.max(1, pointsBalance)) * 100))}%` },
+                              ]}
+                            />
+                          </View>
+                          <TouchableOpacity
+                            style={styles.pointsStepBtn}
+                            onPress={() => setPointsToRedeem(prev => Math.min(pointsBalance, prev + 10))}
+                          >
+                            <Text style={styles.pointsStepBtnText}>+10</Text>
+                          </TouchableOpacity>
+                          <TouchableOpacity
+                            style={styles.pointsMaxBtn}
+                            onPress={() => setPointsToRedeem(pointsBalance)}
+                          >
+                            <Text style={styles.pointsMaxBtnText}>Max</Text>
+                          </TouchableOpacity>
+                        </View>
+
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <Text style={styles.referralMetaText}>
+                            Rate: {convUnit} pts = ₹{rupeeUnit}
+                          </Text>
+                          <Text style={styles.referralDiscountBadge}>
+                            ✨ Discount: ₹{pointsDiscount}
+                          </Text>
+                        </View>
+                      </View>
+                    )}
+                  </View>
+                )}
+
+                {/* Subtotal / Discounts / Total */}
+                <View style={styles.checkoutTotalsDivider}>
+                  <View style={styles.summaryRow}>
+                    <Text style={styles.summaryLabel}>Subtotal</Text>
+                    <Text style={styles.summaryVal}>₹{cartSubtotal}</Text>
+                  </View>
+
+                  {discountAmount > 0 && (
+                    <View style={styles.summaryRow}>
+                      <Text style={[styles.summaryLabel, { color: '#16A34A' }]}>Premium Discount (30%)</Text>
+                      <Text style={[styles.summaryVal, { color: '#16A34A' }]}>-₹{discountAmount}</Text>
+                    </View>
+                  )}
+
+                  {pointsDiscount > 0 && (
+                    <View style={styles.summaryRow}>
+                      <Text style={[styles.summaryLabel, { color: '#15803D' }]}>Referral Points Discount</Text>
+                      <Text style={[styles.summaryVal, { color: '#15803D' }]}>-₹{pointsDiscount}</Text>
+                    </View>
+                  )}
+
+                  <View style={[styles.summaryRow, { marginTop: 4, marginBottom: 0 }]}>
+                    <Text style={styles.checkoutTotalLabel}>Total</Text>
+                    <Text style={styles.checkoutTotalVal}>₹{finalTotal}</Text>
+                  </View>
+                </View>
+
+                <TouchableOpacity
+                  style={[styles.proceedCheckoutBtn, isCheckingOut && { opacity: 0.6 }]}
+                  onPress={handleConfirmOrder}
+                  disabled={isCheckingOut}
+                  activeOpacity={0.85}
+                >
+                  {isCheckingOut ? (
+                    <ActivityIndicator size="small" color="#FFFFFF" />
+                  ) : (
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                      <Ionicons name="checkmark-circle-outline" size={18} color="#FFFFFF" />
+                      <Text style={styles.proceedCheckoutBtnText}>Pay ₹{finalTotal} & Place Order</Text>
+                    </View>
+                  )}
+                </TouchableOpacity>
+              </View>
+            </View>
+          )}
+        </ScrollView>
+      )}
+
+      {/* ======================================================== */}
       {/* 3. MY ORDERS TAB (Matching Web Page 5 & 7) */}
       {/* ======================================================== */}
       {activeTab === 'orders' && (
@@ -1390,78 +2071,6 @@ export const CustomerStoreScreen: React.FC<{ initialSubTab?: string }> = ({ init
                 </TouchableOpacity>
               </ScrollView>
             )}
-          </View>
-        </View>
-      </Modal>
-
-      {/* ======================================================== */}
-      {/* MODAL 2: CHECKOUT MODAL */}
-      {/* ======================================================== */}
-      <Modal visible={showCheckoutModal} transparent animationType="slide">
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalCard}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Checkout Order</Text>
-              <TouchableOpacity onPress={() => setShowCheckoutModal(false)}>
-                <Ionicons name="close" size={24} color="#64748B" />
-              </TouchableOpacity>
-            </View>
-
-            <ScrollView style={{ padding: 16 }}>
-              <Text style={styles.modalSectionLabel}>FULFILMENT METHOD</Text>
-              <View style={{ flexDirection: 'row', gap: 10, marginTop: 6 }}>
-                <TouchableOpacity
-                  style={[styles.fulfilmentBtn, fulfilmentType === 'Gym Pickup' && styles.fulfilmentBtnActive]}
-                  onPress={() => setFulfilmentType('Gym Pickup')}
-                >
-                  <Ionicons name="storefront-outline" size={16} color={fulfilmentType === 'Gym Pickup' ? '#EA580C' : '#64748B'} />
-                  <Text style={[styles.fulfilmentBtnText, fulfilmentType === 'Gym Pickup' && styles.fulfilmentBtnTextActive]}>
-                    Gym Pickup
-                  </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={[styles.fulfilmentBtn, fulfilmentType === 'Delivery' && styles.fulfilmentBtnActive]}
-                  onPress={() => setFulfilmentType('Delivery')}
-                >
-                  <Ionicons name="car-outline" size={16} color={fulfilmentType === 'Delivery' ? '#EA580C' : '#64748B'} />
-                  <Text style={[styles.fulfilmentBtnText, fulfilmentType === 'Delivery' && styles.fulfilmentBtnTextActive]}>
-                    Delivery
-                  </Text>
-                </TouchableOpacity>
-              </View>
-
-              <Text style={[styles.modalSectionLabel, { marginTop: 14 }]}>PAYMENT METHOD</Text>
-              {['UPI', 'Card', 'Desk'].map((pm) => (
-                <TouchableOpacity
-                  key={pm}
-                  style={[styles.payMethodOption, paymentMethod === pm && styles.payMethodOptionActive]}
-                  onPress={() => setPaymentMethod(pm as any)}
-                >
-                  <Text style={[styles.payMethodText, paymentMethod === pm && styles.payMethodTextActive]}>
-                    {pm === 'UPI' ? 'UPI / Google Pay / PhonePe' : pm === 'Card' ? 'Credit / Debit Card' : 'Pay at Gym Reception'}
-                  </Text>
-                  <Ionicons name={paymentMethod === pm ? 'radio-button-on' : 'radio-button-off'} size={18} color="#EA580C" />
-                </TouchableOpacity>
-              ))}
-
-              <View style={styles.checkoutTotalRow}>
-                <Text style={styles.checkoutTotalLabel}>Total Payable</Text>
-                <Text style={styles.checkoutTotalVal}>₹{cartSubtotal}</Text>
-              </View>
-
-              <TouchableOpacity
-                style={styles.modalAddCartBtn}
-                onPress={handleConfirmOrder}
-                disabled={isCheckingOut}
-              >
-                {isCheckingOut ? (
-                  <ActivityIndicator size="small" color="#FFFFFF" />
-                ) : (
-                  <Text style={styles.modalAddCartBtnText}>Confirm Order (₹{cartSubtotal})</Text>
-                )}
-              </TouchableOpacity>
-            </ScrollView>
           </View>
         </View>
       </Modal>
@@ -2909,5 +3518,407 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '800',
     color: '#FFFFFF',
+  },
+
+  // Full Checkout Screen Styles (Matching Web MemberCheckout.tsx)
+  checkoutBackBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    marginBottom: 6,
+    alignSelf: 'flex-start',
+  },
+  checkoutBackText: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#9A3412',
+  },
+  checkoutPageTitle: {
+    fontSize: 24,
+    fontWeight: '900',
+    color: '#111827',
+    letterSpacing: -0.4,
+  },
+  checkoutCard: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 18,
+    padding: 16,
+  },
+  checkoutCardHeading: {
+    fontSize: 16,
+    fontWeight: '800',
+    color: '#111827',
+    marginBottom: 12,
+  },
+  fulfilmentCard: {
+    flex: 1,
+    borderWidth: 2,
+    borderColor: '#E2E8F0',
+    borderRadius: 16,
+    padding: 14,
+    backgroundColor: '#FFFFFF',
+  },
+  fulfilmentCardActive: {
+    borderColor: '#FDBA74',
+    backgroundColor: '#F8FAFC',
+  },
+  fulfilmentCardTitle: {
+    fontSize: 14,
+    fontWeight: '800',
+    color: '#111827',
+    marginTop: 8,
+  },
+  fulfilmentCardDesc: {
+    fontSize: 11,
+    color: '#64748B',
+    marginTop: 2,
+    lineHeight: 15,
+  },
+  deliveryFormWrap: {
+    marginTop: 14,
+    gap: 10,
+  },
+  deliveryRow2: {
+    flexDirection: 'row',
+    gap: 10,
+  },
+  deliveryFieldLabel: {
+    fontSize: 10,
+    fontWeight: '800',
+    color: '#64748B',
+    letterSpacing: 0.4,
+    marginBottom: 4,
+  },
+  deliveryInput: {
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 9,
+    fontSize: 13,
+    color: '#111827',
+  },
+  payGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+    marginBottom: 12,
+  },
+  payGridCard: {
+    width: '48%',
+    flexGrow: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 12,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    backgroundColor: '#FFFFFF',
+  },
+  payGridCardActive: {
+    borderColor: '#FDBA74',
+    backgroundColor: '#FFF7ED',
+  },
+  payGridLabel: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#64748B',
+    flex: 1,
+    marginRight: 6,
+  },
+  payGridLabelActive: {
+    color: '#EA580C',
+  },
+  radioCircle: {
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    borderWidth: 2,
+    borderColor: '#E2E8F0',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  radioCircleActive: {
+    borderColor: '#FDBA74',
+  },
+  radioDotInner: {
+    width: 9,
+    height: 9,
+    borderRadius: 4.5,
+    backgroundColor: '#C2410C',
+  },
+  paymentDetailBox: {
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 14,
+    padding: 14,
+  },
+  paymentSubHeading: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  upiAppPill: {
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 8,
+  },
+  upiAppPillActive: {
+    borderColor: '#FDBA74',
+    backgroundColor: '#FFF7ED',
+  },
+  upiAppPillText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#64748B',
+  },
+  upiAppPillTextActive: {
+    color: '#EA580C',
+  },
+  orDividerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  orDividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#E2E8F0',
+  },
+  orDividerText: {
+    fontSize: 10,
+    fontWeight: '900',
+    color: '#9A3412',
+    letterSpacing: 0.8,
+  },
+  qrSectionBox: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: '#E2E8F0',
+  },
+  qrScanTitle: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: '#111827',
+    marginTop: 4,
+  },
+  qrScanSub: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: '#9A3412',
+    letterSpacing: 0.6,
+    marginTop: 2,
+  },
+  bankPickerBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 11,
+  },
+  bankPickerBtnText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#111827',
+  },
+  bankDropdownList: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 12,
+    overflow: 'hidden',
+  },
+  bankOptionRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F1F5F9',
+  },
+  bankOptionRowActive: {
+    backgroundColor: '#FFF7ED',
+  },
+  bankOptionText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#334155',
+  },
+  bankWarningText: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#D97706',
+  },
+  cashIconCircle: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: '#FFF7ED',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  cashSubDesc: {
+    fontSize: 11,
+    color: '#64748B',
+    marginTop: 2,
+    lineHeight: 16,
+  },
+  checkoutItemLine: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 10,
+  },
+  checkoutItemLineName: {
+    flex: 1,
+    fontSize: 13,
+    color: '#64748B',
+    fontWeight: '600',
+  },
+  checkoutItemLinePrice: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  referralBox: {
+    marginTop: 14,
+    padding: 12,
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 12,
+    gap: 10,
+  },
+  referralHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 8,
+  },
+  checkboxSquare: {
+    width: 17,
+    height: 17,
+    borderRadius: 4,
+    borderWidth: 1.5,
+    borderColor: '#CBD5E1',
+    backgroundColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  checkboxSquareActive: {
+    backgroundColor: '#EA580C',
+    borderColor: '#EA580C',
+  },
+  referralTitle: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  referralAvailableText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#EA580C',
+  },
+  referralExpanded: {
+    borderTopWidth: 1,
+    borderTopColor: '#E2E8F0',
+    paddingTop: 10,
+    gap: 8,
+  },
+  referralMetaText: {
+    fontSize: 11,
+    color: '#64748B',
+    fontWeight: '600',
+  },
+  pointsStepperRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  pointsStepBtn: {
+    paddingHorizontal: 9,
+    paddingVertical: 4,
+    borderRadius: 6,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  pointsStepBtnText: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#334155',
+  },
+  pointsTrackBg: {
+    flex: 1,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: '#E2E8F0',
+    overflow: 'hidden',
+  },
+  pointsTrackFill: {
+    height: '100%',
+    backgroundColor: '#EA580C',
+  },
+  pointsMaxBtn: {
+    paddingHorizontal: 9,
+    paddingVertical: 4,
+    borderRadius: 6,
+    backgroundColor: '#FFF7ED',
+    borderWidth: 1,
+    borderColor: '#FDBA74',
+  },
+  pointsMaxBtnText: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#EA580C',
+  },
+  referralDiscountBadge: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#15803D',
+  },
+  checkoutTotalsDivider: {
+    borderTopWidth: 1,
+    borderTopColor: '#E2E8F0',
+    marginTop: 14,
+    paddingTop: 12,
+    gap: 6,
+  },
+  checkoutSuccessCard: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 22,
+    padding: 26,
+    alignItems: 'center',
+    gap: 8,
+    marginTop: 16,
+  },
+  checkoutSuccessTitle: {
+    fontSize: 24,
+    fontWeight: '900',
+    color: '#111827',
+    marginTop: 4,
+  },
+  checkoutSuccessSub: {
+    fontSize: 13,
+    color: '#64748B',
+    textAlign: 'center',
+    lineHeight: 19,
   },
 });

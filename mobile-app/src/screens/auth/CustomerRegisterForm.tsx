@@ -14,6 +14,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../constants/theme';
 import { useAuth } from '../../context/AuthContext';
 import { api } from '../../api/client';
+import { sanitizeTenDigitPhone, isValidTenDigitPhone } from '../../utils/phoneUtils';
 
 export interface CustomerRegisterFormProps {
   onBackToLogin: () => void;
@@ -121,6 +122,7 @@ export const CustomerRegisterForm: React.FC<CustomerRegisterFormProps> = ({ onBa
       if (!form.weight.trim()) errs.weight = 'Weight is required (kg)';
       if (!form.emergencyContactName.trim()) errs.emergencyContactName = 'Emergency contact name is required';
       if (!form.emergencyContactMobile.trim()) errs.emergencyContactMobile = 'Emergency contact mobile is required';
+      else if (!isValidTenDigitPhone(form.emergencyContactMobile)) errs.emergencyContactMobile = 'Enter a valid 10-digit mobile number';
       if (!form.emergencyContactRelation.trim()) errs.emergencyContactRelation = 'Relationship is required';
     }
 
@@ -280,10 +282,10 @@ export const CustomerRegisterForm: React.FC<CustomerRegisterFormProps> = ({ onBa
               style={[styles.input, errors.mobile && styles.inputError]}
               placeholder="e.g. 9876543210"
               placeholderTextColor={COLORS.textMuted}
-              keyboardType="phone-pad"
+              keyboardType="number-pad"
               maxLength={10}
               value={form.mobile}
-              onChangeText={val => updateField('mobile', val)}
+              onChangeText={val => updateField('mobile', sanitizeTenDigitPhone(val))}
             />
             {errors.mobile && <Text style={styles.errorText}>{errors.mobile}</Text>}
 
@@ -426,10 +428,10 @@ export const CustomerRegisterForm: React.FC<CustomerRegisterFormProps> = ({ onBa
               style={[styles.input, errors.emergencyContactMobile && styles.inputError]}
               placeholder="e.g. 9811223344"
               placeholderTextColor={COLORS.textMuted}
-              keyboardType="phone-pad"
+              keyboardType="number-pad"
               maxLength={10}
               value={form.emergencyContactMobile}
-              onChangeText={val => updateField('emergencyContactMobile', val)}
+              onChangeText={val => updateField('emergencyContactMobile', sanitizeTenDigitPhone(val))}
             />
             {errors.emergencyContactMobile && <Text style={styles.errorText}>{errors.emergencyContactMobile}</Text>}
 

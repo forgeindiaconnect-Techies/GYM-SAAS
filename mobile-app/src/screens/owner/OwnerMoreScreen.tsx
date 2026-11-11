@@ -23,6 +23,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../constants/theme';
 import { useAuth } from '../../context/AuthContext';
 import { api, resolveMediaUrl } from '../../api/client';
+import { sanitizeTenDigitPhone } from '../../utils/phoneUtils';
 import * as ImagePicker from 'expo-image-picker';
 import { FileDownloader } from '../../utils/fileDownloader';
 import { OwnerTrainersScreen } from './OwnerTrainersScreen';
@@ -7760,10 +7761,11 @@ export const OwnerMoreScreen: React.FC<{
                     <TextInput
                       style={styles.gpFormFieldInput}
                       value={gymProfileForm.phone}
-                      onChangeText={text => setGymProfileForm(prev => ({ ...prev, phone: text }))}
-                      placeholder="Phone Number"
+                      onChangeText={text => setGymProfileForm(prev => ({ ...prev, phone: sanitizeTenDigitPhone(text) }))}
+                      placeholder="10-digit Phone Number"
                       placeholderTextColor="#94A3B8"
-                      keyboardType="phone-pad"
+                      keyboardType="number-pad"
+                      maxLength={10}
                     />
                   </View>
                 </View>
@@ -17737,10 +17739,10 @@ export const OwnerMoreScreen: React.FC<{
                   <TextInput
                     style={styles.prodFormInput}
                     value={branchForm.phone}
-                    onChangeText={(text) => setBranchForm(prev => ({ ...prev, phone: text }))}
+                    onChangeText={(text) => setBranchForm(prev => ({ ...prev, phone: sanitizeTenDigitPhone(text) }))}
                     placeholder="e.g. 9876543210"
                     placeholderTextColor="#94A3B8"
-                    keyboardType="phone-pad"
+                    keyboardType="number-pad"
                     maxLength={10}
                   />
                 </View>

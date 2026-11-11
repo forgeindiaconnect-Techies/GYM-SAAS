@@ -14,9 +14,9 @@ import {
   Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS } from '../../constants/theme';
 import { useAuth } from '../../context/AuthContext';
-import { api, BACKEND_PRESETS, getActiveBaseUrl, setActiveBaseUrl, checkBackendHealth } from '../../api/client';
+import { api } from '../../api/client';
+import { sanitizeTenDigitPhone, isValidTenDigitPhone } from '../../utils/phoneUtils';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -40,7 +40,7 @@ const DEFAULT_PROFILE = {
 };
 
 export const CustomerProfileScreen: React.FC = () => {
-  const { user: authUser, logout } = useAuth();
+  const { user: authUser } = useAuth();
 
   const [user, setUser] = useState<any>(DEFAULT_PROFILE);
   const [loading, setLoading] = useState(false);
@@ -50,45 +50,6 @@ export const CustomerProfileScreen: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState<any>(DEFAULT_PROFILE);
   const [saving, setSaving] = useState(false);
-
-  // Backend Connection State
-  const [activeBackendUrl, setActiveBackendUrl] = useState<string>(getActiveBaseUrl());
-  const [isBackendHealthy, setIsBackendHealthy] = useState<boolean | null>(null);
-  const [isPingingBackend, setIsPingingBackend] = useState<boolean>(false);
-  const [showBackendModal, setShowBackendModal] = useState<boolean>(false);
-  const [backendPingLatency, setBackendPingLatency] = useState<number | null>(null);
-
-  const testBackendConnection = async () => {
-    try {
-      setIsPingingBackend(true);
-      const start = Date.now();
-      const healthy = await checkBackendHealth();
-      const latency = Date.now() - start;
-      setIsBackendHealthy(healthy);
-      setBackendPingLatency(latency);
-      if (healthy) {
-        Alert.alert('Backend Connected! ✅', `Server responded successfully in ${latency}ms.\nEndpoint: ${getActiveBaseUrl()}`);
-      } else {
-        Alert.alert('Connection Failed ❌', `Unable to reach server at ${getActiveBaseUrl()}.\nPlease check your Wi-Fi or ensure the backend server is running.`);
-      }
-    } catch {
-      setIsBackendHealthy(false);
-      Alert.alert('Connection Error', `Failed to reach ${getActiveBaseUrl()}`);
-    } finally {
-      setIsPingingBackend(false);
-    }
-  };
-
-  const handleSwitchBackend = async (url: string) => {
-    await setActiveBaseUrl(url);
-    setActiveBackendUrl(url);
-    setShowBackendModal(false);
-    setIsBackendHealthy(null);
-    setBackendPingLatency(null);
-    Alert.alert('Server Switched', `Active backend is now set to:\n${url}`, [
-      { text: 'OK', onPress: () => testBackendConnection() }
-    ]);
-  };
 
   const fetchProfile = useCallback(async () => {
     try {
@@ -137,13 +98,13 @@ export const CustomerProfileScreen: React.FC = () => {
     setFormData({
       firstName: user.firstName || '',
       lastName: user.lastName || '',
-      mobile: user.mobile || '',
+      mobile: sanitizeTenDigitPhone(user.mobile || ''),
       city: user.city || '',
       pinCode: user.pinCode || '',
       gender: user.gender || 'Male',
       height: user.height || '180',
       weight: user.weight || '85',
-      emergencyMobile: user.emergencyContact?.mobile || '9876556789',
+      emergencyMobile: sanitizeTenDigitPhone(user.emergencyContact?.mobile || '9876556789'),
       fitnessGoal: user.fitnessGoal || 'Weight Loss',
       experienceLevel: user.experienceLevel || 'Beginner',
     });
@@ -153,6 +114,14 @@ export const CustomerProfileScreen: React.FC = () => {
   const handleSaveChanges = async () => {
     if (!formData.firstName.trim()) {
       Alert.alert('Required Field', 'Please enter your first name.');
+      return;
+    }
+    if (formData.mobile && !isValidTenDigitPhone(formData.mobile)) {
+      Alert.alert('Invalid Mobile Number', 'Please enter a valid 10-digit mobile number.');
+      return;
+    }
+    if (formData.emergencyMobile && !isValidTenDigitPhone(formData.emergencyMobile)) {
+      Alert.alert('Invalid Emergency Contact', 'Please enter a valid 10-digit emergency mobile number.');
       return;
     }
     try {
@@ -310,127 +279,7 @@ export const CustomerProfileScreen: React.FC = () => {
             <Text style={styles.expValue}>{user.experienceLevel || 'Beginner'}</Text>
           </View>
         </View>
-
-        {/* ========================================================================= */}
-        {/* BACKEND SERVER & API CONNECTION CARD                                      */}
-        {/* ========================================================================= */}
-        <View style={styles.card}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-              <Ionicons name="server-outline" size={16} color="#EA580C" />
-              <Text style={styles.cardSectionTitle}>Backend Connection</Text>
-            </View>
-            <View style={[
-              styles.connectionStatusPill,
-              isBackendHealthy === true ? styles.statusPillGreen : isBackendHealthy === false ? styles.statusPillRed : styles.statusPillGray
-            ]}>
-              <View style={[
-                styles.statusDot,
-                isBackendHealthy === true ? { backgroundColor: '#16A34A' } : isBackendHealthy === false ? { backgroundColor: '#DC2626' } : { backgroundColor: '#EA580C' }
-              ]} />
-              <Text style={styles.connectionStatusText}>
-                {isBackendHealthy === true ? `Online (${backendPingLatency}ms)` : isBackendHealthy === false ? 'Offline' : 'Ready'}
-              </Text>
-            </View>
-          </View>
-
-          <Text style={styles.backendEndpointLabel}>ACTIVE API ENDPOINT</Text>
-          <Text style={styles.backendEndpointValue} numberOfLines={1}>{activeBackendUrl}</Text>
-
-          <View style={styles.backendActionsRow}>
-            <TouchableOpacity
-              style={styles.backendTestBtn}
-              onPress={testBackendConnection}
-              disabled={isPingingBackend}
-              activeOpacity={0.8}
-            >
-              {isPingingBackend ? (
-                <ActivityIndicator size="small" color="#EA580C" />
-              ) : (
-                <>
-                  <Ionicons name="pulse-outline" size={14} color="#EA580C" />
-                  <Text style={styles.backendTestBtnText}>Test Connection</Text>
-                </>
-              )}
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.backendSwitchBtn}
-              onPress={() => setShowBackendModal(true)}
-              activeOpacity={0.8}
-            >
-              <Ionicons name="swap-horizontal" size={14} color="#FFFFFF" />
-              <Text style={styles.backendSwitchBtnText}>Switch Server</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* Sign Out Option */}
-        <TouchableOpacity
-          style={styles.logoutBtn}
-          onPress={() => {
-            Alert.alert('Sign Out', 'Are you sure you want to log out of your account?', [
-              { text: 'Cancel', style: 'cancel' },
-              { text: 'Sign Out', style: 'destructive', onPress: logout },
-            ]);
-          }}
-          activeOpacity={0.7}
-        >
-          <Ionicons name="log-out-outline" size={16} color={COLORS.rose} />
-          <Text style={styles.logoutBtnText}>Sign Out from Customer App</Text>
-        </TouchableOpacity>
       </ScrollView>
-
-      {/* BACKEND SERVER SELECTION MODAL */}
-      <Modal visible={showBackendModal} transparent animationType="fade" onRequestClose={() => setShowBackendModal(false)}>
-        <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPress={() => setShowBackendModal(false)}>
-          <View style={styles.modalCard} onStartShouldSetResponder={() => true}>
-            <View style={styles.modalHeader}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                <Ionicons name="server" size={18} color="#EA580C" />
-                <Text style={styles.modalTitle}>Choose Backend Server</Text>
-              </View>
-              <TouchableOpacity onPress={() => setShowBackendModal(false)} style={{ padding: 4 }}>
-                <Ionicons name="close" size={20} color="#64748B" />
-              </TouchableOpacity>
-            </View>
-
-            <ScrollView showsVerticalScrollIndicator={false} style={{ maxHeight: 380, padding: 8 }}>
-              {BACKEND_PRESETS.map((preset) => {
-                const isSelected = activeBackendUrl === preset.url;
-                return (
-                  <TouchableOpacity
-                    key={preset.id}
-                    style={[styles.presetCard, isSelected && styles.presetCardSelected]}
-                    onPress={() => handleSwitchBackend(preset.url)}
-                    activeOpacity={0.8}
-                  >
-                    <View style={{ flex: 1 }}>
-                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                        <Text style={[styles.presetName, isSelected && { color: '#EA580C', fontWeight: '900' }]}>
-                          {preset.name}
-                        </Text>
-                        {preset.id === 'local_wifi' && (
-                          <View style={styles.recommendBadge}>
-                            <Text style={styles.recommendBadgeText}>Local Wi-Fi</Text>
-                          </View>
-                        )}
-                      </View>
-                      <Text style={styles.presetDesc}>{preset.desc}</Text>
-                      <Text style={styles.presetUrl} numberOfLines={1}>{preset.url}</Text>
-                    </View>
-                    <Ionicons
-                      name={isSelected ? 'radio-button-on' : 'radio-button-off'}
-                      size={20}
-                      color={isSelected ? '#EA580C' : '#94A3B8'}
-                    />
-                  </TouchableOpacity>
-                );
-              })}
-            </ScrollView>
-          </View>
-        </TouchableOpacity>
-      </Modal>
 
       {/* ========================================================================= */}
       {/* 4. EDIT PROFILE MODAL                                                     */}
@@ -476,11 +325,11 @@ export const CustomerProfileScreen: React.FC = () => {
                   <Text style={styles.fieldLabel}>Mobile Number</Text>
                   <TextInput
                     style={styles.fieldInput}
-                    keyboardType="phone-pad"
+                    keyboardType="number-pad"
                     maxLength={10}
                     value={formData.mobile}
-                    onChangeText={(t) => setFormData({ ...formData, mobile: t.replace(/\D/g, '').slice(0, 10) })}
-                    placeholder="Mobile Number"
+                    onChangeText={(t) => setFormData({ ...formData, mobile: sanitizeTenDigitPhone(t) })}
+                    placeholder="10-digit Mobile Number"
                   />
                 </View>
 
@@ -551,10 +400,11 @@ export const CustomerProfileScreen: React.FC = () => {
                   <Text style={styles.fieldLabel}>Emergency Contact</Text>
                   <TextInput
                     style={styles.fieldInput}
-                    keyboardType="phone-pad"
+                    keyboardType="number-pad"
+                    maxLength={10}
                     value={formData.emergencyMobile}
-                    onChangeText={(t) => setFormData({ ...formData, emergencyMobile: t })}
-                    placeholder="Emergency Contact"
+                    onChangeText={(t) => setFormData({ ...formData, emergencyMobile: sanitizeTenDigitPhone(t) })}
+                    placeholder="10-digit Emergency Contact"
                   />
                 </View>
 
@@ -810,23 +660,6 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     color: '#111827',
   },
-  logoutBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    backgroundColor: '#FFF1F2',
-    borderWidth: 1,
-    borderColor: '#FFE4E6',
-    paddingVertical: 13,
-    borderRadius: 14,
-    marginTop: 6,
-  },
-  logoutBtnText: {
-    fontSize: 12,
-    fontWeight: '800',
-    color: COLORS.rose,
-  },
   modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
@@ -945,133 +778,5 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '700',
     color: '#64748B',
-  },
-  connectionStatusPill: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 5,
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 10,
-    borderWidth: 1,
-  },
-  statusPillGreen: {
-    backgroundColor: '#F0FDF4',
-    borderColor: '#BBF7D0',
-  },
-  statusPillRed: {
-    backgroundColor: '#FEF2F2',
-    borderColor: '#FECACA',
-  },
-  statusPillGray: {
-    backgroundColor: '#FFF7ED',
-    borderColor: '#FFEDD5',
-  },
-  statusDot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-  },
-  connectionStatusText: {
-    fontSize: 10,
-    fontWeight: '800',
-    color: '#334155',
-  },
-  backendEndpointLabel: {
-    fontSize: 9,
-    fontWeight: '800',
-    color: '#94A3B8',
-    letterSpacing: 0.5,
-    marginTop: 2,
-  },
-  backendEndpointValue: {
-    fontSize: 11,
-    fontFamily: 'monospace',
-    color: '#1E293B',
-    backgroundColor: '#F8FAFC',
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-    paddingHorizontal: 8,
-    paddingVertical: 6,
-    borderRadius: 8,
-    marginTop: 4,
-  },
-  backendActionsRow: {
-    flexDirection: 'row',
-    gap: 8,
-    marginTop: 8,
-  },
-  backendTestBtn: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 5,
-    backgroundColor: '#FFF7ED',
-    borderWidth: 1,
-    borderColor: '#FFEDD5',
-    paddingVertical: 8,
-    borderRadius: 10,
-  },
-  backendTestBtnText: {
-    fontSize: 11,
-    fontWeight: '800',
-    color: '#EA580C',
-  },
-  backendSwitchBtn: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 5,
-    backgroundColor: '#EA580C',
-    paddingVertical: 8,
-    borderRadius: 10,
-  },
-  backendSwitchBtnText: {
-    fontSize: 11,
-    fontWeight: '800',
-    color: '#FFFFFF',
-  },
-  presetCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#F8FAFC',
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-    borderRadius: 12,
-    padding: 12,
-    marginBottom: 8,
-  },
-  presetCardSelected: {
-    borderColor: '#EA580C',
-    backgroundColor: '#FFF7ED',
-  },
-  presetName: {
-    fontSize: 13,
-    fontWeight: '800',
-    color: '#111827',
-  },
-  presetDesc: {
-    fontSize: 10,
-    color: '#64748B',
-    marginTop: 2,
-  },
-  presetUrl: {
-    fontSize: 9,
-    fontFamily: 'monospace',
-    color: '#94A3B8',
-    marginTop: 4,
-  },
-  recommendBadge: {
-    backgroundColor: '#EA580C',
-    paddingHorizontal: 5,
-    paddingVertical: 1,
-    borderRadius: 6,
-  },
-  recommendBadgeText: {
-    fontSize: 8,
-    fontWeight: '800',
-    color: '#FFFFFF',
   },
 });

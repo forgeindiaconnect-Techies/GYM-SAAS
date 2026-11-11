@@ -15,6 +15,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../constants/theme';
 import { useAuth } from '../../context/AuthContext';
 import { api } from '../../api/client';
+import { sanitizeTenDigitPhone, isValidTenDigitPhone } from '../../utils/phoneUtils';
 
 export const OwnerDashboardScreen: React.FC<{ 
   onNavigateTab: (tab: string, sub?: string) => void;
@@ -442,6 +443,10 @@ export const OwnerDashboardScreen: React.FC<{
   const handleSaveMember = async () => {
     if (!newMemberName.trim() || !newMemberPhone.trim()) {
       Alert.alert('Validation Error', 'Please provide member full name and phone number.');
+      return;
+    }
+    if (!isValidTenDigitPhone(newMemberPhone)) {
+      Alert.alert('Validation Error', 'Please enter a valid 10-digit mobile number.');
       return;
     }
 
@@ -987,11 +992,12 @@ export const OwnerDashboardScreen: React.FC<{
             <Text style={styles.inputLabel}>Mobile Number *</Text>
             <TextInput
               style={styles.modalInput}
-              placeholder="e.g. +91 98765 43210"
+              placeholder="e.g. 9876543210"
               placeholderTextColor={COLORS.textMuted}
               value={newMemberPhone}
-              onChangeText={setNewMemberPhone}
-              keyboardType="phone-pad"
+              onChangeText={(txt) => setNewMemberPhone(sanitizeTenDigitPhone(txt))}
+              keyboardType="number-pad"
+              maxLength={10}
             />
 
             <Text style={styles.inputLabel}>Email (Optional)</Text>

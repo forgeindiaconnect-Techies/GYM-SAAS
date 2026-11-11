@@ -19,6 +19,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { COLORS } from '../../constants/theme';
 import { useAuth } from '../../context/AuthContext';
+import { sanitizeTenDigitPhone, isValidTenDigitPhone } from '../../utils/phoneUtils';
 import { api } from '../../api/client';
 import { FileDownloader } from '../../utils/fileDownloader';
 
@@ -693,7 +694,7 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
   const handleOpenEdit = (member: any) => {
     setSelectedMember(member);
     setEditName(member.name);
-    setEditPhone(member.phone === 'N/A' ? '' : member.phone);
+    setEditPhone(member.phone === 'N/A' ? '' : sanitizeTenDigitPhone(member.phone));
     setEditEmail(member.email === 'N/A' ? '' : member.email);
     setEditPlan(member.plan || 'Starter');
     setEditGender(member.gender !== 'Not Specified' ? member.gender : 'Male');
@@ -706,13 +707,21 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
     setEditPinCode(member.pinCode || '');
     setEditTrainer(member.trainer !== 'Unassigned' ? member.trainer : '');
     setEditEmergencyName(member.emergencyName !== 'N/A' ? member.emergencyName : '');
-    setEditEmergencyPhone(member.emergencyPhone !== 'N/A' ? member.emergencyPhone : '');
+    setEditEmergencyPhone(member.emergencyPhone !== 'N/A' ? sanitizeTenDigitPhone(member.emergencyPhone) : '');
     setEditEmergencyRelation(member.emergencyRelation !== 'N/A' ? member.emergencyRelation : '');
     setEditMemberModalVisible(true);
   };
 
   const handleSaveEdit = async () => {
     if (!selectedMember) return;
+    if (editPhone.trim() && !isValidTenDigitPhone(editPhone)) {
+      Alert.alert('Invalid Phone', 'Mobile number must be exactly 10 digits.');
+      return;
+    }
+    if (editEmergencyPhone.trim() && !isValidTenDigitPhone(editEmergencyPhone)) {
+      Alert.alert('Invalid Phone', 'Emergency contact number must be exactly 10 digits.');
+      return;
+    }
     try {
       setIsSavingEdit(true);
       const nameParts = editName.trim().split(' ');
@@ -819,9 +828,14 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
       setAddStep(1);
       return;
     }
-    if (digitsPhone.length < 10) {
+    if (!isValidTenDigitPhone(digitsPhone)) {
       Alert.alert('Invalid Phone', 'Please enter a valid 10-digit phone number.');
       setAddStep(1);
+      return;
+    }
+    if (newMemberEmergencyPhone.trim() && !isValidTenDigitPhone(newMemberEmergencyPhone)) {
+      Alert.alert('Invalid Phone', 'Emergency contact number must be exactly 10 digits.');
+      setAddStep(4);
       return;
     }
 
@@ -981,7 +995,7 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
   const handleConvertEnquiry = (enquiry: any) => {
     resetAddMemberForm();
     setNewMemberName(enquiry.customerName || '');
-    setNewMemberPhone(enquiry.phone === 'N/A' ? '' : enquiry.phone || '');
+    setNewMemberPhone(enquiry.phone === 'N/A' ? '' : sanitizeTenDigitPhone(enquiry.phone || ''));
     setNewMemberEmail(enquiry.email === 'N/A' ? '' : enquiry.email || '');
     setEnquiryDetailModalVisible(false);
     setActiveSection('members');
@@ -992,6 +1006,10 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
   const handleCreateEnquiry = async () => {
     if (!newEnquiryName.trim() || !newEnquiryPhone.trim()) {
       Alert.alert('Required Fields', 'Please enter Customer Name and Phone number.');
+      return;
+    }
+    if (!isValidTenDigitPhone(newEnquiryPhone)) {
+      Alert.alert('Invalid Phone Number', 'Please enter a valid 10-digit mobile number.');
       return;
     }
 
@@ -1848,9 +1866,9 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
                 <TextInput
                   style={styles.modalInput}
                   value={editPhone}
-                  onChangeText={setEditPhone}
+                  onChangeText={(txt) => setEditPhone(sanitizeTenDigitPhone(txt))}
                   placeholder="10-digit Mobile Number"
-                  keyboardType="phone-pad"
+                  keyboardType="number-pad"
                   maxLength={10}
                 />
 
@@ -2012,9 +2030,10 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
                 <TextInput
                   style={styles.modalInput}
                   value={editEmergencyPhone}
-                  onChangeText={setEditEmergencyPhone}
-                  placeholder="Contact Phone"
-                  keyboardType="phone-pad"
+                  onChangeText={(txt) => setEditEmergencyPhone(sanitizeTenDigitPhone(txt))}
+                  placeholder="10-digit Contact Phone"
+                  keyboardType="number-pad"
+                  maxLength={10}
                 />
 
                 <Text style={styles.inputLabel}>Relationship</Text>
@@ -2319,8 +2338,8 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
                     placeholder="e.g. 9876543210"
                     placeholderTextColor={COLORS.textMuted}
                     value={newMemberPhone}
-                    onChangeText={(txt) => setNewMemberPhone(txt.replace(/[^0-9]/g, '').slice(0, 10))}
-                    keyboardType="phone-pad"
+                    onChangeText={(txt) => setNewMemberPhone(sanitizeTenDigitPhone(txt))}
+                    keyboardType="number-pad"
                     maxLength={10}
                   />
 
@@ -2544,8 +2563,8 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
                     placeholder="e.g. 9876501234"
                     placeholderTextColor={COLORS.textMuted}
                     value={newMemberEmergencyPhone}
-                    onChangeText={(txt) => setNewMemberEmergencyPhone(txt.replace(/[^0-9]/g, '').slice(0, 10))}
-                    keyboardType="phone-pad"
+                    onChangeText={(txt) => setNewMemberEmergencyPhone(sanitizeTenDigitPhone(txt))}
+                    keyboardType="number-pad"
                     maxLength={10}
                   />
 
@@ -2725,8 +2744,9 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
               placeholder="e.g. 9988766554"
               placeholderTextColor={COLORS.textMuted}
               value={newEnquiryPhone}
-              onChangeText={setNewEnquiryPhone}
-              keyboardType="phone-pad"
+              onChangeText={(txt) => setNewEnquiryPhone(sanitizeTenDigitPhone(txt))}
+              keyboardType="number-pad"
+              maxLength={10}
             />
 
             <Text style={styles.inputLabel}>Email Address</Text>

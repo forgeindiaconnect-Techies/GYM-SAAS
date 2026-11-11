@@ -16,6 +16,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../constants/theme';
 import { useAuth } from '../../context/AuthContext';
 import { api } from '../../api/client';
+import { sanitizeTenDigitPhone, isValidTenDigitPhone } from '../../utils/phoneUtils';
 
 const { width } = Dimensions.get('window');
 
@@ -85,6 +86,10 @@ export const TrainerProfileScreen: React.FC = () => {
   };
 
   const handleSaveProfile = async () => {
+    if (editForm.phone && !isValidTenDigitPhone(editForm.phone)) {
+      Alert.alert('Invalid Phone Number', 'Please enter a valid 10-digit mobile number.');
+      return;
+    }
     try {
       setSaving(true);
       const expNum = parseInt(editForm.experience, 10) || 15;
@@ -339,8 +344,10 @@ export const TrainerProfileScreen: React.FC = () => {
                   <TextInput
                     style={styles.modalTextInput}
                     value={editForm.phone}
-                    onChangeText={(txt) => setEditForm({ ...editForm, phone: txt })}
-                    keyboardType="phone-pad"
+                    onChangeText={(txt) => setEditForm({ ...editForm, phone: sanitizeTenDigitPhone(txt) })}
+                    keyboardType="number-pad"
+                    maxLength={10}
+                    placeholder="10-digit Mobile Number"
                   />
                 </View>
 
