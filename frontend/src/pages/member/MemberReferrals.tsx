@@ -342,8 +342,10 @@ const MemberReferrals: React.FC = () => {
       setSendingInvite(true);
       setInviteFeedback(null);
       const res = await api.post('/referrals/invite', {
-        inviteeName: inviteName,
-        inviteeEmail: inviteEmail,
+        inviteeName: inviteName.trim(),
+        inviteeEmail: inviteEmail.trim(),
+        friendName: inviteName.trim(),
+        friendEmail: inviteEmail.trim(),
         personalMessage: inviteMessage
       });
       if (res.data?.success) {

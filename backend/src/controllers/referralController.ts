@@ -618,15 +618,17 @@ export const sendEmailInvite = async (req: AuthRequest, res: Response): Promise<
       return;
     }
 
-    const { friendName, friendEmail, personalMessage } = req.body;
+    const rawEmail = (req.body.friendEmail || req.body.inviteeEmail || req.body.email || '').toString().trim();
+    const rawName = (req.body.friendName || req.body.inviteeName || req.body.name || '').toString().trim();
+    const personalMessage = req.body.personalMessage || '';
 
-    if (!friendEmail || !friendEmail.includes('@')) {
+    if (!rawEmail || !rawEmail.includes('@')) {
       res.status(400).json({ success: false, message: 'A valid email address is required.' });
       return;
     }
 
-    const cleanEmail = friendEmail.trim().toLowerCase();
-    const cleanName = (friendName || 'Friend').trim();
+    const cleanEmail = rawEmail.toLowerCase();
+    const cleanName = rawName || 'Friend';
 
     const user = await User.findById(userId);
     if (!user) {

@@ -119,67 +119,15 @@ const MemberNotifications: React.FC = () => {
             {unreadCount} Unread
           </span>
           <button
-            onClick={markAllAsRead}
-            disabled={unreadCount === 0}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#F8FAFC] hover:bg-[#E2E8F0] text-xs font-bold text-[#111827] border border-[#E2E8F0] transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+            type="button"
+            onClick={() => navigate('/member')}
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#F8FAFC] hover:bg-[#E2E8F0] text-xs font-bold text-[#111827] border border-[#CBD5E1] transition-all cursor-pointer shadow-xs"
+            title="Close"
           >
-            <CheckCheck size={14} className="text-[#EA580C]" />
-            Mark all read
+            <X size={15} className="text-[#EA580C]" />
+            Close
           </button>
         </div>
-      </div>
-
-      {/* Filter Tabs Bar */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-[#E2E8F0] no-scrollbar">
-        <button
-          onClick={() => setFilter('all')}
-          className={clsx(
-            "px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap",
-            filter === 'all'
-              ? 'bg-[#C2410C] text-white shadow-md shadow-orange-500/15 border border-[#FDBA74]'
-              : 'bg-[#FFFFFF] text-[#64748B] hover:text-[#C2410C] border border-[#E2E8F0]'
-          )}
-        >
-          All ({notifications.length})
-        </button>
-
-        <button
-          onClick={() => setFilter('unread')}
-          className={clsx(
-            "px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap",
-            filter === 'unread'
-              ? 'bg-[#C2410C] text-white shadow-md shadow-orange-500/15 border border-[#FDBA74]'
-              : 'bg-[#FFFFFF] text-[#64748B] hover:text-[#C2410C] border border-[#E2E8F0]'
-          )}
-        >
-          Unread ({unreadCount})
-        </button>
-
-        <button
-          onClick={() => setFilter('rewards')}
-          className={clsx(
-            "px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5",
-            filter === 'rewards'
-              ? 'bg-[#C2410C] text-white shadow-md shadow-orange-500/15 border border-[#FDBA74]'
-              : 'bg-[#FFFFFF] text-[#64748B] hover:text-[#C2410C] border border-[#E2E8F0]'
-          )}
-        >
-          <Trophy size={13} className="text-[#EA580C]" />
-          Rewards & Streaks
-        </button>
-
-        <button
-          onClick={() => setFilter('alerts')}
-          className={clsx(
-            "px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5",
-            filter === 'alerts'
-              ? 'bg-[#C2410C] text-white shadow-md shadow-orange-500/15 border border-[#FDBA74]'
-              : 'bg-[#FFFFFF] text-[#64748B] hover:text-[#C2410C] border border-[#E2E8F0]'
-          )}
-        >
-          <AlertCircle size={13} className="text-[#B91C1C]" />
-          Alerts
-        </button>
       </div>
 
       {/* Notifications List */}
@@ -187,17 +135,17 @@ const MemberNotifications: React.FC = () => {
         <div className="flex items-center justify-center py-20 bg-[#FFFFFF] border border-[#E2E8F0] rounded-3xl">
           <div className="w-8 h-8 border-4 border-[#FDBA74] border-t-transparent rounded-full animate-spin" />
         </div>
-      ) : filteredNotifications.length === 0 ? (
+      ) : notifications.length === 0 ? (
         <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-3xl py-16 text-center shadow-xl">
           <Bell size={40} className="mx-auto text-zinc-600 mb-3" />
           <p className="text-[#111827] font-bold text-base">No notifications found</p>
           <p className="text-[#64748B] text-xs mt-1">
-            {filter === 'unread' ? "You're all caught up! No unread messages." : "Alerts, rewards, and gym messages will appear here."}
+            Alerts, rewards, and gym messages will appear here.
           </p>
         </div>
       ) : (
         <div className="space-y-3">
-          {filteredNotifications.map(notif => {
+          {notifications.map(notif => {
             const config = TYPE_CONFIG[notif.type] || TYPE_CONFIG.info;
             const Icon = config.icon;
             const isUnread = !notif.isRead;
@@ -207,7 +155,7 @@ const MemberNotifications: React.FC = () => {
                 key={notif._id}
                 onClick={() => openNotification(notif)}
                 className={clsx(
-                  "w-full text-left p-4 sm:p-5 rounded-2xl border transition-all cursor-pointer flex items-start gap-4 shadow-xl",
+                  "w-full text-left p-4 sm:p-5 rounded-2xl border transition-all cursor-pointer flex items-start gap-4 shadow-xl hover:shadow-md",
                   isUnread
                     ? 'bg-[#FFFFFF] border-l-4 border-l-[#F97316] border-[#E2E8F0] hover:border-[#FFEDD5]'
                     : 'bg-[#FFFFFF] border-[#E2E8F0] hover:border-[#E2E8F0] opacity-80'
@@ -230,25 +178,6 @@ const MemberNotifications: React.FC = () => {
                   <p className="text-xs sm:text-sm text-[#64748B] line-clamp-2 leading-relaxed">
                     {notif.message}
                   </p>
-                </div>
-
-                <div className="flex items-center gap-2 shrink-0 self-center">
-                  {isUnread && (
-                    <button
-                      onClick={(e) => markAsRead(notif._id, e)}
-                      title="Mark as read"
-                      className="p-1.5 rounded-lg hover:bg-[#FFFFFF]/10 text-[#EA580C] hover:text-white transition"
-                    >
-                      <CheckCheck size={16} />
-                    </button>
-                  )}
-                  <button
-                    onClick={(e) => deleteNotification(notif._id, e)}
-                    title="Dismiss"
-                    className="p-1.5 rounded-lg hover:bg-red-50 text-zinc-500 hover:text-[#B91C1C] transition"
-                  >
-                    <Trash2 size={15} />
-                  </button>
                 </div>
               </div>
             );
@@ -318,21 +247,15 @@ const MemberNotifications: React.FC = () => {
                 </div>
               </div>
 
-              {selected.link && (
-                <div className="pt-2">
-                  <button
-                    onClick={() => {
-                      const link = selected.link;
-                      setSelected(null);
-                      navigate(link);
-                    }}
-                    className="w-full py-2.5 rounded-xl bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold text-xs font-bold transition shadow-md shadow-orange-500/15 flex items-center justify-center gap-1.5 cursor-pointer"
-                  >
-                    <span>Go to Activity Page</span>
-                    <ExternalLink size={13} />
-                  </button>
-                </div>
-              )}
+              <div className="pt-2">
+                <button
+                  type="button"
+                  onClick={() => setSelected(null)}
+                  className="w-full py-2.5 rounded-xl bg-[#F8FAFC] hover:bg-[#E2E8F0] text-[#111827] font-bold text-xs border border-[#CBD5E1] transition cursor-pointer"
+                >
+                  Close
+                </button>
+              </div>
             </div>
           </div>
         </div>

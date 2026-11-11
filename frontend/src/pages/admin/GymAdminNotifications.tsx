@@ -142,80 +142,15 @@ const GymAdminNotifications: React.FC = () => {
             {unreadCount} Unread
           </span>
           <button
-            onClick={markAllAsRead}
-            disabled={unreadCount === 0}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#FFFFFF] hover:bg-[#F8FAFC] text-xs font-bold text-[#111827] border-2 border-[#CBD5E1] hover:border-[#EA580C] transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer shadow-xs"
+            type="button"
+            onClick={() => navigate('/admin')}
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#F8FAFC] hover:bg-[#E2E8F0] text-xs font-bold text-[#111827] border border-[#CBD5E1] transition-all cursor-pointer shadow-xs"
+            title="Close"
           >
-            <CheckCheck size={14} className="text-[#EA580C]" />
-            Mark all read
+            <X size={15} className="text-[#EA580C]" />
+            Close
           </button>
         </div>
-      </div>
-
-      {/* Filter Tabs */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-[#E2E8F0] no-scrollbar">
-        <button
-          onClick={() => setFilter('all')}
-          className={clsx(
-            "px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap",
-            filter === 'all'
-              ? 'bg-[#C2410C] text-white shadow-md shadow-orange-500/15 border border-[#FDBA74]'
-              : 'bg-[#FFFFFF] text-[#64748B] hover:text-[#C2410C] border border-[#E2E8F0]'
-          )}
-        >
-          All ({notifications.length})
-        </button>
-
-        <button
-          onClick={() => setFilter('unread')}
-          className={clsx(
-            "px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap",
-            filter === 'unread'
-              ? 'bg-[#C2410C] text-white shadow-md shadow-orange-500/15 border border-[#FDBA74]'
-              : 'bg-[#FFFFFF] text-[#64748B] hover:text-[#C2410C] border border-[#E2E8F0]'
-          )}
-        >
-          Unread ({unreadCount})
-        </button>
-
-        <button
-          onClick={() => setFilter('alerts')}
-          className={clsx(
-            "px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5",
-            filter === 'alerts'
-              ? 'bg-[#C2410C] text-white shadow-md shadow-orange-500/15 border border-[#FDBA74]'
-              : 'bg-[#FFFFFF] text-[#64748B] hover:text-[#C2410C] border border-[#E2E8F0]'
-          )}
-        >
-          <AlertCircle size={13} className="text-[#B91C1C]" />
-          Alerts
-        </button>
-
-        <button
-          onClick={() => setFilter('members')}
-          className={clsx(
-            "px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5",
-            filter === 'members'
-              ? 'bg-[#C2410C] text-white shadow-md shadow-orange-500/15 border border-[#FDBA74]'
-              : 'bg-[#FFFFFF] text-[#64748B] hover:text-[#C2410C] border border-[#E2E8F0]'
-          )}
-        >
-          <Users size={13} className="text-[#EA580C]" />
-          Members & Enquiries
-        </button>
-
-        <button
-          onClick={() => setFilter('billing')}
-          className={clsx(
-            "px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5",
-            filter === 'billing'
-              ? 'bg-[#C2410C] text-white shadow-md shadow-orange-500/15 border border-[#FDBA74]'
-              : 'bg-[#FFFFFF] text-[#64748B] hover:text-[#C2410C] border border-[#E2E8F0]'
-          )}
-        >
-          <CreditCard size={13} className="text-[#15803D]" />
-          Billing & Store
-        </button>
       </div>
 
       {/* Notifications List */}
@@ -223,28 +158,27 @@ const GymAdminNotifications: React.FC = () => {
         <div className="flex items-center justify-center py-20 bg-[#FFFFFF] border border-[#E2E8F0] rounded-3xl">
           <div className="w-8 h-8 border-4 border-[#FDBA74] border-t-transparent rounded-full animate-spin" />
         </div>
-      ) : filteredNotifications.length === 0 ? (
+      ) : notifications.length === 0 ? (
         <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-3xl py-16 text-center shadow-xl">
           <Bell size={40} className="mx-auto text-zinc-600 mb-3" />
           <p className="text-white font-bold text-base">No notifications found</p>
           <p className="text-[#64748B] text-xs mt-1">
-            {filter === 'unread' ? "You're all caught up! No unread notifications." : "System alerts and gym events will appear here."}
+            System alerts and gym events will appear here.
           </p>
         </div>
       ) : (
         <div className="space-y-3">
-          {filteredNotifications.map((notif) => {
+          {notifications.map((notif) => {
             const config = TYPE_CONFIG[notif.type] || TYPE_CONFIG.info;
             const Icon = config.icon;
             const isUnread = !notif.isRead;
-            const link = getNotificationLink(notif);
 
             return (
               <div
                 key={notif._id}
                 onClick={() => openNotification(notif)}
                 className={clsx(
-                  "w-full text-left p-4 sm:p-5 rounded-2xl border transition-all cursor-pointer flex items-start gap-4 shadow-xl group",
+                  "w-full text-left p-4 sm:p-5 rounded-2xl border transition-all cursor-pointer flex items-start gap-4 shadow-xl hover:shadow-md group",
                   isUnread
                     ? 'bg-[#FFFFFF] border-l-4 border-l-[#F97316] border-[#E2E8F0] hover:border-[#FFEDD5]'
                     : 'bg-[#FFFFFF] border-[#E2E8F0] hover:border-[#E2E8F0] opacity-85'
@@ -267,25 +201,6 @@ const GymAdminNotifications: React.FC = () => {
                   <p className="text-xs sm:text-sm text-[#64748B] line-clamp-2 leading-relaxed">
                     {notif.message}
                   </p>
-                </div>
-
-                <div className="flex items-center gap-2 shrink-0 self-center">
-                  {isUnread && (
-                    <button
-                      onClick={(e) => markAsRead(notif._id, e)}
-                      title="Mark as read"
-                      className="p-1.5 rounded-lg hover:bg-[#FFF7ED] text-[#EA580C] hover:text-[#9A3412] transition cursor-pointer"
-                    >
-                      <CheckCheck size={16} />
-                    </button>
-                  )}
-                  <button
-                    onClick={(e) => deleteNotification(notif._id, e)}
-                    title="Dismiss"
-                    className="p-1.5 rounded-lg hover:bg-red-50 text-zinc-500 hover:text-[#B91C1C] transition cursor-pointer"
-                  >
-                    <Trash2 size={15} />
-                  </button>
                 </div>
               </div>
             );
@@ -365,25 +280,11 @@ const GymAdminNotifications: React.FC = () => {
                 </div>
               </div>
 
-              <div className="pt-2 flex items-center justify-between gap-3">
-                {getNotificationLink(selected) ? (
-                  <button
-                    onClick={() => {
-                      const link = getNotificationLink(selected);
-                      setSelected(null);
-                      if (link) navigate(link);
-                    }}
-                    className="flex-1 py-2.5 rounded-xl bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold text-xs transition shadow-md shadow-orange-500/15 flex items-center justify-center gap-1.5 cursor-pointer"
-                  >
-                    <span>Go to Related Page</span>
-                    <ExternalLink size={13} />
-                  </button>
-                ) : (
-                  <div />
-                )}
+              <div className="pt-2">
                 <button
+                  type="button"
                   onClick={() => setSelected(null)}
-                  className="px-5 py-2.5 bg-[#FFFFFF] hover:bg-[#F8FAFC] text-[#111827] text-xs font-bold rounded-xl border border-[#E2E8F0] transition cursor-pointer"
+                  className="w-full py-2.5 rounded-xl bg-[#F8FAFC] hover:bg-[#E2E8F0] text-[#111827] font-bold text-xs border border-[#CBD5E1] transition cursor-pointer"
                 >
                   Close
                 </button>
