@@ -45,6 +45,19 @@ export interface ReportDetails {
   summaryMetrics?: Array<{ label: string; value: string | number }>;
 }
 
+export interface CertificateDetails {
+  recipientName: string;
+  recipientRole?: string;
+  awardTitle: string;
+  awardCategory?: string;
+  description?: string;
+  gymName?: string;
+  awardDate?: string;
+  certificateId: string;
+  metricAchieved?: string;
+  conferredBy?: string;
+}
+
 /**
  * Generate full HTML for clean, professional PDF Invoices
  */
@@ -336,6 +349,238 @@ const generateReportHTML = (rep: ReportDetails): string => {
 
     <div class="footer">
       Generated automatically by Gymora Management Platform &bull; Confidential Business Record &bull; ${genDate}
+    </div>
+  </body>
+  </html>
+  `;
+};
+
+/**
+ * Generate full HTML for Official Certificate of Recognition (matching Web PDF generator)
+ */
+const generateCertificateHTML = (cert: CertificateDetails): string => {
+  const esc = (val?: string) =>
+    String(val || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+
+  const gym = esc(cert.gymName || 'Perfect Fitness Studio').toUpperCase();
+  const recipient = esc(cert.recipientName || 'Award Recipient');
+  const roleLabel = esc(cert.recipientRole || '');
+  const awardTitle = esc(cert.awardTitle || 'Fitness Champion Award');
+  const category = esc(cert.awardCategory || '');
+  const description = esc(cert.description || '');
+  const metric = esc(cert.metricAchieved || '');
+  const certId = esc(cert.certificateId || 'CERT-VERIFIED');
+  const awardDate = esc(cert.awardDate || new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }));
+  const conferredBy = esc(cert.conferredBy || 'Gym Administration');
+
+  return `
+  <!DOCTYPE html>
+  <html>
+  <head>
+    <meta charset="utf-8">
+    <title>Official Certificate - ${certId}</title>
+    <style>
+      @page { size: landscape; margin: 16px; }
+      * { box-sizing: border-box; }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        background: #fcfdfc;
+        margin: 0;
+        padding: 20px;
+        color: #1e293b;
+      }
+      .outer-frame {
+        border: 6px solid #167d78;
+        padding: 8px;
+        background: #fcfdfc;
+        border-radius: 6px;
+        position: relative;
+      }
+      .inner-frame {
+        border: 2px solid #d9a74a;
+        padding: 36px 40px 28px 40px;
+        text-align: center;
+        position: relative;
+      }
+      .gym-name {
+        font-size: 16px;
+        font-weight: 800;
+        color: #167d78;
+        letter-spacing: 2px;
+        margin-bottom: 10px;
+      }
+      .cert-heading {
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 32px;
+        font-weight: 700;
+        color: #344b4a;
+        letter-spacing: 1px;
+        margin: 0 0 8px 0;
+      }
+      .presented-to {
+        font-size: 12px;
+        color: #697778;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        margin-bottom: 18px;
+      }
+      .recipient-name {
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 36px;
+        font-weight: 700;
+        color: #167d78;
+        margin: 0;
+      }
+      .recipient-role {
+        font-size: 12px;
+        font-weight: 700;
+        color: #ea580c;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-top: 4px;
+      }
+      .gold-divider {
+        width: 240px;
+        height: 2px;
+        background: #d9a74a;
+        margin: 12px auto 18px auto;
+      }
+      .body-intro {
+        font-size: 13px;
+        color: #344b4a;
+        margin-bottom: 10px;
+      }
+      .award-title {
+        font-size: 24px;
+        font-weight: 800;
+        color: #b45309;
+        margin: 4px 0;
+      }
+      .award-category {
+        font-size: 13px;
+        font-style: italic;
+        color: #697778;
+        margin-bottom: 8px;
+      }
+      .award-desc {
+        font-size: 13px;
+        color: #475569;
+        max-width: 560px;
+        margin: 6px auto 12px auto;
+        line-height: 1.5;
+      }
+      .metric-text {
+        font-size: 12px;
+        font-weight: 700;
+        color: #344b4a;
+        margin-bottom: 14px;
+      }
+      .cert-id-box {
+        display: inline-block;
+        background: #f3f7f6;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        padding: 8px 22px;
+        font-family: "Courier New", Courier, monospace;
+        font-size: 12px;
+        font-weight: 800;
+        color: #167d78;
+        margin: 8px auto 26px auto;
+      }
+      .footer-grid {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-top: 12px;
+        padding: 0 20px;
+      }
+      .sig-col {
+        width: 180px;
+        text-align: center;
+      }
+      .sig-val {
+        font-size: 13px;
+        font-weight: 700;
+        color: #344b4a;
+        margin-bottom: 4px;
+      }
+      .sig-cursive {
+        font-family: Georgia, "Times New Roman", serif;
+        font-style: italic;
+        font-size: 15px;
+        font-weight: 700;
+        color: #167d78;
+        margin-bottom: 4px;
+      }
+      .sig-line {
+        border-top: 1px solid #b4bebe;
+        padding-top: 5px;
+        font-size: 10px;
+        color: #697778;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+      }
+      .seal-circle {
+        width: 68px;
+        height: 68px;
+        border-radius: 34px;
+        background: #167d78;
+        color: #ffffff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-size: 9px;
+        font-weight: 800;
+        letter-spacing: 0.8px;
+        border: 3px double #d9a74a;
+        margin: 0 auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="outer-frame">
+      <div class="inner-frame">
+        <div class="gym-name">${gym}</div>
+        <h1 class="cert-heading">CERTIFICATE OF RECOGNITION</h1>
+        <div class="presented-to">THIS PRESTIGIOUS HONOR IS PROUDLY PRESENTED TO</div>
+
+        <h2 class="recipient-name">${recipient}</h2>
+        ${roleLabel ? `<div class="recipient-role">${roleLabel}</div>` : ''}
+        <div class="gold-divider"></div>
+
+        <div class="body-intro">
+          In recognition of exemplary fitness dedication, outstanding performance, and milestone achievement in:
+        </div>
+
+        <div class="award-title">${awardTitle}</div>
+        ${category ? `<div class="award-category">Category: ${category}</div>` : ''}
+        ${description ? `<div class="award-desc">&ldquo;${description}&rdquo;</div>` : ''}
+        ${metric ? `<div class="metric-text">Milestone Record: ${metric}</div>` : ''}
+
+        <div class="cert-id-box">Certificate ID: ${certId}</div>
+
+        <div class="footer-grid">
+          <div class="sig-col">
+            <div class="sig-val">${awardDate}</div>
+            <div class="sig-line">DATE OF CONFERMENT</div>
+          </div>
+
+          <div class="seal-circle">
+            <span>OFFICIAL</span>
+            <span>SEAL</span>
+          </div>
+
+          <div class="sig-col">
+            <div class="sig-cursive">${conferredBy}</div>
+            <div class="sig-line">AUTHORIZED SIGNATURE</div>
+          </div>
+        </div>
+      </div>
     </div>
   </body>
   </html>
@@ -656,6 +901,22 @@ export const FileDownloader = {
     } catch (err: any) {
       console.error('[FileDownloader] Failed to generate store invoice PDF:', err);
       Alert.alert('Download Error', err?.message || 'Unable to generate store invoice PDF.');
+    }
+  },
+
+  /**
+   * Download Official Award / Recognition Certificate as a real PDF file
+   */
+  async downloadCertificatePDF(cert: CertificateDetails): Promise<void> {
+    try {
+      const html = generateCertificateHTML(cert);
+      const cleanId = (cert.certificateId || 'CERT').replace(/[^a-zA-Z0-9_-]/g, '_');
+      const cleanTitle = (cert.awardTitle || 'Award').replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 24);
+      const safeFilename = `Certificate_${cleanTitle}_${cleanId}.pdf`;
+      await savePDFFile(html, safeFilename, `Download Official Certificate - ${cert.certificateId}`);
+    } catch (err: any) {
+      console.error('[FileDownloader] Failed to generate certificate PDF:', err);
+      Alert.alert('Download Error', err?.message || 'Unable to generate certificate PDF.');
     }
   }
 };

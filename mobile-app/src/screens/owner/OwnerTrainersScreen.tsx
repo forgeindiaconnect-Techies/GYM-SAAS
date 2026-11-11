@@ -12,8 +12,12 @@ import {
   Linking,
   ActivityIndicator,
   RefreshControl,
-  Dimensions
+  Dimensions,
+  Image,
+  KeyboardAvoidingView,
+  Platform
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../constants/theme';
 import { useAuth } from '../../context/AuthContext';
@@ -127,8 +131,18 @@ interface TrainerItem {
   branchName?: string;
 }
 
+const TRAINING_TYPES = ['Online Training', 'Offline Training', 'Hybrid Training'];
+const BILLING_CYCLES = ['Weekly', 'Monthly', 'Per Session'];
+const UPI_APPS = [
+  { name: 'Google Pay', handle: 'okaxis' },
+  { name: 'PhonePe', handle: 'ybl' },
+  { name: 'Paytm', handle: 'paytm' },
+  { name: 'BHIM / UPI', handle: 'upi' },
+];
+
 export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' }> = ({ initialTab = 'trainers' }) => {
   const { user } = useAuth();
+  const insets = useSafeAreaInsets();
   
   // Top Level Segment
   const [activeSegment, setActiveSegment] = useState<'trainers' | 'hiring'>(initialTab);
@@ -150,9 +164,18 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
 
   // Trainers Data State
   const [trainers, setTrainers] = useState<TrainerItem[]>([]);
+  const [trainerFees, setTrainerFees] = useState<any[]>([]);
+  const [paymentHistory, setPaymentHistory] = useState<any[]>([]);
   const [invitations, setInvitations] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<'All' | 'Active' | 'Suspended' | 'Pending' | 'Rejected'>('All');
+
+  // Fee / Payment / History Search & Filters
+  const [feeSearchQuery, setFeeSearchQuery] = useState('');
+  const [paymentSearchQuery, setPaymentSearchQuery] = useState('');
+  const [historySearchQuery, setHistorySearchQuery] = useState('');
+  const [historyStatusFilter, setHistoryStatusFilter] = useState<'All' | 'Paid' | 'Pending' | 'Failed' | 'Cancelled'>('All');
+  const [historyMethodFilter, setHistoryMethodFilter] = useState<'All' | 'Bank Transfer' | 'UPI' | 'Cash'>('All');
 
   // Hiring Data State
   const [jobs, setJobs] = useState<any[]>([]);
@@ -168,6 +191,13 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
   const [showViewModal, setShowViewModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showFeeModal, setShowFeeModal] = useState(false);
+  const [editingFeeRecord, setEditingFeeRecord] = useState<any>(null);
+  const [savingFee, setSavingFee] = useState(false);
+  const [showProcessPaymentModal, setShowProcessPaymentModal] = useState(false);
+  const [selectedPaymentFee, setSelectedPaymentFee] = useState<any>(null);
+  const [showQrCode, setShowQrCode] = useState(false);
+  const [savingPayment, setSavingPayment] = useState(false);
+  const [selectedPaymentDetail, setSelectedPaymentDetail] = useState<any>(null);
   const [selectedApplication, setSelectedApplication] = useState<any>(null);
   const [showAppModal, setShowAppModal] = useState(false);
 
@@ -240,11 +270,41 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
   });
   const [publishingJob, setPublishingJob] = useState(false);
 
-  // Quick Fee Configuration State
+  // Web-Matching Fee Configuration State
   const [feeForm, setFeeForm] = useState({
-    fee: '',
-    paymentType: 'Per Month',
-    trainingMode: 'both'
+    trainerId: '',
+    trainingType: 'Online Training',
+    feeAmount: '',
+    billingCycle: 'Monthly',
+    effectiveFrom: new Date().toISOString().slice(0, 10),
+    paymentMethod: 'Bank Transfer',
+    status: 'Active',
+    notes: '',
+    accountHolder: '',
+    bankName: '',
+    accountNumber: '',
+    ifscCode: '',
+    upiId: '',
+    upiName: ''
+  });
+
+  // Web-Matching Process Trainer Payment Form State
+  const [processPaymentForm, setProcessPaymentForm] = useState({
+    trainerId: '',
+    trainerFeeId: '',
+    amount: '',
+    paymentMethod: 'Bank Transfer',
+    transactionId: '',
+    paymentDate: new Date().toISOString().slice(0, 10),
+    accountHolder: '',
+    bankName: '',
+    accountNumber: '',
+    ifscCode: '',
+    upiId: '',
+    upiName: '',
+    upiApp: 'Google Pay',
+    handedOverTo: '',
+    notes: ''
   });
 
   // Fetch all data
@@ -253,39 +313,82 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
       setLoading(true);
       const branchParam = user?.branchId ? `?branchId=${user.branchId}` : '';
 
-      // 1. Fetch Trainers
-      const [trainersRes, jobsRes, appsRes, hiredRes] = await Promise.allSettled([
+      const [trainersRes, jobsRes, appsRes, hiredRes, feesRes, historyRes] = await Promise.allSettled([
         api.get(`/trainers${branchParam}`),
         api.get(`/hiring/owner/jobs${branchParam}`).catch(() => api.get(`/hiring/jobs${branchParam}`)),
         api.get(`/hiring/admin/applications${branchParam}`).catch(() => api.get(`/hiring/applications${branchParam}`)),
-        api.get(`/hiring/owner/hired${branchParam}`).catch(() => api.get(`/hiring/hired${branchParam}`))
+        api.get(`/hiring/owner/hired${branchParam}`).catch(() => api.get(`/hiring/hired${branchParam}`)),
+        api.get(`/trainer-payments/fees${branchParam}`),
+        api.get(`/trainer-payments/history${branchParam}`)
       ]);
 
+      let mergedTrainersList: any[] = [];
+      let feeList: any[] = [];
+
+      if (feesRes.status === 'fulfilled' && feesRes.value?.data) {
+        feeList = feesRes.value.data.fees || [];
+        if (Array.isArray(feesRes.value.data.trainers)) {
+          mergedTrainersList = [...feesRes.value.data.trainers];
+        }
+      }
+
       if (trainersRes.status === 'fulfilled' && trainersRes.value.data) {
-        const raw = trainersRes.value.data.trainers || [];
-        setTrainers(raw.map((t: any) => ({
-          _id: t._id || t.id,
-          name: t.name || `${t.firstName || ''} ${t.lastName || ''}`.trim() || 'Trainer Coach',
-          email: t.email || '',
-          phone: t.phone || t.mobile || '',
-          specialization: t.specialization || (Array.isArray(t.expertise) ? t.expertise[0] : t.expertise) || 'ALL',
-          trainingMode: t.trainingMode || 'both',
-          fee: t.fee || '',
-          paymentType: t.paymentType || 'Per Month',
-          expectedSalary: t.expectedSalary || '',
-          status: t.status || 'Active',
-          experience: t.experience || '1 Year',
-          qualifications: t.qualifications || '',
-          certifications: t.certifications || '',
-          expertise: Array.isArray(t.expertise) ? t.expertise.join(', ') : (t.expertise || ''),
-          bio: t.bio || '',
-          availableDays: t.availableDays || t.availability?.days || 'Monday to Friday',
-          availableStartTime: t.availableStartTime || t.availability?.startTime || '06:00 AM',
-          availableEndTime: t.availableEndTime || t.availability?.endTime || '08:00 PM',
-          availableSlot: t.availableSlot || t.availability?.slot || '',
-          branchName: t.branchName || user?.branchName || 'Main Arena'
-        })));
+        const directTrainers = trainersRes.value.data.trainers || [];
+        const existingMap = new Map<string, any>();
+        for (const mt of mergedTrainersList) {
+          if (mt?._id || mt?.id) {
+            existingMap.set(String(mt._id || mt.id), mt);
+          }
+        }
+        // Prefer richer objects from /trainers endpoint while keeping fee-only entries
+        for (const dt of directTrainers) {
+          const id = String(dt._id || dt.id);
+          existingMap.set(id, { ...(existingMap.get(id) || {}), ...dt });
+        }
+        mergedTrainersList = Array.from(existingMap.values());
         setInvitations(trainersRes.value.data.invitations || []);
+      }
+
+      const existingIds = new Set(mergedTrainersList.map(t => String(t._id || t.id)));
+      feeList.forEach(f => {
+        if (f.trainerId && typeof f.trainerId === 'object' && f.trainerId._id) {
+          const id = String(f.trainerId._id);
+          if (!existingIds.has(id)) {
+            mergedTrainersList.push(f.trainerId);
+            existingIds.add(id);
+          }
+        }
+      });
+
+      setTrainerFees(feeList);
+      setTrainers(mergedTrainersList.map((t: any) => ({
+        _id: t._id || t.id,
+        name: t.name || `${t.firstName || ''} ${t.lastName || ''}`.trim() || 'Trainer Coach',
+        email: t.email || '',
+        phone: t.phone || t.mobile || '',
+        specialization: t.specialization || (Array.isArray(t.expertise) ? t.expertise[0] : t.expertise) || 'ALL',
+        trainingMode: t.trainingMode || 'both',
+        fee: t.fee || '',
+        paymentType: t.paymentType || 'Per Month',
+        expectedSalary: t.expectedSalary || '',
+        status: t.status || 'Active',
+        experience: t.experience || '1 Year',
+        qualifications: t.qualifications || '',
+        certifications: t.certifications || '',
+        expertise: Array.isArray(t.expertise) ? t.expertise.join(', ') : (t.expertise || ''),
+        bio: t.bio || '',
+        availableDays: t.availableDays || t.availability?.days || 'Monday to Friday',
+        availableStartTime: t.availableStartTime || t.availability?.startTime || '06:00 AM',
+        availableEndTime: t.availableEndTime || t.availability?.endTime || '08:00 PM',
+        availableSlot: t.availableSlot || t.availability?.slot || '',
+        branchName: t.branchName || user?.branchName || 'Main Arena',
+        createdAt: t.createdAt
+      })));
+
+      if (historyRes.status === 'fulfilled' && historyRes.value?.data) {
+        setPaymentHistory(historyRes.value.data.payments || []);
+      } else {
+        setPaymentHistory([]);
       }
 
       if (jobsRes.status === 'fulfilled' && jobsRes.value?.data) {
@@ -341,6 +444,93 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
     });
   }, [trainers, searchQuery, statusFilter]);
 
+  // Unified Trainer Fees rows (exact parity with GymAdminTrainerFees.tsx)
+  const feeMap = useMemo(() => {
+    return new Map(
+      trainerFees.map(f => [
+        String(f.trainerId?._id || f.trainerId),
+        f
+      ])
+    );
+  }, [trainerFees]);
+
+  const getEffectiveFee = useCallback((trainer: any, feeRecord: any) => {
+    if (feeRecord) return feeRecord;
+    if (trainer && trainer.fee && Number(trainer.fee) > 0) {
+      const modeMap: Record<string, string> = {
+        online: 'Online Training',
+        offline: 'Offline Training',
+        both: 'Hybrid Training'
+      };
+      const cycleMap: Record<string, string> = {
+        'Per Week': 'Weekly',
+        'Per Month': 'Monthly',
+        'Per Session': 'Per Session'
+      };
+      return {
+        _id: null,
+        trainerId: trainer,
+        trainingType: modeMap[trainer.trainingMode] || 'Offline Training',
+        feeAmount: Number(trainer.fee),
+        billingCycle: cycleMap[trainer.paymentType] || 'Monthly',
+        paymentMethod: 'Bank Transfer',
+        effectiveFrom: trainer.createdAt || new Date().toISOString(),
+        status: trainer.status === 'Active' ? 'Active' : 'Pending',
+        isSyncedFromProfile: true
+      };
+    }
+    return null;
+  }, []);
+
+  const allFeeRows = useMemo(() => {
+    return trainers.map(t => {
+      const feeRecord = feeMap.get(String(t._id)) || null;
+      return {
+        trainer: t,
+        fee: getEffectiveFee(t, feeRecord),
+        rawFee: feeRecord
+      };
+    });
+  }, [trainers, feeMap, getEffectiveFee]);
+
+  const filteredFeeRows = useMemo(() => {
+    const q = feeSearchQuery.trim().toLowerCase();
+    if (!q) return allFeeRows;
+    return allFeeRows.filter(row =>
+      row.trainer.name?.toLowerCase().includes(q) ||
+      row.trainer.email?.toLowerCase().includes(q)
+    );
+  }, [allFeeRows, feeSearchQuery]);
+
+  const configuredFeeCount = useMemo(() => allFeeRows.filter(r => r.fee !== null).length, [allFeeRows]);
+  const pendingFeeCount = useMemo(() => allFeeRows.length - configuredFeeCount, [allFeeRows, configuredFeeCount]);
+
+  // Active fees for Trainer Payments tab (exact parity with GymAdminTrainerPayments.tsx)
+  const activePaymentFees = useMemo(() => {
+    const active = trainerFees.filter(f => f.status === 'Active');
+    const q = paymentSearchQuery.trim().toLowerCase();
+    if (!q) return active;
+    return active.filter(f => (f.trainerId?.name || '').toLowerCase().includes(q));
+  }, [trainerFees, paymentSearchQuery]);
+
+  // Payment History filtered & Total Paid Out (exact parity with GymAdminTrainerPaymentHistory.tsx)
+  const filteredPaymentHistory = useMemo(() => {
+    const q = historySearchQuery.trim().toLowerCase();
+    return paymentHistory.filter(p => {
+      const name = (p.trainerId?.name || '').toLowerCase();
+      const matchSearch = !q || name.includes(q);
+      const matchStatus = historyStatusFilter === 'All' || p.paymentStatus === historyStatusFilter;
+      const matchMethod = historyMethodFilter === 'All' || p.paymentMethod === historyMethodFilter;
+      return matchSearch && matchStatus && matchMethod;
+    });
+  }, [paymentHistory, historySearchQuery, historyStatusFilter, historyMethodFilter]);
+
+  const totalPaidOut = useMemo(() => {
+    return filteredPaymentHistory
+      .filter(p => p.paymentStatus === 'Paid')
+      .reduce((sum, p) => sum + (Number(p.amount) || 0), 0);
+  }, [filteredPaymentHistory]);
+
   // Filtered Jobs
   const filteredJobs = useMemo(() => {
     return jobs.filter((j) => {
@@ -379,7 +569,11 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
           text: 'Confirm',
           onPress: async () => {
             try {
-              await api.patch(`/trainers/${trainerId}/status`, { status: newStatus });
+              const payload: any = { status: newStatus };
+              if (newStatus === 'Rejected') {
+                payload.reason = 'Rejected by gym owner';
+              }
+              await api.patch(`/trainers/${trainerId}/status`, payload);
               setTrainers(prev => prev.map(t => t._id === trainerId ? { ...t, status: newStatus } : t));
               Alert.alert('Success', `Trainer status updated to ${newStatus}.`);
             } catch (err: any) {
@@ -474,34 +668,292 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
     }
   };
 
-  const openFeeModal = (trainer: TrainerItem) => {
+  const openSetFeeModal = (trainer: any) => {
     setSelectedTrainer(trainer);
+    setEditingFeeRecord(null);
+    const modeMap: Record<string, string> = {
+      online: 'Online Training',
+      offline: 'Offline Training',
+      both: 'Hybrid Training'
+    };
+    const cycleMap: Record<string, string> = {
+      'Per Week': 'Weekly',
+      'Per Month': 'Monthly',
+      'Per Session': 'Per Session'
+    };
     setFeeForm({
-      fee: trainer.fee ? String(trainer.fee) : '',
-      paymentType: trainer.paymentType || 'Per Month',
-      trainingMode: trainer.trainingMode || 'both'
+      trainerId: String(trainer._id),
+      trainingType: modeMap[trainer.trainingMode] || 'Offline Training',
+      feeAmount: trainer.fee ? String(trainer.fee) : '',
+      billingCycle: cycleMap[trainer.paymentType] || 'Monthly',
+      effectiveFrom: trainer.createdAt ? new Date(trainer.createdAt).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10),
+      paymentMethod: 'Bank Transfer',
+      status: 'Active',
+      notes: '',
+      accountHolder: trainer.name || '',
+      bankName: '',
+      accountNumber: '',
+      ifscCode: '',
+      upiId: trainer.phone ? `${trainer.phone}@paytm` : '',
+      upiName: trainer.name || ''
+    });
+    setShowFeeModal(true);
+  };
+
+  const openEditFeeModal = (fee: any, trainer?: any) => {
+    const tr = trainer || fee?.trainerId;
+    setSelectedTrainer(tr || null);
+    setEditingFeeRecord(fee?._id ? fee : null);
+    setFeeForm({
+      trainerId: String(fee?.trainerId?._id || fee?.trainerId || tr?._id || ''),
+      trainingType: fee?.trainingType || 'Offline Training',
+      feeAmount: fee?.feeAmount ? String(fee.feeAmount) : (tr?.fee ? String(tr.fee) : ''),
+      billingCycle: fee?.billingCycle || 'Monthly',
+      effectiveFrom: fee?.effectiveFrom ? new Date(fee.effectiveFrom).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10),
+      paymentMethod: fee?.paymentMethod || 'Bank Transfer',
+      status: fee?.status || 'Active',
+      notes: fee?.notes || '',
+      accountHolder: fee?.bankDetails?.accountHolder || tr?.name || '',
+      bankName: fee?.bankDetails?.bankName || '',
+      accountNumber: fee?.bankDetails?.accountNumber || '',
+      ifscCode: fee?.bankDetails?.ifscCode || '',
+      upiId: fee?.upiDetails?.upiId || (tr?.phone ? `${tr.phone}@paytm` : ''),
+      upiName: fee?.upiDetails?.upiName || tr?.name || ''
+    });
+    setShowFeeModal(true);
+  };
+
+  const openAddNewFeeModal = () => {
+    setSelectedTrainer(null);
+    setEditingFeeRecord(null);
+    setFeeForm({
+      trainerId: '',
+      trainingType: 'Online Training',
+      feeAmount: '',
+      billingCycle: 'Monthly',
+      effectiveFrom: new Date().toISOString().slice(0, 10),
+      paymentMethod: 'Bank Transfer',
+      status: 'Active',
+      notes: '',
+      accountHolder: '',
+      bankName: '',
+      accountNumber: '',
+      ifscCode: '',
+      upiId: '',
+      upiName: ''
     });
     setShowFeeModal(true);
   };
 
   const handleSaveFee = async () => {
-    if (!selectedTrainer) return;
+    if (!feeForm.trainerId || !feeForm.feeAmount || !feeForm.billingCycle || !feeForm.effectiveFrom) {
+      Alert.alert('Validation Error', 'Please select a trainer and enter Fee Amount, Billing Cycle, and Effective From date.');
+      return;
+    }
+    const feeNum = Number(feeForm.feeAmount) || 0;
+    if (feeNum <= 0) {
+      Alert.alert('Validation Error', 'Fee amount must be greater than zero.');
+      return;
+    }
     try {
-      await api.put(`/trainers/${selectedTrainer._id}`, {
-        fee: feeForm.fee ? Number(feeForm.fee) : 0,
-        paymentType: feeForm.paymentType,
-        trainingMode: feeForm.trainingMode
+      setSavingFee(true);
+      await api.post('/trainer-payments/fee', {
+        ...feeForm,
+        feeAmount: feeNum,
+        paymentMethod: feeForm.paymentMethod || 'Bank Transfer',
+        commissionType: 'Percentage',
+        commissionValue: 0,
+        netAmount: feeNum
       });
-      setTrainers(prev => prev.map(t => t._id === selectedTrainer._id ? {
-        ...t,
-        fee: feeForm.fee ? Number(feeForm.fee) : undefined,
-        paymentType: feeForm.paymentType,
-        trainingMode: feeForm.trainingMode
-      } : t));
       setShowFeeModal(false);
-      Alert.alert('Fee Configured', 'Trainer compensation structure updated.');
+      Alert.alert('Success', editingFeeRecord ? 'Trainer fee updated successfully!' : 'Trainer fee set successfully!');
+      fetchData();
     } catch (err: any) {
-      Alert.alert('Error', err.response?.data?.message || 'Failed to save fee.');
+      Alert.alert('Error', err?.response?.data?.message || 'Failed to save fee.');
+    } finally {
+      setSavingFee(false);
+    }
+  };
+
+  const openProcessPaymentModal = (fee: any) => {
+    const trainer = fee.trainerId || {};
+    const trainerName = trainer.name || 'Trainer';
+    const emailPrefix = trainer.email ? trainer.email.split('@')[0] : 'trainer';
+    const trainerPhone = trainer.phone || '';
+    const defaultUpi = fee.upiDetails?.upiId || (trainerPhone ? `${trainerPhone}@paytm` : `${emailPrefix}@okaxis`);
+
+    setSelectedPaymentFee(fee);
+    setShowQrCode(false);
+    setProcessPaymentForm({
+      trainerId: String(trainer._id || fee.trainerId || ''),
+      trainerFeeId: String(fee._id || ''),
+      amount: fee.feeAmount ? String(fee.feeAmount) : '0',
+      paymentMethod: fee.paymentMethod || 'Bank Transfer',
+      transactionId: '',
+      paymentDate: new Date().toISOString().slice(0, 10),
+      accountHolder: fee.bankDetails?.accountHolder || trainerName,
+      bankName: fee.bankDetails?.bankName || '',
+      accountNumber: fee.bankDetails?.accountNumber || '',
+      ifscCode: fee.bankDetails?.ifscCode || '',
+      upiId: defaultUpi,
+      upiName: fee.upiDetails?.upiName || trainerName,
+      upiApp: 'Google Pay',
+      handedOverTo: trainerName,
+      notes: `${fee.billingCycle || 'Monthly'} Trainer fee payment for ${trainerName}`
+    });
+    setShowProcessPaymentModal(true);
+  };
+
+  const handleSelectUpiApp = (app: { name: string; handle: string }) => {
+    setProcessPaymentForm(prev => {
+      const currentUpi = prev.upiId || '';
+      let userPart = currentUpi.includes('@') ? currentUpi.split('@')[0] : currentUpi;
+      if (!userPart && selectedPaymentFee?.trainerId) {
+        userPart = selectedPaymentFee.trainerId.phone || selectedPaymentFee.trainerId.email?.split('@')[0] || 'trainer';
+      }
+      return {
+        ...prev,
+        upiApp: app.name,
+        upiId: `${userPart}@${app.handle}`
+      };
+    });
+  };
+
+  const handleProcessPaymentSubmit = async () => {
+    const amountNum = Number(processPaymentForm.amount);
+    if (!amountNum || amountNum <= 0) {
+      Alert.alert('Validation Error', 'Please enter a valid payment amount.');
+      return;
+    }
+
+    if (processPaymentForm.paymentMethod === 'Bank Transfer') {
+      if (processPaymentForm.accountNumber && processPaymentForm.accountNumber.length < 9) {
+        Alert.alert('Validation Error', 'Bank account number must be at least 9 digits (9–18 digits).');
+        return;
+      }
+      if (processPaymentForm.ifscCode && processPaymentForm.ifscCode.length < 11) {
+        Alert.alert('Validation Error', 'IFSC code must be exactly 11 characters.');
+        return;
+      }
+    }
+
+    if (['Bank Transfer', 'UPI'].includes(processPaymentForm.paymentMethod) && !processPaymentForm.transactionId.trim()) {
+      Alert.alert(
+        'Transaction ID Required',
+        `Please enter the ${processPaymentForm.paymentMethod === 'UPI' ? 'UPI Reference / UTR Number' : 'Bank UTR / Transaction ID'} to confirm this payment.`
+      );
+      return;
+    }
+
+    try {
+      setSavingPayment(true);
+      const payload: any = {
+        trainerId: processPaymentForm.trainerId,
+        trainerFeeId: processPaymentForm.trainerFeeId,
+        amount: amountNum,
+        paymentMethod: processPaymentForm.paymentMethod,
+        paymentDate: processPaymentForm.paymentDate,
+        notes: processPaymentForm.notes
+      };
+      if (processPaymentForm.transactionId.trim()) {
+        payload.transactionId = processPaymentForm.transactionId.trim();
+      }
+      await api.post('/trainer-payments/process', payload);
+      setShowProcessPaymentModal(false);
+      Alert.alert('Success', 'Payment processed and recorded successfully!');
+      fetchData();
+    } catch (err: any) {
+      Alert.alert('Payment Failed', err?.response?.data?.message || 'Failed to process payment.');
+    } finally {
+      setSavingPayment(false);
+    }
+  };
+
+  const formatPaymentDateTime = (iso?: string) => {
+    if (!iso) return '-';
+    try {
+      return new Date(iso).toLocaleString('en-IN', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      });
+    } catch {
+      return iso;
+    }
+  };
+
+  const formatEffectiveDate = (iso?: string) => {
+    if (!iso) return '—';
+    try {
+      return new Date(iso).toLocaleDateString('en-IN', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric'
+      });
+    } catch {
+      return iso;
+    }
+  };
+
+  const handleDownloadAllPaymentHistoryPDF = async () => {
+    try {
+      if (filteredPaymentHistory.length === 0) return;
+      const headers = ['Date', 'Trainer', 'Training Type', 'Amount (INR)', 'Method', 'Status', 'Transaction ID'];
+      const rows = filteredPaymentHistory.map(p => [
+        formatPaymentDateTime(p.createdAt || p.paymentDate),
+        p.trainerId?.name || 'Unknown',
+        p.trainerFeeId?.trainingType || '-',
+        `₹${Number(p.amount || 0).toLocaleString('en-IN')}`,
+        p.paymentMethod || '-',
+        p.paymentStatus || '-',
+        p.transactionId || 'N/A'
+      ]);
+      await FileDownloader.downloadReportPDF({
+        title: 'Trainer Payment History',
+        subtitle: 'Complete record of all trainer payments',
+        gymName: user?.gymName || 'Perfect Fitness Studio',
+        summaryMetrics: [
+          { label: 'Total Paid Out', value: `₹${totalPaidOut.toLocaleString('en-IN')}` },
+          { label: 'Total Transactions', value: String(filteredPaymentHistory.length) }
+        ],
+        headers,
+        rows
+      }, 'Trainer_Payment_History');
+    } catch (err: any) {
+      Alert.alert('Download Error', err?.message || 'Failed to download Payment History PDF.');
+    }
+  };
+
+  const handleDownloadSinglePaymentReceiptPDF = async (p: any) => {
+    try {
+      const trainerName = p.trainerId?.name || 'Unknown';
+      const dateFormatted = formatPaymentDateTime(p.createdAt || p.paymentDate);
+      const receiptId = p.transactionId || p._id?.slice(-8)?.toUpperCase() || 'REC-001';
+      await FileDownloader.downloadReportPDF({
+        title: 'Trainer Payment Receipt',
+        subtitle: `Receipt #: ${receiptId} • Issued ${dateFormatted}`,
+        gymName: user?.gymName || 'Perfect Fitness Studio',
+        summaryMetrics: [
+          { label: 'Amount Paid', value: `₹${Number(p.amount || 0).toLocaleString('en-IN')}` },
+          { label: 'Payment Status', value: p.paymentStatus || 'Paid' }
+        ],
+        headers: ['Payment Information', 'Details'],
+        rows: [
+          ['Trainer Name', trainerName],
+          ['Training Type', p.trainerFeeId?.trainingType || '-'],
+          ['Amount Paid', `₹${Number(p.amount || 0).toLocaleString('en-IN')}`],
+          ['Payment Method', p.paymentMethod || '-'],
+          ['Payment Status', p.paymentStatus || '-'],
+          ['Transaction ID', p.transactionId || 'N/A'],
+          ['Date & Time', dateFormatted],
+          ['Notes / Remarks', p.notes || 'None']
+        ]
+      }, `Trainer_Receipt_${trainerName.replace(/[^a-zA-Z0-9]/g, '_')}`);
+    } catch (err: any) {
+      Alert.alert('Download Error', err?.message || 'Failed to download receipt PDF.');
     }
   };
 
@@ -843,8 +1295,8 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
           </View>
         ) : activeSegment === 'trainers' ? (
           <>
-            {/* SUB-TABS: Trainers List | Trainer Fees | Trainer Payments | Payment History */}
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.subTabsScroll} contentContainerStyle={styles.subTabsContainer}>
+            {/* SUB-TABS: Trainers List | Trainer Fees | Trainer Payments | Payment History (2x2 Grid so none clip) */}
+            <View style={styles.subTabsGrid}>
               {[
                 { key: 'list', label: 'Trainers List', icon: 'barbell' },
                 { key: 'fees', label: 'Trainer Fees', icon: 'cash-outline' },
@@ -855,7 +1307,7 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
                 return (
                   <TouchableOpacity
                     key={tab.key}
-                    style={[styles.subTabPill, isActive && styles.subTabPillActive]}
+                    style={[styles.subTabGridPill, isActive && styles.subTabPillActive]}
                     onPress={() => setTrainerSubTab(tab.key as any)}
                     activeOpacity={0.7}
                   >
@@ -864,26 +1316,26 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
                       size={14} 
                       color={isActive ? COLORS.white : COLORS.textMuted} 
                     />
-                    <Text style={[styles.subTabPillText, isActive && styles.subTabPillTextActive]}>
+                    <Text style={[styles.subTabPillText, isActive && styles.subTabPillTextActive]} numberOfLines={1}>
                       {tab.label}
                     </Text>
                   </TouchableOpacity>
                 );
               })}
-            </ScrollView>
+            </View>
 
             {/* WEB-MATCHING PAGE HEADER */}
             <View style={styles.pageHeaderRow}>
               <View style={{ flex: 1 }}>
                 <Text style={styles.pageHeaderTitle}>
                   {trainerSubTab === 'list' ? 'Trainers' :
-                   trainerSubTab === 'fees' ? 'Trainer Fees' :
-                   trainerSubTab === 'payments' ? 'Trainer Payments' : 'Payment History'}
+                   trainerSubTab === 'fees' ? 'Trainer Fee Settings' :
+                   trainerSubTab === 'payments' ? 'Trainer Payments' : 'Trainer Payment History'}
                 </Text>
                 <Text style={styles.pageHeaderSub}>
                   {trainerSubTab === 'list' ? 'Manage all trainers hired by your gym.' :
-                   trainerSubTab === 'fees' ? 'Configure trainer billing cycles, commission and fees.' :
-                   trainerSubTab === 'payments' ? 'Track pending trainer payouts and session wages.' : 'Complete transaction ledger of trainer settlements.'}
+                   trainerSubTab === 'fees' ? 'Configure and manage fees for your trainers' :
+                   trainerSubTab === 'payments' ? 'Log new payments and process pending trainer dues.' : 'Complete record of all trainer payments'}
                 </Text>
               </View>
               {trainerSubTab === 'list' && (
@@ -895,6 +1347,22 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
                   <Ionicons name="add" size={16} color={COLORS.white} />
                   <Text style={styles.hireBtnText}>Hire Trainer</Text>
                 </TouchableOpacity>
+              )}
+              {trainerSubTab === 'fees' && (
+                <TouchableOpacity 
+                  style={styles.hireBtn}
+                  onPress={openAddNewFeeModal}
+                  activeOpacity={0.7}
+                >
+                  <Ionicons name="add" size={16} color={COLORS.white} />
+                  <Text style={styles.hireBtnText}>Set New Fee</Text>
+                </TouchableOpacity>
+              )}
+              {trainerSubTab === 'history' && (
+                <View style={styles.totalPaidOutCard}>
+                  <Text style={styles.totalPaidOutLabel}>Total Paid Out</Text>
+                  <Text style={styles.totalPaidOutValue}>₹{totalPaidOut.toLocaleString('en-IN')}</Text>
+                </View>
               )}
             </View>
 
@@ -939,163 +1407,345 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
 
                 {/* Trainer Cards List */}
                 <View style={styles.trainersList}>
-                  {filteredTrainers.length === 0 ? (
+                  {filteredTrainers.length === 0 && invitations.length === 0 ? (
                     <View style={styles.emptyCardBox}>
                       <Ionicons name="barbell-outline" size={36} color={COLORS.textMuted} />
                       <Text style={styles.emptyCardTitle}>No Trainers Found</Text>
                       <Text style={styles.emptyCardText}>
                         {searchQuery || statusFilter !== 'All' 
                           ? 'No trainers match your selected filters. Try resetting search.' 
-                          : 'No trainers enrolled in database staff roster yet. Click "+ Hire Trainer" to add.'}
+                          : 'No trainers found. Hire a trainer to get started.'}
                       </Text>
                     </View>
                   ) : (
-                    filteredTrainers.map((t) => {
-                      const isSuspended = t.status === 'Suspended';
-                      const isActive = t.status === 'Active';
-                      const isPending = t.status === 'Pending';
-                      const isRejected = t.status === 'Rejected';
+                    <>
+                      {filteredTrainers.map((t) => {
+                        const isSuspended = t.status === 'Suspended';
+                        const isActive = t.status === 'Active';
+                        const isPending = t.status === 'Pending';
+                        const isRejected = t.status === 'Rejected';
 
-                      return (
-                        <View key={t._id} style={styles.trainerCard}>
-                          {/* Card Top Row: Info & Status Badge */}
-                          <View style={styles.cardHeader}>
-                            <View style={styles.avatar}>
-                              <Text style={styles.avatarText}>{t.name?.charAt(0)?.toUpperCase() || 'T'}</Text>
-                            </View>
-                            <View style={styles.cardHeaderInfo}>
-                              <Text style={styles.trainerNameText}>{t.name}</Text>
-                              <Text style={styles.trainerEmailText}>{t.email}</Text>
-                              {t.phone ? (
-                                <Text style={styles.trainerPhoneText}>{t.phone}</Text>
-                              ) : null}
-                            </View>
-                            <View style={[
-                              styles.statusBadge,
-                              isActive && styles.statusBadgeActive,
-                              isSuspended && styles.statusBadgeSuspended,
-                              isPending && styles.statusBadgePending,
-                              isRejected && styles.statusBadgeRejected
-                            ]}>
-                              <Text style={[
-                                styles.statusBadgeText,
-                                isActive && styles.statusBadgeTextActive,
-                                isSuspended && styles.statusBadgeTextSuspended,
-                                isPending && styles.statusBadgeTextPending,
-                                isRejected && styles.statusBadgeTextRejected
+                        return (
+                          <View key={t._id} style={styles.trainerCard}>
+                            {/* Card Top Row: Info & Status Badge */}
+                            <View style={styles.cardHeader}>
+                              <View style={styles.avatar}>
+                                <Text style={styles.avatarText}>{t.name?.charAt(0)?.toUpperCase() || 'T'}</Text>
+                              </View>
+                              <View style={styles.cardHeaderInfo}>
+                                <Text style={styles.trainerNameText}>{t.name}</Text>
+                                <Text style={styles.trainerEmailText}>{t.email}</Text>
+                                {t.phone ? (
+                                  <Text style={styles.trainerPhoneText}>{t.phone}</Text>
+                                ) : null}
+                              </View>
+                              <View style={[
+                                styles.statusBadge,
+                                isActive && styles.statusBadgeActive,
+                                isSuspended && styles.statusBadgeSuspended,
+                                isPending && styles.statusBadgePending,
+                                isRejected && styles.statusBadgeRejected
                               ]}>
-                                {t.status}
-                              </Text>
-                            </View>
-                          </View>
-
-                          {/* Card Middle: Specialization, Mode, Fee */}
-                          <View style={styles.cardDetailsBox}>
-                            <View style={styles.detailItem}>
-                              <Text style={styles.detailLabel}>SPECIALIZATION</Text>
-                              <Text style={styles.detailValue}>{t.specialization || 'General'}</Text>
-                            </View>
-
-                            <View style={styles.detailItem}>
-                              <Text style={styles.detailLabel}>MODE</Text>
-                              <View style={styles.modePill}>
-                                <Text style={styles.modePillText}>
-                                  {t.trainingMode ? t.trainingMode.charAt(0).toUpperCase() + t.trainingMode.slice(1) : 'Both'}
+                                <Text style={[
+                                  styles.statusBadgeText,
+                                  isActive && styles.statusBadgeTextActive,
+                                  isSuspended && styles.statusBadgeTextSuspended,
+                                  isPending && styles.statusBadgeTextPending,
+                                  isRejected && styles.statusBadgeTextRejected
+                                ]}>
+                                  {t.status}
                                 </Text>
                               </View>
                             </View>
 
+                            {/* Card Middle: Specialization, Mode, Fee */}
+                            <View style={styles.cardDetailsBox}>
+                              <View style={styles.detailItem}>
+                                <Text style={styles.detailLabel}>SPECIALIZATION</Text>
+                                <Text style={styles.detailValue}>{t.specialization || 'General'}</Text>
+                              </View>
+
+                              <View style={styles.detailItem}>
+                                <Text style={styles.detailLabel}>MODE</Text>
+                                <View style={styles.modePill}>
+                                  <Text style={styles.modePillText}>
+                                    {t.trainingMode ? t.trainingMode.charAt(0).toUpperCase() + t.trainingMode.slice(1) : 'Both'}
+                                  </Text>
+                                </View>
+                              </View>
+
+                              <View style={styles.detailItem}>
+                                <Text style={styles.detailLabel}>FEE</Text>
+                                {t.fee && Number(t.fee) > 0 ? (
+                                  <Text style={styles.feeValue}>
+                                    ₹{Number(t.fee).toLocaleString('en-IN')}
+                                    <Text style={styles.feeCycle}> / {t.paymentType === 'Per Session' ? 'ses' : t.paymentType === 'Per Week' ? 'wk' : 'mo'}</Text>
+                                  </Text>
+                                ) : t.expectedSalary ? (
+                                  <Text style={styles.feeValue}>
+                                    ₹{Number(t.expectedSalary).toLocaleString('en-IN')}
+                                    <Text style={styles.feeCycle}> exp</Text>
+                                  </Text>
+                                ) : (
+                                  <Text style={styles.feeNotConfigured}>Not configured</Text>
+                                )}
+                              </View>
+                            </View>
+
+                            {/* Card Bottom: Action Toolbar (View, Edit, Status Toggles, Delete, Call) */}
+                            <View style={styles.cardActionsRow}>
+                              <TouchableOpacity 
+                                style={styles.actionIconBtn} 
+                                onPress={() => openViewModal(t)}
+                                accessibilityLabel="View Profile"
+                              >
+                                <Ionicons name="eye-outline" size={17} color={COLORS.textMedium} />
+                              </TouchableOpacity>
+
+                              <TouchableOpacity 
+                                style={styles.actionIconBtn} 
+                                onPress={() => openEditModal(t)}
+                                accessibilityLabel="Edit Trainer"
+                              >
+                                <Ionicons name="pencil-outline" size={17} color={COLORS.textMedium} />
+                              </TouchableOpacity>
+
+                              <View style={styles.statusIconsCluster}>
+                                <TouchableOpacity 
+                                  style={[styles.statusIconBtn, isActive && styles.statusIconBtnCurrent]}
+                                  onPress={() => handleSetStatus(t._id, t.name, 'Active')}
+                                  accessibilityLabel="Set Active"
+                                >
+                                  <Ionicons name="checkmark-circle-outline" size={18} color={isActive ? COLORS.primary : COLORS.textMuted} />
+                                </TouchableOpacity>
+
+                                <TouchableOpacity 
+                                  style={[styles.statusIconBtn, isSuspended && styles.statusIconBtnCurrent]}
+                                  onPress={() => handleSetStatus(t._id, t.name, 'Suspended')}
+                                  accessibilityLabel="Set Suspended"
+                                >
+                                  <Ionicons name="pause-circle-outline" size={18} color={isSuspended ? '#DC2626' : COLORS.textMuted} />
+                                </TouchableOpacity>
+
+                                <TouchableOpacity 
+                                  style={[styles.statusIconBtn, isPending && styles.statusIconBtnCurrent]}
+                                  onPress={() => handleSetStatus(t._id, t.name, 'Pending')}
+                                  accessibilityLabel="Set Pending"
+                                >
+                                  <Ionicons name="time-outline" size={18} color={isPending ? '#D97706' : COLORS.textMuted} />
+                                </TouchableOpacity>
+
+                                <TouchableOpacity 
+                                  style={[styles.statusIconBtn, isRejected && styles.statusIconBtnCurrent]}
+                                  onPress={() => handleSetStatus(t._id, t.name, 'Rejected')}
+                                  accessibilityLabel="Set Rejected"
+                                >
+                                  <Ionicons name="ban-outline" size={18} color={isRejected ? '#DC2626' : COLORS.textMuted} />
+                                </TouchableOpacity>
+                              </View>
+
+                              <TouchableOpacity 
+                                style={styles.actionIconBtn} 
+                                onPress={() => handleDeleteTrainer(t._id, t.name)}
+                                accessibilityLabel="Delete Trainer"
+                              >
+                                <Ionicons name="trash-outline" size={17} color="#DC2626" />
+                              </TouchableOpacity>
+
+                              {t.phone ? (
+                                <TouchableOpacity 
+                                  style={styles.actionCallBtn}
+                                  onPress={() => handleCallTrainer(t.phone)}
+                                >
+                                  <Ionicons name="call" size={13} color={COLORS.primary} />
+                                  <Text style={styles.actionCallText}>Call</Text>
+                                </TouchableOpacity>
+                              ) : null}
+                            </View>
+                          </View>
+                        );
+                      })}
+
+                      {/* Pending Invitations (Matching Web) */}
+                      {statusFilter === 'All' && invitations.map((invite: any) => (
+                        <View key={invite._id} style={[styles.trainerCard, { opacity: 0.78, backgroundColor: '#FFFBF7' }]}>
+                          <View style={styles.cardHeader}>
+                            <View style={styles.avatar}>
+                              <Text style={styles.avatarText}>{invite.trainerName?.charAt(0)?.toUpperCase() || 'I'}</Text>
+                            </View>
+                            <View style={styles.cardHeaderInfo}>
+                              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                                <Text style={styles.trainerNameText}>{invite.trainerName}</Text>
+                                <View style={styles.modePill}>
+                                  <Text style={styles.modePillText}>Invited</Text>
+                                </View>
+                              </View>
+                              <Text style={styles.trainerEmailText}>{invite.email}</Text>
+                            </View>
+                            <View style={[styles.statusBadge, styles.statusBadgePending]}>
+                              <Text style={[styles.statusBadgeText, styles.statusBadgeTextPending]}>
+                                Invite {invite.status || 'Pending'}
+                              </Text>
+                            </View>
+                          </View>
+                          <View style={styles.cardDetailsBox}>
+                            <View style={styles.detailItem}>
+                              <Text style={styles.detailLabel}>SPECIALIZATION</Text>
+                              <Text style={styles.detailValue}>{invite.specialization || '-'}</Text>
+                            </View>
+                            <View style={styles.detailItem}>
+                              <Text style={styles.detailLabel}>MODE</Text>
+                              <Text style={styles.detailValue}>{invite.trainingMode || 'offline'}</Text>
+                            </View>
                             <View style={styles.detailItem}>
                               <Text style={styles.detailLabel}>FEE</Text>
-                              {t.fee && Number(t.fee) > 0 ? (
-                                <Text style={styles.feeValue}>
-                                  ₹{Number(t.fee).toLocaleString('en-IN')}
-                                  <Text style={styles.feeCycle}> / {t.paymentType === 'Per Session' ? 'ses' : t.paymentType === 'Per Week' ? 'wk' : 'mo'}</Text>
+                              <Text style={styles.feeNotConfigured}>—</Text>
+                            </View>
+                          </View>
+                        </View>
+                      ))}
+                    </>
+                  )}
+                </View>
+              </>
+            )}
+
+            {/* SUB-TAB 2: TRAINER FEES (WEB PARITY: KPI CARDS, SEARCH, FULL TABLE DETAILS) */}
+            {trainerSubTab === 'fees' && (
+              <>
+                {/* 3 Summary KPI Cards */}
+                <View style={styles.threeKpiRow}>
+                  <View style={styles.threeKpiCard}>
+                    <View style={[styles.smallKpiIcon, { backgroundColor: '#FFF7ED' }]}>
+                      <Text style={{ color: COLORS.primary, fontWeight: '800', fontSize: 13 }}>₹</Text>
+                    </View>
+                    <Text style={styles.threeKpiValue}>{allFeeRows.length}</Text>
+                    <Text style={styles.threeKpiLabel}>Total Trainers</Text>
+                  </View>
+                  <View style={styles.threeKpiCard}>
+                    <View style={[styles.smallKpiIcon, { backgroundColor: '#ECFDF5' }]}>
+                      <Ionicons name="checkmark-circle-outline" size={14} color="#EA580C" />
+                    </View>
+                    <Text style={styles.threeKpiValue}>{configuredFeeCount}</Text>
+                    <Text style={styles.threeKpiLabel}>Fee Configured</Text>
+                  </View>
+                  <View style={styles.threeKpiCard}>
+                    <View style={[styles.smallKpiIcon, { backgroundColor: '#FEF3C7' }]}>
+                      <Ionicons name="alert-circle-outline" size={14} color="#D97706" />
+                    </View>
+                    <Text style={styles.threeKpiValue}>{pendingFeeCount}</Text>
+                    <Text style={styles.threeKpiLabel}>Pending Setup</Text>
+                  </View>
+                </View>
+
+                {/* Search trainer... */}
+                <View style={styles.searchBar}>
+                  <Ionicons name="search-outline" size={16} color={COLORS.textMuted} />
+                  <TextInput
+                    style={styles.searchInput}
+                    placeholder="Search trainer..."
+                    placeholderTextColor={COLORS.textMuted}
+                    value={feeSearchQuery}
+                    onChangeText={setFeeSearchQuery}
+                  />
+                  {feeSearchQuery ? (
+                    <TouchableOpacity onPress={() => setFeeSearchQuery('')}>
+                      <Ionicons name="close-circle" size={16} color={COLORS.textMuted} />
+                    </TouchableOpacity>
+                  ) : null}
+                </View>
+
+                <View style={styles.trainersList}>
+                  {filteredFeeRows.length === 0 ? (
+                    <View style={styles.emptyCardBox}>
+                      <Ionicons name="cash-outline" size={36} color={COLORS.textMuted} />
+                      <Text style={styles.emptyCardTitle}>No trainers found</Text>
+                      <Text style={styles.emptyCardText}>Add trainers to your gym first, then configure fees here.</Text>
+                    </View>
+                  ) : (
+                    filteredFeeRows.map(({ trainer, fee }) => {
+                      const feeStatus = fee?.status;
+                      return (
+                        <View key={trainer._id} style={styles.trainerCard}>
+                          <View style={styles.cardHeader}>
+                            <View style={styles.avatar}>
+                              <Text style={styles.avatarText}>{trainer.name?.charAt(0)?.toUpperCase() || 'T'}</Text>
+                            </View>
+                            <View style={styles.cardHeaderInfo}>
+                              <Text style={styles.trainerNameText}>{trainer.name}</Text>
+                              <Text style={styles.trainerEmailText}>{trainer.email || trainer.specialization || 'Coaching Staff'}</Text>
+                            </View>
+                            {fee ? (
+                              <View style={[
+                                styles.statusBadge,
+                                feeStatus === 'Active' ? styles.statusBadgeActive :
+                                feeStatus === 'Pending' ? styles.statusBadgePending :
+                                feeStatus === 'Rejected' ? styles.statusBadgeSuspended : styles.statusBadgeRejected
+                              ]}>
+                                <Text style={[
+                                  styles.statusBadgeText,
+                                  feeStatus === 'Active' ? styles.statusBadgeTextActive :
+                                  feeStatus === 'Pending' ? styles.statusBadgeTextPending :
+                                  feeStatus === 'Rejected' ? styles.statusBadgeTextSuspended : styles.statusBadgeTextRejected
+                                ]}>
+                                  {feeStatus || 'Active'}
                                 </Text>
-                              ) : t.expectedSalary ? (
-                                <Text style={styles.feeValue}>
-                                  ₹{Number(t.expectedSalary).toLocaleString('en-IN')}
-                                  <Text style={styles.feeCycle}> exp</Text>
-                                </Text>
+                              </View>
+                            ) : (
+                              <View style={[styles.statusBadge, styles.statusBadgePending]}>
+                                <Text style={[styles.statusBadgeText, styles.statusBadgeTextPending]}>Not Set</Text>
+                              </View>
+                            )}
+                          </View>
+
+                          <View style={styles.feeDetailsGrid}>
+                            <View style={styles.feeGridCell}>
+                              <Text style={styles.detailLabel}>TRAINING TYPE</Text>
+                              <Text style={styles.detailValue}>{fee ? fee.trainingType : 'Not set'}</Text>
+                            </View>
+                            <View style={styles.feeGridCell}>
+                              <Text style={styles.detailLabel}>FEE (SALARY)</Text>
+                              <Text style={styles.feeValue}>
+                                {fee ? `₹${Number(fee.feeAmount).toLocaleString('en-IN')}` : '—'}
+                              </Text>
+                            </View>
+                            <View style={styles.feeGridCell}>
+                              <Text style={styles.detailLabel}>BILLING CYCLE</Text>
+                              {fee ? (
+                                <View style={styles.modePill}>
+                                  <Text style={styles.modePillText}>{fee.billingCycle}</Text>
+                                </View>
                               ) : (
-                                <Text style={styles.feeNotConfigured}>Not configured</Text>
+                                <Text style={styles.detailValue}>—</Text>
                               )}
                             </View>
-                          </View>
-
-                          {/* Card Bottom: Action Toolbar (View, Edit, Status Toggles, Delete, Call) */}
-                          <View style={styles.cardActionsRow}>
-                            {/* Left View & Edit Buttons */}
-                            <TouchableOpacity 
-                              style={styles.actionIconBtn} 
-                              onPress={() => openViewModal(t)}
-                              accessibilityLabel="View Profile"
-                            >
-                              <Ionicons name="eye-outline" size={17} color={COLORS.textMedium} />
-                            </TouchableOpacity>
-
-                            <TouchableOpacity 
-                              style={styles.actionIconBtn} 
-                              onPress={() => openEditModal(t)}
-                              accessibilityLabel="Edit Trainer"
-                            >
-                              <Ionicons name="pencil-outline" size={17} color={COLORS.textMedium} />
-                            </TouchableOpacity>
-
-                            {/* Center Status Controls Divider */}
-                            <View style={styles.statusIconsCluster}>
-                              <TouchableOpacity 
-                                style={[styles.statusIconBtn, isActive && styles.statusIconBtnCurrent]}
-                                onPress={() => handleSetStatus(t._id, t.name, 'Active')}
-                                accessibilityLabel="Set Active"
-                              >
-                                <Ionicons name="checkmark-circle-outline" size={18} color={isActive ? COLORS.primary : COLORS.textMuted} />
-                              </TouchableOpacity>
-
-                              <TouchableOpacity 
-                                style={[styles.statusIconBtn, isSuspended && styles.statusIconBtnCurrent]}
-                                onPress={() => handleSetStatus(t._id, t.name, 'Suspended')}
-                                accessibilityLabel="Set Suspended"
-                              >
-                                <Ionicons name="pause-circle-outline" size={18} color={isSuspended ? '#DC2626' : COLORS.textMuted} />
-                              </TouchableOpacity>
-
-                              <TouchableOpacity 
-                                style={[styles.statusIconBtn, isPending && styles.statusIconBtnCurrent]}
-                                onPress={() => handleSetStatus(t._id, t.name, 'Pending')}
-                                accessibilityLabel="Set Pending"
-                              >
-                                <Ionicons name="time-outline" size={18} color={isPending ? '#D97706' : COLORS.textMuted} />
-                              </TouchableOpacity>
-
-                              <TouchableOpacity 
-                                style={[styles.statusIconBtn, isRejected && styles.statusIconBtnCurrent]}
-                                onPress={() => handleSetStatus(t._id, t.name, 'Rejected')}
-                                accessibilityLabel="Set Rejected"
-                              >
-                                <Ionicons name="ban-outline" size={18} color={isRejected ? '#DC2626' : COLORS.textMuted} />
-                              </TouchableOpacity>
+                            <View style={styles.feeGridCell}>
+                              <Text style={styles.detailLabel}>EFFECTIVE FROM</Text>
+                              <Text style={styles.detailValue}>
+                                {fee?.effectiveFrom ? formatEffectiveDate(fee.effectiveFrom) : '—'}
+                              </Text>
                             </View>
-
-                            {/* Right Delete & Call */}
-                            <TouchableOpacity 
-                              style={styles.actionIconBtn} 
-                              onPress={() => handleDeleteTrainer(t._id, t.name)}
-                              accessibilityLabel="Delete Trainer"
-                            >
-                              <Ionicons name="trash-outline" size={17} color="#DC2626" />
-                            </TouchableOpacity>
-
-                            {t.phone ? (
-                              <TouchableOpacity 
-                                style={styles.actionCallBtn}
-                                onPress={() => handleCallTrainer(t.phone)}
-                              >
-                                <Ionicons name="call" size={13} color={COLORS.primary} />
-                                <Text style={styles.actionCallText}>Call</Text>
-                              </TouchableOpacity>
-                            ) : null}
                           </View>
+
+                          {fee ? (
+                            <TouchableOpacity 
+                              style={styles.editFeeBtnWide}
+                              onPress={() => openEditFeeModal(fee, trainer)}
+                              activeOpacity={0.75}
+                            >
+                              <Ionicons name="create-outline" size={15} color={COLORS.primary} />
+                              <Text style={styles.editFeeBtnWideText}>Edit Fee</Text>
+                            </TouchableOpacity>
+                          ) : (
+                            <TouchableOpacity 
+                              style={styles.payNowBtn}
+                              onPress={() => openSetFeeModal(trainer)}
+                              activeOpacity={0.75}
+                            >
+                              <Ionicons name="add" size={15} color={COLORS.white} />
+                              <Text style={styles.payNowBtnText}>Set Fee</Text>
+                            </TouchableOpacity>
+                          )}
                         </View>
                       );
                     })
@@ -1104,103 +1754,227 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
               </>
             )}
 
-            {/* SUB-TAB 2: TRAINER FEES */}
-            {trainerSubTab === 'fees' && (
-              <View style={styles.trainersList}>
-                {trainers.map((t) => (
-                  <View key={t._id} style={styles.trainerCard}>
-                    <View style={styles.cardHeader}>
-                      <View style={styles.avatar}>
-                        <Text style={styles.avatarText}>{t.name?.charAt(0) || 'T'}</Text>
-                      </View>
-                      <View style={styles.cardHeaderInfo}>
-                        <Text style={styles.trainerNameText}>{t.name}</Text>
-                        <Text style={styles.trainerEmailText}>{t.specialization || 'Coaching Staff'}</Text>
-                      </View>
-                      <TouchableOpacity 
-                        style={styles.configFeeBtn}
-                        onPress={() => openFeeModal(t)}
+            {/* SUB-TAB 3: TRAINER PAYMENTS (WEB PARITY: ACTIVE FEES ONLY + PROCESS PAYMENT MODAL) */}
+            {trainerSubTab === 'payments' && (
+              <>
+                <View style={styles.searchBar}>
+                  <Ionicons name="search-outline" size={16} color={COLORS.textMuted} />
+                  <TextInput
+                    style={styles.searchInput}
+                    placeholder="Search trainers by name..."
+                    placeholderTextColor={COLORS.textMuted}
+                    value={paymentSearchQuery}
+                    onChangeText={setPaymentSearchQuery}
+                  />
+                  {paymentSearchQuery ? (
+                    <TouchableOpacity onPress={() => setPaymentSearchQuery('')}>
+                      <Ionicons name="close-circle" size={16} color={COLORS.textMuted} />
+                    </TouchableOpacity>
+                  ) : null}
+                </View>
+
+                <View style={styles.trainersList}>
+                  {activePaymentFees.length === 0 ? (
+                    <View style={styles.emptyCardBox}>
+                      <Ionicons name="card-outline" size={36} color={COLORS.textMuted} />
+                      <Text style={styles.emptyCardTitle}>No active fees found</Text>
+                      <Text style={styles.emptyCardText}>No active fees found. Configure fees first.</Text>
+                      <TouchableOpacity
+                        style={[styles.hireBtn, { marginTop: 8 }]}
+                        onPress={() => setTrainerSubTab('fees')}
                       >
-                        <Ionicons name="create-outline" size={14} color={COLORS.primary} />
-                        <Text style={styles.configFeeBtnText}>Set Fee</Text>
+                        <Text style={styles.hireBtnText}>Go to Trainer Fees</Text>
                       </TouchableOpacity>
                     </View>
+                  ) : (
+                    activePaymentFees.map((fee: any) => {
+                      const tr = fee.trainerId || {};
+                      return (
+                        <View key={fee._id} style={styles.trainerCard}>
+                          <View style={styles.cardHeader}>
+                            <View style={styles.avatar}>
+                              <Text style={styles.avatarText}>{tr.name?.charAt(0)?.toUpperCase() || 'T'}</Text>
+                            </View>
+                            <View style={styles.cardHeaderInfo}>
+                              <Text style={styles.trainerNameText}>{tr.name || 'Trainer'}</Text>
+                              <Text style={styles.trainerEmailText}>{tr.email || ''}</Text>
+                            </View>
+                          </View>
 
-                    <View style={styles.cardDetailsBox}>
-                      <View style={styles.detailItem}>
-                        <Text style={styles.detailLabel}>CURRENT FEE</Text>
-                        <Text style={styles.feeValue}>
-                          {t.fee ? `₹${Number(t.fee).toLocaleString('en-IN')}` : 'Not set'}
-                        </Text>
-                      </View>
-                      <View style={styles.detailItem}>
-                        <Text style={styles.detailLabel}>BILLING CYCLE</Text>
-                        <Text style={styles.detailValue}>{t.paymentType || 'Per Month'}</Text>
-                      </View>
-                      <View style={styles.detailItem}>
-                        <Text style={styles.detailLabel}>MODE</Text>
-                        <Text style={styles.detailValue}>{t.trainingMode || 'both'}</Text>
-                      </View>
-                    </View>
-                  </View>
-                ))}
-              </View>
-            )}
+                          <View style={styles.cardDetailsBox}>
+                            <View style={styles.detailItem}>
+                              <Text style={styles.detailLabel}>TRAINING TYPE</Text>
+                              <Text style={styles.detailValue}>{fee.trainingType || 'Offline Training'}</Text>
+                            </View>
+                            <View style={styles.detailItem}>
+                              <Text style={styles.detailLabel}>FEE AMOUNT</Text>
+                              <Text style={styles.feeValue}>
+                                ₹ {Number(fee.feeAmount || 0).toLocaleString('en-IN')}
+                                <Text style={styles.feeCycle}> / {fee.billingCycle || 'Monthly'}</Text>
+                              </Text>
+                            </View>
+                          </View>
 
-            {/* SUB-TAB 3: TRAINER PAYMENTS */}
-            {trainerSubTab === 'payments' && (
-              <View style={styles.trainersList}>
-                {trainers.map((t) => (
-                  <View key={t._id} style={styles.trainerCard}>
-                    <View style={styles.cardHeader}>
-                      <View style={styles.avatar}>
-                        <Text style={styles.avatarText}>{t.name?.charAt(0) || 'T'}</Text>
-                      </View>
-                      <View style={styles.cardHeaderInfo}>
-                        <Text style={styles.trainerNameText}>{t.name}</Text>
-                        <Text style={styles.trainerEmailText}>{t.phone || t.email}</Text>
-                      </View>
-                      <View style={[styles.statusBadge, styles.statusBadgeActive]}>
-                        <Text style={[styles.statusBadgeText, styles.statusBadgeTextActive]}>Active Contract</Text>
-                      </View>
-                    </View>
-
-                    <View style={styles.cardDetailsBox}>
-                      <View style={styles.detailItem}>
-                        <Text style={styles.detailLabel}>MONTHLY BASE</Text>
-                        <Text style={styles.feeValue}>{t.fee ? `₹${Number(t.fee).toLocaleString('en-IN')}` : '₹0'}</Text>
-                      </View>
-                      <View style={styles.detailItem}>
-                        <Text style={styles.detailLabel}>CYCLE</Text>
-                        <Text style={styles.detailValue}>{t.paymentType || 'Monthly'}</Text>
-                      </View>
-                      <View style={styles.detailItem}>
-                        <Text style={styles.detailLabel}>PAYMENT STATUS</Text>
-                        <Text style={[styles.detailValue, { color: '#15803D' }]}>Settled</Text>
-                      </View>
-                    </View>
-
-                    <TouchableOpacity 
-                      style={styles.payNowBtn}
-                      onPress={() => Alert.alert('Process Payout', `Initiating payment cycle settlement for ${t.name}.`)}
-                    >
-                      <Ionicons name="card" size={14} color={COLORS.white} />
-                      <Text style={styles.payNowBtnText}>Process Settlement</Text>
-                    </TouchableOpacity>
-                  </View>
-                ))}
-              </View>
-            )}
-
-            {/* SUB-TAB 4: PAYMENT HISTORY */}
-            {trainerSubTab === 'history' && (
-              <View style={styles.trainersList}>
-                <View style={styles.emptyCardBox}>
-                  <Ionicons name="document-text-outline" size={36} color={COLORS.textMuted} />
-                  <Text style={styles.emptyCardTitle}>Payout History Ledger</Text>
-                  <Text style={styles.emptyCardText}>All recorded monthly and per-session trainer disbursements will appear here.</Text>
+                          <TouchableOpacity 
+                            style={styles.payNowBtn}
+                            onPress={() => openProcessPaymentModal(fee)}
+                            activeOpacity={0.75}
+                          >
+                            <Ionicons name="card-outline" size={15} color={COLORS.white} />
+                            <Text style={styles.payNowBtnText}>Process Payment</Text>
+                          </TouchableOpacity>
+                        </View>
+                      );
+                    })
+                  )}
                 </View>
-              </View>
+              </>
+            )}
+
+            {/* SUB-TAB 4: PAYMENT HISTORY (WEB PARITY: TOTAL PAID OUT, FILTERS, PDF EXPORT, DETAILS MODAL) */}
+            {trainerSubTab === 'history' && (
+              <>
+                <View style={styles.searchBar}>
+                  <Ionicons name="search-outline" size={16} color={COLORS.textMuted} />
+                  <TextInput
+                    style={styles.searchInput}
+                    placeholder="Search trainer..."
+                    placeholderTextColor={COLORS.textMuted}
+                    value={historySearchQuery}
+                    onChangeText={setHistorySearchQuery}
+                  />
+                  {historySearchQuery ? (
+                    <TouchableOpacity onPress={() => setHistorySearchQuery('')}>
+                      <Ionicons name="close-circle" size={16} color={COLORS.textMuted} />
+                    </TouchableOpacity>
+                  ) : null}
+                </View>
+
+                {/* Status Filter Row */}
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterScroll}>
+                  {(['All', 'Paid', 'Pending', 'Failed', 'Cancelled'] as const).map((st) => {
+                    const isSelected = historyStatusFilter === st;
+                    return (
+                      <TouchableOpacity
+                        key={st}
+                        style={[styles.filterChip, isSelected && styles.filterChipActive]}
+                        onPress={() => setHistoryStatusFilter(st)}
+                        activeOpacity={0.7}
+                      >
+                        <Text style={[styles.filterChipText, isSelected && styles.filterChipTextActive]}>
+                          {st === 'All' ? 'All Status' : st}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </ScrollView>
+
+                {/* Method Filter & Download PDF Row */}
+                <View style={styles.historyToolbarRow}>
+                  <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ flex: 1 }}>
+                    {(['All', 'Bank Transfer', 'UPI', 'Cash'] as const).map((m) => {
+                      const isSelected = historyMethodFilter === m;
+                      return (
+                        <TouchableOpacity
+                          key={m}
+                          style={[styles.filterChip, isSelected && styles.filterChipActive]}
+                          onPress={() => setHistoryMethodFilter(m)}
+                          activeOpacity={0.7}
+                        >
+                          <Text style={[styles.filterChipText, isSelected && styles.filterChipTextActive]}>
+                            {m === 'All' ? 'All Methods' : m}
+                          </Text>
+                        </TouchableOpacity>
+                      );
+                    })}
+                  </ScrollView>
+
+                  <TouchableOpacity
+                    style={[styles.hireBtn, filteredPaymentHistory.length === 0 && { opacity: 0.45 }]}
+                    onPress={handleDownloadAllPaymentHistoryPDF}
+                    disabled={filteredPaymentHistory.length === 0}
+                    activeOpacity={0.75}
+                  >
+                    <Ionicons name="download-outline" size={15} color={COLORS.white} />
+                    <Text style={styles.hireBtnText}>Download PDF</Text>
+                  </TouchableOpacity>
+                </View>
+
+                <View style={styles.trainersList}>
+                  {filteredPaymentHistory.length === 0 ? (
+                    <View style={styles.emptyCardBox}>
+                      <Ionicons name="time-outline" size={36} color={COLORS.textMuted} />
+                      <Text style={styles.emptyCardTitle}>No payment records yet</Text>
+                      <Text style={styles.emptyCardText}>
+                        Payment records appear here after you process trainer payments. Start by configuring trainer fees.
+                      </Text>
+                      <TouchableOpacity
+                        style={[styles.hireBtn, { marginTop: 8 }]}
+                        onPress={() => setTrainerSubTab('fees')}
+                      >
+                        <Text style={styles.hireBtnText}>Configure Trainer Fees</Text>
+                        <Ionicons name="arrow-forward" size={14} color={COLORS.white} />
+                      </TouchableOpacity>
+                    </View>
+                  ) : (
+                    filteredPaymentHistory.map((p: any) => {
+                      const status = p.paymentStatus || 'Paid';
+                      const isPaid = status === 'Paid';
+                      const isPending = status === 'Pending';
+                      const isFailed = status === 'Failed';
+                      return (
+                        <View key={p._id} style={styles.trainerCard}>
+                          <View style={styles.cardHeader}>
+                            <View style={styles.avatar}>
+                              <Text style={styles.avatarText}>{p.trainerId?.name?.charAt(0)?.toUpperCase() || 'T'}</Text>
+                            </View>
+                            <View style={styles.cardHeaderInfo}>
+                              <Text style={styles.trainerNameText}>{p.trainerId?.name || 'Unknown'}</Text>
+                              <Text style={styles.trainerEmailText}>{formatPaymentDateTime(p.createdAt || p.paymentDate)}</Text>
+                            </View>
+                            <View style={{ alignItems: 'flex-end', gap: 4 }}>
+                              <Text style={styles.historyAmountText}>₹{Number(p.amount || 0).toLocaleString('en-IN')}</Text>
+                              <View style={[
+                                styles.statusBadge,
+                                isPaid ? styles.statusBadgeActive :
+                                isPending ? styles.statusBadgePending :
+                                isFailed ? styles.statusBadgeSuspended : styles.statusBadgeRejected
+                              ]}>
+                                <Text style={[
+                                  styles.statusBadgeText,
+                                  isPaid ? styles.statusBadgeTextActive :
+                                  isPending ? styles.statusBadgeTextPending :
+                                  isFailed ? styles.statusBadgeTextSuspended : styles.statusBadgeTextRejected
+                                ]}>
+                                  {status}
+                                </Text>
+                              </View>
+                            </View>
+                          </View>
+
+                          <View style={styles.cardDetailsBox}>
+                            <View style={styles.detailItem}>
+                              <Text style={styles.detailLabel}>TRAINING TYPE</Text>
+                              <Text style={styles.detailValue}>{p.trainerFeeId?.trainingType || '-'}</Text>
+                            </View>
+                            <View style={styles.detailItem}>
+                              <Text style={styles.detailLabel}>PAYMENT METHOD</Text>
+                              <Text style={styles.detailValue}>{p.paymentMethod || '-'}</Text>
+                            </View>
+                            <TouchableOpacity
+                              style={styles.viewDetailsLinkBtn}
+                              onPress={() => setSelectedPaymentDetail(p)}
+                              activeOpacity={0.7}
+                            >
+                              <Text style={styles.viewDetailsLinkText}>View Details</Text>
+                            </TouchableOpacity>
+                          </View>
+                        </View>
+                      );
+                    })
+                  )}
+                </View>
+              </>
             )}
           </>
         ) : (
@@ -2237,6 +3011,12 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
                     <Text style={styles.profileDataLabel}>Certifications</Text>
                     <Text style={styles.profileDataVal}>{selectedTrainer.certifications || 'CPR, ACE Fitness Certified'}</Text>
                   </View>
+                  {selectedTrainer.expertise ? (
+                    <View style={styles.profileDataRow}>
+                      <Text style={styles.profileDataLabel}>Expertise</Text>
+                      <Text style={styles.profileDataVal}>{selectedTrainer.expertise}</Text>
+                    </View>
+                  ) : null}
                 </View>
 
                 <View style={styles.profileSection}>
@@ -2251,7 +3031,20 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
                       {selectedTrainer.availableStartTime || '06:00 AM'} - {selectedTrainer.availableEndTime || '08:00 PM'}
                     </Text>
                   </View>
+                  {selectedTrainer.availableSlot ? (
+                    <View style={styles.profileDataRow}>
+                      <Text style={styles.profileDataLabel}>Slot Capacity</Text>
+                      <Text style={styles.profileDataVal}>{selectedTrainer.availableSlot}</Text>
+                    </View>
+                  ) : null}
                 </View>
+
+                {selectedTrainer.bio ? (
+                  <View style={styles.profileSection}>
+                    <Text style={styles.profileSectionTitle}>ABOUT</Text>
+                    <Text style={{ fontSize: 12, color: '#334155', lineHeight: 17 }}>{selectedTrainer.bio}</Text>
+                  </View>
+                ) : null}
               </ScrollView>
             )}
 
@@ -2408,55 +3201,500 @@ export const OwnerTrainersScreen: React.FC<{ initialTab?: 'trainers' | 'hiring' 
       </Modal>
 
       {/* =======================================================
-          MODAL 4: CONFIGURE FEE MODAL
+          MODAL 4: SET / EDIT TRAINER FEE MODAL (WEB PARITY)
           ======================================================= */}
       <Modal visible={showFeeModal} transparent animationType="slide">
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalCard}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={styles.modalOverlay}
+        >
+          <View style={[styles.modalCard, { paddingBottom: Math.max(insets.bottom, 20) }]}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Set Trainer Compensation</Text>
+              <View>
+                <Text style={styles.modalTitle}>{editingFeeRecord ? 'Edit Trainer Fee' : 'Set Trainer Fee'}</Text>
+                <Text style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 1 }}>
+                  Configure fee details for the selected trainer
+                </Text>
+              </View>
               <TouchableOpacity onPress={() => setShowFeeModal(false)}>
                 <Ionicons name="close" size={22} color={COLORS.textMedium} />
               </TouchableOpacity>
             </View>
 
-            <Text style={styles.inputLabel}>Fee Amount (₹)</Text>
-            <TextInput
-              style={styles.modalInput}
-              placeholder="e.g. 25000"
-              placeholderTextColor={COLORS.textMuted}
-              value={feeForm.fee}
-              onChangeText={(v) => setFeeForm({ ...feeForm, fee: v })}
-              keyboardType="numeric"
-            />
+            <ScrollView style={{ maxHeight: 440 }} showsVerticalScrollIndicator={false}>
+              <Text style={styles.inputLabel}>Trainer *</Text>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 6 }}>
+                <View style={{ flexDirection: 'row', gap: 6 }}>
+                  {trainers.map(tr => {
+                    const selected = String(feeForm.trainerId) === String(tr._id);
+                    return (
+                      <TouchableOpacity
+                        key={tr._id}
+                        style={[styles.typeChip, { flex: 0, paddingHorizontal: 12 }, selected && styles.typeChipActive]}
+                        onPress={() => setFeeForm({ ...feeForm, trainerId: String(tr._id) })}
+                      >
+                        <Text style={[styles.typeChipText, selected && styles.typeChipTextActive]}>
+                          {tr.name}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+              </ScrollView>
 
-            <Text style={styles.inputLabel}>Billing Cycle</Text>
-            <View style={styles.typeSelectorRow}>
-              {['Per Month', 'Per Week', 'Per Session'].map((c) => (
-                <TouchableOpacity
-                  key={c}
-                  style={[styles.typeChip, feeForm.paymentType === c && styles.typeChipActive]}
-                  onPress={() => setFeeForm({ ...feeForm, paymentType: c })}
-                >
-                  <Text style={[styles.typeChipText, feeForm.paymentType === c && styles.typeChipTextActive]}>
-                    {c}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
+              <Text style={styles.inputLabel}>Training Type *</Text>
+              <View style={styles.typeSelectorRow}>
+                {TRAINING_TYPES.map((tt) => (
+                  <TouchableOpacity
+                    key={tt}
+                    style={[styles.typeChip, feeForm.trainingType === tt && styles.typeChipActive]}
+                    onPress={() => setFeeForm({ ...feeForm, trainingType: tt })}
+                  >
+                    <Text style={[styles.typeChipText, feeForm.trainingType === tt && styles.typeChipTextActive]} numberOfLines={1}>
+                      {tt.replace(' Training', '')}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+
+              <View style={styles.twoColRow}>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.inputLabel}>Fee Amount (₹) *</Text>
+                  <TextInput
+                    style={styles.modalInput}
+                    placeholder="e.g. 25000"
+                    placeholderTextColor={COLORS.textMuted}
+                    value={feeForm.feeAmount}
+                    onChangeText={(v) => setFeeForm({ ...feeForm, feeAmount: v.replace(/[^0-9.]/g, '') })}
+                    keyboardType="numeric"
+                  />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.inputLabel}>Effective From *</Text>
+                  <TextInput
+                    style={styles.modalInput}
+                    placeholder="YYYY-MM-DD"
+                    placeholderTextColor={COLORS.textMuted}
+                    value={feeForm.effectiveFrom}
+                    onChangeText={(v) => setFeeForm({ ...feeForm, effectiveFrom: v })}
+                  />
+                </View>
+              </View>
+
+              <Text style={styles.inputLabel}>Billing Cycle *</Text>
+              <View style={styles.typeSelectorRow}>
+                {BILLING_CYCLES.map((c) => (
+                  <TouchableOpacity
+                    key={c}
+                    style={[styles.typeChip, feeForm.billingCycle === c && styles.typeChipActive]}
+                    onPress={() => setFeeForm({ ...feeForm, billingCycle: c })}
+                  >
+                    <Text style={[styles.typeChipText, feeForm.billingCycle === c && styles.typeChipTextActive]}>
+                      {c}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+
+              <Text style={styles.inputLabel}>Status</Text>
+              <View style={styles.typeSelectorRow}>
+                {['Active', 'Inactive', 'Pending', 'Rejected'].map((st) => (
+                  <TouchableOpacity
+                    key={st}
+                    style={[styles.typeChip, feeForm.status === st && styles.typeChipActive]}
+                    onPress={() => setFeeForm({ ...feeForm, status: st })}
+                  >
+                    <Text style={[styles.typeChipText, feeForm.status === st && styles.typeChipTextActive]}>
+                      {st}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+
+              <Text style={styles.inputLabel}>Notes (Optional)</Text>
+              <TextInput
+                style={[styles.modalInput, { height: 70, textAlignVertical: 'top' }]}
+                placeholder="Any additional notes..."
+                placeholderTextColor={COLORS.textMuted}
+                value={feeForm.notes}
+                onChangeText={(v) => setFeeForm({ ...feeForm, notes: v })}
+                multiline
+              />
+            </ScrollView>
 
             <View style={styles.modalActions}>
               <TouchableOpacity 
                 style={styles.modalCancelBtn} 
                 onPress={() => setShowFeeModal(false)}
+                disabled={savingFee}
               >
                 <Text style={styles.modalCancelText}>Cancel</Text>
               </TouchableOpacity>
               <TouchableOpacity 
                 style={styles.modalSubmitBtn} 
                 onPress={handleSaveFee}
+                disabled={savingFee}
               >
-                <Text style={styles.modalSubmitText}>Save Fee</Text>
+                {savingFee ? (
+                  <ActivityIndicator size="small" color={COLORS.white} />
+                ) : (
+                  <Text style={styles.modalSubmitText}>Save Trainer Fee</Text>
+                )}
+              </TouchableOpacity>
+            </View>
+          </View>
+        </KeyboardAvoidingView>
+      </Modal>
+
+      {/* =======================================================
+          MODAL 6: PROCESS TRAINER PAYMENT MODAL (WEB PARITY)
+          ======================================================= */}
+      <Modal visible={showProcessPaymentModal} transparent animationType="slide">
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={styles.modalOverlay}
+        >
+          <View style={[styles.modalCard, { paddingBottom: Math.max(insets.bottom, 20) }]}>
+            <View style={styles.modalHeader}>
+              <View>
+                <Text style={styles.modalTitle}>Process Trainer Payment</Text>
+                <Text style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 1 }}>
+                  Confirm and record fee disbursement to trainer
+                </Text>
+              </View>
+              <TouchableOpacity onPress={() => setShowProcessPaymentModal(false)}>
+                <Ionicons name="close" size={22} color={COLORS.textMedium} />
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView style={{ maxHeight: 460 }} showsVerticalScrollIndicator={false}>
+              {/* Trainer Summary Badge */}
+              <View style={styles.paymentSummaryBox}>
+                <View style={styles.avatar}>
+                  <Text style={styles.avatarText}>
+                    {selectedPaymentFee?.trainerId?.name?.charAt(0)?.toUpperCase() || 'T'}
+                  </Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.trainerNameText}>
+                    {selectedPaymentFee?.trainerId?.name || 'Trainer'}
+                  </Text>
+                  <Text style={styles.trainerEmailText}>{selectedPaymentFee?.trainerId?.email || ''}</Text>
+                  <View style={[styles.modePill, { marginTop: 4 }]}>
+                    <Text style={styles.modePillText}>{selectedPaymentFee?.trainingType || 'Offline Training'}</Text>
+                  </View>
+                </View>
+                <View style={{ alignItems: 'flex-end' }}>
+                  <Text style={{ fontSize: 10, color: COLORS.textMuted, fontWeight: '700' }}>DUE AMOUNT</Text>
+                  <Text style={{ fontSize: 16, fontWeight: '800', color: COLORS.primary }}>
+                    ₹{Number(selectedPaymentFee?.feeAmount || 0).toLocaleString('en-IN')}
+                  </Text>
+                  <Text style={{ fontSize: 10, color: COLORS.textMuted }}>
+                    / {selectedPaymentFee?.billingCycle || 'Monthly'}
+                  </Text>
+                </View>
+              </View>
+
+              <View style={styles.twoColRow}>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.inputLabel}>Amount to Pay (₹) *</Text>
+                  <TextInput
+                    style={styles.modalInput}
+                    value={processPaymentForm.amount}
+                    onChangeText={(v) => setProcessPaymentForm({ ...processPaymentForm, amount: v.replace(/[^0-9.]/g, '') })}
+                    keyboardType="numeric"
+                  />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.inputLabel}>Payment Date *</Text>
+                  <TextInput
+                    style={styles.modalInput}
+                    placeholder="YYYY-MM-DD"
+                    value={processPaymentForm.paymentDate}
+                    onChangeText={(v) => setProcessPaymentForm({ ...processPaymentForm, paymentDate: v })}
+                  />
+                </View>
+              </View>
+
+              <Text style={styles.inputLabel}>Select Payment Method *</Text>
+              <View style={styles.typeSelectorRow}>
+                {[
+                  { value: 'Bank Transfer', label: 'Bank Transfer' },
+                  { value: 'UPI', label: 'UPI / QR' },
+                  { value: 'Cash', label: 'Cash' }
+                ].map((m) => (
+                  <TouchableOpacity
+                    key={m.value}
+                    style={[styles.typeChip, processPaymentForm.paymentMethod === m.value && styles.typeChipActive]}
+                    onPress={() => setProcessPaymentForm({ ...processPaymentForm, paymentMethod: m.value })}
+                  >
+                    <Text style={[styles.typeChipText, processPaymentForm.paymentMethod === m.value && styles.typeChipTextActive]}>
+                      {m.label}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+
+              {processPaymentForm.paymentMethod === 'Bank Transfer' && (
+                <View style={styles.paymentMethodBox}>
+                  <Text style={styles.profileSectionTitle}>TRAINER BANK ACCOUNT DETAILS</Text>
+                  <Text style={styles.inputLabel}>Account Holder Name</Text>
+                  <TextInput
+                    style={styles.modalInput}
+                    value={processPaymentForm.accountHolder}
+                    onChangeText={(v) => setProcessPaymentForm({ ...processPaymentForm, accountHolder: v })}
+                  />
+                  <Text style={styles.inputLabel}>Bank Name</Text>
+                  <TextInput
+                    style={styles.modalInput}
+                    placeholder="e.g. HDFC Bank, SBI, ICICI"
+                    placeholderTextColor={COLORS.textMuted}
+                    value={processPaymentForm.bankName}
+                    onChangeText={(v) => setProcessPaymentForm({ ...processPaymentForm, bankName: v })}
+                  />
+                  <View style={styles.twoColRow}>
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.inputLabel}>Account Number</Text>
+                      <TextInput
+                        style={styles.modalInput}
+                        placeholder="9-18 digits"
+                        placeholderTextColor={COLORS.textMuted}
+                        value={processPaymentForm.accountNumber}
+                        onChangeText={(v) => setProcessPaymentForm({ ...processPaymentForm, accountNumber: v.replace(/\D/g, '').slice(0, 18) })}
+                        keyboardType="numeric"
+                      />
+                    </View>
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.inputLabel}>IFSC Code</Text>
+                      <TextInput
+                        style={styles.modalInput}
+                        placeholder="HDFC0001234"
+                        placeholderTextColor={COLORS.textMuted}
+                        value={processPaymentForm.ifscCode}
+                        onChangeText={(v) => setProcessPaymentForm({ ...processPaymentForm, ifscCode: v.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 11) })}
+                        autoCapitalize="characters"
+                      />
+                    </View>
+                  </View>
+                  <Text style={styles.inputLabel}>Bank UTR / Transaction Reference ID *</Text>
+                  <TextInput
+                    style={styles.modalInput}
+                    placeholder="e.g. UTR202609298877"
+                    placeholderTextColor={COLORS.textMuted}
+                    value={processPaymentForm.transactionId}
+                    onChangeText={(v) => setProcessPaymentForm({ ...processPaymentForm, transactionId: v.replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 22) })}
+                    autoCapitalize="characters"
+                  />
+                </View>
+              )}
+
+              {processPaymentForm.paymentMethod === 'UPI' && (
+                <View style={styles.paymentMethodBox}>
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Text style={styles.profileSectionTitle}>UPI PAYMENT</Text>
+                    <TouchableOpacity
+                      style={styles.configFeeBtn}
+                      onPress={() => setShowQrCode(!showQrCode)}
+                    >
+                      <Ionicons name="qr-code-outline" size={14} color={COLORS.primary} />
+                      <Text style={styles.configFeeBtnText}>{showQrCode ? 'Hide QR' : 'Scan UPI QR'}</Text>
+                    </TouchableOpacity>
+                  </View>
+
+                  <Text style={styles.inputLabel}>Quick Select UPI App</Text>
+                  <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: 4 }}>
+                    {UPI_APPS.map(app => (
+                      <TouchableOpacity
+                        key={app.name}
+                        style={[styles.filterChip, processPaymentForm.upiApp === app.name && styles.filterChipActive]}
+                        onPress={() => handleSelectUpiApp(app)}
+                      >
+                        <Text style={[styles.filterChipText, processPaymentForm.upiApp === app.name && styles.filterChipTextActive]}>
+                          {app.name}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+
+                  <Text style={styles.inputLabel}>Trainer UPI ID / VPA *</Text>
+                  <TextInput
+                    style={styles.modalInput}
+                    placeholder="e.g. 9876543210@paytm"
+                    placeholderTextColor={COLORS.textMuted}
+                    value={processPaymentForm.upiId}
+                    onChangeText={(v) => setProcessPaymentForm({ ...processPaymentForm, upiId: v.trim() })}
+                    autoCapitalize="none"
+                  />
+
+                  {showQrCode && (
+                    <View style={styles.qrPreviewBox}>
+                      <Image
+                        source={{
+                          uri: `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(
+                            `upi://pay?pa=${processPaymentForm.upiId || ''}&pn=${processPaymentForm.upiName || 'Trainer'}&am=${processPaymentForm.amount || '0'}&cu=INR&tn=Trainer%20Fee%20Payment`
+                          )}`
+                        }}
+                        style={{ width: 140, height: 140, borderRadius: 8 }}
+                      />
+                      <Text style={{ fontSize: 11, color: '#334155', marginTop: 6, fontWeight: '600' }}>
+                        UPI VPA: {processPaymentForm.upiId || 'Not set'}
+                      </Text>
+                    </View>
+                  )}
+
+                  <Text style={styles.inputLabel}>UPI Reference / Transaction ID (UTR) *</Text>
+                  <TextInput
+                    style={styles.modalInput}
+                    placeholder="12-digit UTR number"
+                    placeholderTextColor={COLORS.textMuted}
+                    value={processPaymentForm.transactionId}
+                    onChangeText={(v) => setProcessPaymentForm({ ...processPaymentForm, transactionId: v.replace(/[^0-9]/g, '').slice(0, 12) })}
+                    keyboardType="numeric"
+                    maxLength={12}
+                  />
+                </View>
+              )}
+
+              {processPaymentForm.paymentMethod === 'Cash' && (
+                <View style={styles.paymentMethodBox}>
+                  <Text style={styles.profileSectionTitle}>CASH PAYMENT SETTLEMENT</Text>
+                  <Text style={styles.inputLabel}>Handed Over To *</Text>
+                  <TextInput
+                    style={styles.modalInput}
+                    value={processPaymentForm.handedOverTo}
+                    onChangeText={(v) => setProcessPaymentForm({ ...processPaymentForm, handedOverTo: v })}
+                  />
+                  <Text style={styles.inputLabel}>Cash Receipt / Voucher No. (Optional)</Text>
+                  <TextInput
+                    style={styles.modalInput}
+                    placeholder="e.g. CASH-OCT-2026"
+                    placeholderTextColor={COLORS.textMuted}
+                    value={processPaymentForm.transactionId}
+                    onChangeText={(v) => setProcessPaymentForm({ ...processPaymentForm, transactionId: v })}
+                  />
+                </View>
+              )}
+
+              <Text style={styles.inputLabel}>Payment Notes / Remarks (Optional)</Text>
+              <TextInput
+                style={[styles.modalInput, { height: 64, textAlignVertical: 'top' }]}
+                placeholder="e.g. Monthly trainer retainer fee"
+                placeholderTextColor={COLORS.textMuted}
+                value={processPaymentForm.notes}
+                onChangeText={(v) => setProcessPaymentForm({ ...processPaymentForm, notes: v })}
+                multiline
+              />
+            </ScrollView>
+
+            <View style={styles.modalActions}>
+              <TouchableOpacity 
+                style={styles.modalCancelBtn} 
+                onPress={() => setShowProcessPaymentModal(false)}
+                disabled={savingPayment}
+              >
+                <Text style={styles.modalCancelText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={styles.modalSubmitBtn} 
+                onPress={handleProcessPaymentSubmit}
+                disabled={savingPayment}
+              >
+                {savingPayment ? (
+                  <ActivityIndicator size="small" color={COLORS.white} />
+                ) : (
+                  <Text style={styles.modalSubmitText}>Confirm & Submit Payment</Text>
+                )}
+              </TouchableOpacity>
+            </View>
+          </View>
+        </KeyboardAvoidingView>
+      </Modal>
+
+      {/* =======================================================
+          MODAL 7: PAYMENT DETAILS MODAL (WEB PARITY)
+          ======================================================= */}
+      <Modal visible={Boolean(selectedPaymentDetail)} transparent animationType="slide">
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalCard, { paddingBottom: Math.max(insets.bottom, 20) }]}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Payment Details</Text>
+              <TouchableOpacity onPress={() => setSelectedPaymentDetail(null)}>
+                <Ionicons name="close" size={22} color={COLORS.textMedium} />
+              </TouchableOpacity>
+            </View>
+
+            {selectedPaymentDetail && (
+              <ScrollView style={{ maxHeight: 420 }} showsVerticalScrollIndicator={false}>
+                <View style={styles.paymentHighlightCard}>
+                  <Text style={{ fontSize: 12, fontWeight: '700', color: COLORS.primary }}>Amount Paid</Text>
+                  <Text style={{ fontSize: 22, fontWeight: '800', color: COLORS.primary }}>
+                    ₹{Number(selectedPaymentDetail.amount || 0).toLocaleString('en-IN')}
+                  </Text>
+                </View>
+
+                <View style={styles.profileSection}>
+                  <View style={styles.profileDataRow}>
+                    <Text style={styles.profileDataLabel}>Trainer</Text>
+                    <Text style={styles.profileDataVal}>{selectedPaymentDetail.trainerId?.name || 'Unknown'}</Text>
+                  </View>
+                  <View style={styles.profileDataRow}>
+                    <Text style={styles.profileDataLabel}>Training Type</Text>
+                    <Text style={styles.profileDataVal}>{selectedPaymentDetail.trainerFeeId?.trainingType || '-'}</Text>
+                  </View>
+                  <View style={styles.profileDataRow}>
+                    <Text style={styles.profileDataLabel}>Status</Text>
+                    <Text style={[styles.profileDataVal, { color: COLORS.primary }]}>
+                      {selectedPaymentDetail.paymentStatus || '-'}
+                    </Text>
+                  </View>
+                  <View style={styles.profileDataRow}>
+                    <Text style={styles.profileDataLabel}>Date</Text>
+                    <Text style={styles.profileDataVal}>
+                      {formatPaymentDateTime(selectedPaymentDetail.paymentDate || selectedPaymentDetail.createdAt)}
+                    </Text>
+                  </View>
+                  <View style={styles.profileDataRow}>
+                    <Text style={styles.profileDataLabel}>Payment Method</Text>
+                    <Text style={styles.profileDataVal}>{selectedPaymentDetail.paymentMethod || '-'}</Text>
+                  </View>
+                  <View style={styles.profileDataRow}>
+                    <Text style={styles.profileDataLabel}>Transaction ID</Text>
+                    <Text style={styles.profileDataVal}>{selectedPaymentDetail.transactionId || 'N/A'}</Text>
+                  </View>
+                </View>
+
+                {selectedPaymentDetail.paymentProof ? (
+                  <TouchableOpacity
+                    style={[styles.editFeeBtnWide, { marginTop: 10 }]}
+                    onPress={() => Linking.openURL(selectedPaymentDetail.paymentProof).catch(() => Alert.alert('Error', 'Unable to open proof link.'))}
+                  >
+                    <Ionicons name="document-text-outline" size={15} color={COLORS.primary} />
+                    <Text style={styles.editFeeBtnWideText}>View Payment Proof</Text>
+                  </TouchableOpacity>
+                ) : null}
+
+                {selectedPaymentDetail.notes ? (
+                  <View style={styles.profileSection}>
+                    <Text style={styles.profileSectionTitle}>NOTES</Text>
+                    <Text style={{ fontSize: 12, color: '#334155', lineHeight: 17 }}>{selectedPaymentDetail.notes}</Text>
+                  </View>
+                ) : null}
+              </ScrollView>
+            )}
+
+            <View style={[styles.modalActions, { gap: 10 }]}>
+              <TouchableOpacity
+                style={[styles.modalSubmitBtn, { flex: 1.4, flexDirection: 'row', gap: 6 }]}
+                onPress={() => selectedPaymentDetail && handleDownloadSinglePaymentReceiptPDF(selectedPaymentDetail)}
+              >
+                <Ionicons name="download-outline" size={16} color={COLORS.white} />
+                <Text style={styles.modalSubmitText}>Download PDF</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.modalCancelBtn, { flex: 0.8 }]}
+                onPress={() => setSelectedPaymentDetail(null)}
+              >
+                <Text style={styles.modalCancelText}>Close</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -3936,5 +5174,170 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderWidth: 1,
     borderColor: '#FED7AA',
+  },
+  // Web-Parity Trainer Tabs, Fees, Payments & History Styles
+  subTabsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginBottom: 14,
+  },
+  subTabGridPill: {
+    width: (width - 40) / 2,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 9,
+    borderRadius: 12,
+    backgroundColor: COLORS.white,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  totalPaidOutCard: {
+    backgroundColor: COLORS.white,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    alignItems: 'flex-end',
+  },
+  totalPaidOutLabel: {
+    fontSize: 10,
+    fontWeight: '600',
+    color: COLORS.textMuted,
+  },
+  totalPaidOutValue: {
+    fontSize: 16,
+    fontWeight: '800',
+    color: COLORS.primary,
+  },
+  threeKpiRow: {
+    flexDirection: 'row',
+    gap: 8,
+    marginBottom: 12,
+  },
+  threeKpiCard: {
+    flex: 1,
+    backgroundColor: COLORS.white,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 12,
+    padding: 10,
+    alignItems: 'flex-start',
+    gap: 4,
+  },
+  smallKpiIcon: {
+    width: 28,
+    height: 28,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 2,
+  },
+  threeKpiValue: {
+    fontSize: 17,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  threeKpiLabel: {
+    fontSize: 10,
+    fontWeight: '600',
+    color: COLORS.textMuted,
+  },
+  feeDetailsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    backgroundColor: '#F8FAFC',
+    borderRadius: 10,
+    padding: 10,
+    rowGap: 10,
+    columnGap: 8,
+  },
+  feeGridCell: {
+    width: '47%',
+  },
+  editFeeBtnWide: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    paddingVertical: 8,
+    borderRadius: 10,
+    marginTop: 4,
+  },
+  editFeeBtnWideText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: COLORS.primary,
+  },
+  historyToolbarRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 12,
+  },
+  historyAmountText: {
+    fontSize: 14,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  viewDetailsLinkBtn: {
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 8,
+    backgroundColor: '#FFF7ED',
+    borderWidth: 1,
+    borderColor: '#FFEDD5',
+  },
+  viewDetailsLinkText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#9A3412',
+  },
+  paymentSummaryBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 12,
+    padding: 12,
+    marginBottom: 6,
+  },
+  paymentMethodBox: {
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 12,
+    padding: 12,
+    marginTop: 8,
+  },
+  qrPreviewBox: {
+    marginTop: 10,
+    padding: 12,
+    backgroundColor: COLORS.white,
+    borderWidth: 1,
+    borderStyle: 'dashed',
+    borderColor: '#CBD5E1',
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  paymentHighlightCard: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#FFF7ED',
+    borderWidth: 1,
+    borderColor: '#FFEDD5',
+    borderRadius: 12,
+    padding: 14,
+    marginBottom: 4,
   },
 });

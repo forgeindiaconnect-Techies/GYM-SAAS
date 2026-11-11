@@ -12,8 +12,11 @@ import {
   RefreshControl, 
   Alert,
   Image,
-  Linking
+  Linking,
+  KeyboardAvoidingView,
+  Platform
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../constants/theme';
 import { api } from '../../api/client';
@@ -1223,6 +1226,9 @@ const DEFAULT_COMPLETED_LOGS = [
 ];
 
 export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKey }> = ({ initialSection = 'none' }) => {
+  const insets = useSafeAreaInsets();
+  const modalBottomPad = Math.max(insets.bottom + 12, 24);
+  const modalTopGap = Math.max(insets.top + 16, 42);
   const [activeSection, setActiveSection] = useState<ProgramSectionKey>(initialSection);
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -1929,7 +1935,11 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
                   onPress={() => setSelectedExerciseDetail(ex)}
                   activeOpacity={0.85}
                 >
-                  <StickFigureAnimation exerciseName={ex.name} category={ex.category} />
+                  <StickFigureAnimation
+                    exerciseName={ex.name}
+                    category={ex.category}
+                    targetMuscle={ex.targetMuscle}
+                  />
                 </TouchableOpacity>
               </View>
 
@@ -4129,8 +4139,8 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
           animationType="slide"
           onRequestClose={() => setSelectedExerciseDetail(null)}
         >
-          <View style={styles.modalOverlay}>
-            <View style={[styles.modalContent, { maxHeight: '92%', height: '92%' }]}>
+          <View style={[styles.modalOverlay, { paddingTop: modalTopGap }]}>
+            <View style={[styles.modalContent, { maxHeight: '88%', height: '88%' }]}>
               {/* Header */}
               <View style={styles.modalHeader}>
                 <View style={{ flex: 1, paddingRight: 8 }}>
@@ -4159,12 +4169,18 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
                 </TouchableOpacity>
               </View>
 
-              <ScrollView style={{ padding: 16 }} contentContainerStyle={{ gap: 14 }}>
+              <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: 24, gap: 14 }} showsVerticalScrollIndicator={false}>
                 {/* Animated Biomechanical Demonstration Card */}
                 <View style={styles.exDetailAnimCard}>
                   <Text style={styles.exDetailAnimTitle}>ANIMATED WORKOUT DEMONSTRATION</Text>
                   <View style={styles.exDetailAnimContainer}>
-                    <StickFigureAnimation exerciseName={selectedExerciseDetail?.name || ''} isDetail={true} />
+                    <StickFigureAnimation
+                      exerciseName={selectedExerciseDetail?.name || ''}
+                      category={selectedExerciseDetail?.category}
+                      targetMuscle={selectedExerciseDetail?.targetMuscle}
+                      isDetail={true}
+                      showInteractiveControls={true}
+                    />
                   </View>
                   <View style={styles.exDetailDemoPill}>
                     <View style={styles.exDemoDot} />
@@ -4240,7 +4256,7 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
               </ScrollView>
 
               {/* Footer */}
-              <View style={styles.modalFooter}>
+              <View style={[styles.modalFooter, { paddingBottom: modalBottomPad }]}>
                 <TouchableOpacity
                   style={styles.exDetailCloseBtn}
                   onPress={() => setSelectedExerciseDetail(null)}
@@ -4295,8 +4311,11 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
           animationType="slide"
           onRequestClose={() => setApproveModalExercise(null)}
         >
-          <View style={styles.modalOverlay}>
-            <View style={[styles.modalContent, { maxHeight: '90%' }]}>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+            style={[styles.modalOverlay, { paddingTop: modalTopGap }]}
+          >
+            <View style={[styles.modalContent, { maxHeight: '88%' }]}>
               {/* Header */}
               <View style={styles.modalHeader}>
                 <View style={{ flex: 1 }}>
@@ -4310,7 +4329,7 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
                 </TouchableOpacity>
               </View>
 
-              <ScrollView style={{ padding: 16 }} contentContainerStyle={{ gap: 14 }}>
+              <ScrollView style={{ flexShrink: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: 24, gap: 14 }} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
                 {/* Banner */}
                 <View style={styles.exApproveNotice}>
                   <Text style={styles.exApproveNoticeText}>
@@ -4385,7 +4404,7 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
               </ScrollView>
 
               {/* Footer */}
-              <View style={styles.modalFooter}>
+              <View style={[styles.modalFooter, { paddingBottom: modalBottomPad }]}>
                 <TouchableOpacity
                   style={styles.exApproveCancelBtn}
                   onPress={() => setApproveModalExercise(null)}
@@ -4409,7 +4428,7 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
                 </TouchableOpacity>
               </View>
             </View>
-          </View>
+          </KeyboardAvoidingView>
         </Modal>
 
         {/* Difficulty Selector Modal */}
@@ -4460,8 +4479,8 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
           animationType="slide"
           onRequestClose={() => setActiveVideoPlayer(null)}
         >
-          <View style={styles.modalOverlay}>
-            <View style={[styles.modalContent, { maxHeight: '92%', height: '92%' }]}>
+          <View style={[styles.modalOverlay, { paddingTop: modalTopGap }]}>
+            <View style={[styles.modalContent, { maxHeight: '88%', height: '88%' }]}>
               {/* Modal Header */}
               <View style={styles.modalHeader}>
                 <View style={{ flex: 1, paddingRight: 8 }}>
@@ -4582,7 +4601,7 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
               </ScrollView>
 
               {/* Modal Footer */}
-              <View style={styles.gevPlayerFooter}>
+              <View style={[styles.gevPlayerFooter, { paddingBottom: modalBottomPad }]}>
                 <TouchableOpacity
                   style={styles.gevPlayerCloseBtn}
                   onPress={() => setActiveVideoPlayer(null)}
@@ -4616,17 +4635,20 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
           animationType="slide"
           onRequestClose={() => setShowAddExerciseModal(false)}
         >
-          <View style={styles.modalOverlay}>
-            <View style={[styles.modalContent, { maxHeight: '92%', height: '92%' }]}>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+            style={[styles.modalOverlay, { paddingTop: modalTopGap }]}
+          >
+            <View style={[styles.modalContent, { maxHeight: '88%', height: '88%' }]}>
               {/* Modal Header */}
               <View style={styles.modalHeader}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, flex: 1 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, flex: 1, paddingRight: 8 }}>
                   <View style={styles.gevAddHeaderIconSquircle}>
                     <Ionicons name="barbell" size={18} color="#C2410C" />
                   </View>
-                  <View>
+                  <View style={{ flex: 1 }}>
                     <Text style={styles.modalTitle}>Add Exercise Manually</Text>
-                    <Text style={{ fontSize: 11, color: '#64748B' }}>Add a custom workout video with technique tips</Text>
+                    <Text style={{ fontSize: 11, color: '#64748B', marginTop: 1 }}>Add a custom workout video with technique tips</Text>
                   </View>
                 </View>
                 <TouchableOpacity onPress={() => setShowAddExerciseModal(false)} style={{ padding: 4 }}>
@@ -4634,7 +4656,12 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
                 </TouchableOpacity>
               </View>
 
-              <ScrollView style={{ flex: 1, padding: 16 }} contentContainerStyle={{ gap: 12 }}>
+              <ScrollView
+                style={{ flex: 1 }}
+                contentContainerStyle={{ padding: 16, paddingBottom: 28, gap: 14 }}
+                showsVerticalScrollIndicator={false}
+                keyboardShouldPersistTaps="handled"
+              >
                 {/* 1. Exercise Name (English) */}
                 <View>
                   <Text style={styles.gevFormLabel}>EXERCISE NAME (ENGLISH) *</Text>
@@ -4662,7 +4689,7 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
                 {/* 3. Category Selector */}
                 <View>
                   <Text style={styles.gevFormLabel}>CATEGORY *</Text>
-                  <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 6, paddingVertical: 2 }}>
+                  <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, paddingVertical: 2 }}>
                     {(['Chest', 'Back', 'Legs', 'Shoulders', 'Biceps & Triceps', 'Core & Cardio'] as const).map(cat => (
                       <TouchableOpacity
                         key={cat}
@@ -4680,7 +4707,7 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
                         </Text>
                       </TouchableOpacity>
                     ))}
-                  </ScrollView>
+                  </View>
                 </View>
 
                 {/* 4. Language Selector */}
@@ -4814,7 +4841,7 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
                     ))}
                   </View>
 
-                  <View style={{ flexDirection: 'row', gap: 6 }}>
+                  <View style={{ flexDirection: 'row', gap: 8, alignItems: 'center' }}>
                     <TextInput
                       style={[styles.gevFormInput, { flex: 1 }]}
                       placeholder="Add a technique tip (e.g. Keep chest high, elbows at 45°)..."
@@ -4840,7 +4867,7 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
               </ScrollView>
 
               {/* Modal Footer */}
-              <View style={styles.gevFormFooter}>
+              <View style={[styles.gevFormFooter, { paddingBottom: modalBottomPad }]}>
                 <TouchableOpacity
                   style={styles.gevFormCancelBtn}
                   onPress={() => setShowAddExerciseModal(false)}
@@ -4859,7 +4886,7 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
                 </TouchableOpacity>
               </View>
             </View>
-          </View>
+          </KeyboardAvoidingView>
         </Modal>
 
         {/* 3b. Approve Video for Customer Modal */}
@@ -4869,8 +4896,11 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
           animationType="slide"
           onRequestClose={() => setApproveVideoItem(null)}
         >
-          <View style={styles.modalOverlay}>
-            <View style={[styles.modalContent, { maxHeight: '80%' }]}>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+            style={[styles.modalOverlay, { paddingTop: modalTopGap }]}
+          >
+            <View style={[styles.modalContent, { maxHeight: '84%' }]}>
               <View style={styles.modalHeader}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, flex: 1 }}>
                   <Ionicons name="checkmark-circle" size={20} color="#EA580C" />
@@ -4881,7 +4911,7 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
                 </TouchableOpacity>
               </View>
 
-              <ScrollView style={{ padding: 16 }} contentContainerStyle={{ gap: 12 }}>
+              <ScrollView style={{ flexShrink: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: 24, gap: 12 }} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
                 <View style={styles.gevApproveBanner}>
                   <Text style={styles.gevApproveBannerText}>
                     Approving <Text style={{ fontWeight: '800' }}>{approveVideoItem?.title}</Text> ({approveVideoItem?.category} • {approveVideoItem?.duration}) directly to customer dashboard.
@@ -4940,7 +4970,7 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
                 </View>
               </ScrollView>
 
-              <View style={styles.gevFormFooter}>
+              <View style={[styles.gevFormFooter, { paddingBottom: modalBottomPad }]}>
                 <TouchableOpacity
                   style={styles.gevFormCancelBtn}
                   onPress={() => setApproveVideoItem(null)}
@@ -4962,7 +4992,7 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
                 </TouchableOpacity>
               </View>
             </View>
-          </View>
+          </KeyboardAvoidingView>
         </Modal>
 
         {/* 4. Workout Plan Builder Modal (100% Match of Web /trainer/workout-plans Form) */}
@@ -4972,8 +5002,11 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
           animationType="slide" 
           onRequestClose={() => setWpIsBuilderOpen(false)}
         >
-          <View style={styles.modalOverlay}>
-            <View style={[styles.modalContent, { maxHeight: '92%', height: '92%' }]}>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+            style={[styles.modalOverlay, { paddingTop: modalTopGap }]}
+          >
+            <View style={[styles.modalContent, { maxHeight: '88%', height: '88%' }]}>
               {/* Modal Header */}
               <View style={styles.modalHeader}>
                 <View style={{ flex: 1, paddingRight: 8 }}>
@@ -4989,7 +5022,12 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
                 </TouchableOpacity>
               </View>
 
-              <ScrollView style={{ flex: 1, padding: 16 }} contentContainerStyle={{ gap: 14 }}>
+              <ScrollView
+                style={{ flex: 1 }}
+                contentContainerStyle={{ padding: 16, paddingBottom: 28, gap: 14 }}
+                showsVerticalScrollIndicator={false}
+                keyboardShouldPersistTaps="handled"
+              >
                 {/* 1. Client Select */}
                 <View>
                   <Text style={styles.wpBuilderSectionLabel}>ASSIGN TO CLIENT *</Text>
@@ -5003,6 +5041,7 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
                           key={c._id}
                           style={[
                             styles.wpClientSelectCard,
+                            { minWidth: 162 },
                             isSelected && styles.wpClientSelectCardActive
                           ]}
                           onPress={() => setWpSelectedCustomerId(c._id)}
@@ -5011,7 +5050,7 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
                           <View style={[styles.wpClientMiniAvatar, isSelected && { backgroundColor: '#EA580C' }]}>
                             <Text style={styles.wpClientMiniAvatarText}>{initials}</Text>
                           </View>
-                          <View style={{ minWidth: 100 }}>
+                          <View style={{ flex: 1, minWidth: 85 }}>
                             <Text style={[styles.wpClientMiniName, isSelected && { color: '#EA580C' }]} numberOfLines={1}>
                               {cName}
                             </Text>
@@ -5209,8 +5248,8 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
 
                               {/* Parameter Inputs Row (Sets, Reps, Rest, Duration) */}
                               <View style={styles.wpParamInputsGrid}>
-                                <View style={styles.wpParamCol}>
-                                  <Text style={styles.wpParamLabel}>SETS</Text>
+                                <View style={[styles.wpParamCol, { flex: 0.75 }]}>
+                                  <Text style={styles.wpParamLabel} numberOfLines={1}>SETS</Text>
                                   <TextInput
                                     style={styles.wpParamInput}
                                     keyboardType="numeric"
@@ -5218,8 +5257,8 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
                                     onChangeText={(v) => updateExerciseParamInWpDay(exIdx, 'sets', parseInt(v) || 1)}
                                   />
                                 </View>
-                                <View style={styles.wpParamCol}>
-                                  <Text style={styles.wpParamLabel}>REPS / TARGET</Text>
+                                <View style={[styles.wpParamCol, { flex: 1.25 }]}>
+                                  <Text style={styles.wpParamLabel} numberOfLines={1}>REPS / TARGET</Text>
                                   <TextInput
                                     style={styles.wpParamInput}
                                     value={String(item.repetitions || '12')}
@@ -5228,8 +5267,8 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
                                     placeholderTextColor="#94A3B8"
                                   />
                                 </View>
-                                <View style={styles.wpParamCol}>
-                                  <Text style={styles.wpParamLabel}>REST (SEC)</Text>
+                                <View style={[styles.wpParamCol, { flex: 1 }]}>
+                                  <Text style={styles.wpParamLabel} numberOfLines={1}>REST (SEC)</Text>
                                   <TextInput
                                     style={styles.wpParamInput}
                                     keyboardType="numeric"
@@ -5237,8 +5276,8 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
                                     onChangeText={(v) => updateExerciseParamInWpDay(exIdx, 'restTime', parseInt(v) || 0)}
                                   />
                                 </View>
-                                <View style={styles.wpParamCol}>
-                                  <Text style={styles.wpParamLabel}>DURATION (SEC)</Text>
+                                <View style={[styles.wpParamCol, { flex: 1.2 }]}>
+                                  <Text style={styles.wpParamLabel} numberOfLines={1}>DURATION (SEC)</Text>
                                   <TextInput
                                     style={styles.wpParamInput}
                                     keyboardType="numeric"
@@ -5266,7 +5305,7 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
               </ScrollView>
 
               {/* Modal Footer */}
-              <View style={styles.wpModalFooter}>
+              <View style={[styles.wpModalFooter, { paddingBottom: modalBottomPad }]}>
                 <Text style={styles.wpFooterCountText}>
                   {wpWorkoutDays.reduce((acc, d) => acc + (d.exercises?.length || 0), 0)} total exercises configured
                 </Text>
@@ -5290,7 +5329,7 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
                   </TouchableOpacity>
 
                   <TouchableOpacity
-                    style={styles.wpFooterPublishBtn}
+                    style={[styles.wpFooterPublishBtn, { flex: 1.25 }]}
                     onPress={() => handleSaveWorkoutPlanSubmit(true)}
                     activeOpacity={0.85}
                   >
@@ -5300,7 +5339,7 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
                 </View>
               </View>
             </View>
-          </View>
+          </KeyboardAvoidingView>
         </Modal>
 
         {/* 4b. Exercise Library Picker Modal */}
@@ -5364,7 +5403,7 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
               </View>
 
               {/* Exercises List */}
-              <ScrollView style={{ flex: 1, padding: 12 }} contentContainerStyle={{ gap: 8 }}>
+              <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 12, paddingBottom: modalBottomPad + 12, gap: 8 }} showsVerticalScrollIndicator={false}>
                 {exercises
                   .filter(ex => {
                     const matchSearch = (ex.name || '').toLowerCase().includes(wpPickerSearch.toLowerCase()) ||
@@ -5404,8 +5443,8 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
 
         {/* 5. Workout Plan Details Modal */}
         <Modal visible={!!selectedWorkoutDetail} transparent animationType="slide" onRequestClose={() => setSelectedWorkoutDetail(null)}>
-          <View style={styles.modalOverlay}>
-            <View style={[styles.modalContent, { maxHeight: '90%' }]}>
+          <View style={[styles.modalOverlay, { paddingTop: modalTopGap }]}>
+            <View style={[styles.modalContent, { maxHeight: '88%' }]}>
               <View style={styles.modalHeader}>
                 <View style={{ flex: 1 }}>
                   <Text style={styles.modalTitle}>{selectedWorkoutDetail?.planName || selectedWorkoutDetail?.name}</Text>
@@ -5418,7 +5457,7 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
                 </TouchableOpacity>
               </View>
 
-              <ScrollView style={{ padding: 16 }} contentContainerStyle={{ gap: 12 }}>
+              <ScrollView style={{ flexShrink: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: 24, gap: 12 }} showsVerticalScrollIndicator={false}>
                 <Text style={styles.detailBoxText}>{selectedWorkoutDetail?.description}</Text>
 
                 {/* Days Breakdown */}
@@ -5442,7 +5481,7 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
                 ))}
               </ScrollView>
 
-              <View style={styles.modalFooter}>
+              <View style={[styles.modalFooter, { paddingBottom: modalBottomPad }]}>
                 <TouchableOpacity
                   style={[styles.primaryAddBtn, { flex: 1, justifyContent: 'center' }]}
                   onPress={() => {
@@ -5462,8 +5501,11 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
 
         {/* 6. Create Diet Plan Modal (100% Match of Web Form) */}
         <Modal visible={showDietFormModal} transparent animationType="slide" onRequestClose={() => setShowDietFormModal(false)}>
-          <View style={styles.modalOverlay}>
-            <View style={[styles.modalContent, { maxHeight: '92%' }]}>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+            style={[styles.modalOverlay, { paddingTop: modalTopGap }]}
+          >
+            <View style={[styles.modalContent, { maxHeight: '88%' }]}>
               {/* Header */}
               <View style={styles.modalHeader}>
                 <View style={{ flex: 1 }}>
@@ -5476,7 +5518,7 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
               </View>
 
               {/* Body */}
-              <ScrollView style={{ padding: 16 }} contentContainerStyle={{ gap: 14 }}>
+              <ScrollView style={{ flexShrink: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: 24, gap: 14 }} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
                 {/* Plan Name */}
                 <View>
                   <Text style={styles.dpFormLabel}>PLAN NAME *</Text>
@@ -5594,7 +5636,7 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
               </ScrollView>
 
               {/* Footer */}
-              <View style={styles.modalFooter}>
+              <View style={[styles.modalFooter, { paddingBottom: modalBottomPad }]}>
                 <TouchableOpacity
                   style={styles.modalCancelBtn}
                   onPress={() => setShowDietFormModal(false)}
@@ -5612,27 +5654,27 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
                 </TouchableOpacity>
               </View>
             </View>
-          </View>
+          </KeyboardAvoidingView>
         </Modal>
 
         {/* 7. View Details Modal (100% Match of Web View Details Modal) */}
         <Modal visible={!!selectedDietDetail} transparent animationType="slide" onRequestClose={() => setSelectedDietDetail(null)}>
-          <View style={styles.modalOverlay}>
-            <View style={[styles.modalContent, { maxHeight: '92%' }]}>
+          <View style={[styles.modalOverlay, { paddingTop: modalTopGap }]}>
+            <View style={[styles.modalContent, { maxHeight: '88%' }]}>
               {/* Header */}
               <View style={[styles.modalHeader, { backgroundColor: '#EA580C', borderBottomWidth: 0, paddingVertical: 14 }]}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, flex: 1 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, flex: 1, paddingRight: 8 }}>
                   <View style={{ width: 36, height: 36, borderRadius: 10, backgroundColor: 'rgba(255,255,255,0.2)', alignItems: 'center', justifyContent: 'center' }}>
                     <Ionicons name="restaurant" size={18} color="#FFFFFF" />
                   </View>
                   <View style={{ flex: 1 }}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                      <Text style={{ fontSize: 16, fontWeight: '900', color: '#FFFFFF' }}>{selectedDietDetail?.name}</Text>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                      <Text style={{ fontSize: 16, fontWeight: '900', color: '#FFFFFF', flexShrink: 1 }}>{selectedDietDetail?.name}</Text>
                       <View style={{ backgroundColor: 'rgba(255,255,255,0.2)', paddingHorizontal: 8, paddingVertical: 2, borderRadius: 10 }}>
                         <Text style={{ fontSize: 10, fontWeight: '800', color: '#FFFFFF' }}>{selectedDietDetail?.type}</Text>
                       </View>
                     </View>
-                    <Text style={{ fontSize: 11, color: 'rgba(255,255,255,0.85)', marginTop: 1 }}>
+                    <Text style={{ fontSize: 11, color: 'rgba(255,255,255,0.85)', marginTop: 2 }}>
                       {selectedDietDetail?.targetGoal}
                     </Text>
                   </View>
@@ -5643,7 +5685,11 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
               </View>
 
               {/* Body */}
-              <ScrollView style={{ padding: 16 }} contentContainerStyle={{ gap: 14 }}>
+              <ScrollView
+                style={{ flexShrink: 1 }}
+                contentContainerStyle={{ padding: 16, paddingBottom: 24, gap: 14 }}
+                showsVerticalScrollIndicator={false}
+              >
                 {/* Plan Overview Card */}
                 <View style={styles.dpModalOverviewCard}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 4 }}>
@@ -5705,12 +5751,12 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
                   <View style={{ gap: 8 }}>
                     {(selectedDietDetail?.meals || []).map((m: any, idx: number) => (
                       <View key={idx} style={styles.dpMealCard}>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8, marginBottom: 4 }}>
                           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, flex: 1 }}>
                             <View style={styles.dpMealNumBadge}>
                               <Text style={styles.dpMealNumText}>{idx + 1}</Text>
                             </View>
-                            <Text style={{ fontSize: 12, fontWeight: '800', color: '#111827' }}>
+                            <Text style={{ fontSize: 12, fontWeight: '800', color: '#111827', flex: 1 }}>
                               {m.mealName || m.meal}
                             </Text>
                           </View>
@@ -5752,7 +5798,7 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
               </ScrollView>
 
               {/* Modal Footer */}
-              <View style={[styles.modalFooter, { flexDirection: 'row', gap: 8 }]}>
+              <View style={[styles.modalFooter, { flexDirection: 'row', gap: 10, paddingBottom: modalBottomPad, backgroundColor: '#FFFFFF' }]}>
                 <TouchableOpacity
                   style={[styles.primaryAddBtn, { flex: 1, backgroundColor: '#FFFFFF', borderWidth: 1, borderColor: '#EA580C', justifyContent: 'center' }]}
                   onPress={() => {
@@ -5784,7 +5830,10 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
 
         {/* 7b. Approve & Deliver Diet Plan Modal (100% Match of Web Approval Modal) */}
         <Modal visible={!!approvingDietPlan} transparent animationType="slide" onRequestClose={() => setApprovingDietPlan(null)}>
-          <View style={styles.modalOverlay}>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+            style={[styles.modalOverlay, { paddingTop: modalTopGap }]}
+          >
             <View style={[styles.modalContent, { maxHeight: '85%' }]}>
               {/* Header */}
               <View style={styles.modalHeader}>
@@ -5798,7 +5847,7 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
               </View>
 
               {/* Body */}
-              <ScrollView style={{ padding: 16 }} contentContainerStyle={{ gap: 14 }}>
+              <ScrollView style={{ flexShrink: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: 24, gap: 14 }} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
                 {/* Notice Box */}
                 <View style={styles.dpApproveNoticeBox}>
                   <Text style={styles.dpApproveNoticeText}>
@@ -5836,7 +5885,7 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
               </ScrollView>
 
               {/* Footer */}
-              <View style={styles.modalFooter}>
+              <View style={[styles.modalFooter, { paddingBottom: modalBottomPad }]}>
                 <TouchableOpacity
                   style={styles.modalCancelBtn}
                   onPress={() => setApprovingDietPlan(null)}
@@ -5861,12 +5910,12 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
                 </TouchableOpacity>
               </View>
             </View>
-          </View>
+          </KeyboardAvoidingView>
         </Modal>
 
         {/* 8. Gym Equipment Details Modal */}
         <Modal visible={!!selectedEquipmentDetail} transparent animationType="slide" onRequestClose={() => setSelectedEquipmentDetail(null)}>
-          <View style={styles.modalOverlay}>
+          <View style={[styles.modalOverlay, { paddingTop: modalTopGap }]}>
             <View style={[styles.modalContent, { maxHeight: '85%' }]}>
               <View style={styles.modalHeader}>
                 <View style={{ flex: 1 }}>
@@ -5880,7 +5929,7 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
                 </TouchableOpacity>
               </View>
 
-              <ScrollView style={{ padding: 16 }} contentContainerStyle={{ gap: 12 }}>
+              <ScrollView style={{ flexShrink: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: 24, gap: 12 }} showsVerticalScrollIndicator={false}>
                 <View style={styles.detailBox}>
                   <Text style={styles.detailBoxTitle}>LOCATION & STATUS</Text>
                   <Text style={styles.detailBoxText}>
@@ -5907,7 +5956,7 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
                 </View>
               </ScrollView>
 
-              <View style={styles.modalFooter}>
+              <View style={[styles.modalFooter, { paddingBottom: modalBottomPad }]}>
                 <TouchableOpacity
                   style={styles.modalCancelBtn}
                   onPress={() => setSelectedEquipmentDetail(null)}
@@ -5926,8 +5975,8 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
           animationType="slide"
           onRequestClose={() => setCwpSelectedCustomer(null)}
         >
-          <View style={styles.modalOverlay}>
-            <View style={[styles.modalContent, { maxHeight: '92%' }]}>
+          <View style={[styles.modalOverlay, { paddingTop: modalTopGap }]}>
+            <View style={[styles.modalContent, { maxHeight: '88%' }]}>
               {/* Modal Header */}
               <View style={styles.cwpModalHeader}>
                 <View style={{ flex: 1 }}>
@@ -5951,7 +6000,7 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
                 </TouchableOpacity>
               </View>
 
-              <ScrollView style={{ padding: 16 }} contentContainerStyle={{ gap: 14 }}>
+              <ScrollView style={{ flexShrink: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: 24, gap: 14 }} showsVerticalScrollIndicator={false}>
                 {/* Modal Day Selection Pills */}
                 <View>
                   <Text style={styles.cwpModalDaySectionLabel}>
@@ -6125,7 +6174,7 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
               </ScrollView>
 
               {/* Modal Footer */}
-              <View style={styles.modalFooter}>
+              <View style={[styles.modalFooter, { paddingBottom: modalBottomPad }]}>
                 <TouchableOpacity
                   style={[styles.primaryAddBtn, { flex: 1, backgroundColor: '#EA580C', justifyContent: 'center' }]}
                   onPress={() => {
@@ -6144,7 +6193,10 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
 
         {/* 10. Assign & Approve for Publish Modal */}
         <Modal visible={showAssignModal} transparent animationType="slide" onRequestClose={() => setShowAssignModal(false)}>
-          <View style={styles.modalOverlay}>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+            style={[styles.modalOverlay, { paddingTop: modalTopGap }]}
+          >
             <View style={[styles.modalContent, { maxHeight: '80%' }]}>
               <View style={styles.modalHeader}>
                 <View style={{ flex: 1 }}>
@@ -6182,7 +6234,7 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
                 </View>
               </View>
 
-              <View style={styles.modalFooter}>
+              <View style={[styles.modalFooter, { paddingBottom: modalBottomPad }]}>
                 <TouchableOpacity
                   style={[styles.primaryAddBtn, { flex: 1, justifyContent: 'center' }]}
                   onPress={() => {
@@ -6199,7 +6251,7 @@ export const TrainerProgramsScreen: React.FC<{ initialSection?: ProgramSectionKe
                 </TouchableOpacity>
               </View>
             </View>
-          </View>
+          </KeyboardAvoidingView>
         </Modal>
       </View>
     );
@@ -8637,7 +8689,7 @@ const styles = StyleSheet.create({
   wpActiveDayHeaderRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     paddingBottom: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#E2E8F0',
@@ -8646,15 +8698,16 @@ const styles = StyleSheet.create({
     fontSize: 9,
     fontWeight: '800',
     color: '#64748B',
-    marginBottom: 2,
+    marginBottom: 4,
   },
   wpDayTitleInput: {
     backgroundColor: '#FFFFFF',
     borderWidth: 1,
     borderColor: '#CBD5E1',
     borderRadius: 8,
-    paddingHorizontal: 8,
-    paddingVertical: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    minHeight: 36,
     fontSize: 12,
     fontWeight: '800',
     color: '#111827',
@@ -8662,10 +8715,12 @@ const styles = StyleSheet.create({
   wpAddExBtn: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     gap: 4,
     backgroundColor: '#C2410C',
-    paddingHorizontal: 10,
+    paddingHorizontal: 11,
     paddingVertical: 7,
+    minHeight: 36,
     borderRadius: 10,
   },
   wpAddExBtnText: {
@@ -8675,6 +8730,10 @@ const styles = StyleSheet.create({
   },
   wpRemoveDayBtn: {
     padding: 6,
+    minHeight: 36,
+    width: 36,
+    alignItems: 'center',
+    justifyContent: 'center',
     borderRadius: 8,
     borderWidth: 1,
     borderColor: '#FCA5A5',
@@ -8745,7 +8804,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '800',
     color: '#111827',
-    maxWidth: 130,
+    flexShrink: 1,
   },
   wpBuilderCategoryPill: {
     backgroundColor: '#F1F5F9',
@@ -8784,7 +8843,8 @@ const styles = StyleSheet.create({
     fontSize: 8,
     fontWeight: '900',
     color: '#64748B',
-    marginBottom: 3,
+    marginBottom: 4,
+    textAlign: 'center',
   },
   wpParamInput: {
     backgroundColor: '#FFFFFF',
@@ -8792,7 +8852,8 @@ const styles = StyleSheet.create({
     borderColor: '#E2E8F0',
     borderRadius: 6,
     paddingHorizontal: 6,
-    paddingVertical: 3,
+    paddingVertical: 5,
+    minHeight: 32,
     fontSize: 11,
     fontWeight: '700',
     color: '#111827',
@@ -8809,7 +8870,9 @@ const styles = StyleSheet.create({
     color: '#111827',
   },
   wpModalFooter: {
-    padding: 12,
+    paddingHorizontal: 16,
+    paddingTop: 12,
+    paddingBottom: 14,
     borderTopWidth: 1,
     borderTopColor: '#E2E8F0',
     backgroundColor: '#F8FAFC',
@@ -8823,6 +8886,7 @@ const styles = StyleSheet.create({
   wpFooterCancelBtn: {
     paddingVertical: 9,
     paddingHorizontal: 12,
+    minHeight: 40,
     borderRadius: 10,
     borderWidth: 1,
     borderColor: '#CBD5E1',
@@ -8842,13 +8906,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 4,
     paddingVertical: 9,
+    paddingHorizontal: 8,
+    minHeight: 40,
     borderRadius: 10,
     borderWidth: 1,
     borderColor: '#E2E8F0',
     backgroundColor: '#FFFFFF',
   },
   wpFooterDraftText: {
-    fontSize: 12,
+    fontSize: 11.5,
     fontWeight: '800',
     color: '#111827',
   },
@@ -8859,11 +8925,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 4,
     paddingVertical: 9,
+    paddingHorizontal: 10,
+    minHeight: 40,
     borderRadius: 10,
     backgroundColor: '#C2410C',
   },
   wpFooterPublishText: {
-    fontSize: 12,
+    fontSize: 11.5,
     fontWeight: '800',
     color: '#FFFFFF',
   },
@@ -9662,7 +9730,8 @@ const styles = StyleSheet.create({
     borderColor: '#E2E8F0',
     borderRadius: 12,
     paddingHorizontal: 12,
-    paddingVertical: 8,
+    paddingVertical: 9,
+    minHeight: 40,
     fontSize: 12,
     color: '#111827',
   },
@@ -9699,12 +9768,14 @@ const styles = StyleSheet.create({
   gevAddTipBtn: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     gap: 4,
     backgroundColor: '#FFF7ED',
     borderWidth: 1,
     borderColor: '#FFEDD5',
-    paddingHorizontal: 10,
-    borderRadius: 10,
+    paddingHorizontal: 12,
+    minHeight: 40,
+    borderRadius: 12,
   },
   gevAddTipBtnText: {
     fontSize: 11,
@@ -9713,15 +9784,18 @@ const styles = StyleSheet.create({
   },
   gevFormFooter: {
     flexDirection: 'row',
-    gap: 8,
-    padding: 12,
+    gap: 10,
+    paddingHorizontal: 16,
+    paddingTop: 12,
+    paddingBottom: 14,
     borderTopWidth: 1,
     borderTopColor: '#E2E8F0',
     backgroundColor: '#F8FAFC',
   },
   gevFormCancelBtn: {
     paddingVertical: 10,
-    paddingHorizontal: 14,
+    paddingHorizontal: 16,
+    minHeight: 42,
     borderRadius: 12,
     borderWidth: 1,
     borderColor: '#CBD5E1',
@@ -9741,6 +9815,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 6,
     paddingVertical: 10,
+    minHeight: 42,
     borderRadius: 12,
     backgroundColor: '#C2410C',
   },
@@ -10242,10 +10317,13 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   exDetailAnimContainer: {
-    height: 140,
+    minHeight: 195,
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    paddingVertical: 8,
   },
   exDetailDemoPill: {
     flexDirection: 'row',

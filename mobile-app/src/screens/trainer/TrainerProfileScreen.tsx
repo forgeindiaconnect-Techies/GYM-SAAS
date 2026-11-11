@@ -20,7 +20,7 @@ import { api } from '../../api/client';
 const { width } = Dimensions.get('window');
 
 export const TrainerProfileScreen: React.FC = () => {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [trainer, setTrainer] = useState<any>(null);
@@ -301,25 +301,6 @@ export const TrainerProfileScreen: React.FC = () => {
           </View>
         </View>
       </View>
-
-      {/* Logout Action */}
-      <TouchableOpacity 
-        style={styles.logoutBtn}
-        onPress={() => {
-          Alert.alert(
-            'Sign Out',
-            'Are you sure you want to log out of your coach account?',
-            [
-              { text: 'Cancel', style: 'cancel' },
-              { text: 'Sign Out', style: 'destructive', onPress: logout }
-            ]
-          );
-        }}
-        activeOpacity={0.8}
-      >
-        <Ionicons name="log-out-outline" size={16} color="#B91C1C" />
-        <Text style={styles.logoutBtnText}>Logout Coach Account</Text>
-      </TouchableOpacity>
 
       {/* =========================================================================
           EDIT PROFILE MODAL
@@ -678,23 +659,6 @@ const styles = StyleSheet.create({
   feeGridRow: {
     flexDirection: 'row',
     gap: 10,
-  },
-  logoutBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 6,
-    backgroundColor: '#FEF2F2',
-    borderWidth: 1,
-    borderColor: '#FEE2E2',
-    paddingVertical: 12,
-    borderRadius: 14,
-    marginTop: 6,
-  },
-  logoutBtnText: {
-    fontSize: 12,
-    fontWeight: '800',
-    color: '#B91C1C',
   },
 
   // Modals

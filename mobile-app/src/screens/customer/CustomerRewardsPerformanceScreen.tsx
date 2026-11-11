@@ -1096,24 +1096,19 @@ export const CustomerRewardsPerformanceScreen: React.FC = () => {
                   activeOpacity={0.8}
                   onPress={async () => {
                     try {
-                      await FileDownloader.downloadReportPDF({
-                        title: `Certificate of Achievement: ${selectedAwardForCert.title}`,
-                        subtitle: `Proudly conferred to ${user?.name || user?.firstName ? `${user?.firstName || ''} ${user?.lastName || ''}`.trim() : 'Renugopal Y'}`,
+                      await FileDownloader.downloadCertificatePDF({
+                        recipientName: user?.name || user?.firstName ? `${user?.firstName || ''} ${user?.lastName || ''}`.trim() : 'Renugopal Y',
+                        recipientRole: 'Member',
+                        awardTitle: selectedAwardForCert.title,
+                        awardCategory: selectedAwardForCert.category || 'Member Recognition',
+                        description: selectedAwardForCert.reason || 'Demonstrating outstanding consistency and fitness milestone achievements',
                         gymName: 'Perfect Fitness Studio',
-                        dateRange: selectedAwardForCert.dateConferred
+                        awardDate: selectedAwardForCert.dateConferred
                           ? new Date(selectedAwardForCert.dateConferred).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
                           : 'October 15, 2026',
-                        headers: ['Certificate ID', 'Recipient', 'Award Category', 'Conferred By', 'Reason'],
-                        rows: [
-                          [
-                            selectedAwardForCert.certificateId || 'CERT-GYM-2026',
-                            user?.name || user?.firstName ? `${user?.firstName || ''} ${user?.lastName || ''}`.trim() : 'Renugopal Y',
-                            selectedAwardForCert.title,
-                            selectedAwardForCert.conferredBy || 'Gym Management',
-                            selectedAwardForCert.reason || 'Demonstrating outstanding consistency and fitness milestone achievements'
-                          ]
-                        ]
-                      }, `Certificate_${selectedAwardForCert.title.replace(/[^a-zA-Z0-9_-]/g, '_')}`);
+                        certificateId: selectedAwardForCert.certificateId || 'CERT-GYM-2026',
+                        conferredBy: selectedAwardForCert.conferredBy || 'Gym Management',
+                      });
                     } catch (err: any) {
                       Alert.alert('Download Error', err?.message || 'Unable to download certificate PDF.');
                     }

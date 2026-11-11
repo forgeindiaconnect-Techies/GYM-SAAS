@@ -15,6 +15,7 @@ import {
   Platform,
   Image
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../constants/theme';
 import { useAuth } from '../../context/AuthContext';
@@ -442,6 +443,7 @@ const DEFAULT_HALL_OF_FAME = [
 
 export const TrainerMoreScreen: React.FC<{ initialSection?: TrainerMoreKey }> = ({ initialSection = 'none' }) => {
   const { user, logout } = useAuth();
+  const insets = useSafeAreaInsets();
   const [activeSection, setActiveSection] = useState<TrainerMoreKey>(initialSection);
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -532,6 +534,10 @@ export const TrainerMoreScreen: React.FC<{ initialSection?: TrainerMoreKey }> = 
   const [feedbacks, setFeedbacks] = useState<any[]>(DEFAULT_FEEDBACK_ITEMS);
   const [feedbackSearch, setFeedbackSearch] = useState('');
   const [feedbackStatusFilter, setFeedbackStatusFilter] = useState('All');
+  const [feedbackDateFilter, setFeedbackDateFilter] = useState('');
+  const [feedbackGroupByDate, setFeedbackGroupByDate] = useState(true);
+  const [showFeedbackCalendarModal, setShowFeedbackCalendarModal] = useState(false);
+  const [feedbackCalendarMonth, setFeedbackCalendarMonth] = useState<Date>(() => new Date(2026, 9, 1));
   const [feedbackSortOrder, setFeedbackSortOrder] = useState<'desc' | 'asc'>('desc');
   const [feedbackExpandedId, setFeedbackExpandedId] = useState<string | null>(null);
   const [selectedFeedbackDetail, setSelectedFeedbackDetail] = useState<any | null>(null);
@@ -546,6 +552,7 @@ export const TrainerMoreScreen: React.FC<{ initialSection?: TrainerMoreKey }> = 
   const [hallOfFameList, setHallOfFameList] = useState<any[]>(DEFAULT_HALL_OF_FAME);
   const [requestingRewardId, setRequestingRewardId] = useState<string | null>(null);
   const [selectedCertificate, setSelectedCertificate] = useState<any | null>(null);
+  const [downloadingCertId, setDownloadingCertId] = useState<string | null>(null);
   const [rewards, setRewards] = useState<any[]>(DEFAULT_TRAINER_REWARDS_LIST);
   const [aiCustomers, setAiCustomers] = useState<any[]>([
     {
@@ -1056,6 +1063,40 @@ export const TrainerMoreScreen: React.FC<{ initialSection?: TrainerMoreKey }> = 
       return 'Member';
     };
 
+    const toLocalYMD = (dateStr?: string | Date) => {
+      if (!dateStr) return '';
+      const d = new Date(dateStr);
+      if (isNaN(d.getTime())) return '';
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const dd = String(d.getDate()).padStart(2, '0');
+      return `${yyyy}-${mm}-${dd}`;
+    };
+
+    const formatCalendarBtnLabel = (ymd: string) => {
+      if (!ymd) return 'mm/dd/yyyy';
+      const parts = ymd.split('-');
+      if (parts.length !== 3) return ymd;
+      return `${parts[1]}/${parts[2]}/${parts[0]}`;
+    };
+
+    const getDateGroupKey = (dateStr?: string | Date) => {
+      if (!dateStr) return 'Other Dates';
+      const d = new Date(dateStr);
+      if (isNaN(d.getTime())) return 'Other Dates';
+      const today = new Date();
+      const yesterday = new Date();
+      yesterday.setDate(today.getDate() - 1);
+      if (d.toDateString() === today.toDateString()) return 'Today';
+      if (d.toDateString() === yesterday.toDateString()) return 'Yesterday';
+      return d.toLocaleDateString('en-US', {
+        weekday: 'long',
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      });
+    };
+
     const formatDt = (dateStr?: string) => {
       if (!dateStr) return { date: '—', time: '—' };
       const d = new Date(dateStr);
@@ -1066,11 +1107,58 @@ export const TrainerMoreScreen: React.FC<{ initialSection?: TrainerMoreKey }> = 
       };
     };
 
+    const openFeedbackCalendar = () => {
+      if (feedbackDateFilter) {
+        const [y, m] = feedbackDateFilter.split('-').map(Number);
+        if (y && m) setFeedbackCalendarMonth(new Date(y, m - 1, 1));
+      } else if (feedbacks.length > 0 && feedbacks[0]?.createdAt) {
+        const latest = new Date(feedbacks[0].createdAt);
+        if (!isNaN(latest.getTime())) {
+          setFeedbackCalendarMonth(new Date(latest.getFullYear(), latest.getMonth(), 1));
+        }
+      }
+      setShowFeedbackCalendarModal(true);
+    };
+
+    const getFeedbackCalendarDays = (currentDate: Date) => {
+      const year = currentDate.getFullYear();
+      const month = currentDate.getMonth();
+      const firstDayIndex = new Date(year, month, 1).getDay();
+      const daysInCurrentMonth = new Date(year, month + 1, 0).getDate();
+      const daysInPrevMonth = new Date(year, month, 0).getDate();
+      const days: Array<{ day: number; isCurrentMonth: boolean; isoString: string; dateObj: Date }> = [];
+
+      for (let i = firstDayIndex - 1; i >= 0; i--) {
+        const d = daysInPrevMonth - i;
+        const prevM = month === 0 ? 11 : month - 1;
+        const prevY = month === 0 ? year - 1 : year;
+        const mm = String(prevM + 1).padStart(2, '0');
+        const dd = String(d).padStart(2, '0');
+        days.push({ day: d, isCurrentMonth: false, isoString: `${prevY}-${mm}-${dd}`, dateObj: new Date(prevY, prevM, d) });
+      }
+      for (let d = 1; d <= daysInCurrentMonth; d++) {
+        const mm = String(month + 1).padStart(2, '0');
+        const dd = String(d).padStart(2, '0');
+        days.push({ day: d, isCurrentMonth: true, isoString: `${year}-${mm}-${dd}`, dateObj: new Date(year, month, d) });
+      }
+      const totalCells = days.length > 35 ? 42 : 35;
+      const remaining = totalCells - days.length;
+      for (let d = 1; d <= remaining; d++) {
+        const nextM = month === 11 ? 0 : month + 1;
+        const nextY = month === 11 ? year + 1 : year;
+        const mm = String(nextM + 1).padStart(2, '0');
+        const dd = String(d).padStart(2, '0');
+        days.push({ day: d, isCurrentMonth: false, isoString: `${nextY}-${mm}-${dd}`, dateObj: new Date(nextY, nextM, d) });
+      }
+      return days;
+    };
+
     const filteredFeedbacks = feedbacks
       .filter(f => {
         const nameMatch = getClientName(f).toLowerCase().includes(feedbackSearch.toLowerCase());
         const statusMatch = feedbackStatusFilter === 'All' || f.status === feedbackStatusFilter;
-        return nameMatch && statusMatch;
+        const dateMatch = !feedbackDateFilter || toLocalYMD(f.createdAt) === feedbackDateFilter;
+        return nameMatch && statusMatch && dateMatch;
       })
       .sort((a, b) => {
         const timeA = new Date(a.createdAt || 0).getTime();
@@ -1078,10 +1166,235 @@ export const TrainerMoreScreen: React.FC<{ initialSection?: TrainerMoreKey }> = 
         return feedbackSortOrder === 'desc' ? timeB - timeA : timeA - timeB;
       });
 
+    // Group items date-wise (matching Web)
+    const dateGroups = filteredFeedbacks.reduce((acc: { key: string; items: any[] }[], f: any) => {
+      const key = getDateGroupKey(f.createdAt);
+      const existing = acc.find(g => g.key === key);
+      if (existing) {
+        existing.items.push(f);
+      } else {
+        acc.push({ key, items: [f] });
+      }
+      return acc;
+    }, []);
+
     const totalCount = feedbacks.length;
     const aiGenCount = feedbacks.filter(f => f.status === 'AI Generated').length;
     const approvedCount = feedbacks.filter(f => f.status === 'Trainer Approved' || f.status === 'Sent').length;
     const revisionCount = feedbacks.filter(f => f.status === 'Revision Requested').length;
+
+    const FB_MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    const FB_WEEKDAYS = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+    const feedbackDateSet = new Set(feedbacks.map(f => toLocalYMD(f.createdAt)).filter(Boolean));
+
+    const renderFeedbackCard = (f: any) => {
+      const id = f._id;
+      const isOpen = feedbackExpandedId === id;
+      const name = getClientName(f);
+      const goal = f.fitnessProfile?.goal || f.fitnessProfile?.primaryGoal || 'Weight Loss';
+      const workoutDays = f.workoutRecommendation?.weeklySchedule?.length || 4;
+      const dietMeals = f.dietRecommendation?.mealPlan?.length || 4;
+      const dt = formatDt(f.createdAt);
+      const summary = f.aiAnalysis?.assessment || f.aiAnalysis?.profileSummary || '';
+      const isApproved = f.status === 'Trainer Approved' || f.status === 'Sent';
+      const isRevision = f.status === 'Revision Requested';
+      const statusBg = isApproved ? '#ECFDF5' : isRevision ? '#FEF3C7' : '#F8FAFC';
+      const statusTextColor = isApproved ? '#16A34A' : isRevision ? '#B45309' : '#EA580C';
+
+      return (
+        <View key={id} style={styles.fbCard}>
+          {/* Main Card Header */}
+          <TouchableOpacity
+            style={styles.fbCardHeader}
+            onPress={() => setFeedbackExpandedId(isOpen ? null : id)}
+            activeOpacity={0.9}
+          >
+            <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 10, flex: 1 }}>
+              <View style={styles.fbAvatar}>
+                <Text style={styles.fbAvatarText}>{name[0]?.toUpperCase() || 'M'}</Text>
+              </View>
+
+              <View style={{ flex: 1 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                  <Text style={styles.fbClientName}>{name}</Text>
+                  <View style={[styles.fbStatusBadge, { backgroundColor: statusBg }]}>
+                    <Text style={[styles.fbStatusBadgeText, { color: statusTextColor }]}>
+                      {f.status}
+                    </Text>
+                  </View>
+                </View>
+
+                {/* Meta Tags */}
+                <View style={styles.fbMetaRow}>
+                  <View style={styles.fbMetaItem}>
+                    <Ionicons name="barbell-outline" size={12} color="#EA580C" />
+                    <Text style={styles.fbMetaItemText}>Goal: {goal}</Text>
+                  </View>
+                  <View style={styles.fbMetaItem}>
+                    <Ionicons name="fitness-outline" size={12} color="#64748B" />
+                    <Text style={styles.fbMetaItemText}>{workoutDays} days</Text>
+                  </View>
+                  <View style={styles.fbMetaItem}>
+                    <Ionicons name="nutrition-outline" size={12} color="#64748B" />
+                    <Text style={styles.fbMetaItemText}>{dietMeals} meals</Text>
+                  </View>
+                </View>
+
+                {/* Date & Time Badge */}
+                <View style={styles.fbDateBadge}>
+                  <Ionicons name="calendar-outline" size={11} color="#EA580C" />
+                  <Text style={styles.fbDateText}>{dt.date}</Text>
+                  <Text style={{ color: '#CBD5E1' }}>•</Text>
+                  <Ionicons name="time-outline" size={11} color="#EA580C" />
+                  <Text style={styles.fbTimeText}>{dt.time}</Text>
+                </View>
+
+                {summary ? (
+                  <Text style={styles.fbSummaryText} numberOfLines={2}>
+                    {summary}
+                  </Text>
+                ) : null}
+              </View>
+            </View>
+
+            {/* Actions Column */}
+            <View style={{ alignItems: 'flex-end', gap: 8 }}>
+              <TouchableOpacity
+                style={styles.fbFullViewBtn}
+                onPress={(e) => {
+                  e.stopPropagation();
+                  setSelectedFeedbackDetail(f);
+                }}
+                activeOpacity={0.8}
+              >
+                <Text style={styles.fbFullViewBtnText}>Full View</Text>
+              </TouchableOpacity>
+
+              <Ionicons
+                name={isOpen ? 'chevron-up' : 'chevron-down'}
+                size={18}
+                color="#64748B"
+              />
+            </View>
+          </TouchableOpacity>
+
+          {/* Inline Accordion Content */}
+          {isOpen && (
+            <View style={styles.fbAccordionContent}>
+              {summary ? (
+                <View style={styles.fbSectionBox}>
+                  <Text style={styles.fbSectionTitle}>AI ASSESSMENT</Text>
+                  <Text style={styles.fbSectionDesc}>{summary}</Text>
+                </View>
+              ) : null}
+
+              {f.workoutRecommendation?.weeklySchedule && (
+                <View style={styles.fbSectionBox}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 6 }}>
+                    <Ionicons name="barbell" size={14} color="#EA580C" />
+                    <Text style={styles.fbSectionTitle}>WORKOUT PLAN</Text>
+                  </View>
+                  {f.workoutRecommendation.weeklySchedule.map((day: any, i: number) => (
+                    <View key={i} style={styles.fbScheduleRow}>
+                      <Text style={styles.fbDayName}>{day.day}</Text>
+                      <Text style={styles.fbDayFocus}>{day.focus || 'Training Session'}</Text>
+                    </View>
+                  ))}
+                </View>
+              )}
+
+              {f.dietRecommendation?.mealPlan && (
+                <View style={styles.fbSectionBox}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 6 }}>
+                    <Ionicons name="nutrition" size={14} color="#EA580C" />
+                    <Text style={styles.fbSectionTitle}>DIET PLAN</Text>
+                  </View>
+                  {f.dietRecommendation.mealPlan.map((meal: any, i: number) => (
+                    <View key={i} style={styles.fbScheduleRow}>
+                      <Text style={styles.fbDayName}>{meal.meal || meal.mealType}</Text>
+                      <Text style={styles.fbDayFocus}>{meal.time || (meal.calories ? `${meal.calories} kcal` : 'Custom')}</Text>
+                    </View>
+                  ))}
+                </View>
+              )}
+
+              {f.trainerNotes ? (
+                <View style={[styles.fbSectionBox, { backgroundColor: '#F0FDF4', borderColor: '#BBF7D0' }]}>
+                  <Text style={[styles.fbSectionTitle, { color: '#166534' }]}>TRAINER NOTES</Text>
+                  <Text style={[styles.fbSectionDesc, { color: '#14532D' }]}>{f.trainerNotes}</Text>
+                </View>
+              ) : null}
+
+              {/* Chat & Feedback Discussion */}
+              <View style={styles.fbChatSection}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+                  <Ionicons name="chatbubbles" size={15} color="#EA580C" />
+                  <Text style={styles.fbChatHeading}>Chat & Feedback Discussion</Text>
+                </View>
+
+                {f.chatMessages && f.chatMessages.length > 0 ? (
+                  <View style={{ gap: 8, marginBottom: 10 }}>
+                    {f.chatMessages.map((msg: any, idx: number) => {
+                      const isTrainer = msg.senderRole === 'TRAINER';
+                      return (
+                        <View
+                          key={idx}
+                          style={[
+                            styles.fbChatBubble,
+                            isTrainer ? styles.fbChatBubbleTrainer : styles.fbChatBubbleMember
+                          ]}
+                        >
+                          <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 2 }}>
+                            <Text style={[styles.fbChatSender, { color: isTrainer ? '#EA580C' : '#111827' }]}>
+                              {isTrainer ? '💬 Trainer (You)' : `👤 Member (${msg.senderName || name})`}
+                            </Text>
+                            <Text style={styles.fbChatTime}>
+                              {msg.date ? new Date(msg.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
+                            </Text>
+                          </View>
+                          <Text style={styles.fbChatMsgText}>{msg.message}</Text>
+                        </View>
+                      );
+                    })}
+                  </View>
+                ) : (
+                  <Text style={{ fontSize: 12, color: '#64748B', fontStyle: 'italic', marginBottom: 8 }}>
+                    No messages yet. Send a guidance note or answer to this client.
+                  </Text>
+                )}
+
+                <View style={styles.fbReplyInputCard}>
+                  <TextInput
+                    style={styles.fbReplyTextInput}
+                    placeholder="Write a reply or message to the customer..."
+                    placeholderTextColor="#94A3B8"
+                    multiline
+                    value={feedbackReplyTexts[id] || ''}
+                    onChangeText={txt => setFeedbackReplyTexts(prev => ({ ...prev, [id]: txt }))}
+                  />
+                  <View style={{ flexDirection: 'row', justifyContent: 'flex-end', marginTop: 6 }}>
+                    <TouchableOpacity
+                      style={[
+                        styles.fbSendReplyBtn,
+                        (!feedbackReplyTexts[id]?.trim() || feedbackReplySending[id]) && { opacity: 0.5 }
+                      ]}
+                      disabled={!feedbackReplyTexts[id]?.trim() || feedbackReplySending[id]}
+                      onPress={() => handleSendFeedbackReply(id)}
+                      activeOpacity={0.8}
+                    >
+                      <Ionicons name="send" size={13} color="#FFFFFF" />
+                      <Text style={styles.fbSendReplyBtnText}>
+                        {feedbackReplySending[id] ? 'Sending...' : 'Send Reply'}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+            </View>
+          )}
+        </View>
+      );
+    };
 
     return (
       <ScrollView 
@@ -1120,7 +1433,7 @@ export const TrainerMoreScreen: React.FC<{ initialSection?: TrainerMoreKey }> = 
           </View>
         </View>
 
-        {/* Search & Sort Row */}
+        {/* Search Input */}
         <View style={styles.fbSearchContainer}>
           <Ionicons name="search" size={16} color="#64748B" style={{ marginLeft: 4 }} />
           <TextInput
@@ -1137,7 +1450,7 @@ export const TrainerMoreScreen: React.FC<{ initialSection?: TrainerMoreKey }> = 
           ) : null}
         </View>
 
-        {/* Filter Pills & Sort Bar */}
+        {/* Status Filter Pills Row */}
         <View style={styles.fbFilterRow}>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 6, paddingRight: 8 }}>
             {['All', 'Trainer Approved', 'AI Generated', 'Revision Requested'].map(status => {
@@ -1156,241 +1469,198 @@ export const TrainerMoreScreen: React.FC<{ initialSection?: TrainerMoreKey }> = 
               );
             })}
           </ScrollView>
+        </View>
 
+        {/* Web-Matched Action Controls Bar: Calendar Filter | Sort | Date-Wise ON/OFF */}
+        <View style={styles.fbControlsRow}>
+          {/* Calendar Date Filter Button */}
+          <View style={[styles.fbCalendarBtn, feedbackDateFilter ? styles.fbCalendarBtnActive : null]}>
+            <TouchableOpacity
+              style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}
+              onPress={openFeedbackCalendar}
+              activeOpacity={0.8}
+            >
+              <Ionicons name="calendar-outline" size={14} color="#EA580C" />
+              <Text style={[styles.fbCalendarBtnText, feedbackDateFilter ? { color: '#111827' } : null]}>
+                {formatCalendarBtnLabel(feedbackDateFilter)}
+              </Text>
+              <Ionicons name="calendar" size={12} color="#64748B" />
+            </TouchableOpacity>
+            {feedbackDateFilter ? (
+              <TouchableOpacity
+                onPress={() => setFeedbackDateFilter('')}
+                style={{ marginLeft: 4, padding: 2 }}
+                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+              >
+                <Ionicons name="close-circle" size={15} color="#EA580C" />
+              </TouchableOpacity>
+            ) : null}
+          </View>
+
+          {/* Sort Button */}
           <TouchableOpacity
             style={styles.fbSortBtn}
             onPress={() => setFeedbackSortOrder(prev => prev === 'desc' ? 'asc' : 'desc')}
             activeOpacity={0.8}
           >
-            <Ionicons name="swap-vertical" size={13} color="#EA580C" />
+            <Ionicons name="time-outline" size={14} color="#64748B" />
             <Text style={styles.fbSortBtnText}>
-              {feedbackSortOrder === 'desc' ? 'Newest' : 'Oldest'}
+              {feedbackSortOrder === 'desc' ? 'Newest First' : 'Oldest First'}
+            </Text>
+          </TouchableOpacity>
+
+          {/* Date-Wise ON / OFF Toggle Button */}
+          <TouchableOpacity
+            style={[styles.fbDateWiseBtn, feedbackGroupByDate && styles.fbDateWiseBtnActive]}
+            onPress={() => setFeedbackGroupByDate(g => !g)}
+            activeOpacity={0.8}
+          >
+            <Ionicons
+              name="calendar-outline"
+              size={14}
+              color={feedbackGroupByDate ? '#FFFFFF' : '#64748B'}
+            />
+            <Text style={[styles.fbDateWiseBtnText, feedbackGroupByDate && { color: '#FFFFFF' }]}>
+              {feedbackGroupByDate ? 'Date-Wise: ON' : 'Date-Wise: OFF'}
             </Text>
           </TouchableOpacity>
         </View>
 
-        {/* List of Feedback Cards */}
+        {/* List of Feedback Cards (Date-Wise Grouped OR Flat) */}
         {filteredFeedbacks.length === 0 ? (
           <View style={styles.emptyCard}>
             <Ionicons name="chatbubble-ellipses-outline" size={36} color="#94A3B8" />
             <Text style={styles.emptyTitle}>No Feedback Records Found</Text>
-            <Text style={styles.emptySub}>No client assessment recommendations match your active filter.</Text>
+            <Text style={styles.emptySub}>
+              {feedbackDateFilter
+                ? `No client feedback plans found for ${formatCalendarBtnLabel(feedbackDateFilter)}.`
+                : 'No client assessment recommendations match your active filter.'}
+            </Text>
+            {feedbackDateFilter ? (
+              <TouchableOpacity
+                style={[styles.fbSortBtn, { marginTop: 10 }]}
+                onPress={() => setFeedbackDateFilter('')}
+              >
+                <Text style={styles.fbSortBtnText}>Clear Date Filter</Text>
+              </TouchableOpacity>
+            ) : null}
           </View>
+        ) : feedbackGroupByDate ? (
+          dateGroups.map(group => (
+            <View key={group.key} style={styles.fbDateGroupWrapper}>
+              <View style={styles.fbDateGroupHeader}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, flex: 1 }}>
+                  <Ionicons name="calendar-outline" size={14} color="#EA580C" />
+                  <Text style={styles.fbDateGroupTitle}>{group.key.toUpperCase()}</Text>
+                </View>
+                <View style={styles.fbDateGroupCountPill}>
+                  <Text style={styles.fbDateGroupCountText}>
+                    {group.items.length} {group.items.length === 1 ? 'plan' : 'plans'}
+                  </Text>
+                </View>
+              </View>
+              {group.items.map(renderFeedbackCard)}
+            </View>
+          ))
         ) : (
-          filteredFeedbacks.map(f => {
-            const id = f._id;
-            const isOpen = feedbackExpandedId === id;
-            const name = getClientName(f);
-            const goal = f.fitnessProfile?.goal || f.fitnessProfile?.primaryGoal || 'Weight Loss';
-            const workoutDays = f.workoutRecommendation?.weeklySchedule?.length || 4;
-            const dietMeals = f.dietRecommendation?.mealPlan?.length || 4;
-            const dt = formatDt(f.createdAt);
-            const summary = f.aiAnalysis?.assessment || f.aiAnalysis?.profileSummary || '';
-            const isApproved = f.status === 'Trainer Approved' || f.status === 'Sent';
-            const isRevision = f.status === 'Revision Requested';
-            const statusBg = isApproved ? '#ECFDF5' : isRevision ? '#FEF3C7' : '#F8FAFC';
-            const statusTextColor = isApproved ? '#16A34A' : isRevision ? '#B45309' : '#EA580C';
+          filteredFeedbacks.map(renderFeedbackCard)
+        )}
 
-            return (
-              <View key={id} style={styles.fbCard}>
-                {/* Main Card Header */}
-                <TouchableOpacity
-                  style={styles.fbCardHeader}
-                  onPress={() => setFeedbackExpandedId(isOpen ? null : id)}
-                  activeOpacity={0.9}
-                >
-                  <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 10, flex: 1 }}>
-                    <View style={styles.fbAvatar}>
-                      <Text style={styles.fbAvatarText}>{name[0]?.toUpperCase() || 'M'}</Text>
-                    </View>
+        {/* Calendar Picker Modal */}
+        <Modal
+          visible={showFeedbackCalendarModal}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setShowFeedbackCalendarModal(false)}
+        >
+          <TouchableOpacity
+            style={styles.fbCalBackdrop}
+            activeOpacity={1}
+            onPress={() => setShowFeedbackCalendarModal(false)}
+          >
+            <View style={styles.fbCalCard} onStartShouldSetResponder={() => true}>
+              <View style={styles.fbCalHeaderRow}>
+                <Text style={styles.fbCalMonthTitle}>
+                  {FB_MONTH_NAMES[feedbackCalendarMonth.getMonth()]} {feedbackCalendarMonth.getFullYear()}
+                </Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                  <TouchableOpacity
+                    style={styles.fbCalArrowBtn}
+                    onPress={() => setFeedbackCalendarMonth(prev => new Date(prev.getFullYear(), prev.getMonth() - 1, 1))}
+                  >
+                    <Ionicons name="chevron-back" size={18} color="#475569" />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.fbCalArrowBtn}
+                    onPress={() => setFeedbackCalendarMonth(prev => new Date(prev.getFullYear(), prev.getMonth() + 1, 1))}
+                  >
+                    <Ionicons name="chevron-forward" size={18} color="#475569" />
+                  </TouchableOpacity>
+                </View>
+              </View>
 
-                    <View style={{ flex: 1 }}>
-                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-                        <Text style={styles.fbClientName}>{name}</Text>
-                        <View style={[styles.fbStatusBadge, { backgroundColor: statusBg }]}>
-                          <Text style={[styles.fbStatusBadgeText, { color: statusTextColor }]}>
-                            {f.status}
-                          </Text>
-                        </View>
-                      </View>
+              <View style={styles.fbCalWeekdaysRow}>
+                {FB_WEEKDAYS.map(w => (
+                  <Text key={w} style={styles.fbCalWeekdayText}>{w}</Text>
+                ))}
+              </View>
 
-                      {/* Meta Tags */}
-                      <View style={styles.fbMetaRow}>
-                        <View style={styles.fbMetaItem}>
-                          <Ionicons name="barbell-outline" size={12} color="#EA580C" />
-                          <Text style={styles.fbMetaItemText}>Goal: {goal}</Text>
-                        </View>
-                        <View style={styles.fbMetaItem}>
-                          <Ionicons name="fitness-outline" size={12} color="#64748B" />
-                          <Text style={styles.fbMetaItemText}>{workoutDays} days</Text>
-                        </View>
-                        <View style={styles.fbMetaItem}>
-                          <Ionicons name="nutrition-outline" size={12} color="#64748B" />
-                          <Text style={styles.fbMetaItemText}>{dietMeals} meals</Text>
-                        </View>
-                      </View>
-
-                      {/* Date & Time Badge */}
-                      <View style={styles.fbDateBadge}>
-                        <Ionicons name="calendar-outline" size={11} color="#EA580C" />
-                        <Text style={styles.fbDateText}>{dt.date}</Text>
-                        <Text style={{ color: '#CBD5E1' }}>•</Text>
-                        <Ionicons name="time-outline" size={11} color="#EA580C" />
-                        <Text style={styles.fbTimeText}>{dt.time}</Text>
-                      </View>
-
-                      {summary ? (
-                        <Text style={styles.fbSummaryText} numberOfLines={2}>
-                          {summary}
-                        </Text>
-                      ) : null}
-                    </View>
-                  </View>
-
-                  {/* Actions Column */}
-                  <View style={{ alignItems: 'flex-end', gap: 8 }}>
+              <View style={styles.fbCalGrid}>
+                {getFeedbackCalendarDays(feedbackCalendarMonth).map((dayItem, idx) => {
+                  const isSelected = feedbackDateFilter === dayItem.isoString;
+                  const hasFeedback = feedbackDateSet.has(dayItem.isoString);
+                  return (
                     <TouchableOpacity
-                      style={styles.fbFullViewBtn}
-                      onPress={(e) => {
-                        e.stopPropagation();
-                        setSelectedFeedbackDetail(f);
+                      key={`${dayItem.isoString}-${idx}`}
+                      style={styles.fbCalDayCell}
+                      onPress={() => {
+                        setFeedbackDateFilter(dayItem.isoString);
+                        setShowFeedbackCalendarModal(false);
                       }}
-                      activeOpacity={0.8}
+                      activeOpacity={0.7}
                     >
-                      <Text style={styles.fbFullViewBtnText}>Full View</Text>
-                    </TouchableOpacity>
-
-                    <Ionicons 
-                      name={isOpen ? "chevron-up" : "chevron-down"} 
-                      size={18} 
-                      color="#64748B" 
-                    />
-                  </View>
-                </TouchableOpacity>
-
-                {/* Inline Accordion Content */}
-                {isOpen && (
-                  <View style={styles.fbAccordionContent}>
-                    {/* AI Assessment Box */}
-                    {summary ? (
-                      <View style={styles.fbSectionBox}>
-                        <Text style={styles.fbSectionTitle}>AI ASSESSMENT</Text>
-                        <Text style={styles.fbSectionDesc}>{summary}</Text>
-                      </View>
-                    ) : null}
-
-                    {/* Workout Preview */}
-                    {f.workoutRecommendation?.weeklySchedule && (
-                      <View style={styles.fbSectionBox}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 6 }}>
-                          <Ionicons name="barbell" size={14} color="#EA580C" />
-                          <Text style={styles.fbSectionTitle}>WORKOUT PLAN</Text>
-                        </View>
-                        {f.workoutRecommendation.weeklySchedule.map((day: any, i: number) => (
-                          <View key={i} style={styles.fbScheduleRow}>
-                            <Text style={styles.fbDayName}>{day.day}</Text>
-                            <Text style={styles.fbDayFocus}>{day.focus || 'Training Session'}</Text>
-                          </View>
-                        ))}
-                      </View>
-                    )}
-
-                    {/* Diet Preview */}
-                    {f.dietRecommendation?.mealPlan && (
-                      <View style={styles.fbSectionBox}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 6 }}>
-                          <Ionicons name="nutrition" size={14} color="#EA580C" />
-                          <Text style={styles.fbSectionTitle}>DIET PLAN</Text>
-                        </View>
-                        {f.dietRecommendation.mealPlan.map((meal: any, i: number) => (
-                          <View key={i} style={styles.fbScheduleRow}>
-                            <Text style={styles.fbDayName}>{meal.meal || meal.mealType}</Text>
-                            <Text style={styles.fbDayFocus}>{meal.time || (meal.calories ? `${meal.calories} kcal` : 'Custom')}</Text>
-                          </View>
-                        ))}
-                      </View>
-                    )}
-
-                    {/* Trainer Notes */}
-                    {f.trainerNotes ? (
-                      <View style={[styles.fbSectionBox, { backgroundColor: '#F0FDF4', borderColor: '#BBF7D0' }]}>
-                        <Text style={[styles.fbSectionTitle, { color: '#166534' }]}>TRAINER NOTES</Text>
-                        <Text style={[styles.fbSectionDesc, { color: '#14532D' }]}>{f.trainerNotes}</Text>
-                      </View>
-                    ) : null}
-
-                    {/* Chat & Feedback Discussion */}
-                    <View style={styles.fbChatSection}>
-                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 8 }}>
-                        <Ionicons name="chatbubbles" size={15} color="#EA580C" />
-                        <Text style={styles.fbChatHeading}>Chat & Feedback Discussion</Text>
-                      </View>
-
-                      {f.chatMessages && f.chatMessages.length > 0 ? (
-                        <View style={{ gap: 8, marginBottom: 10 }}>
-                          {f.chatMessages.map((msg: any, idx: number) => {
-                            const isTrainer = msg.senderRole === 'TRAINER';
-                            return (
-                              <View
-                                key={idx}
-                                style={[
-                                  styles.fbChatBubble,
-                                  isTrainer ? styles.fbChatBubbleTrainer : styles.fbChatBubbleMember
-                                ]}
-                              >
-                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 2 }}>
-                                  <Text style={[styles.fbChatSender, { color: isTrainer ? '#EA580C' : '#111827' }]}>
-                                    {isTrainer ? '💬 Trainer (You)' : `👤 Member (${msg.senderName || name})`}
-                                  </Text>
-                                  <Text style={styles.fbChatTime}>
-                                    {msg.date ? new Date(msg.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
-                                  </Text>
-                                </View>
-                                <Text style={styles.fbChatMsgText}>{msg.message}</Text>
-                              </View>
-                            );
-                          })}
+                      {isSelected ? (
+                        <View style={styles.fbCalSelectedDayBox}>
+                          <Text style={styles.fbCalSelectedDayText}>{dayItem.day}</Text>
                         </View>
                       ) : (
-                        <Text style={{ fontSize: 12, color: '#64748B', fontStyle: 'italic', marginBottom: 8 }}>
-                          No messages yet. Send a guidance note or answer to this client.
-                        </Text>
-                      )}
-
-                      {/* Reply Box */}
-                      <View style={styles.fbReplyInputCard}>
-                        <TextInput
-                          style={styles.fbReplyTextInput}
-                          placeholder="Write a reply or message to the customer..."
-                          placeholderTextColor="#94A3B8"
-                          multiline
-                          value={feedbackReplyTexts[id] || ''}
-                          onChangeText={txt => setFeedbackReplyTexts(prev => ({ ...prev, [id]: txt }))}
-                        />
-                        <View style={{ flexDirection: 'row', justifyContent: 'flex-end', marginTop: 6 }}>
-                          <TouchableOpacity
-                            style={[
-                              styles.fbSendReplyBtn,
-                              (!feedbackReplyTexts[id]?.trim() || feedbackReplySending[id]) && { opacity: 0.5 }
-                            ]}
-                            disabled={!feedbackReplyTexts[id]?.trim() || feedbackReplySending[id]}
-                            onPress={() => handleSendFeedbackReply(id)}
-                            activeOpacity={0.8}
-                          >
-                            <Ionicons name="send" size={13} color="#FFFFFF" />
-                            <Text style={styles.fbSendReplyBtnText}>
-                              {feedbackReplySending[id] ? 'Sending...' : 'Send Reply'}
-                            </Text>
-                          </TouchableOpacity>
+                        <View style={{ alignItems: 'center' }}>
+                          <Text style={[styles.fbCalDayText, !dayItem.isCurrentMonth && styles.fbCalDayTextMuted]}>
+                            {dayItem.day}
+                          </Text>
+                          {hasFeedback && dayItem.isCurrentMonth && <View style={styles.fbCalDot} />}
                         </View>
-                      </View>
-                    </View>
-                  </View>
-                )}
+                      )}
+                    </TouchableOpacity>
+                  );
+                })}
               </View>
-            );
-          })
-        )}
+
+              <View style={styles.fbCalBottomRow}>
+                <TouchableOpacity
+                  onPress={() => {
+                    setFeedbackDateFilter('');
+                    setShowFeedbackCalendarModal(false);
+                  }}
+                  style={{ padding: 6 }}
+                >
+                  <Text style={styles.fbCalActionText}>Clear</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    const today = new Date();
+                    setFeedbackDateFilter(toLocalYMD(today));
+                    setFeedbackCalendarMonth(new Date(today.getFullYear(), today.getMonth(), 1));
+                    setShowFeedbackCalendarModal(false);
+                  }}
+                  style={{ padding: 6 }}
+                >
+                  <Text style={styles.fbCalActionText}>Today</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </TouchableOpacity>
+        </Modal>
       </ScrollView>
     );
   };
@@ -2000,12 +2270,22 @@ export const TrainerMoreScreen: React.FC<{ initialSection?: TrainerMoreKey }> = 
 
                 {/* Download Certificate Button */}
                 <TouchableOpacity
-                  style={styles.rewDownloadCertBtn}
-                  onPress={() => setSelectedCertificate(award)}
+                  style={[styles.rewDownloadCertBtn, downloadingCertId === (award._id || award.certificateId) && { opacity: 0.7 }]}
+                  disabled={downloadingCertId === (award._id || award.certificateId)}
+                  onPress={() => handleDownloadCertificate(award)}
                   activeOpacity={0.8}
                 >
-                  <Ionicons name="download-outline" size={16} color="#FFFFFF" />
-                  <Text style={styles.rewDownloadCertBtnText}>Download Official PDF Certificate</Text>
+                  {downloadingCertId === (award._id || award.certificateId) ? (
+                    <>
+                      <ActivityIndicator size="small" color="#FFFFFF" />
+                      <Text style={styles.rewDownloadCertBtnText}>Generating PDF...</Text>
+                    </>
+                  ) : (
+                    <>
+                      <Ionicons name="download-outline" size={16} color="#FFFFFF" />
+                      <Text style={styles.rewDownloadCertBtnText}>Download Official PDF Certificate</Text>
+                    </>
+                  )}
                 </TouchableOpacity>
               </View>
             ))}
@@ -2036,6 +2316,34 @@ export const TrainerMoreScreen: React.FC<{ initialSection?: TrainerMoreKey }> = 
         )}
       </ScrollView>
     );
+  };
+
+  const handleDownloadCertificate = async (award: any) => {
+    if (!award) return;
+    const certKey = award._id || award.certificateId || 'cert';
+    const certId = award.certificateId || 'CERT-PF-2026-TR889';
+    try {
+      setDownloadingCertId(certKey);
+      const awardDateStr = award.publishedAt || award.updatedAt || award.createdAt;
+      await FileDownloader.downloadCertificatePDF({
+        recipientName: award.winnerName || user?.name || (user as any)?.fullName || 'Gym Trainer',
+        recipientRole: 'Trainer',
+        awardTitle: award.title || 'Coaching Excellence Award',
+        awardCategory: award.category || 'Custom Award',
+        description: award.description || '',
+        gymName: award.gymId?.name || 'Perfect Fitness Studio',
+        awardDate: awardDateStr
+          ? new Date(awardDateStr).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+          : new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
+        certificateId: certId,
+        metricAchieved: award.winnerScore ? `${award.winnerScore}` : undefined,
+        conferredBy: award.gymId?.name || 'Gym Administration',
+      });
+    } catch (err: any) {
+      Alert.alert('Download Error', err?.message || 'Failed to download certificate.');
+    } finally {
+      setDownloadingCertId(null);
+    }
   };
 
   // Official Certificate Modal with Download Action
@@ -2101,7 +2409,7 @@ export const TrainerMoreScreen: React.FC<{ initialSection?: TrainerMoreKey }> = 
                 <View style={styles.certFooterRow}>
                   <View style={{ alignItems: 'center' }}>
                     <Text style={styles.certSignTitle}>MANAGEMENT</Text>
-                    <Text style={styles.certSignVal}>Perfect Fitness Studio</Text>
+                    <Text style={styles.certSignVal}>{award.gymId?.name || 'Perfect Fitness Studio'}</Text>
                   </View>
                   <View style={{ alignItems: 'center' }}>
                     <Text style={styles.certSignTitle}>DATE CONFERRED</Text>
@@ -2125,30 +2433,7 @@ export const TrainerMoreScreen: React.FC<{ initialSection?: TrainerMoreKey }> = 
             <View style={[styles.modalFooter, { flexDirection: 'column', gap: 8 }]}>
               <TouchableOpacity
                 style={styles.notifGoToPageBtn}
-                onPress={async () => {
-                  try {
-                    await FileDownloader.downloadReportPDF({
-                      title: 'Official Certificate of Coaching Excellence',
-                      subtitle: `${selectedCertificate.title} • Verified Badge ID: ${certId}`,
-                      gymName: 'Perfect Fitness Studio',
-                      summaryMetrics: [
-                        { label: 'Honoree', value: user?.name || (user as any)?.fullName || 'Naveen Coach' },
-                        { label: 'Award Category', value: selectedCertificate.category || 'Floor Excellence' },
-                        { label: 'Award Period', value: selectedCertificate.awardPeriod || 'October 2026 Honors' },
-                        { label: 'Verification Status', value: 'VERIFIED & AUTHENTIC' },
-                      ],
-                      headers: ['Criteria / Standard', 'Performance Metric', 'Evaluation Score', 'Sign-Off'],
-                      rows: [
-                        ['Member Goal Completion', 'Top client body transformation metrics', '98.5%', 'Lead Master Coach'],
-                        ['Attendance & Punctuality', '100% on-time scheduled coaching sessions', '100%', 'Operations Director'],
-                        ['Floor Technique & Safety', 'Zero safety incidents, pristine floor standards', 'Exemplary', 'Facility Management'],
-                        ['Client Feedback Rating', 'Average 4.9+ star verified member ratings', '5.0 / 5.0', 'Member Community'],
-                      ]
-                    }, `Coaching_Certificate_${certId}`);
-                  } catch (err: any) {
-                    Alert.alert('Download Error', err?.message || 'Failed to download certificate.');
-                  }
-                }}
+                onPress={() => handleDownloadCertificate(selectedCertificate)}
                 activeOpacity={0.8}
               >
                 <Ionicons name="download" size={16} color="#FFFFFF" />
@@ -4149,9 +4434,12 @@ export const TrainerMoreScreen: React.FC<{ initialSection?: TrainerMoreKey }> = 
         animationType="slide"
         onRequestClose={() => setShowAiReviewModal(false)}
       >
-        <View style={styles.reviewFullContainer}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          style={styles.reviewFullContainer}
+        >
           {/* Top Bar Navigation */}
-          <View style={styles.reviewTopBar}>
+          <View style={[styles.reviewTopBar, { paddingTop: Math.max(insets.top + 10, 44) }]}>
             <TouchableOpacity 
               style={styles.reviewBackBtn} 
               onPress={() => setShowAiReviewModal(false)}
@@ -4161,7 +4449,7 @@ export const TrainerMoreScreen: React.FC<{ initialSection?: TrainerMoreKey }> = 
               <Text style={styles.reviewBackText}>Back to Client List</Text>
             </TouchableOpacity>
 
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
               <View style={[styles.reviewStatusPill, isApproved ? styles.statusPillApproved : styles.statusPillPending]}>
                 <Ionicons 
                   name={isApproved ? "checkmark-circle" : "time-outline"} 
@@ -4230,7 +4518,7 @@ export const TrainerMoreScreen: React.FC<{ initialSection?: TrainerMoreKey }> = 
             {/* CARD 1: Customer Information & Assessment Details */}
             <View style={styles.reviewSectionCard}>
               <View style={styles.reviewCardHeader}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, flex: 1 }}>
                   <Ionicons name="person-outline" size={18} color="#EA580C" />
                   <Text style={styles.reviewCardTitle}>Customer Information & Assessment</Text>
                 </View>
@@ -4263,7 +4551,7 @@ export const TrainerMoreScreen: React.FC<{ initialSection?: TrainerMoreKey }> = 
                 </View>
                 <View style={styles.reviewDemoTile}>
                   <Text style={styles.reviewDemoLabel}>EQUIPMENT</Text>
-                  <Text style={styles.reviewDemoValue} numberOfLines={1}>Full Commercial Gym</Text>
+                  <Text style={styles.reviewDemoValue} numberOfLines={2}>Full Commercial Gym</Text>
                 </View>
               </View>
 
@@ -4280,13 +4568,13 @@ export const TrainerMoreScreen: React.FC<{ initialSection?: TrainerMoreKey }> = 
             {/* CARD 2: AI Generated Assessment & Health Analysis */}
             <View style={styles.reviewSectionCard}>
               <View style={styles.reviewCardHeader}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, flex: 1 }}>
                   <Ionicons name="sparkles" size={18} color="#EA580C" />
                   <Text style={styles.reviewCardTitle}>AI Generated Assessment & Health Analysis</Text>
                 </View>
                 <TouchableOpacity 
                   onPress={() => setShowOriginalDraft(!showOriginalDraft)}
-                  style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}
+                  style={{ flexDirection: 'row', alignItems: 'center', gap: 3, flexShrink: 0 }}
                 >
                   <Text style={{ fontSize: 11, fontWeight: '700', color: '#EA580C' }}>
                     {showOriginalDraft ? 'Hide Deep Insights' : 'View Full Insights'}
@@ -4323,11 +4611,11 @@ export const TrainerMoreScreen: React.FC<{ initialSection?: TrainerMoreKey }> = 
             {/* CARD 3: AI-Generated 7-Day Workout Routine (Monday – Sunday) */}
             <View style={styles.reviewSectionCard}>
               <View style={styles.reviewCardHeader}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                  <Ionicons name="barbell-outline" size={18} color="#EA580C" />
-                  <View>
+                <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 8, flex: 1 }}>
+                  <Ionicons name="barbell-outline" size={18} color="#EA580C" style={{ marginTop: 2 }} />
+                  <View style={{ flex: 1 }}>
                     <Text style={styles.reviewCardTitle}>AI Workout Plan (Monday – Sunday)</Text>
-                    <Text style={{ fontSize: 11, color: '#64748B' }}>
+                    <Text style={{ fontSize: 11, color: '#64748B', marginTop: 2, lineHeight: 15 }}>
                       Calibrate sets, reps, and exercise selection for each day from Monday to Sunday.
                     </Text>
                   </View>
@@ -4493,11 +4781,11 @@ export const TrainerMoreScreen: React.FC<{ initialSection?: TrainerMoreKey }> = 
             {/* CARD 4: AI-Generated 7-Day Diet & Nutrition Plan (Monday – Sunday) */}
             <View style={styles.reviewSectionCard}>
               <View style={styles.reviewCardHeader}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                  <Ionicons name="restaurant-outline" size={18} color="#EA580C" />
-                  <View>
+                <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 8, flex: 1 }}>
+                  <Ionicons name="restaurant-outline" size={18} color="#EA580C" style={{ marginTop: 2 }} />
+                  <View style={{ flex: 1 }}>
                     <Text style={styles.reviewCardTitle}>AI Diet Plan (Monday – Sunday)</Text>
-                    <Text style={{ fontSize: 11, color: '#64748B' }}>
+                    <Text style={{ fontSize: 11, color: '#64748B', marginTop: 2, lineHeight: 15 }}>
                       Review calorie targets, macro splits, and daily scheduled meal nutrition.
                     </Text>
                   </View>
@@ -4534,8 +4822,8 @@ export const TrainerMoreScreen: React.FC<{ initialSection?: TrainerMoreKey }> = 
 
               {/* Nutrition Targets Row */}
               <View style={styles.reviewNutritionTargetBox}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <Text style={styles.reviewNutriFocusTitle}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
+                  <Text style={[styles.reviewNutriFocusTitle, { flex: 1 }]}>
                     {selectedDietDay} Focus: <Text style={{ color: '#EA580C' }}>{activeDietDayData.focus}</Text>
                   </Text>
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
@@ -4609,7 +4897,7 @@ export const TrainerMoreScreen: React.FC<{ initialSection?: TrainerMoreKey }> = 
             {/* CARD 5: AI Recovery & Lifestyle Protocol */}
             <View style={styles.reviewSectionCard}>
               <View style={styles.reviewCardHeader}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, flex: 1 }}>
                   <Ionicons name="heart-half-outline" size={18} color="#EA580C" />
                   <Text style={styles.reviewCardTitle}>AI Recovery & Lifestyle Protocol</Text>
                 </View>
@@ -4657,7 +4945,7 @@ export const TrainerMoreScreen: React.FC<{ initialSection?: TrainerMoreKey }> = 
             {/* CARD 6: Trainer Recommendations & Direct Customer Notes */}
             <View style={styles.reviewSectionCard}>
               <View style={styles.reviewCardHeader}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, flex: 1 }}>
                   <Ionicons name="create-outline" size={18} color="#EA580C" />
                   <Text style={styles.reviewCardTitle}>Trainer Recommendations & Direct Customer Notes</Text>
                 </View>
@@ -4688,11 +4976,11 @@ export const TrainerMoreScreen: React.FC<{ initialSection?: TrainerMoreKey }> = 
               </View>
             </View>
 
-            <View style={{ height: 90 }} />
+            <View style={{ height: Math.max(insets.bottom + 84, 96) }} />
           </ScrollView>
 
           {/* Sticky Bottom Actions Bar */}
-          <View style={styles.reviewStickyBottomBar}>
+          <View style={[styles.reviewStickyBottomBar, { paddingBottom: Math.max(insets.bottom + 12, 24) }]}>
             <TouchableOpacity 
               style={styles.reviewBottomDraftBtn}
               onPress={handleApproveWithoutChanges}
@@ -4711,7 +4999,7 @@ export const TrainerMoreScreen: React.FC<{ initialSection?: TrainerMoreKey }> = 
               <Text style={styles.reviewBottomApproveText}>Edit & Approve</Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </KeyboardAvoidingView>
       </Modal>
     );
   };
@@ -4738,7 +5026,9 @@ export const TrainerMoreScreen: React.FC<{ initialSection?: TrainerMoreKey }> = 
         {activeSection === 'profile' && renderProfile()}
         {activeSection === 'ai-assistant' && renderAI()}
         {activeSection === 'feedback' && renderFeedback()}
+        {activeSection === 'feedback' && renderFeedbackDetailModal()}
         {activeSection === 'rewards' && renderRewards()}
+        {activeSection === 'rewards' && renderCertificateModal()}
         {activeSection === 'financials' && renderFinancials()}
         {activeSection === 'jobs' && renderJobs()}
         {activeSection === 'jobs' && renderJobDetailsModal()}
@@ -5342,8 +5632,9 @@ const styles = StyleSheet.create({
   },
   reviewCardHeader: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     justifyContent: 'space-between',
+    gap: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#F1F5F9',
     paddingBottom: 10,
@@ -5352,6 +5643,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '800',
     color: '#111827',
+    flexShrink: 1,
   },
   reviewGoalBadge: {
     backgroundColor: '#FFF7ED',
@@ -5360,6 +5652,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: 8,
+    flexShrink: 0,
   },
   reviewGoalBadgeText: {
     fontSize: 10,
@@ -5491,8 +5784,9 @@ const styles = StyleSheet.create({
   },
   reviewDaySplitBanner: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     justifyContent: 'space-between',
+    gap: 10,
     backgroundColor: '#F8FAFC',
     borderRadius: 12,
     padding: 10,
@@ -7117,8 +7411,194 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 14,
+    marginBottom: 10,
     gap: 8,
+  },
+  fbControlsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginBottom: 14,
+  },
+  fbCalendarBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    paddingHorizontal: 10,
+    paddingVertical: 7,
+    borderRadius: 10,
+  },
+  fbCalendarBtnActive: {
+    borderColor: '#FDBA74',
+    backgroundColor: '#FFF7ED',
+  },
+  fbCalendarBtnText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#64748B',
+  },
+  fbDateWiseBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    paddingHorizontal: 10,
+    paddingVertical: 7,
+    borderRadius: 10,
+  },
+  fbDateWiseBtnActive: {
+    backgroundColor: '#C2410C',
+    borderColor: '#C2410C',
+  },
+  fbDateWiseBtnText: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#64748B',
+  },
+  fbDateGroupWrapper: {
+    marginBottom: 14,
+  },
+  fbDateGroupHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    marginBottom: 8,
+  },
+  fbDateGroupTitle: {
+    fontSize: 11,
+    fontWeight: '900',
+    color: '#111827',
+    letterSpacing: 0.6,
+  },
+  fbDateGroupCountPill: {
+    backgroundColor: '#FFF7ED',
+    borderWidth: 1,
+    borderColor: '#FFEDD5',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 999,
+  },
+  fbDateGroupCountText: {
+    fontSize: 10,
+    fontWeight: '800',
+    color: '#EA580C',
+  },
+  fbCalBackdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  fbCalCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: 16,
+    width: '92%',
+    maxWidth: 340,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.15,
+    shadowRadius: 14,
+    elevation: 8,
+  },
+  fbCalHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 14,
+  },
+  fbCalMonthTitle: {
+    fontSize: 16,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  fbCalArrowBtn: {
+    padding: 6,
+    borderRadius: 8,
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  fbCalWeekdaysRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 6,
+  },
+  fbCalWeekdayText: {
+    width: 38,
+    textAlign: 'center',
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#64748B',
+  },
+  fbCalGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  fbCalDayCell: {
+    width: '14.28%',
+    height: 38,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 1,
+  },
+  fbCalDayText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#1E293B',
+  },
+  fbCalDayTextMuted: {
+    color: '#CBD5E1',
+    fontWeight: '400',
+  },
+  fbCalSelectedDayBox: {
+    width: 32,
+    height: 32,
+    backgroundColor: '#EA580C',
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  fbCalSelectedDayText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '800',
+  },
+  fbCalDot: {
+    width: 5,
+    height: 5,
+    borderRadius: 2.5,
+    backgroundColor: '#EA580C',
+    marginTop: 2,
+  },
+  fbCalBottomRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 12,
+    paddingTop: 10,
+    borderTopWidth: 1,
+    borderTopColor: '#F1F5F9',
+  },
+  fbCalActionText: {
+    color: '#EA580C',
+    fontSize: 14,
+    fontWeight: '700',
   },
   fbFilterPill: {
     paddingHorizontal: 12,
@@ -7144,18 +7624,18 @@ const styles = StyleSheet.create({
   fbSortBtn: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
-    backgroundColor: '#FFF7ED',
+    gap: 5,
+    backgroundColor: '#FFFFFF',
     borderWidth: 1,
-    borderColor: '#FFEDD5',
+    borderColor: '#E2E8F0',
     paddingHorizontal: 10,
-    paddingVertical: 6,
+    paddingVertical: 7,
     borderRadius: 10,
   },
   fbSortBtnText: {
     fontSize: 11,
     fontWeight: '700',
-    color: '#EA580C',
+    color: '#475569',
   },
   fbCard: {
     backgroundColor: '#FFFFFF',

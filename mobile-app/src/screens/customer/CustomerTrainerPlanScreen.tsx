@@ -1100,7 +1100,11 @@ export const CustomerTrainerPlanScreen: React.FC = () => {
                       <View style={styles.exerciseAnimatedBox}>
                         {/* Live Biomechanical Stick Figure Simulation */}
                         <View style={styles.stickFigureWrapper}>
-                          <StickFigureAnimation exerciseName={ex.name} category={ex.category} />
+                          <StickFigureAnimation
+                            exerciseName={ex.name}
+                            category={ex.category}
+                            targetMuscle={ex.targetMuscle}
+                          />
                         </View>
 
                         {/* Top-Left Category & Difficulty Badges */}
@@ -2384,13 +2388,13 @@ const styles = StyleSheet.create({
   },
   exerciseAnimatedBox: {
     height: 155,
-    backgroundColor: '#E2E8F0',
+    backgroundColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
     overflow: 'hidden',
     borderBottomWidth: 1,
-    borderBottomColor: '#CBD5E1',
+    borderBottomColor: '#E2E8F0',
   },
   stickFigureWrapper: {
     width: '100%',

@@ -28,6 +28,7 @@ import { FileDownloader } from '../../utils/fileDownloader';
 import { OwnerTrainersScreen } from './OwnerTrainersScreen';
 import { OwnerMembersScreen } from './OwnerMembersScreen';
 import { OwnerFinancesScreen } from './OwnerFinancesScreen';
+import StickFigureAnimation from '../../components/StickFigureAnimation';
 
 const { width } = Dimensions.get('window');
 
@@ -739,6 +740,8 @@ export const OwnerMoreScreen: React.FC<{
   const [showStatusPickerModal, setShowStatusPickerModal] = useState(false);
   const [orderToUpdateStatus, setOrderToUpdateStatus] = useState<any | null>(null);
   const [statusUpdateReason, setStatusUpdateReason] = useState('');
+  const [orderStatusToast, setOrderStatusToast] = useState<string | null>(null);
+  const orderToastTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const [storeProducts, setStoreProducts] = useState<any[]>(DEFAULT_STORE_PRODUCTS);
   const [storeSales, setStoreSales] = useState<any>(null);
@@ -933,7 +936,7 @@ export const OwnerMoreScreen: React.FC<{
     }
   ]);
 
-  const [perfCustomerStats, setPerfCustomerStats] = useState({
+  const [perfCustomerStats, setPerfCustomerStats] = useState<any>({
     totalCustomers: 2,
     activeMembersCount: 2,
     averageAttendanceStreak: 1,
@@ -956,7 +959,7 @@ export const OwnerMoreScreen: React.FC<{
     }
   ]);
 
-  const [perfTrainerStats, setPerfTrainerStats] = useState({
+  const [perfTrainerStats, setPerfTrainerStats] = useState<any>({
     totalTrainers: 1,
     totalCompletedSessions: 30,
     averageGymTrainerRating: 5.0
@@ -1052,9 +1055,116 @@ export const OwnerMoreScreen: React.FC<{
   const [perfSearch, setPerfSearch] = useState('');
   const [perfMembershipFilter, setPerfMembershipFilter] = useState('ALL');
   const [perfTrainerFilter, setPerfTrainerFilter] = useState('ALL');
+  const [perfTrainerSearch, setPerfTrainerSearch] = useState('');
+  const [perfRewardSearch, setPerfRewardSearch] = useState('');
+  const [perfClaimStatusFilter, setPerfClaimStatusFilter] = useState('ALL');
   const [selectedPerfCustomer, setSelectedPerfCustomer] = useState<any | null>(null);
   const [selectedPerfCalendarCustomer, setSelectedPerfCalendarCustomer] = useState<any | null>(null);
   const [selectedPerfTrainer, setSelectedPerfTrainer] = useState<any | null>(null);
+
+  // Rewards & Performance Extended Web-Parity State
+  const [perfCustomerModalTab, setPerfCustomerModalTab] = useState<'overview' | 'calendar'>('overview');
+  const [perfTrainerModalTab, setPerfTrainerModalTab] = useState<'handled-customers' | 'workout-tracking' | 'diet-tracking' | 'sessions' | 'reviews' | 'rewards'>('handled-customers');
+  const [perfCalendarMonth, setPerfCalendarMonth] = useState<Date>(() => new Date());
+  const [perfCalendarSelectedKey, setPerfCalendarSelectedKey] = useState<string>(() => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  });
+  const [perfPickerType, setPerfPickerType] = useState<'membership' | 'trainer' | 'claimStatus' | 'awardAudience' | 'awardPeriod' | null>(null);
+
+  // Store Products & Packages for Reward Creation
+  const [perfStoreProducts, setPerfStoreProducts] = useState<any[]>([]);
+  const [perfGymPackages, setPerfGymPackages] = useState<any[]>([]);
+
+  // Create / Edit Reward Modal State
+  const [showPerfRewardModal, setShowPerfRewardModal] = useState(false);
+  const [perfRewardEditId, setPerfRewardEditId] = useState<string | null>(null);
+  const [perfRewardSaving, setPerfRewardSaving] = useState(false);
+  const [perfRewardCustSearch, setPerfRewardCustSearch] = useState('');
+  const [perfRewardSelCustomer, setPerfRewardSelCustomer] = useState<any | null>(null);
+  const [perfRewardSelTrainer, setPerfRewardSelTrainer] = useState<any | null>(null);
+  const [perfRewardForm, setPerfRewardForm] = useState<any>({
+    title: '',
+    description: '',
+    recipientType: 'Customer',
+    assignmentMethod: 'Points',
+    category: 'Discount Coupon',
+    rewardType: 'Coupon',
+    assignedUserId: '',
+    trainerId: '',
+    sessionCount: 2,
+    sessionDuration: '45 mins',
+    discountType: 'Percentage',
+    discountValue: 15,
+    applicableService: 'All Services',
+    minPurchaseAmount: 0,
+    productId: '',
+    productName: '',
+    productQuantity: 1,
+    membershipDuration: '1 Month',
+    packageId: '',
+    packageName: '',
+    awardReason: '',
+    achievementPeriod: 'This Month',
+    hasCertificate: true,
+    achievementCondition: 'visits',
+    requiredPoints: 100,
+    minVerifiedVisits: 10,
+    minWorkoutCompletions: 5,
+    minStreakDays: 7,
+    minDietAdherenceDays: 7,
+    minCompletedSessions: 15,
+    minAverageRating: 4.5,
+    minReviewedPlans: 0,
+    bonusAmount: 0,
+    currency: 'INR',
+    expiryDate: '',
+    totalQuantity: 0,
+    maxClaimsPerUser: 1,
+    requireApproval: false,
+    termsAndConditions: 'Valid only at registered gym branch. Cannot be combined with other offers.',
+    status: 'Active'
+  });
+
+  // Awards & Recognition State
+  const [perfAwards, setPerfAwards] = useState<any[]>([]);
+  const [perfHallOfFame, setPerfHallOfFame] = useState<any[]>([]);
+  const [perfAwardSearch, setPerfAwardSearch] = useState('');
+  const [perfAwardAudienceFilter, setPerfAwardAudienceFilter] = useState('ALL');
+  const [perfAwardPeriodFilter, setPerfAwardPeriodFilter] = useState('ALL');
+  const [showPerfAwardModal, setShowPerfAwardModal] = useState(false);
+  const [perfAwardEditId, setPerfAwardEditId] = useState<string | null>(null);
+  const [perfAwardSaving, setPerfAwardSaving] = useState(false);
+  const [perfAwardForm, setPerfAwardForm] = useState<any>({
+    title: '',
+    recipientType: 'Customer',
+    category: 'Fitness Champion',
+    description: '',
+    badgeIcon: 'Trophy',
+    awardPeriod: 'Monthly',
+    criteriaMetric: 'workout_completions',
+    minCriteriaValue: 10,
+    winnerSelectionMethod: 'OWNER_CONFIRMATION',
+    prizeBonusAmount: 0,
+    prizeDescription: 'Official Certificate & Hall of Fame Feature',
+    allowDuplicateWinner: false
+  });
+  const [selectedPerfAwardCandidates, setSelectedPerfAwardCandidates] = useState<any | null>(null);
+  const [perfCandidatesList, setPerfCandidatesList] = useState<any[]>([]);
+  const [perfCandidatesLoading, setPerfCandidatesLoading] = useState(false);
+  const [perfSelectedWinnerId, setPerfSelectedWinnerId] = useState('');
+  const [perfSelectedWinnerMetric, setPerfSelectedWinnerMetric] = useState('');
+  const [perfConfirmingWinner, setPerfConfirmingWinner] = useState(false);
+  const [perfAwardToPublish, setPerfAwardToPublish] = useState<any | null>(null);
+  const [perfPublishingAward, setPerfPublishingAward] = useState(false);
+
+  // Claim Action Modal State
+  const [selectedPerfClaim, setSelectedPerfClaim] = useState<any | null>(null);
+  const [perfClaimActionType, setPerfClaimActionType] = useState<'APPROVE' | 'REJECT' | 'REDEEM' | 'PAYOUT'>('APPROVE');
+  const [perfClaimRejectionReason, setPerfClaimRejectionReason] = useState('');
+  const [perfClaimPaymentRef, setPerfClaimPaymentRef] = useState('');
+  const [perfClaimNotes, setPerfClaimNotes] = useState('');
+  const [perfClaimProcessing, setPerfClaimProcessing] = useState(false);
 
   // Online Sessions State (Matching Web /admin/online-sessions - Images 1 & 2)
   const [onlineSessions, setOnlineSessions] = useState<OnlineSessionItem[]>([
@@ -1093,10 +1203,16 @@ export const OwnerMoreScreen: React.FC<{
   const [newOnlineLink, setNewOnlineLink] = useState('');
   const [newOnlineDescription, setNewOnlineDescription] = useState('Virtual session with gym personal trainer.');
 
-  // Trainer Schedule State (Matching Web /admin/trainer-schedule - Images 1, 2, 3)
-  const [scheduleAnchorDate, setScheduleAnchorDate] = useState(() => new Date('2026-10-15T12:00:00'));
+  // Trainer Schedule State (Matching Web /admin/trainer-schedule)
+  const [scheduleAnchorDate, setScheduleAnchorDate] = useState(() => new Date());
   const [scheduleTrainerFilter, setScheduleTrainerFilter] = useState('ALL');
-  const [selectedScheduleDayIndex, setSelectedScheduleDayIndex] = useState(3); // Thursday Oct 15
+  const [scheduleTrainers, setScheduleTrainers] = useState<any[]>([]);
+  const [schedulesLoadedFromApi, setSchedulesLoadedFromApi] = useState(false);
+  const [showScheduleTrainerPicker, setShowScheduleTrainerPicker] = useState(false);
+  const [selectedScheduleDayIndex, setSelectedScheduleDayIndex] = useState(() => {
+    const dow = new Date().getDay();
+    return dow === 0 ? 6 : dow - 1;
+  });
   const [selectedScheduleDetail, setSelectedScheduleDetail] = useState<any | null>(null);
 
   // Video Bookings State (Matching Web /admin/video-bookings - Images 1 & 2)
@@ -1136,11 +1252,26 @@ export const OwnerMoreScreen: React.FC<{
   const [bookVideoFee, setBookVideoFee] = useState('0');
   const [bookVideoCustomLink, setBookVideoCustomLink] = useState('');
 
-  // Attendance State (Matching Web /admin/attendance - Images 1, 2, 3)
+  // Attendance State (Matching Web /admin/attendance)
   const [attendanceMainTab, setAttendanceMainTab] = useState<'CUSTOMERS' | 'TRAINERS'>('CUSTOMERS');
   const [attendanceTimeframe, setAttendanceTimeframe] = useState<'perday' | 'weekly' | 'monthly' | 'annual'>('perday');
   const [attendanceSearch, setAttendanceSearch] = useState('');
   const [selectedAttendanceDetail, setSelectedAttendanceDetail] = useState<any | null>(null);
+  const [selectedAttChartBarIdx, setSelectedAttChartBarIdx] = useState<number | null>(null);
+  const [isDownloadingAttendancePdf, setIsDownloadingAttendancePdf] = useState(false);
+
+  const formatAttDateDisplay = (dateStr: string) => {
+    if (!dateStr) return '';
+    const clean = String(dateStr).split('T')[0];
+    const parts = clean.split('-');
+    if (parts.length === 3) {
+      const [y, m, d] = parts;
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      const monthName = months[parseInt(m, 10) - 1] || m;
+      return `${monthName} ${d}, ${y}`;
+    }
+    return dateStr;
+  };
 
   // ==========================================
   // REFERRALS STATE (Matching Web Images 1, 2, 3 & Tabs)
@@ -1326,89 +1457,29 @@ export const OwnerMoreScreen: React.FC<{
   });
 
   const [customerAttendanceLogs, setCustomerAttendanceLogs] = useState<any[]>([
-    {
-      id: 'cust-att-1',
-      name: 'Renugopal Y',
-      email: 'renugopal@example.com',
-      type: 'Session Member',
-      date: 'Oct 26, 2026',
-      isoDate: '2026-10-26',
-      checkInTime: '03:58 PM',
-      checkOutTime: 'In Gym',
-      status: 'In Gym'
-    },
-    {
-      id: 'cust-att-2',
-      name: 'Vikram Patel',
-      email: 'vikram.p@example.com',
-      type: 'VIP Member',
-      date: 'Oct 26, 2026',
-      isoDate: '2026-10-26',
-      checkInTime: '02:30 PM',
-      checkOutTime: '04:15 PM',
-      status: 'Completed'
-    },
-    {
-      id: 'cust-att-3',
-      name: 'Sneha Reddy',
-      email: 'sneha.r@example.com',
-      type: 'Monthly Member',
-      date: 'Oct 26, 2026',
-      isoDate: '2026-10-26',
-      checkInTime: '01:15 PM',
-      checkOutTime: '02:45 PM',
-      status: 'Completed'
-    },
-    {
-      id: 'cust-att-4',
-      name: 'Priya Sharma',
-      email: 'priya.s@example.com',
-      type: 'Session Member',
-      date: 'Oct 26, 2026',
-      isoDate: '2026-10-26',
-      checkInTime: '11:30 AM',
-      checkOutTime: '12:45 PM',
-      status: 'Completed'
-    }
+    { id: 'cust-1', name: 'Renugopal Y', email: 'renugopal@example.com', type: 'Session Member', date: 'Oct 26, 2026', isoDate: '2026-10-26', checkInTime: '03:58 PM', checkOutTime: 'In Gym', status: 'In Gym' },
+    { id: 'cust-2', name: 'Vikram Patel', email: 'vikram.p@example.com', type: 'VIP Member', date: 'Oct 26, 2026', isoDate: '2026-10-26', checkInTime: '02:30 PM', checkOutTime: '04:15 PM', status: 'Completed' },
+    { id: 'cust-3', name: 'Sneha Reddy', email: 'sneha.r@example.com', type: 'Monthly Member', date: 'Oct 26, 2026', isoDate: '2026-10-26', checkInTime: '01:15 PM', checkOutTime: '02:45 PM', status: 'Completed' },
+    { id: 'cust-4', name: 'Priya Sharma', email: 'priya.s@example.com', type: 'Session Member', date: 'Oct 26, 2026', isoDate: '2026-10-26', checkInTime: '11:30 AM', checkOutTime: '12:45 PM', status: 'Completed' },
+    { id: 'cust-5', name: 'Amit Kumar', email: 'amit.k@example.com', type: 'Regular Member', date: 'Oct 25, 2026', isoDate: '2026-10-25', checkInTime: '06:10 PM', checkOutTime: '07:30 PM', status: 'Completed' },
+    { id: 'cust-6', name: 'Ananya Iyer', email: 'ananya.i@example.com', type: 'VIP Member', date: 'Oct 24, 2026', isoDate: '2026-10-24', checkInTime: '07:00 AM', checkOutTime: '08:30 AM', status: 'Completed' },
+    { id: 'cust-7', name: 'Rahul Verma', email: 'rahul.v@example.com', type: 'Monthly Member', date: 'Oct 23, 2026', isoDate: '2026-10-23', checkInTime: '05:45 PM', checkOutTime: '07:15 PM', status: 'Completed' },
+    { id: 'cust-8', name: 'Rohit Joshi', email: 'rohit.j@example.com', type: 'Guest Pass', date: 'Oct 22, 2026', isoDate: '2026-10-22', checkInTime: '04:00 PM', checkOutTime: '05:30 PM', status: 'Completed' },
+    { id: 'cust-9', name: 'Meera Nambiar', email: 'meera.n@example.com', type: 'Session Member', date: 'Oct 15, 2026', isoDate: '2026-10-15', checkInTime: '09:15 AM', checkOutTime: '10:30 AM', status: 'Completed' },
+    { id: 'cust-10', name: 'Karthik Sundaram', email: 'karthik.s@example.com', type: 'VIP Member', date: 'Oct 08, 2026', isoDate: '2026-10-08', checkInTime: '06:30 AM', checkOutTime: '08:00 AM', status: 'Completed' },
+    { id: 'cust-11', name: 'Deepa Nair', email: 'deepa.n@example.com', type: 'Monthly Member', date: 'Sep 28, 2026', isoDate: '2026-09-28', checkInTime: '05:00 PM', checkOutTime: '06:30 PM', status: 'Completed' },
+    { id: 'cust-12', name: 'Sanjay Rao', email: 'sanjay.r@example.com', type: 'Session Member', date: 'Aug 14, 2026', isoDate: '2026-08-14', checkInTime: '07:30 PM', checkOutTime: '09:00 PM', status: 'Completed' },
   ]);
 
   const [trainerAttendanceLogs, setTrainerAttendanceLogs] = useState<any[]>([
-    {
-      id: 'tr-att-1',
-      name: 'Rajesh Khanna',
-      specialization: 'Strength & Conditioning',
-      dutyType: 'Personal Training (In-Gym)',
-      assignedCustomer: 'Renugopal Y',
-      date: 'Oct 26, 2026',
-      scheduledTime: '03:00 PM - 04:00 PM',
-      checkInTime: '02:55 PM',
-      checkOutTime: 'In Progress',
-      punctuality: 'On Time'
-    },
-    {
-      id: 'tr-att-2',
-      name: 'Kavita Menon',
-      specialization: 'Yoga & Flexibility',
-      dutyType: 'Floor Shift (Morning)',
-      assignedCustomer: 'Main Floor',
-      date: 'Oct 26, 2026',
-      scheduledTime: '06:00 AM - 12:00 PM',
-      checkInTime: '05:50 AM',
-      checkOutTime: '12:05 PM',
-      punctuality: 'On Time'
-    },
-    {
-      id: 'tr-att-3',
-      name: 'Arjun Nair',
-      specialization: 'CrossFit & HIIT',
-      dutyType: 'Online Session (Virtual)',
-      assignedCustomer: 'Priya Sharma',
-      date: 'Oct 26, 2026',
-      scheduledTime: '11:00 AM - 12:00 PM',
-      checkInTime: '10:58 AM',
-      checkOutTime: '12:02 PM',
-      punctuality: 'On Time'
-    }
+    { id: 'tr-1', name: 'Rajesh Khanna', specialization: 'Strength & Conditioning', dutyType: 'Personal Training (In-Gym)', assignedCustomer: 'Renugopal Y', date: 'Oct 26, 2026', isoDate: '2026-10-26', scheduledTime: '03:00 PM - 04:00 PM', checkInTime: '02:55 PM', checkOutTime: 'In Progress', punctuality: 'On Time' },
+    { id: 'tr-2', name: 'Kavita Menon', specialization: 'Yoga & Flexibility', dutyType: 'Floor Shift (Morning)', assignedCustomer: 'Main Floor', date: 'Oct 26, 2026', isoDate: '2026-10-26', scheduledTime: '06:00 AM - 12:00 PM', checkInTime: '05:50 AM', checkOutTime: '12:05 PM', punctuality: 'On Time' },
+    { id: 'tr-3', name: 'Arjun Nair', specialization: 'CrossFit & HIIT', dutyType: 'Online Session (Virtual)', assignedCustomer: 'Priya Sharma', date: 'Oct 26, 2026', isoDate: '2026-10-26', scheduledTime: '11:00 AM - 12:00 PM', checkInTime: '10:58 AM', checkOutTime: '12:02 PM', punctuality: 'On Time' },
+    { id: 'tr-4', name: 'Sunita Rao', specialization: 'Nutrition & PT', dutyType: 'Personal Training (In-Gym)', assignedCustomer: 'Vikram Patel', date: 'Oct 25, 2026', isoDate: '2026-10-25', scheduledTime: '02:00 PM - 03:00 PM', checkInTime: '01:55 PM', checkOutTime: '03:05 PM', punctuality: 'On Time' },
+    { id: 'tr-5', name: 'Devendra Singh', specialization: 'Bodybuilding & Hypertrophy', dutyType: 'Floor Shift (Evening)', assignedCustomer: 'Main Floor', date: 'Oct 24, 2026', isoDate: '2026-10-24', scheduledTime: '04:00 PM - 10:00 PM', checkInTime: '04:05 PM', checkOutTime: '10:00 PM', punctuality: 'Late' },
+    { id: 'tr-6', name: 'Pooja Hegde', specialization: 'Pilates & Core', dutyType: 'Personal Training (In-Gym)', assignedCustomer: 'Sneha Reddy', date: 'Oct 22, 2026', isoDate: '2026-10-22', scheduledTime: '10:00 AM - 11:00 AM', checkInTime: '09:55 AM', checkOutTime: '11:00 AM', punctuality: 'On Time' },
+    { id: 'tr-7', name: 'Manpreet Gill', specialization: 'Strength & Conditioning', dutyType: 'Group Class (HIIT)', assignedCustomer: 'Studio A', date: 'Oct 14, 2026', isoDate: '2026-10-14', scheduledTime: '07:00 AM - 08:30 AM', checkInTime: '06:50 AM', checkOutTime: '08:35 AM', punctuality: 'On Time' },
+    { id: 'tr-8', name: 'Farhan Akhtar', specialization: 'Calisthenics & Cardio', dutyType: 'Personal Training (In-Gym)', assignedCustomer: 'Rahul Verma', date: 'Sep 20, 2026', isoDate: '2026-09-20', scheduledTime: '05:00 PM - 06:00 PM', checkInTime: '04:55 PM', checkOutTime: '06:00 PM', punctuality: 'On Time' },
   ]);
 
   // Reports & Analytics State (Matching Web /admin/reports)
@@ -1429,6 +1500,11 @@ export const OwnerMoreScreen: React.FC<{
   const [subPaymentStep, setSubPaymentStep] = useState<string | null>(null);
   const [subActionType, setSubActionType] = useState<'RENEWAL' | 'UPGRADE' | 'SWITCH'>('RENEWAL');
   const [subPaymentMethod, setSubPaymentMethod] = useState<'Card' | 'UPI' | 'NetBanking'>('Card');
+  const [subCardNumber, setSubCardNumber] = useState('');
+  const [subCardExpiry, setSubCardExpiry] = useState('');
+  const [subCardCvv, setSubCardCvv] = useState('');
+  const [subCardHolder, setSubCardHolder] = useState('');
+  const [subPaymentError, setSubPaymentError] = useState<string | null>(null);
   const [subSelectedInvoice, setSubSelectedInvoice] = useState<any | null>(null);
   const [isSubmittingPayment, setIsSubmittingPayment] = useState(false);
 
@@ -1622,16 +1698,150 @@ export const OwnerMoreScreen: React.FC<{
   const [storeProductTypeFilter, setStoreProductTypeFilter] = useState('all');
   const [storeProductStatusFilter, setStoreProductStatusFilter] = useState('all');
   const [storeProductInventoryFilter, setStoreProductInventoryFilter] = useState('all');
+  const PRODUCT_TYPE_CONFIG: Record<string, {
+    hasVariants: boolean;
+    variantFields: { name: string; label: string; placeholder: string }[];
+    fields: { name: string; label: string; type: 'text' | 'number' | 'select' | 'date'; options?: string[]; placeholder?: string }[];
+  }> = {
+    'Supplements': {
+      hasVariants: true,
+      variantFields: [
+        { name: 'flavour', label: 'Flavour', placeholder: 'e.g. Chocolate' },
+        { name: 'weight', label: 'Weight/Volume', placeholder: 'e.g. 1kg' },
+      ],
+      fields: [
+        { name: 'form', label: 'Form', type: 'select', options: ['Powder', 'Capsule', 'Liquid', 'Tablet', 'Bar'] },
+        { name: 'servings', label: 'Servings', type: 'number', placeholder: 'e.g. 30' },
+        { name: 'dietary', label: 'Dietary Preference', type: 'select', options: ['Vegetarian', 'Non-Vegetarian', 'Vegan'] },
+        { name: 'expiryDate', label: 'Expiry Date', type: 'date', placeholder: 'YYYY-MM-DD' },
+      ],
+    },
+    'Nutrition & Healthy Snacks': {
+      hasVariants: true,
+      variantFields: [{ name: 'flavour', label: 'Flavour', placeholder: 'e.g. Peanut Butter' }],
+      fields: [
+        { name: 'dietary', label: 'Dietary Preference', type: 'select', options: ['Vegetarian', 'Non-Vegetarian', 'Vegan', 'Gluten-Free'] },
+        { name: 'calories', label: 'Calories per serving', type: 'number', placeholder: 'e.g. 220' },
+        { name: 'expiryDate', label: 'Expiry Date', type: 'date', placeholder: 'YYYY-MM-DD' },
+      ],
+    },
+    'Fitness Drinks': {
+      hasVariants: true,
+      variantFields: [
+        { name: 'flavour', label: 'Flavour', placeholder: 'e.g. Berry' },
+        { name: 'volume', label: 'Volume (ml)', placeholder: 'e.g. 500' },
+      ],
+      fields: [
+        { name: 'drinkType', label: 'Drink Type', type: 'select', options: ['Energy Drink', 'Protein Shake', 'Electrolytes', 'Pre-Workout'] },
+        { name: 'sugarFree', label: 'Sugar Free', type: 'select', options: ['Yes', 'No'] },
+        { name: 'expiryDate', label: 'Expiry Date', type: 'date', placeholder: 'YYYY-MM-DD' },
+      ],
+    },
+    'Gym Accessories': {
+      hasVariants: true,
+      variantFields: [
+        { name: 'color', label: 'Color', placeholder: 'e.g. Black' },
+        { name: 'size', label: 'Size', placeholder: 'e.g. Medium' },
+      ],
+      fields: [{ name: 'material', label: 'Material', type: 'text', placeholder: 'e.g. Leather / Nylon' }],
+    },
+    'Yoga & Recovery': {
+      hasVariants: true,
+      variantFields: [
+        { name: 'color', label: 'Color', placeholder: 'e.g. Blue' },
+        { name: 'thickness', label: 'Thickness/Variant', placeholder: 'e.g. 6mm' },
+      ],
+      fields: [{ name: 'material', label: 'Material', type: 'text', placeholder: 'e.g. TPE / Rubber' }],
+    },
+    'Gym Clothing': {
+      hasVariants: true,
+      variantFields: [
+        { name: 'size', label: 'Size', placeholder: 'e.g. L' },
+        { name: 'color', label: 'Color', placeholder: 'e.g. Black' },
+      ],
+      fields: [
+        { name: 'gender', label: 'Gender', type: 'select', options: ['Men', 'Women', 'Unisex'] },
+        { name: 'fit', label: 'Fit Type', type: 'select', options: ['Slim Fit', 'Regular Fit', 'Compression', 'Oversized'] },
+        { name: 'material', label: 'Material', type: 'text', placeholder: 'e.g. Cotton / Polyester' },
+      ],
+    },
+    'Gym Merchandise': {
+      hasVariants: true,
+      variantFields: [
+        { name: 'size', label: 'Size', placeholder: 'e.g. L' },
+        { name: 'color', label: 'Color', placeholder: 'e.g. Black' },
+      ],
+      fields: [],
+    },
+    'Fitness Monitoring': {
+      hasVariants: true,
+      variantFields: [{ name: 'color', label: 'Color', placeholder: 'e.g. Silver' }],
+      fields: [
+        { name: 'connectivity', label: 'Connectivity', type: 'select', options: ['Bluetooth', 'Wi-Fi', 'Both', 'None'] },
+        { name: 'warranty', label: 'Warranty (Months)', type: 'number', placeholder: 'e.g. 12' },
+      ],
+    },
+    'Personal Care': {
+      hasVariants: true,
+      variantFields: [
+        { name: 'size', label: 'Volume/Weight', placeholder: 'e.g. 250ml' },
+        { name: 'fragrance', label: 'Fragrance', placeholder: 'e.g. Mint' },
+      ],
+      fields: [
+        { name: 'type', label: 'Type', type: 'select', options: ['Deodorant', 'Body Wash', 'Shampoo', 'Cream', 'Other'] },
+        { name: 'expiryDate', label: 'Expiry Date', type: 'date', placeholder: 'YYYY-MM-DD' },
+      ],
+    },
+    'Healthy Meals': {
+      hasVariants: false,
+      variantFields: [],
+      fields: [
+        { name: 'dietary', label: 'Dietary Preference', type: 'select', options: ['Vegetarian', 'Non-Vegetarian', 'Vegan', 'Keto'] },
+        { name: 'calories', label: 'Calories', type: 'number', placeholder: 'e.g. 450' },
+        { name: 'protein', label: 'Protein (g)', type: 'number', placeholder: 'e.g. 35' },
+      ],
+    },
+    'Other': {
+      hasVariants: false,
+      variantFields: [],
+      fields: [],
+    },
+  };
+
   const [showAddStoreProductModal, setShowAddStoreProductModal] = useState(false);
   const [showEditStoreProductModal, setShowEditStoreProductModal] = useState(false);
   const [editingStoreProduct, setEditingStoreProduct] = useState<any | null>(null);
   const [isStoreProductSaving, setIsStoreProductSaving] = useState(false);
-  const [storeProductForm, setStoreProductForm] = useState({
+  const [storeProductForm, setStoreProductForm] = useState<{
+    name: string;
+    description: string;
+    brand: string;
+    sku: string;
+    categoryName: string;
+    productType: string;
+    image: string;
+    sellingPrice: string;
+    discountPrice: string;
+    stock: string;
+    lowStockThreshold: string;
+    status: string;
+    availability: string;
+    fulfilmentType: string;
+    hasVariants: boolean;
+    attributes: Record<string, string>;
+    variants: Array<{
+      sku?: string;
+      attributes: Record<string, string>;
+      price: string;
+      discountPrice: string;
+      stock: string;
+    }>;
+  }>({
     name: '',
     description: '',
     brand: '',
     sku: '',
-    categoryName: 'General',
+    categoryName: 'Supplements',
     productType: 'Supplements',
     image: '',
     sellingPrice: '',
@@ -1642,6 +1852,8 @@ export const OwnerMoreScreen: React.FC<{
     availability: 'Both',
     fulfilmentType: 'Gym Pickup',
     hasVariants: false,
+    attributes: {},
+    variants: [],
   });
 
   const [storeSelectPickerModal, setStoreSelectPickerModal] = useState<{
@@ -1682,6 +1894,68 @@ export const OwnerMoreScreen: React.FC<{
   const [selectedSaleDetail, setSelectedSaleDetail] = useState<any | null>(null);
   const [salesFromDate, setSalesFromDate] = useState('');
   const [salesToDate, setSalesToDate] = useState('');
+  const [salesCalendarTarget, setSalesCalendarTarget] = useState<'from' | 'to' | null>(null);
+  const [salesCalendarCursor, setSalesCalendarCursor] = useState<{ year: number; month: number }>(() => {
+    const now = new Date();
+    return { year: now.getFullYear(), month: now.getMonth() };
+  });
+
+  const toLocalYMD = (d: Date): string => {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  };
+
+  const parseSalesFilterDate = (raw: string, endOfDay = false): Date | null => {
+    const str = (raw || '').trim();
+    if (!str) return null;
+    const ymdMatch = str.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+    if (ymdMatch) {
+      const d = new Date(
+        Number(ymdMatch[1]),
+        Number(ymdMatch[2]) - 1,
+        Number(ymdMatch[3]),
+        endOfDay ? 23 : 0,
+        endOfDay ? 59 : 0,
+        endOfDay ? 59 : 0,
+        endOfDay ? 999 : 0
+      );
+      return isNaN(d.getTime()) ? null : d;
+    }
+    const slashMatch = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+    if (slashMatch) {
+      const p1 = Number(slashMatch[1]);
+      const p2 = Number(slashMatch[2]);
+      const yr = Number(slashMatch[3]);
+      // Treat as MM/DD/YYYY (matching placeholder) unless first number > 12 (DD/MM/YYYY)
+      const month = p1 > 12 ? p2 - 1 : p1 - 1;
+      const day = p1 > 12 ? p1 : p2;
+      const d = new Date(yr, month, day, endOfDay ? 23 : 0, endOfDay ? 59 : 0, endOfDay ? 59 : 0, endOfDay ? 999 : 0);
+      return isNaN(d.getTime()) ? null : d;
+    }
+    const fallback = new Date(str);
+    if (isNaN(fallback.getTime())) return null;
+    if (endOfDay) fallback.setHours(23, 59, 59, 999);
+    else fallback.setHours(0, 0, 0, 0);
+    return fallback;
+  };
+
+  const formatSalesDateDisplay = (raw: string): string => {
+    const parsed = parseSalesFilterDate(raw, false);
+    if (!parsed) return raw;
+    const mm = String(parsed.getMonth() + 1).padStart(2, '0');
+    const dd = String(parsed.getDate()).padStart(2, '0');
+    const yyyy = parsed.getFullYear();
+    return `${mm}/${dd}/${yyyy}`;
+  };
+
+  const openSalesCalendar = (target: 'from' | 'to') => {
+    const existingRaw = target === 'from' ? salesFromDate : salesToDate;
+    const baseDate = parseSalesFilterDate(existingRaw, false) || new Date();
+    setSalesCalendarCursor({ year: baseDate.getFullYear(), month: baseDate.getMonth() });
+    setSalesCalendarTarget(target);
+  };
 
   const [selectedInvoiceSale, setSelectedInvoiceSale] = useState<any | null>(null);
   const [showInvoiceModal, setShowInvoiceModal] = useState(false);
@@ -1818,13 +2092,35 @@ export const OwnerMoreScreen: React.FC<{
         }
       } else if (id === 'trainer_schedule') {
         try {
-          const res = await api.get('/trainer-sessions/gym');
-          const list = res.data?.sessions || (Array.isArray(res.data) ? res.data : []);
-          setGymSessions(list);
+          const [sessRes, trRes] = await Promise.allSettled([
+            api.get('/trainer-sessions/gym'),
+            api.get('/trainers')
+          ]);
+          const list = sessRes.status === 'fulfilled'
+            ? (sessRes.value.data?.sessions || (Array.isArray(sessRes.value.data) ? sessRes.value.data : []))
+            : [];
+          const trList = trRes.status === 'fulfilled'
+            ? (trRes.value.data?.trainers || (Array.isArray(trRes.value.data) ? trRes.value.data : []))
+            : [];
+          if (sessRes.status === 'fulfilled') {
+            setGymSessions(list);
+            setSchedulesLoadedFromApi(true);
+          }
+          if (trRes.status === 'fulfilled') {
+            setScheduleTrainers(trList);
+          }
           const valid = list.filter((s: any) => s.date);
           if (valid.length > 0) {
-            const cleanDate = valid[0].date.split('T')[0];
-            setScheduleAnchorDate(new Date(cleanDate + 'T12:00:00'));
+            const now = new Date();
+            const todayIso = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+            const targetSession = valid.find((s: any) => s.date.split('T')[0] >= todayIso) || valid[0];
+            if (targetSession?.date) {
+              const cleanDate = targetSession.date.split('T')[0];
+              const anchor = new Date(cleanDate + 'T12:00:00');
+              setScheduleAnchorDate(anchor);
+              const dow = anchor.getDay();
+              setSelectedScheduleDayIndex(dow === 0 ? 6 : dow - 1);
+            }
           }
         } catch (e) {
           console.error('Error loading trainer schedule:', e);
@@ -1866,23 +2162,58 @@ export const OwnerMoreScreen: React.FC<{
           const list = res.data?.sessions || (Array.isArray(res.data) ? res.data : []);
           setGymSessions(list);
           if (list.length > 0) {
+            const mappedTrainer = list.map((s: any, idx: number) => {
+              const iso = s.date ? String(s.date).split('T')[0] : '2026-10-26';
+              const checkInStr = s.checkInTime
+                ? new Date(s.checkInTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+                : (s.startTime || '09:00 AM');
+              const checkOutStr = s.checkOutTime
+                ? new Date(s.checkOutTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+                : (s.status === 'In Progress' ? 'In Progress' : (s.endTime || '10:00 AM'));
+              return {
+                id: `sess-tr-${s._id || idx}`,
+                sessionId: s._id,
+                name: s.trainerId?.name || 'Assigned Trainer',
+                specialization: s.trainerId?.specialization || 'Personal Trainer',
+                dutyType: s.mode === 'Online' ? 'Online Session (Virtual)' : 'Personal Training (In-Gym)',
+                assignedCustomer: `${s.customerId?.firstName || ''} ${s.customerId?.lastName || ''}`.trim() || 'Client',
+                date: formatAttDateDisplay(iso),
+                isoDate: iso,
+                scheduledTime: `${s.startTime || '10:00 AM'} - ${s.endTime || '11:00 AM'}`,
+                checkInTime: checkInStr,
+                checkOutTime: checkOutStr,
+                punctuality: s.attendanceStatus === 'Late' ? 'Late' : 'On Time',
+              };
+            });
+            setTrainerAttendanceLogs(prev => [
+              ...mappedTrainer,
+              ...prev.filter(p => !mappedTrainer.some((m: any) => m.id === p.id)),
+            ]);
+
             const mappedCustomer = list
               .filter((s: any) => s.customerId)
-              .map((s: any, idx: number) => ({
-                id: `sess-att-${s._id || idx}`,
-                name: `${s.customerId?.firstName || ''} ${s.customerId?.lastName || ''}`.trim() || 'Renugopal Y',
-                email: s.customerId?.email || 'renugopal@example.com',
-                type: 'Session Member',
-                date: 'Oct 26, 2026',
-                isoDate: s.date ? s.date.split('T')[0] : '2026-10-26',
-                checkInTime: s.checkInTime ? new Date(s.checkInTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) : (s.startTime || '03:58 PM'),
-                checkOutTime: s.checkOutTime ? new Date(s.checkOutTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) : 'In Gym',
-                status: s.checkOutTime ? 'Completed' : 'In Gym'
-              }));
+              .map((s: any, idx: number) => {
+                const iso = s.date ? String(s.date).split('T')[0] : '2026-10-26';
+                return {
+                  id: `sess-cust-${s._id || idx}`,
+                  name: `${s.customerId?.firstName || ''} ${s.customerId?.lastName || ''}`.trim() || 'Client',
+                  email: s.customerId?.email || '',
+                  type: 'Session Member',
+                  date: formatAttDateDisplay(iso),
+                  isoDate: iso,
+                  checkInTime: s.checkInTime
+                    ? new Date(s.checkInTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+                    : (s.startTime || '10:00 AM'),
+                  checkOutTime: s.checkOutTime
+                    ? new Date(s.checkOutTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+                    : (s.status === 'In Progress' || s.checkInTime ? 'In Gym' : (s.endTime || '11:00 AM')),
+                  status: s.checkOutTime ? 'Completed' : 'In Gym',
+                };
+              });
             if (mappedCustomer.length > 0) {
               setCustomerAttendanceLogs(prev => [
                 ...mappedCustomer,
-                ...prev.filter(p => !mappedCustomer.some((m: any) => m.id === p.id))
+                ...prev.filter(p => !mappedCustomer.some((m: any) => m.id === p.id)),
               ]);
             }
           }
@@ -2021,34 +2352,67 @@ export const OwnerMoreScreen: React.FC<{
         loadCustomRewardsAndClaims();
       } else if (id === 'rewards') {
         try {
-          const [custPerfRes, trPerfRes, rwdRes] = await Promise.allSettled([
+          const [custPerfRes, trPerfRes, rwdRes, awRes, hofRes, prodRes, pkgRes] = await Promise.allSettled([
             api.get('/performance/customers'),
             api.get('/performance/trainers'),
-            api.get('/rewards/owner')
+            api.get('/rewards/owner'),
+            api.get('/awards/owner'),
+            api.get('/awards/hall-of-fame'),
+            api.get('/store/admin/products'),
+            api.get('/gym-packages')
           ]);
           if (custPerfRes.status === 'fulfilled' && custPerfRes.value.data?.success) {
-            if (custPerfRes.value.data.customers?.length > 0) {
-              setPerfCustomers(custPerfRes.value.data.customers);
+            const custList = custPerfRes.value.data.customers || [];
+            if (custPerfRes.value.data.customers) {
+              setPerfCustomers(custList);
             }
             if (custPerfRes.value.data.stats) {
-              setPerfCustomerStats(custPerfRes.value.data.stats);
+              const s = custPerfRes.value.data.stats;
+              const computedEligible = s.eligibleRewardsCount !== undefined
+                ? s.eligibleRewardsCount
+                : custList.filter((c: any) => (c.rewardsSummary?.eligibleRewardsCount || 0) > 0).length;
+              setPerfCustomerStats({
+                totalCustomers: s.totalCustomers ?? custList.length,
+                activeMembersCount: s.activeMembersCount ?? custList.filter((c: any) => c.membership?.status === 'Active').length,
+                averageAttendanceStreak: s.averageAttendanceStreak ?? 0,
+                averageWorkoutCompletionRate: s.averageWorkoutCompletionRate ?? null,
+                eligibleRewardsCount: computedEligible
+              });
             }
           }
           if (trPerfRes.status === 'fulfilled' && trPerfRes.value.data?.success) {
-            if (trPerfRes.value.data.trainers?.length > 0) {
-              setPerfTrainers(trPerfRes.value.data.trainers);
+            const trList = trPerfRes.value.data.trainers || [];
+            if (trPerfRes.value.data.trainers) {
+              setPerfTrainers(trList);
             }
             if (trPerfRes.value.data.stats) {
-              setPerfTrainerStats(trPerfRes.value.data.stats);
+              const ts = trPerfRes.value.data.stats;
+              setPerfTrainerStats({
+                totalTrainers: ts.totalTrainers ?? trList.length,
+                totalCompletedSessions: ts.totalCompletedSessionsAcrossTrainers ?? ts.totalCompletedSessions ?? 0,
+                averageGymTrainerRating: ts.averageGymTrainerRating ?? 5.0
+              });
             }
           }
           if (rwdRes.status === 'fulfilled' && rwdRes.value.data?.success) {
-            if (rwdRes.value.data.rewards?.length > 0) {
+            if (rwdRes.value.data.rewards) {
               setPerfRewards(rwdRes.value.data.rewards);
             }
-            if (rwdRes.value.data.claims?.length > 0) {
+            if (rwdRes.value.data.claims) {
               setPerfClaims(rwdRes.value.data.claims);
             }
+          }
+          if (awRes.status === 'fulfilled' && awRes.value.data?.success) {
+            setPerfAwards(awRes.value.data.awards || []);
+          }
+          if (hofRes.status === 'fulfilled' && hofRes.value.data?.success) {
+            setPerfHallOfFame(hofRes.value.data.awards || hofRes.value.data.hallOfFame || []);
+          }
+          if (prodRes.status === 'fulfilled' && prodRes.value.data?.products) {
+            setPerfStoreProducts(prodRes.value.data.products);
+          }
+          if (pkgRes.status === 'fulfilled' && pkgRes.value.data?.packages) {
+            setPerfGymPackages(pkgRes.value.data.packages);
           }
         } catch (rwdErr) {
           console.log('[OwnerMore] rewards fetch error:', rwdErr);
@@ -2263,31 +2627,95 @@ export const OwnerMoreScreen: React.FC<{
 
   // 2. Gym Store Sales History (Matching Web /admin/store/sales)
   
-  const handleUpdateOrderStatus = async (orderId: string, nextStatus: string, reason?: string) => {
-    try {
-      setUpdatingOrderId(orderId);
-      await api.patch(`/store/admin/orders/${orderId}/status`, { status: nextStatus, note: reason || '' }).catch(() => null);
-      
-      setStoreOrders(prev => prev.map(o => o._id === orderId ? { ...o, status: nextStatus } : o));
-      if (selectedOrderDetail && selectedOrderDetail._id === orderId) {
-        setSelectedOrderDetail((prev: any) => ({ ...prev, status: nextStatus }));
-      }
-      setShowStatusPickerModal(false);
-      setOrderToUpdateStatus(null);
-      setStatusUpdateReason('');
-      Alert.alert('Status Updated', `Order status changed to "${nextStatus}".`);
-    } catch (err: any) {
-      setStoreOrders(prev => prev.map(o => o._id === orderId ? { ...o, status: nextStatus } : o));
-      if (selectedOrderDetail && selectedOrderDetail._id === orderId) {
-        setSelectedOrderDetail((prev: any) => ({ ...prev, status: nextStatus }));
-      }
-      setShowStatusPickerModal(false);
-      setOrderToUpdateStatus(null);
-      setStatusUpdateReason('');
-      Alert.alert('Status Updated', `Order status updated to "${nextStatus}".`);
-    } finally {
-      setUpdatingOrderId(null);
+  const handleUpdateOrderStatus = (orderId: string, nextStatus: string, reason?: string) => {
+    const targetOrder =
+      storeOrders.find(o => o._id === orderId) ||
+      orderToUpdateStatus ||
+      selectedOrderDetail;
+    const prevStatus = targetOrder?.status;
+    const prevPaymentStatus = targetOrder?.paymentStatus;
+
+    // 1. Instant 0ms optimistic state update & modal close (no waiting on network or blocking Alert)
+    setShowStatusPickerModal(false);
+    setOrderToUpdateStatus(null);
+    setStatusUpdateReason('');
+    setUpdatingOrderId(null);
+
+    const applyStatusPatch = (list: any[]) =>
+      list.map(o =>
+        o._id === orderId
+          ? {
+              ...o,
+              status: nextStatus,
+              ...(nextStatus === 'Completed' && o.paymentStatus === 'Pending' ? { paymentStatus: 'Paid' } : {}),
+              ...(nextStatus === 'Refunded' ? { paymentStatus: 'Refunded' } : {}),
+            }
+          : o
+      );
+
+    setStoreOrders(prev => {
+      const base = prev.length > 0 ? prev : DEFAULT_STORE_ORDERS;
+      return applyStatusPatch(base);
+    });
+
+    if (selectedOrderDetail && selectedOrderDetail._id === orderId) {
+      setSelectedOrderDetail((prev: any) =>
+        prev
+          ? {
+              ...prev,
+              status: nextStatus,
+              ...(nextStatus === 'Completed' && prev.paymentStatus === 'Pending' ? { paymentStatus: 'Paid' } : {}),
+              ...(nextStatus === 'Refunded' ? { paymentStatus: 'Refunded' } : {}),
+            }
+          : prev
+      );
     }
+
+    // Keep Sales History synced instantaneously too
+    setStoreSales((prev: any) => {
+      if (!prev) return prev;
+      const updateRow = (s: any) =>
+        s._id === orderId || (targetOrder?.orderNumber && s.recordNumber === targetOrder.orderNumber)
+          ? { ...s, status: nextStatus }
+          : s;
+      if (Array.isArray(prev)) return prev.map(updateRow);
+      if (Array.isArray(prev.sales)) return { ...prev, sales: prev.sales.map(updateRow) };
+      return prev;
+    });
+
+    if (orderToastTimerRef.current) clearTimeout(orderToastTimerRef.current);
+    setOrderStatusToast(`Status updated to "${nextStatus}"`);
+    orderToastTimerRef.current = setTimeout(() => {
+      setOrderStatusToast(null);
+    }, 2200);
+
+    // 2. Sync with backend in background without blocking UI taps
+    api
+      .patch(`/store/admin/orders/${orderId}/status`, { status: nextStatus, note: reason || '' })
+      .then((res) => {
+        const updatedOrder = res?.data?.order;
+        if (updatedOrder && updatedOrder._id) {
+          setStoreOrders(prev => prev.map(o => (o._id === updatedOrder._id ? { ...o, ...updatedOrder } : o)));
+          setSelectedOrderDetail((prev: any) =>
+            prev && prev._id === updatedOrder._id ? { ...prev, ...updatedOrder } : prev
+          );
+        }
+      })
+      .catch((err: any) => {
+        if (err?.response?.status >= 400 && prevStatus) {
+          setStoreOrders(prev =>
+            prev.map(o =>
+              o._id === orderId ? { ...o, status: prevStatus, paymentStatus: prevPaymentStatus } : o
+            )
+          );
+          setSelectedOrderDetail((prev: any) =>
+            prev && prev._id === orderId
+              ? { ...prev, status: prevStatus, paymentStatus: prevPaymentStatus }
+              : prev
+          );
+          Alert.alert('Update Failed', err?.response?.data?.message || 'Could not update order status.');
+        }
+      });
   };
 
 
@@ -2321,6 +2749,13 @@ export const OwnerMoreScreen: React.FC<{
           <Text style={styles.ordersTitle}>Orders</Text>
           <Text style={styles.ordersSubtitle}>Manage online orders from your members.</Text>
         </View>
+
+        {orderStatusToast && (
+          <View style={styles.orderInstantToastBanner}>
+            <Ionicons name="checkmark-circle" size={16} color="#15803D" />
+            <Text style={styles.orderInstantToastText}>{orderStatusToast}</Text>
+          </View>
+        )}
 
         {/* Search Bar matching Web */}
         <View style={styles.ordersSearchBox}>
@@ -2945,19 +3380,16 @@ const renderSalesHistoryView = () => {
       if (salesFilter === 'online' && !isOnline) return false;
       if (salesFilter === 'offline' && !isOffline) return false;
 
-      // Calendar Date Range Filtering (From & To)
+      // Calendar Date Range Filtering (From & To - timezone-safe local parsing)
       if (salesFromDate.trim()) {
-        const itemDate = new Date(s.date || s.createdAt || 0);
-        const fromDate = new Date(salesFromDate.trim());
-        if (!isNaN(fromDate.getTime()) && itemDate < fromDate) return false;
+        const itemDate = new Date(s.date || s.saleDate || s.createdAt || 0);
+        const fromDate = parseSalesFilterDate(salesFromDate, false);
+        if (fromDate && itemDate < fromDate) return false;
       }
       if (salesToDate.trim()) {
-        const itemDate = new Date(s.date || s.createdAt || 0);
-        const toDate = new Date(salesToDate.trim());
-        if (!isNaN(toDate.getTime())) {
-          toDate.setHours(23, 59, 59, 999);
-          if (itemDate > toDate) return false;
-        }
+        const itemDate = new Date(s.date || s.saleDate || s.createdAt || 0);
+        const toDate = parseSalesFilterDate(salesToDate, true);
+        if (toDate && itemDate > toDate) return false;
       }
 
       if (salesSearchQuery.trim()) {
@@ -3071,85 +3503,125 @@ const renderSalesHistoryView = () => {
           )}
         </View>
 
-        {/* Calendar Date Pickers (Matching Web mm/dd/yyyy inputs) */}
+        {/* Calendar Date Pickers (Interactive Calendar Buttons matching Web mm/dd/yyyy inputs) */}
         <View style={styles.salesDateFilterRow}>
-          <View style={styles.salesDateBox}>
-            <Ionicons name="calendar" size={14} color="#EA580C" />
-            <TextInput
-              style={styles.salesDateInput}
-              value={salesFromDate}
-              onChangeText={setSalesFromDate}
-              placeholder="mm/dd/yyyy (From)"
-              placeholderTextColor="#94A3B8"
-            />
+          <TouchableOpacity
+            style={[styles.salesDateBox, Boolean(salesFromDate) && styles.salesDateBoxActive]}
+            activeOpacity={0.75}
+            onPress={() => openSalesCalendar('from')}
+          >
+            <View style={styles.salesCalendarIconPill}>
+              <Ionicons name="calendar" size={14} color="#EA580C" />
+            </View>
+            <Text
+              style={[
+                styles.salesDateValueText,
+                !salesFromDate && styles.salesDatePlaceholderText,
+              ]}
+              numberOfLines={1}
+            >
+              {salesFromDate ? formatSalesDateDisplay(salesFromDate) : 'mm/dd/yyyy (From)'}
+            </Text>
             {salesFromDate.length > 0 && (
-              <TouchableOpacity onPress={() => setSalesFromDate('')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-                <Ionicons name="close-circle" size={14} color="#94A3B8" />
+              <TouchableOpacity
+                onPress={(e) => {
+                  e.stopPropagation?.();
+                  setSalesFromDate('');
+                }}
+                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+              >
+                <Ionicons name="close-circle" size={15} color="#94A3B8" />
               </TouchableOpacity>
             )}
-          </View>
+          </TouchableOpacity>
 
-          <View style={styles.salesDateBox}>
-            <Ionicons name="calendar" size={14} color="#EA580C" />
-            <TextInput
-              style={styles.salesDateInput}
-              value={salesToDate}
-              onChangeText={setSalesToDate}
-              placeholder="mm/dd/yyyy (To)"
-              placeholderTextColor="#94A3B8"
-            />
+          <TouchableOpacity
+            style={[styles.salesDateBox, Boolean(salesToDate) && styles.salesDateBoxActive]}
+            activeOpacity={0.75}
+            onPress={() => openSalesCalendar('to')}
+          >
+            <View style={styles.salesCalendarIconPill}>
+              <Ionicons name="calendar" size={14} color="#EA580C" />
+            </View>
+            <Text
+              style={[
+                styles.salesDateValueText,
+                !salesToDate && styles.salesDatePlaceholderText,
+              ]}
+              numberOfLines={1}
+            >
+              {salesToDate ? formatSalesDateDisplay(salesToDate) : 'mm/dd/yyyy (To)'}
+            </Text>
             {salesToDate.length > 0 && (
-              <TouchableOpacity onPress={() => setSalesToDate('')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-                <Ionicons name="close-circle" size={14} color="#94A3B8" />
+              <TouchableOpacity
+                onPress={(e) => {
+                  e.stopPropagation?.();
+                  setSalesToDate('');
+                }}
+                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+              >
+                <Ionicons name="close-circle" size={15} color="#94A3B8" />
               </TouchableOpacity>
             )}
-          </View>
+          </TouchableOpacity>
         </View>
 
         {/* Quick Date Presets */}
-        <View style={styles.salesQuickDateRow}>
-          <TouchableOpacity
-            style={[styles.salesQuickDateChip, (!salesFromDate && !salesToDate) && styles.salesQuickDateChipActive]}
-            onPress={() => { setSalesFromDate(''); setSalesToDate(''); }}
-          >
-            <Text style={[styles.salesQuickDateText, (!salesFromDate && !salesToDate) && styles.salesQuickDateTextActive]}>All Dates</Text>
-          </TouchableOpacity>
+        {(() => {
+          const todayYMD = toLocalYMD(new Date());
+          const d7 = new Date();
+          d7.setDate(d7.getDate() - 7);
+          const ymd7 = toLocalYMD(d7);
+          const d30 = new Date();
+          d30.setDate(d30.getDate() - 30);
+          const ymd30 = toLocalYMD(d30);
 
-          <TouchableOpacity
-            style={styles.salesQuickDateChip}
-            onPress={() => {
-              const today = new Date().toISOString().split('T')[0];
-              setSalesFromDate(today);
-              setSalesToDate(today);
-            }}
-          >
-            <Text style={styles.salesQuickDateText}>Today</Text>
-          </TouchableOpacity>
+          const isAllActive = !salesFromDate && !salesToDate;
+          const isTodayActive = salesFromDate === todayYMD && salesToDate === todayYMD;
+          const is7Active = salesFromDate === ymd7 && salesToDate === todayYMD;
+          const is30Active = salesFromDate === ymd30 && salesToDate === todayYMD;
 
-          <TouchableOpacity
-            style={styles.salesQuickDateChip}
-            onPress={() => {
-              const d = new Date();
-              d.setDate(d.getDate() - 7);
-              setSalesFromDate(d.toISOString().split('T')[0]);
-              setSalesToDate(new Date().toISOString().split('T')[0]);
-            }}
-          >
-            <Text style={styles.salesQuickDateText}>Last 7 Days</Text>
-          </TouchableOpacity>
+          return (
+            <View style={styles.salesQuickDateRow}>
+              <TouchableOpacity
+                style={[styles.salesQuickDateChip, isAllActive && styles.salesQuickDateChipActive]}
+                onPress={() => { setSalesFromDate(''); setSalesToDate(''); }}
+              >
+                <Text style={[styles.salesQuickDateText, isAllActive && styles.salesQuickDateTextActive]}>All Dates</Text>
+              </TouchableOpacity>
 
-          <TouchableOpacity
-            style={styles.salesQuickDateChip}
-            onPress={() => {
-              const d = new Date();
-              d.setDate(d.getDate() - 30);
-              setSalesFromDate(d.toISOString().split('T')[0]);
-              setSalesToDate(new Date().toISOString().split('T')[0]);
-            }}
-          >
-            <Text style={styles.salesQuickDateText}>Last 30 Days</Text>
-          </TouchableOpacity>
-        </View>
+              <TouchableOpacity
+                style={[styles.salesQuickDateChip, isTodayActive && styles.salesQuickDateChipActive]}
+                onPress={() => {
+                  setSalesFromDate(todayYMD);
+                  setSalesToDate(todayYMD);
+                }}
+              >
+                <Text style={[styles.salesQuickDateText, isTodayActive && styles.salesQuickDateTextActive]}>Today</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.salesQuickDateChip, is7Active && styles.salesQuickDateChipActive]}
+                onPress={() => {
+                  setSalesFromDate(ymd7);
+                  setSalesToDate(todayYMD);
+                }}
+              >
+                <Text style={[styles.salesQuickDateText, is7Active && styles.salesQuickDateTextActive]}>Last 7 Days</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.salesQuickDateChip, is30Active && styles.salesQuickDateChipActive]}
+                onPress={() => {
+                  setSalesFromDate(ymd30);
+                  setSalesToDate(todayYMD);
+                }}
+              >
+                <Text style={[styles.salesQuickDateText, is30Active && styles.salesQuickDateTextActive]}>Last 30 Days</Text>
+              </TouchableOpacity>
+            </View>
+          );
+        })()}
 
         {/* Sales Records List */}
         {filtered.length === 0 ? (
@@ -3867,6 +4339,9 @@ const renderSalesHistoryView = () => {
     '16:00', '17:00', '18:00', '19:00', '20:00'
   ];
 
+  const formatSchedIso = (d: Date) =>
+    `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
   const getWeekDays = (anchor: Date) => {
     const d = new Date(anchor);
     const dayOfWeek = d.getDay();
@@ -3875,11 +4350,11 @@ const renderSalesHistoryView = () => {
     monday.setDate(d.getDate() + distanceToMonday);
 
     const days = [];
-    const todayIso = new Date().toISOString().split('T')[0];
+    const todayIso = formatSchedIso(new Date());
     for (let i = 0; i < 7; i++) {
       const cur = new Date(monday);
       cur.setDate(monday.getDate() + i);
-      const isoDate = cur.toISOString().split('T')[0];
+      const isoDate = formatSchedIso(cur);
       const dayName = cur.toLocaleDateString('en-US', { weekday: 'long' });
       const displayDate = cur.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
       const shortDay = cur.toLocaleDateString('en-US', { weekday: 'short' });
@@ -3899,43 +4374,55 @@ const renderSalesHistoryView = () => {
     const weekDays = getWeekDays(scheduleAnchorDate);
     const startDay = weekDays[0];
     const endDay = weekDays[6];
-    const year = scheduleAnchorDate.getFullYear() || 2026;
+    const year = weekDays[0] ? parseInt(weekDays[0].isoDate.slice(0, 4), 10) : (scheduleAnchorDate.getFullYear() || 2026);
     const weekRangeLabel = `${startDay.displayDate} - ${endDay.displayDate}, ${year}`;
 
-    // Extract sessions
-    const sessionsList = Array.isArray(gymSessions) && gymSessions.length > 0 ? gymSessions : [
-      {
-        _id: 'bkg-9f5kmz5t9',
-        bookingId: 'BKG-9F5KMZ5T9',
-        title: 'Online Session',
-        trainerId: { name: 'Naveen' },
-        customerId: { firstName: 'Renugopal', lastName: 'Y', email: 'renugopal5457@gmail.com' },
-        date: '2026-10-15',
-        startTime: '10:00 AM',
-        endTime: '11:00 AM',
-        duration: 60,
-        mode: 'Online',
-        fee: 25000,
-        status: 'Confirmed',
-        meetingLink: 'https://meet.jit.si/aigym-session-naveen-001'
-      }
-    ];
+    // Use real API sessions when loaded; only fallback to sample if API hasn't responded yet
+    const sessionsList = schedulesLoadedFromApi
+      ? (Array.isArray(gymSessions) ? gymSessions : [])
+      : (Array.isArray(gymSessions) && gymSessions.length > 0 ? gymSessions : [
+          {
+            _id: 'bkg-9f5kmz5t9',
+            bookingId: 'BKG-9F5KMZ5T9',
+            title: 'Online Session',
+            trainerId: { _id: 'tr-naveen', name: 'Naveen' },
+            customerId: { firstName: 'Renugopal', lastName: 'Y', email: 'renugopal5457@gmail.com' },
+            date: '2026-10-15',
+            startTime: '10:00 AM',
+            endTime: '11:00 AM',
+            duration: 60,
+            mode: 'Online',
+            fee: 25000,
+            status: 'Confirmed',
+            meetingLink: 'https://meet.jit.si/aigym-session-naveen-001'
+          }
+        ]);
 
     const allItems = sessionsList.map((s: any) => {
-      const trainerName = s.trainerId?.name || 'Naveen';
+      const rawTrainerObj = s.trainerId && typeof s.trainerId === 'object' ? s.trainerId : null;
+      const trainerIdVal = String(rawTrainerObj?._id || (typeof s.trainerId === 'string' ? s.trainerId : '') || '');
+      const lookupTrainer = trainerIdVal ? scheduleTrainers.find(t => String(t._id) === trainerIdVal) : null;
+      const trainerName = String(
+        rawTrainerObj?.name ||
+        s.trainerName ||
+        (rawTrainerObj?.firstName ? `${rawTrainerObj.firstName} ${rawTrainerObj.lastName || ''}`.trim() : '') ||
+        lookupTrainer?.name ||
+        'Unassigned Trainer'
+      ).trim();
+
       const custFirst = s.customerId?.firstName || '';
       const custLast = s.customerId?.lastName || '';
-      const customerName = (custFirst + ' ' + custLast).trim() || 'Renugopal Y';
+      const customerName = (custFirst + ' ' + custLast).trim() || s.customerName || 'Client';
       const isOnline = s.mode === 'Online' || Boolean(s.meetingLink);
 
       let slotHour = '10:00';
       if (s.startTime) {
-        let t = s.startTime.toUpperCase().trim();
+        let t = String(s.startTime).toUpperCase().trim();
         if (t.includes('-')) t = t.split('-')[0].trim();
         const isPM = t.includes('PM');
         const isAM = t.includes('AM');
         t = t.replace(/AM|PM/g, '').trim();
-        let [hStr] = t.split(':');
+        const [hStr] = t.split(':');
         let h = parseInt(hStr, 10);
         if (!isNaN(h)) {
           if (isPM && h < 12) h += 12;
@@ -3945,18 +4432,19 @@ const renderSalesHistoryView = () => {
         }
       }
 
-      const dStr = s.date ? s.date.split('T')[0] : '2026-10-15';
+      const dStr = s.date ? String(s.date).split('T')[0] : formatSchedIso(new Date());
       const dObj = new Date(dStr + 'T12:00:00');
       const dayName = dObj.toLocaleDateString('en-US', { weekday: 'long' });
 
       return {
-        id: s._id || s.bookingId || 'sched-001',
-        bookingId: s.bookingId || (s._id ? s._id.slice(-9).toUpperCase() : 'BKG-9F5KMZ5T9'),
+        id: s._id || s.bookingId || `sched-${dStr}-${slotHour}-${trainerName}`,
+        bookingId: s.bookingId || (s._id ? String(s._id).slice(-9).toUpperCase() : 'BKG-SESSION'),
         title: isOnline ? 'Online Session' : 'Personal Training',
         type: isOnline ? 'ONLINE SESSION' : 'PERSONAL TRAINING',
+        trainerId: trainerIdVal,
         trainerName,
         customerName,
-        customerEmail: s.customerId?.email || 'renugopal5457@gmail.com',
+        customerEmail: s.customerId?.email || '',
         date: dStr,
         day: dayName,
         time: slotHour,
@@ -3965,17 +4453,45 @@ const renderSalesHistoryView = () => {
         durationHours: Math.max(1, Math.round((s.duration || 60) / 60)),
         mode: isOnline ? 'Online' : 'Offline',
         status: s.status || 'Confirmed',
-        fee: s.fee ?? 25000,
-        meetingLink: s.meetingLink || (isOnline ? 'https://meet.jit.si/aigym-session-naveen-001' : undefined),
+        fee: s.fee ?? 0,
+        meetingLink: s.meetingLink || undefined,
       };
     });
 
-    const filteredItems = allItems.filter(item => {
-      if (scheduleTrainerFilter !== 'ALL' && item.trainerName.toLowerCase() !== scheduleTrainerFilter.toLowerCase()) {
-        return false;
-      }
-      return true;
+    // Build complete trainer picker list from /trainers + any trainers seen in sessions
+    const trainerOptionMap = new Map<string, { id: string; name: string }>();
+    scheduleTrainers.forEach(t => {
+      const id = String(t._id || t.trainerId || t.name || '').trim();
+      const name = String(t.name || '').trim();
+      if (name) trainerOptionMap.set(name.toLowerCase(), { id, name });
     });
+    allItems.forEach(it => {
+      if (it.trainerName && it.trainerName !== 'Unassigned Trainer') {
+        const key = it.trainerName.toLowerCase();
+        if (!trainerOptionMap.has(key)) {
+          trainerOptionMap.set(key, { id: it.trainerId || it.trainerName, name: it.trainerName });
+        }
+      }
+    });
+    const trainerOptions = Array.from(trainerOptionMap.values());
+
+    const activeTrainerFilterObj = scheduleTrainerFilter === 'ALL'
+      ? null
+      : trainerOptions.find(t => t.name.toLowerCase() === scheduleTrainerFilter.toLowerCase() || t.id === scheduleTrainerFilter) || { id: scheduleTrainerFilter, name: scheduleTrainerFilter };
+
+    const filteredItems = allItems.filter(item => {
+      if (!activeTrainerFilterObj) return true;
+      if (activeTrainerFilterObj.id && item.trainerId && item.trainerId === activeTrainerFilterObj.id) {
+        return true;
+      }
+      return item.trainerName.trim().toLowerCase() === activeTrainerFilterObj.name.trim().toLowerCase();
+    });
+
+    const weekIsoSet = new Set(weekDays.map(w => w.isoDate));
+    const weekFilteredItems = filteredItems.filter(it => weekIsoSet.has(it.date));
+    const safeDayIdx = Math.min(Math.max(selectedScheduleDayIndex, 0), weekDays.length - 1);
+    const selectedDayCol = weekDays[safeDayIdx] || weekDays[0];
+    const selectedDayItems = selectedDayCol ? filteredItems.filter(it => it.date === selectedDayCol.isoDate) : [];
 
     const handlePrevWeek = () => {
       const next = new Date(scheduleAnchorDate);
@@ -3990,12 +4506,15 @@ const renderSalesHistoryView = () => {
     };
 
     const handleThisWeek = () => {
-      setScheduleAnchorDate(new Date('2026-10-15T12:00:00'));
+      const now = new Date();
+      setScheduleAnchorDate(now);
+      const dow = now.getDay();
+      setSelectedScheduleDayIndex(dow === 0 ? 6 : dow - 1);
     };
 
     return (
       <View style={{ gap: 16 }}>
-        {/* Header (Matching Web Image 1) */}
+        {/* Header (Matching Web) */}
         <View style={styles.schedHeaderCard}>
           <View style={styles.schedBreadcrumbRow}>
             <Ionicons name="calendar" size={14} color="#EA580C" />
@@ -4007,9 +4526,8 @@ const renderSalesHistoryView = () => {
           </Text>
         </View>
 
-        {/* Navigation & Controls Card (Matching Web Image 1) */}
+        {/* Navigation & Controls Card */}
         <View style={styles.schedControlsCard}>
-          {/* Week Nav Buttons + Date Range */}
           <View style={styles.schedWeekNavRow}>
             <View style={styles.schedNavBtnGroup}>
               <TouchableOpacity
@@ -4041,25 +4559,28 @@ const renderSalesHistoryView = () => {
             </View>
           </View>
 
-          {/* Filter Dropdown & Legend Row (Matching Web Image 1) */}
           <View style={styles.schedFilterLegendRow}>
             <TouchableOpacity
               style={styles.schedTrainerFilterPill}
-              onPress={() => {
-                setScheduleTrainerFilter(prev => prev === 'ALL' ? 'Naveen' : 'ALL');
-              }}
+              onPress={() => setShowScheduleTrainerPicker(true)}
               activeOpacity={0.7}
             >
               <Ionicons name="funnel-outline" size={13} color="#64748B" />
               <Text style={styles.schedTrainerFilterPillText}>
-                {scheduleTrainerFilter === 'ALL' ? 'All Trainers (2)' : 'Trainer: Naveen'}
+                {activeTrainerFilterObj ? `Trainer: ${activeTrainerFilterObj.name}` : `All Trainers (${trainerOptions.length})`}
               </Text>
               <Ionicons name="chevron-down" size={12} color="#64748B" />
             </TouchableOpacity>
 
+            <View style={[styles.schedRosterBadge, { backgroundColor: '#FFF7ED', borderColor: '#FDBA74' }]}>
+              <Text style={[styles.schedRosterBadgeText, { color: '#C2410C' }]}>
+                {weekFilteredItems.length} this week • {filteredItems.length} total
+              </Text>
+            </View>
+
             <View style={styles.schedLegendBox}>
               <View style={styles.schedLegendItem}>
-                <View style={[styles.schedLegendDot, { backgroundColor: '#FFEDD5' }]} />
+                <View style={[styles.schedLegendDot, { backgroundColor: '#FDBA74' }]} />
                 <Text style={styles.schedLegendText}>Personal Training (In-Gym)</Text>
               </View>
               <View style={styles.schedLegendItem}>
@@ -4070,13 +4591,20 @@ const renderSalesHistoryView = () => {
           </View>
         </View>
 
-        {/* Weekly Day Selector Strip (Mobile Optimized) */}
+        {/* Weekly Day Selector Strip + Selected Day Agenda */}
         <View style={styles.schedDayStripCard}>
-          <Text style={styles.schedDayStripHeader}>SELECT DAY AGENDA</Text>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Text style={styles.schedDayStripHeader}>SELECT DAY AGENDA</Text>
+            {activeTrainerFilterObj && (
+              <Text style={{ fontSize: 10, fontWeight: '700', color: '#EA580C' }}>
+                Filtered: {activeTrainerFilterObj.name}
+              </Text>
+            )}
+          </View>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8 }}>
             {weekDays.map((col, idx) => {
               const hasSession = filteredItems.some(it => it.date === col.isoDate);
-              const isSelected = selectedScheduleDayIndex === idx;
+              const isSelected = safeDayIdx === idx;
               return (
                 <TouchableOpacity
                   key={col.isoDate}
@@ -4101,58 +4629,80 @@ const renderSalesHistoryView = () => {
               );
             })}
           </ScrollView>
+
+          {selectedDayCol && (
+            <View style={{ paddingTop: 8, borderTopWidth: 1, borderTopColor: '#F1F5F9', gap: 6 }}>
+              <Text style={{ fontSize: 11, fontWeight: '700', color: '#475569' }}>
+                {selectedDayCol.dayName}, {selectedDayCol.displayDate} • {selectedDayItems.length} Session{selectedDayItems.length === 1 ? '' : 's'}
+              </Text>
+              {selectedDayItems.length === 0 ? (
+                <Text style={{ fontSize: 11, color: '#94A3B8', fontStyle: 'italic' }}>
+                  No sessions scheduled{activeTrainerFilterObj ? ` for ${activeTrainerFilterObj.name}` : ''} on {selectedDayCol.displayDate}.
+                </Text>
+              ) : (
+                selectedDayItems.map(item => (
+                  <TouchableOpacity
+                    key={`day-${item.id}`}
+                    style={[styles.schedRosterItemCard, { paddingVertical: 8, paddingHorizontal: 10 }]}
+                    onPress={() => setSelectedScheduleDetail(item)}
+                    activeOpacity={0.75}
+                  >
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
+                      <View style={{ flex: 1 }}>
+                        <Text style={styles.schedRosterTrainerName}>{item.trainerName} • {item.displayTime}</Text>
+                        <Text style={styles.schedRosterClientName}>Client: {item.customerName} ({item.mode === 'Online' ? 'Online Session' : 'In-Gym PT'})</Text>
+                      </View>
+                      <Ionicons name="chevron-forward" size={15} color="#EA580C" />
+                    </View>
+                  </TouchableOpacity>
+                ))
+              )}
+            </View>
+          )}
         </View>
 
-        {/* Interactive Schedule Timetable Grid (Matching Web Images 1 & 2) */}
+        {/* Interactive Schedule Timetable Grid */}
         <View style={styles.schedTableCard}>
           <View style={styles.schedTableHeader}>
             <Text style={styles.schedTableTitle}>Live Weekly Timetable</Text>
-            <Text style={styles.schedTableSub}>Swipe right to view all week slots</Text>
+            <Text style={styles.schedTableSub}>Swipe right for Thu–Sun slots</Text>
           </View>
 
-          <ScrollView horizontal showsHorizontalScrollIndicator={true} style={{ borderRadius: 14 }}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={true} style={{ borderRadius: 12 }}>
             <View style={styles.schedTableContainer}>
-              {/* Table Column Headers */}
               <View style={styles.schedTableRowHeader}>
                 <View style={styles.schedTimeColHeader}>
                   <Text style={styles.schedColHeaderText}>TIME</Text>
                 </View>
-                {weekDays.map(col => (
+                {weekDays.map((col, idx) => (
                   <View
                     key={col.dayName}
                     style={[
                       styles.schedDayColHeader,
-                      col.isoDate === '2026-10-15' && styles.schedDayColHeaderHighlight
+                      (col.isToday || idx === safeDayIdx) && styles.schedDayColHeaderHighlight
                     ]}
                   >
-                    <Text style={styles.schedDayColName}>{col.dayName}</Text>
-                    <Text style={styles.schedDayColDate}>{col.displayDate}</Text>
+                    <Text style={styles.schedDayColName} numberOfLines={1}>{col.dayName}</Text>
+                    <Text style={styles.schedDayColDate} numberOfLines={1}>{col.displayDate}</Text>
                   </View>
                 ))}
               </View>
 
-              {/* Table Hourly Rows */}
               {SCHEDULE_HOURS.map(hour => (
                 <View key={hour} style={styles.schedTableRow}>
-                  {/* Hour label */}
                   <View style={styles.schedTimeCell}>
                     <Text style={styles.schedTimeCellText}>{hour}</Text>
                   </View>
 
-                  {/* 7 Day cells */}
-                  {weekDays.map(col => {
-                    const matching = filteredItems.filter(item => {
-                      const matchesDate = item.date === col.isoDate;
-                      const matchesHour = item.time === hour;
-                      return matchesDate && matchesHour;
-                    });
+                  {weekDays.map((col, idx) => {
+                    const matching = filteredItems.filter(item => item.date === col.isoDate && item.time === hour);
 
                     return (
                       <View
                         key={`${col.isoDate}-${hour}`}
                         style={[
                           styles.schedGridSlotCell,
-                          col.isoDate === '2026-10-15' && { backgroundColor: '#FFFDFB' }
+                          (col.isToday || idx === safeDayIdx) && { backgroundColor: '#FFFDFB' }
                         ]}
                       >
                         {matching.map(session => (
@@ -4184,8 +4734,8 @@ const renderSalesHistoryView = () => {
                             </View>
 
                             <View style={styles.schedSlotModeRow}>
-                              <Ionicons name="videocam" size={10} color="#EA580C" />
-                              <Text style={styles.schedSlotModeText}>Online</Text>
+                              <Ionicons name={session.mode === 'Online' ? 'videocam' : 'location'} size={10} color="#EA580C" />
+                              <Text style={styles.schedSlotModeText}>{session.mode === 'Online' ? 'Online' : 'In-Gym'}</Text>
                             </View>
                           </TouchableOpacity>
                         ))}
@@ -4198,12 +4748,16 @@ const renderSalesHistoryView = () => {
           </ScrollView>
         </View>
 
-        {/* Scheduled Customer Bookings Roster (Matching Web Image 3) */}
+        {/* Scheduled Customer Bookings Roster */}
         <View style={styles.schedRosterCard}>
           <View style={styles.schedRosterHeader}>
-            <View>
+            <View style={{ flex: 1 }}>
               <Text style={styles.schedRosterTitle}>Scheduled Customer Bookings</Text>
-              <Text style={styles.schedRosterSubtitle}>All active customer appointments with assigned trainers</Text>
+              <Text style={styles.schedRosterSubtitle}>
+                {activeTrainerFilterObj
+                  ? `Showing bookings assigned to ${activeTrainerFilterObj.name}`
+                  : 'All active customer appointments with assigned trainers'}
+              </Text>
             </View>
             <View style={styles.schedRosterBadge}>
               <Text style={styles.schedRosterBadgeText}>
@@ -4215,7 +4769,11 @@ const renderSalesHistoryView = () => {
           {filteredItems.length === 0 ? (
             <View style={styles.schedRosterEmpty}>
               <Ionicons name="calendar-outline" size={28} color="#94A3B8" />
-              <Text style={styles.schedRosterEmptyText}>No scheduled customer bookings found.</Text>
+              <Text style={styles.schedRosterEmptyText}>
+                {activeTrainerFilterObj
+                  ? `No scheduled customer bookings found for ${activeTrainerFilterObj.name}.`
+                  : 'No scheduled customer bookings found.'}
+              </Text>
             </View>
           ) : (
             <View style={{ gap: 10 }}>
@@ -4227,17 +4785,17 @@ const renderSalesHistoryView = () => {
                   onPress={() => setSelectedScheduleDetail(item)}
                 >
                   <View style={styles.schedRosterItemTop}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, flex: 1 }}>
                       <View style={styles.schedRosterAvatar}>
                         <Text style={styles.schedRosterAvatarText}>{item.trainerName.charAt(0)}</Text>
                       </View>
-                      <View>
+                      <View style={{ flex: 1 }}>
                         <Text style={styles.schedRosterTrainerName}>{item.trainerName}</Text>
                         <Text style={styles.schedRosterClientName}>Client: {item.customerName}</Text>
                       </View>
                     </View>
                     <View style={styles.schedRosterModeBadge}>
-                      <Text style={styles.schedRosterModeBadgeText}>{item.mode.toUpperCase()}</Text>
+                      <Text style={styles.schedRosterModeBadgeText}>{item.mode === 'Online' ? 'ONLINE' : 'IN-GYM'}</Text>
                     </View>
                   </View>
 
@@ -4246,13 +4804,66 @@ const renderSalesHistoryView = () => {
                       <Ionicons name="calendar-outline" size={13} color="#EA580C" />
                       <Text style={styles.schedRosterDateText}>{item.date}</Text>
                     </View>
-                    <Text style={styles.schedRosterTimeText}>{item.time} ({item.duration}m)</Text>
+                    <Text style={styles.schedRosterTimeText}>{item.displayTime || item.time} ({item.duration}m)</Text>
                   </View>
                 </TouchableOpacity>
               ))}
             </View>
           )}
         </View>
+
+        {/* Trainer Filter Picker Modal */}
+        <Modal
+          visible={showScheduleTrainerPicker}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setShowScheduleTrainerPicker(false)}
+        >
+          <View style={styles.perfModalOverlay}>
+            <View style={styles.perfModalCard}>
+              <View style={styles.perfModalHeader}>
+                <Text style={styles.perfModalTitle}>Filter Schedule by Trainer</Text>
+                <TouchableOpacity onPress={() => setShowScheduleTrainerPicker(false)} style={styles.perfModalCloseBtn}>
+                  <Ionicons name="close" size={20} color="#64748B" />
+                </TouchableOpacity>
+              </View>
+              <ScrollView style={{ maxHeight: 320 }}>
+                <TouchableOpacity
+                  style={[styles.perfPickerOptionRow, scheduleTrainerFilter === 'ALL' && { backgroundColor: '#FFF7ED', borderColor: '#FDBA74' }]}
+                  onPress={() => {
+                    setScheduleTrainerFilter('ALL');
+                    setShowScheduleTrainerPicker(false);
+                  }}
+                >
+                  <Text style={[styles.perfCellDarkVal, scheduleTrainerFilter === 'ALL' && { color: '#C2410C' }]}>
+                    All Trainers ({trainerOptions.length})
+                  </Text>
+                  {scheduleTrainerFilter === 'ALL' && <Ionicons name="checkmark-circle" size={18} color="#EA580C" />}
+                </TouchableOpacity>
+
+                {trainerOptions.map(tr => {
+                  const isSel = activeTrainerFilterObj?.name.toLowerCase() === tr.name.toLowerCase();
+                  const count = allItems.filter(it => (tr.id && it.trainerId === tr.id) || it.trainerName.trim().toLowerCase() === tr.name.toLowerCase()).length;
+                  return (
+                    <TouchableOpacity
+                      key={tr.id || tr.name}
+                      style={[styles.perfPickerOptionRow, isSel && { backgroundColor: '#FFF7ED', borderColor: '#FDBA74' }]}
+                      onPress={() => {
+                        setScheduleTrainerFilter(tr.name);
+                        setShowScheduleTrainerPicker(false);
+                      }}
+                    >
+                      <Text style={[styles.perfCellDarkVal, isSel && { color: '#C2410C' }]}>
+                        {tr.name} ({count} booking{count === 1 ? '' : 's'})
+                      </Text>
+                      {isSel && <Ionicons name="checkmark-circle" size={18} color="#EA580C" />}
+                    </TouchableOpacity>
+                  );
+                })}
+              </ScrollView>
+            </View>
+          </View>
+        </Modal>
       </View>
     );
   };
@@ -4560,59 +5171,417 @@ const renderSalesHistoryView = () => {
     );
   };
 
-  // ATTENDANCE VIEW (Matching Web /admin/attendance - Images 1, 2, 3)
+  // ATTENDANCE VIEW (Matching Web /admin/attendance)
   const renderAttendanceView = () => {
     const isCustomerTab = attendanceMainTab === 'CUSTOMERS';
     const q = attendanceSearch.toLowerCase().trim();
-
-    const filteredCustomers = customerAttendanceLogs.filter(item => {
-      if (!q) return true;
-      return (
-        item.name.toLowerCase().includes(q) ||
-        (item.email && item.email.toLowerCase().includes(q)) ||
-        item.type.toLowerCase().includes(q) ||
-        item.date.toLowerCase().includes(q)
-      );
-    });
-
-    const filteredTrainers = trainerAttendanceLogs.filter(item => {
-      if (!q) return true;
-      return (
-        item.name.toLowerCase().includes(q) ||
-        item.specialization.toLowerCase().includes(q) ||
-        item.dutyType.toLowerCase().includes(q) ||
-        (item.assignedCustomer && item.assignedCustomer.toLowerCase().includes(q))
-      );
-    });
-
-    // Hourly Traffic Data (Matching Web Image 2)
-    const HOURLY_TRAFFIC = [
-      { hour: '06:00', heightPct: 20, count: '12 members' },
-      { hour: '07:00', heightPct: 15, count: '9 members' },
-      { hour: '08:00', heightPct: 10, count: '6 members' },
-      { hour: '09:00', heightPct: 6, count: '3 members' },
-      { hour: '10:00', heightPct: 12, count: '7 members' },
-      { hour: '11:00', heightPct: 28, count: '18 members' },
-      { hour: '12:00', heightPct: 45, count: '28 members' },
-      { hour: '13:00', heightPct: 60, count: '38 members' },
-      { hour: '14:00', heightPct: 80, count: '52 members' },
-      { hour: '15:00', heightPct: 52, count: '32 members' },
-      { hour: '16:00', heightPct: 42, count: '26 members' },
-      { hour: '17:00', heightPct: 70, count: '45 members' },
-      { hour: '18:00', heightPct: 95, count: '64 members' },
-      { hour: '19:00', heightPct: 85, count: '58 members' },
-      { hour: '20:00', heightPct: 62, count: '40 members' },
-      { hour: '21:00', heightPct: 38, count: '25 members' },
-    ];
 
     const timeframeLabel =
       attendanceTimeframe === 'perday' ? 'Per Day' :
       attendanceTimeframe === 'weekly' ? 'Weekly' :
       attendanceTimeframe === 'monthly' ? 'Monthly' : 'Annual';
+    const timeframeTag = timeframeLabel.toUpperCase();
+
+    const filterByTimeframe = <T extends { isoDate?: string; date?: string }>(items: T[], perDayFallback: number, weeklyFallback: number, monthlyFallback: number): T[] => {
+      const getIso = (it: T) => (it.isoDate || it.date || '').split('T')[0];
+      let list = items;
+      if (attendanceTimeframe === 'perday') {
+        list = items.filter(it => {
+          const d = getIso(it);
+          return d === '2026-10-26' || d.startsWith('2026-10-26');
+        });
+        if (list.length === 0) list = items.slice(0, perDayFallback);
+      } else if (attendanceTimeframe === 'weekly') {
+        list = items.filter(it => getIso(it) >= '2026-10-20');
+        if (list.length === 0) list = items.slice(0, weeklyFallback);
+      } else if (attendanceTimeframe === 'monthly') {
+        list = items.filter(it => getIso(it) >= '2026-10-01');
+        if (list.length === 0) list = items.slice(0, monthlyFallback);
+      }
+      return list;
+    };
+
+    const filteredCustomers = filterByTimeframe(customerAttendanceLogs, 5, 8, 10).filter(item => {
+      if (!q) return true;
+      return (
+        item.name.toLowerCase().includes(q) ||
+        (item.email && item.email.toLowerCase().includes(q)) ||
+        item.type.toLowerCase().includes(q) ||
+        item.date.toLowerCase().includes(q) ||
+        (item.isoDate && item.isoDate.toLowerCase().includes(q))
+      );
+    });
+
+    const filteredTrainers = filterByTimeframe(trainerAttendanceLogs, 4, 6, 8).filter(item => {
+      if (!q) return true;
+      return (
+        item.name.toLowerCase().includes(q) ||
+        item.specialization.toLowerCase().includes(q) ||
+        item.dutyType.toLowerCase().includes(q) ||
+        item.date.toLowerCase().includes(q) ||
+        (item.isoDate && item.isoDate.toLowerCase().includes(q)) ||
+        (item.assignedCustomer && item.assignedCustomer.toLowerCase().includes(q))
+      );
+    });
+
+    // Dynamic Customer Metrics based on Timeframe (Matching Web customerMetrics)
+    const customerMetrics = (() => {
+      switch (attendanceTimeframe) {
+        case 'weekly':
+          return {
+            card1Title: 'Avg Daily in Gym',
+            card1Value: '148',
+            card1Sub: 'Across last 7 days',
+            card2Title: 'Total Check-ins (This Week)',
+            card2Value: '1,092',
+            card2Sub: '+8.4% vs last week',
+            card2SubPositive: true,
+            card3Title: 'Peak Day This Week',
+            card3Value: 'Wednesday',
+            card3Sub: '198 check-ins recorded',
+            card4Title: 'Failed Entries',
+            card4Value: '14',
+            card4Sub: 'Average 2 / day',
+            chartTitle: 'Weekly Traffic',
+            chartSubtitle: 'Daily member attendance volume',
+            chartBadge: 'Daily Member Volume',
+            chartData: [
+              { label: 'Mon', heightPct: 78, count: '165 check-ins' },
+              { label: 'Tue', heightPct: 85, count: '182 check-ins' },
+              { label: 'Wed', heightPct: 98, count: '198 check-ins' },
+              { label: 'Thu', heightPct: 80, count: '174 check-ins' },
+              { label: 'Fri', heightPct: 88, count: '188 check-ins' },
+              { label: 'Sat', heightPct: 54, count: '110 check-ins' },
+              { label: 'Sun', heightPct: 40, count: '75 check-ins' },
+            ],
+            chartMarkers: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+          };
+        case 'monthly':
+          return {
+            card1Title: 'Avg Daily in Gym',
+            card1Value: '152',
+            card1Sub: '30-day facility average',
+            card2Title: 'Total Check-ins (This Month)',
+            card2Value: '4,680',
+            card2Sub: '+14.2% vs last month',
+            card2SubPositive: true,
+            card3Title: 'Peak Week This Month',
+            card3Value: 'Week 2',
+            card3Sub: '1,240 visits logged',
+            card4Title: 'Failed Entries',
+            card4Value: '48',
+            card4Sub: 'Resolved at front desk',
+            chartTitle: 'Monthly Traffic',
+            chartSubtitle: 'Weekly aggregated member volume',
+            chartBadge: 'Weekly Breakdown',
+            chartData: [
+              { label: 'Week 1', heightPct: 75, count: '1,120 visits' },
+              { label: 'Week 2', heightPct: 96, count: '1,240 visits' },
+              { label: 'Week 3', heightPct: 84, count: '1,180 visits' },
+              { label: 'Week 4', heightPct: 80, count: '1,140 visits' },
+            ],
+            chartMarkers: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+          };
+        case 'annual':
+          return {
+            card1Title: 'Annual Active Members',
+            card1Value: '1,280',
+            card1Sub: 'Unique visitors this year',
+            card2Title: 'Total Check-ins (Annual)',
+            card2Value: '56,420',
+            card2Sub: '+22% year-over-year',
+            card2SubPositive: true,
+            card3Title: 'Peak Month This Year',
+            card3Value: 'January',
+            card3Sub: '5,840 check-ins',
+            card4Title: 'Failed Entries',
+            card4Value: '412',
+            card4Sub: '0.7% rejection rate',
+            chartTitle: 'Annual Traffic',
+            chartSubtitle: '12-Month attendance volume trend',
+            chartBadge: '12-Month Check-in Trend',
+            chartData: [
+              { label: 'Jan', heightPct: 96, count: '5,840 visits' },
+              { label: 'Feb', heightPct: 82, count: '4,950 visits' },
+              { label: 'Mar', heightPct: 78, count: '4,720 visits' },
+              { label: 'Apr', heightPct: 72, count: '4,350 visits' },
+              { label: 'May', heightPct: 68, count: '4,100 visits' },
+              { label: 'Jun', heightPct: 70, count: '4,250 visits' },
+              { label: 'Jul', heightPct: 76, count: '4,600 visits' },
+              { label: 'Aug', heightPct: 80, count: '4,850 visits' },
+              { label: 'Sep', heightPct: 86, count: '5,200 visits' },
+              { label: 'Oct', heightPct: 90, count: '5,460 visits' },
+              { label: 'Nov', heightPct: 84, count: '5,080 visits' },
+              { label: 'Dec', heightPct: 74, count: '4,480 visits' },
+            ],
+            chartMarkers: ['Jan', 'Mar', 'May', 'Jul', 'Sep', 'Nov'],
+          };
+        case 'perday':
+        default:
+          return {
+            card1Title: 'Currently in Gym',
+            card1Value: '42',
+            card1Sub: 'Active on floor now',
+            card2Title: 'Total Check-ins Today',
+            card2Value: '156',
+            card2Sub: '+12% vs yesterday',
+            card2SubPositive: true,
+            card3Title: 'Peak Hour Today',
+            card3Value: '18:00',
+            card3Sub: '64 members inside',
+            card4Title: 'Failed Entries',
+            card4Value: '3',
+            card4Sub: 'Pass expired / RFID issue',
+            chartTitle: "Today's Traffic",
+            chartSubtitle: 'Hourly member check-in distribution',
+            chartBadge: 'Hourly Member Volume',
+            chartData: [
+              { label: '06:00', heightPct: 20, count: '12 members' },
+              { label: '07:00', heightPct: 15, count: '9 members' },
+              { label: '08:00', heightPct: 10, count: '6 members' },
+              { label: '09:00', heightPct: 5, count: '3 members' },
+              { label: '10:00', heightPct: 10, count: '7 members' },
+              { label: '11:00', heightPct: 30, count: '18 members' },
+              { label: '12:00', heightPct: 45, count: '28 members' },
+              { label: '13:00', heightPct: 60, count: '38 members' },
+              { label: '14:00', heightPct: 80, count: '52 members' },
+              { label: '15:00', heightPct: 50, count: '32 members' },
+              { label: '16:00', heightPct: 40, count: '26 members' },
+              { label: '17:00', heightPct: 70, count: '45 members' },
+              { label: '18:00', heightPct: 90, count: '64 members' },
+              { label: '19:00', heightPct: 85, count: '58 members' },
+              { label: '20:00', heightPct: 60, count: '40 members' },
+              { label: '21:00', heightPct: 40, count: '25 members' },
+            ],
+            chartMarkers: ['06:00', '12:00', '18:00 (Peak)', '22:00'],
+          };
+      }
+    })();
+
+    // Trainer stats & Dynamic Metrics based on Timeframe (Matching Web trainerStats & trainerMetrics)
+    const onDutyRaw = trainerAttendanceLogs.filter(t => t.checkOutTime === 'In Progress').length;
+    const totalTrainersRaw = trainerAttendanceLogs.length;
+    const completedRaw = trainerAttendanceLogs.filter(
+      t => t.checkOutTime !== 'In Progress' && t.checkOutTime !== '--:--'
+    ).length;
+    const trainerStats = {
+      onDutyCount: onDutyRaw || 6,
+      totalToday: totalTrainersRaw || 8,
+      completedCount: completedRaw || 12,
+      attendancePct: totalTrainersRaw > 0 ? Math.round(((completedRaw + onDutyRaw) / totalTrainersRaw) * 100) : 98,
+    };
+
+    const trainerMetrics = (() => {
+      switch (attendanceTimeframe) {
+        case 'weekly':
+          return {
+            card1Title: 'Avg Trainers / Day',
+            card1Value: '6',
+            card1Sub: 'Full floor coverage',
+            card2Title: 'Total Check-ins (This Week)',
+            card2Value: '54',
+            card2Sub: '100% shifts logged',
+            card3Title: 'Completed Sessions (Weekly)',
+            card3Value: '78',
+            card3Sub: 'PT & class bookings',
+            card4Title: 'Weekly Attendance Rate',
+            card4Value: '96%',
+            card4Sub: 'High coach punctuality',
+            chartTitle: 'Weekly Trainer Shift Coverage',
+            chartSubtitle: 'Total coaching hours per day this week',
+            chartBadge: 'Daily Floor & PT Hours',
+            chartData: [
+              { label: 'Mon', heightPct: 80, count: '48 hrs (6 coaches)' },
+              { label: 'Tue', heightPct: 88, count: '52 hrs (7 coaches)' },
+              { label: 'Wed', heightPct: 95, count: '56 hrs (7 coaches)' },
+              { label: 'Thu', heightPct: 84, count: '50 hrs (6 coaches)' },
+              { label: 'Fri', heightPct: 90, count: '54 hrs (7 coaches)' },
+              { label: 'Sat', heightPct: 60, count: '36 hrs (5 coaches)' },
+              { label: 'Sun', heightPct: 42, count: '25 hrs (4 coaches)' },
+            ],
+            chartMarkers: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+          };
+        case 'monthly':
+          return {
+            card1Title: 'Active Floor Trainers',
+            card1Value: '8',
+            card1Sub: 'Certified staff',
+            card2Title: 'Total Check-ins (This Month)',
+            card2Value: '228',
+            card2Sub: 'Monthly total shifts',
+            card3Title: 'Completed Sessions (Monthly)',
+            card3Value: '315',
+            card3Sub: 'Personal & group training',
+            card4Title: 'Monthly Attendance Rate',
+            card4Value: '97%',
+            card4Sub: '4 late arrivals noted',
+            chartTitle: 'Monthly Trainer Shift Hours',
+            chartSubtitle: 'Weekly aggregated trainer hours',
+            chartBadge: 'Weekly Coaching Volume',
+            chartData: [
+              { label: 'Week 1', heightPct: 78, count: '280 hrs coaching' },
+              { label: 'Week 2', heightPct: 90, count: '320 hrs coaching' },
+              { label: 'Week 3', heightPct: 85, count: '305 hrs coaching' },
+              { label: 'Week 4', heightPct: 82, count: '295 hrs coaching' },
+            ],
+            chartMarkers: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+          };
+        case 'annual':
+          return {
+            card1Title: 'Total Roster Trainers',
+            card1Value: '10',
+            card1Sub: 'Staff on payroll',
+            card2Title: 'Total Check-ins (Annual)',
+            card2Value: '2,740',
+            card2Sub: 'Shifts logged in 2026',
+            card3Title: 'Completed Sessions (Annual)',
+            card3Value: '3,820',
+            card3Sub: 'Sessions conducted',
+            card4Title: 'Annual Attendance Rate',
+            card4Value: '98%',
+            card4Sub: 'Facility performance 4.9/5',
+            chartTitle: 'Annual Trainer Session Coverage',
+            chartSubtitle: 'Monthly completed coaching sessions',
+            chartBadge: 'Monthly Session Totals',
+            chartData: [
+              { label: 'Jan', heightPct: 95, count: '345 sessions' },
+              { label: 'Feb', heightPct: 82, count: '298 sessions' },
+              { label: 'Mar', heightPct: 78, count: '284 sessions' },
+              { label: 'Apr', heightPct: 74, count: '270 sessions' },
+              { label: 'May', heightPct: 70, count: '255 sessions' },
+              { label: 'Jun', heightPct: 72, count: '260 sessions' },
+              { label: 'Jul', heightPct: 78, count: '285 sessions' },
+              { label: 'Aug', heightPct: 82, count: '300 sessions' },
+              { label: 'Sep', heightPct: 88, count: '320 sessions' },
+              { label: 'Oct', heightPct: 92, count: '335 sessions' },
+              { label: 'Nov', heightPct: 85, count: '310 sessions' },
+              { label: 'Dec', heightPct: 76, count: '278 sessions' },
+            ],
+            chartMarkers: ['Jan', 'Mar', 'May', 'Jul', 'Sep', 'Nov'],
+          };
+        case 'perday':
+        default:
+          return {
+            card1Title: 'Trainers On Duty',
+            card1Value: String(trainerStats.onDutyCount || 6),
+            card1Sub: 'Live on floor now',
+            card2Title: 'Total Trainer Check-ins',
+            card2Value: String(trainerStats.totalToday || 8),
+            card2Sub: 'Morning & evening shifts',
+            card3Title: 'Completed Sessions / Shifts',
+            card3Value: String(trainerStats.completedCount || 12),
+            card3Sub: '1-on-1 PT & floor duty',
+            card4Title: 'Attendance Rate',
+            card4Value: `${trainerStats.attendancePct}%`,
+            card4Sub: 'All staff on time',
+            chartTitle: 'Trainer Shift & Session Coverage',
+            chartSubtitle: 'Active coach distribution across facility hours',
+            chartBadge: 'Floor & PT Availability',
+            chartData: [
+              { label: '06:00', heightPct: 50, count: '4 Active Coaches' },
+              { label: '07:00', heightPct: 70, count: '6 Active Coaches' },
+              { label: '08:00', heightPct: 85, count: '7 Active Coaches' },
+              { label: '09:00', heightPct: 90, count: '7 Active Coaches' },
+              { label: '10:00', heightPct: 80, count: '6 Active Coaches' },
+              { label: '11:00', heightPct: 60, count: '5 Active Coaches' },
+              { label: '12:00', heightPct: 50, count: '4 Active Coaches' },
+              { label: '13:00', heightPct: 75, count: '6 Active Coaches' },
+              { label: '14:00', heightPct: 95, count: '8 Active Coaches' },
+              { label: '15:00', heightPct: 100, count: '8 Active Coaches' },
+              { label: '16:00', heightPct: 85, count: '7 Active Coaches' },
+              { label: '17:00', heightPct: 70, count: '6 Active Coaches' },
+              { label: '18:00', heightPct: 60, count: '5 Active Coaches' },
+              { label: '19:00', heightPct: 40, count: '3 Active Coaches' },
+            ],
+            chartMarkers: ['06:00 (Early Floor)', '12:00 (Midday)', '17:00 (Evening)', '21:00'],
+          };
+      }
+    })();
+
+    const activeMetrics = isCustomerTab ? customerMetrics : trainerMetrics;
+    const selectedBar =
+      selectedAttChartBarIdx !== null && activeMetrics.chartData[selectedAttChartBarIdx]
+        ? activeMetrics.chartData[selectedAttChartBarIdx]
+        : null;
+
+    const kpiCards = isCustomerTab
+      ? [
+          { icon: 'people' as const, bg: '#FFF7ED', color: '#EA580C', title: customerMetrics.card1Title, value: customerMetrics.card1Value, sub: customerMetrics.card1Sub, positive: false },
+          { icon: 'person-add' as const, bg: '#F0FDF4', color: '#16A34A', title: customerMetrics.card2Title, value: customerMetrics.card2Value, sub: customerMetrics.card2Sub, positive: true },
+          { icon: 'time' as const, bg: '#FFF7ED', color: '#EA580C', title: customerMetrics.card3Title, value: customerMetrics.card3Value, sub: customerMetrics.card3Sub, positive: false },
+          { icon: 'person-remove' as const, bg: '#FEE2E2', color: '#DC2626', title: customerMetrics.card4Title, value: customerMetrics.card4Value, sub: customerMetrics.card4Sub, positive: false },
+        ]
+      : [
+          { icon: 'barbell' as const, bg: '#FFF7ED', color: '#EA580C', title: trainerMetrics.card1Title, value: trainerMetrics.card1Value, sub: trainerMetrics.card1Sub, positive: false },
+          { icon: 'checkmark-done' as const, bg: '#F0FDF4', color: '#16A34A', title: trainerMetrics.card2Title, value: trainerMetrics.card2Value, sub: trainerMetrics.card2Sub, positive: false },
+          { icon: 'calendar' as const, bg: '#FFFBEB', color: '#D97706', title: trainerMetrics.card3Title, value: trainerMetrics.card3Value, sub: trainerMetrics.card3Sub, positive: false },
+          { icon: 'speedometer' as const, bg: '#F0FDF4', color: '#16A34A', title: trainerMetrics.card4Title, value: trainerMetrics.card4Value, sub: trainerMetrics.card4Sub, positive: true },
+        ];
+
+    const handleDownloadAttendancePDF = async () => {
+      if (isDownloadingAttendancePdf) return;
+      try {
+        setIsDownloadingAttendancePdf(true);
+        const dateStr = new Date().toISOString().split('T')[0];
+        if (isCustomerTab) {
+          await FileDownloader.downloadReportPDF(
+            {
+              title: `Customer & Member Attendance Report (${timeframeLabel})`,
+              subtitle: `Facility member check-ins & traffic summary • ${timeframeLabel} View`,
+              gymName: user?.gymName || 'Perfect Fitness Studio',
+              summaryMetrics: [
+                { label: customerMetrics.card1Title, value: customerMetrics.card1Value },
+                { label: customerMetrics.card2Title, value: customerMetrics.card2Value },
+                { label: customerMetrics.card3Title, value: customerMetrics.card3Value },
+                { label: customerMetrics.card4Title, value: customerMetrics.card4Value },
+              ],
+              headers: ['Member Name', 'Type', 'Date', 'Check-In Time', 'Check-Out Time'],
+              rows: filteredCustomers.map(c => [
+                c.name,
+                c.type,
+                c.isoDate || c.date,
+                c.checkInTime,
+                c.checkOutTime,
+              ]),
+            },
+            `Customer_Attendance_Report_${timeframeLabel}_${dateStr}`
+          );
+        } else {
+          await FileDownloader.downloadReportPDF(
+            {
+              title: `Trainer & Staff Attendance Report (${timeframeLabel})`,
+              subtitle: `Staff check-ins, duty shifts & session coverage • ${timeframeLabel} View`,
+              gymName: user?.gymName || 'Perfect Fitness Studio',
+              summaryMetrics: [
+                { label: trainerMetrics.card1Title, value: trainerMetrics.card1Value },
+                { label: trainerMetrics.card2Title, value: trainerMetrics.card2Value },
+                { label: trainerMetrics.card3Title, value: trainerMetrics.card3Value },
+                { label: trainerMetrics.card4Title, value: trainerMetrics.card4Value },
+              ],
+              headers: ['Trainer Name', 'Date', 'Assigned Duty / Mode', 'Client / Area', 'Scheduled Slot', 'Check-In', 'Check-Out'],
+              rows: filteredTrainers.map(t => [
+                t.name,
+                t.isoDate || t.date,
+                t.dutyType,
+                t.assignedCustomer ? `Client: ${t.assignedCustomer}` : 'Main Floor',
+                t.scheduledTime,
+                t.checkInTime,
+                t.checkOutTime,
+              ]),
+            },
+            `Trainer_Attendance_Report_${timeframeLabel}_${dateStr}`
+          );
+        }
+      } catch (err: any) {
+        Alert.alert('Download Error', err?.message || 'Failed to generate attendance PDF.');
+      } finally {
+        setIsDownloadingAttendancePdf(false);
+      }
+    };
 
     return (
       <View style={{ gap: 16 }}>
-        {/* Header (Matching Web Image 1) */}
+        {/* Header (Matching Web GymAdminAttendance) */}
         <View style={styles.attHeaderCard}>
           <View style={styles.attBreadcrumbRow}>
             <Ionicons name="people-outline" size={14} color="#EA580C" />
@@ -4621,10 +5590,12 @@ const renderSalesHistoryView = () => {
 
           <View style={styles.attTitleRow}>
             <Text style={styles.attTitleText}>Attendance</Text>
-            {/* Live Tracking Active Badge */}
+            {/* Live Tracking / Trainers On Duty Badge */}
             <View style={styles.attLiveTrackingPill}>
               <View style={styles.attLiveDot} />
-              <Text style={styles.attLiveTrackingText}>Live Tracking Active</Text>
+              <Text style={styles.attLiveTrackingText}>
+                {isCustomerTab ? 'Live Tracking Active' : `${trainerStats.onDutyCount} Trainers On Duty`}
+              </Text>
             </View>
           </View>
 
@@ -4644,7 +5615,10 @@ const renderSalesHistoryView = () => {
                   <TouchableOpacity
                     key={tf}
                     style={[styles.attTimeframePill, active && styles.attTimeframePillActive]}
-                    onPress={() => setAttendanceTimeframe(tf)}
+                    onPress={() => {
+                      setAttendanceTimeframe(tf);
+                      setSelectedAttChartBarIdx(null);
+                    }}
                     activeOpacity={0.8}
                   >
                     <Text style={[styles.attTimeframePillText, active && styles.attTimeframePillTextActive]}>
@@ -4656,28 +5630,31 @@ const renderSalesHistoryView = () => {
             </View>
 
             <TouchableOpacity
-              style={styles.attPdfBtn}
+              style={[styles.attPdfBtn, isDownloadingAttendancePdf && { opacity: 0.7 }]}
               activeOpacity={0.8}
-              onPress={() => {
-                Alert.alert(
-                  'Download PDF',
-                  `Generating ${isCustomerTab ? 'Customer' : 'Trainer'} Attendance Report (${timeframeLabel})...\n\nReport downloaded successfully!`
-                );
-              }}
+              disabled={isDownloadingAttendancePdf}
+              onPress={handleDownloadAttendancePDF}
             >
-              <Ionicons name="download-outline" size={14} color="#FFFFFF" />
-              <Text style={styles.attPdfBtnText}>Download PDF</Text>
+              {isDownloadingAttendancePdf ? (
+                <ActivityIndicator size="small" color="#FFFFFF" />
+              ) : (
+                <Ionicons name="download-outline" size={14} color="#FFFFFF" />
+              )}
+              <Text style={styles.attPdfBtnText}>
+                {isDownloadingAttendancePdf ? 'Generating...' : 'Download PDF'}
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
 
-        {/* Tab Switcher: Customers Attendance vs Trainers Attendance (Matching Web Image 1) */}
+        {/* Tab Switcher: Customers Attendance vs Trainers Attendance */}
         <View style={styles.attTabSwitchRow}>
           <TouchableOpacity
             style={[styles.attTabBtn, isCustomerTab && styles.attTabBtnActive]}
             onPress={() => {
               setAttendanceMainTab('CUSTOMERS');
               setAttendanceSearch('');
+              setSelectedAttChartBarIdx(null);
             }}
             activeOpacity={0.8}
           >
@@ -4697,6 +5674,7 @@ const renderSalesHistoryView = () => {
             onPress={() => {
               setAttendanceMainTab('TRAINERS');
               setAttendanceSearch('');
+              setSelectedAttChartBarIdx(null);
             }}
             activeOpacity={0.8}
           >
@@ -4712,167 +5690,129 @@ const renderSalesHistoryView = () => {
           </TouchableOpacity>
         </View>
 
-        {/* 4 Summary Stat Cards (Matching Web Image 1) */}
-        {isCustomerTab ? (
-          <View style={styles.onlineKpiGrid}>
-            {/* Card 1: Currently in Gym */}
-            <View style={styles.onlineKpiCard}>
+        {/* 4 Dynamic Summary Stat Cards */}
+        <View style={styles.onlineKpiGrid}>
+          {kpiCards.map((card, idx) => (
+            <View key={idx} style={styles.onlineKpiCard}>
               <View style={styles.onlineKpiTopRow}>
-                <View style={[styles.onlineKpiIconSquircle, { backgroundColor: '#FFF7ED' }]}>
-                  <Ionicons name="people" size={16} color="#EA580C" />
+                <View style={[styles.onlineKpiIconSquircle, { backgroundColor: card.bg }]}>
+                  <Ionicons name={card.icon} size={16} color={card.color} />
                 </View>
                 <View style={styles.attCardTagPill}>
-                  <Text style={styles.attCardTagPillText}>PER DAY</Text>
+                  <Text style={styles.attCardTagPillText}>{timeframeTag}</Text>
                 </View>
               </View>
-              <Text style={styles.attCardTitleText}>Currently in Gym</Text>
-              <Text style={styles.attCardBigValue}>42</Text>
-              <Text style={styles.attCardSubText}>Active on floor now</Text>
+              <Text style={styles.attCardTitleText} numberOfLines={2}>
+                {card.title}
+              </Text>
+              <Text
+                style={styles.attCardBigValue}
+                numberOfLines={1}
+                adjustsFontSizeToFit
+                minimumFontScale={0.7}
+              >
+                {card.value}
+              </Text>
+              <Text
+                style={[
+                  styles.attCardSubText,
+                  card.positive && { color: '#16A34A', fontWeight: '700' },
+                ]}
+              >
+                {card.sub}
+              </Text>
+            </View>
+          ))}
+        </View>
+
+        {/* Dynamic Traffic / Trainer Coverage Chart & Live Feed */}
+        <View style={{ gap: 14 }}>
+          {/* Dynamic Bar Chart Card */}
+          <View style={styles.attTrafficCard}>
+            <View style={styles.attTrafficHeader}>
+              <View style={{ flex: 1, paddingRight: 8 }}>
+                <Text style={styles.attTrafficTitle}>{activeMetrics.chartTitle}</Text>
+                <Text style={styles.attTrafficSub}>{activeMetrics.chartSubtitle}</Text>
+              </View>
+              <View style={styles.attTrafficBadge}>
+                <Text style={styles.attTrafficBadgeText}>{activeMetrics.chartBadge}</Text>
+              </View>
             </View>
 
-            {/* Card 2: Total Check-ins Today */}
-            <View style={styles.onlineKpiCard}>
-              <View style={styles.onlineKpiTopRow}>
-                <View style={[styles.onlineKpiIconSquircle, { backgroundColor: '#F0FDF4' }]}>
-                  <Ionicons name="person-add" size={16} color="#16A34A" />
-                </View>
-                <View style={styles.attCardTagPill}>
-                  <Text style={styles.attCardTagPillText}>PER DAY</Text>
-                </View>
+            {/* Tapped Bar Count Readout (Mobile Equivalent of Web Hover Tooltip) */}
+            {selectedBar ? (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  backgroundColor: '#FFF7ED',
+                  borderWidth: 1,
+                  borderColor: '#FFEDD5',
+                  borderRadius: 10,
+                  paddingHorizontal: 10,
+                  paddingVertical: 6,
+                }}
+              >
+                <Text style={{ fontSize: 11, fontWeight: '800', color: '#9A3412' }}>
+                  {selectedBar.label}: <Text style={{ color: '#EA580C' }}>{selectedBar.count}</Text>
+                </Text>
+                <TouchableOpacity onPress={() => setSelectedAttChartBarIdx(null)}>
+                  <Ionicons name="close-circle" size={15} color="#EA580C" />
+                </TouchableOpacity>
               </View>
-              <Text style={styles.attCardTitleText}>Total Check-ins Today</Text>
-              <Text style={styles.attCardBigValue}>156</Text>
-              <Text style={[styles.attCardSubText, { color: '#16A34A', fontWeight: '700' }]}>+12% vs yesterday</Text>
+            ) : (
+              <Text style={{ fontSize: 10, color: '#94A3B8', fontWeight: '600' }}>
+                Tap any bar to view exact count
+              </Text>
+            )}
+
+            {/* Bar Chart Container */}
+            <View style={styles.attChartContainer}>
+              {activeMetrics.chartData.map((bar, idx) => {
+                const isSelected = selectedAttChartBarIdx === idx;
+                return (
+                  <TouchableOpacity
+                    key={`${bar.label}-${idx}`}
+                    style={styles.attBarCol}
+                    activeOpacity={0.75}
+                    onPress={() => setSelectedAttChartBarIdx(isSelected ? null : idx)}
+                  >
+                    <View
+                      style={[
+                        styles.attBarFill,
+                        {
+                          height: `${bar.heightPct}%`,
+                          backgroundColor: isSelected
+                            ? '#C2410C'
+                            : isCustomerTab
+                              ? '#F97316'
+                              : '#C2410C',
+                          opacity: selectedAttChartBarIdx !== null && !isSelected ? 0.55 : 1,
+                        },
+                      ]}
+                    />
+                  </TouchableOpacity>
+                );
+              })}
             </View>
 
-            {/* Card 3: Peak Hour Today */}
-            <View style={styles.onlineKpiCard}>
-              <View style={styles.onlineKpiTopRow}>
-                <View style={[styles.onlineKpiIconSquircle, { backgroundColor: '#FFF7ED' }]}>
-                  <Ionicons name="time" size={16} color="#EA580C" />
-                </View>
-                <View style={styles.attCardTagPill}>
-                  <Text style={styles.attCardTagPillText}>PER DAY</Text>
-                </View>
-              </View>
-              <Text style={styles.attCardTitleText}>Peak Hour Today</Text>
-              <Text style={styles.attCardBigValue}>18:00</Text>
-              <Text style={styles.attCardSubText}>64 members inside</Text>
-            </View>
-
-            {/* Card 4: Failed Entries */}
-            <View style={styles.onlineKpiCard}>
-              <View style={styles.onlineKpiTopRow}>
-                <View style={[styles.onlineKpiIconSquircle, { backgroundColor: '#FEE2E2' }]}>
-                  <Ionicons name="person-remove" size={16} color="#DC2626" />
-                </View>
-                <View style={styles.attCardTagPill}>
-                  <Text style={styles.attCardTagPillText}>PER DAY</Text>
-                </View>
-              </View>
-              <Text style={styles.attCardTitleText}>Failed Entries</Text>
-              <Text style={styles.attCardBigValue}>3</Text>
-              <Text style={styles.attCardSubText}>Pass expired / RFID issue</Text>
+            <View style={styles.attChartLabelsRow}>
+              {activeMetrics.chartMarkers.map((marker, idx) => (
+                <Text key={idx} style={styles.attChartMarkerText}>
+                  {marker}
+                </Text>
+              ))}
             </View>
           </View>
-        ) : (
-          <View style={styles.onlineKpiGrid}>
-            <View style={styles.onlineKpiCard}>
-              <View style={styles.onlineKpiTopRow}>
-                <View style={[styles.onlineKpiIconSquircle, { backgroundColor: '#FFF7ED' }]}>
-                  <Ionicons name="barbell" size={16} color="#EA580C" />
-                </View>
-                <View style={styles.attCardTagPill}>
-                  <Text style={styles.attCardTagPillText}>PER DAY</Text>
-                </View>
-              </View>
-              <Text style={styles.attCardTitleText}>Trainers On Duty</Text>
-              <Text style={styles.attCardBigValue}>6</Text>
-              <Text style={styles.attCardSubText}>Live on floor now</Text>
-            </View>
 
-            <View style={styles.onlineKpiCard}>
-              <View style={styles.onlineKpiTopRow}>
-                <View style={[styles.onlineKpiIconSquircle, { backgroundColor: '#F0FDF4' }]}>
-                  <Ionicons name="checkmark-done" size={16} color="#16A34A" />
-                </View>
-                <View style={styles.attCardTagPill}>
-                  <Text style={styles.attCardTagPillText}>PER DAY</Text>
-                </View>
-              </View>
-              <Text style={styles.attCardTitleText}>Total Trainer Check-ins</Text>
-              <Text style={styles.attCardBigValue}>8</Text>
-              <Text style={styles.attCardSubText}>Morning & evening shifts</Text>
-            </View>
-
-            <View style={styles.onlineKpiCard}>
-              <View style={styles.onlineKpiTopRow}>
-                <View style={[styles.onlineKpiIconSquircle, { backgroundColor: '#FFFBEB' }]}>
-                  <Ionicons name="calendar" size={16} color="#D97706" />
-                </View>
-                <View style={styles.attCardTagPill}>
-                  <Text style={styles.attCardTagPillText}>PER DAY</Text>
-                </View>
-              </View>
-              <Text style={styles.attCardTitleText}>Completed Sessions</Text>
-              <Text style={styles.attCardBigValue}>12</Text>
-              <Text style={styles.attCardSubText}>1-on-1 PT & floor duty</Text>
-            </View>
-
-            <View style={styles.onlineKpiCard}>
-              <View style={styles.onlineKpiTopRow}>
-                <View style={[styles.onlineKpiIconSquircle, { backgroundColor: '#F0FDF4' }]}>
-                  <Ionicons name="speedometer" size={16} color="#16A34A" />
-                </View>
-                <View style={styles.attCardTagPill}>
-                  <Text style={styles.attCardTagPillText}>PER DAY</Text>
-                </View>
-              </View>
-              <Text style={styles.attCardTitleText}>Attendance Rate</Text>
-              <Text style={styles.attCardBigValue}>98%</Text>
-              <Text style={[styles.attCardSubText, { color: '#16A34A', fontWeight: '700' }]}>All staff on time</Text>
-            </View>
-          </View>
-        )}
-
-        {/* Traffic Chart & Recent Check-ins (Matching Web Image 2) */}
-        {isCustomerTab && (
-          <View style={{ gap: 14 }}>
-            {/* Today's Traffic Card */}
-            <View style={styles.attTrafficCard}>
-              <View style={styles.attTrafficHeader}>
-                <View>
-                  <Text style={styles.attTrafficTitle}>Today's Traffic</Text>
-                  <Text style={styles.attTrafficSub}>Hourly member check-in distribution</Text>
-                </View>
-                <View style={styles.attTrafficBadge}>
-                  <Text style={styles.attTrafficBadgeText}>Hourly Member Volume</Text>
-                </View>
-              </View>
-
-              {/* Bar Chart Container */}
-              <View style={styles.attChartContainer}>
-                {HOURLY_TRAFFIC.map(bar => (
-                  <View key={bar.hour} style={styles.attBarCol}>
-                    <View style={[styles.attBarFill, { height: `${bar.heightPct}%` }]} />
-                  </View>
-                ))}
-              </View>
-
-              <View style={styles.attChartLabelsRow}>
-                <Text style={styles.attChartMarkerText}>06:00</Text>
-                <Text style={styles.attChartMarkerText}>12:00</Text>
-                <Text style={styles.attChartMarkerText}>18:00 (Peak)</Text>
-                <Text style={styles.attChartMarkerText}>22:00</Text>
-              </View>
-            </View>
-
-            {/* Recent Check-ins Card (Matching Web Image 2) */}
+          {/* Recent Check-ins (CUSTOMERS) or Trainer Shift Status (TRAINERS) */}
+          {isCustomerTab ? (
             <View style={styles.attRecentCard}>
               <View style={styles.attRecentHeader}>
                 <View>
                   <Text style={styles.attRecentTitle}>Recent Check-ins</Text>
-                  <Text style={styles.attRecentSub}>Per Day View</Text>
+                  <Text style={styles.attRecentSub}>{timeframeLabel} View</Text>
                 </View>
                 <View style={styles.attRecentBadge}>
                   <Text style={styles.attRecentBadgeText}>{filteredCustomers.length} Logs</Text>
@@ -4880,36 +5820,113 @@ const renderSalesHistoryView = () => {
               </View>
 
               <View style={{ gap: 8, marginTop: 8 }}>
-                {filteredCustomers.slice(0, 4).map(log => (
-                  <View key={log.id} style={styles.attRecentItem}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                      <View style={[styles.attRecentAvatar, log.type === 'VIP Member' && { backgroundColor: '#EA580C' }]}>
-                        <Text style={[styles.attRecentAvatarText, log.type === 'VIP Member' && { color: '#FFFFFF' }]}>
+                {filteredCustomers.slice(0, 6).map(log => (
+                  <TouchableOpacity
+                    key={log.id}
+                    style={styles.attRecentItem}
+                    activeOpacity={0.8}
+                    onPress={() => setSelectedAttendanceDetail({ ...log, recordCategory: 'Customer' })}
+                  >
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, flex: 1 }}>
+                      <View
+                        style={[
+                          styles.attRecentAvatar,
+                          log.type === 'VIP Member' && { backgroundColor: '#C2410C' },
+                          log.type === 'Guest Pass' && { backgroundColor: '#FEF3C7' },
+                        ]}
+                      >
+                        <Text
+                          style={[
+                            styles.attRecentAvatarText,
+                            log.type === 'VIP Member' && { color: '#FFFFFF' },
+                            log.type === 'Guest Pass' && { color: '#B45309' },
+                          ]}
+                        >
                           {log.name.charAt(0)}
                         </Text>
                       </View>
-                      <View>
+                      <View style={{ flex: 1 }}>
                         <Text style={styles.attRecentName}>{log.name}</Text>
                         <Text style={styles.attRecentType}>{log.type} • {log.date}</Text>
                       </View>
                     </View>
                     <Text style={styles.attRecentTime}>{log.checkInTime}</Text>
-                  </View>
+                  </TouchableOpacity>
                 ))}
               </View>
             </View>
-          </View>
-        )}
+          ) : (
+            <View style={styles.attRecentCard}>
+              <View style={styles.attRecentHeader}>
+                <View>
+                  <Text style={styles.attRecentTitle}>Trainer Shift Status</Text>
+                  <Text style={styles.attRecentSub}>{timeframeLabel} View</Text>
+                </View>
+                <View style={styles.attRecentBadge}>
+                  <Text style={styles.attRecentBadgeText}>{filteredTrainers.length} Shifts</Text>
+                </View>
+              </View>
 
-        {/* Customer Access Logs / Trainer Shifts Table (Matching Web Image 3) */}
+              <View style={{ gap: 8, marginTop: 8 }}>
+                {filteredTrainers.slice(0, 6).map(item => {
+                  const isOnDuty = item.checkOutTime === 'In Progress';
+                  return (
+                    <TouchableOpacity
+                      key={item.id}
+                      style={styles.attRecentItem}
+                      activeOpacity={0.8}
+                      onPress={() => setSelectedAttendanceDetail({ ...item, recordCategory: 'Trainer' })}
+                    >
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, flex: 1, paddingRight: 8 }}>
+                        <View style={[styles.attRecentAvatar, { backgroundColor: '#C2410C' }]}>
+                          <Text style={[styles.attRecentAvatarText, { color: '#FFFFFF' }]}>
+                            {item.name.charAt(0)}
+                          </Text>
+                        </View>
+                        <View style={{ flex: 1 }}>
+                          <Text style={styles.attRecentName} numberOfLines={1}>{item.name}</Text>
+                          <Text style={styles.attRecentType} numberOfLines={1}>{item.dutyType}</Text>
+                        </View>
+                      </View>
+                      <View
+                        style={{
+                          paddingHorizontal: 9,
+                          paddingVertical: 4,
+                          borderRadius: 9999,
+                          borderWidth: 1,
+                          backgroundColor: isOnDuty ? '#FFF7ED' : '#ECFDF5',
+                          borderColor: isOnDuty ? '#FFEDD5' : '#A7F3D0',
+                        }}
+                      >
+                        <Text
+                          style={{
+                            fontSize: 10,
+                            fontWeight: '800',
+                            color: isOnDuty ? '#EA580C' : '#047857',
+                          }}
+                        >
+                          {isOnDuty ? 'On Duty' : 'Completed'}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+            </View>
+          )}
+        </View>
+
+        {/* Customer Access Logs / Trainers Attendance & Shift Logs */}
         <View style={styles.attLogsCard}>
           <View style={styles.attLogsHeader}>
             <View>
               <Text style={styles.attLogsTitle}>
-                {isCustomerTab ? 'Customer Access Logs' : 'Trainer Shift & Duty Logs'}
+                {isCustomerTab ? 'Customer Access Logs' : 'Trainers Attendance & Shift Logs'}
               </Text>
               <Text style={styles.attLogsSubtitle}>
-                Complete history of facility entries ({timeframeLabel})
+                {isCustomerTab
+                  ? `Complete history of facility entries (${timeframeLabel})`
+                  : `Detailed records of trainer check-ins, sessions, and duty times (${timeframeLabel})`}
               </Text>
             </View>
           </View>
@@ -4919,7 +5936,7 @@ const renderSalesHistoryView = () => {
             <Ionicons name="search" size={16} color="#94A3B8" />
             <TextInput
               style={styles.onlineSearchInput}
-              placeholder={isCustomerTab ? 'Search member name or date...' : 'Search trainer name or duty...'}
+              placeholder={isCustomerTab ? 'Search member name or date...' : 'Search trainer, duty, client or date...'}
               placeholderTextColor="#94A3B8"
               value={attendanceSearch}
               onChangeText={setAttendanceSearch}
@@ -4936,19 +5953,20 @@ const renderSalesHistoryView = () => {
             filteredCustomers.length === 0 ? (
               <View style={styles.schedRosterEmpty}>
                 <Ionicons name="calendar-outline" size={28} color="#94A3B8" />
-                <Text style={styles.schedRosterEmptyText}>No customer attendance records found.</Text>
+                <Text style={styles.schedRosterEmptyText}>
+                  No customer attendance records found for this timeframe.
+                </Text>
               </View>
             ) : (
               <View style={{ gap: 10, marginTop: 4 }}>
                 {filteredCustomers.map(item => (
                   <View key={item.id} style={styles.attRecordCard}>
-                    {/* Member Top Row */}
                     <View style={styles.attRecordTopRow}>
-                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, flex: 1 }}>
                         <View style={styles.attRecordAvatar}>
                           <Text style={styles.attRecordAvatarText}>{item.name.charAt(0)}</Text>
                         </View>
-                        <View>
+                        <View style={{ flex: 1 }}>
                           <Text style={styles.attRecordName}>{item.name}</Text>
                           {item.email ? (
                             <Text style={styles.attRecordEmail}>{item.email}</Text>
@@ -4960,7 +5978,6 @@ const renderSalesHistoryView = () => {
                       </View>
                     </View>
 
-                    {/* Meta Times Row (Matching Web Image 3) */}
                     <View style={styles.attRecordTimesRow}>
                       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
                         <Ionicons name="calendar-outline" size={12} color="#EA580C" />
@@ -4973,16 +5990,17 @@ const renderSalesHistoryView = () => {
                       </View>
 
                       <View>
-                        <Text style={[
-                          styles.attRecordOutTimeText,
-                          item.checkOutTime === 'In Gym' && styles.attRecordInGymPill
-                        ]}>
+                        <Text
+                          style={[
+                            styles.attRecordOutTimeText,
+                            item.checkOutTime === 'In Gym' && styles.attRecordInGymPill,
+                          ]}
+                        >
                           {item.checkOutTime}
                         </Text>
                       </View>
                     </View>
 
-                    {/* View Details Action */}
                     <View style={styles.attRecordFooterRow}>
                       <TouchableOpacity
                         style={styles.attViewDetailsBtn}
@@ -5001,35 +6019,68 @@ const renderSalesHistoryView = () => {
             filteredTrainers.length === 0 ? (
               <View style={styles.schedRosterEmpty}>
                 <Ionicons name="barbell-outline" size={28} color="#94A3B8" />
-                <Text style={styles.schedRosterEmptyText}>No trainer shift records found.</Text>
+                <Text style={styles.schedRosterEmptyText}>
+                  No trainer attendance records found for this timeframe.
+                </Text>
               </View>
             ) : (
               <View style={{ gap: 10, marginTop: 4 }}>
                 {filteredTrainers.map(item => (
                   <View key={item.id} style={styles.attRecordCard}>
                     <View style={styles.attRecordTopRow}>
-                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                        <View style={[styles.attRecordAvatar, { backgroundColor: '#F0FDF4' }]}>
-                          <Text style={[styles.attRecordAvatarText, { color: '#16A34A' }]}>{item.name.charAt(0)}</Text>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, flex: 1 }}>
+                        <View style={[styles.attRecordAvatar, { backgroundColor: '#C2410C' }]}>
+                          <Text style={[styles.attRecordAvatarText, { color: '#FFFFFF' }]}>{item.name.charAt(0)}</Text>
                         </View>
-                        <View>
+                        <View style={{ flex: 1 }}>
                           <Text style={styles.attRecordName}>{item.name}</Text>
                           <Text style={styles.attRecordEmail}>{item.specialization}</Text>
                         </View>
                       </View>
                       <View style={[styles.onlineStatusPill, styles.onlineStatusUpcoming]}>
-                        <Text style={styles.onlineStatusUpcomingText}>{item.punctuality}</Text>
+                        <Text style={styles.onlineStatusUpcomingText}>{item.punctuality || 'On Time'}</Text>
+                      </View>
+                    </View>
+
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8, paddingTop: 4 }}>
+                      <View style={{ flex: 1, minWidth: '45%' }}>
+                        <Text style={{ fontSize: 9, fontWeight: '800', color: '#64748B' }}>ASSIGNED DUTY / MODE</Text>
+                        <Text style={{ fontSize: 11, fontWeight: '700', color: '#111827', marginTop: 1 }}>{item.dutyType}</Text>
+                      </View>
+                      <View style={{ flex: 1, minWidth: '45%' }}>
+                        <Text style={{ fontSize: 9, fontWeight: '800', color: '#64748B' }}>CLIENT / AREA</Text>
+                        <Text style={{ fontSize: 11, fontWeight: '700', color: '#EA580C', marginTop: 1 }}>
+                          {item.assignedCustomer ? `Client: ${item.assignedCustomer}` : 'Main Floor'}
+                        </Text>
+                      </View>
+                    </View>
+
+                    <View style={styles.attRecordTimesRow}>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                        <Ionicons name="calendar-outline" size={12} color="#EA580C" />
+                        <Text style={styles.attRecordDateText}>{item.date}</Text>
+                      </View>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                        <Ionicons name="time-outline" size={12} color="#EA580C" />
+                        <Text style={{ fontSize: 11, fontWeight: '600', color: '#64748B' }}>{item.scheduledTime}</Text>
                       </View>
                     </View>
 
                     <View style={styles.attRecordTimesRow}>
                       <View>
-                        <Text style={{ fontSize: 9, fontWeight: '800', color: '#64748B' }}>DUTY</Text>
-                        <Text style={{ fontSize: 11, fontWeight: '700', color: '#EA580C' }}>{item.dutyType}</Text>
+                        <Text style={{ fontSize: 9, fontWeight: '800', color: '#64748B' }}>CHECK-IN</Text>
+                        <Text style={{ fontSize: 11, fontWeight: '800', color: '#111827' }}>{item.checkInTime}</Text>
                       </View>
-                      <View>
-                        <Text style={{ fontSize: 9, fontWeight: '800', color: '#64748B' }}>IN / OUT</Text>
-                        <Text style={{ fontSize: 11, fontWeight: '700', color: '#111827' }}>{item.checkInTime} - {item.checkOutTime}</Text>
+                      <View style={{ alignItems: 'flex-end' }}>
+                        <Text style={{ fontSize: 9, fontWeight: '800', color: '#64748B' }}>CHECK-OUT</Text>
+                        <Text
+                          style={[
+                            { fontSize: 11, fontWeight: '800', color: '#111827' },
+                            item.checkOutTime === 'In Progress' && styles.attRecordInGymPill,
+                          ]}
+                        >
+                          {item.checkOutTime}
+                        </Text>
                       </View>
                     </View>
 
@@ -5424,6 +6475,9 @@ const renderBranchesView = () => {
   const renderCustomerPerfModal = () => {
     if (!selectedPerfCustomer) return null;
     const c = selectedPerfCustomer;
+    const modalCal = buildPerfCalendarData(c, perfCalendarMonth, perfCalendarSelectedKey);
+    const eligibleList = (c.rewardsSummary?.evaluatedRewards || []).filter((rw: any) => rw.isEligible);
+
     return (
       <Modal visible={Boolean(selectedPerfCustomer)} transparent animationType="slide">
         <View style={styles.perfModalOverlay}>
@@ -5433,8 +6487,37 @@ const renderBranchesView = () => {
                 <Text style={styles.perfModalTitle}>Member Performance Record</Text>
                 <Text style={styles.perfModalSub}>Verified fitness tracking, attendance & routine consistency</Text>
               </View>
+              <TouchableOpacity
+                onPress={() => {
+                  const cust = c;
+                  setSelectedPerfCustomer(null);
+                  setPerfCalendarMonth(new Date());
+                  setPerfCalendarSelectedKey(formatPerfDateKey(new Date()));
+                  setSelectedPerfCalendarCustomer(cust);
+                }}
+                style={[styles.perfSmallPrimaryBtn, { marginRight: 8 }]}
+              >
+                <Ionicons name="calendar-outline" size={12} color="#FFFFFF" />
+                <Text style={styles.perfSmallPrimaryText}>Calendar</Text>
+              </TouchableOpacity>
               <TouchableOpacity onPress={() => setSelectedPerfCustomer(null)} style={styles.perfModalCloseBtn}>
                 <Ionicons name="close" size={20} color="#64748B" />
+              </TouchableOpacity>
+            </View>
+
+            {/* Modal Sub-View Switcher: Overview vs Daily Calendar */}
+            <View style={{ flexDirection: 'row', gap: 6, marginBottom: 10, backgroundColor: '#F8FAFC', padding: 4, borderRadius: 10, borderWidth: 1, borderColor: '#E2E8F0' }}>
+              <TouchableOpacity
+                style={[styles.perfSubTabBtn, perfCustomerModalTab === 'overview' && styles.perfSubTabBtnActive]}
+                onPress={() => setPerfCustomerModalTab('overview')}
+              >
+                <Text style={[styles.perfSubTabText, perfCustomerModalTab === 'overview' && styles.perfSubTabTextActive]}>Full Overview & Logs</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.perfSubTabBtn, perfCustomerModalTab === 'calendar' && styles.perfSubTabBtnActive]}
+                onPress={() => setPerfCustomerModalTab('calendar')}
+              >
+                <Text style={[styles.perfSubTabText, perfCustomerModalTab === 'calendar' && styles.perfSubTabTextActive]}>Per-Day Calendar</Text>
               </TouchableOpacity>
             </View>
 
@@ -5442,76 +6525,133 @@ const renderBranchesView = () => {
               {/* Member Card */}
               <View style={styles.perfModalMemberBox}>
                 <View style={styles.perfModalAvatar}>
-                  <Text style={styles.perfModalAvatarText}>{c.name.charAt(0)}</Text>
+                  <Text style={styles.perfModalAvatarText}>{(c.name || 'M').charAt(0)}</Text>
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={styles.perfModalMemberName}>{c.name}</Text>
-                  <Text style={styles.perfModalMemberContact}>{c.email}{c.phone ? ` • ${c.phone}` : ''}</Text>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 4 }}>
+                  <Text style={styles.perfModalMemberContact}>{c.email}{(c.phone || c.mobile) ? ` • ${c.phone || c.mobile}` : ''}</Text>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 4, flexWrap: 'wrap' }}>
                     <View style={styles.perfStatusPillActive}>
                       <Text style={styles.perfStatusPillTextActive}>{c.membership?.status || 'Active'}</Text>
                     </View>
                     <Text style={styles.perfPlanText}>{c.membership?.planName || 'Standard'}</Text>
+                    {c.rewardsSummary?.pointsBalance !== undefined && (
+                      <Text style={[styles.perfPlanText, { color: '#D97706', fontWeight: '700' }]}>
+                        • {c.rewardsSummary.pointsBalance} pts wallet
+                      </Text>
+                    )}
                   </View>
                 </View>
               </View>
 
-              {/* Data Grid */}
-              <View style={styles.perfModalGrid}>
-                <View style={styles.perfModalGridRow}>
-                  <View style={styles.perfModalGridCol}>
-                    <Text style={styles.perfCellLabel}>COACH / TRAINER</Text>
-                    <Text style={styles.perfCellDarkVal}>{c.assignedTrainer ? c.assignedTrainer.name : 'None assigned'}</Text>
-                  </View>
-                  <View style={styles.perfModalGridCol}>
-                    <Text style={styles.perfCellLabel}>ATTENDANCE STREAK</Text>
-                    <Text style={[styles.perfCellDarkVal, { color: '#B45309' }]}>
-                      {c.attendanceSummary?.attendanceStreak || 0} Days Verified
-                    </Text>
-                  </View>
-                </View>
-
-                <View style={styles.perfModalGridRow}>
-                  <View style={styles.perfModalGridCol}>
-                    <Text style={styles.perfCellLabel}>WORKOUT COMPLETION</Text>
-                    <Text style={styles.perfWorkoutPctText}>
-                      {c.workoutSummary?.completionPercentage !== null && c.workoutSummary?.completionPercentage !== undefined ? `${c.workoutSummary.completionPercentage}%` : 'Not recorded'}
-                    </Text>
-                    <Text style={styles.perfCellSubVal}>
-                      {c.workoutSummary?.completedWorkoutsCount || 0} of {c.workoutSummary?.totalWorkoutsScheduled || 0} sessions
-                    </Text>
-                  </View>
-                  <View style={styles.perfModalGridCol}>
-                    <Text style={styles.perfCellLabel}>DIET PLAN STATUS</Text>
-                    <Text style={[styles.perfCellDarkVal, { color: '#15803D' }]}>
-                      {c.dietSummary?.plan?.status || 'Approved'}
-                    </Text>
-                    <Text style={styles.perfCellSubVal}>
-                      {c.dietSummary?.adherencePercentage ? `${c.dietSummary.adherencePercentage}% check-in` : 'No meal logs'}
-                    </Text>
-                  </View>
-                </View>
-
-                <View style={styles.perfModalGridFullCol}>
-                  <Text style={styles.perfCellLabel}>ELIGIBLE REWARDS & INCENTIVES</Text>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 4, flexWrap: 'wrap', gap: 8 }}>
-                    <View style={styles.perfEligiblePill}>
-                      <Ionicons name="gift" size={13} color="#15803D" />
-                      <Text style={styles.perfEligiblePillText}>15% Off Nutrition Store Coupon (Eligible)</Text>
+              {perfCustomerModalTab === 'overview' ? (
+                <View style={styles.perfModalGrid}>
+                  <View style={styles.perfModalGridRow}>
+                    <View style={styles.perfModalGridCol}>
+                      <Text style={styles.perfCellLabel}>COACH / TRAINER</Text>
+                      <Text style={styles.perfCellDarkVal}>{c.assignedTrainer ? c.assignedTrainer.name : 'None assigned'}</Text>
                     </View>
-                    <TouchableOpacity 
-                      style={styles.perfAwardDirectBtn}
-                      onPress={() => Alert.alert('Award Perk', `Reward voucher dispatched to ${c.name}!`)}
-                    >
-                      <Text style={styles.perfAwardDirectBtnText}>Award Perk</Text>
+                    <View style={styles.perfModalGridCol}>
+                      <Text style={styles.perfCellLabel}>ATTENDANCE STREAK</Text>
+                      <Text style={[styles.perfCellDarkVal, { color: '#B45309' }]}>
+                        {c.attendanceSummary?.attendanceStreak || 0} Days ({c.attendanceSummary?.totalVerifiedVisits || 0} visits)
+                      </Text>
+                    </View>
+                  </View>
+
+                  <View style={styles.perfModalGridRow}>
+                    <View style={styles.perfModalGridCol}>
+                      <Text style={styles.perfCellLabel}>WORKOUT COMPLETION</Text>
+                      <Text style={styles.perfWorkoutPctText}>
+                        {c.workoutSummary?.completionPercentage !== null && c.workoutSummary?.completionPercentage !== undefined ? `${c.workoutSummary.completionPercentage}%` : 'Not recorded'}
+                      </Text>
+                      <Text style={styles.perfCellSubVal}>
+                        {c.workoutSummary?.completedWorkoutsCount || 0} of {c.workoutSummary?.totalWorkoutsScheduled || 0} sessions
+                      </Text>
+                    </View>
+                    <View style={styles.perfModalGridCol}>
+                      <Text style={styles.perfCellLabel}>DIET PLAN STATUS</Text>
+                      <Text style={[styles.perfCellDarkVal, { color: '#15803D' }]}>
+                        {c.dietSummary?.plan?.status || 'Not assigned'}
+                      </Text>
+                      <Text style={styles.perfCellSubVal}>
+                        {c.dietSummary?.adherencePercentage !== null && c.dietSummary?.adherencePercentage !== undefined ? `${c.dietSummary.adherencePercentage}% check-in` : 'No meal logs'}
+                      </Text>
+                    </View>
+                  </View>
+
+                  <View style={styles.perfModalGridFullCol}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
+                      <Text style={styles.perfCellLabel}>
+                        ELIGIBLE REWARDS ({c.rewardsSummary?.eligibleRewardsCount ?? eligibleList.length})
+                      </Text>
+                      <TouchableOpacity
+                        style={styles.perfAwardDirectBtn}
+                        onPress={() => {
+                          setSelectedPerfCustomer(null);
+                          openPerfCreateRewardModal('Customer', c);
+                        }}
+                      >
+                        <Text style={styles.perfAwardDirectBtnText}>+ Direct Reward</Text>
+                      </TouchableOpacity>
+                    </View>
+                    {eligibleList.length === 0 ? (
+                      <Text style={styles.perfCellMutedVal}>No rewards currently unlocked — tap "+ Direct Reward" to grant one.</Text>
+                    ) : (
+                      <View style={{ gap: 6 }}>
+                        {eligibleList.map((rw: any, idx: number) => (
+                          <View key={rw.rewardId || idx} style={[styles.perfEligiblePill, { justifyContent: 'space-between', paddingVertical: 6 }]}>
+                            <Text style={styles.perfEligiblePillText}>{rw.title}</Text>
+                            <Text style={{ fontSize: 10, color: '#15803D', fontWeight: '700' }}>{rw.alreadyClaimed ? 'Claimed' : 'Eligible'}</Text>
+                          </View>
+                        ))}
+                      </View>
+                    )}
+                  </View>
+                </View>
+              ) : (
+                <View style={styles.perfCalGridCard}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+                    <TouchableOpacity style={styles.perfCalNavBtn} onPress={() => setPerfCalendarMonth(prev => new Date(prev.getFullYear(), prev.getMonth() - 1, 1))}>
+                      <Ionicons name="chevron-back" size={15} color="#111827" />
+                    </TouchableOpacity>
+                    <Text style={styles.perfCalMonthTitle}>
+                      {perfCalendarMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                    </Text>
+                    <TouchableOpacity style={styles.perfCalNavBtn} onPress={() => setPerfCalendarMonth(prev => new Date(prev.getFullYear(), prev.getMonth() + 1, 1))}>
+                      <Ionicons name="chevron-forward" size={15} color="#111827" />
                     </TouchableOpacity>
                   </View>
+                  <View style={styles.perfCalWeekRow}>
+                    {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((w, i) => <Text key={i} style={styles.perfCalWeekText}>{w}</Text>)}
+                  </View>
+                  <View style={styles.perfCalDaysGrid}>
+                    {modalCal.days.map(d => {
+                      const ev = modalCal.eventsMap.get(d.dateKey);
+                      const hasAny = ev && (ev.hasAttendance || ev.hasWorkout || ev.hasDiet);
+                      return (
+                        <TouchableOpacity
+                          key={d.dateKey}
+                          onPress={() => setPerfCalendarSelectedKey(d.dateKey)}
+                          style={[styles.perfCalDayBox, !d.isCurrentMonth && { opacity: 0.4 }, hasAny ? styles.perfCalDayBoxActive : styles.perfCalDayBoxEmpty, d.isSelected && styles.perfCalDayBoxStreak]}
+                        >
+                          <Text style={[styles.perfCalDayNum, hasAny && styles.perfCalDayNumActive]}>{d.dayNumber}</Text>
+                        </TouchableOpacity>
+                      );
+                    })}
+                  </View>
+                  <View style={{ marginTop: 10, paddingTop: 8, borderTopWidth: 1, borderTopColor: '#E2E8F0', gap: 4 }}>
+                    <Text style={styles.perfCellLabel}>SELECTED DATE: {perfCalendarSelectedKey}</Text>
+                    <Text style={styles.perfCellSubVal}>
+                      Attendance: {modalCal.selectedDayData.attendance ? 'Present ✓' : 'None'} • Workouts: {modalCal.selectedDayData.completedWorkouts.length} • Meals: {modalCal.selectedDayData.completedMeals.length}
+                    </Text>
+                  </View>
                 </View>
-              </View>
+              )}
             </ScrollView>
 
             <View style={{ marginTop: 14, paddingTop: 10, borderTopWidth: 1, borderTopColor: '#E2E8F0' }}>
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={styles.perfModalCloseBottomBtn}
                 onPress={() => setSelectedPerfCustomer(null)}
               >
@@ -5524,10 +6664,191 @@ const renderBranchesView = () => {
     );
   };
 
+  // Interactive Sales History Calendar Date Picker Modal
+  const renderSalesCalendarModal = () => {
+    if (!salesCalendarTarget) return null;
+    const { year, month } = salesCalendarCursor;
+    const monthName = new Date(year, month, 1).toLocaleDateString('en-US', {
+      month: 'long',
+      year: 'numeric',
+    });
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const firstWeekday = new Date(year, month, 1).getDay(); // 0 = Sun
+    const cells: (number | null)[] = [
+      ...Array.from({ length: firstWeekday }, () => null),
+      ...Array.from({ length: daysInMonth }, (_, i) => i + 1),
+    ];
+    while (cells.length % 7 !== 0) {
+      cells.push(null);
+    }
+
+    const todayYMD = toLocalYMD(new Date());
+    const fromParsed = parseSalesFilterDate(salesFromDate, false);
+    const toParsed = parseSalesFilterDate(salesToDate, false);
+    const fromYMD = fromParsed ? toLocalYMD(fromParsed) : '';
+    const toYMD = toParsed ? toLocalYMD(toParsed) : '';
+
+    const handlePrevMonth = () => {
+      if (month === 0) setSalesCalendarCursor({ year: year - 1, month: 11 });
+      else setSalesCalendarCursor({ year, month: month - 1 });
+    };
+
+    const handleNextMonth = () => {
+      if (month === 11) setSalesCalendarCursor({ year: year + 1, month: 0 });
+      else setSalesCalendarCursor({ year, month: month + 1 });
+    };
+
+    const handleSelectDay = (day: number) => {
+      const picked = toLocalYMD(new Date(year, month, day));
+      if (salesCalendarTarget === 'from') {
+        setSalesFromDate(picked);
+        if (toYMD && picked > toYMD) {
+          setSalesToDate(picked);
+        }
+      } else {
+        setSalesToDate(picked);
+        if (fromYMD && picked < fromYMD) {
+          setSalesFromDate(picked);
+        }
+      }
+    };
+
+    return (
+      <Modal
+        visible={Boolean(salesCalendarTarget)}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setSalesCalendarTarget(null)}
+      >
+        <View style={styles.perfModalOverlay}>
+          <View style={styles.salesCalModalCard}>
+            <View style={styles.perfModalHeader}>
+              <View style={{ flex: 1, paddingRight: 10 }}>
+                <Text style={styles.perfModalTitle}>
+                  {salesCalendarTarget === 'from' ? 'Select From Date' : 'Select To Date'}
+                </Text>
+                <Text style={styles.perfModalSub}>
+                  {salesCalendarTarget === 'from'
+                    ? salesFromDate
+                      ? `Selected: ${formatSalesDateDisplay(salesFromDate)}`
+                      : 'Tap a date on the calendar for start date'
+                    : salesToDate
+                      ? `Selected: ${formatSalesDateDisplay(salesToDate)}`
+                      : 'Tap a date on the calendar for end date'}
+                </Text>
+              </View>
+              <TouchableOpacity
+                onPress={() => setSalesCalendarTarget(null)}
+                style={styles.perfModalCloseBtn}
+              >
+                <Ionicons name="close" size={20} color="#64748B" />
+              </TouchableOpacity>
+            </View>
+
+            {/* Month Navigator */}
+            <View style={styles.salesCalMonthHeader}>
+              <TouchableOpacity style={styles.salesCalNavBtn} onPress={handlePrevMonth}>
+                <Ionicons name="chevron-back" size={18} color="#1E293B" />
+              </TouchableOpacity>
+              <Text style={styles.salesCalMonthTitle}>{monthName}</Text>
+              <TouchableOpacity style={styles.salesCalNavBtn} onPress={handleNextMonth}>
+                <Ionicons name="chevron-forward" size={18} color="#1E293B" />
+              </TouchableOpacity>
+            </View>
+
+            {/* Weekday Header */}
+            <View style={styles.salesCalWeekRow}>
+              {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((wd) => (
+                <Text key={wd} style={styles.salesCalWeekLabel}>
+                  {wd}
+                </Text>
+              ))}
+            </View>
+
+            {/* Calendar Days Grid */}
+            <View style={styles.salesCalDaysGrid}>
+              {cells.map((day, idx) => {
+                if (day === null) {
+                  return <View key={`empty-${idx}`} style={styles.salesCalDayCell} />;
+                }
+                const cellYMD = toLocalYMD(new Date(year, month, day));
+                const isFrom = cellYMD === fromYMD;
+                const isTo = cellYMD === toYMD;
+                const isEndpoint = isFrom || isTo;
+                const isInRange =
+                  Boolean(fromYMD && toYMD && cellYMD > fromYMD && cellYMD < toYMD);
+                const isToday = cellYMD === todayYMD;
+
+                return (
+                  <View key={cellYMD} style={styles.salesCalDayCell}>
+                    <TouchableOpacity
+                      style={[
+                        styles.salesCalDayBtn,
+                        isInRange && styles.salesCalDayInRange,
+                        isToday && !isEndpoint && styles.salesCalDayToday,
+                        isEndpoint && styles.salesCalDaySelected,
+                      ]}
+                      activeOpacity={0.75}
+                      onPress={() => handleSelectDay(day)}
+                    >
+                      <Text
+                        style={[
+                          styles.salesCalDayText,
+                          isInRange && styles.salesCalDayInRangeText,
+                          isToday && !isEndpoint && styles.salesCalDayTodayText,
+                          isEndpoint && styles.salesCalDaySelectedText,
+                        ]}
+                      >
+                        {day}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                );
+              })}
+            </View>
+
+            {/* Footer Controls */}
+            <View style={styles.salesCalFooterRow}>
+              <TouchableOpacity
+                style={styles.salesCalSecondaryBtn}
+                onPress={() => {
+                  const now = new Date();
+                  setSalesCalendarCursor({ year: now.getFullYear(), month: now.getMonth() });
+                  if (salesCalendarTarget === 'from') setSalesFromDate(todayYMD);
+                  else setSalesToDate(todayYMD);
+                }}
+              >
+                <Text style={styles.salesCalSecondaryBtnText}>Today</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.salesCalSecondaryBtn}
+                onPress={() => {
+                  if (salesCalendarTarget === 'from') setSalesFromDate('');
+                  else setSalesToDate('');
+                }}
+              >
+                <Text style={styles.salesCalSecondaryBtnText}>Clear</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.salesCalDoneBtn}
+                onPress={() => setSalesCalendarTarget(null)}
+              >
+                <Text style={styles.salesCalDoneBtnText}>Done</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+    );
+  };
+
   // Customer Calendar View Modal (Matching Web CustomerDailyCalendarView)
   const renderCustomerCalendarModal = () => {
-    if (!selectedPerfCalendarCustomer) return null;
+    if (!selectedPerfCalendarCustomer || perfSubTab === 'calendar') return null;
     const c = selectedPerfCalendarCustomer;
+    const calData = buildPerfCalendarData(c, perfCalendarMonth, perfCalendarSelectedKey);
     return (
       <Modal visible={Boolean(selectedPerfCalendarCustomer)} transparent animationType="slide">
         <View style={styles.perfModalOverlay}>
@@ -5542,35 +6863,755 @@ const renderBranchesView = () => {
               </TouchableOpacity>
             </View>
 
-            <ScrollView style={{ maxHeight: 420 }} showsVerticalScrollIndicator={false}>
+            <ScrollView style={{ maxHeight: 450 }} showsVerticalScrollIndicator={false}>
               <View style={styles.perfCalGridCard}>
-                <Text style={styles.perfCalMonthTitle}>October 2026 Completed Sets</Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+                  <TouchableOpacity style={styles.perfCalNavBtn} onPress={() => setPerfCalendarMonth(prev => new Date(prev.getFullYear(), prev.getMonth() - 1, 1))}>
+                    <Ionicons name="chevron-back" size={16} color="#111827" />
+                  </TouchableOpacity>
+                  <Text style={styles.perfCalMonthTitle}>
+                    {perfCalendarMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                  </Text>
+                  <TouchableOpacity style={styles.perfCalNavBtn} onPress={() => setPerfCalendarMonth(prev => new Date(prev.getFullYear(), prev.getMonth() + 1, 1))}>
+                    <Ionicons name="chevron-forward" size={16} color="#111827" />
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.perfCalWeekRow}>
+                  {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(w => <Text key={w} style={styles.perfCalWeekText}>{w}</Text>)}
+                </View>
                 <View style={styles.perfCalDaysGrid}>
-                  {Array.from({ length: 31 }, (_, i) => i + 1).map(day => {
-                    const isComplete = day <= 21;
+                  {calData.days.map(d => {
+                    const ev = calData.eventsMap.get(d.dateKey);
+                    const hasAny = ev && (ev.hasAttendance || ev.hasWorkout || ev.hasDiet);
                     return (
-                      <View 
-                        key={day} 
+                      <TouchableOpacity
+                        key={d.dateKey}
+                        onPress={() => setPerfCalendarSelectedKey(d.dateKey)}
                         style={[
-                          styles.perfCalDayBox, 
-                          isComplete ? styles.perfCalDayBoxActive : styles.perfCalDayBoxEmpty,
+                          styles.perfCalDayBox,
+                          !d.isCurrentMonth && { opacity: 0.4 },
+                          hasAny ? styles.perfCalDayBoxActive : styles.perfCalDayBoxEmpty,
+                          d.isSelected && styles.perfCalDayBoxStreak
                         ]}
                       >
-                        <Text style={[styles.perfCalDayNum, isComplete && styles.perfCalDayNumActive]}>{day}</Text>
-                        {isComplete && <Ionicons name="checkmark" size={10} color="#15803D" />}
-                      </View>
+                        <Text style={[styles.perfCalDayNum, hasAny && styles.perfCalDayNumActive]}>{d.dayNumber}</Text>
+                        <View style={{ flexDirection: 'row', gap: 2, marginTop: 2 }}>
+                          {ev?.hasAttendance && <View style={[styles.perfCalDot, { backgroundColor: '#16A34A' }]} />}
+                          {ev?.hasWorkout && <View style={[styles.perfCalDot, { backgroundColor: '#EA580C' }]} />}
+                          {ev?.hasDiet && <View style={[styles.perfCalDot, { backgroundColor: '#D97706' }]} />}
+                        </View>
+                      </TouchableOpacity>
                     );
                   })}
                 </View>
               </View>
+
+              <View style={[styles.perfCalGridCard, { marginTop: 10 }]}>
+                <Text style={styles.perfCalMonthTitle}>Activity on {perfCalendarSelectedKey}</Text>
+                <Text style={styles.perfCellSubVal}>
+                  Attendance: {calData.selectedDayData.attendance ? 'Verified Check-in ✓' : 'No visit recorded'}
+                </Text>
+                <Text style={styles.perfCellSubVal}>
+                  Completed Workouts: {calData.selectedDayData.completedWorkouts.length}
+                </Text>
+                <Text style={styles.perfCellSubVal}>
+                  Meals Checked-in: {calData.selectedDayData.completedMeals.length}
+                </Text>
+              </View>
             </ScrollView>
 
             <View style={{ marginTop: 14, paddingTop: 10, borderTopWidth: 1, borderTopColor: '#E2E8F0' }}>
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={styles.perfModalCloseBottomBtn}
                 onPress={() => setSelectedPerfCalendarCustomer(null)}
               >
                 <Text style={styles.perfModalCloseBottomText}>Close</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+    );
+  };
+
+  const renderTrainerPerfModal = () => {
+    if (!selectedPerfTrainer) return null;
+    const t = selectedPerfTrainer;
+    const clients = t.handledClients || [];
+    const workoutsList = t.completedWorkoutsList || [];
+    const mealsList = t.completedMealsList || [];
+    const sessionsList = (t.completedSessionsList && t.completedSessionsList.length > 0)
+      ? t.completedSessionsList
+      : (t.handledSessions || []).filter((s: any) => s.status === 'Completed');
+    const reviewsList = t.feedbackSummary?.reviews || [];
+    const bonusesList = t.rewardsSummary?.evaluatedRewards || [];
+
+    return (
+      <Modal visible={Boolean(selectedPerfTrainer)} transparent animationType="slide">
+        <View style={styles.perfModalOverlay}>
+          <View style={styles.perfModalCard}>
+            <View style={styles.perfModalHeader}>
+              <View style={{ flex: 1, paddingRight: 10 }}>
+                <Text style={styles.perfModalTitle}>{t.name} — Trainer Report</Text>
+                <Text style={styles.perfModalSub}>{t.email}{t.phone ? ` • ${t.phone}` : ''}</Text>
+              </View>
+              <TouchableOpacity onPress={() => setSelectedPerfTrainer(null)} style={styles.perfModalCloseBtn}>
+                <Ionicons name="close" size={20} color="#64748B" />
+              </TouchableOpacity>
+            </View>
+
+            {/* 5 Summary Strip */}
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, marginBottom: 10 }}>
+              {[
+                { label: 'CLIENTS', val: `${t.clientsSummary?.totalAssignedCustomers ?? clients.length}`, color: '#111827' },
+                { label: 'WORKOUTS', val: `${t.sessionsSummary?.completedWorkoutsCount ?? workoutsList.length}`, color: '#EA580C' },
+                { label: 'MEALS LOGGED', val: `${t.sessionsSummary?.completedMealsCount ?? mealsList.length}`, color: '#EA580C' },
+                { label: 'SESSIONS', val: `${t.sessionsSummary?.completedSessionsCount ?? t.completedSessionsCount ?? sessionsList.length}`, color: '#111827' },
+                { label: 'RATING', val: `${t.feedbackSummary?.averageRating ?? t.averageRating ?? 5.0} ★`, color: '#D97706' }
+              ].map((kpi, idx) => (
+                <View key={idx} style={[styles.perfTrainerStatItem, { minWidth: 92 }]}>
+                  <Text style={styles.perfTrainerStatLabel}>{kpi.label}</Text>
+                  <Text style={[styles.perfTrainerStatVal, { color: kpi.color }]}>{kpi.val}</Text>
+                </View>
+              ))}
+            </ScrollView>
+
+            {/* Sub-Tabs */}
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 6, marginBottom: 10 }}>
+              {[
+                { id: 'handled-customers', label: `Clients (${clients.length})` },
+                { id: 'workout-tracking', label: `Workouts (${workoutsList.length})` },
+                { id: 'diet-tracking', label: `Diet (${mealsList.length})` },
+                { id: 'sessions', label: `Sessions (${sessionsList.length})` },
+                { id: 'reviews', label: `Reviews (${reviewsList.length})` },
+                { id: 'rewards', label: `Bonuses (${bonusesList.length})` }
+              ].map(tab => (
+                <TouchableOpacity
+                  key={tab.id}
+                  onPress={() => setPerfTrainerModalTab(tab.id as any)}
+                  style={[styles.perfSubTabBtn, perfTrainerModalTab === tab.id && styles.perfSubTabBtnActive]}
+                >
+                  <Text style={[styles.perfSubTabText, perfTrainerModalTab === tab.id && styles.perfSubTabTextActive]}>{tab.label}</Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+
+            <ScrollView style={{ maxHeight: 340 }} showsVerticalScrollIndicator={false}>
+              {perfTrainerModalTab === 'handled-customers' && (
+                clients.length === 0 ? <Text style={styles.perfCellMutedVal}>No customer clients assigned.</Text> :
+                clients.map((cl: any, i: number) => (
+                  <View key={cl.customerId || i} style={[styles.perfMemberCard, { marginBottom: 8 }]}>
+                    <Text style={styles.perfMemberName}>{cl.name}</Text>
+                    <Text style={styles.perfMemberContact}>{cl.email} • Sessions: {cl.sessionsCount || 0}</Text>
+                  </View>
+                ))
+              )}
+              {perfTrainerModalTab === 'workout-tracking' && (
+                workoutsList.length === 0 ? <Text style={styles.perfCellMutedVal}>No completed workouts recorded.</Text> :
+                workoutsList.slice(0, 25).map((w: any, i: number) => (
+                  <View key={w._id || i} style={[styles.perfMemberCard, { marginBottom: 8 }]}>
+                    <Text style={styles.perfMemberName}>{w.clientName || 'Member'} — {w.exerciseName || w.dayName}</Text>
+                    <Text style={styles.perfMemberContact}>{w.completedSets || 0} sets • {w.completedAt ? new Date(w.completedAt).toLocaleDateString() : 'Recorded'}</Text>
+                  </View>
+                ))
+              )}
+              {perfTrainerModalTab === 'diet-tracking' && (
+                mealsList.length === 0 ? <Text style={styles.perfCellMutedVal}>No completed meal check-ins recorded.</Text> :
+                mealsList.slice(0, 25).map((m: any, i: number) => (
+                  <View key={m._id || i} style={[styles.perfMemberCard, { marginBottom: 8 }]}>
+                    <Text style={styles.perfMemberName}>{m.clientName || 'Member'} — {m.mealType}</Text>
+                    <Text style={styles.perfMemberContact}>{m.calories || 0} kcal • {m.protein || 0}g protein</Text>
+                  </View>
+                ))
+              )}
+              {perfTrainerModalTab === 'sessions' && (
+                sessionsList.length === 0 ? <Text style={styles.perfCellMutedVal}>No completed training sessions recorded.</Text> :
+                sessionsList.slice(0, 25).map((s: any, i: number) => (
+                  <View key={s._id || i} style={[styles.perfMemberCard, { marginBottom: 8 }]}>
+                    <Text style={styles.perfMemberName}>{s.clientName || 'Member'} • {s.mode || 'In-Person'}</Text>
+                    <Text style={styles.perfMemberContact}>{s.date || 'Session'} {s.time ? `• ${s.time}` : ''}</Text>
+                  </View>
+                ))
+              )}
+              {perfTrainerModalTab === 'reviews' && (
+                reviewsList.length === 0 ? <Text style={styles.perfCellMutedVal}>No customer reviews recorded yet.</Text> :
+                reviewsList.map((rev: any, i: number) => (
+                  <View key={i} style={[styles.perfMemberCard, { marginBottom: 8 }]}>
+                    <Text style={styles.perfMemberName}>{rev.clientName || 'Gym Member'} • {rev.rating} ⭐</Text>
+                    <Text style={styles.perfMemberContact}>"{rev.review}"</Text>
+                  </View>
+                ))
+              )}
+              {perfTrainerModalTab === 'rewards' && (
+                bonusesList.length === 0 ? <Text style={styles.perfCellMutedVal}>No trainer bonus programs evaluated.</Text> :
+                bonusesList.map((rw: any, i: number) => (
+                  <View key={rw.rewardId || i} style={[styles.perfMemberCard, { marginBottom: 8 }]}>
+                    <Text style={styles.perfMemberName}>{rw.title}</Text>
+                    <Text style={styles.perfMemberContact}>
+                      {rw.bonusAmount > 0 ? `₹${rw.bonusAmount} Bonus • ` : ''}{rw.alreadyClaimed ? 'Claimed' : rw.isEligible ? 'Eligible' : 'In Progress'}
+                    </Text>
+                  </View>
+                ))
+              )}
+            </ScrollView>
+
+            <View style={{ marginTop: 12, paddingTop: 10, borderTopWidth: 1, borderTopColor: '#E2E8F0' }}>
+              <TouchableOpacity style={styles.perfModalCloseBottomBtn} onPress={() => setSelectedPerfTrainer(null)}>
+                <Text style={styles.perfModalCloseBottomText}>Close Report</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+    );
+  };
+
+  const renderPerfPickerModal = () => {
+    if (!perfPickerType) return null;
+    let title = 'Select Filter';
+    let options: Array<{ label: string; value: string; active: boolean; onSelect: () => void }> = [];
+
+    if (perfPickerType === 'membership') {
+      title = 'Membership Status Filter';
+      options = ['ALL', 'Active', 'Inactive', 'Pending'].map(v => ({
+        label: v === 'ALL' ? 'All Statuses' : v,
+        value: v,
+        active: perfMembershipFilter === v,
+        onSelect: () => setPerfMembershipFilter(v)
+      }));
+    } else if (perfPickerType === 'trainer') {
+      title = 'Assigned Trainer Filter';
+      options = [
+        { label: 'All Trainers', value: 'ALL', active: perfTrainerFilter === 'ALL', onSelect: () => setPerfTrainerFilter('ALL') },
+        ...perfTrainers.map(t => {
+          const id = t.trainerId || t._id;
+          return {
+            label: `${t.name} (${t.email})`,
+            value: id,
+            active: perfTrainerFilter === id,
+            onSelect: () => setPerfTrainerFilter(id)
+          };
+        })
+      ];
+    } else if (perfPickerType === 'claimStatus') {
+      title = 'Claim Status Filter';
+      options = ['ALL', 'Pending', 'Approved', 'Redeemed', 'Rejected'].map(v => ({
+        label: v === 'ALL' ? 'All Statuses' : v,
+        value: v,
+        active: perfClaimStatusFilter === v,
+        onSelect: () => setPerfClaimStatusFilter(v)
+      }));
+    } else if (perfPickerType === 'awardAudience') {
+      title = 'Recipient Audience Filter';
+      options = [
+        { label: 'All Recipients', value: 'ALL', active: perfAwardAudienceFilter === 'ALL', onSelect: () => setPerfAwardAudienceFilter('ALL') },
+        { label: 'Customers Only', value: 'Customer', active: perfAwardAudienceFilter === 'Customer', onSelect: () => setPerfAwardAudienceFilter('Customer') },
+        { label: 'Trainers Only', value: 'Trainer', active: perfAwardAudienceFilter === 'Trainer', onSelect: () => setPerfAwardAudienceFilter('Trainer') }
+      ];
+    } else if (perfPickerType === 'awardPeriod') {
+      title = 'Award Period Filter';
+      options = ['ALL', 'Daily', 'Weekly', 'Monthly', 'Quarterly', 'Annual'].map(v => ({
+        label: v === 'ALL' ? 'All Periods' : v,
+        value: v,
+        active: perfAwardPeriodFilter === v,
+        onSelect: () => setPerfAwardPeriodFilter(v)
+      }));
+    }
+
+    return (
+      <Modal visible={Boolean(perfPickerType)} transparent animationType="fade">
+        <View style={styles.perfModalOverlay}>
+          <View style={styles.perfModalCard}>
+            <View style={styles.perfModalHeader}>
+              <Text style={styles.perfModalTitle}>{title}</Text>
+              <TouchableOpacity onPress={() => setPerfPickerType(null)} style={styles.perfModalCloseBtn}>
+                <Ionicons name="close" size={20} color="#64748B" />
+              </TouchableOpacity>
+            </View>
+            <ScrollView style={{ maxHeight: 320 }}>
+              {options.map(opt => (
+                <TouchableOpacity
+                  key={opt.value}
+                  style={[styles.perfPickerOptionRow, opt.active && { backgroundColor: '#FFF7ED', borderColor: '#FDBA74' }]}
+                  onPress={() => { opt.onSelect(); setPerfPickerType(null); }}
+                >
+                  <Text style={[styles.perfCellDarkVal, opt.active && { color: '#C2410C' }]}>{opt.label}</Text>
+                  {opt.active && <Ionicons name="checkmark-circle" size={18} color="#EA580C" />}
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
+    );
+  };
+
+  const renderPerfRewardFormModal = () => {
+    if (!showPerfRewardModal) return null;
+    const isTrainer = perfRewardForm.recipientType === 'Trainer';
+    const categories = isTrainer
+      ? ['Performance Award', 'Session Milestone Bonus', 'Client Retention Bonus', 'Recognition Badge']
+      : ['Discount Coupon', 'Free Product / Gift', 'Personal Training', 'Free Membership / Extension', 'Performance Award'];
+
+    return (
+      <Modal visible={showPerfRewardModal} transparent animationType="slide">
+        <View style={styles.perfModalOverlay}>
+          <View style={styles.perfModalCard}>
+            <View style={styles.perfModalHeader}>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.perfModalTitle}>{perfRewardEditId ? 'Edit Reward' : `Create ${perfRewardForm.recipientType} Reward`}</Text>
+                <Text style={styles.perfModalSub}>Configure benefit rules, eligibility targets & redemption method</Text>
+              </View>
+              <TouchableOpacity onPress={() => setShowPerfRewardModal(false)} style={styles.perfModalCloseBtn}>
+                <Ionicons name="close" size={20} color="#64748B" />
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView style={{ maxHeight: 460 }} showsVerticalScrollIndicator={false}>
+              <View style={{ gap: 12 }}>
+                {/* Recipient Switch */}
+                <Text style={styles.perfCellLabel}>RECIPIENT TYPE</Text>
+                <View style={{ flexDirection: 'row', gap: 8 }}>
+                  {(['Customer', 'Trainer'] as const).map(rt => (
+                    <TouchableOpacity
+                      key={rt}
+                      style={[styles.perfSubTabBtn, perfRewardForm.recipientType === rt && styles.perfSubTabBtnActive]}
+                      onPress={() => setPerfRewardForm({
+                        ...perfRewardForm,
+                        recipientType: rt,
+                        assignmentMethod: rt === 'Trainer' ? 'Direct' : 'Points',
+                        category: rt === 'Trainer' ? 'Performance Award' : 'Discount Coupon',
+                        assignedUserId: ''
+                      })}
+                    >
+                      <Text style={[styles.perfSubTabText, perfRewardForm.recipientType === rt && styles.perfSubTabTextActive]}>{rt}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+
+                {/* Assignment Method */}
+                <Text style={styles.perfCellLabel}>ASSIGNMENT METHOD</Text>
+                <View style={{ flexDirection: 'row', gap: 6, flexWrap: 'wrap' }}>
+                  {(['Points', 'Achievement', 'Direct'] as const).map(m => (
+                    <TouchableOpacity
+                      key={m}
+                      style={[styles.perfSubTabBtn, perfRewardForm.assignmentMethod === m && styles.perfSubTabBtnActive]}
+                      onPress={() => setPerfRewardForm({ ...perfRewardForm, assignmentMethod: m })}
+                    >
+                      <Text style={[styles.perfSubTabText, perfRewardForm.assignmentMethod === m && styles.perfSubTabTextActive]}>{m}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+
+                {/* Category */}
+                <Text style={styles.perfCellLabel}>CATEGORY</Text>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 6 }}>
+                  {categories.map(cat => (
+                    <TouchableOpacity
+                      key={cat}
+                      style={[styles.perfCalMemberChip, perfRewardForm.category === cat && styles.perfCalMemberChipActive]}
+                      onPress={() => setPerfRewardForm({ ...perfRewardForm, category: cat })}
+                    >
+                      <Text style={[styles.perfCalMemberChipText, perfRewardForm.category === cat && styles.perfCalMemberChipTextActive]}>{cat}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
+
+                <Text style={styles.perfCellLabel}>REWARD TITLE *</Text>
+                <TextInput
+                  style={styles.perfFormInput}
+                  placeholder="e.g. ₹200 Off Next Renewal"
+                  placeholderTextColor="#94A3B8"
+                  value={perfRewardForm.title}
+                  onChangeText={v => setPerfRewardForm({ ...perfRewardForm, title: v })}
+                />
+
+                <Text style={styles.perfCellLabel}>DESCRIPTION *</Text>
+                <TextInput
+                  style={[styles.perfFormInput, { minHeight: 60, textAlignVertical: 'top' }]}
+                  multiline
+                  placeholder="Detail reward guidelines and redemption rules..."
+                  placeholderTextColor="#94A3B8"
+                  value={perfRewardForm.description}
+                  onChangeText={v => setPerfRewardForm({ ...perfRewardForm, description: v })}
+                />
+
+                {/* Direct Recipient Picker */}
+                {perfRewardForm.assignmentMethod === 'Direct' && (
+                  <View style={styles.perfFilterContainer}>
+                    <Text style={styles.perfCellLabel}>SELECT {perfRewardForm.recipientType.toUpperCase()} FOR DIRECT AWARD</Text>
+                    <TextInput
+                      style={[styles.perfFormInput, { marginTop: 6 }]}
+                      placeholder={`Search ${perfRewardForm.recipientType.toLowerCase()} name...`}
+                      placeholderTextColor="#94A3B8"
+                      value={perfRewardCustSearch}
+                      onChangeText={setPerfRewardCustSearch}
+                    />
+                    <ScrollView style={{ maxHeight: 110, marginTop: 6 }}>
+                      {(isTrainer ? perfTrainers : perfCustomers)
+                        .filter(u => !perfRewardCustSearch.trim() || (u.name || '').toLowerCase().includes(perfRewardCustSearch.toLowerCase()))
+                        .slice(0, 10)
+                        .map(u => {
+                          const uid = u._id || u.customerId || u.trainerId;
+                          const isSel = perfRewardForm.assignedUserId === uid;
+                          return (
+                            <TouchableOpacity
+                              key={uid}
+                              style={[styles.perfPickerOptionRow, isSel && { backgroundColor: '#FFF7ED', borderColor: '#FDBA74' }]}
+                              onPress={() => {
+                                setPerfRewardForm({ ...perfRewardForm, assignedUserId: uid });
+                                if (isTrainer) setPerfRewardSelTrainer(u);
+                                else setPerfRewardSelCustomer(u);
+                              }}
+                            >
+                              <Text style={styles.perfCellDarkVal}>{u.name} ({u.email})</Text>
+                              {isSel && <Ionicons name="checkmark-circle" size={16} color="#EA580C" />}
+                            </TouchableOpacity>
+                          );
+                        })}
+                    </ScrollView>
+                  </View>
+                )}
+
+                {perfRewardForm.assignmentMethod === 'Points' && (
+                  <View>
+                    <Text style={styles.perfCellLabel}>REQUIRED POINTS COST</Text>
+                    <TextInput
+                      style={styles.perfFormInput}
+                      keyboardType="numeric"
+                      value={String(perfRewardForm.requiredPoints)}
+                      onChangeText={v => setPerfRewardForm({ ...perfRewardForm, requiredPoints: Number(v) || 0 })}
+                    />
+                  </View>
+                )}
+
+                {perfRewardForm.assignmentMethod === 'Achievement' && (
+                  <View style={{ gap: 8 }}>
+                    <Text style={styles.perfCellLabel}>ACHIEVEMENT MILESTONE CONDITION</Text>
+                    <View style={{ flexDirection: 'row', gap: 6, flexWrap: 'wrap' }}>
+                      {[
+                        { id: 'visits', label: 'Gym Visits' },
+                        { id: 'workouts', label: 'Workouts' },
+                        { id: 'streak', label: 'Streak Days' },
+                        { id: 'goals', label: 'Diet Goals' }
+                      ].map(cond => (
+                        <TouchableOpacity
+                          key={cond.id}
+                          style={[styles.perfCalMemberChip, perfRewardForm.achievementCondition === cond.id && styles.perfCalMemberChipActive]}
+                          onPress={() => setPerfRewardForm({ ...perfRewardForm, achievementCondition: cond.id })}
+                        >
+                          <Text style={[styles.perfCalMemberChipText, perfRewardForm.achievementCondition === cond.id && styles.perfCalMemberChipTextActive]}>{cond.label}</Text>
+                        </TouchableOpacity>
+                      ))}
+                    </View>
+                    <TextInput
+                      style={styles.perfFormInput}
+                      keyboardType="numeric"
+                      placeholder="Target threshold count"
+                      value={String(
+                        perfRewardForm.achievementCondition === 'workouts' ? perfRewardForm.minWorkoutCompletions :
+                        perfRewardForm.achievementCondition === 'streak' ? perfRewardForm.minStreakDays :
+                        perfRewardForm.achievementCondition === 'goals' ? perfRewardForm.minDietAdherenceDays :
+                        perfRewardForm.minVerifiedVisits
+                      )}
+                      onChangeText={v => {
+                        const num = Number(v) || 0;
+                        if (perfRewardForm.achievementCondition === 'workouts') setPerfRewardForm({ ...perfRewardForm, minWorkoutCompletions: num });
+                        else if (perfRewardForm.achievementCondition === 'streak') setPerfRewardForm({ ...perfRewardForm, minStreakDays: num });
+                        else if (perfRewardForm.achievementCondition === 'goals') setPerfRewardForm({ ...perfRewardForm, minDietAdherenceDays: num });
+                        else setPerfRewardForm({ ...perfRewardForm, minVerifiedVisits: num });
+                      }}
+                    />
+                  </View>
+                )}
+
+                {(isTrainer || perfRewardForm.category === 'Performance Award') && (
+                  <View style={{ flexDirection: 'row', gap: 8 }}>
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.perfCellLabel}>CASH BONUS (₹)</Text>
+                      <TextInput
+                        style={styles.perfFormInput}
+                        keyboardType="numeric"
+                        value={String(perfRewardForm.bonusAmount)}
+                        onChangeText={v => setPerfRewardForm({ ...perfRewardForm, bonusAmount: Number(v) || 0 })}
+                      />
+                    </View>
+                    {isTrainer && (
+                      <View style={{ flex: 1 }}>
+                        <Text style={styles.perfCellLabel}>MIN SESSIONS</Text>
+                        <TextInput
+                          style={styles.perfFormInput}
+                          keyboardType="numeric"
+                          value={String(perfRewardForm.minCompletedSessions)}
+                          onChangeText={v => setPerfRewardForm({ ...perfRewardForm, minCompletedSessions: Number(v) || 0 })}
+                        />
+                      </View>
+                    )}
+                  </View>
+                )}
+
+                <TouchableOpacity
+                  style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 4 }}
+                  onPress={() => setPerfRewardForm({ ...perfRewardForm, requireApproval: !perfRewardForm.requireApproval })}
+                >
+                  <Ionicons name={perfRewardForm.requireApproval ? 'checkbox' : 'square-outline'} size={20} color="#EA580C" />
+                  <Text style={styles.perfCellDarkVal}>Require Owner Approval before grant</Text>
+                </TouchableOpacity>
+              </View>
+            </ScrollView>
+
+            <View style={{ flexDirection: 'row', gap: 10, marginTop: 14, paddingTop: 10, borderTopWidth: 1, borderTopColor: '#E2E8F0' }}>
+              <TouchableOpacity style={[styles.perfModalCloseBottomBtn, { flex: 1 }]} onPress={() => setShowPerfRewardModal(false)}>
+                <Text style={styles.perfModalCloseBottomText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.perfCreateRewardBtn, { flex: 1, justifyContent: 'center', paddingVertical: 11 }]}
+                onPress={handleSavePerfReward}
+                disabled={perfRewardSaving}
+              >
+                <Text style={styles.perfCreateRewardBtnText}>{perfRewardSaving ? 'Saving...' : perfRewardEditId ? 'Save Changes' : 'Create Reward'}</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+    );
+  };
+
+  const renderPerfAwardModals = () => (
+    <>
+      {/* Modal 1: Create / Edit Award */}
+      {showPerfAwardModal && (
+        <Modal visible={showPerfAwardModal} transparent animationType="slide">
+          <View style={styles.perfModalOverlay}>
+            <View style={styles.perfModalCard}>
+              <View style={styles.perfModalHeader}>
+                <Text style={styles.perfModalTitle}>{perfAwardEditId ? 'Edit Award' : 'Create Awards & Recognition'}</Text>
+                <TouchableOpacity onPress={() => setShowPerfAwardModal(false)} style={styles.perfModalCloseBtn}>
+                  <Ionicons name="close" size={20} color="#64748B" />
+                </TouchableOpacity>
+              </View>
+              <ScrollView style={{ maxHeight: 420 }} showsVerticalScrollIndicator={false}>
+                <View style={{ gap: 10 }}>
+                  <Text style={styles.perfCellLabel}>AUDIENCE</Text>
+                  <View style={{ flexDirection: 'row', gap: 8 }}>
+                    {['Customer', 'Trainer'].map(rec => (
+                      <TouchableOpacity
+                        key={rec}
+                        style={[styles.perfSubTabBtn, perfAwardForm.recipientType === rec && styles.perfSubTabBtnActive]}
+                        onPress={() => setPerfAwardForm({
+                          ...perfAwardForm,
+                          recipientType: rec,
+                          category: rec === 'Customer' ? 'Fitness Champion' : 'Trainer of the Month',
+                          criteriaMetric: rec === 'Customer' ? 'workout_completions' : 'completed_sessions'
+                        })}
+                      >
+                        <Text style={[styles.perfSubTabText, perfAwardForm.recipientType === rec && styles.perfSubTabTextActive]}>{rec}s</Text>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+
+                  <Text style={styles.perfCellLabel}>AWARD PERIOD</Text>
+                  <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 6 }}>
+                    {['Daily', 'Weekly', 'Monthly', 'Quarterly', 'Annual'].map(per => (
+                      <TouchableOpacity
+                        key={per}
+                        style={[styles.perfCalMemberChip, perfAwardForm.awardPeriod === per && styles.perfCalMemberChipActive]}
+                        onPress={() => setPerfAwardForm({ ...perfAwardForm, awardPeriod: per })}
+                      >
+                        <Text style={[styles.perfCalMemberChipText, perfAwardForm.awardPeriod === per && styles.perfCalMemberChipTextActive]}>{per}</Text>
+                      </TouchableOpacity>
+                    ))}
+                  </ScrollView>
+
+                  <Text style={styles.perfCellLabel}>AWARD TITLE *</Text>
+                  <TextInput
+                    style={styles.perfFormInput}
+                    placeholder="e.g. Member of the Month"
+                    placeholderTextColor="#94A3B8"
+                    value={perfAwardForm.title}
+                    onChangeText={v => setPerfAwardForm({ ...perfAwardForm, title: v })}
+                  />
+
+                  <Text style={styles.perfCellLabel}>DESCRIPTION *</Text>
+                  <TextInput
+                    style={[styles.perfFormInput, { minHeight: 56 }]}
+                    multiline
+                    placeholder="Detail award significance..."
+                    placeholderTextColor="#94A3B8"
+                    value={perfAwardForm.description}
+                    onChangeText={v => setPerfAwardForm({ ...perfAwardForm, description: v })}
+                  />
+
+                  <Text style={styles.perfCellLabel}>PRIZE BONUS AMOUNT (₹)</Text>
+                  <TextInput
+                    style={styles.perfFormInput}
+                    keyboardType="numeric"
+                    value={String(perfAwardForm.prizeBonusAmount)}
+                    onChangeText={v => setPerfAwardForm({ ...perfAwardForm, prizeBonusAmount: Number(v) || 0 })}
+                  />
+                </View>
+              </ScrollView>
+              <View style={{ flexDirection: 'row', gap: 10, marginTop: 14, paddingTop: 10, borderTopWidth: 1, borderTopColor: '#E2E8F0' }}>
+                <TouchableOpacity style={[styles.perfModalCloseBottomBtn, { flex: 1 }]} onPress={() => setShowPerfAwardModal(false)}>
+                  <Text style={styles.perfModalCloseBottomText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={[styles.perfCreateRewardBtn, { flex: 1, justifyContent: 'center', paddingVertical: 11 }]} onPress={handleSavePerfAward} disabled={perfAwardSaving}>
+                  <Text style={styles.perfCreateRewardBtnText}>{perfAwardSaving ? 'Saving...' : perfAwardEditId ? 'Update Award' : 'Create Award'}</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+      )}
+
+      {/* Modal 2: Evaluate Candidates */}
+      {selectedPerfAwardCandidates && (
+        <Modal visible={Boolean(selectedPerfAwardCandidates)} transparent animationType="slide">
+          <View style={styles.perfModalOverlay}>
+            <View style={styles.perfModalCard}>
+              <View style={styles.perfModalHeader}>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.perfModalTitle}>Evaluate Candidates</Text>
+                  <Text style={styles.perfModalSub}>{selectedPerfAwardCandidates.title}</Text>
+                </View>
+                <TouchableOpacity onPress={() => setSelectedPerfAwardCandidates(null)} style={styles.perfModalCloseBtn}>
+                  <Ionicons name="close" size={20} color="#64748B" />
+                </TouchableOpacity>
+              </View>
+              <ScrollView style={{ maxHeight: 340 }}>
+                {perfCandidatesLoading ? (
+                  <ActivityIndicator size="small" color="#EA580C" style={{ marginVertical: 24 }} />
+                ) : perfCandidatesList.length === 0 ? (
+                  <Text style={styles.perfCellMutedVal}>No eligible candidates found for this criteria metric.</Text>
+                ) : (
+                  perfCandidatesList.map((cand: any, i: number) => {
+                    const isSel = perfSelectedWinnerId === cand.userId?.toString();
+                    return (
+                      <TouchableOpacity
+                        key={cand.userId || i}
+                        style={[styles.perfPickerOptionRow, isSel && { backgroundColor: '#FFF7ED', borderColor: '#FDBA74' }]}
+                        onPress={() => {
+                          setPerfSelectedWinnerId(cand.userId?.toString() || '');
+                          setPerfSelectedWinnerMetric(cand.metricDescription || '');
+                        }}
+                      >
+                        <View style={{ flex: 1 }}>
+                          <Text style={styles.perfCellDarkVal}>#{i + 1} {cand.name}</Text>
+                          <Text style={styles.perfCellSubVal}>{cand.email} • {cand.metricDescription}</Text>
+                        </View>
+                        <Text style={{ fontWeight: '800', color: '#EA580C' }}>{cand.primaryScore}</Text>
+                      </TouchableOpacity>
+                    );
+                  })
+                )}
+              </ScrollView>
+              <View style={{ flexDirection: 'row', gap: 10, marginTop: 14, paddingTop: 10, borderTopWidth: 1, borderTopColor: '#E2E8F0' }}>
+                <TouchableOpacity style={[styles.perfModalCloseBottomBtn, { flex: 1 }]} onPress={() => setSelectedPerfAwardCandidates(null)}>
+                  <Text style={styles.perfModalCloseBottomText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={[styles.perfCreateRewardBtn, { flex: 1, justifyContent: 'center', paddingVertical: 11 }]} onPress={handleConfirmPerfWinner} disabled={perfConfirmingWinner}>
+                  <Text style={styles.perfCreateRewardBtnText}>{perfConfirmingWinner ? 'Confirming...' : 'Confirm Winner'}</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+      )}
+
+      {/* Modal 3: Publish Confirmation */}
+      {perfAwardToPublish && (
+        <Modal visible={Boolean(perfAwardToPublish)} transparent animationType="fade">
+          <View style={styles.perfModalOverlay}>
+            <View style={styles.perfModalCard}>
+              <Text style={styles.perfModalTitle}>Publish Official Award?</Text>
+              <Text style={[styles.perfModalSub, { marginTop: 6, marginBottom: 14 }]}>
+                Publishing "{perfAwardToPublish.title}" issues an official digital certificate and notifies the winner in Hall of Fame.
+              </Text>
+              <View style={{ flexDirection: 'row', gap: 10 }}>
+                <TouchableOpacity style={[styles.perfModalCloseBottomBtn, { flex: 1 }]} onPress={() => setPerfAwardToPublish(null)}>
+                  <Text style={styles.perfModalCloseBottomText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={[styles.perfCreateRewardBtn, { flex: 1, justifyContent: 'center', backgroundColor: '#15803D', paddingVertical: 11 }]} onPress={handlePublishPerfAward} disabled={perfPublishingAward}>
+                  <Text style={styles.perfCreateRewardBtnText}>{perfPublishingAward ? 'Publishing...' : 'Confirm Publish'}</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+      )}
+    </>
+  );
+
+  const renderPerfClaimActionModal = () => {
+    if (!selectedPerfClaim) return null;
+    return (
+      <Modal visible={Boolean(selectedPerfClaim)} transparent animationType="slide">
+        <View style={styles.perfModalOverlay}>
+          <View style={styles.perfModalCard}>
+            <View style={styles.perfModalHeader}>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.perfModalTitle}>
+                  {perfClaimActionType === 'APPROVE' && 'Approve Claim Request'}
+                  {perfClaimActionType === 'REJECT' && 'Reject Claim Request'}
+                  {perfClaimActionType === 'REDEEM' && 'Mark Voucher Redeemed'}
+                  {perfClaimActionType === 'PAYOUT' && 'Record Bonus Payout'}
+                </Text>
+                <Text style={styles.perfModalSub}>Voucher: {selectedPerfClaim.claimCode}</Text>
+              </View>
+              <TouchableOpacity onPress={() => setSelectedPerfClaim(null)} style={styles.perfModalCloseBtn}>
+                <Ionicons name="close" size={20} color="#64748B" />
+              </TouchableOpacity>
+            </View>
+
+            <View style={{ gap: 10, marginVertical: 10 }}>
+              {perfClaimActionType === 'REJECT' && (
+                <View>
+                  <Text style={[styles.perfCellLabel, { color: '#DC2626' }]}>REJECTION REASON *</Text>
+                  <TextInput
+                    style={[styles.perfFormInput, { minHeight: 60 }]}
+                    multiline
+                    placeholder="Provide reason for rejection..."
+                    placeholderTextColor="#94A3B8"
+                    value={perfClaimRejectionReason}
+                    onChangeText={setPerfClaimRejectionReason}
+                  />
+                </View>
+              )}
+              {perfClaimActionType === 'PAYOUT' && (
+                <View>
+                  <Text style={styles.perfCellLabel}>PAYMENT REFERENCE *</Text>
+                  <TextInput
+                    style={styles.perfFormInput}
+                    placeholder="e.g. UPI Ref #, Bank Ref #, Cash Voucher"
+                    placeholderTextColor="#94A3B8"
+                    value={perfClaimPaymentRef}
+                    onChangeText={setPerfClaimPaymentRef}
+                  />
+                </View>
+              )}
+              <View>
+                <Text style={styles.perfCellLabel}>INTERNAL AUDIT NOTE</Text>
+                <TextInput
+                  style={styles.perfFormInput}
+                  placeholder="Optional internal remarks..."
+                  placeholderTextColor="#94A3B8"
+                  value={perfClaimNotes}
+                  onChangeText={setPerfClaimNotes}
+                />
+              </View>
+            </View>
+
+            <View style={{ flexDirection: 'row', gap: 10, marginTop: 8 }}>
+              <TouchableOpacity style={[styles.perfModalCloseBottomBtn, { flex: 1 }]} onPress={() => setSelectedPerfClaim(null)}>
+                <Text style={styles.perfModalCloseBottomText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.perfCreateRewardBtn, { flex: 1, justifyContent: 'center', paddingVertical: 11, backgroundColor: perfClaimActionType === 'REJECT' ? '#DC2626' : '#C2410C' }]}
+                onPress={handleProcessPerfClaim}
+                disabled={perfClaimProcessing}
+              >
+                <Text style={styles.perfCreateRewardBtnText}>{perfClaimProcessing ? 'Processing...' : 'Confirm Action'}</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -6285,51 +8326,91 @@ const renderBranchesView = () => {
     },
   ];
 
-  // Subscription Payment & Renewal Modal
+  // Subscription Payment & Renewal Modal (Matching Web GymAdminSubscription.tsx)
   const renderSubPaymentModal = () => {
     if (!subPaymentStep) return null;
 
     const targetPlan = SAAS_PLATFORM_PLANS.find(p => p.key === subPaymentStep) || SAAS_PLATFORM_PLANS[1];
     const targetPrice = subIsAnnual ? targetPlan.priceAnnual : targetPlan.priceMonthly;
 
+    const now = new Date();
+    const rawSubStatus = String(subActiveData?.status || (user as any)?.subscriptionStatus || 'ACTIVE').toUpperCase();
+    const rawExpiry = subActiveData?.endDate || (user as any)?.subscriptionExpiryDate || (user as any)?.subscriptionExpiry;
+    const parsedExpiry = rawExpiry ? new Date(rawExpiry) : new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+    const isSubExpired = parsedExpiry < now || rawSubStatus === 'EXPIRED';
+    const renewalDateFormatted = parsedExpiry.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+
+    const closePaymentModal = () => {
+      setSubPaymentError(null);
+      setSubPaymentStep(null);
+    };
+
+    const handleCardNumberChange = (val: string) => {
+      const digits = val.replace(/\D/g, '').slice(0, 16);
+      const formatted = digits.replace(/(\d{4})(?=\d)/g, '$1 ');
+      setSubCardNumber(formatted);
+      if (subPaymentError) setSubPaymentError(null);
+    };
+
+    const handleCardExpiryChange = (val: string) => {
+      const digits = val.replace(/\D/g, '').slice(0, 4);
+      const formatted = digits.length > 2 ? `${digits.slice(0, 2)}/${digits.slice(2)}` : digits;
+      setSubCardExpiry(formatted);
+      if (subPaymentError) setSubPaymentError(null);
+    };
+
     const handleConfirmPayment = async () => {
+      setSubPaymentError(null);
       try {
         setIsSubmittingPayment(true);
-        if (subActionType === 'RENEWAL') {
-          await api.post('/subscriptions/renew', {
-            billingCycle: subIsAnnual ? 'annual' : 'monthly',
-            paymentMethod: subPaymentMethod,
-          }).catch(() => null);
+        const backendMethod = subPaymentMethod === 'Card' ? 'Credit/Debit Card' : subPaymentMethod;
+        const res = subActionType === 'RENEWAL'
+          ? await api.post('/subscriptions/renew', {
+              billingCycle: subIsAnnual ? 'annual' : 'monthly',
+              paymentMethod: backendMethod,
+            })
+          : await api.post('/subscriptions/upgrade', {
+              targetPlan: subPaymentStep,
+              billingCycle: subIsAnnual ? 'annual' : 'monthly',
+              paymentMethod: backendMethod,
+            });
+
+        if (res?.data?.success) {
+          if (res.data.subscription) {
+            setSubActiveData((prev: any) => ({
+              ...(prev || {}),
+              planKey: subPaymentStep,
+              status: 'ACTIVE',
+              billingCycle: subIsAnnual ? 'annual' : 'monthly',
+              endDate: res.data.subscription?.endDate || prev?.endDate,
+            }));
+          } else {
+            setSubActiveData((prev: any) => ({
+              ...(prev || {}),
+              planKey: subPaymentStep,
+              status: 'ACTIVE',
+              billingCycle: subIsAnnual ? 'annual' : 'monthly',
+            }));
+          }
+
+          await fetchDetailData('subscription');
+          setSubCardNumber('');
+          setSubCardExpiry('');
+          setSubCardCvv('');
+          setSubCardHolder('');
+          setSubPaymentStep(null);
+
+          Alert.alert(
+            'Payment Successful',
+            subActionType === 'RENEWAL'
+              ? `Your ${targetPlan.name} plan has been successfully renewed!`
+              : `Your plan has been upgraded to ${targetPlan.name}!`
+          );
         } else {
-          await api.post('/subscriptions/upgrade', {
-            targetPlan: subPaymentStep,
-            billingCycle: subIsAnnual ? 'annual' : 'monthly',
-            paymentMethod: subPaymentMethod,
-          }).catch(() => null);
+          setSubPaymentError(res?.data?.message || 'Payment could not be completed.');
         }
-
-        // Add to history
-        const newInv = {
-          id: `#INV-${new Date().getFullYear()}-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
-          date: '14 Oct 2026',
-          plan: `${targetPlan.name} Plan (${subIsAnnual ? 'Annual' : 'Monthly'})`,
-          validity: '14 Oct 2026 — 14 Nov 2026',
-          amount: `₹${targetPrice.toLocaleString('en-IN')}`,
-          status: 'Paid',
-          isCurrent: true,
-        };
-        setSubHistory(prev => [newInv, ...prev]);
-
-        Alert.alert(
-          'Payment Successful! 🎉',
-          subActionType === 'RENEWAL'
-            ? `Your ${targetPlan.name} plan has been renewed successfully!`
-            : `Your gym subscription has been upgraded to ${targetPlan.name}!`,
-          [{ text: 'OK', onPress: () => setSubPaymentStep(null) }]
-        );
       } catch (err: any) {
-        Alert.alert('Payment Notice', 'Your payment was registered and your active plan details are updated.');
-        setSubPaymentStep(null);
+        setSubPaymentError(err?.response?.data?.message || 'Payment processing failed. Please try again.');
       } finally {
         setIsSubmittingPayment(false);
       }
@@ -6340,116 +8421,185 @@ const renderBranchesView = () => {
         visible={Boolean(subPaymentStep)}
         transparent
         animationType="fade"
-        onRequestClose={() => setSubPaymentStep(null)}
+        onRequestClose={closePaymentModal}
       >
-        <TouchableOpacity
-          style={styles.modalOverlay}
-          activeOpacity={1}
-          onPress={() => setSubPaymentStep(null)}
-        >
-          <View style={styles.subModalCard}>
-            {/* Modal Header */}
-            <View style={styles.subModalHeader}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                <View style={styles.subModalIconBox}>
-                  <Ionicons name="ribbon" size={22} color={COLORS.primary} />
-                </View>
-                <View>
-                  <Text style={styles.subModalTitle}>
-                    {subActionType === 'RENEWAL' ? 'Confirm Plan Renewal' : `Upgrade to ${targetPlan.name}`}
-                  </Text>
-                  <Text style={styles.subModalSub}>
-                    {subActionType === 'RENEWAL'
-                      ? 'Extend your existing license without interruption'
-                      : 'Unlock additional branch and trainer capabilities'}
-                  </Text>
-                </View>
-              </View>
-              <TouchableOpacity onPress={() => setSubPaymentStep(null)}>
-                <Ionicons name="close" size={22} color={COLORS.textMedium} />
-              </TouchableOpacity>
-            </View>
-
-            {/* Plan Summary Box */}
-            <View style={styles.subModalSummaryBox}>
-              <View style={styles.subModalSummaryRow}>
-                <Text style={styles.subModalSummaryLabel}>Selected Plan:</Text>
-                <Text style={styles.subModalSummaryVal}>{targetPlan.name}</Text>
-              </View>
-              <View style={styles.subModalSummaryRow}>
-                <Text style={styles.subModalSummaryLabel}>Billing Period:</Text>
-                <Text style={styles.subModalSummaryVal}>
-                  {subIsAnnual ? 'Annual (12 Months)' : 'Monthly (1 Month)'}
-                </Text>
-              </View>
-              <View style={styles.subModalSummaryRow}>
-                <Text style={styles.subModalSummaryLabel}>Effective Start Date:</Text>
-                <Text style={styles.subModalSummaryVal}>
-                  {subActionType === 'RENEWAL' ? '14 Nov 2026 (Extended)' : 'Immediate'}
-                </Text>
-              </View>
-              <View style={[styles.subModalSummaryRow, styles.subModalSummaryTotalRow]}>
-                <Text style={styles.subModalTotalLabel}>Total Payable Amount:</Text>
-                <Text style={styles.subModalTotalVal}>₹{targetPrice.toLocaleString('en-IN')}</Text>
-              </View>
-            </View>
-
-            {/* Payment Method Selector */}
-            <View style={{ gap: 8, marginTop: 4 }}>
-              <Text style={styles.subModalPaymentHeading}>SELECT PAYMENT METHOD</Text>
-              <View style={{ gap: 6 }}>
-                {[
-                  { key: 'Card', label: 'Credit / Debit Card', icon: 'card-outline' },
-                  { key: 'UPI', label: 'UPI (GPay / PhonePe / Paytm)', icon: 'phone-portrait-outline' },
-                  { key: 'NetBanking', label: 'Net Banking (All Indian Banks)', icon: 'business-outline' },
-                ].map(m => {
-                  const isSel = subPaymentMethod === m.key;
-                  return (
-                    <TouchableOpacity
-                      key={m.key}
-                      style={[styles.subModalPayMethodBtn, isSel && styles.subModalPayMethodBtnActive]}
-                      onPress={() => setSubPaymentMethod(m.key as any)}
-                      activeOpacity={0.7}
-                    >
-                      <Ionicons
-                        name={m.icon as any}
-                        size={18}
-                        color={isSel ? COLORS.primary : COLORS.textMuted}
-                      />
-                      <Text style={[styles.subModalPayMethodText, isSel && styles.subModalPayMethodTextActive]}>
-                        {m.label}
-                      </Text>
-                      <Ionicons
-                        name={isSel ? 'radio-button-on' : 'radio-button-off'}
-                        size={18}
-                        color={isSel ? COLORS.primary : '#CBD5E1'}
-                      />
-                    </TouchableOpacity>
-                  );
-                })}
-              </View>
-            </View>
-
-            {/* Pay Button */}
-            <TouchableOpacity
-              style={styles.subModalPaySubmitBtn}
-              onPress={handleConfirmPayment}
-              disabled={isSubmittingPayment}
-              activeOpacity={0.8}
+        <View style={styles.subDialogOverlay}>
+          <TouchableOpacity
+            style={StyleSheet.absoluteFill}
+            activeOpacity={1}
+            onPress={closePaymentModal}
+          />
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+            style={styles.subDialogKbdWrap}
+          >
+            <ScrollView
+              contentContainerStyle={styles.subDialogScrollContent}
+              keyboardShouldPersistTaps="handled"
+              showsVerticalScrollIndicator={false}
             >
-              {isSubmittingPayment ? (
-                <ActivityIndicator size="small" color={COLORS.white} />
-              ) : (
-                <>
-                  <Ionicons name="lock-closed" size={16} color={COLORS.white} />
-                  <Text style={styles.subModalPaySubmitText}>
-                    Confirm & Pay ₹{targetPrice.toLocaleString('en-IN')}
-                  </Text>
-                </>
-              )}
-            </TouchableOpacity>
-          </View>
-        </TouchableOpacity>
+              <View style={styles.subModalCard}>
+                {/* Modal Header */}
+                <View style={styles.subModalHeader}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, flex: 1, paddingRight: 8 }}>
+                    <View style={styles.subModalIconBox}>
+                      <Ionicons name="ribbon-outline" size={22} color="#EA580C" />
+                    </View>
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.subModalTitle}>
+                        {subActionType === 'RENEWAL' ? 'Confirm Plan Renewal' : `Confirm Upgrade to ${targetPlan.name}`}
+                      </Text>
+                      <Text style={styles.subModalSub}>
+                        {subActionType === 'RENEWAL'
+                          ? 'Extend your existing license without interruption'
+                          : 'Unlock additional branch and trainer capabilities'}
+                      </Text>
+                    </View>
+                  </View>
+                  <TouchableOpacity onPress={closePaymentModal} style={styles.subModalCloseBtn} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+                    <Ionicons name="close-circle-outline" size={22} color="#64748B" />
+                  </TouchableOpacity>
+                </View>
+
+                {/* Error Banner */}
+                {subPaymentError ? (
+                  <View style={styles.subModalErrorBox}>
+                    <Ionicons name="alert-circle-outline" size={16} color="#B91C1C" />
+                    <Text style={styles.subModalErrorText}>{subPaymentError}</Text>
+                  </View>
+                ) : null}
+
+                {/* Plan & Pricing Summary Box */}
+                <View style={styles.subModalSummaryBox}>
+                  <View style={styles.subModalSummaryRow}>
+                    <Text style={styles.subModalSummaryLabel}>Selected Plan:</Text>
+                    <Text style={styles.subModalSummaryVal}>{targetPlan.name}</Text>
+                  </View>
+                  <View style={styles.subModalSummaryRow}>
+                    <Text style={styles.subModalSummaryLabel}>Billing Period:</Text>
+                    <Text style={styles.subModalSummaryVal}>
+                      {subIsAnnual ? 'Annual (12 Months)' : 'Monthly (1 Month)'}
+                    </Text>
+                  </View>
+                  <View style={styles.subModalSummaryRow}>
+                    <Text style={styles.subModalSummaryLabel}>Effective Start Date:</Text>
+                    <Text style={styles.subModalSummaryVal}>
+                      {subActionType === 'RENEWAL' && !isSubExpired ? `${renewalDateFormatted} (Continuously extended)` : 'Immediate'}
+                    </Text>
+                  </View>
+                  <View style={[styles.subModalSummaryRow, styles.subModalSummaryTotalRow]}>
+                    <Text style={styles.subModalTotalLabel}>Total Payable Amount:</Text>
+                    <Text style={styles.subModalTotalVal}>₹{targetPrice.toLocaleString('en-IN')}</Text>
+                  </View>
+                </View>
+
+                {/* Payment Method Selection (Matching Web Segmented Tabs + Card Inputs) */}
+                <View style={{ gap: 10 }}>
+                  <Text style={styles.subModalPaymentHeading}>SELECT PAYMENT METHOD</Text>
+                  <View style={styles.subModalMethodTabsRow}>
+                    {(['Card', 'UPI', 'NetBanking'] as const).map(method => {
+                      const isSel = subPaymentMethod === method;
+                      return (
+                        <TouchableOpacity
+                          key={method}
+                          style={[styles.subModalMethodTabBtn, isSel && styles.subModalMethodTabBtnActive]}
+                          onPress={() => {
+                            setSubPaymentMethod(method);
+                            if (subPaymentError) setSubPaymentError(null);
+                          }}
+                          activeOpacity={0.75}
+                        >
+                          <Text style={[styles.subModalMethodTabText, isSel && styles.subModalMethodTabTextActive]}>
+                            {method}
+                          </Text>
+                        </TouchableOpacity>
+                      );
+                    })}
+                  </View>
+
+                  {subPaymentMethod === 'Card' && (
+                    <View style={{ gap: 10, paddingTop: 2 }}>
+                      <TextInput
+                        style={styles.subModalInput}
+                        placeholder="Card Number (4000 1234 5678 9010)"
+                        placeholderTextColor="#64748B"
+                        value={subCardNumber}
+                        onChangeText={handleCardNumberChange}
+                        keyboardType="number-pad"
+                        maxLength={19}
+                      />
+                      <View style={styles.subModalInputRow}>
+                        <TextInput
+                          style={[styles.subModalInput, { flex: 1 }]}
+                          placeholder="MM / YY"
+                          placeholderTextColor="#64748B"
+                          value={subCardExpiry}
+                          onChangeText={handleCardExpiryChange}
+                          keyboardType="number-pad"
+                          maxLength={5}
+                        />
+                        <TextInput
+                          style={[styles.subModalInput, { flex: 1 }]}
+                          placeholder="CVV"
+                          placeholderTextColor="#64748B"
+                          value={subCardCvv}
+                          onChangeText={(val) => setSubCardCvv(val.replace(/\D/g, '').slice(0, 3))}
+                          keyboardType="number-pad"
+                          secureTextEntry
+                          maxLength={3}
+                        />
+                      </View>
+                      <TextInput
+                        style={styles.subModalInput}
+                        placeholder="Cardholder Full Name"
+                        placeholderTextColor="#64748B"
+                        value={subCardHolder}
+                        onChangeText={setSubCardHolder}
+                        autoCapitalize="words"
+                      />
+                    </View>
+                  )}
+                </View>
+
+                {/* Modal Actions: Cancel + Confirm & Pay */}
+                <View style={styles.subModalActionsRow}>
+                  <TouchableOpacity
+                    style={styles.subModalCancelBtn}
+                    onPress={closePaymentModal}
+                    disabled={isSubmittingPayment}
+                    activeOpacity={0.75}
+                  >
+                    <Text style={styles.subModalCancelText}>Cancel</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={[styles.subModalPaySubmitBtn, isSubmittingPayment && { opacity: 0.6 }]}
+                    onPress={handleConfirmPayment}
+                    disabled={isSubmittingPayment}
+                    activeOpacity={0.8}
+                  >
+                    {isSubmittingPayment ? (
+                      <>
+                        <ActivityIndicator size="small" color={COLORS.white} />
+                        <Text style={styles.subModalPaySubmitText}>Verifying Payment...</Text>
+                      </>
+                    ) : (
+                      <Text style={styles.subModalPaySubmitText}>
+                        Confirm & Pay ₹{targetPrice.toLocaleString('en-IN')}
+                      </Text>
+                    )}
+                  </TouchableOpacity>
+                </View>
+
+                {/* Security Footer */}
+                <View style={styles.subModalTlsFooter}>
+                  <Ionicons name="shield-outline" size={14} color="#EA580C" />
+                  <Text style={styles.subModalTlsText}>256-bit TLS encrypted & verified payment gateway</Text>
+                </View>
+              </View>
+            </ScrollView>
+          </KeyboardAvoidingView>
+        </View>
       </Modal>
     );
   };
@@ -6467,7 +8617,7 @@ const renderBranchesView = () => {
         onRequestClose={() => setSubSelectedInvoice(null)}
       >
         <TouchableOpacity
-          style={styles.modalOverlay}
+          style={styles.subDialogOverlay}
           activeOpacity={1}
           onPress={() => setSubSelectedInvoice(null)}
         >
@@ -6575,8 +8725,8 @@ const renderBranchesView = () => {
 
   // 6. SaaS Subscription & Licensing View (Matching Web /admin/subscription)
   const renderSubscriptionView = () => {
-    // Current Active Plan Data (Matching Image 2: Silver Plan)
-    const currentPlanKey = ((user as any)?.subscriptionPlan || subActiveData?.planKey || 'SILVER').toUpperCase();
+    // Current Active Plan Data (Matching Web GymAdminSubscription.tsx)
+    const currentPlanKey = (subActiveData?.planKey || (user as any)?.subscriptionPlan || 'SILVER').toUpperCase();
     const currentPlanName = currentPlanKey === 'GOLD' ? 'Gold Plan' : currentPlanKey === 'PREMIUM' ? 'Premium Plan' : 'Silver Plan';
     const isPlanActive = true;
     const remainingDays = 10;
@@ -6673,7 +8823,8 @@ const renderBranchesView = () => {
               <TouchableOpacity
                 style={styles.subRenewPlanBtn}
                 onPress={() => {
-                  setSubPaymentStep('SILVER');
+                  setSubPaymentError(null);
+                  setSubPaymentStep(currentPlanKey === 'FREE_TRIAL' ? 'SILVER' : currentPlanKey);
                   setSubActionType('RENEWAL');
                 }}
                 activeOpacity={0.8}
@@ -6685,7 +8836,8 @@ const renderBranchesView = () => {
               <TouchableOpacity
                 style={styles.subUpgradePlanBtn}
                 onPress={() => {
-                  setSubPaymentStep('GOLD');
+                  setSubPaymentError(null);
+                  setSubPaymentStep(currentPlanKey === 'GOLD' ? 'PREMIUM' : 'GOLD');
                   setSubActionType('UPGRADE');
                 }}
                 activeOpacity={0.7}
@@ -7381,6 +9533,12 @@ const renderBranchesView = () => {
             {monthlyGrowth.map((item, idx) => {
               const isSelected = reportSelectedMonth === idx || (reportSelectedMonth === null && item.count > 0);
               const hasCount = item.count > 0;
+              const tooltipPosStyle =
+                idx === 0
+                  ? { left: -4, right: -52, alignItems: 'flex-start' as const }
+                  : idx === monthlyGrowth.length - 1
+                  ? { left: -52, right: -4, alignItems: 'flex-end' as const }
+                  : { left: -28, right: -28, alignItems: 'center' as const };
               return (
                 <TouchableOpacity
                   key={idx}
@@ -7390,11 +9548,18 @@ const renderBranchesView = () => {
                 >
                   {/* Tooltip if selected */}
                   {isSelected && (
-                    <View style={styles.reportsBarTooltip}>
-                      <Text style={styles.reportsBarTooltipText}>
-                        {item.month}: {item.count}
-                      </Text>
-                      <View style={styles.reportsBarTooltipArrow} />
+                    <View style={[styles.reportsBarTooltipWrap, tooltipPosStyle]} pointerEvents="none">
+                      <View style={styles.reportsBarTooltip}>
+                        <Text style={styles.reportsBarTooltipText} numberOfLines={1} allowFontScaling={false}>
+                          {item.month}: {item.count}
+                        </Text>
+                      </View>
+                      <View
+                        style={[
+                          styles.reportsBarTooltipArrow,
+                          idx === 0 ? { marginLeft: 12 } : idx === monthlyGrowth.length - 1 ? { marginRight: 12 } : null
+                        ]}
+                      />
                     </View>
                   )}
 
@@ -7411,6 +9576,8 @@ const renderBranchesView = () => {
 
                   {/* Month Label */}
                   <Text
+                    numberOfLines={1}
+                    allowFontScaling={false}
                     style={[
                       styles.reportsBarMonthLabel,
                       (hasCount || isSelected) && styles.reportsBarMonthLabelActive
@@ -8283,21 +10450,6 @@ const renderBranchesView = () => {
       setSelectedNotification(notif);
     };
 
-    const getLinkSection = (notif: any): string | null => {
-      const link = (notif?.link || '').toLowerCase();
-      const text = ((notif?.title || '') + ' ' + (notif?.message || '')).toLowerCase();
-      if (link.includes('trainer') || text.includes('trainer') || link.includes('hiring') || text.includes('applied') || text.includes('resume')) return 'trainers';
-      if (link.includes('enquiry') || link.includes('contact') || text.includes('contact') || text.includes('message') || text.includes('enquiry')) return 'enquiries';
-      if (link.includes('order') || text.includes('order') || text.includes('store') || text.includes('product')) return 'store_orders';
-      if (link.includes('booking') || text.includes('booking') || text.includes('session')) return 'session_bookings';
-      if (link.includes('equipment') || text.includes('equipment')) return 'equipment';
-      if (link.includes('review') || text.includes('review') || text.includes('feedback')) return 'reviews';
-      if (link.includes('report') || text.includes('report') || text.includes('revenue')) return 'reports';
-      if (link.includes('member') || text.includes('member') || link.includes('plan') || text.includes('renewal')) return 'plans';
-      if (link.includes('finance') || text.includes('payment')) return 'finances';
-      return null;
-    };
-
     return (
       <View style={{ gap: 14 }}>
         {/* Top Header Card Matching Web Image 1 */}
@@ -8653,44 +10805,6 @@ const renderBranchesView = () => {
 
                   {/* Action Buttons */}
                   <View style={styles.ntModalFooter}>
-                    {(() => {
-                      const section = getLinkSection(selectedNotification);
-                      if (section) {
-                        return (
-                          <TouchableOpacity
-                            activeOpacity={0.8}
-                            onPress={() => {
-                              const targetSection = section;
-                              setSelectedNotification(null);
-                              if (onNavigateTab) {
-                                if (targetSection === 'trainers' || targetSection === 'hiring') {
-                                  if (onCloseSubPage) onCloseSubPage();
-                                  onNavigateTab('trainers', targetSection === 'hiring' ? 'hiring' : 'trainers');
-                                  return;
-                                }
-                                if (targetSection === 'members' || targetSection === 'enquiries') {
-                                  if (onCloseSubPage) onCloseSubPage();
-                                  onNavigateTab('members', targetSection === 'enquiries' ? 'enquiries' : 'members');
-                                  return;
-                                }
-                                if (targetSection === 'finances') {
-                                  if (onCloseSubPage) onCloseSubPage();
-                                  onNavigateTab('finances');
-                                  return;
-                                }
-                              }
-                              setActiveDetailItem(targetSection);
-                            }}
-                            style={styles.ntModalActionBtn}
-                          >
-                            <Ionicons name="open-outline" size={14} color="#FFFFFF" />
-                            <Text style={styles.ntModalActionBtnText}>Open Section</Text>
-                          </TouchableOpacity>
-                        );
-                      }
-                      return null;
-                    })()}
-
                     <TouchableOpacity
                       activeOpacity={0.8}
                       onPress={() => setSelectedNotification(null)}
@@ -8849,44 +10963,552 @@ const renderBranchesView = () => {
   };
 
   // 10. Rewards & Performance (Matching Web /admin/rewards-performance - Images 2 & 3)
+  // ==========================================
+  // REWARDS, PERFORMANCE & AWARDS HELPERS
+  // ==========================================
+  const formatPerfDateKey = (d: Date) =>
+    `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
+  const extractPerfDateKey = (val: any): string | null => {
+    if (!val) return null;
+    if (typeof val === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(val.trim())) return val.trim();
+    const d = new Date(val);
+    if (isNaN(d.getTime())) return null;
+    return formatPerfDateKey(d);
+  };
+
+  const buildPerfCalendarData = (activeCust: any, viewMonth: Date, selectedKey: string) => {
+    const year = viewMonth.getFullYear();
+    const month = viewMonth.getMonth();
+    const firstDayIndex = new Date(year, month, 1).getDay();
+    const daysInCurrentMonth = new Date(year, month + 1, 0).getDate();
+    const daysInPrevMonth = new Date(year, month, 0).getDate();
+    const todayKey = formatPerfDateKey(new Date());
+
+    const days: Array<{
+      dateKey: string;
+      dayNumber: number;
+      isCurrentMonth: boolean;
+      isToday: boolean;
+      isSelected: boolean;
+    }> = [];
+
+    for (let i = firstDayIndex - 1; i >= 0; i--) {
+      const d = new Date(year, month - 1, daysInPrevMonth - i);
+      const dKey = formatPerfDateKey(d);
+      days.push({ dateKey: dKey, dayNumber: d.getDate(), isCurrentMonth: false, isToday: dKey === todayKey, isSelected: dKey === selectedKey });
+    }
+    for (let i = 1; i <= daysInCurrentMonth; i++) {
+      const d = new Date(year, month, i);
+      const dKey = formatPerfDateKey(d);
+      days.push({ dateKey: dKey, dayNumber: i, isCurrentMonth: true, isToday: dKey === todayKey, isSelected: dKey === selectedKey });
+    }
+    const remainingCells = (7 - (days.length % 7)) % 7;
+    for (let i = 1; i <= remainingCells; i++) {
+      const d = new Date(year, month + 1, i);
+      const dKey = formatPerfDateKey(d);
+      days.push({ dateKey: dKey, dayNumber: i, isCurrentMonth: false, isToday: dKey === todayKey, isSelected: dKey === selectedKey });
+    }
+
+    const eventsMap = new Map<string, { hasWorkout: boolean; hasDiet: boolean; hasAttendance: boolean }>();
+    const ensure = (k: string) => {
+      if (!eventsMap.has(k)) eventsMap.set(k, { hasWorkout: false, hasDiet: false, hasAttendance: false });
+      return eventsMap.get(k)!;
+    };
+
+    const attLogs = activeCust?.attendanceSummary?.attendanceLogs || [];
+    for (const l of attLogs) {
+      const k = extractPerfDateKey(l.date || l.checkInTime);
+      if (k) ensure(k).hasAttendance = true;
+    }
+    const wList = activeCust?.workoutSummary?.completedWorkoutsList || (activeCust?.workoutSummary?.allWorkoutsList || []).filter((w: any) => w.status === 'Completed');
+    for (const w of wList) {
+      if (w.completedAt && (w.status === 'Completed' || (w.completedSets && w.completedSets > 0))) {
+        const k = extractPerfDateKey(w.completedAt);
+        if (k) ensure(k).hasWorkout = true;
+      }
+    }
+    const mList = activeCust?.dietSummary?.completedMealsList || (activeCust?.dietSummary?.allMealsList || []).filter((m: any) => m.completed !== false);
+    for (const m of mList) {
+      if (m.completedAt && m.completed !== false) {
+        const k = extractPerfDateKey(m.completedAt);
+        if (k) ensure(k).hasDiet = true;
+      }
+    }
+
+    const dayAttendance = attLogs.find((l: any) => extractPerfDateKey(l.date || l.checkInTime) === selectedKey) || null;
+    const allWorkouts = activeCust?.workoutSummary?.completedWorkoutsList || activeCust?.workoutSummary?.allWorkoutsList || [];
+    const dayWorkouts = allWorkouts.filter((w: any) => w.completedAt && (!w.status || w.status === 'Completed') && extractPerfDateKey(w.completedAt) === selectedKey);
+    const allMeals = activeCust?.dietSummary?.completedMealsList || activeCust?.dietSummary?.allMealsList || [];
+    const dayMeals = allMeals.filter((m: any) => m.completedAt && m.completed !== false && extractPerfDateKey(m.completedAt) === selectedKey);
+
+    return { days, eventsMap, selectedDayData: { attendance: dayAttendance, completedWorkouts: dayWorkouts, completedMeals: dayMeals } };
+  };
+
+  const openPerfCreateRewardModal = (defaultRecipient: 'Customer' | 'Trainer' = 'Customer', preselectedCustomer?: any) => {
+    setPerfRewardEditId(null);
+    setPerfRewardCustSearch('');
+    setPerfRewardSelCustomer(preselectedCustomer || null);
+    setPerfRewardSelTrainer(null);
+    const defaultCat = defaultRecipient === 'Customer' ? 'Discount Coupon' : 'Performance Award';
+    const defaultMethod = preselectedCustomer ? 'Direct' : (defaultRecipient === 'Trainer' ? 'Direct' : 'Points');
+    setPerfRewardForm({
+      title: '',
+      description: '',
+      recipientType: defaultRecipient,
+      assignmentMethod: defaultMethod,
+      category: defaultCat,
+      rewardType: defaultRecipient === 'Customer' ? 'Coupon' : 'Award',
+      assignedUserId: preselectedCustomer?._id || preselectedCustomer?.customerId || '',
+      trainerId: perfTrainers[0]?.trainerId || perfTrainers[0]?._id || '',
+      sessionCount: 2,
+      sessionDuration: '45 mins',
+      discountType: 'Percentage',
+      discountValue: 15,
+      applicableService: 'All Services',
+      minPurchaseAmount: 0,
+      productId: perfStoreProducts[0]?._id || '',
+      productName: perfStoreProducts[0]?.name || '',
+      productQuantity: 1,
+      membershipDuration: '1 Month',
+      packageId: perfGymPackages[0]?._id || '',
+      packageName: perfGymPackages[0]?.name || '',
+      awardReason: '',
+      achievementPeriod: 'This Month',
+      hasCertificate: true,
+      achievementCondition: 'visits',
+      requiredPoints: 100,
+      minVerifiedVisits: 10,
+      minWorkoutCompletions: 5,
+      minStreakDays: 7,
+      minDietAdherenceDays: 7,
+      minCompletedSessions: defaultRecipient === 'Trainer' ? 15 : 0,
+      minAverageRating: defaultRecipient === 'Trainer' ? 4.5 : 0,
+      minReviewedPlans: 0,
+      bonusAmount: defaultRecipient === 'Trainer' ? 1500 : 0,
+      currency: 'INR',
+      expiryDate: '',
+      totalQuantity: 0,
+      maxClaimsPerUser: 1,
+      requireApproval: false,
+      termsAndConditions: 'Valid only at registered gym branch. Cannot be combined with other offers.',
+      status: 'Active'
+    });
+    setShowPerfRewardModal(true);
+  };
+
+  const openPerfEditRewardModal = (r: any) => {
+    setPerfRewardEditId(r._id);
+    setPerfRewardCustSearch('');
+    const cId = r.assignedUserId?._id || r.assignedUserId || '';
+    const tId = r.trainerId?._id || r.trainerId || '';
+    const foundCust = cId ? perfCustomers.find((c: any) => c._id === cId || c.customerId === cId) || r.assignedUserId : null;
+    const foundTr = tId ? perfTrainers.find((t: any) => t._id === tId || t.trainerId === tId) || r.trainerId : null;
+    setPerfRewardSelCustomer(foundCust);
+    setPerfRewardSelTrainer(foundTr);
+    const method = r.assignmentMethod || ((r.requiredPoints || 0) > 0 ? 'Points' : 'Achievement');
+    setPerfRewardForm({
+      title: r.title || '',
+      description: r.description || '',
+      recipientType: r.recipientType || 'Customer',
+      assignmentMethod: method,
+      category: r.category || 'Discount Coupon',
+      rewardType: r.rewardType || 'Reward',
+      assignedUserId: cId,
+      trainerId: tId,
+      sessionCount: r.sessionCount || 2,
+      sessionDuration: r.sessionDuration || '45 mins',
+      discountType: r.discountType || 'Percentage',
+      discountValue: r.discountValue || 15,
+      applicableService: r.applicableService || 'All Services',
+      minPurchaseAmount: r.minPurchaseAmount || 0,
+      productId: r.productId?._id || r.productId || '',
+      productName: r.productName || r.productId?.name || '',
+      productQuantity: r.productQuantity || 1,
+      membershipDuration: r.membershipDuration || '1 Month',
+      packageId: r.packageId?._id || r.packageId || '',
+      packageName: r.packageName || r.packageId?.name || '',
+      awardReason: r.awardReason || '',
+      achievementPeriod: r.achievementPeriod || 'This Month',
+      hasCertificate: Boolean(r.hasCertificate),
+      achievementCondition: r.eligibilityCondition || (r.minWorkoutCompletions > 0 ? 'workouts' : r.minStreakDays > 0 ? 'streak' : 'visits'),
+      requiredPoints: r.requiredPoints || 0,
+      minVerifiedVisits: r.minVerifiedVisits || 0,
+      minWorkoutCompletions: r.minWorkoutCompletions || 0,
+      minStreakDays: r.minStreakDays || 0,
+      minDietAdherenceDays: r.minDietAdherenceDays || 0,
+      minCompletedSessions: r.minCompletedSessions || 0,
+      minAverageRating: r.minAverageRating || 0,
+      minReviewedPlans: r.minReviewedPlans || 0,
+      bonusAmount: r.bonusAmount || 0,
+      currency: r.currency || 'INR',
+      expiryDate: r.expiryDate ? String(r.expiryDate).split('T')[0] : '',
+      totalQuantity: r.totalQuantity || 0,
+      maxClaimsPerUser: r.maxClaimsPerUser || 1,
+      requireApproval: Boolean(r.requireApproval),
+      termsAndConditions: r.termsAndConditions || '',
+      status: r.status || 'Active'
+    });
+    setShowPerfRewardModal(true);
+  };
+
+  const handleSavePerfReward = async () => {
+    if (!perfRewardForm.title.trim() || !perfRewardForm.description.trim()) {
+      Alert.alert('Missing Fields', 'Please enter a reward title and description.');
+      return;
+    }
+    if (perfRewardForm.assignmentMethod === 'Direct' && !perfRewardForm.assignedUserId) {
+      Alert.alert('Recipient Required', `Please select a specific ${perfRewardForm.recipientType.toLowerCase()} for direct assignment.`);
+      return;
+    }
+    try {
+      setPerfRewardSaving(true);
+      const payload: any = {
+        ...perfRewardForm,
+        totalQuantity: Number(perfRewardForm.totalQuantity) || 0,
+        maxClaimsPerUser: perfRewardForm.assignmentMethod === 'Direct' ? 1 : (Number(perfRewardForm.maxClaimsPerUser) || 1)
+      };
+      if (perfRewardForm.assignmentMethod === 'Direct') {
+        payload.requiredPoints = 0;
+        payload.minVerifiedVisits = 0;
+        payload.minWorkoutCompletions = 0;
+        payload.minStreakDays = 0;
+        payload.minDietAdherenceDays = 0;
+      } else if (perfRewardForm.assignmentMethod === 'Points') {
+        payload.requiredPoints = Number(perfRewardForm.requiredPoints) || 100;
+        payload.minVerifiedVisits = 0;
+        payload.minWorkoutCompletions = 0;
+        payload.minStreakDays = 0;
+        payload.minDietAdherenceDays = 0;
+      } else {
+        payload.requiredPoints = 0;
+        payload.minVerifiedVisits = perfRewardForm.achievementCondition === 'visits' ? (Number(perfRewardForm.minVerifiedVisits) || 10) : (perfRewardForm.achievementCondition === 'milestone' ? (Number(perfRewardForm.minVerifiedVisits) || 20) : 0);
+        payload.minWorkoutCompletions = perfRewardForm.achievementCondition === 'workouts' ? (Number(perfRewardForm.minWorkoutCompletions) || 5) : (perfRewardForm.achievementCondition === 'milestone' ? (Number(perfRewardForm.minWorkoutCompletions) || 15) : 0);
+        payload.minStreakDays = perfRewardForm.achievementCondition === 'streak' ? (Number(perfRewardForm.minStreakDays) || 7) : 0;
+        payload.minDietAdherenceDays = perfRewardForm.achievementCondition === 'goals' ? (Number(perfRewardForm.minDietAdherenceDays) || 7) : 0;
+      }
+      if (perfRewardEditId) {
+        await api.put(`/rewards/${perfRewardEditId}`, payload);
+        Alert.alert('Success', 'Reward updated successfully!');
+      } else {
+        await api.post('/rewards', payload);
+        Alert.alert('Success', 'Reward created successfully!');
+      }
+      setShowPerfRewardModal(false);
+      setPerfRewardEditId(null);
+      await fetchDetailData('rewards');
+    } catch (err: any) {
+      Alert.alert('Error', err?.response?.data?.message || 'Failed to save reward');
+    } finally {
+      setPerfRewardSaving(false);
+    }
+  };
+
+  const handleDeletePerfReward = (rewardId: string) => {
+    Alert.alert('Delete Reward', 'Are you sure you want to remove this reward?', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Delete',
+        style: 'destructive',
+        onPress: async () => {
+          try {
+            await api.delete(`/rewards/${rewardId}`);
+            await fetchDetailData('rewards');
+          } catch (err: any) {
+            Alert.alert('Error', err?.response?.data?.message || 'Failed to delete reward');
+          }
+        }
+      }
+    ]);
+  };
+
+  const openPerfCreateAwardModal = () => {
+    setPerfAwardEditId(null);
+    setPerfAwardForm({
+      title: '',
+      recipientType: 'Customer',
+      category: 'Fitness Champion',
+      description: '',
+      badgeIcon: 'Trophy',
+      awardPeriod: 'Monthly',
+      startDate: new Date().toISOString().split('T')[0],
+      criteriaMetric: 'workout_completions',
+      minCriteriaValue: 10,
+      winnerSelectionMethod: 'OWNER_CONFIRMATION',
+      prizeBonusAmount: 0,
+      prizeDescription: 'Official Certificate & Hall of Fame Feature',
+      allowDuplicateWinner: false
+    });
+    setShowPerfAwardModal(true);
+  };
+
+  const openPerfEditAwardModal = (aw: any) => {
+    setPerfAwardEditId(aw._id);
+    setPerfAwardForm({
+      title: aw.title || '',
+      recipientType: aw.recipientType || 'Customer',
+      category: aw.category || 'Fitness Champion',
+      description: aw.description || '',
+      badgeIcon: aw.badgeIcon || 'Trophy',
+      awardPeriod: aw.awardPeriod || 'Monthly',
+      startDate: aw.startDate ? new Date(aw.startDate).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+      criteriaMetric: aw.criteriaMetric || (aw.recipientType === 'Trainer' ? 'completed_sessions' : 'workout_completions'),
+      minCriteriaValue: aw.minCriteriaValue !== undefined ? aw.minCriteriaValue : 10,
+      winnerSelectionMethod: aw.winnerSelectionMethod || 'OWNER_CONFIRMATION',
+      prizeBonusAmount: aw.prizeBonusAmount || 0,
+      prizeDescription: aw.prizeDescription || 'Official Certificate & Hall of Fame Feature',
+      allowDuplicateWinner: Boolean(aw.allowDuplicateWinner)
+    });
+    setShowPerfAwardModal(true);
+  };
+
+  const handleSavePerfAward = async () => {
+    if (!perfAwardForm.title.trim() || !perfAwardForm.description.trim()) {
+      Alert.alert('Missing Fields', 'Please enter an award title and description.');
+      return;
+    }
+    try {
+      setPerfAwardSaving(true);
+      if (perfAwardEditId) {
+        await api.put(`/awards/${perfAwardEditId}`, perfAwardForm);
+        Alert.alert('Success', 'Award updated successfully!');
+      } else {
+        await api.post('/awards', perfAwardForm);
+        Alert.alert('Success', 'Award created successfully!');
+      }
+      setShowPerfAwardModal(false);
+      setPerfAwardEditId(null);
+      await fetchDetailData('rewards');
+    } catch (err: any) {
+      Alert.alert('Error', err?.response?.data?.message || 'Failed to save award');
+    } finally {
+      setPerfAwardSaving(false);
+    }
+  };
+
+  const handleDeletePerfAward = (awardId: string) => {
+    Alert.alert('Delete Award', 'Are you sure you want to delete this award?', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Delete',
+        style: 'destructive',
+        onPress: async () => {
+          try {
+            await api.delete(`/awards/${awardId}`);
+            await fetchDetailData('rewards');
+          } catch (err: any) {
+            Alert.alert('Error', err?.response?.data?.message || 'Failed to delete award');
+          }
+        }
+      }
+    ]);
+  };
+
+  const openPerfCandidateEvaluation = async (aw: any) => {
+    setSelectedPerfAwardCandidates(aw);
+    setPerfSelectedWinnerId(aw.winnerUserId?._id || aw.winnerUserId || '');
+    setPerfSelectedWinnerMetric(aw.winnerMetricAchieved || '');
+    try {
+      setPerfCandidatesLoading(true);
+      const res = await api.get(`/awards/${aw._id}/candidates`);
+      setPerfCandidatesList(res.data?.candidates || []);
+    } catch (err: any) {
+      setPerfCandidatesList([]);
+      Alert.alert('Error', err?.response?.data?.message || 'Failed to evaluate candidates');
+    } finally {
+      setPerfCandidatesLoading(false);
+    }
+  };
+
+  const handleConfirmPerfWinner = async () => {
+    if (!selectedPerfAwardCandidates || !perfSelectedWinnerId) {
+      Alert.alert('Selection Required', 'Please select a candidate to confirm as winner.');
+      return;
+    }
+    try {
+      setPerfConfirmingWinner(true);
+      await api.put(`/awards/${selectedPerfAwardCandidates._id}/confirm-winner`, {
+        winnerUserId: perfSelectedWinnerId,
+        winnerMetricAchieved: perfSelectedWinnerMetric
+      });
+      setSelectedPerfAwardCandidates(null);
+      Alert.alert('Winner Confirmed', 'Winner confirmed and moved to Under Review!');
+      await fetchDetailData('rewards');
+    } catch (err: any) {
+      Alert.alert('Error', err?.response?.data?.message || 'Failed to confirm winner');
+    } finally {
+      setPerfConfirmingWinner(false);
+    }
+  };
+
+  const handlePublishPerfAward = async () => {
+    if (!perfAwardToPublish) return;
+    try {
+      setPerfPublishingAward(true);
+      const res = await api.put(`/awards/${perfAwardToPublish._id}/publish`);
+      setPerfAwardToPublish(null);
+      Alert.alert('Published!', `Award officially published! Certificate ID: ${res.data?.certificateId || 'VERIFIED'}`);
+      await fetchDetailData('rewards');
+    } catch (err: any) {
+      Alert.alert('Error', err?.response?.data?.message || 'Failed to publish award');
+    } finally {
+      setPerfPublishingAward(false);
+    }
+  };
+
+  const openPerfClaimAction = (claim: any, action: 'APPROVE' | 'REJECT' | 'REDEEM' | 'PAYOUT') => {
+    setSelectedPerfClaim(claim);
+    setPerfClaimActionType(action);
+    setPerfClaimRejectionReason('');
+    setPerfClaimPaymentRef('');
+    setPerfClaimNotes('');
+  };
+
+  const handleProcessPerfClaim = async () => {
+    if (!selectedPerfClaim) return;
+    let body: any = {};
+    if (perfClaimActionType === 'APPROVE') {
+      body = { claimStatus: 'Approved', notes: perfClaimNotes };
+    } else if (perfClaimActionType === 'REJECT') {
+      if (!perfClaimRejectionReason.trim()) {
+        Alert.alert('Reason Required', 'Please enter a rejection reason.');
+        return;
+      }
+      body = { claimStatus: 'Rejected', rejectionReason: perfClaimRejectionReason, notes: perfClaimNotes };
+    } else if (perfClaimActionType === 'REDEEM') {
+      body = { claimStatus: 'Redeemed', notes: perfClaimNotes };
+    } else if (perfClaimActionType === 'PAYOUT') {
+      if (!perfClaimPaymentRef.trim()) {
+        Alert.alert('Reference Required', 'Please enter a payment reference or transaction ID.');
+        return;
+      }
+      body = { financialPayoutStatus: 'Paid', financialPayoutReference: perfClaimPaymentRef, notes: perfClaimNotes };
+    }
+    try {
+      setPerfClaimProcessing(true);
+      await api.put(`/rewards/claims/${selectedPerfClaim._id}/status`, body);
+      setSelectedPerfClaim(null);
+      Alert.alert('Updated', 'Claim status updated successfully.');
+      await fetchDetailData('rewards');
+    } catch (err: any) {
+      Alert.alert('Error', err?.response?.data?.message || 'Failed to update claim');
+    } finally {
+      setPerfClaimProcessing(false);
+    }
+  };
+
   const renderRewardsView = () => {
     const filteredPerfCustomers = perfCustomers.filter(c => {
-      const matchSearch = !perfSearch.trim() || 
-        c.name.toLowerCase().includes(perfSearch.toLowerCase()) || 
-        c.email.toLowerCase().includes(perfSearch.toLowerCase()) || 
-        (c.phone && c.phone.includes(perfSearch));
-      const matchStatus = perfMembershipFilter === 'ALL' || c.membership?.status?.toUpperCase() === perfMembershipFilter.toUpperCase();
-      const matchTrainer = perfTrainerFilter === 'ALL' || (c.assignedTrainer && (c.assignedTrainer._id === perfTrainerFilter || c.assignedTrainer.name?.toLowerCase().includes(perfTrainerFilter.toLowerCase())));
+      const matchSearch = !perfSearch.trim() ||
+        (c.name || '').toLowerCase().includes(perfSearch.toLowerCase()) ||
+        (c.email || '').toLowerCase().includes(perfSearch.toLowerCase()) ||
+        (c.phone || c.mobile || '').includes(perfSearch);
+      const matchStatus = perfMembershipFilter === 'ALL' || (c.membership?.status || '').toUpperCase() === perfMembershipFilter.toUpperCase();
+      const matchTrainer = perfTrainerFilter === 'ALL' || (c.assignedTrainer && (
+        c.assignedTrainer._id === perfTrainerFilter ||
+        c.assignedTrainer.trainerId === perfTrainerFilter ||
+        (c.assignedTrainer.name || '').toLowerCase().includes(perfTrainerFilter.toLowerCase())
+      ));
       return matchSearch && matchStatus && matchTrainer;
     });
 
+    const filteredPerfTrainers = perfTrainers.filter(t => {
+      if (!perfTrainerSearch.trim()) return true;
+      const q = perfTrainerSearch.toLowerCase();
+      return (t.name || '').toLowerCase().includes(q) || (t.email || '').toLowerCase().includes(q) || (t.phone || '').includes(q);
+    });
+
+    const customerRewardsList = perfRewards.filter(r =>
+      (r.recipientType === 'Customer' || r.recipientType === 'Both') &&
+      (!perfRewardSearch.trim() || (r.title || '').toLowerCase().includes(perfRewardSearch.toLowerCase()) || (r.category || '').toLowerCase().includes(perfRewardSearch.toLowerCase()))
+    );
+
+    const trainerRewardsList = perfRewards.filter(r =>
+      (r.recipientType === 'Trainer' || r.recipientType === 'Both') &&
+      (!perfRewardSearch.trim() || (r.title || '').toLowerCase().includes(perfRewardSearch.toLowerCase()) || (r.category || '').toLowerCase().includes(perfRewardSearch.toLowerCase()))
+    );
+
+    const filteredAwardsList = perfAwards.filter(a => {
+      const matchS = !perfAwardSearch.trim() || (a.title || '').toLowerCase().includes(perfAwardSearch.toLowerCase()) || (a.category || '').toLowerCase().includes(perfAwardSearch.toLowerCase()) || (a.winnerName || '').toLowerCase().includes(perfAwardSearch.toLowerCase());
+      const matchA = perfAwardAudienceFilter === 'ALL' || a.recipientType === perfAwardAudienceFilter;
+      const matchP = perfAwardPeriodFilter === 'ALL' || a.awardPeriod === perfAwardPeriodFilter;
+      return matchS && matchA && matchP;
+    });
+
+    const filteredClaimsList = perfClaims.filter(cl => {
+      const userName = cl.userId ? `${cl.userId.firstName || ''} ${cl.userId.lastName || ''}`.trim() : (cl.userName || '');
+      const rewardTitle = cl.rewardId?.title || cl.rewardTitle || '';
+      const q = perfRewardSearch.toLowerCase();
+      const matchS = !q || (cl.claimCode || '').toLowerCase().includes(q) || userName.toLowerCase().includes(q) || rewardTitle.toLowerCase().includes(q);
+      const matchSt = perfClaimStatusFilter === 'ALL' || cl.claimStatus === perfClaimStatusFilter;
+      return matchS && matchSt;
+    });
+
+    const eligibleCountDisplay = perfCustomerStats.eligibleRewardsCount !== undefined && perfCustomerStats.eligibleRewardsCount !== null
+      ? perfCustomerStats.eligibleRewardsCount
+      : perfCustomers.filter((c: any) => (c.rewardsSummary?.eligibleRewardsCount || 0) > 0).length;
+
+    const avgWorkoutDisplay = perfCustomerStats.averageWorkoutCompletionRate !== null && perfCustomerStats.averageWorkoutCompletionRate !== undefined
+      ? `${perfCustomerStats.averageWorkoutCompletionRate}%`
+      : 'N/A';
+
+    const trainerFilterLabel = perfTrainerFilter === 'ALL'
+      ? 'All Trainers'
+      : (perfTrainers.find(t => (t.trainerId || t._id) === perfTrainerFilter)?.name || 'Selected Trainer');
+
+    const activeCalCust = selectedPerfCalendarCustomer || perfCustomers[0] || null;
+    const inlineCal = buildPerfCalendarData(activeCalCust, perfCalendarMonth, perfCalendarSelectedKey);
+    const pendingClaimsCount = perfClaims.filter(c => c.claimStatus === 'Pending').length;
+
     return (
       <View style={{ gap: 14 }}>
-        {/* Top Header Card Matching Web Image 2 */}
+        {/* Top Header Card Matching Web */}
         <View style={styles.perfHeroCard}>
           <View style={styles.perfHeroIconBox}>
             <Ionicons name="ribbon" size={24} color="#EA580C" />
           </View>
-          <View style={{ flex: 1 }}>
+          <View style={{ flex: 1, gap: 6 }}>
             <Text style={styles.perfHeroTitle}>Rewards, Performance & Awards</Text>
             <Text style={styles.perfHeroSub}>
               Comprehensive management of customer & trainer rewards, verified performance records, awards honors, and claims audit.
             </Text>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginTop: 4 }}>
+              <TouchableOpacity
+                style={styles.perfCreateRewardBtn}
+                onPress={() => openPerfCreateRewardModal(rewardsMainTab === 'trainer-rewards' ? 'Trainer' : 'Customer')}
+                activeOpacity={0.8}
+              >
+                <Ionicons name="add" size={14} color="#FFFFFF" />
+                <Text style={styles.perfCreateRewardBtnText}>
+                  {rewardsMainTab === 'trainer-rewards' ? 'Create Trainer Incentive' : 'Create Reward'}
+                </Text>
+              </TouchableOpacity>
+              {rewardsMainTab === 'awards-recognition' && (
+                <TouchableOpacity
+                  style={[styles.perfCreateRewardBtn, { backgroundColor: '#1E293B' }]}
+                  onPress={openPerfCreateAwardModal}
+                  activeOpacity={0.8}
+                >
+                  <Ionicons name="trophy" size={13} color="#FFFFFF" />
+                  <Text style={styles.perfCreateRewardBtnText}>Create Award</Text>
+                </TouchableOpacity>
+              )}
+            </View>
           </View>
         </View>
 
-        {/* 5 Main Tabs Matching Web Image 2 */}
-        <ScrollView 
-          horizontal 
+        {/* 5 Main Tabs Matching Web */}
+        <ScrollView
+          horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.perfMainTabsScroll}
         >
           {[
             { id: 'performance-overview', label: 'Performance Overview', icon: 'bar-chart-outline' },
-            { id: 'customer-rewards', label: `Customer Rewards (${perfRewards.filter(r => r.recipientType === 'Customer').length})`, icon: 'gift-outline' },
-            { id: 'trainer-rewards', label: `Trainer Rewards (${perfRewards.filter(r => r.recipientType === 'Trainer').length})`, icon: 'barbell-outline' },
-            { id: 'awards-recognition', label: 'Awards & Recognition', icon: 'trophy-outline' },
-            { id: 'claims-history', label: `Claims & History (${perfClaims.length})`, icon: 'ticket-outline' },
+            { id: 'customer-rewards', label: `Customer Rewards (${perfRewards.filter(r => r.recipientType === 'Customer' || r.recipientType === 'Both').length})`, icon: 'gift-outline' },
+            { id: 'trainer-rewards', label: `Trainer Rewards (${perfRewards.filter(r => r.recipientType === 'Trainer' || r.recipientType === 'Both').length})`, icon: 'barbell-outline' },
+            { id: 'awards-recognition', label: `Awards & Recognition (${perfAwards.length})`, icon: 'trophy-outline' },
+            { id: 'claims-history', label: pendingClaimsCount > 0 ? `Claims & History (${pendingClaimsCount})` : `Claims & History (${perfClaims.length})`, icon: 'ticket-outline' },
           ].map(tab => {
             const isActive = rewardsMainTab === tab.id;
             return (
@@ -8896,10 +11518,10 @@ const renderBranchesView = () => {
                 onPress={() => setRewardsMainTab(tab.id as any)}
                 activeOpacity={0.7}
               >
-                <Ionicons 
-                  name={tab.icon as any} 
-                  size={14} 
-                  color={isActive ? '#FFFFFF' : '#64748B'} 
+                <Ionicons
+                  name={tab.icon as any}
+                  size={14}
+                  color={isActive ? '#FFFFFF' : '#64748B'}
                 />
                 <Text style={[styles.perfMainTabText, isActive && styles.perfMainTabTextActive]}>
                   {tab.label}
@@ -8914,8 +11536,12 @@ const renderBranchesView = () => {
             ======================================================== */}
         {rewardsMainTab === 'performance-overview' && (
           <View style={{ gap: 14 }}>
-            {/* 3 Sub Switcher Pills Matching Web Image 2 */}
-            <View style={styles.perfSubTabsRow}>
+            {/* 3 Sub Switcher Pills — Scrollable cleanly without text collisions */}
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.perfSubTabsRow}
+            >
               {[
                 { id: 'customer', label: `Customer Performance (${perfCustomerStats.totalCustomers})`, icon: 'people' },
                 { id: 'trainer', label: `Trainer Performance (${perfTrainerStats.totalTrainers})`, icon: 'barbell' },
@@ -8929,25 +11555,24 @@ const renderBranchesView = () => {
                     onPress={() => setPerfSubTab(sub.id as any)}
                     activeOpacity={0.7}
                   >
-                    <Ionicons 
-                      name={sub.icon as any} 
-                      size={13} 
-                      color={isSubActive ? '#FFFFFF' : '#64748B'} 
+                    <Ionicons
+                      name={sub.icon as any}
+                      size={14}
+                      color={isSubActive ? '#FFFFFF' : '#64748B'}
                     />
-                    <Text style={[styles.perfSubTabText, isSubActive && styles.perfSubTabTextActive]}>
+                    <Text style={[styles.perfSubTabText, isSubActive && styles.perfSubTabTextActive]} numberOfLines={1}>
                       {sub.label}
                     </Text>
                   </TouchableOpacity>
                 );
               })}
-            </View>
+            </ScrollView>
 
             {/* SUB-TAB A: CUSTOMER PERFORMANCE */}
             {perfSubTab === 'customer' && (
               <View style={{ gap: 14 }}>
-                {/* 4 KPI Summary Cards Grid Matching Web Image 2 */}
+                {/* 4 KPI Summary Cards Grid */}
                 <View style={styles.perfKpiGrid}>
-                  {/* Card 1: Total Members */}
                   <View style={styles.perfKpiCard}>
                     <View style={styles.perfKpiHeader}>
                       <Text style={styles.perfKpiLabel}>TOTAL GYM MEMBERS</Text>
@@ -8955,11 +11580,10 @@ const renderBranchesView = () => {
                         <Ionicons name="people-outline" size={15} color="#EA580C" />
                       </View>
                     </View>
-                    <Text style={styles.perfKpiValue}>{perfCustomerStats.totalCustomers}</Text>
-                    <Text style={styles.perfKpiSub}>{perfCustomerStats.activeMembersCount} with active membership</Text>
+                    <Text style={styles.perfKpiValue}>{perfCustomerStats.totalCustomers ?? 0}</Text>
+                    <Text style={styles.perfKpiSub}>{perfCustomerStats.activeMembersCount ?? 0} with active membership</Text>
                   </View>
 
-                  {/* Card 2: Attendance Streak */}
                   <View style={styles.perfKpiCard}>
                     <View style={styles.perfKpiHeader}>
                       <Text style={styles.perfKpiLabel}>AVG ATTENDANCE STREAK</Text>
@@ -8968,12 +11592,11 @@ const renderBranchesView = () => {
                       </View>
                     </View>
                     <Text style={[styles.perfKpiValue, { color: '#B45309' }]}>
-                      {perfCustomerStats.averageAttendanceStreak} <Text style={{ fontSize: 13, fontWeight: 'normal' }}>days</Text>
+                      {perfCustomerStats.averageAttendanceStreak ?? 0} <Text style={{ fontSize: 13, fontWeight: '600' }}>days</Text>
                     </Text>
                     <Text style={styles.perfKpiSub}>Consecutive verified visits</Text>
                   </View>
 
-                  {/* Card 3: Workout Completion */}
                   <View style={styles.perfKpiCard}>
                     <View style={styles.perfKpiHeader}>
                       <Text style={styles.perfKpiLabel}>AVG WORKOUT COMPLETION</Text>
@@ -8982,12 +11605,11 @@ const renderBranchesView = () => {
                       </View>
                     </View>
                     <Text style={[styles.perfKpiValue, { color: '#EA580C' }]}>
-                      {perfCustomerStats.averageWorkoutCompletionRate}%
+                      {avgWorkoutDisplay}
                     </Text>
                     <Text style={styles.perfKpiSub}>Based on logged workout sets</Text>
                   </View>
 
-                  {/* Card 4: Eligible for Rewards */}
                   <View style={styles.perfKpiCard}>
                     <View style={styles.perfKpiHeader}>
                       <Text style={styles.perfKpiLabel}>ELIGIBLE FOR REWARDS</Text>
@@ -8996,13 +11618,13 @@ const renderBranchesView = () => {
                       </View>
                     </View>
                     <Text style={[styles.perfKpiValue, { color: '#15803D' }]}>
-                      {perfCustomerStats.eligibleRewardsCount}
+                      {eligibleCountDisplay}
                     </Text>
                     <Text style={styles.perfKpiSub}>Members meeting target rules</Text>
                   </View>
                 </View>
 
-                {/* Search & Filter Bar Matching Web Image 2 */}
+                {/* Search & Real Filter Pickers */}
                 <View style={styles.perfFilterContainer}>
                   <View style={styles.perfSearchRow}>
                     <Ionicons name="search" size={15} color="#64748B" />
@@ -9023,12 +11645,12 @@ const renderBranchesView = () => {
                   <View style={styles.perfFilterChipsRow}>
                     <View style={styles.perfFilterChip}>
                       <Text style={styles.perfFilterChipLabel}>MEMBERSHIP:</Text>
-                      <TouchableOpacity 
-                        onPress={() => setPerfMembershipFilter(prev => prev === 'ALL' ? 'Active' : 'ALL')}
+                      <TouchableOpacity
+                        onPress={() => setPerfPickerType('membership')}
                         style={styles.perfFilterChipSelect}
                       >
                         <Text style={styles.perfFilterChipValue}>
-                          {perfMembershipFilter === 'ALL' ? 'All Statuses' : 'Active'}
+                          {perfMembershipFilter === 'ALL' ? 'All Statuses' : perfMembershipFilter}
                         </Text>
                         <Ionicons name="chevron-down" size={12} color="#64748B" />
                       </TouchableOpacity>
@@ -9036,18 +11658,18 @@ const renderBranchesView = () => {
 
                     <View style={styles.perfFilterChip}>
                       <Text style={styles.perfFilterChipLabel}>TRAINER:</Text>
-                      <TouchableOpacity 
-                        onPress={() => setPerfTrainerFilter(prev => prev === 'ALL' ? 'tr-001' : 'ALL')}
+                      <TouchableOpacity
+                        onPress={() => setPerfPickerType('trainer')}
                         style={styles.perfFilterChipSelect}
                       >
-                        <Text style={styles.perfFilterChipValue}>
-                          {perfTrainerFilter === 'ALL' ? 'All Trainers' : 'Naveen'}
+                        <Text style={styles.perfFilterChipValue} numberOfLines={1}>
+                          {trainerFilterLabel}
                         </Text>
                         <Ionicons name="chevron-down" size={12} color="#64748B" />
                       </TouchableOpacity>
                     </View>
 
-                    <TouchableOpacity 
+                    <TouchableOpacity
                       style={styles.perfCalendarShortcutBtn}
                       onPress={() => setPerfSubTab('calendar')}
                       activeOpacity={0.7}
@@ -9058,7 +11680,7 @@ const renderBranchesView = () => {
                   </View>
                 </View>
 
-                {/* Customer Table / Card List Matching Web Image 3 */}
+                {/* Customer Cards List */}
                 <View style={{ gap: 10 }}>
                   {filteredPerfCustomers.length === 0 ? (
                     <View style={styles.perfEmptyBox}>
@@ -9073,13 +11695,12 @@ const renderBranchesView = () => {
                       const dPct = c.dietSummary?.adherencePercentage;
 
                       return (
-                        <View key={c.customerId} style={styles.perfMemberCard}>
-                          {/* Top Row: Customer Info */}
+                        <View key={c.customerId || c._id} style={styles.perfMemberCard}>
                           <View style={styles.perfMemberTopRow}>
                             <View style={{ flex: 1 }}>
                               <Text style={styles.perfMemberName}>{c.name}</Text>
                               <Text style={styles.perfMemberContact}>
-                                {c.email}{c.phone ? ` • ${c.phone}` : ''}
+                                {c.email}{(c.phone || c.mobile) ? ` • ${c.phone || c.mobile}` : ''}
                               </Text>
                             </View>
                             <View style={styles.perfMemberBadgeBox}>
@@ -9092,15 +11713,12 @@ const renderBranchesView = () => {
                             </View>
                           </View>
 
-                          {/* Middle Grid: Assigned Trainer, Workouts, Diet, Visits & Streak, Reward Status */}
                           <View style={styles.perfMemberDataGrid}>
-                            {/* Assigned Trainer */}
                             <View style={styles.perfGridCell}>
                               <Text style={styles.perfCellLabel}>ASSIGNED TRAINER</Text>
                               <Text style={styles.perfCellDarkVal}>{c.assignedTrainer ? c.assignedTrainer.name : 'None assigned'}</Text>
                             </View>
 
-                            {/* Workouts */}
                             <View style={styles.perfGridCell}>
                               <Text style={styles.perfCellLabel}>WORKOUTS</Text>
                               {wPct !== null && wPct !== undefined ? (
@@ -9115,7 +11733,6 @@ const renderBranchesView = () => {
                               )}
                             </View>
 
-                            {/* Diet Plan */}
                             <View style={styles.perfGridCell}>
                               <Text style={styles.perfCellLabel}>DIET PLAN</Text>
                               {dPlan ? (
@@ -9132,7 +11749,6 @@ const renderBranchesView = () => {
                               )}
                             </View>
 
-                            {/* Visits & Streak */}
                             <View style={styles.perfGridCell}>
                               <Text style={styles.perfCellLabel}>VISITS & STREAK</Text>
                               <Text style={styles.perfCellDarkVal}>{c.attendanceSummary?.totalVerifiedVisits || 0} visits</Text>
@@ -9142,7 +11758,6 @@ const renderBranchesView = () => {
                               </View>
                             </View>
 
-                            {/* Reward Status */}
                             <View style={styles.perfGridCell}>
                               <Text style={styles.perfCellLabel}>REWARD STATUS</Text>
                               {c.rewardsSummary?.eligibleRewardsCount > 0 ? (
@@ -9158,20 +11773,28 @@ const renderBranchesView = () => {
                             </View>
                           </View>
 
-                          {/* Action Row: Calendar & View */}
                           <View style={styles.perfMemberActionsRow}>
-                            <TouchableOpacity 
+                            <TouchableOpacity
                               style={styles.perfActionCalendarBtn}
-                              onPress={() => setSelectedPerfCalendarCustomer(c)}
+                              onPress={() => {
+                                setPerfCalendarMonth(new Date());
+                                setPerfCalendarSelectedKey(formatPerfDateKey(new Date()));
+                                setSelectedPerfCalendarCustomer(c);
+                              }}
                               activeOpacity={0.7}
                             >
                               <Ionicons name="calendar-outline" size={13} color="#EA580C" />
                               <Text style={styles.perfActionCalendarText}>Calendar</Text>
                             </TouchableOpacity>
 
-                            <TouchableOpacity 
+                            <TouchableOpacity
                               style={styles.perfActionViewBtn}
-                              onPress={() => setSelectedPerfCustomer(c)}
+                              onPress={() => {
+                                setPerfCustomerModalTab('overview');
+                                setPerfCalendarMonth(new Date());
+                                setPerfCalendarSelectedKey(formatPerfDateKey(new Date()));
+                                setSelectedPerfCustomer(c);
+                              }}
                               activeOpacity={0.7}
                             >
                               <Ionicons name="eye-outline" size={13} color="#111827" />
@@ -9192,74 +11815,139 @@ const renderBranchesView = () => {
                 <View style={styles.perfTrainerKpiRow}>
                   <View style={styles.perfTrainerKpiCard}>
                     <Text style={styles.perfKpiLabel}>TOTAL TRAINERS</Text>
-                    <Text style={styles.perfKpiValue}>{perfTrainerStats.totalTrainers}</Text>
-                    <Text style={styles.perfKpiSub}>Gym trainers on staff</Text>
+                    <Text style={styles.perfKpiValue}>{perfTrainerStats.totalTrainers ?? perfTrainers.length}</Text>
+                    <Text style={styles.perfKpiSub}>Active certified roster</Text>
                   </View>
                   <View style={styles.perfTrainerKpiCard}>
-                    <Text style={styles.perfKpiLabel}>COMPLETED SESSIONS</Text>
-                    <Text style={[styles.perfKpiValue, { color: '#EA580C' }]}>{perfTrainerStats.totalCompletedSessions}</Text>
-                    <Text style={styles.perfKpiSub}>Supervised workouts</Text>
+                    <Text style={styles.perfKpiLabel}>SESSIONS SUPERVISED</Text>
+                    <Text style={[styles.perfKpiValue, { color: '#EA580C' }]}>
+                      {perfTrainerStats.totalCompletedSessionsAcrossTrainers ?? perfTrainerStats.totalCompletedSessions ?? 0}
+                    </Text>
+                    <Text style={styles.perfKpiSub}>Online & in-person</Text>
                   </View>
                   <View style={styles.perfTrainerKpiCard}>
-                    <Text style={styles.perfKpiLabel}>AVG RATING</Text>
-                    <Text style={[styles.perfKpiValue, { color: '#D97706' }]}>{perfTrainerStats.averageGymTrainerRating} ★</Text>
+                    <Text style={styles.perfKpiLabel}>GYM RATING</Text>
+                    <Text style={[styles.perfKpiValue, { color: '#D97706' }]}>
+                      {perfTrainerStats.averageGymTrainerRating ?? 5.0} ★
+                    </Text>
                     <Text style={styles.perfKpiSub}>Across client reviews</Text>
                   </View>
                 </View>
 
-                {perfTrainers.map(t => (
-                  <View key={t.trainerId} style={styles.perfTrainerCard}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-                      <View style={styles.perfTrainerAvatar}>
-                        <Text style={styles.perfTrainerAvatarText}>{t.name.charAt(0)}</Text>
-                      </View>
-                      <View style={{ flex: 1 }}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                          <Text style={styles.perfTrainerName}>{t.name}</Text>
-                          <View style={styles.perfTrainerRolePill}>
-                            <Text style={styles.perfTrainerRoleText}>{t.role}</Text>
+                <View style={styles.perfFilterContainer}>
+                  <View style={styles.perfSearchRow}>
+                    <Ionicons name="search" size={15} color="#64748B" />
+                    <TextInput
+                      style={styles.perfSearchInput}
+                      placeholder="Search trainer by name, email, or phone..."
+                      placeholderTextColor="#94A3B8"
+                      value={perfTrainerSearch}
+                      onChangeText={setPerfTrainerSearch}
+                    />
+                    {perfTrainerSearch ? (
+                      <TouchableOpacity onPress={() => setPerfTrainerSearch('')}>
+                        <Ionicons name="close-circle" size={16} color="#64748B" />
+                      </TouchableOpacity>
+                    ) : null}
+                  </View>
+                </View>
+
+                {filteredPerfTrainers.length === 0 ? (
+                  <View style={styles.perfEmptyBox}>
+                    <Ionicons name="barbell-outline" size={32} color="#94A3B8" />
+                    <Text style={styles.perfEmptyTitle}>No Trainers Found</Text>
+                    <Text style={styles.perfEmptySub}>Try adjusting your trainer search filter.</Text>
+                  </View>
+                ) : (
+                  filteredPerfTrainers.map(t => {
+                    const clientsCount = t.clientsSummary?.totalAssignedCustomers ?? t.handledClients?.length ?? t.activeClientsCount ?? 0;
+                    const adherencePct = t.clientsSummary?.averageClientWorkoutProgress;
+                    const sessionsDone = t.sessionsSummary?.completedSessionsCount ?? t.completedSessionsCount ?? 0;
+                    const onlineCount = t.sessionsSummary?.onlineCount ?? 0;
+                    const inPersonCount = t.sessionsSummary?.inPersonCount ?? sessionsDone;
+                    const ratingVal = t.feedbackSummary?.averageRating ?? t.averageRating ?? 5.0;
+                    const reviewsCount = t.feedbackSummary?.totalRatingsCount ?? t.reviewCount ?? 0;
+                    const bonusesCount = t.rewardsSummary?.eligibleBonusesCount ?? 0;
+                    const punctuality = t.sessionsSummary?.averagePunctualityMinutes;
+
+                    return (
+                      <View key={t.trainerId || t._id} style={styles.perfTrainerCard}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+                          <View style={styles.perfTrainerAvatar}>
+                            <Text style={styles.perfTrainerAvatarText}>{(t.name || 'T').charAt(0)}</Text>
+                          </View>
+                          <View style={{ flex: 1 }}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                              <Text style={styles.perfTrainerName}>{t.name}</Text>
+                              <View style={styles.perfTrainerRolePill}>
+                                <Text style={styles.perfTrainerRoleText}>{t.role || t.status || 'Trainer'}</Text>
+                              </View>
+                            </View>
+                            <Text style={styles.perfTrainerContact}>{t.email}{t.phone ? ` • ${t.phone}` : ''}</Text>
                           </View>
                         </View>
-                        <Text style={styles.perfTrainerContact}>{t.email} • {t.phone}</Text>
-                      </View>
-                    </View>
 
-                    <View style={styles.perfTrainerStatStrip}>
-                      <View style={styles.perfTrainerStatItem}>
-                        <Text style={styles.perfTrainerStatLabel}>CLIENTS</Text>
-                        <Text style={styles.perfTrainerStatVal}>{t.activeClientsCount} active</Text>
+                        <View style={styles.perfTrainerStatStrip}>
+                          <View style={styles.perfTrainerStatItem}>
+                            <Text style={styles.perfTrainerStatLabel}>CLIENTS</Text>
+                            <Text style={styles.perfTrainerStatVal}>{clientsCount} assigned</Text>
+                            {adherencePct !== null && adherencePct !== undefined && (
+                              <Text style={styles.perfCellSubVal}>{adherencePct}% adherence</Text>
+                            )}
+                          </View>
+                          <View style={styles.perfTrainerStatItem}>
+                            <Text style={styles.perfTrainerStatLabel}>SESSIONS</Text>
+                            <Text style={styles.perfTrainerStatVal}>{sessionsDone} done</Text>
+                            <Text style={styles.perfCellSubVal}>{onlineCount} On / {inPersonCount} Floor</Text>
+                          </View>
+                          <View style={styles.perfTrainerStatItem}>
+                            <Text style={styles.perfTrainerStatLabel}>CLIENT RATING</Text>
+                            <Text style={[styles.perfTrainerStatVal, { color: '#D97706' }]}>{ratingVal} ★ ({reviewsCount})</Text>
+                            {punctuality !== undefined && punctuality !== null && (
+                              <Text style={styles.perfCellSubVal}>Punctuality: {punctuality}m</Text>
+                            )}
+                          </View>
+                          <View style={styles.perfTrainerStatItem}>
+                            <Text style={styles.perfTrainerStatLabel}>BONUSES</Text>
+                            <Text style={[styles.perfTrainerStatVal, { color: bonusesCount > 0 ? '#15803D' : '#64748B' }]}>
+                              {bonusesCount > 0 ? `${bonusesCount} Eligible` : (t.status || 'Active')}
+                            </Text>
+                          </View>
+                        </View>
+
+                        <View style={styles.perfMemberActionsRow}>
+                          <TouchableOpacity
+                            style={styles.perfActionCalendarBtn}
+                            onPress={() => {
+                              setPerfTrainerModalTab('handled-customers');
+                              setSelectedPerfTrainer(t);
+                            }}
+                            activeOpacity={0.7}
+                          >
+                            <Ionicons name="document-text-outline" size={14} color="#EA580C" />
+                            <Text style={styles.perfActionCalendarText}>Performance Report</Text>
+                          </TouchableOpacity>
+                        </View>
                       </View>
-                      <View style={styles.perfTrainerStatItem}>
-                        <Text style={styles.perfTrainerStatLabel}>SESSIONS</Text>
-                        <Text style={styles.perfTrainerStatVal}>{t.completedSessionsCount} done</Text>
-                      </View>
-                      <View style={styles.perfTrainerStatItem}>
-                        <Text style={styles.perfTrainerStatLabel}>CLIENT RATING</Text>
-                        <Text style={[styles.perfTrainerStatVal, { color: '#D97706' }]}>{t.averageRating} ★ ({t.reviewCount})</Text>
-                      </View>
-                      <View style={styles.perfTrainerStatItem}>
-                        <Text style={styles.perfTrainerStatLabel}>STATUS</Text>
-                        <Text style={[styles.perfTrainerStatVal, { color: '#15803D' }]}>{t.status}</Text>
-                      </View>
-                    </View>
-                  </View>
-                ))}
+                    );
+                  })
+                )}
               </View>
             )}
 
-            {/* SUB-TAB C: CUSTOMER CALENDAR */}
+            {/* SUB-TAB C: CUSTOMER CALENDAR (REAL INTERACTIVE WEB PARITY) */}
             {perfSubTab === 'calendar' && (
               <View style={styles.perfCalendarContainer}>
                 <Text style={styles.perfCalendarTitle}>Daily Workout & Diet Consistency Calendar</Text>
-                <Text style={styles.perfCalendarSub}>Verified check-ins, routine executions and nutrition logging.</Text>
-                
-                {/* Member Selector */}
-                <View style={{ flexDirection: 'row', gap: 8, marginTop: 10 }}>
+                <Text style={styles.perfCalendarSub}>Tap a member and date to inspect verified check-ins, completed workouts & diet logs.</Text>
+
+                {/* Scrollable Member Selector */}
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, paddingVertical: 10 }}>
                   {perfCustomers.map(c => {
-                    const isSelected = (selectedPerfCalendarCustomer?.customerId || perfCustomers[0].customerId) === c.customerId;
+                    const isSelected = (activeCalCust?.customerId || activeCalCust?._id) === (c.customerId || c._id);
                     return (
                       <TouchableOpacity
-                        key={c.customerId}
+                        key={c.customerId || c._id}
                         style={[styles.perfCalMemberChip, isSelected && styles.perfCalMemberChipActive]}
                         onPress={() => setSelectedPerfCalendarCustomer(c)}
                       >
@@ -9269,38 +11957,140 @@ const renderBranchesView = () => {
                       </TouchableOpacity>
                     );
                   })}
-                </View>
+                </ScrollView>
 
-                {/* Monthly Consistency Heatmap Card */}
+                {/* Interactive Monthly Grid */}
                 <View style={styles.perfCalGridCard}>
-                  <Text style={styles.perfCalMonthTitle}>October 2026 Consistency Record</Text>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+                    <TouchableOpacity
+                      style={styles.perfCalNavBtn}
+                      onPress={() => setPerfCalendarMonth(prev => new Date(prev.getFullYear(), prev.getMonth() - 1, 1))}
+                    >
+                      <Ionicons name="chevron-back" size={16} color="#111827" />
+                    </TouchableOpacity>
+                    <View style={{ alignItems: 'center' }}>
+                      <Text style={styles.perfCalMonthTitle}>
+                        {perfCalendarMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                      </Text>
+                      {activeCalCust && <Text style={{ fontSize: 10, color: '#64748B' }}>{activeCalCust.name}</Text>}
+                    </View>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                      <TouchableOpacity
+                        style={styles.perfCalTodayBtn}
+                        onPress={() => {
+                          const now = new Date();
+                          setPerfCalendarMonth(now);
+                          setPerfCalendarSelectedKey(formatPerfDateKey(now));
+                        }}
+                      >
+                        <Text style={styles.perfCalTodayBtnText}>Today</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={styles.perfCalNavBtn}
+                        onPress={() => setPerfCalendarMonth(prev => new Date(prev.getFullYear(), prev.getMonth() + 1, 1))}
+                      >
+                        <Ionicons name="chevron-forward" size={16} color="#111827" />
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+
+                  {/* Weekday Labels */}
+                  <View style={styles.perfCalWeekRow}>
+                    {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(w => (
+                      <Text key={w} style={styles.perfCalWeekText}>{w}</Text>
+                    ))}
+                  </View>
+
                   <View style={styles.perfCalDaysGrid}>
-                    {Array.from({ length: 31 }, (_, i) => i + 1).map(day => {
-                      const isComplete = day <= 21;
-                      const hasStreak = day === 21;
+                    {inlineCal.days.map((d) => {
+                      const ev = inlineCal.eventsMap.get(d.dateKey);
+                      const hasAny = ev && (ev.hasAttendance || ev.hasWorkout || ev.hasDiet);
                       return (
-                        <View 
-                          key={day} 
+                        <TouchableOpacity
+                          key={d.dateKey}
+                          activeOpacity={0.7}
+                          onPress={() => setPerfCalendarSelectedKey(d.dateKey)}
                           style={[
-                            styles.perfCalDayBox, 
-                            isComplete ? styles.perfCalDayBoxActive : styles.perfCalDayBoxEmpty,
-                            hasStreak && styles.perfCalDayBoxStreak
+                            styles.perfCalDayBox,
+                            !d.isCurrentMonth && { opacity: 0.4 },
+                            hasAny ? styles.perfCalDayBoxActive : styles.perfCalDayBoxEmpty,
+                            d.isToday && !d.isSelected && { borderColor: '#EA580C', borderWidth: 1.5 },
+                            d.isSelected && styles.perfCalDayBoxStreak
                           ]}
                         >
-                          <Text style={[styles.perfCalDayNum, isComplete && styles.perfCalDayNumActive]}>{day}</Text>
-                          {isComplete && <Ionicons name="checkmark" size={10} color="#15803D" />}
-                        </View>
+                          <Text style={[styles.perfCalDayNum, hasAny && styles.perfCalDayNumActive, d.isSelected && { color: '#C2410C', fontWeight: '900' }]}>
+                            {d.dayNumber}
+                          </Text>
+                          <View style={{ flexDirection: 'row', gap: 2, marginTop: 2 }}>
+                            {ev?.hasAttendance && <View style={[styles.perfCalDot, { backgroundColor: '#16A34A' }]} />}
+                            {ev?.hasWorkout && <View style={[styles.perfCalDot, { backgroundColor: '#EA580C' }]} />}
+                            {ev?.hasDiet && <View style={[styles.perfCalDot, { backgroundColor: '#D97706' }]} />}
+                          </View>
+                        </TouchableOpacity>
                       );
                     })}
                   </View>
+
                   <View style={styles.perfCalLegendRow}>
                     <View style={styles.perfCalLegendItem}>
-                      <View style={[styles.perfCalLegendDot, { backgroundColor: '#DCFCE7', borderColor: '#BBF7D0' }]} />
-                      <Text style={styles.perfCalLegendText}>Workout & Diet Complete</Text>
+                      <View style={[styles.perfCalDot, { backgroundColor: '#16A34A', width: 8, height: 8 }]} />
+                      <Text style={styles.perfCalLegendText}>Attendance</Text>
                     </View>
                     <View style={styles.perfCalLegendItem}>
-                      <View style={[styles.perfCalLegendDot, { backgroundColor: '#FFF7ED', borderColor: '#FFEDD5' }]} />
-                      <Text style={styles.perfCalLegendText}>Active Streak Milestone</Text>
+                      <View style={[styles.perfCalDot, { backgroundColor: '#EA580C', width: 8, height: 8 }]} />
+                      <Text style={styles.perfCalLegendText}>Workout Done</Text>
+                    </View>
+                    <View style={styles.perfCalLegendItem}>
+                      <View style={[styles.perfCalDot, { backgroundColor: '#D97706', width: 8, height: 8 }]} />
+                      <Text style={styles.perfCalLegendText}>Diet Check-in</Text>
+                    </View>
+                  </View>
+                </View>
+
+                {/* Selected Day Activity Card */}
+                <View style={styles.perfCalGridCard}>
+                  <Text style={styles.perfCalMonthTitle}>Activity on {perfCalendarSelectedKey}</Text>
+                  <View style={{ gap: 8, marginTop: 6 }}>
+                    <View style={styles.perfCalDayDetailRow}>
+                      <Ionicons name="checkmark-circle-outline" size={16} color={inlineCal.selectedDayData.attendance ? '#15803D' : '#94A3B8'} />
+                      <View style={{ flex: 1 }}>
+                        <Text style={styles.perfCellDarkVal}>
+                          {inlineCal.selectedDayData.attendance ? 'Verified Gym Check-in' : 'No gym attendance logged'}
+                        </Text>
+                        {inlineCal.selectedDayData.attendance?.checkInTime && (
+                          <Text style={styles.perfCellSubVal}>
+                            Time: {new Date(inlineCal.selectedDayData.attendance.checkInTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          </Text>
+                        )}
+                      </View>
+                    </View>
+
+                    <View style={styles.perfCalDayDetailRow}>
+                      <Ionicons name="barbell-outline" size={16} color={inlineCal.selectedDayData.completedWorkouts.length > 0 ? '#EA580C' : '#94A3B8'} />
+                      <View style={{ flex: 1 }}>
+                        <Text style={styles.perfCellDarkVal}>
+                          {inlineCal.selectedDayData.completedWorkouts.length} Completed Workout(s)
+                        </Text>
+                        {inlineCal.selectedDayData.completedWorkouts.slice(0, 3).map((w: any, i: number) => (
+                          <Text key={i} style={styles.perfCellSubVal}>
+                            • {w.exerciseName || w.dayName || 'Completed Set'} {w.completedSets ? `(${w.completedSets} sets)` : ''}
+                          </Text>
+                        ))}
+                      </View>
+                    </View>
+
+                    <View style={styles.perfCalDayDetailRow}>
+                      <Ionicons name="restaurant-outline" size={16} color={inlineCal.selectedDayData.completedMeals.length > 0 ? '#D97706' : '#94A3B8'} />
+                      <View style={{ flex: 1 }}>
+                        <Text style={styles.perfCellDarkVal}>
+                          {inlineCal.selectedDayData.completedMeals.length} Meal Check-in(s)
+                        </Text>
+                        {inlineCal.selectedDayData.completedMeals.slice(0, 3).map((m: any, i: number) => (
+                          <Text key={i} style={styles.perfCellSubVal}>
+                            • {m.mealType || 'Meal'} {m.calories ? `(${m.calories} kcal)` : ''}
+                          </Text>
+                        ))}
+                      </View>
                     </View>
                   </View>
                 </View>
@@ -9310,128 +12100,446 @@ const renderBranchesView = () => {
         )}
 
         {/* ========================================================
-            TAB 2: CUSTOMER REWARDS CATALOG (4)
+            TAB 2: CUSTOMER REWARDS CATALOG
             ======================================================== */}
         {rewardsMainTab === 'customer-rewards' && (
           <View style={{ gap: 12 }}>
             <View style={styles.perfCatalogHeaderRow}>
               <View style={{ flex: 1 }}>
-                <Text style={styles.perfCatalogTitle}>Active Customer Perks & Rewards</Text>
-                <Text style={styles.perfCatalogSub}>Gamification vouchers, free store items & PT trials.</Text>
+                <Text style={styles.perfCatalogTitle}>Customer Rewards & Perks</Text>
+                <Text style={styles.perfCatalogSub}>Vouchers, free store gifts, PT trials & achievement unlocks.</Text>
               </View>
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={styles.perfCreateRewardBtn}
-                onPress={() => Alert.alert('Create Customer Reward', 'Customer perk creation modal opened.')}
+                onPress={() => openPerfCreateRewardModal('Customer')}
               >
                 <Ionicons name="add" size={14} color="#FFFFFF" />
                 <Text style={styles.perfCreateRewardBtnText}>Add Perk</Text>
               </TouchableOpacity>
             </View>
 
-            {perfRewards.filter(r => r.recipientType === 'Customer').map((r) => (
-              <View key={r._id} style={styles.perfRewardItemCard}>
-                <View style={styles.perfRewardIconSquare}>
-                  <Ionicons name="gift" size={20} color="#EA580C" />
-                </View>
-                <View style={{ flex: 1 }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <Text style={styles.perfRewardItemTitle}>{r.title}</Text>
-                    <View style={styles.perfRewardBadge}>
-                      <Text style={styles.perfRewardBadgeText}>{r.category}</Text>
-                    </View>
-                  </View>
-                  <Text style={styles.perfRewardItemDesc}>{r.description}</Text>
-                  <View style={styles.perfRewardMetaRow}>
-                    <View style={styles.perfRewardPointsPill}>
-                      <Ionicons name="star" size={11} color="#D97706" />
-                      <Text style={styles.perfRewardPointsText}>{r.requiredPoints} Points Required</Text>
-                    </View>
-                    <Text style={styles.perfRewardClaimCount}>{r.claimedCount} Redeemed</Text>
-                  </View>
-                </View>
+            {/* 4 Summary KPI Cards Matching Web */}
+            <View style={styles.perfKpiGrid}>
+              <View style={styles.perfKpiCard}>
+                <Text style={styles.perfKpiLabel}>ACTIVE CUSTOMER OFFERS</Text>
+                <Text style={styles.perfKpiValue}>{customerRewardsList.filter(r => r.status !== 'Inactive').length}</Text>
+                <Text style={styles.perfKpiSub}>{customerRewardsList.length} total configured</Text>
               </View>
-            ))}
+              <View style={styles.perfKpiCard}>
+                <Text style={styles.perfKpiLabel}>TOTAL REDEMPTIONS</Text>
+                <Text style={[styles.perfKpiValue, { color: '#EA580C' }]}>
+                  {customerRewardsList.reduce((acc, r) => acc + (r.claimedCount || 0), 0)}
+                </Text>
+                <Text style={styles.perfKpiSub}>Vouchers & perks claimed</Text>
+              </View>
+              <View style={styles.perfKpiCard}>
+                <Text style={styles.perfKpiLabel}>POINTS PERKS</Text>
+                <Text style={[styles.perfKpiValue, { color: '#D97706' }]}>
+                  {customerRewardsList.filter(r => (r.requiredPoints || 0) > 0 || r.assignmentMethod === 'Points').length}
+                </Text>
+                <Text style={styles.perfKpiSub}>Loyalty points catalog</Text>
+              </View>
+              <View style={styles.perfKpiCard}>
+                <Text style={styles.perfKpiLabel}>INSTANT CLAIMS</Text>
+                <Text style={[styles.perfKpiValue, { color: '#15803D' }]}>
+                  {customerRewardsList.filter(r => !r.requireApproval).length}
+                </Text>
+                <Text style={styles.perfKpiSub}>Auto-approved rewards</Text>
+              </View>
+            </View>
+
+            {/* Search Bar */}
+            <View style={styles.perfFilterContainer}>
+              <View style={styles.perfSearchRow}>
+                <Ionicons name="search" size={15} color="#64748B" />
+                <TextInput
+                  style={styles.perfSearchInput}
+                  placeholder="Search customer rewards by title or category..."
+                  placeholderTextColor="#94A3B8"
+                  value={perfRewardSearch}
+                  onChangeText={setPerfRewardSearch}
+                />
+                {perfRewardSearch ? (
+                  <TouchableOpacity onPress={() => setPerfRewardSearch('')}>
+                    <Ionicons name="close-circle" size={16} color="#64748B" />
+                  </TouchableOpacity>
+                ) : null}
+              </View>
+            </View>
+
+            {customerRewardsList.length === 0 ? (
+              <View style={styles.perfEmptyBox}>
+                <Ionicons name="gift-outline" size={32} color="#94A3B8" />
+                <Text style={styles.perfEmptyTitle}>No Customer Rewards Found</Text>
+                <Text style={styles.perfEmptySub}>Tap "+ Add Perk" above to create a reward or discount voucher.</Text>
+              </View>
+            ) : (
+              customerRewardsList.map((r) => (
+                <View key={r._id} style={styles.perfRewardItemCard}>
+                  <View style={styles.perfRewardIconSquare}>
+                    <Ionicons name="gift" size={20} color="#EA580C" />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 6, flexWrap: 'wrap' }}>
+                      <Text style={styles.perfRewardItemTitle}>{r.title}</Text>
+                      <View style={styles.perfRewardBadge}>
+                        <Text style={styles.perfRewardBadgeText}>{r.category}</Text>
+                      </View>
+                    </View>
+                    <Text style={styles.perfRewardItemDesc}>{r.description}</Text>
+
+                    <View style={styles.perfRewardMetaRow}>
+                      {(r.requiredPoints || 0) > 0 && (
+                        <View style={styles.perfRewardPointsPill}>
+                          <Ionicons name="star" size={11} color="#D97706" />
+                          <Text style={styles.perfRewardPointsText}>{r.requiredPoints} pts</Text>
+                        </View>
+                      )}
+                      {r.minVerifiedVisits > 0 && (
+                        <View style={styles.perfRewardPointsPill}>
+                          <Text style={styles.perfRewardPointsText}>{r.minVerifiedVisits} visits req.</Text>
+                        </View>
+                      )}
+                      {r.minWorkoutCompletions > 0 && (
+                        <View style={styles.perfRewardPointsPill}>
+                          <Text style={styles.perfRewardPointsText}>{r.minWorkoutCompletions} workouts</Text>
+                        </View>
+                      )}
+                      {r.minStreakDays > 0 && (
+                        <View style={styles.perfRewardPointsPill}>
+                          <Text style={styles.perfRewardPointsText}>{r.minStreakDays}d streak</Text>
+                        </View>
+                      )}
+                      <View style={[styles.perfRewardPointsPill, { backgroundColor: r.requireApproval ? '#FEF3C7' : '#DCFCE7', borderColor: r.requireApproval ? '#FDE68A' : '#BBF7D0' }]}>
+                        <Text style={[styles.perfRewardPointsText, { color: r.requireApproval ? '#B45309' : '#15803D' }]}>
+                          {r.requireApproval ? 'Approval Req.' : 'Instant Claim'}
+                        </Text>
+                      </View>
+                      <Text style={styles.perfRewardClaimCount}>{r.claimedCount || 0} Redeemed</Text>
+                    </View>
+
+                    <View style={styles.perfItemActionsBar}>
+                      <TouchableOpacity style={styles.perfSmallEditBtn} onPress={() => openPerfEditRewardModal(r)}>
+                        <Ionicons name="create-outline" size={13} color="#C2410C" />
+                        <Text style={styles.perfSmallEditText}>Edit</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.perfSmallDeleteBtn} onPress={() => handleDeletePerfReward(r._id)}>
+                        <Ionicons name="trash-outline" size={13} color="#DC2626" />
+                        <Text style={styles.perfSmallDeleteText}>Delete</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </View>
+              ))
+            )}
           </View>
         )}
 
         {/* ========================================================
-            TAB 3: TRAINER REWARDS CATALOG (2)
+            TAB 3: TRAINER REWARDS CATALOG
             ======================================================== */}
         {rewardsMainTab === 'trainer-rewards' && (
           <View style={{ gap: 12 }}>
             <View style={styles.perfCatalogHeaderRow}>
               <View style={{ flex: 1 }}>
                 <Text style={styles.perfCatalogTitle}>Trainer Performance Incentives</Text>
-                <Text style={styles.perfCatalogSub}>Cash incentives, honors & performance honors.</Text>
+                <Text style={styles.perfCatalogSub}>Cash bonuses, session milestones & trainer honors.</Text>
               </View>
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={styles.perfCreateRewardBtn}
-                onPress={() => Alert.alert('Create Trainer Incentive', 'Trainer incentive modal opened.')}
+                onPress={() => openPerfCreateRewardModal('Trainer')}
               >
                 <Ionicons name="add" size={14} color="#FFFFFF" />
                 <Text style={styles.perfCreateRewardBtnText}>Add Incentive</Text>
               </TouchableOpacity>
             </View>
 
-            {perfRewards.filter(r => r.recipientType === 'Trainer').map((r) => (
-              <View key={r._id} style={styles.perfRewardItemCard}>
-                <View style={[styles.perfRewardIconSquare, { backgroundColor: '#FEF3C7' }]}>
-                  <Ionicons name="trophy" size={20} color="#D97706" />
-                </View>
-                <View style={{ flex: 1 }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <Text style={styles.perfRewardItemTitle}>{r.title}</Text>
-                    <View style={[styles.perfRewardBadge, { backgroundColor: '#FFF7ED', borderColor: '#FFEDD5' }]}>
-                      <Text style={[styles.perfRewardBadgeText, { color: '#C2410C' }]}>{r.category}</Text>
+            {/* 4 Summary KPI Cards Matching Web */}
+            <View style={styles.perfKpiGrid}>
+              <View style={styles.perfKpiCard}>
+                <Text style={styles.perfKpiLabel}>TRAINER INCENTIVES</Text>
+                <Text style={styles.perfKpiValue}>{trainerRewardsList.length}</Text>
+                <Text style={styles.perfKpiSub}>Active bonus programs</Text>
+              </View>
+              <View style={styles.perfKpiCard}>
+                <Text style={styles.perfKpiLabel}>CASH BONUS PROGRAMS</Text>
+                <Text style={[styles.perfKpiValue, { color: '#15803D' }]}>
+                  {trainerRewardsList.filter(r => (r.bonusAmount || 0) > 0).length}
+                </Text>
+                <Text style={styles.perfKpiSub}>Monetary payouts enabled</Text>
+              </View>
+              <View style={styles.perfKpiCard}>
+                <Text style={styles.perfKpiLabel}>BONUSES CLAIMED</Text>
+                <Text style={[styles.perfKpiValue, { color: '#EA580C' }]}>
+                  {trainerRewardsList.reduce((acc, r) => acc + (r.claimedCount || 0), 0)}
+                </Text>
+                <Text style={styles.perfKpiSub}>Verified awards issued</Text>
+              </View>
+              <View style={styles.perfKpiCard}>
+                <Text style={styles.perfKpiLabel}>STAFF PARTICIPANTS</Text>
+                <Text style={styles.perfKpiValue}>{perfTrainerStats.totalTrainers ?? perfTrainers.length}</Text>
+                <Text style={styles.perfKpiSub}>Evaluated trainers</Text>
+              </View>
+            </View>
+
+            <View style={styles.perfFilterContainer}>
+              <View style={styles.perfSearchRow}>
+                <Ionicons name="search" size={15} color="#64748B" />
+                <TextInput
+                  style={styles.perfSearchInput}
+                  placeholder="Search trainer incentives by title or category..."
+                  placeholderTextColor="#94A3B8"
+                  value={perfRewardSearch}
+                  onChangeText={setPerfRewardSearch}
+                />
+                {perfRewardSearch ? (
+                  <TouchableOpacity onPress={() => setPerfRewardSearch('')}>
+                    <Ionicons name="close-circle" size={16} color="#64748B" />
+                  </TouchableOpacity>
+                ) : null}
+              </View>
+            </View>
+
+            {trainerRewardsList.length === 0 ? (
+              <View style={styles.perfEmptyBox}>
+                <Ionicons name="trophy-outline" size={32} color="#94A3B8" />
+                <Text style={styles.perfEmptyTitle}>No Trainer Incentives Found</Text>
+                <Text style={styles.perfEmptySub}>Tap "+ Add Incentive" to set up trainer cash bonuses or milestones.</Text>
+              </View>
+            ) : (
+              trainerRewardsList.map((r) => (
+                <View key={r._id} style={styles.perfRewardItemCard}>
+                  <View style={[styles.perfRewardIconSquare, { backgroundColor: '#FEF3C7' }]}>
+                    <Ionicons name="trophy" size={20} color="#D97706" />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 6, flexWrap: 'wrap' }}>
+                      <Text style={styles.perfRewardItemTitle}>{r.title}</Text>
+                      <View style={[styles.perfRewardBadge, { backgroundColor: '#FFF7ED', borderColor: '#FFEDD5' }]}>
+                        <Text style={[styles.perfRewardBadgeText, { color: '#C2410C' }]}>{r.category}</Text>
+                      </View>
+                    </View>
+                    <Text style={styles.perfRewardItemDesc}>{r.description}</Text>
+
+                    <View style={styles.perfRewardMetaRow}>
+                      {(r.bonusAmount || 0) > 0 ? (
+                        <View style={[styles.perfRewardPointsPill, { backgroundColor: '#DCFCE7', borderColor: '#BBF7D0' }]}>
+                          <Text style={[styles.perfRewardPointsText, { color: '#15803D' }]}>₹{r.bonusAmount} Cash Bonus</Text>
+                        </View>
+                      ) : (
+                        <View style={styles.perfRewardPointsPill}>
+                          <Text style={styles.perfRewardPointsText}>Honorary Recognition</Text>
+                        </View>
+                      )}
+                      {r.minCompletedSessions > 0 && (
+                        <View style={styles.perfRewardPointsPill}>
+                          <Text style={styles.perfRewardPointsText}>{r.minCompletedSessions}+ Sessions</Text>
+                        </View>
+                      )}
+                      {r.minAverageRating > 0 && (
+                        <View style={styles.perfRewardPointsPill}>
+                          <Text style={styles.perfRewardPointsText}>{r.minAverageRating}★ Min Rating</Text>
+                        </View>
+                      )}
+                      <Text style={styles.perfRewardClaimCount}>{r.claimedCount || 0} Awarded</Text>
+                    </View>
+
+                    <View style={styles.perfItemActionsBar}>
+                      <TouchableOpacity style={styles.perfSmallEditBtn} onPress={() => openPerfEditRewardModal(r)}>
+                        <Ionicons name="create-outline" size={13} color="#C2410C" />
+                        <Text style={styles.perfSmallEditText}>Edit</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.perfSmallDeleteBtn} onPress={() => handleDeletePerfReward(r._id)}>
+                        <Ionicons name="trash-outline" size={13} color="#DC2626" />
+                        <Text style={styles.perfSmallDeleteText}>Delete</Text>
+                      </TouchableOpacity>
                     </View>
                   </View>
-                  <Text style={styles.perfRewardItemDesc}>{r.description}</Text>
-                  <View style={styles.perfRewardMetaRow}>
-                    {r.bonusAmount ? (
-                      <View style={[styles.perfRewardPointsPill, { backgroundColor: '#DCFCE7', borderColor: '#BBF7D0' }]}>
-                        <Text style={[styles.perfRewardPointsText, { color: '#15803D' }]}>₹{r.bonusAmount} Cash Bonus</Text>
-                      </View>
-                    ) : (
-                      <View style={styles.perfRewardPointsPill}>
-                        <Text style={styles.perfRewardPointsText}>Honorary Trophy</Text>
-                      </View>
-                    )}
-                    <Text style={styles.perfRewardClaimCount}>{r.claimedCount} Awarded</Text>
-                  </View>
                 </View>
-              </View>
-            ))}
+              ))
+            )}
           </View>
         )}
 
         {/* ========================================================
-            TAB 4: AWARDS & RECOGNITION
+            TAB 4: AWARDS & RECOGNITION (LIVE WEB PARITY)
             ======================================================== */}
         {rewardsMainTab === 'awards-recognition' && (
           <View style={{ gap: 12 }}>
-            <Text style={styles.perfCatalogTitle}>Honorary Gym Awards & Recognition</Text>
-            <Text style={styles.perfCatalogSub}>Public trophies, certificates and hall-of-fame recognitions.</Text>
+            <View style={styles.perfCatalogHeaderRow}>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.perfCatalogTitle}>Awards & Recognition ({perfAwards.length})</Text>
+                <Text style={styles.perfCatalogSub}>Create awards, evaluate candidates, confirm winners & publish certificates.</Text>
+              </View>
+              <TouchableOpacity
+                style={styles.perfCreateRewardBtn}
+                onPress={openPerfCreateAwardModal}
+              >
+                <Ionicons name="add" size={14} color="#FFFFFF" />
+                <Text style={styles.perfCreateRewardBtnText}>Create Award</Text>
+              </TouchableOpacity>
+            </View>
 
-            {[
-              { title: 'Member of the Month', recipient: 'Renugopal Y', reason: '100% workout routine adherence and 30 completed training sessions.', date: 'October 2026', icon: 'medal' },
-              { title: 'Best Transformation', recipient: 'Renugopal Y', reason: 'Achieved targeted weight reduction and nutritional milestones.', date: 'October 2026', icon: 'sparkles' },
-              { title: 'Consistency Star', recipient: 'Renugopal Y', reason: 'Maintained consecutive weekly attendance and logged progress.', date: 'October 2026', icon: 'flame' },
-              { title: 'Coach of the Year', recipient: 'Naveen', reason: 'Highest client satisfaction rating (5.0 ★) and zero session cancellations.', date: '2026 Annual', icon: 'trophy' },
-            ].map((aw, i) => (
-              <View key={i} style={styles.perfAwardCard}>
-                <View style={styles.perfAwardIconCircle}>
-                  <Ionicons name={aw.icon as any} size={22} color="#EA580C" />
+            {/* Search & Filters */}
+            <View style={styles.perfFilterContainer}>
+              <View style={styles.perfSearchRow}>
+                <Ionicons name="search" size={15} color="#64748B" />
+                <TextInput
+                  style={styles.perfSearchInput}
+                  placeholder="Search award title, category or winner..."
+                  placeholderTextColor="#94A3B8"
+                  value={perfAwardSearch}
+                  onChangeText={setPerfAwardSearch}
+                />
+                {perfAwardSearch ? (
+                  <TouchableOpacity onPress={() => setPerfAwardSearch('')}>
+                    <Ionicons name="close-circle" size={16} color="#64748B" />
+                  </TouchableOpacity>
+                ) : null}
+              </View>
+
+              <View style={styles.perfFilterChipsRow}>
+                <View style={styles.perfFilterChip}>
+                  <Text style={styles.perfFilterChipLabel}>AUDIENCE:</Text>
+                  <TouchableOpacity onPress={() => setPerfPickerType('awardAudience')} style={styles.perfFilterChipSelect}>
+                    <Text style={styles.perfFilterChipValue}>{perfAwardAudienceFilter === 'ALL' ? 'All Recipients' : `${perfAwardAudienceFilter}s`}</Text>
+                    <Ionicons name="chevron-down" size={12} color="#64748B" />
+                  </TouchableOpacity>
                 </View>
-                <View style={{ flex: 1 }}>
-                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Text style={styles.perfAwardTitle}>{aw.title}</Text>
-                    <Text style={styles.perfAwardDate}>{aw.date}</Text>
-                  </View>
-                  <Text style={styles.perfAwardRecipient}>Honoree: {aw.recipient}</Text>
-                  <Text style={styles.perfAwardReason}>{aw.reason}</Text>
+
+                <View style={styles.perfFilterChip}>
+                  <Text style={styles.perfFilterChipLabel}>PERIOD:</Text>
+                  <TouchableOpacity onPress={() => setPerfPickerType('awardPeriod')} style={styles.perfFilterChipSelect}>
+                    <Text style={styles.perfFilterChipValue}>{perfAwardPeriodFilter === 'ALL' ? 'All Periods' : perfAwardPeriodFilter}</Text>
+                    <Ionicons name="chevron-down" size={12} color="#64748B" />
+                  </TouchableOpacity>
                 </View>
               </View>
-            ))}
+            </View>
+
+            {filteredAwardsList.length === 0 ? (
+              <View style={styles.perfEmptyBox}>
+                <Ionicons name="trophy-outline" size={32} color="#94A3B8" />
+                <Text style={styles.perfEmptyTitle}>No Awards Created Yet</Text>
+                <Text style={styles.perfEmptySub}>Tap "+ Create Award" to launch Monthly or Annual gym honors.</Text>
+              </View>
+            ) : (
+              filteredAwardsList.map((aw) => {
+                const isPublished = aw.status === 'Published';
+                const hasWinner = Boolean(aw.winnerUserId || aw.winnerName);
+                const winnerDisplay = aw.winnerName || (aw.winnerUserId ? `${aw.winnerUserId.firstName || ''} ${aw.winnerUserId.lastName || ''}`.trim() : '');
+                return (
+                  <View key={aw._id} style={styles.perfAwardCard}>
+                    <View style={styles.perfAwardIconCircle}>
+                      <Ionicons name={aw.recipientType === 'Trainer' ? 'medal' : 'trophy'} size={22} color="#EA580C" />
+                    </View>
+                    <View style={{ flex: 1, gap: 4 }}>
+                      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                        <Text style={styles.perfAwardTitle}>{aw.title}</Text>
+                        <View style={[styles.perfClaimStatusPill, isPublished ? { backgroundColor: '#DCFCE7', borderColor: '#BBF7D0' } : hasWinner ? { backgroundColor: '#FEF3C7', borderColor: '#FDE68A' } : { backgroundColor: '#F1F5F9', borderColor: '#E2E8F0' }]}>
+                          <Text style={[styles.perfClaimStatusText, { color: isPublished ? '#15803D' : hasWinner ? '#B45309' : '#475569' }]}>
+                            {aw.status || (isPublished ? 'Published' : hasWinner ? 'Under Review' : 'Open')}
+                          </Text>
+                        </View>
+                      </View>
+                      <Text style={styles.perfAwardRecipient}>
+                        {aw.recipientType} Award • {aw.category} • {aw.awardPeriod || 'Monthly'}
+                      </Text>
+                      <Text style={styles.perfAwardReason}>{aw.description}</Text>
+
+                      {winnerDisplay ? (
+                        <View style={[styles.perfEligiblePill, { alignSelf: 'flex-start', marginTop: 2 }]}>
+                          <Ionicons name="ribbon" size={12} color="#15803D" />
+                          <Text style={styles.perfEligiblePillText}>
+                            Winner: {winnerDisplay}{aw.winnerMetricAchieved ? ` • ${aw.winnerMetricAchieved}` : ''}
+                          </Text>
+                        </View>
+                      ) : null}
+
+                      <View style={styles.perfItemActionsBar}>
+                        {!isPublished ? (
+                          <>
+                            <TouchableOpacity style={styles.perfSmallPrimaryBtn} onPress={() => openPerfCandidateEvaluation(aw)}>
+                              <Ionicons name="people-outline" size={13} color="#FFFFFF" />
+                              <Text style={styles.perfSmallPrimaryText}>{hasWinner ? 'Change Winner' : 'Evaluate Candidates'}</Text>
+                            </TouchableOpacity>
+                            {hasWinner && (
+                              <TouchableOpacity style={[styles.perfSmallPrimaryBtn, { backgroundColor: '#15803D' }]} onPress={() => setPerfAwardToPublish(aw)}>
+                                <Ionicons name="checkmark-done" size={13} color="#FFFFFF" />
+                                <Text style={styles.perfSmallPrimaryText}>Publish</Text>
+                              </TouchableOpacity>
+                            )}
+                            <TouchableOpacity style={styles.perfSmallEditBtn} onPress={() => openPerfEditAwardModal(aw)}>
+                              <Ionicons name="create-outline" size={13} color="#C2410C" />
+                              <Text style={styles.perfSmallEditText}>Edit</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.perfSmallDeleteBtn} onPress={() => handleDeletePerfAward(aw._id)}>
+                              <Ionicons name="trash-outline" size={13} color="#DC2626" />
+                            </TouchableOpacity>
+                          </>
+                        ) : (
+                          <>
+                            <TouchableOpacity
+                              style={styles.perfSmallPrimaryBtn}
+                              onPress={async () => {
+                                await FileDownloader.downloadReportPDF(
+                                  {
+                                    title: `Award Certificate - ${aw.title}`,
+                                    subtitle: `${aw.category} • Certificate ID: ${aw.certificateId || 'CERT-VERIFIED'}`,
+                                    gymName: user?.gymName || 'Perfect Fitness Studio',
+                                    summaryMetrics: [
+                                      { label: 'Honoree', value: winnerDisplay || 'Award Recipient' },
+                                      { label: 'Award Title', value: aw.title },
+                                      { label: 'Category', value: aw.category },
+                                      { label: 'Certificate ID', value: aw.certificateId || 'CERT-VERIFIED' },
+                                    ],
+                                    headers: ['Award Field', 'Details'],
+                                    rows: [
+                                      ['Honoree', winnerDisplay || 'Award Recipient'],
+                                      ['Title', aw.title],
+                                      ['Category', aw.category],
+                                      ['Period', aw.awardPeriod || 'Monthly'],
+                                      ['Achievement', aw.winnerMetricAchieved || aw.description || 'Verified'],
+                                      ['Certificate ID', aw.certificateId || 'CERT-VERIFIED'],
+                                    ],
+                                  },
+                                  `Certificate_${(winnerDisplay || 'Winner').replace(/\s+/g, '_')}`
+                                );
+                              }}
+                            >
+                              <Ionicons name="download-outline" size={13} color="#FFFFFF" />
+                              <Text style={styles.perfSmallPrimaryText}>Certificate PDF</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.perfSmallEditBtn} onPress={() => openPerfEditAwardModal(aw)}>
+                              <Ionicons name="create-outline" size={13} color="#C2410C" />
+                              <Text style={styles.perfSmallEditText}>Edit</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.perfSmallDeleteBtn} onPress={() => handleDeletePerfAward(aw._id)}>
+                              <Ionicons name="trash-outline" size={13} color="#DC2626" />
+                            </TouchableOpacity>
+                          </>
+                        )}
+                      </View>
+                    </View>
+                  </View>
+                );
+              })
+            )}
+
+            {perfHallOfFame.length > 0 && (
+              <View style={{ marginTop: 8, gap: 8 }}>
+                <Text style={[styles.perfCatalogTitle, { fontSize: 15 }]}>Hall of Fame ({perfHallOfFame.length})</Text>
+                {perfHallOfFame.map((h: any, idx: number) => (
+                  <View key={h._id || idx} style={[styles.perfAwardCard, { backgroundColor: '#FFF7ED', borderColor: '#FDBA74' }]}>
+                    <Ionicons name="star" size={18} color="#EA580C" />
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.perfAwardTitle}>{h.title} — {h.winnerName || 'Honoree'}</Text>
+                      <Text style={styles.perfAwardReason}>{h.winnerMetricAchieved || h.description}</Text>
+                    </View>
+                  </View>
+                ))}
+              </View>
+            )}
           </View>
         )}
 
@@ -9440,24 +12548,100 @@ const renderBranchesView = () => {
             ======================================================== */}
         {rewardsMainTab === 'claims-history' && (
           <View style={{ gap: 12 }}>
-            <Text style={styles.perfCatalogTitle}>Claims & Audit Trail</Text>
-            <Text style={styles.perfCatalogSub}>Verified member voucher claims, barcode redemptions & settlements.</Text>
+            <Text style={styles.perfCatalogTitle}>Claims & Audit Trail ({filteredClaimsList.length})</Text>
+            <Text style={styles.perfCatalogSub}>Approve pending vouchers, mark redeemed, or record cash bonus payouts.</Text>
 
-            {perfClaims.map((cl) => (
-              <View key={cl._id} style={styles.perfClaimCard}>
-                <View style={{ flex: 1 }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <Text style={styles.perfClaimCode}>{cl.claimCode}</Text>
-                    <View style={styles.perfClaimStatusPill}>
-                      <Text style={styles.perfClaimStatusText}>{cl.claimStatus}</Text>
-                    </View>
-                  </View>
-                  <Text style={styles.perfClaimUser}>{cl.userName} ({cl.userEmail})</Text>
-                  <Text style={styles.perfClaimReward}>{cl.rewardTitle}</Text>
-                  <Text style={styles.perfClaimDate}>Claimed on {new Date(cl.claimedAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</Text>
+            <View style={styles.perfFilterContainer}>
+              <View style={styles.perfSearchRow}>
+                <Ionicons name="search" size={15} color="#64748B" />
+                <TextInput
+                  style={styles.perfSearchInput}
+                  placeholder="Search claim code, member name or reward..."
+                  placeholderTextColor="#94A3B8"
+                  value={perfRewardSearch}
+                  onChangeText={setPerfRewardSearch}
+                />
+              </View>
+              <View style={styles.perfFilterChipsRow}>
+                <View style={styles.perfFilterChip}>
+                  <Text style={styles.perfFilterChipLabel}>STATUS:</Text>
+                  <TouchableOpacity onPress={() => setPerfPickerType('claimStatus')} style={styles.perfFilterChipSelect}>
+                    <Text style={styles.perfFilterChipValue}>{perfClaimStatusFilter === 'ALL' ? 'All Statuses' : perfClaimStatusFilter}</Text>
+                    <Ionicons name="chevron-down" size={12} color="#64748B" />
+                  </TouchableOpacity>
                 </View>
               </View>
-            ))}
+            </View>
+
+            {filteredClaimsList.length === 0 ? (
+              <View style={styles.perfEmptyBox}>
+                <Ionicons name="ticket-outline" size={32} color="#94A3B8" />
+                <Text style={styles.perfEmptyTitle}>No Claims Found</Text>
+                <Text style={styles.perfEmptySub}>Reward claims and trainer bonus requests appear here.</Text>
+              </View>
+            ) : (
+              filteredClaimsList.map((cl) => {
+                const userName = cl.userId ? `${cl.userId.firstName || ''} ${cl.userId.lastName || ''}`.trim() : (cl.userName || 'Member');
+                const userEmail = cl.userId?.email || cl.userEmail || '';
+                const rewardTitle = cl.rewardId?.title || cl.rewardTitle || 'Reward';
+                const hasBonus = cl.financialPayoutStatus && cl.financialPayoutStatus !== 'Not Applicable';
+                const stColor = cl.claimStatus === 'Approved' ? '#15803D' : cl.claimStatus === 'Redeemed' ? '#0369A1' : cl.claimStatus === 'Rejected' ? '#B91C1C' : '#B45309';
+                const stBg = cl.claimStatus === 'Approved' ? '#DCFCE7' : cl.claimStatus === 'Redeemed' ? '#E0F2FE' : cl.claimStatus === 'Rejected' ? '#FEE2E2' : '#FEF3C7';
+
+                return (
+                  <View key={cl._id} style={styles.perfClaimCard}>
+                    <View style={{ flex: 1, gap: 4 }}>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 6 }}>
+                        <Text style={styles.perfClaimCode}>{cl.claimCode}</Text>
+                        <View style={[styles.perfClaimStatusPill, { backgroundColor: stBg, borderColor: stBg }]}>
+                          <Text style={[styles.perfClaimStatusText, { color: stColor }]}>{cl.claimStatus}</Text>
+                        </View>
+                      </View>
+                      <Text style={styles.perfClaimUser}>
+                        {userName}{userEmail ? ` (${userEmail})` : ''} • {cl.userRole === 'TRAINER' ? 'Trainer' : 'Customer'}
+                      </Text>
+                      <Text style={styles.perfClaimReward}>
+                        {rewardTitle}{cl.pointsDeducted > 0 ? ` • -${cl.pointsDeducted} pts` : ''}
+                      </Text>
+                      {cl.rejectionReason ? (
+                        <Text style={{ fontSize: 11, color: '#DC2626' }}>Reason: {cl.rejectionReason}</Text>
+                      ) : null}
+                      {hasBonus ? (
+                        <Text style={{ fontSize: 11, fontWeight: '700', color: cl.financialPayoutStatus === 'Paid' ? '#15803D' : '#B45309' }}>
+                          Payout: {cl.financialPayoutStatus}{cl.financialPayoutReference ? ` (Ref: ${cl.financialPayoutReference})` : ''}
+                        </Text>
+                      ) : null}
+                      <Text style={styles.perfClaimDate}>
+                        Claimed on {cl.claimedAt ? new Date(cl.claimedAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : 'Recorded'}
+                      </Text>
+
+                      <View style={styles.perfItemActionsBar}>
+                        {cl.claimStatus === 'Pending' && (
+                          <>
+                            <TouchableOpacity style={styles.perfSmallPrimaryBtn} onPress={() => openPerfClaimAction(cl, 'APPROVE')}>
+                              <Text style={styles.perfSmallPrimaryText}>Approve</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.perfSmallDeleteBtn} onPress={() => openPerfClaimAction(cl, 'REJECT')}>
+                              <Text style={styles.perfSmallDeleteText}>Reject</Text>
+                            </TouchableOpacity>
+                          </>
+                        )}
+                        {cl.claimStatus === 'Approved' && (
+                          <TouchableOpacity style={[styles.perfSmallPrimaryBtn, { backgroundColor: '#0369A1' }]} onPress={() => openPerfClaimAction(cl, 'REDEEM')}>
+                            <Text style={styles.perfSmallPrimaryText}>Mark Redeemed</Text>
+                          </TouchableOpacity>
+                        )}
+                        {hasBonus && cl.financialPayoutStatus === 'Pending' && (
+                          <TouchableOpacity style={styles.perfSmallPrimaryBtn} onPress={() => openPerfClaimAction(cl, 'PAYOUT')}>
+                            <Text style={styles.perfSmallPrimaryText}>Record Payout</Text>
+                          </TouchableOpacity>
+                        )}
+                      </View>
+                    </View>
+                  </View>
+                );
+              })
+            )}
           </View>
         )}
       </View>
@@ -10629,96 +13813,13 @@ const renderBranchesView = () => {
           </View>
         </View>
 
-        {/* Center Stick-Figure Demonstration Graphic (Matching Web Animations) */}
+        {/* Center Biomechanical Exercise Animation (Matching Web Animations) */}
         <View style={styles.exStickFigureCenterBox}>
-          {isPullUp ? (
-            <View style={{ alignItems: 'center' }}>
-              <View style={{ width: 140, height: 4, backgroundColor: '#94A3B8', borderRadius: 2, marginBottom: 2 }} />
-              <View style={{ flexDirection: 'row', width: 70, justifyContent: 'space-between' }}>
-                <View style={{ width: 5, height: 26, backgroundColor: '#22C55E', borderRadius: 2, transform: [{ rotate: '25deg' }] }} />
-                <View style={{ width: 5, height: 26, backgroundColor: '#22C55E', borderRadius: 2, transform: [{ rotate: '-25deg' }] }} />
-              </View>
-              <View style={{ width: 16, height: 16, borderRadius: 8, backgroundColor: '#38BDF8', marginTop: -6 }} />
-              <View style={{ width: 10, height: 34, backgroundColor: '#22C55E', borderRadius: 3, marginTop: 2 }} />
-              <View style={{ flexDirection: 'row', width: 20, justifyContent: 'space-between', marginTop: 1 }}>
-                <View style={{ width: 4, height: 32, backgroundColor: '#64748B', borderRadius: 2 }} />
-                <View style={{ width: 4, height: 32, backgroundColor: '#64748B', borderRadius: 2 }} />
-              </View>
-            </View>
-          ) : isDeadlift ? (
-            <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <View style={{ alignItems: 'center', transform: [{ rotate: '-35deg' }] }}>
-                  <View style={{ width: 16, height: 16, borderRadius: 8, backgroundColor: '#38BDF8', marginBottom: 2 }} />
-                  <View style={{ width: 9, height: 32, backgroundColor: '#64748B', borderRadius: 3 }} />
-                </View>
-                <View style={{ width: 12, height: 26, backgroundColor: '#22C55E', borderRadius: 4, marginLeft: -8, marginTop: 10 }} />
-                <View style={{ width: 5, height: 34, backgroundColor: '#64748B', borderRadius: 2, marginLeft: 2, marginTop: 22, transform: [{ rotate: '15deg' }] }} />
-              </View>
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 4 }}>
-                <View style={{ width: 4, height: 22, backgroundColor: '#EF4444', borderRadius: 2 }} />
-                <View style={{ width: 110, height: 4, backgroundColor: '#EF4444' }} />
-                <View style={{ width: 4, height: 22, backgroundColor: '#EF4444', borderRadius: 2 }} />
-              </View>
-            </View>
-          ) : isCurl ? (
-            <View style={{ alignItems: 'center' }}>
-              <View style={{ width: 18, height: 18, borderRadius: 9, backgroundColor: '#38BDF8', marginBottom: 3 }} />
-              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                <View style={{ alignItems: 'center', marginRight: 4 }}>
-                  <View style={{ width: 10, height: 4, backgroundColor: '#EF4444', borderRadius: 1 }} />
-                  <View style={{ width: 7, height: 28, backgroundColor: '#22C55E', borderRadius: 3, marginVertical: 1 }} />
-                  <View style={{ width: 10, height: 4, backgroundColor: '#EF4444', borderRadius: 1 }} />
-                </View>
-                <View style={{ width: 10, height: 36, backgroundColor: '#94A3B8', borderRadius: 3 }} />
-                <View style={{ alignItems: 'center', marginLeft: 4 }}>
-                  <View style={{ width: 10, height: 4, backgroundColor: '#EF4444', borderRadius: 1 }} />
-                  <View style={{ width: 7, height: 28, backgroundColor: '#22C55E', borderRadius: 3, marginVertical: 1 }} />
-                  <View style={{ width: 10, height: 4, backgroundColor: '#EF4444', borderRadius: 1 }} />
-                </View>
-              </View>
-              <View style={{ flexDirection: 'row', width: 22, justifyContent: 'space-between', marginTop: 2 }}>
-                <View style={{ width: 5, height: 38, backgroundColor: '#64748B', borderRadius: 2 }} />
-                <View style={{ width: 5, height: 38, backgroundColor: '#64748B', borderRadius: 2 }} />
-              </View>
-            </View>
-          ) : isBench || isPushUp ? (
-            <View style={{ alignItems: 'center' }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6 }}>
-                <View style={{ width: 4, height: 18, backgroundColor: '#EF4444', borderRadius: 1 }} />
-                <View style={{ width: 90, height: 4, backgroundColor: '#EF4444' }} />
-                <View style={{ width: 4, height: 18, backgroundColor: '#EF4444', borderRadius: 1 }} />
-              </View>
-              <View style={{ flexDirection: 'row', width: 60, justifyContent: 'space-between', marginBottom: 2 }}>
-                <View style={{ width: 6, height: 20, backgroundColor: '#22C55E', borderRadius: 2 }} />
-                <View style={{ width: 6, height: 20, backgroundColor: '#22C55E', borderRadius: 2 }} />
-              </View>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <View style={{ width: 16, height: 16, borderRadius: 8, backgroundColor: '#38BDF8', marginRight: 4 }} />
-                <View style={{ width: 42, height: 12, backgroundColor: '#22C55E', borderRadius: 4 }} />
-                <View style={{ width: 40, height: 8, backgroundColor: '#64748B', borderRadius: 2, marginLeft: 2 }} />
-              </View>
-            </View>
-          ) : isPlank ? (
-            <View style={{ alignItems: 'center' }}>
-              <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
-                <View style={{ width: 14, height: 14, borderRadius: 7, backgroundColor: '#38BDF8', marginRight: 4, marginBottom: 4 }} />
-                <View style={{ width: 4, height: 16, backgroundColor: '#64748B', borderRadius: 2, marginRight: 2 }} />
-                <View style={{ width: 48, height: 12, backgroundColor: '#22C55E', borderRadius: 4, marginBottom: 6 }} />
-                <View style={{ width: 44, height: 7, backgroundColor: '#64748B', borderRadius: 2, marginLeft: 2, marginBottom: 5 }} />
-              </View>
-              <View style={{ width: 130, height: 2, backgroundColor: '#475569', marginTop: 4 }} />
-            </View>
-          ) : (
-            <View style={{ alignItems: 'center' }}>
-              <View style={{ width: 18, height: 18, borderRadius: 9, backgroundColor: '#38BDF8', marginBottom: 3 }} />
-              <View style={{ width: 10, height: 34, backgroundColor: '#94A3B8', borderRadius: 3 }} />
-              <View style={{ flexDirection: 'row', width: 26, justifyContent: 'space-between', marginTop: 1 }}>
-                <View style={{ width: 6, height: 36, backgroundColor: '#22C55E', borderRadius: 3 }} />
-                <View style={{ width: 6, height: 36, backgroundColor: '#22C55E', borderRadius: 3 }} />
-              </View>
-            </View>
-          )}
+          <StickFigureAnimation
+            exerciseName={ex.name || ''}
+            category={ex.category}
+            targetMuscle={ex.targetMuscle}
+          />
 
           {/* Play Indicator Overlay */}
           <View style={styles.exPlayIndicatorCircle}>
@@ -12305,7 +15406,7 @@ const renderPackagePlansView = () => {
       description: '',
       brand: '',
       sku: '',
-      categoryName: 'General',
+      categoryName: 'Supplements',
       productType: 'Supplements',
       image: '',
       sellingPrice: '',
@@ -12316,18 +15417,26 @@ const renderPackagePlansView = () => {
       availability: 'Both',
       fulfilmentType: 'Gym Pickup',
       hasVariants: false,
+      attributes: {},
+      variants: [],
     });
     setShowAddStoreProductModal(true);
   };
 
   const handleOpenEditStoreProduct = (prod: any) => {
     setEditingStoreProduct(prod);
+    const parsedAttrs: Record<string, string> = {};
+    if (prod.attributes && typeof prod.attributes === 'object') {
+      Object.entries(prod.attributes).forEach(([k, v]) => {
+        if (v !== undefined && v !== null) parsedAttrs[k] = String(v);
+      });
+    }
     setStoreProductForm({
       name: prod.name || '',
       description: prod.description || '',
       brand: prod.brand || '',
       sku: prod.sku || '',
-      categoryName: prod.categoryName || prod.category || 'General',
+      categoryName: prod.categoryName || prod.category || prod.productType || 'Supplements',
       productType: prod.productType || 'Supplements',
       image: prod.image || '',
       sellingPrice: String(prod.sellingPrice ?? prod.price ?? ''),
@@ -12336,30 +15445,75 @@ const renderPackagePlansView = () => {
       lowStockThreshold: String(prod.lowStockThreshold ?? 5),
       status: prod.status || 'Active',
       availability: prod.availability || 'Both',
-      fulfilmentType: prod.fulfilmentType || 'Both',
+      fulfilmentType: prod.fulfilmentType || 'Gym Pickup',
       hasVariants: Boolean(prod.hasVariants),
+      attributes: parsedAttrs,
+      variants: Array.isArray(prod.variants)
+        ? prod.variants.map((v: any) => ({
+            sku: v.sku || '',
+            attributes: v.attributes || {},
+            price: String(v.price ?? ''),
+            discountPrice: v.discountPrice !== undefined && v.discountPrice !== null ? String(v.discountPrice) : '',
+            stock: String(v.stock ?? 0),
+          }))
+        : [],
     });
     setShowEditStoreProductModal(true);
   };
 
   const handleSaveStoreProduct = async (isEdit: boolean) => {
-    if (!storeProductForm.name.trim()) {
-      Alert.alert('Required Field', 'Please enter a product name.');
+    if (!storeProductForm.name.trim() || !storeProductForm.productType.trim()) {
+      Alert.alert('Required Field', 'Please enter a product name and select a product type.');
       return;
     }
-    const sellPrice = Number(storeProductForm.sellingPrice);
-    if (isNaN(sellPrice) || sellPrice < 0 || storeProductForm.sellingPrice.trim() === '') {
-      Alert.alert('Invalid Price', 'Please enter a valid selling price.');
-      return;
-    }
-    const discPrice = storeProductForm.discountPrice.trim() !== '' ? Number(storeProductForm.discountPrice) : undefined;
-    if (discPrice !== undefined && (isNaN(discPrice) || discPrice < 0 || discPrice >= sellPrice)) {
-      Alert.alert('Invalid Discount', 'Discount price must be less than regular selling price.');
-      return;
+
+    let sellPrice = Number(storeProductForm.sellingPrice) || 0;
+    let discPrice: number | undefined =
+      storeProductForm.discountPrice.trim() !== '' ? Number(storeProductForm.discountPrice) : undefined;
+
+    if (!storeProductForm.hasVariants) {
+      if (storeProductForm.sellingPrice.trim() === '' || isNaN(Number(storeProductForm.sellingPrice)) || sellPrice < 0) {
+        Alert.alert('Invalid Price', 'Please enter a valid selling price.');
+        return;
+      }
+      if (discPrice !== undefined && (isNaN(discPrice) || discPrice < 0 || discPrice >= sellPrice)) {
+        Alert.alert('Invalid Discount', 'Discount amount cannot be greater than or equal to selling price.');
+        return;
+      }
+    } else {
+      if (storeProductForm.variants.length === 0) {
+        Alert.alert('Variants Required', 'Please add at least one variant.');
+        return;
+      }
+      for (const v of storeProductForm.variants) {
+        const vp = Number(v.price);
+        if (v.price.trim() === '' || isNaN(vp) || vp < 0) {
+          Alert.alert('Invalid Variant Price', 'All variants must have a valid price.');
+          return;
+        }
+        const vd = v.discountPrice.trim() !== '' ? Number(v.discountPrice) : undefined;
+        if (vd !== undefined && (isNaN(vd) || vd < 0 || vd >= vp)) {
+          Alert.alert('Invalid Variant Discount', 'Discount amount cannot be greater than or equal to price in variants.');
+          return;
+        }
+      }
+      sellPrice = Number(storeProductForm.variants[0]?.price) || 0;
     }
 
     try {
       setIsStoreProductSaving(true);
+      const formattedVariants = storeProductForm.hasVariants
+        ? storeProductForm.variants.map((v) => ({
+            sku: v.sku?.trim() || undefined,
+            attributes: v.attributes || {},
+            price: Number(v.price) || 0,
+            discountPrice: v.discountPrice.trim() !== '' ? Number(v.discountPrice) : undefined,
+            stock: Number(v.stock) || 0,
+          }))
+        : [];
+
+      const totalVariantStock = formattedVariants.reduce((sum, v) => sum + v.stock, 0);
+
       const payload = {
         name: storeProductForm.name.trim(),
         description: storeProductForm.description.trim(),
@@ -12369,13 +15523,15 @@ const renderPackagePlansView = () => {
         productType: storeProductForm.productType,
         image: storeProductForm.image.trim() || undefined,
         sellingPrice: sellPrice,
-        discountPrice: discPrice,
-        stock: Number(storeProductForm.stock) || 0,
+        discountPrice: storeProductForm.hasVariants ? undefined : discPrice,
+        stock: storeProductForm.hasVariants ? totalVariantStock : Number(storeProductForm.stock) || 0,
         lowStockThreshold: Number(storeProductForm.lowStockThreshold) || 5,
         status: storeProductForm.status,
         availability: storeProductForm.availability,
         fulfilmentType: storeProductForm.fulfilmentType,
         hasVariants: storeProductForm.hasVariants,
+        attributes: storeProductForm.attributes || {},
+        variants: formattedVariants,
       };
 
       if (isEdit && editingStoreProduct) {
@@ -14333,6 +17489,7 @@ const renderPackagePlansView = () => {
   const renderAttendanceDetailModal = () => {
     if (!selectedAttendanceDetail) return null;
     const record = selectedAttendanceDetail;
+    const isTrainer = record.recordCategory === 'Trainer';
 
     return (
       <Modal
@@ -14342,15 +17499,19 @@ const renderPackagePlansView = () => {
         onRequestClose={() => setSelectedAttendanceDetail(null)}
       >
         <View style={styles.invoiceModalOverlay}>
-          <View style={[styles.invoiceModalCard, { maxHeight: 520 }]}>
+          <View style={[styles.invoiceModalCard, { maxHeight: 560 }]}>
             <View style={styles.invoiceHeader}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, flex: 1 }}>
                 <View style={[styles.onlineKpiIconSquircle, { width: 38, height: 38, backgroundColor: '#FFF7ED' }]}>
-                  <Ionicons name="finger-print" size={20} color="#EA580C" />
+                  <Ionicons name="pulse-outline" size={20} color="#EA580C" />
                 </View>
-                <View>
-                  <Text style={styles.invoiceTitle}>{record.name}</Text>
-                  <Text style={styles.invoiceLogoText}>ENTRY RECORD • {record.recordCategory || 'MEMBER'}</Text>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.invoiceTitle}>
+                    {isTrainer ? 'Trainer Shift & Session Details' : 'Member Check-In Details'}
+                  </Text>
+                  <Text style={styles.invoiceLogoText}>
+                    {record.date} • {isTrainer ? record.dutyType : record.type}
+                  </Text>
                 </View>
               </View>
               <TouchableOpacity onPress={() => setSelectedAttendanceDetail(null)}>
@@ -14359,59 +17520,83 @@ const renderPackagePlansView = () => {
             </View>
 
             <ScrollView style={styles.invoiceBody} showsVerticalScrollIndicator={false}>
-              <View style={[styles.sessionModalRow, { backgroundColor: '#F8FAFC', padding: 10, borderRadius: 12, marginBottom: 8 }]}>
-                <View>
-                  <Text style={{ fontSize: 10, fontWeight: '800', color: '#64748B' }}>MEMBERSHIP / ROLE</Text>
-                  <Text style={{ fontSize: 14, fontWeight: '800', color: '#111827', marginTop: 2 }}>
-                    {record.type || record.specialization || 'Active Member'}
+              <View style={[styles.sessionModalRow, { backgroundColor: '#F8FAFC', padding: 12, borderRadius: 12, marginBottom: 10 }]}>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 14, fontWeight: '800', color: '#111827' }}>{record.name}</Text>
+                  {isTrainer ? (
+                    <Text style={{ fontSize: 12, color: '#64748B', marginTop: 2 }}>{record.specialization}</Text>
+                  ) : record.email ? (
+                    <Text style={{ fontSize: 12, color: '#64748B', marginTop: 2 }}>{record.email}</Text>
+                  ) : null}
+                </View>
+                <View style={[styles.onlineStatusPill, record.checkOutTime === 'In Gym' || record.checkOutTime === 'In Progress' ? styles.onlineStatusLive : styles.onlineStatusUpcoming]}>
+                  <Text style={record.checkOutTime === 'In Gym' || record.checkOutTime === 'In Progress' ? styles.onlineStatusLiveText : styles.onlineStatusUpcomingText}>
+                    {isTrainer ? (record.punctuality || 'On Time') : record.type}
                   </Text>
                 </View>
-                <View style={[styles.onlineStatusPill, record.checkOutTime === 'In Gym' ? styles.onlineStatusLive : styles.onlineStatusUpcoming]}>
-                  <Text style={record.checkOutTime === 'In Gym' ? styles.onlineStatusLiveText : styles.onlineStatusUpcomingText}>
-                    {record.checkOutTime === 'In Gym' ? 'IN FACILITY' : 'VISIT COMPLETE'}
-                  </Text>
-                </View>
               </View>
 
-              <View style={styles.sessionModalRow}>
-                <Text style={styles.sessionModalLabel}>Date Logged:</Text>
-                <Text style={styles.sessionModalValue}>{record.date}</Text>
-              </View>
-
-              <View style={styles.sessionModalRow}>
-                <Text style={styles.sessionModalLabel}>Facility Check-In:</Text>
-                <Text style={[styles.sessionModalValue, { color: '#EA580C', fontWeight: '800' }]}>
-                  {record.checkInTime}
-                </Text>
-              </View>
-
-              <View style={styles.sessionModalRow}>
-                <Text style={styles.sessionModalLabel}>Facility Checkout:</Text>
-                <Text style={[styles.sessionModalValue, record.checkOutTime === 'In Gym' && { color: '#EA580C', fontWeight: '800' }]}>
-                  {record.checkOutTime}
-                </Text>
-              </View>
-
-              <View style={styles.sessionModalRow}>
-                <Text style={styles.sessionModalLabel}>Access Verification:</Text>
-                <Text style={styles.sessionModalValue}>Biometric RFID Turnstile Gate #1</Text>
-              </View>
-
-              {record.email ? (
-                <View style={styles.sessionModalRow}>
-                  <Text style={styles.sessionModalLabel}>Account Email:</Text>
-                  <Text style={styles.sessionModalValue}>{record.email}</Text>
-                </View>
-              ) : null}
-
-              {record.dutyType ? (
-                <View style={styles.sessionModalRow}>
-                  <Text style={styles.sessionModalLabel}>Assigned Shift:</Text>
-                  <Text style={[styles.sessionModalValue, { color: '#EA580C', fontWeight: '800' }]}>
-                    {record.dutyType}
-                  </Text>
-                </View>
-              ) : null}
+              {isTrainer ? (
+                <>
+                  <View style={styles.sessionModalRow}>
+                    <Text style={styles.sessionModalLabel}>Assigned Client / Area:</Text>
+                    <Text style={styles.sessionModalValue}>{record.assignedCustomer || 'General Floor'}</Text>
+                  </View>
+                  <View style={styles.sessionModalRow}>
+                    <Text style={styles.sessionModalLabel}>Session Mode / Duty:</Text>
+                    <Text style={styles.sessionModalValue}>{record.dutyType}</Text>
+                  </View>
+                  <View style={styles.sessionModalRow}>
+                    <Text style={styles.sessionModalLabel}>Scheduled Slot:</Text>
+                    <Text style={styles.sessionModalValue}>{record.scheduledTime}</Text>
+                  </View>
+                  <View style={styles.sessionModalRow}>
+                    <Text style={styles.sessionModalLabel}>Date:</Text>
+                    <Text style={styles.sessionModalValue}>{record.date}</Text>
+                  </View>
+                  <View style={styles.sessionModalRow}>
+                    <Text style={styles.sessionModalLabel}>Check-In Time:</Text>
+                    <Text style={[styles.sessionModalValue, { color: '#EA580C', fontWeight: '800' }]}>
+                      {record.checkInTime}
+                    </Text>
+                  </View>
+                  <View style={styles.sessionModalRow}>
+                    <Text style={styles.sessionModalLabel}>Check-Out Time:</Text>
+                    <Text style={[styles.sessionModalValue, { color: '#EA580C', fontWeight: '800' }]}>
+                      {record.checkOutTime}
+                    </Text>
+                  </View>
+                  {record.sessionId ? (
+                    <View style={styles.sessionModalRow}>
+                      <Text style={styles.sessionModalLabel}>Session Reference ID:</Text>
+                      <Text style={[styles.sessionModalValue, { fontSize: 11 }]}>{record.sessionId}</Text>
+                    </View>
+                  ) : null}
+                </>
+              ) : (
+                <>
+                  <View style={styles.sessionModalRow}>
+                    <Text style={styles.sessionModalLabel}>Date:</Text>
+                    <Text style={styles.sessionModalValue}>{record.date}</Text>
+                  </View>
+                  <View style={styles.sessionModalRow}>
+                    <Text style={styles.sessionModalLabel}>Membership / Pass:</Text>
+                    <Text style={styles.sessionModalValue}>{record.type}</Text>
+                  </View>
+                  <View style={styles.sessionModalRow}>
+                    <Text style={styles.sessionModalLabel}>Check-In Time:</Text>
+                    <Text style={[styles.sessionModalValue, { color: '#EA580C', fontWeight: '800' }]}>
+                      {record.checkInTime}
+                    </Text>
+                  </View>
+                  <View style={styles.sessionModalRow}>
+                    <Text style={styles.sessionModalLabel}>Check-Out Time:</Text>
+                    <Text style={[styles.sessionModalValue, record.checkOutTime === 'In Gym' && { color: '#EA580C', fontWeight: '800' }]}>
+                      {record.checkOutTime}
+                    </Text>
+                  </View>
+                </>
+              )}
             </ScrollView>
 
             <View style={styles.invoiceActionsRow}>
@@ -14880,23 +18065,10 @@ const renderPackagePlansView = () => {
               </View>
             </ScrollView>
 
-            {/* Modal Footer (Matching Web Modal) */}
+            {/* Modal Footer */}
             <View style={styles.saleModalFooter}>
               <TouchableOpacity
-                style={styles.saleModalInvoiceBtn}
-                onPress={() => {
-                  const saleToPrint = selectedSaleDetail;
-                  setSelectedSaleDetail(null);
-                  setSelectedInvoiceSale(saleToPrint);
-                  setShowInvoiceModal(true);
-                }}
-              >
-                <Ionicons name="document-text" size={15} color="#EA580C" />
-                <Text style={styles.saleModalInvoiceText}>Download / Print Invoice</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={styles.saleModalCloseBtn}
+                style={[styles.saleModalCloseBtn, { flex: 1, alignItems: 'center', justifyContent: 'center' }]}
                 onPress={() => setSelectedSaleDetail(null)}
               >
                 <Text style={styles.saleModalCloseText}>Close</Text>
@@ -15180,7 +18352,7 @@ const renderPackagePlansView = () => {
         }}
       >
         <View style={styles.prodModalOverlay}>
-          <View style={[styles.prodModalCard, { maxWidth: 360 }]}>
+          <View style={[styles.prodModalCard, { width: '100%' }]}>
             <View style={styles.prodModalHeader}>
               <View>
                 <Text style={styles.prodModalTitle}>Update Order Status</Text>
@@ -15197,7 +18369,7 @@ const renderPackagePlansView = () => {
               </TouchableOpacity>
             </View>
 
-            <View style={{ padding: 16 }}>
+            <ScrollView style={{ padding: 16 }} showsVerticalScrollIndicator={false}>
               <Text style={{ fontSize: 12, fontWeight: '700', color: '#64748B', marginBottom: 10 }}>SELECT NEXT STATUS:</Text>
               {availableStatuses.map(st => {
                 const isCurrent = st === currentStatus;
@@ -15205,6 +18377,7 @@ const renderPackagePlansView = () => {
                 return (
                   <TouchableOpacity
                     key={st}
+                    activeOpacity={0.6}
                     style={[
                       styles.orderStatusOptionRow,
                       isCurrent && { backgroundColor: '#FFF7ED', borderColor: '#FDBA74' }
@@ -15221,7 +18394,8 @@ const renderPackagePlansView = () => {
                   </TouchableOpacity>
                 );
               })}
-            </View>
+              <View style={{ height: 12 }} />
+            </ScrollView>
           </View>
         </View>
       </Modal>
@@ -17278,6 +20452,508 @@ const renderAdjustStockModal = () => {
     );
   };
 
+  const renderStoreProductFormBody = () => {
+    const typeConfig = PRODUCT_TYPE_CONFIG[storeProductForm.productType] || PRODUCT_TYPE_CONFIG['Other'];
+
+    const addVariantRow = () => {
+      setStoreProductForm(f => ({
+        ...f,
+        variants: [...f.variants, { sku: '', attributes: {}, price: '', discountPrice: '', stock: '0' }],
+      }));
+    };
+
+    const removeVariantRow = (idx: number) => {
+      setStoreProductForm(f => ({
+        ...f,
+        variants: f.variants.filter((_, i) => i !== idx),
+      }));
+    };
+
+    const updateVariantField = (idx: number, field: 'price' | 'discountPrice' | 'stock' | 'sku', value: string) => {
+      setStoreProductForm(f => {
+        const next = [...f.variants];
+        next[idx] = { ...next[idx], [field]: value };
+        return { ...f, variants: next };
+      });
+    };
+
+    const updateVariantAttr = (idx: number, attrKey: string, value: string) => {
+      setStoreProductForm(f => {
+        const next = [...f.variants];
+        next[idx] = {
+          ...next[idx],
+          attributes: { ...(next[idx]?.attributes || {}), [attrKey]: value },
+        };
+        return { ...f, variants: next };
+      });
+    };
+
+    return (
+      <ScrollView
+        style={styles.prodModalBody}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
+        {/* Product Name */}
+        <View style={styles.prodFormGroup}>
+          <Text style={styles.prodFormLabel}>Product Name *</Text>
+          <TextInput
+            style={styles.prodFormInput}
+            placeholder="e.g. Gold Standard Whey Protein"
+            placeholderTextColor={COLORS.textMuted}
+            value={storeProductForm.name}
+            onChangeText={txt => setStoreProductForm(f => ({ ...f, name: txt }))}
+          />
+        </View>
+
+        {/* Product Type / Category Selector (All 11 Web Categories) */}
+        <View style={styles.prodFormGroup}>
+          <Text style={styles.prodFormLabel}>Product Type *</Text>
+          <View style={styles.prodTypeWrapGrid}>
+            {Object.keys(PRODUCT_TYPE_CONFIG).map(t => {
+              const sel = storeProductForm.productType === t;
+              return (
+                <TouchableOpacity
+                  key={t}
+                  style={[styles.prodFormTypeChip, sel && styles.prodFormTypeChipActive]}
+                  activeOpacity={0.75}
+                  onPress={() =>
+                    setStoreProductForm(f => ({
+                      ...f,
+                      productType: t,
+                      categoryName: t,
+                      attributes: {},
+                      variants: [],
+                      hasVariants: false,
+                    }))
+                  }
+                >
+                  <Text style={[styles.prodFormTypeChipText, sel && styles.prodFormTypeChipTextActive]}>
+                    {t}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        </View>
+
+        {/* Category & Brand (2 columns) */}
+        <View style={styles.prodFormRow}>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.prodFormLabel}>Category Name</Text>
+            <TextInput
+              style={styles.prodFormInput}
+              placeholder="e.g. Supplements"
+              placeholderTextColor={COLORS.textMuted}
+              value={storeProductForm.categoryName}
+              onChangeText={txt => setStoreProductForm(f => ({ ...f, categoryName: txt }))}
+            />
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.prodFormLabel}>Brand Name</Text>
+            <TextInput
+              style={styles.prodFormInput}
+              placeholder="e.g. Optimum Nutrition"
+              placeholderTextColor={COLORS.textMuted}
+              value={storeProductForm.brand}
+              onChangeText={txt => setStoreProductForm(f => ({ ...f, brand: txt }))}
+            />
+          </View>
+        </View>
+
+        {/* SKU */}
+        <View style={styles.prodFormGroup}>
+          <Text style={styles.prodFormLabel}>SKU / Code</Text>
+          <TextInput
+            style={styles.prodFormInput}
+            placeholder="e.g. ON-WPI-01"
+            placeholderTextColor={COLORS.textMuted}
+            value={storeProductForm.sku}
+            onChangeText={txt => setStoreProductForm(f => ({ ...f, sku: txt }))}
+          />
+        </View>
+
+        {/* Description */}
+        <View style={styles.prodFormGroup}>
+          <Text style={styles.prodFormLabel}>Description</Text>
+          <TextInput
+            style={[styles.prodFormInput, { height: 60, textAlignVertical: 'top' }]}
+            placeholder="Product description, benefits, ingredients, etc."
+            placeholderTextColor={COLORS.textMuted}
+            multiline={true}
+            numberOfLines={2}
+            value={storeProductForm.description}
+            onChangeText={txt => setStoreProductForm(f => ({ ...f, description: txt }))}
+          />
+        </View>
+
+        {/* PRODUCT DETAILS (DYNAMIC BASED ON SELECTED PRODUCT TYPE - Matching Web GymStoreProducts.tsx) */}
+        {typeConfig.fields.length > 0 && (
+          <View style={styles.prodWebSection}>
+            <Text style={styles.prodWebSectionTitle}>PRODUCT DETAILS ({storeProductForm.productType})</Text>
+            <View style={styles.prodDynamicFieldsGrid}>
+              {typeConfig.fields.map(field => {
+                const attrVal = storeProductForm.attributes?.[field.name] || '';
+                if (field.type === 'select') {
+                  return (
+                    <View key={field.name} style={styles.prodDynamicFieldBox}>
+                      <Text style={styles.prodWebFieldLabel}>{field.label.toUpperCase()}</Text>
+                      <TouchableOpacity
+                        style={styles.prodWebSelectBox}
+                        activeOpacity={0.75}
+                        onPress={() => {
+                          setStoreSelectPickerModal({
+                            title: `Select ${field.label}`,
+                            selectedValue: attrVal,
+                            options: (field.options || []).map(opt => ({ label: opt, value: opt })),
+                            onSelect: val =>
+                              setStoreProductForm(f => ({
+                                ...f,
+                                attributes: { ...(f.attributes || {}), [field.name]: val },
+                              })),
+                          });
+                        }}
+                      >
+                        <Text
+                          style={[
+                            styles.prodWebSelectBoxText,
+                            !attrVal && { color: COLORS.textMuted, fontWeight: '500' },
+                          ]}
+                          numberOfLines={1}
+                        >
+                          {attrVal || `Select ${field.label}`}
+                        </Text>
+                        <Ionicons name="chevron-down" size={13} color="#64748B" />
+                      </TouchableOpacity>
+                    </View>
+                  );
+                }
+
+                return (
+                  <View key={field.name} style={styles.prodDynamicFieldBox}>
+                    <Text style={styles.prodWebFieldLabel}>{field.label.toUpperCase()}</Text>
+                    <TextInput
+                      style={styles.prodFormInput}
+                      placeholder={field.placeholder || `Enter ${field.label}`}
+                      placeholderTextColor={COLORS.textMuted}
+                      keyboardType={field.type === 'number' ? 'numeric' : 'default'}
+                      value={attrVal}
+                      onChangeText={txt =>
+                        setStoreProductForm(f => ({
+                          ...f,
+                          attributes: { ...(f.attributes || {}), [field.name]: txt },
+                        }))
+                      }
+                    />
+                  </View>
+                );
+              })}
+            </View>
+          </View>
+        )}
+
+        {/* VARIANTS TOGGLE (Matching Web Checkbox when category supports variants) */}
+        {typeConfig.variantFields.length > 0 && (
+          <View style={styles.prodWebSection}>
+            <TouchableOpacity
+              style={styles.prodVariantToggleRow}
+              activeOpacity={0.75}
+              onPress={() =>
+                setStoreProductForm(f => {
+                  const nextHas = !f.hasVariants;
+                  const nextVars =
+                    nextHas && f.variants.length === 0
+                      ? [{ sku: '', attributes: {}, price: f.sellingPrice || '', discountPrice: f.discountPrice || '', stock: f.stock || '0' }]
+                      : f.variants;
+                  return { ...f, hasVariants: nextHas, variants: nextVars };
+                })
+              }
+            >
+              <Ionicons
+                name={storeProductForm.hasVariants ? 'checkbox' : 'square-outline'}
+                size={20}
+                color={storeProductForm.hasVariants ? '#EA580C' : '#94A3B8'}
+              />
+              <Text style={styles.prodVariantToggleText}>
+                This product has multiple options/variants
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
+        {/* VARIANTS LIST OR STANDARD PRICING & INVENTORY */}
+        {storeProductForm.hasVariants && typeConfig.variantFields.length > 0 ? (
+          <View style={styles.prodWebSection}>
+            <View style={styles.prodVariantsHeaderRow}>
+              <Text style={styles.prodWebSectionTitle}>VARIANTS</Text>
+              <TouchableOpacity
+                style={styles.prodAddVariantBtn}
+                activeOpacity={0.75}
+                onPress={addVariantRow}
+              >
+                <Ionicons name="add" size={14} color="#EA580C" />
+                <Text style={styles.prodAddVariantBtnText}>Add Variant</Text>
+              </TouchableOpacity>
+            </View>
+
+            {storeProductForm.variants.length === 0 ? (
+              <Text style={styles.prodVariantsEmptyText}>
+                No variants added. Tap "Add Variant" to create one.
+              </Text>
+            ) : (
+              storeProductForm.variants.map((v, vIdx) => (
+                <View key={vIdx} style={styles.prodVariantCard}>
+                  <View style={styles.prodVariantCardHeader}>
+                    <Text style={styles.prodVariantCardTitle}>Variant #{vIdx + 1}</Text>
+                    <TouchableOpacity
+                      onPress={() => removeVariantRow(vIdx)}
+                      style={styles.prodVariantDeleteBtn}
+                    >
+                      <Ionicons name="trash-outline" size={14} color="#DC2626" />
+                    </TouchableOpacity>
+                  </View>
+
+                  <View style={styles.prodDynamicFieldsGrid}>
+                    {typeConfig.variantFields.map(vf => (
+                      <View key={vf.name} style={styles.prodDynamicFieldBox}>
+                        <Text style={styles.prodWebFieldLabel}>{vf.label.toUpperCase()}</Text>
+                        <TextInput
+                          style={styles.prodFormInput}
+                          placeholder={vf.placeholder}
+                          placeholderTextColor={COLORS.textMuted}
+                          value={v.attributes?.[vf.name] || ''}
+                          onChangeText={txt => updateVariantAttr(vIdx, vf.name, txt)}
+                        />
+                      </View>
+                    ))}
+                  </View>
+
+                  <View style={[styles.prodFormRow, { marginTop: 8, marginBottom: 0 }]}>
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.prodWebFieldLabel}>PRICE (₹) *</Text>
+                      <TextInput
+                        style={styles.prodFormInput}
+                        placeholder="0"
+                        keyboardType="numeric"
+                        placeholderTextColor={COLORS.textMuted}
+                        value={v.price}
+                        onChangeText={txt => updateVariantField(vIdx, 'price', txt)}
+                      />
+                    </View>
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.prodWebFieldLabel}>DISCOUNT (₹)</Text>
+                      <TextInput
+                        style={styles.prodFormInput}
+                        placeholder="Optional"
+                        keyboardType="numeric"
+                        placeholderTextColor={COLORS.textMuted}
+                        value={v.discountPrice}
+                        onChangeText={txt => updateVariantField(vIdx, 'discountPrice', txt)}
+                      />
+                    </View>
+                    <View style={{ flex: 0.8 }}>
+                      <Text style={styles.prodWebFieldLabel}>STOCK</Text>
+                      <TextInput
+                        style={styles.prodFormInput}
+                        placeholder="0"
+                        keyboardType="numeric"
+                        placeholderTextColor={COLORS.textMuted}
+                        value={v.stock}
+                        onChangeText={txt => updateVariantField(vIdx, 'stock', txt)}
+                      />
+                    </View>
+                  </View>
+                </View>
+              ))
+            )}
+          </View>
+        ) : (
+          <>
+            {/* Prices (Selling Price & Discount Price) */}
+            <View style={styles.prodFormRow}>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.prodFormLabel}>Selling Price (₹) *</Text>
+                <TextInput
+                  style={styles.prodFormInput}
+                  placeholder="e.g. 199"
+                  keyboardType="numeric"
+                  placeholderTextColor={COLORS.textMuted}
+                  value={storeProductForm.sellingPrice}
+                  onChangeText={txt => setStoreProductForm(f => ({ ...f, sellingPrice: txt }))}
+                />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.prodFormLabel}>Discount Price (₹)</Text>
+                <TextInput
+                  style={styles.prodFormInput}
+                  placeholder="e.g. 140 (optional)"
+                  keyboardType="numeric"
+                  placeholderTextColor={COLORS.textMuted}
+                  value={storeProductForm.discountPrice}
+                  onChangeText={txt => setStoreProductForm(f => ({ ...f, discountPrice: txt }))}
+                />
+              </View>
+            </View>
+
+            {/* Stock & Low Stock Threshold */}
+            <View style={styles.prodFormRow}>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.prodFormLabel}>Stock Quantity *</Text>
+                <TextInput
+                  style={styles.prodFormInput}
+                  placeholder="e.g. 10"
+                  keyboardType="numeric"
+                  placeholderTextColor={COLORS.textMuted}
+                  value={storeProductForm.stock}
+                  onChangeText={txt => setStoreProductForm(f => ({ ...f, stock: txt }))}
+                />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.prodFormLabel}>Low Stock Alert</Text>
+                <TextInput
+                  style={styles.prodFormInput}
+                  placeholder="e.g. 5"
+                  keyboardType="numeric"
+                  placeholderTextColor={COLORS.textMuted}
+                  value={storeProductForm.lowStockThreshold}
+                  onChangeText={txt => setStoreProductForm(f => ({ ...f, lowStockThreshold: txt }))}
+                />
+              </View>
+            </View>
+          </>
+        )}
+
+        {/* SALES SETTINGS (Matching Web Application) */}
+        <View style={styles.prodWebSection}>
+          <Text style={styles.prodWebSectionTitle}>SALES SETTINGS</Text>
+          <View style={styles.prodWebDropdownRow}>
+            {/* STATUS */}
+            <View style={{ flex: 1 }}>
+              <Text style={styles.prodWebFieldLabel}>STATUS</Text>
+              <TouchableOpacity
+                style={styles.prodWebSelectBox}
+                onPress={() => {
+                  setStoreSelectPickerModal({
+                    title: 'Select Status',
+                    selectedValue: storeProductForm.status,
+                    options: [
+                      { label: 'Active', value: 'Active', sub: 'Visible in store & available for purchase' },
+                      { label: 'Inactive', value: 'Inactive', sub: 'Hidden from store catalog' },
+                    ],
+                    onSelect: (val) => setStoreProductForm(f => ({ ...f, status: val })),
+                  });
+                }}
+                activeOpacity={0.7}
+              >
+                <Text style={styles.prodWebSelectBoxText} numberOfLines={1}>
+                  {storeProductForm.status === 'Inactive' ? 'Inactive' : 'Active'}
+                </Text>
+                <Ionicons name="chevron-down" size={13} color="#64748B" />
+              </TouchableOpacity>
+            </View>
+
+            {/* SELL ONLINE */}
+            <View style={{ flex: 1.45 }}>
+              <Text style={styles.prodWebFieldLabel}>SELL ONLINE</Text>
+              <TouchableOpacity
+                style={styles.prodWebSelectBox}
+                onPress={() => {
+                  setStoreSelectPickerModal({
+                    title: 'Select Sell Online Channel',
+                    selectedValue: storeProductForm.availability,
+                    options: [
+                      { label: 'Both Online & In-Gym', value: 'Both', sub: 'Available both on mobile app & reception' },
+                      { label: 'Online Only', value: 'Online', sub: 'Purchasable only in mobile app store' },
+                      { label: 'In-Gym Only', value: 'Offline', sub: 'Purchasable only in-person at gym reception' },
+                    ],
+                    onSelect: (val) => setStoreProductForm(f => ({ ...f, availability: val })),
+                  });
+                }}
+                activeOpacity={0.7}
+              >
+                <Text style={styles.prodWebSelectBoxText} numberOfLines={1}>
+                  {storeProductForm.availability === 'Online'
+                    ? 'Online Only'
+                    : storeProductForm.availability === 'Offline'
+                    ? 'In-Gym Only'
+                    : 'Both Online & In-Gym'}
+                </Text>
+                <Ionicons name="chevron-down" size={13} color="#64748B" />
+              </TouchableOpacity>
+            </View>
+
+            {/* FULFILMENT */}
+            <View style={{ flex: 1.25 }}>
+              <Text style={styles.prodWebFieldLabel}>FULFILMENT</Text>
+              <TouchableOpacity
+                style={styles.prodWebSelectBox}
+                onPress={() => {
+                  setStoreSelectPickerModal({
+                    title: 'Select Fulfilment Method',
+                    selectedValue: storeProductForm.fulfilmentType,
+                    options: [
+                      { label: 'Gym Pickup', value: 'Gym Pickup', sub: 'Member collects items at gym front desk' },
+                      { label: 'Delivery', value: 'Delivery', sub: 'Direct shipment to customer home address' },
+                      { label: 'Pickup & Delivery', value: 'Both', sub: 'Both gym pickup and home delivery supported' },
+                    ],
+                    onSelect: (val) => setStoreProductForm(f => ({ ...f, fulfilmentType: val })),
+                  });
+                }}
+                activeOpacity={0.7}
+              >
+                <Text style={styles.prodWebSelectBoxText} numberOfLines={1}>
+                  {storeProductForm.fulfilmentType === 'Delivery'
+                    ? 'Delivery'
+                    : storeProductForm.fulfilmentType === 'Both'
+                    ? 'Both'
+                    : 'Gym Pickup'}
+                </Text>
+                <Ionicons name="chevron-down" size={13} color="#64748B" />
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+
+        {/* PRODUCT IMAGE (Matching Web Application) */}
+        <View style={styles.prodWebSection}>
+          <Text style={styles.prodWebSectionTitle}>PRODUCT IMAGE</Text>
+          <View style={styles.prodWebImageRow}>
+            <View style={styles.prodWebImageSquareBox}>
+              {storeProductForm.image ? (
+                <Image
+                  source={{ uri: storeProductForm.image }}
+                  style={styles.prodWebImagePreview}
+                  resizeMode="cover"
+                />
+              ) : (
+                <Ionicons name="image-outline" size={24} color="#EA580C" style={{ opacity: 0.35 }} />
+              )}
+            </View>
+
+            <View style={styles.prodWebImageInputCol}>
+              <TouchableOpacity
+                style={styles.prodWebUploadBtn}
+                onPress={handlePickProductImage}
+                activeOpacity={0.7}
+              >
+                <Ionicons name="cloud-upload-outline" size={14} color="#EA580C" />
+                <Text style={styles.prodWebUploadBtnText}>Upload Image</Text>
+              </TouchableOpacity>
+
+              <TextInput
+                style={styles.prodWebImageUrlInput}
+                placeholder="or paste an image URL"
+                placeholderTextColor="#94A3B8"
+                value={storeProductForm.image}
+                onChangeText={txt => setStoreProductForm(f => ({ ...f, image: txt }))}
+              />
+            </View>
+          </View>
+        </View>
+      </ScrollView>
+    );
+  };
+
 const renderAddStoreProductModal = () => {
     if (!showAddStoreProductModal) return null;
 
@@ -17293,7 +20969,6 @@ const renderAddStoreProductModal = () => {
           style={styles.prodModalOverlay}
         >
           <View style={styles.prodModalCard}>
-            {/* Modal Header */}
             <View style={styles.prodModalHeader}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
                 <View style={styles.prodModalIconBox}>
@@ -17312,273 +20987,8 @@ const renderAddStoreProductModal = () => {
               </TouchableOpacity>
             </View>
 
-            {/* Scrollable Form */}
-            <ScrollView style={styles.prodModalBody} showsVerticalScrollIndicator={false}>
-              {/* Product Name */}
-              <View style={styles.prodFormGroup}>
-                <Text style={styles.prodFormLabel}>Product Name *</Text>
-                <TextInput
-                  style={styles.prodFormInput}
-                  placeholder="e.g. Gold Standard Whey Protein"
-                  placeholderTextColor={COLORS.textMuted}
-                  value={storeProductForm.name}
-                  onChangeText={txt => setStoreProductForm(f => ({ ...f, name: txt }))}
-                />
-              </View>
+            {renderStoreProductFormBody()}
 
-              {/* Product Type */}
-              <View style={styles.prodFormGroup}>
-                <Text style={styles.prodFormLabel}>Product Type *</Text>
-                <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 6, paddingTop: 4 }}>
-                  {['Supplements', 'Fitness Drinks', 'Gym Clothing', 'Gym Accessories', 'Nutrition & Healthy Snacks', 'Other'].map(t => {
-                    const sel = storeProductForm.productType === t;
-                    return (
-                      <TouchableOpacity
-                        key={t}
-                        style={[styles.prodFormTypeChip, sel && styles.prodFormTypeChipActive]}
-                        onPress={() => setStoreProductForm(f => ({ ...f, productType: t, categoryName: t }))}
-                      >
-                        <Text style={[styles.prodFormTypeChipText, sel && styles.prodFormTypeChipTextActive]}>{t}</Text>
-                      </TouchableOpacity>
-                    );
-                  })}
-                </ScrollView>
-              </View>
-
-              {/* Category & Brand (2 columns) */}
-              <View style={styles.prodFormRow}>
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.prodFormLabel}>Category Name</Text>
-                  <TextInput
-                    style={styles.prodFormInput}
-                    placeholder="e.g. Supplements"
-                    placeholderTextColor={COLORS.textMuted}
-                    value={storeProductForm.categoryName}
-                    onChangeText={txt => setStoreProductForm(f => ({ ...f, categoryName: txt }))}
-                  />
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.prodFormLabel}>Brand Name</Text>
-                  <TextInput
-                    style={styles.prodFormInput}
-                    placeholder="e.g. Optimum Nutrition"
-                    placeholderTextColor={COLORS.textMuted}
-                    value={storeProductForm.brand}
-                    onChangeText={txt => setStoreProductForm(f => ({ ...f, brand: txt }))}
-                  />
-                </View>
-              </View>
-
-              {/* SKU */}
-              <View style={styles.prodFormGroup}>
-                <Text style={styles.prodFormLabel}>SKU / Code</Text>
-                <TextInput
-                  style={styles.prodFormInput}
-                  placeholder="e.g. ON-WPI-01"
-                  placeholderTextColor={COLORS.textMuted}
-                  value={storeProductForm.sku}
-                  onChangeText={txt => setStoreProductForm(f => ({ ...f, sku: txt }))}
-                />
-              </View>
-
-              {/* Description */}
-              <View style={styles.prodFormGroup}>
-                <Text style={styles.prodFormLabel}>Description</Text>
-                <TextInput
-                  style={[styles.prodFormInput, { height: 60, textAlignVertical: 'top' }]}
-                  placeholder="Product description, benefits, ingredients, etc."
-                  placeholderTextColor={COLORS.textMuted}
-                  multiline={true}
-                  numberOfLines={2}
-                  value={storeProductForm.description}
-                  onChangeText={txt => setStoreProductForm(f => ({ ...f, description: txt }))}
-                />
-              </View>
-
-              {/* Prices (Selling Price & Discount Price) */}
-              <View style={styles.prodFormRow}>
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.prodFormLabel}>Selling Price (₹) *</Text>
-                  <TextInput
-                    style={styles.prodFormInput}
-                    placeholder="e.g. 199"
-                    keyboardType="numeric"
-                    placeholderTextColor={COLORS.textMuted}
-                    value={storeProductForm.sellingPrice}
-                    onChangeText={txt => setStoreProductForm(f => ({ ...f, sellingPrice: txt }))}
-                  />
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.prodFormLabel}>Discount Price (₹)</Text>
-                  <TextInput
-                    style={styles.prodFormInput}
-                    placeholder="e.g. 140 (optional)"
-                    keyboardType="numeric"
-                    placeholderTextColor={COLORS.textMuted}
-                    value={storeProductForm.discountPrice}
-                    onChangeText={txt => setStoreProductForm(f => ({ ...f, discountPrice: txt }))}
-                  />
-                </View>
-              </View>
-
-              {/* Stock & Low Stock Threshold */}
-              <View style={styles.prodFormRow}>
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.prodFormLabel}>Stock Quantity *</Text>
-                  <TextInput
-                    style={styles.prodFormInput}
-                    placeholder="e.g. 10"
-                    keyboardType="numeric"
-                    placeholderTextColor={COLORS.textMuted}
-                    value={storeProductForm.stock}
-                    onChangeText={txt => setStoreProductForm(f => ({ ...f, stock: txt }))}
-                  />
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.prodFormLabel}>Low Stock Alert</Text>
-                  <TextInput
-                    style={styles.prodFormInput}
-                    placeholder="e.g. 5"
-                    keyboardType="numeric"
-                    placeholderTextColor={COLORS.textMuted}
-                    value={storeProductForm.lowStockThreshold}
-                    onChangeText={txt => setStoreProductForm(f => ({ ...f, lowStockThreshold: txt }))}
-                  />
-                </View>
-              </View>
-
-              {/* SALES SETTINGS (Matching Web Application Image 1) */}
-              <View style={styles.prodWebSection}>
-                <Text style={styles.prodWebSectionTitle}>SALES SETTINGS</Text>
-                <View style={styles.prodWebDropdownRow}>
-                  {/* STATUS */}
-                  <View style={{ flex: 1 }}>
-                    <Text style={styles.prodWebFieldLabel}>STATUS</Text>
-                    <TouchableOpacity
-                      style={styles.prodWebSelectBox}
-                      onPress={() => {
-                        setStoreSelectPickerModal({
-                          title: 'Select Status',
-                          selectedValue: storeProductForm.status,
-                          options: [
-                            { label: 'Active', value: 'Active', sub: 'Visible in store & available for purchase' },
-                            { label: 'Inactive', value: 'Inactive', sub: 'Hidden from store catalog' },
-                          ],
-                          onSelect: (val) => setStoreProductForm(f => ({ ...f, status: val })),
-                        });
-                      }}
-                      activeOpacity={0.7}
-                    >
-                      <Text style={styles.prodWebSelectBoxText} numberOfLines={1}>
-                        {storeProductForm.status === 'Inactive' ? 'Inactive' : 'Active'}
-                      </Text>
-                      <Ionicons name="chevron-down" size={13} color="#64748B" />
-                    </TouchableOpacity>
-                  </View>
-
-                  {/* SELL ONLINE */}
-                  <View style={{ flex: 1.45 }}>
-                    <Text style={styles.prodWebFieldLabel}>SELL ONLINE</Text>
-                    <TouchableOpacity
-                      style={styles.prodWebSelectBox}
-                      onPress={() => {
-                        setStoreSelectPickerModal({
-                          title: 'Select Sell Online Channel',
-                          selectedValue: storeProductForm.availability,
-                          options: [
-                            { label: 'Both Online & In-Gym', value: 'Both', sub: 'Available both on mobile app & reception' },
-                            { label: 'Online Only', value: 'Online', sub: 'Purchasable only in mobile app store' },
-                            { label: 'In-Gym Only', value: 'Offline', sub: 'Purchasable only in-person at gym reception' },
-                          ],
-                          onSelect: (val) => setStoreProductForm(f => ({ ...f, availability: val })),
-                        });
-                      }}
-                      activeOpacity={0.7}
-                    >
-                      <Text style={styles.prodWebSelectBoxText} numberOfLines={1}>
-                        {storeProductForm.availability === 'Online'
-                          ? 'Online Only'
-                          : storeProductForm.availability === 'Offline'
-                          ? 'In-Gym Only'
-                          : 'Both Online & In-Gym'}
-                      </Text>
-                      <Ionicons name="chevron-down" size={13} color="#64748B" />
-                    </TouchableOpacity>
-                  </View>
-
-                  {/* FULFILMENT */}
-                  <View style={{ flex: 1.25 }}>
-                    <Text style={styles.prodWebFieldLabel}>FULFILMENT</Text>
-                    <TouchableOpacity
-                      style={styles.prodWebSelectBox}
-                      onPress={() => {
-                        setStoreSelectPickerModal({
-                          title: 'Select Fulfilment Method',
-                          selectedValue: storeProductForm.fulfilmentType,
-                          options: [
-                            { label: 'Gym Pickup', value: 'Gym Pickup', sub: 'Member collects items at gym front desk' },
-                            { label: 'Delivery', value: 'Delivery', sub: 'Direct shipment to customer home address' },
-                            { label: 'Pickup & Delivery', value: 'Both', sub: 'Both gym pickup and home delivery supported' },
-                          ],
-                          onSelect: (val) => setStoreProductForm(f => ({ ...f, fulfilmentType: val })),
-                        });
-                      }}
-                      activeOpacity={0.7}
-                    >
-                      <Text style={styles.prodWebSelectBoxText} numberOfLines={1}>
-                        {storeProductForm.fulfilmentType === 'Delivery'
-                          ? 'Delivery'
-                          : storeProductForm.fulfilmentType === 'Both'
-                          ? 'Both'
-                          : 'Gym Pickup'}
-                      </Text>
-                      <Ionicons name="chevron-down" size={13} color="#64748B" />
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              </View>
-
-              {/* PRODUCT IMAGE (Matching Web Application Image 1) */}
-              <View style={styles.prodWebSection}>
-                <Text style={styles.prodWebSectionTitle}>PRODUCT IMAGE</Text>
-                <View style={styles.prodWebImageRow}>
-                  {/* Square Image Box */}
-                  <View style={styles.prodWebImageSquareBox}>
-                    {storeProductForm.image ? (
-                      <Image
-                        source={{ uri: storeProductForm.image }}
-                        style={styles.prodWebImagePreview}
-                        resizeMode="cover"
-                      />
-                    ) : (
-                      <Ionicons name="image-outline" size={24} color="#EA580C" style={{ opacity: 0.35 }} />
-                    )}
-                  </View>
-
-                  {/* Upload Image Button & Paste URL Input */}
-                  <View style={styles.prodWebImageInputCol}>
-                    <TouchableOpacity
-                      style={styles.prodWebUploadBtn}
-                      onPress={handlePickProductImage}
-                      activeOpacity={0.7}
-                    >
-                      <Ionicons name="cloud-upload-outline" size={14} color="#EA580C" />
-                      <Text style={styles.prodWebUploadBtnText}>Upload Image</Text>
-                    </TouchableOpacity>
-
-                    <TextInput
-                      style={styles.prodWebImageUrlInput}
-                      placeholder="or paste an image URL"
-                      placeholderTextColor="#94A3B8"
-                      value={storeProductForm.image}
-                      onChangeText={txt => setStoreProductForm(f => ({ ...f, image: txt }))}
-                    />
-                  </View>
-                </View>
-              </View>
-            </ScrollView>
-
-            {/* Modal Actions */}
             <View style={styles.prodModalFooterWeb}>
               <TouchableOpacity
                 style={styles.prodModalCancelBtnWeb}
@@ -17624,7 +21034,6 @@ const renderAddStoreProductModal = () => {
           style={styles.prodModalOverlay}
         >
           <View style={styles.prodModalCard}>
-            {/* Modal Header */}
             <View style={styles.prodModalHeader}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
                 <View style={styles.prodModalIconBox}>
@@ -17643,273 +21052,8 @@ const renderAddStoreProductModal = () => {
               </TouchableOpacity>
             </View>
 
-            {/* Scrollable Form */}
-            <ScrollView style={styles.prodModalBody} showsVerticalScrollIndicator={false}>
-              {/* Product Name */}
-              <View style={styles.prodFormGroup}>
-                <Text style={styles.prodFormLabel}>Product Name *</Text>
-                <TextInput
-                  style={styles.prodFormInput}
-                  placeholder="e.g. Gold Standard Whey Protein"
-                  placeholderTextColor={COLORS.textMuted}
-                  value={storeProductForm.name}
-                  onChangeText={txt => setStoreProductForm(f => ({ ...f, name: txt }))}
-                />
-              </View>
+            {renderStoreProductFormBody()}
 
-              {/* Product Type */}
-              <View style={styles.prodFormGroup}>
-                <Text style={styles.prodFormLabel}>Product Type *</Text>
-                <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 6, paddingTop: 4 }}>
-                  {['Supplements', 'Fitness Drinks', 'Gym Clothing', 'Gym Accessories', 'Nutrition & Healthy Snacks', 'Other'].map(t => {
-                    const sel = storeProductForm.productType === t;
-                    return (
-                      <TouchableOpacity
-                        key={t}
-                        style={[styles.prodFormTypeChip, sel && styles.prodFormTypeChipActive]}
-                        onPress={() => setStoreProductForm(f => ({ ...f, productType: t, categoryName: t }))}
-                      >
-                        <Text style={[styles.prodFormTypeChipText, sel && styles.prodFormTypeChipTextActive]}>{t}</Text>
-                      </TouchableOpacity>
-                    );
-                  })}
-                </ScrollView>
-              </View>
-
-              {/* Category & Brand */}
-              <View style={styles.prodFormRow}>
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.prodFormLabel}>Category Name</Text>
-                  <TextInput
-                    style={styles.prodFormInput}
-                    placeholder="e.g. Supplements"
-                    placeholderTextColor={COLORS.textMuted}
-                    value={storeProductForm.categoryName}
-                    onChangeText={txt => setStoreProductForm(f => ({ ...f, categoryName: txt }))}
-                  />
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.prodFormLabel}>Brand Name</Text>
-                  <TextInput
-                    style={styles.prodFormInput}
-                    placeholder="e.g. Optimum Nutrition"
-                    placeholderTextColor={COLORS.textMuted}
-                    value={storeProductForm.brand}
-                    onChangeText={txt => setStoreProductForm(f => ({ ...f, brand: txt }))}
-                  />
-                </View>
-              </View>
-
-              {/* SKU */}
-              <View style={styles.prodFormGroup}>
-                <Text style={styles.prodFormLabel}>SKU / Code</Text>
-                <TextInput
-                  style={styles.prodFormInput}
-                  placeholder="e.g. ON-WPI-01"
-                  placeholderTextColor={COLORS.textMuted}
-                  value={storeProductForm.sku}
-                  onChangeText={txt => setStoreProductForm(f => ({ ...f, sku: txt }))}
-                />
-              </View>
-
-              {/* Description */}
-              <View style={styles.prodFormGroup}>
-                <Text style={styles.prodFormLabel}>Description</Text>
-                <TextInput
-                  style={[styles.prodFormInput, { height: 60, textAlignVertical: 'top' }]}
-                  placeholder="Product description, benefits, ingredients, etc."
-                  placeholderTextColor={COLORS.textMuted}
-                  multiline={true}
-                  numberOfLines={2}
-                  value={storeProductForm.description}
-                  onChangeText={txt => setStoreProductForm(f => ({ ...f, description: txt }))}
-                />
-              </View>
-
-              {/* Prices */}
-              <View style={styles.prodFormRow}>
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.prodFormLabel}>Selling Price (₹) *</Text>
-                  <TextInput
-                    style={styles.prodFormInput}
-                    placeholder="e.g. 199"
-                    keyboardType="numeric"
-                    placeholderTextColor={COLORS.textMuted}
-                    value={storeProductForm.sellingPrice}
-                    onChangeText={txt => setStoreProductForm(f => ({ ...f, sellingPrice: txt }))}
-                  />
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.prodFormLabel}>Discount Price (₹)</Text>
-                  <TextInput
-                    style={styles.prodFormInput}
-                    placeholder="e.g. 140"
-                    keyboardType="numeric"
-                    placeholderTextColor={COLORS.textMuted}
-                    value={storeProductForm.discountPrice}
-                    onChangeText={txt => setStoreProductForm(f => ({ ...f, discountPrice: txt }))}
-                  />
-                </View>
-              </View>
-
-              {/* Stock & Low Stock Threshold */}
-              <View style={styles.prodFormRow}>
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.prodFormLabel}>Stock Quantity *</Text>
-                  <TextInput
-                    style={styles.prodFormInput}
-                    placeholder="e.g. 10"
-                    keyboardType="numeric"
-                    placeholderTextColor={COLORS.textMuted}
-                    value={storeProductForm.stock}
-                    onChangeText={txt => setStoreProductForm(f => ({ ...f, stock: txt }))}
-                  />
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.prodFormLabel}>Low Stock Alert</Text>
-                  <TextInput
-                    style={styles.prodFormInput}
-                    placeholder="e.g. 5"
-                    keyboardType="numeric"
-                    placeholderTextColor={COLORS.textMuted}
-                    value={storeProductForm.lowStockThreshold}
-                    onChangeText={txt => setStoreProductForm(f => ({ ...f, lowStockThreshold: txt }))}
-                  />
-                </View>
-              </View>
-
-              {/* SALES SETTINGS (Matching Web Application Image 1) */}
-              <View style={styles.prodWebSection}>
-                <Text style={styles.prodWebSectionTitle}>SALES SETTINGS</Text>
-                <View style={styles.prodWebDropdownRow}>
-                  {/* STATUS */}
-                  <View style={{ flex: 1 }}>
-                    <Text style={styles.prodWebFieldLabel}>STATUS</Text>
-                    <TouchableOpacity
-                      style={styles.prodWebSelectBox}
-                      onPress={() => {
-                        setStoreSelectPickerModal({
-                          title: 'Select Status',
-                          selectedValue: storeProductForm.status,
-                          options: [
-                            { label: 'Active', value: 'Active', sub: 'Visible in store & available for purchase' },
-                            { label: 'Inactive', value: 'Inactive', sub: 'Hidden from store catalog' },
-                          ],
-                          onSelect: (val) => setStoreProductForm(f => ({ ...f, status: val })),
-                        });
-                      }}
-                      activeOpacity={0.7}
-                    >
-                      <Text style={styles.prodWebSelectBoxText} numberOfLines={1}>
-                        {storeProductForm.status === 'Inactive' ? 'Inactive' : 'Active'}
-                      </Text>
-                      <Ionicons name="chevron-down" size={13} color="#64748B" />
-                    </TouchableOpacity>
-                  </View>
-
-                  {/* SELL ONLINE */}
-                  <View style={{ flex: 1.45 }}>
-                    <Text style={styles.prodWebFieldLabel}>SELL ONLINE</Text>
-                    <TouchableOpacity
-                      style={styles.prodWebSelectBox}
-                      onPress={() => {
-                        setStoreSelectPickerModal({
-                          title: 'Select Sell Online Channel',
-                          selectedValue: storeProductForm.availability,
-                          options: [
-                            { label: 'Both Online & In-Gym', value: 'Both', sub: 'Available both on mobile app & reception' },
-                            { label: 'Online Only', value: 'Online', sub: 'Purchasable only in mobile app store' },
-                            { label: 'In-Gym Only', value: 'Offline', sub: 'Purchasable only in-person at gym reception' },
-                          ],
-                          onSelect: (val) => setStoreProductForm(f => ({ ...f, availability: val })),
-                        });
-                      }}
-                      activeOpacity={0.7}
-                    >
-                      <Text style={styles.prodWebSelectBoxText} numberOfLines={1}>
-                        {storeProductForm.availability === 'Online'
-                          ? 'Online Only'
-                          : storeProductForm.availability === 'Offline'
-                          ? 'In-Gym Only'
-                          : 'Both Online & In-Gym'}
-                      </Text>
-                      <Ionicons name="chevron-down" size={13} color="#64748B" />
-                    </TouchableOpacity>
-                  </View>
-
-                  {/* FULFILMENT */}
-                  <View style={{ flex: 1.25 }}>
-                    <Text style={styles.prodWebFieldLabel}>FULFILMENT</Text>
-                    <TouchableOpacity
-                      style={styles.prodWebSelectBox}
-                      onPress={() => {
-                        setStoreSelectPickerModal({
-                          title: 'Select Fulfilment Method',
-                          selectedValue: storeProductForm.fulfilmentType,
-                          options: [
-                            { label: 'Gym Pickup', value: 'Gym Pickup', sub: 'Member collects items at gym front desk' },
-                            { label: 'Delivery', value: 'Delivery', sub: 'Direct shipment to customer home address' },
-                            { label: 'Pickup & Delivery', value: 'Both', sub: 'Both gym pickup and home delivery supported' },
-                          ],
-                          onSelect: (val) => setStoreProductForm(f => ({ ...f, fulfilmentType: val })),
-                        });
-                      }}
-                      activeOpacity={0.7}
-                    >
-                      <Text style={styles.prodWebSelectBoxText} numberOfLines={1}>
-                        {storeProductForm.fulfilmentType === 'Delivery'
-                          ? 'Delivery'
-                          : storeProductForm.fulfilmentType === 'Both'
-                          ? 'Both'
-                          : 'Gym Pickup'}
-                      </Text>
-                      <Ionicons name="chevron-down" size={13} color="#64748B" />
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              </View>
-
-              {/* PRODUCT IMAGE (Matching Web Application Image 1) */}
-              <View style={styles.prodWebSection}>
-                <Text style={styles.prodWebSectionTitle}>PRODUCT IMAGE</Text>
-                <View style={styles.prodWebImageRow}>
-                  {/* Square Image Box */}
-                  <View style={styles.prodWebImageSquareBox}>
-                    {storeProductForm.image ? (
-                      <Image
-                        source={{ uri: storeProductForm.image }}
-                        style={styles.prodWebImagePreview}
-                        resizeMode="cover"
-                      />
-                    ) : (
-                      <Ionicons name="image-outline" size={24} color="#EA580C" style={{ opacity: 0.35 }} />
-                    )}
-                  </View>
-
-                  {/* Upload Image Button & Paste URL Input */}
-                  <View style={styles.prodWebImageInputCol}>
-                    <TouchableOpacity
-                      style={styles.prodWebUploadBtn}
-                      onPress={handlePickProductImage}
-                      activeOpacity={0.7}
-                    >
-                      <Ionicons name="cloud-upload-outline" size={14} color="#EA580C" />
-                      <Text style={styles.prodWebUploadBtnText}>Upload Image</Text>
-                    </TouchableOpacity>
-
-                    <TextInput
-                      style={styles.prodWebImageUrlInput}
-                      placeholder="or paste an image URL"
-                      placeholderTextColor="#94A3B8"
-                      value={storeProductForm.image}
-                      onChangeText={txt => setStoreProductForm(f => ({ ...f, image: txt }))}
-                    />
-                  </View>
-                </View>
-              </View>
-            </ScrollView>
-
-            {/* Modal Actions */}
             <View style={styles.prodModalFooterWeb}>
               <TouchableOpacity
                 style={styles.prodModalCancelBtnWeb}
@@ -18340,6 +21484,12 @@ return (
       {renderCustomerPerfModal()}
       {renderDeletedRecordDetailsModal()}
       {renderCustomerCalendarModal()}
+      {renderTrainerPerfModal()}
+      {renderPerfPickerModal()}
+      {renderPerfRewardFormModal()}
+      {renderPerfAwardModals()}
+      {renderPerfClaimActionModal()}
+      {renderSalesCalendarModal()}
 
       {/* ONLINE SESSIONS MODALS */}
       {renderCreateOnlineSessionModal()}
@@ -20633,31 +23783,50 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     color: '#EA580C',
   },
+  subDialogOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(15, 23, 42, 0.72)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
+  },
+  subDialogKbdWrap: {
+    width: '100%',
+    maxWidth: 440,
+    maxHeight: '92%',
+  },
+  subDialogScrollContent: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   subModalCard: {
     backgroundColor: COLORS.white,
     borderRadius: 24,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
     padding: 20,
-    width: '92%',
+    width: '100%',
     maxWidth: 440,
     gap: 14,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 10,
-    elevation: 8,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.2,
+    shadowRadius: 16,
+    elevation: 10,
   },
   subModalHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     borderBottomWidth: 1,
-    borderBottomColor: '#F1F5F9',
-    paddingBottom: 12,
+    borderBottomColor: '#E2E8F0',
+    paddingBottom: 14,
   },
   subModalIconBox: {
-    width: 40,
-    height: 40,
-    borderRadius: 12,
+    width: 44,
+    height: 44,
+    borderRadius: 14,
     backgroundColor: '#FFF7ED',
     borderWidth: 1,
     borderColor: '#FFEDD5',
@@ -20672,15 +23841,35 @@ const styles = StyleSheet.create({
   subModalSub: {
     fontSize: 11,
     color: '#64748B',
-    marginTop: 1,
+    marginTop: 2,
+  },
+  subModalCloseBtn: {
+    padding: 4,
+    borderRadius: 12,
+  },
+  subModalErrorBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    padding: 10,
+    borderRadius: 12,
+    backgroundColor: '#FEF2F2',
+    borderWidth: 1,
+    borderColor: '#FECACA',
+  },
+  subModalErrorText: {
+    flex: 1,
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#B91C1C',
   },
   subModalSummaryBox: {
     backgroundColor: '#F8FAFC',
-    borderRadius: 14,
+    borderRadius: 16,
     borderWidth: 1,
     borderColor: '#E2E8F0',
-    padding: 12,
-    gap: 6,
+    padding: 14,
+    gap: 8,
   },
   subModalSummaryRow: {
     flexDirection: 'row',
@@ -20688,18 +23877,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   subModalSummaryLabel: {
-    fontSize: 11,
+    fontSize: 12,
     color: '#64748B',
   },
   subModalSummaryVal: {
     fontSize: 12,
-    fontWeight: '700',
+    fontWeight: '800',
     color: '#111827',
   },
   subModalSummaryTotalRow: {
     borderTopWidth: 1,
     borderTopColor: '#E2E8F0',
-    paddingTop: 8,
+    paddingTop: 10,
     marginTop: 4,
   },
   subModalTotalLabel: {
@@ -20708,55 +23897,102 @@ const styles = StyleSheet.create({
     color: '#111827',
   },
   subModalTotalVal: {
-    fontSize: 18,
+    fontSize: 19,
     fontWeight: '900',
     color: '#EA580C',
   },
   subModalPaymentHeading: {
-    fontSize: 10,
+    fontSize: 11,
     fontWeight: '800',
     color: '#64748B',
-    letterSpacing: 0.5,
+    letterSpacing: 0.6,
   },
-  subModalPayMethodBtn: {
+  subModalMethodTabsRow: {
     flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: 10,
-    borderRadius: 10,
+    gap: 8,
+  },
+  subModalMethodTabBtn: {
+    flex: 1,
+    paddingVertical: 10,
+    paddingHorizontal: 8,
+    borderRadius: 12,
     borderWidth: 1,
     borderColor: '#E2E8F0',
     backgroundColor: '#F8FAFC',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  subModalPayMethodBtnActive: {
-    borderColor: COLORS.primary,
-    backgroundColor: '#FFF7ED',
+  subModalMethodTabBtnActive: {
+    backgroundColor: '#C2410C',
+    borderColor: '#FDBA74',
   },
-  subModalPayMethodText: {
+  subModalMethodTabText: {
     fontSize: 12,
-    fontWeight: '600',
-    color: '#111827',
-    flex: 1,
-    marginLeft: 8,
-  },
-  subModalPayMethodTextActive: {
-    color: COLORS.primary,
     fontWeight: '700',
+    color: '#64748B',
+  },
+  subModalMethodTabTextActive: {
+    color: COLORS.white,
+  },
+  subModalInputRow: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  subModalInput: {
+    backgroundColor: COLORS.white,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 12,
+    paddingHorizontal: 14,
+    paddingVertical: 11,
+    fontSize: 12,
+    color: '#111827',
+  },
+  subModalActionsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    paddingTop: 4,
+  },
+  subModalCancelBtn: {
+    flex: 1,
+    paddingVertical: 13,
+    borderRadius: 12,
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  subModalCancelText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#64748B',
   },
   subModalPaySubmitBtn: {
+    flex: 2,
     backgroundColor: '#C2410C',
     borderRadius: 12,
-    paddingVertical: 14,
+    paddingVertical: 13,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
-    marginTop: 4,
   },
   subModalPaySubmitText: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: '800',
     color: COLORS.white,
+  },
+  subModalTlsFooter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+  },
+  subModalTlsText: {
+    fontSize: 11,
+    color: '#64748B',
   },
   subInvoiceModalCard: {
     backgroundColor: COLORS.white,
@@ -21079,6 +24315,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    gap: 8,
     borderBottomWidth: 1,
     borderBottomColor: '#F1F5F9',
     paddingBottom: 10,
@@ -21108,11 +24346,11 @@ const styles = StyleSheet.create({
     color: '#64748B',
   },
   reportsBarChartArea: {
-    height: 150,
+    height: 168,
     flexDirection: 'row',
     alignItems: 'flex-end',
     justifyContent: 'space-between',
-    paddingTop: 36,
+    paddingTop: 42,
     paddingBottom: 6,
   },
   reportsBarCol: {
@@ -21122,31 +24360,38 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     position: 'relative',
   },
-  reportsBarTooltip: {
+  reportsBarTooltipWrap: {
     position: 'absolute',
-    top: -24,
+    top: -12,
+    zIndex: 20,
+  },
+  reportsBarTooltip: {
     backgroundColor: '#111827',
-    paddingHorizontal: 6,
-    paddingVertical: 3,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
     borderRadius: 6,
-    zIndex: 10,
     alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    elevation: 4,
   },
   reportsBarTooltipText: {
-    fontSize: 9,
+    fontSize: 10,
     fontWeight: '800',
     color: COLORS.white,
   },
   reportsBarTooltipArrow: {
     width: 0,
     height: 0,
-    borderLeftWidth: 4,
-    borderRightWidth: 4,
-    borderTopWidth: 4,
+    borderLeftWidth: 5,
+    borderRightWidth: 5,
+    borderTopWidth: 5,
     borderLeftColor: 'transparent',
     borderRightColor: 'transparent',
     borderTopColor: '#111827',
-    alignSelf: 'center',
   },
   reportsBarTrack: {
     width: '70%',
@@ -21445,27 +24690,28 @@ const styles = StyleSheet.create({
   },
   perfSubTabsRow: {
     flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: '#F8FAFC',
-    padding: 4,
+    padding: 5,
     borderRadius: 14,
     borderWidth: 1,
     borderColor: '#E2E8F0',
     gap: 6,
   },
   perfSubTabBtn: {
-    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 5,
-    paddingVertical: 8,
+    gap: 6,
+    paddingVertical: 9,
+    paddingHorizontal: 14,
     borderRadius: 10,
   },
   perfSubTabBtnActive: {
     backgroundColor: '#C2410C',
   },
   perfSubTabText: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '700',
     color: '#64748B',
   },
@@ -21497,11 +24743,140 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   perfKpiLabel: {
+    flex: 1,
+    marginRight: 6,
     fontSize: 8.5,
     fontWeight: '800',
     color: '#64748B',
     textTransform: 'uppercase',
-    letterSpacing: 0.5,
+    letterSpacing: 0.4,
+  },
+  perfItemActionsBar: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    gap: 8,
+    marginTop: 8,
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: '#F1F5F9',
+  },
+  perfSmallPrimaryBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: '#C2410C',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 8,
+  },
+  perfSmallPrimaryText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#FFFFFF',
+  },
+  perfSmallEditBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: '#FFF7ED',
+    borderWidth: 1,
+    borderColor: '#FDBA74',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 8,
+  },
+  perfSmallEditText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#C2410C',
+  },
+  perfSmallDeleteBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: '#FEF2F2',
+    borderWidth: 1,
+    borderColor: '#FECACA',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 8,
+  },
+  perfSmallDeleteText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#DC2626',
+  },
+  perfCalNavBtn: {
+    width: 30,
+    height: 30,
+    borderRadius: 8,
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  perfCalTodayBtn: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 8,
+    backgroundColor: '#FFF7ED',
+    borderWidth: 1,
+    borderColor: '#FDBA74',
+  },
+  perfCalTodayBtnText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#C2410C',
+  },
+  perfCalWeekRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 6,
+  },
+  perfCalWeekText: {
+    width: '13.5%',
+    textAlign: 'center',
+    fontSize: 10,
+    fontWeight: '700',
+    color: '#64748B',
+  },
+  perfCalDot: {
+    width: 5,
+    height: 5,
+    borderRadius: 99,
+  },
+  perfCalDayDetailRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 8,
+    backgroundColor: '#F8FAFC',
+    padding: 10,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  perfPickerOptionRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 12,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    backgroundColor: '#FFFFFF',
+    marginBottom: 8,
+  },
+  perfFormInput: {
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 9,
+    fontSize: 13,
+    color: '#111827',
+    backgroundColor: '#FFFFFF',
   },
   perfKpiIconBox: {
     width: 26,
@@ -22563,8 +25938,10 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   exCardMediaArea: {
-    height: 180,
-    backgroundColor: '#0F172A',
+    height: 185,
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#E2E8F0',
     justifyContent: 'space-between',
     padding: 12,
     position: 'relative',
@@ -27405,6 +30782,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    gap: 6,
   },
   schedTableTitle: {
     fontSize: 14,
@@ -27413,10 +30792,11 @@ const styles = StyleSheet.create({
   },
   schedTableSub: {
     fontSize: 10,
+    fontWeight: '600',
     color: '#64748B',
   },
   schedTableContainer: {
-    minWidth: 760,
+    minWidth: 698,
     borderWidth: 1,
     borderColor: '#E2E8F0',
     borderRadius: 12,
@@ -27430,7 +30810,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F8FAFC',
   },
   schedTimeColHeader: {
-    width: 65,
+    width: 54,
     paddingVertical: 10,
     borderRightWidth: 1,
     borderRightColor: '#E2E8F0',
@@ -27441,11 +30821,12 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: '800',
     color: '#64748B',
-    letterSpacing: 0.5,
+    letterSpacing: 0.4,
   },
   schedDayColHeader: {
-    width: 99,
+    width: 92,
     paddingVertical: 8,
+    paddingHorizontal: 4,
     borderRightWidth: 1,
     borderRightColor: '#E2E8F0',
     alignItems: 'center',
@@ -27455,7 +30836,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF7ED',
   },
   schedDayColName: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '800',
     color: '#111827',
   },
@@ -27471,7 +30852,7 @@ const styles = StyleSheet.create({
     minHeight: 74,
   },
   schedTimeCell: {
-    width: 65,
+    width: 54,
     paddingTop: 8,
     borderRightWidth: 1,
     borderRightColor: '#E2E8F0',
@@ -27484,7 +30865,7 @@ const styles = StyleSheet.create({
     color: '#64748B',
   },
   schedGridSlotCell: {
-    width: 99,
+    width: 92,
     padding: 4,
     borderRightWidth: 1,
     borderRightColor: '#E2E8F0',
@@ -27578,6 +30959,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    gap: 8,
     borderBottomWidth: 1,
     borderBottomColor: '#F1F5F9',
     paddingBottom: 10,
@@ -30435,6 +33817,278 @@ const styles = StyleSheet.create({
     fontSize: 11.5,
     fontWeight: '700',
     color: '#475569',
+  },
+  salesDateBoxActive: {
+    borderColor: '#EA580C',
+    backgroundColor: '#FFF7ED',
+  },
+  salesCalendarIconPill: {
+    width: 24,
+    height: 24,
+    borderRadius: 6,
+    backgroundColor: '#FFEDD5',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  salesDateValueText: {
+    flex: 1,
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#111827',
+  },
+  salesDatePlaceholderText: {
+    color: '#94A3B8',
+    fontWeight: '500',
+  },
+  salesCalModalCard: {
+    width: '100%',
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    padding: 18,
+    paddingBottom: 26,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 8,
+  },
+  salesCalTargetTabs: {
+    flexDirection: 'row',
+    gap: 8,
+    marginBottom: 12,
+  },
+  salesCalTargetTab: {
+    flex: 1,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    borderRadius: 10,
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  salesCalTargetTabActive: {
+    backgroundColor: '#FFF7ED',
+    borderColor: '#EA580C',
+  },
+  salesCalTargetTabLabel: {
+    fontSize: 9.5,
+    fontWeight: '700',
+    color: '#64748B',
+    marginBottom: 2,
+  },
+  salesCalTargetTabVal: {
+    fontSize: 12.5,
+    fontWeight: '700',
+    color: '#1E293B',
+  },
+  salesCalMonthHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 10,
+    paddingHorizontal: 4,
+  },
+  salesCalNavBtn: {
+    width: 34,
+    height: 34,
+    borderRadius: 10,
+    backgroundColor: '#F1F5F9',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  salesCalMonthTitle: {
+    fontSize: 15,
+    fontWeight: '800',
+    color: '#0F172A',
+  },
+  salesCalWeekRow: {
+    flexDirection: 'row',
+    marginBottom: 6,
+  },
+  salesCalWeekLabel: {
+    flex: 1,
+    textAlign: 'center',
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#64748B',
+  },
+  salesCalDaysGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  salesCalDayCell: {
+    width: '14.2857%',
+    aspectRatio: 1,
+    padding: 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  salesCalDayBtn: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  salesCalDayInRange: {
+    backgroundColor: '#FFEDD5',
+  },
+  salesCalDayToday: {
+    borderWidth: 1.5,
+    borderColor: '#EA580C',
+  },
+  salesCalDaySelected: {
+    backgroundColor: '#EA580C',
+  },
+  salesCalDayText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#1E293B',
+  },
+  salesCalDayInRangeText: {
+    color: '#9A3412',
+    fontWeight: '700',
+  },
+  salesCalDayTodayText: {
+    color: '#EA580C',
+    fontWeight: '800',
+  },
+  salesCalDaySelectedText: {
+    color: '#FFFFFF',
+    fontWeight: '800',
+  },
+  salesCalFooterRow: {
+    flexDirection: 'row',
+    gap: 8,
+    marginTop: 14,
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: '#E2E8F0',
+  },
+  salesCalSecondaryBtn: {
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    borderRadius: 10,
+    backgroundColor: '#F1F5F9',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  salesCalSecondaryBtnText: {
+    fontSize: 12.5,
+    fontWeight: '700',
+    color: '#475569',
+  },
+  salesCalDoneBtn: {
+    flex: 1,
+    paddingVertical: 10,
+    borderRadius: 10,
+    backgroundColor: '#EA580C',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  salesCalDoneBtnText: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: '#FFFFFF',
+  },
+  orderInstantToastBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    backgroundColor: '#DCFCE7',
+    borderWidth: 1,
+    borderColor: '#86EFAC',
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    marginBottom: 10,
+  },
+  orderInstantToastText: {
+    fontSize: 12.5,
+    fontWeight: '700',
+    color: '#166534',
+    flex: 1,
+  },
+  prodTypeWrapGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+    paddingTop: 4,
+  },
+  prodDynamicFieldsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+  },
+  prodDynamicFieldBox: {
+    width: '48%',
+    flexGrow: 1,
+  },
+  prodVariantToggleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingVertical: 4,
+  },
+  prodVariantToggleText: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#111827',
+    flex: 1,
+  },
+  prodVariantsHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 8,
+  },
+  prodAddVariantBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: '#FFF7ED',
+    borderWidth: 1,
+    borderColor: '#FDBA74',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 8,
+  },
+  prodAddVariantBtnText: {
+    fontSize: 11.5,
+    fontWeight: '800',
+    color: '#EA580C',
+  },
+  prodVariantsEmptyText: {
+    fontSize: 12,
+    color: '#64748B',
+    textAlign: 'center',
+    paddingVertical: 12,
+  },
+  prodVariantCard: {
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 12,
+    padding: 10,
+    marginBottom: 8,
+  },
+  prodVariantCardHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 8,
+  },
+  prodVariantCardTitle: {
+    fontSize: 11.5,
+    fontWeight: '800',
+    color: '#EA580C',
+    textTransform: 'uppercase',
+  },
+  prodVariantDeleteBtn: {
+    backgroundColor: '#FEF2F2',
+    borderRadius: 6,
+    padding: 5,
   },
 
 });
