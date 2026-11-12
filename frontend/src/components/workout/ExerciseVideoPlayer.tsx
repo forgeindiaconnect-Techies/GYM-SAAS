@@ -1,6 +1,7 @@
-﻿import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Play, Pause, RotateCcw, Maximize, Volume2, VolumeX, Sparkles, Video, Activity } from 'lucide-react';
 import ExerciseAnimationEngine from './ExerciseAnimationEngine';
+import { getAssetUrl } from '../../utils/api';
 
 interface ExerciseVideoPlayerProps {
   videoUrl?: string;
@@ -62,7 +63,7 @@ export const ExerciseVideoPlayer: React.FC<ExerciseVideoPlayerProps> = ({
 
   const isMixkit = Boolean(videoUrl && videoUrl.includes('mixkit.co'));
   const normalizedVideoUrl = (isValidMediaUrl(videoUrl) && !isMixkit)
-    ? (videoUrl!.startsWith('http') ? videoUrl! : `http://localhost:5600${videoUrl}`)
+    ? getAssetUrl(videoUrl!)
     : '';
 
   // Determine initial view mode:

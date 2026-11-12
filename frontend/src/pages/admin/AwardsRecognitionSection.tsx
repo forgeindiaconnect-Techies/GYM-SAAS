@@ -23,16 +23,25 @@ import {
   Activity,
   IndianRupee,
   ShieldCheck,
-  Edit3
+  Edit3,
+  PenTool
 } from 'lucide-react';
 import api from '../../utils/api';
-import { generateAwardCertificatePDF } from '../../utils/certificateGenerator';
+import {
+  type CertificateData,
+  generateAwardCertificatePDF,
+  mapAwardToCertificateData
+} from '../../utils/certificateGenerator';
+import CertificatePreviewModal from '../../components/CertificatePreviewModal';
+import DigitalSignatureSection from '../../components/admin/DigitalSignatureSection';
 
 export default function AwardsRecognitionSection() {
   const [subTab, setSubTab] = useState<'awards'>('awards');
   const [awards, setAwards] = useState<any[]>([]);
   const [hallOfFame, setHallOfFame] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [previewCertificate, setPreviewCertificate] = useState<CertificateData | null>(null);
+  const [isSignatureModalOpen, setIsSignatureModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [periodFilter, setPeriodFilter] = useState('ALL');
   const [recipientFilter, setRecipientFilter] = useState('ALL');
@@ -54,10 +63,12 @@ export default function AwardsRecognitionSection() {
     criteriaMetric: 'workout_completions',
     minCriteriaValue: 10,
     winnerSelectionMethod: 'OWNER_CONFIRMATION',
+    signatureType: 'DIGITAL' as 'DIGITAL' | 'MANUAL',
     prizeBonusAmount: 0,
     prizeDescription: 'Official Certificate & Hall of Fame Feature',
     allowDuplicateWinner: false
   });
+  const [savedSignature, setSavedSignature] = useState<any>(null);
 
   // Candidate Evaluation Modal
   const [selectedAwardForCandidates, setSelectedAwardForCandidates] = useState<any | null>(null);
@@ -77,9 +88,10 @@ export default function AwardsRecognitionSection() {
   const fetchAwardsAndHallOfFame = async () => {
     try {
       setLoading(true);
-      const [awardsRes, hofRes] = await Promise.allSettled([
+      const [awardsRes, hofRes, sigRes] = await Promise.allSettled([
         api.get('/awards/owner'),
-        api.get('/awards/hall-of-fame')
+        api.get('/awards/hall-of-fame'),
+        api.get('/awards/signature')
       ]);
 
       if (awardsRes.status === 'fulfilled' && awardsRes.value.data?.success) {
@@ -87,6 +99,9 @@ export default function AwardsRecognitionSection() {
       }
       if (hofRes.status === 'fulfilled' && hofRes.value.data?.success) {
         setHallOfFame(hofRes.value.data.hallOfFame || []);
+      }
+      if (sigRes.status === 'fulfilled' && sigRes.value.data?.success) {
+        setSavedSignature(sigRes.value.data.signature || null);
       }
     } catch (err: any) {
       console.error('Failed to load awards:', err);
@@ -115,6 +130,7 @@ export default function AwardsRecognitionSection() {
       criteriaMetric: 'workout_completions',
       minCriteriaValue: 10,
       winnerSelectionMethod: 'OWNER_CONFIRMATION',
+      signatureType: 'DIGITAL',
       prizeBonusAmount: 0,
       prizeDescription: 'Official Certificate & Hall of Fame Feature',
       allowDuplicateWinner: false
@@ -137,6 +153,7 @@ export default function AwardsRecognitionSection() {
       criteriaMetric: award.criteriaMetric || (award.recipientType === 'Trainer' ? 'completed_sessions' : 'workout_completions'),
       minCriteriaValue: award.minCriteriaValue !== undefined ? award.minCriteriaValue : 10,
       winnerSelectionMethod: award.winnerSelectionMethod || 'OWNER_CONFIRMATION',
+      signatureType: award.signatureType === 'MANUAL' ? 'MANUAL' : 'DIGITAL',
       prizeBonusAmount: award.prizeBonusAmount || 0,
       prizeDescription: award.prizeDescription || 'Official Certificate & Hall of Fame Feature',
       allowDuplicateWinner: Boolean(award.allowDuplicateWinner)
@@ -200,7 +217,10 @@ export default function AwardsRecognitionSection() {
         winnerMetricAchieved: selectedWinnerMetric
       });
       if (res.data?.success) {
-        setMessage({ type: 'success', text: 'Winner successfully confirmed and moved to Under Review!' });
+        setMessage({
+          type: 'success',
+          text: `Winner confirmed & certificate generated (${res.data.certificateId || 'Ready'}). Moved to Under Review!`
+        });
         setSelectedAwardForCandidates(null);
         fetchAwardsAndHallOfFame();
       }
@@ -242,16 +262,12 @@ export default function AwardsRecognitionSection() {
     }
   };
 
-  const handleDownloadCertificate = (award: any) => {
-    generateAwardCertificatePDF({
-      recipientName: award.winnerName || award.winnerUserId?.firstName ? `${award.winnerUserId?.firstName || ''} ${award.winnerUserId?.lastName || ''}`.trim() : 'Award Recipient',
-      recipientRole: award.winnerRole,
-      awardTitle: award.title,
-      awardCategory: award.category,
-      awardDate: award.publishedAt ? new Date(award.publishedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : new Date().toLocaleDateString(),
-      certificateId: award.certificateId || 'CERT-VERIFIED',
-      metricAchieved: award.winnerMetricAchieved
-    });
+  const handleDownloadCertificate = async (award: any) => {
+    await generateAwardCertificatePDF(mapAwardToCertificateData(award));
+  };
+
+  const handleViewCertificate = (award: any) => {
+    setPreviewCertificate(mapAwardToCertificateData(award));
   };
 
   const filteredAwards = awards.filter(a => {
@@ -473,13 +489,31 @@ export default function AwardsRecognitionSection() {
                             </button>
 
                             {hasWinner && (
-                              <button
-                                onClick={() => setAwardToPublish(award)}
-                                className="px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-[#C2410C] hover:bg-[#9A3412] transition cursor-pointer flex items-center gap-1.5 shadow-sm shadow-orange-500/15"
-                              >
-                                <Send className="w-3.5 h-3.5" />
-                                Publish Award
-                              </button>
+                              <>
+                                <button
+                                  onClick={() => handleViewCertificate(award)}
+                                  className="px-3 py-1.5 rounded-lg text-xs font-bold text-[#111827] bg-[#F8FAFC] hover:bg-[#FFF7ED] border border-[#E2E8F0] hover:border-[#FDBA74] transition cursor-pointer flex items-center gap-1.5"
+                                  title="View Certificate"
+                                >
+                                  <Eye className="w-3.5 h-3.5 text-[#EA580C]" />
+                                  View Certificate
+                                </button>
+                                <button
+                                  onClick={() => handleDownloadCertificate(award)}
+                                  className="px-3 py-1.5 rounded-lg text-xs font-bold text-[#C2410C] bg-[#FFFFFF] hover:bg-[#FFF7ED] border border-[#E2E8F0] hover:border-[#FDBA74] transition cursor-pointer flex items-center gap-1.5"
+                                  title="Download PDF Certificate"
+                                >
+                                  <Download className="w-3.5 h-3.5" />
+                                  PDF
+                                </button>
+                                <button
+                                  onClick={() => setAwardToPublish(award)}
+                                  className="px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-[#C2410C] hover:bg-[#9A3412] transition cursor-pointer flex items-center gap-1.5 shadow-sm shadow-orange-500/15"
+                                >
+                                  <Send className="w-3.5 h-3.5" />
+                                  Publish Award
+                                </button>
+                              </>
                             )}
 
                             <button
@@ -501,21 +535,28 @@ export default function AwardsRecognitionSection() {
                           </button>
                         </>
                       ) : (
-                        <div className="flex items-center gap-2 w-full">
+                        <div className="flex flex-wrap items-center gap-2 w-full">
                           <button
                             onClick={() => openEditModal(award)}
-                            className="px-3.5 py-2 rounded-xl text-xs font-bold text-[#C2410C] bg-[#FFFFFF] hover:bg-[#FFF7ED] border border-[#E2E8F0] hover:border-[#FDBA74] transition cursor-pointer flex items-center justify-center gap-1.5 shrink-0"
+                            className="px-3 py-2 rounded-xl text-xs font-bold text-[#C2410C] bg-[#FFFFFF] hover:bg-[#FFF7ED] border border-[#E2E8F0] hover:border-[#FDBA74] transition cursor-pointer flex items-center justify-center gap-1.5 shrink-0"
                             title="Edit Award Details"
                           >
                             <Edit3 className="w-3.5 h-3.5 text-[#EA580C]" />
                             Edit
                           </button>
                           <button
+                            onClick={() => handleViewCertificate(award)}
+                            className="px-3 py-2 rounded-xl text-xs font-bold text-[#111827] bg-[#F8FAFC] hover:bg-[#FFF7ED] border border-[#E2E8F0] hover:border-[#FDBA74] transition cursor-pointer flex items-center justify-center gap-1.5 shrink-0"
+                          >
+                            <Eye className="w-3.5 h-3.5 text-[#EA580C]" />
+                            View Certificate
+                          </button>
+                          <button
                             onClick={() => handleDownloadCertificate(award)}
                             className="flex-1 px-3 py-2 rounded-xl text-xs font-bold text-white bg-[#C2410C] hover:bg-[#9A3412] transition cursor-pointer flex items-center justify-center gap-1.5 shadow-sm shadow-orange-500/15"
                           >
                             <Download className="w-3.5 h-3.5" />
-                            Download Official Certificate PDF
+                            Download PDF
                           </button>
                           <button
                             onClick={() => handleDeleteAward(award._id)}
@@ -695,6 +736,108 @@ export default function AwardsRecognitionSection() {
                 </div>
               </div>
 
+              {/* Certificate Signature Option */}
+              <div>
+                <label className="block font-bold text-[#64748B] mb-1.5">Certificate Signature Option *</label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  <button
+                    type="button"
+                    onClick={() => setAwardFormData({ ...awardFormData, signatureType: 'DIGITAL' })}
+                    className={`p-3 rounded-xl border text-left transition cursor-pointer flex items-start gap-2.5 ${
+                      awardFormData.signatureType === 'DIGITAL'
+                        ? 'bg-[#FFF7ED] border-[#F97316] ring-1 ring-[#F97316]/30'
+                        : 'bg-[#FFFFFF] border-[#E2E8F0] hover:border-[#FDBA74]'
+                    }`}
+                  >
+                    <PenTool
+                      className={`w-4 h-4 mt-0.5 shrink-0 ${
+                        awardFormData.signatureType === 'DIGITAL' ? 'text-[#C2410C]' : 'text-[#64748B]'
+                      }`}
+                    />
+                    <div className="min-w-0">
+                      <p className="text-xs font-bold text-[#111827]">Digital Signature</p>
+                      <p className="text-[11px] text-[#64748B] mt-0.5">
+                        {savedSignature
+                          ? `Auto-uses saved signature (${savedSignature.signatoryName})`
+                          : 'Uses your saved signature from System Settings'}
+                      </p>
+                    </div>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setAwardFormData({ ...awardFormData, signatureType: 'MANUAL' })}
+                    className={`p-3 rounded-xl border text-left transition cursor-pointer flex items-start gap-2.5 ${
+                      awardFormData.signatureType === 'MANUAL'
+                        ? 'bg-[#FFF7ED] border-[#F97316] ring-1 ring-[#F97316]/30'
+                        : 'bg-[#FFFFFF] border-[#E2E8F0] hover:border-[#FDBA74]'
+                    }`}
+                  >
+                    <Edit3
+                      className={`w-4 h-4 mt-0.5 shrink-0 ${
+                        awardFormData.signatureType === 'MANUAL' ? 'text-[#C2410C]' : 'text-[#64748B]'
+                      }`}
+                    />
+                    <div className="min-w-0">
+                      <p className="text-xs font-bold text-[#111827]">Manual Signature</p>
+                      <p className="text-[11px] text-[#64748B] mt-0.5">
+                        Leaves a blank signature line for physical pen signing
+                      </p>
+                    </div>
+                  </button>
+                </div>
+
+                {awardFormData.signatureType === 'DIGITAL' && (
+                  <div className="mt-2.5 p-3 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] flex items-center justify-between gap-3">
+                    {savedSignature ? (
+                      <>
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="bg-white border border-[#E2E8F0] rounded-lg px-2.5 py-1 shrink-0">
+                            <img
+                              src={savedSignature.signatureImage}
+                              alt="Saved Digital Signature"
+                              className="h-8 max-w-[100px] object-contain"
+                            />
+                          </div>
+                          <div className="min-w-0">
+                            <p className="text-xs font-bold text-[#111827] truncate">
+                              {savedSignature.signatoryName}
+                            </p>
+                            <p className="text-[11px] text-[#64748B] truncate">
+                              {savedSignature.designation || 'Gym Owner'}
+                            </p>
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setIsSignatureModalOpen(true)}
+                          className="px-3 py-1.5 rounded-lg text-xs font-bold text-[#C2410C] bg-white hover:bg-[#FFF7ED] border border-[#E2E8F0] hover:border-[#FDBA74] transition cursor-pointer shrink-0"
+                        >
+                          Change Signature
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <div className="min-w-0">
+                          <p className="text-xs font-bold text-[#B91C1C]">No Digital Signature saved yet</p>
+                          <p className="text-[11px] text-[#64748B]">
+                            Draw or upload your signature now to include it on certificates.
+                          </p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setIsSignatureModalOpen(true)}
+                          className="px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-[#C2410C] hover:bg-[#9A3412] transition cursor-pointer shrink-0 flex items-center gap-1.5"
+                        >
+                          <PenTool className="w-3.5 h-3.5" />
+                          Setup Signature
+                        </button>
+                      </>
+                    )}
+                  </div>
+                )}
+              </div>
+
               <div className="pt-3 border-t border-[#E2E8F0] flex justify-end gap-2">
                 <button
                   type="button"
@@ -866,6 +1009,39 @@ export default function AwardsRecognitionSection() {
                 {publishing ? 'Publishing...' : 'Confirm & Publish'}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      <CertificatePreviewModal
+        certificate={previewCertificate}
+        onClose={() => setPreviewCertificate(null)}
+      />
+
+      {isSignatureModalOpen && (
+        <div
+          className="fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto"
+          onClick={() => {
+            setIsSignatureModalOpen(false);
+            fetchAwardsAndHallOfFame();
+          }}
+        >
+          <div
+            className="bg-[#FFFFFF] rounded-3xl max-w-2xl w-full p-6 shadow-2xl border border-[#E2E8F0] max-h-[90vh] overflow-y-auto relative"
+            onClick={e => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={() => {
+                setIsSignatureModalOpen(false);
+                fetchAwardsAndHallOfFame();
+              }}
+              className="absolute top-4 right-4 p-2 rounded-xl text-[#64748B] hover:text-[#111827] hover:bg-[#F8FAFC] transition cursor-pointer"
+              aria-label="Close signature setup"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <DigitalSignatureSection />
           </div>
         </div>
       )}

@@ -8,13 +8,27 @@ import {
   publishAward,
   getHallOfFame,
   getMyAwards,
-  deleteAward
+  deleteAward,
+  getGymSignature,
+  upsertGymSignature,
+  deleteGymSignature,
+  getMyCertificates,
+  getCertificateById
 } from '../controllers/awardController';
 import { authenticate } from '../middlewares/auth';
 
 const router = express.Router();
 
 router.use(authenticate);
+
+// Gym Owner Digital Signature operations
+router.get('/signature', getGymSignature);
+router.put('/signature', upsertGymSignature);
+router.delete('/signature', deleteGymSignature);
+
+// Certificate operations (strictly authorized)
+router.get('/certificates/my', getMyCertificates);
+router.get('/certificates/:certificateId', getCertificateById);
 
 // Owner operations
 router.post('/', createAward);

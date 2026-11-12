@@ -19,10 +19,16 @@ import {
   TrendingUp,
   Percent,
   Download,
-  Sparkles
+  Sparkles,
+  Eye
 } from 'lucide-react';
 import api from '../../utils/api';
-import { generateAwardCertificatePDF } from '../../utils/certificateGenerator';
+import {
+  type CertificateData,
+  generateAwardCertificatePDF,
+  mapAwardToCertificateData
+} from '../../utils/certificateGenerator';
+import CertificatePreviewModal from '../../components/CertificatePreviewModal';
 
 interface TrainerStats {
   completedSessionsCount: number;
@@ -112,6 +118,7 @@ export default function TrainerRewards() {
   const [hallOfFame, setHallOfFame] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [requestingId, setRequestingId] = useState<string | null>(null);
+  const [previewCertificate, setPreviewCertificate] = useState<CertificateData | null>(null);
 
   // Message banner
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
@@ -834,28 +841,22 @@ export default function TrainerRewards() {
                       </div>
                     </div>
 
-                    <button
-                      onClick={() =>
-                        generateAwardCertificatePDF({
-                          recipientName: award.winnerName || 'Gym Trainer',
-                          recipientRole: 'Trainer',
-                          awardTitle: award.title,
-                          awardCategory: award.category,
-                          gymName: award.gymId?.name,
-                          awardDate: new Date(award.publishedAt || award.updatedAt).toLocaleDateString('en-US', {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric'
-                          }),
-                          certificateId: award.certificateId || 'CERT-VERIFIED',
-                          metricAchieved: award.winnerScore ? `${award.winnerScore}` : undefined
-                        })
-                      }
-                      className="w-full py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-2 bg-[#C2410C] text-white font-bold hover:opacity-90 shadow-sm transition"
-                    >
-                      <Download className="w-4 h-4" />
-                      Download Official PDF Certificate
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => setPreviewCertificate(mapAwardToCertificateData(award))}
+                        className="flex-1 py-2.5 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 bg-[#F8FAFC] hover:bg-[#FFF7ED] text-[#111827] border border-[#E2E8F0] hover:border-[#FDBA74] transition cursor-pointer"
+                      >
+                        <Eye className="w-4 h-4 text-[#EA580C]" />
+                        View Certificate
+                      </button>
+                      <button
+                        onClick={() => generateAwardCertificatePDF(mapAwardToCertificateData(award))}
+                        className="flex-1 py-2.5 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 bg-[#C2410C] text-white hover:opacity-90 shadow-sm transition cursor-pointer"
+                      >
+                        <Download className="w-4 h-4" />
+                        Download PDF
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -910,6 +911,11 @@ export default function TrainerRewards() {
           </div>
         </div>
       )}
+
+      <CertificatePreviewModal
+        certificate={previewCertificate}
+        onClose={() => setPreviewCertificate(null)}
+      />
     </div>
   );
 }

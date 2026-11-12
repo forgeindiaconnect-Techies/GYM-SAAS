@@ -20,6 +20,7 @@ export interface IAwardRecognition extends Document {
   criteriaMetric: string;
   minCriteriaValue?: number;
   winnerSelectionMethod: WinnerSelectionType;
+  signatureType?: 'DIGITAL' | 'MANUAL';
   prizeBonusAmount?: number;
   prizeDescription?: string;
   status: AwardStatusType;
@@ -68,6 +69,11 @@ const awardRecognitionSchema = new Schema<IAwardRecognition>(
       type: String,
       enum: ['AUTOMATIC_TOP_PERFORMER', 'OWNER_CONFIRMATION'],
       default: 'OWNER_CONFIRMATION'
+    },
+    signatureType: {
+      type: String,
+      enum: ['DIGITAL', 'MANUAL'],
+      default: 'DIGITAL'
     },
     prizeBonusAmount: { type: Number, default: 0, min: 0 },
     prizeDescription: { type: String, trim: true },

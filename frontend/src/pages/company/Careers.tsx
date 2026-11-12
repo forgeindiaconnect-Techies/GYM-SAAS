@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../utils/api';
 import { useAuth } from '../../contexts/AuthContext';
 import {
   Activity,
@@ -103,7 +103,7 @@ export default function Careers() {
       if (employmentFilter) params.employmentType = employmentFilter;
       if (experienceFilter) params.experience = experienceFilter;
 
-      const res = await axios.get('http://localhost:5600/api/hiring/jobs', { params });
+      const res = await api.get('/hiring/jobs', { params });
       if (res.data.success) {
         const list = res.data.data || res.data.jobs || [];
         setJobs(list);
@@ -140,9 +140,7 @@ export default function Careers() {
     try {
       const token = localStorage.getItem('aigym_token') || sessionStorage.getItem('aigym_token') || localStorage.getItem('token');
       if (!token) return;
-      const res = await axios.get('http://localhost:5600/api/hiring/trainer/applications', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await api.get('/hiring/trainer/applications');
       if (res.data.success) {
         const apps = res.data.applications || res.data.data || [];
         const ids = apps.map((app: any) => app.jobId?._id || app.jobId);
@@ -252,9 +250,8 @@ export default function Careers() {
       formData.append('coverLetter', form.coverLetter);
       formData.append('resume', resumeFile);
 
-      const res = await axios.post('http://localhost:5600/api/hiring/trainer/apply', formData, {
+      const res = await api.post('/hiring/trainer/apply', formData, {
         headers: {
-          Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data'
         }
       });

@@ -260,7 +260,7 @@ const TrainerGymEquipments: React.FC = () => {
               onClick={() => setStatusFilter(st)}
               className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-colors ${
                 statusFilter === st
-                  ? 'bg-[#F8FAFC] text-white'
+                  ? 'bg-[#C2410C] text-white'
                   : 'text-[#64748B] hover:bg-[#FFF7ED]'
               }`}
             >

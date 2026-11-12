@@ -27,11 +27,17 @@ import {
   Activity,
   CalendarCheck,
   Download,
-  Dumbbell
+  Dumbbell,
+  Eye
 } from 'lucide-react';
 import clsx from 'clsx';
 import api from '../../utils/api';
-import { generateAwardCertificatePDF } from '../../utils/certificateGenerator';
+import {
+  type CertificateData,
+  generateAwardCertificatePDF,
+  mapAwardToCertificateData
+} from '../../utils/certificateGenerator';
+import CertificatePreviewModal from '../../components/CertificatePreviewModal';
 
 interface Challenge {
   _id: string;
@@ -143,6 +149,7 @@ export default function MemberChallenges() {
   const [hallOfFame, setHallOfFame] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [syncing, setSyncing] = useState<string | null>(null);
+  const [previewCertificate, setPreviewCertificate] = useState<CertificateData | null>(null);
 
   // Selected Challenge Details Modal
   const [selectedChallenge, setSelectedChallenge] = useState<Challenge | null>(null);
@@ -1705,28 +1712,22 @@ export default function MemberChallenges() {
                       </div>
                     </div>
 
-                    <button
-                      onClick={() =>
-                        generateAwardCertificatePDF({
-                          recipientName: award.winnerName || 'Gym Member',
-                          recipientRole: 'Customer',
-                          awardTitle: award.title,
-                          awardCategory: award.category,
-                          gymName: award.gymId?.name,
-                          awardDate: new Date(award.publishedAt || award.updatedAt).toLocaleDateString('en-US', {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric'
-                          }),
-                          certificateId: award.certificateId || 'CERT-VERIFIED',
-                          metricAchieved: award.winnerScore ? `${award.winnerScore}` : undefined
-                        })
-                      }
-                      className="w-full py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-2 bg-[#C2410C] text-white font-bold hover:bg-[#9A3412] shadow-md shadow-orange-500/15 transition cursor-pointer"
-                    >
-                      <Download className="w-4 h-4" />
-                      Download Official PDF Certificate
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => setPreviewCertificate(mapAwardToCertificateData(award))}
+                        className="flex-1 py-2.5 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 bg-[#F8FAFC] hover:bg-[#FFF7ED] text-[#111827] border border-[#E2E8F0] hover:border-[#FDBA74] transition cursor-pointer"
+                      >
+                        <Eye className="w-4 h-4 text-[#EA580C]" />
+                        View Certificate
+                      </button>
+                      <button
+                        onClick={() => generateAwardCertificatePDF(mapAwardToCertificateData(award))}
+                        className="flex-1 py-2.5 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 bg-[#C2410C] text-white hover:bg-[#9A3412] shadow-md shadow-orange-500/15 transition cursor-pointer"
+                      >
+                        <Download className="w-4 h-4" />
+                        Download PDF
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -1866,6 +1867,11 @@ export default function MemberChallenges() {
           </div>
         </div>
       )}
+
+      <CertificatePreviewModal
+        certificate={previewCertificate}
+        onClose={() => setPreviewCertificate(null)}
+      />
     </div>
   );
 }

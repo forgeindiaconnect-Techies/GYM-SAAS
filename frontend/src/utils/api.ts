@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const getBaseUrl = () => {
+export const getBaseUrl = () => {
   if (import.meta.env.VITE_API_URL) {
     return import.meta.env.VITE_API_URL;
   }
@@ -12,6 +12,16 @@ const getBaseUrl = () => {
     return 'https://gym-saas-35l3.onrender.com/api';
   }
   return 'http://localhost:5600/api';
+};
+
+export const getServerOrigin = () => getBaseUrl().replace(/\/api\/?$/, '');
+
+export const getAssetUrl = (path?: string) => {
+  if (!path) return '';
+  if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) {
+    return path;
+  }
+  return `${getServerOrigin()}${path.startsWith('/') ? path : `/${path}`}`;
 };
 
 const api = axios.create({

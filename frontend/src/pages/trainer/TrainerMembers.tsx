@@ -1,12 +1,10 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Users, Search, MoreVertical, X, User, Download } from 'lucide-react';
+import { Users, Search, X, User, Download } from 'lucide-react';
 import api from '../../utils/api';
 import TrainerClientsTabs from '../../components/Trainer/TrainerClientsTabs';
 import { exportToExcel, exportToPDF } from '../../utils/export';
 
 const TrainerMembers = () => {
-  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [clients, setClients] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -92,7 +90,6 @@ const TrainerMembers = () => {
     fetchClients();
   }, []);
 
-  const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [openDetailsModal, setOpenDetailsModal] = useState<any>(null);
 
   const filteredClients = clients.filter((client) => {
@@ -227,30 +224,6 @@ const TrainerMembers = () => {
                       {client.status}
                     </span>
                   </div>
-                </div>
-                <div className="relative">
-                  <button 
-                    onClick={() => setOpenMenu(openMenu === client.id ? null : client.id)}
-                    className="text-[#64748B] hover:text-[#C2410C] transition-colors"
-                  >
-                    <MoreVertical size={18} />
-                  </button>
-                  {openMenu === client.id && (
-                    <div className="absolute right-0 mt-2 w-48 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl shadow-lg overflow-hidden z-10">
-                      <button 
-                        onClick={() => { navigate('/trainer/session-bookings'); setOpenMenu(null); }}
-                        className="w-full text-left px-4 py-3 text-sm text-[#111827] hover:bg-[#FFF7ED] transition-colors"
-                      >
-                        View Sessions
-                      </button>
-                      <button 
-                        onClick={() => { alert('Assign Workout Plan feature coming soon!'); setOpenMenu(null); }}
-                        className="w-full text-left px-4 py-3 text-sm text-[#111827] hover:bg-[#FFF7ED] transition-colors border-t border-[#E2E8F0]"
-                      >
-                        Assign Workout Plan
-                      </button>
-                    </div>
-                  )}
                 </div>
               </div>
 

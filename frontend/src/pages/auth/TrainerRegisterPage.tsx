@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import type { FormEvent } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { getAssetUrl } from '../../utils/api';
 import {
   Activity,
   AlertCircle,
@@ -712,7 +713,7 @@ export default function TrainerRegisterPage() {
                 <div className="w-20 h-20 rounded-full border-2 border-[#FDBA74] overflow-hidden bg-[#F8FAFC] flex items-center justify-center">
                   {form.profilePhoto ? (
                     <img
-                      src={`http://localhost:5600${form.profilePhoto}`}
+                      src={getAssetUrl(form.profilePhoto)}
                       alt="Profile preview"
                       className="w-full h-full object-cover"
                     />
