@@ -9,6 +9,7 @@ import CustomerPointsWallet from '../models/CustomerPointsWallet';
 import RewardDefinition from '../models/RewardDefinition';
 import CustomerMembership from '../models/CustomerMembership';
 import TrainerSession from '../models/TrainerSession';
+import Trainer from '../models/Trainer';
 import WorkoutProgress from '../models/WorkoutProgress';
 import User from '../models/User';
 import Notification from '../models/Notification';
@@ -599,8 +600,9 @@ export const getMemberChallenges = async (req: AuthRequest, res: Response): Prom
           isPackageEligible = false;
         } else {
           // Check if package matches
+          const userPkgId = activeMembership.packageId?.toString() || activeMembership._id?.toString();
           const matchPkg = ch.eligiblePackageIds.some(
-            (pkgId: any) => pkgId.toString() === activeMembership._id?.toString()
+            (pkgId: any) => pkgId.toString() === userPkgId
           );
           if (!matchPkg) {
             isPackageEligible = false;
@@ -853,22 +855,26 @@ export const getTrainerCustomerProgress = async (req: AuthRequest, res: Response
       return;
     }
 
+    const trainerDoc = await Trainer.findOne({ userId: trainerId }).select('_id');
+    const trainerIds: any[] = [trainerId];
+    if (trainerDoc?._id) trainerIds.push(trainerDoc._id);
+
     // Find customers assigned to this trainer (via TrainerSession or memberships)
-    const trainerSessions = await TrainerSession.find({ trainerId, gymId }).distinct('customerId');
+    const trainerSessions = await TrainerSession.find({ trainerId: { $in: trainerIds }, gymId }).distinct('customerId');
 
     // Also get customers who requested workout plans or have trainerId assigned
-    const assignedWorkouts = await WorkoutProgress.find({ trainerId, gymId }).distinct('customerId');
+    const assignedWorkouts = await WorkoutProgress.find({ trainerId: { $in: trainerIds }, gymId }).distinct('customerId');
 
     const customerIds = Array.from(
       new Set([...trainerSessions.map(id => id.toString()), ...assignedWorkouts.map(id => id.toString())])
     );
 
-    // Get participants matching these customerIds or all active gym challenges if no specific assignments yet
-    let query: any = { gymId };
+    // Get participants matching these customerIds
     if (customerIds.length === 0) {
       res.status(200).json({ success: true, challenges: [], participants: [] });
       return;
     }
+    let query: any = { gymId, customerId: { $in: customerIds } };
 
     const participants = await ChallengeParticipant.find(query)
       .populate('challengeId', 'title challengeType targetValue targetUnit startDate endDate status badgeName')

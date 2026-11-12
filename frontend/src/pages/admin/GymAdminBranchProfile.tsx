@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Building2, MapPin, Clock, ArrowLeft, Loader2, Edit, Save, X, Activity, CheckCircle, Plus } from 'lucide-react';
 import api from '../../utils/api';
@@ -270,7 +270,7 @@ const GymAdminBranchProfile = () => {
                 <div>
                   <label className="block text-sm text-[#64748B] font-medium mb-1">Pincode</label>
                   {editMode ? (
-                    <input type="text" value={form.location?.pinCode} onChange={e => setForm({...form, location: {...form.location, pinCode: e.target.value}})} className="w-full border rounded-lg px-3 py-2 outline-none focus:border-[#FDBA74]" />
+                    <input type="text" inputMode="numeric" maxLength={6} pattern="\d{6}" value={form.location?.pinCode || ''} onChange={e => setForm({...form, location: {...form.location, pinCode: e.target.value.replace(/\D/g, '').slice(0, 6)}})} placeholder="6-digit pincode" className="w-full border rounded-lg px-3 py-2 outline-none focus:border-[#FDBA74]" />
                   ) : (
                     <p className="font-semibold text-[#111827]">{branch.location?.pinCode}</p>
                   )}

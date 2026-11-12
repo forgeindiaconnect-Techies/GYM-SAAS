@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { MapPin, Navigation, Search, Save, CheckCircle2, AlertCircle, Loader2, Building2, Globe, ShieldCheck, ExternalLink, ArrowLeft } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
@@ -649,9 +649,13 @@ export const GymAdminLocationSettings: React.FC = () => {
                 </label>
                 <input
                   type="text"
+                  inputMode="numeric"
+                  maxLength={6}
+                  pattern="\d{6}"
+                  title="Enter a valid 6-digit pincode"
                   placeholder="635601"
                   value={pinCode}
-                  onChange={(e) => setPinCode(e.target.value)}
+                  onChange={(e) => setPinCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
                   required
                   className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-3.5 py-2.5 text-sm text-[#111827] font-medium focus:border-[#FDBA74] outline-none transition-colors"
                 />

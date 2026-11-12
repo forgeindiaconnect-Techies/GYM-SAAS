@@ -5,7 +5,8 @@ import {
   verifyMembership,
   getGymMemberships,
   resendMembershipEmail,
-  runMembershipExpiryCheck
+  runMembershipExpiryCheck,
+  getMembershipPlans
 } from '../controllers/membershipController';
 import { authenticate } from '../middlewares/auth';
 
@@ -17,6 +18,7 @@ router.post('/subscribe', authenticate, joinGym);
 router.post('/checkout', authenticate, joinGym);
 router.get('/my', authenticate, getMyMemberships);
 router.get('/gym', authenticate, getGymMemberships);
+router.get('/plans', authenticate, getMembershipPlans);
 router.put('/:id/verify', authenticate, verifyMembership);
 router.post('/:id/resend-email', authenticate, resendMembershipEmail);
 router.post('/check-expiry', authenticate, async (req, res) => {

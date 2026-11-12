@@ -138,13 +138,14 @@ export default function Careers() {
 
   const fetchMyApplications = async () => {
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('aigym_token') || sessionStorage.getItem('aigym_token') || localStorage.getItem('token');
       if (!token) return;
       const res = await axios.get('http://localhost:5600/api/hiring/trainer/applications', {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.data.success) {
-        const ids = res.data.data.map((app: any) => app.jobId?._id || app.jobId);
+        const apps = res.data.applications || res.data.data || [];
+        const ids = apps.map((app: any) => app.jobId?._id || app.jobId);
         setAppliedJobs(ids);
       }
     } catch (err) {
@@ -234,7 +235,7 @@ export default function Careers() {
 
     setSubmitting(true);
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('aigym_token') || sessionStorage.getItem('aigym_token') || localStorage.getItem('token');
       const formData = new FormData();
       formData.append('jobId', selectedJob._id);
       formData.append('fullName', form.fullName);

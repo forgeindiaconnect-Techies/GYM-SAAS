@@ -253,6 +253,7 @@ const CustomerRegisterPage = () => {
     if (step === 1) {
       if (!form.gender) e.gender = 'Gender is required';
       if (!form.city.trim()) e.city = 'City is required';
+      if (form.pinCode.trim() && !/^\d{6}$/.test(form.pinCode.trim())) e.pinCode = 'Enter a valid 6-digit PIN code';
       if (!form.height) e.height = 'Height is required';
       if (!form.weight) e.weight = 'Weight is required';
       if (!form.emergencyContactName.trim()) e.emergencyContactName = 'Emergency contact name is required';
@@ -299,7 +300,7 @@ const CustomerRegisterPage = () => {
       const targetGymId = intentData?.gymId || validatedReferral?.referrer?.gymId || selectedPkg?.gymId;
       const targetBranchId = intentData?.branchId;
 
-      const res = await api.post('/auth/register/customer', {
+      const res = await api.post('/auth/register', {
         firstName: form.firstName.trim(),
         lastName: form.lastName.trim(),
         email: form.email.trim().toLowerCase(),
@@ -555,11 +556,10 @@ const CustomerRegisterPage = () => {
                     type="button"
                     disabled={!form.referralCode?.trim() || referralCheckLoading}
                     onClick={() => handleValidateReferralCode(form.referralCode)}
-                    className={`px-4 py-2 text-xs font-bold rounded-xl transition-all whitespace-nowrap shadow-sm cursor-pointer ${
-                      validatedReferral
+                    className={`px-4 py-2 text-xs font-bold rounded-xl transition-all whitespace-nowrap shadow-sm cursor-pointer ${validatedReferral
                         ? 'bg-[#C2410C] hover:bg-[#9A3412] text-white'
                         : 'bg-[#C2410C] hover:bg-[#9A3412] disabled:bg-[#F8FAFC] disabled:text-[#64748B] disabled:cursor-not-allowed text-white'
-                    }`}
+                      }`}
                   >
                     {referralCheckLoading ? 'Validating...' : validatedReferral ? 'Applied ✓' : 'Apply Code'}
                   </button>
@@ -618,7 +618,8 @@ const CustomerRegisterPage = () => {
                 </div>
                 <div>
                   <label className="block text-sm text-[#64748B] mb-2">PIN Code</label>
-                  <input id="reg-pinCode" value={form.pinCode} onChange={e => set('pinCode', e.target.value)} placeholder="6-digit PIN code" className={inputCls('pinCode')} />
+                  <input id="reg-pinCode" type="text" inputMode="numeric" maxLength={6} pattern="\d{6}" value={form.pinCode} onChange={e => set('pinCode', e.target.value.replace(/\D/g, '').slice(0, 6))} placeholder="6-digit PIN code" className={inputCls('pinCode')} />
+                  {errors.pinCode && <p className="text-red-500 text-xs mt-1">{errors.pinCode}</p>}
                 </div>
               </div>
               <div>
@@ -740,11 +741,10 @@ const CustomerRegisterPage = () => {
                   <button
                     type="button"
                     onClick={() => setPackageFilter('ALL')}
-                    className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                      packageFilter === 'ALL'
+                    className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${packageFilter === 'ALL'
                         ? 'bg-[#C2410C] text-white shadow-sm'
                         : 'bg-[#FFFFFF] border border-[#E2E8F0] text-[#64748B] hover:border-[#FFEDD5]'
-                    }`}
+                      }`}
                   >
                     All Packages ({packages.length})
                   </button>
@@ -756,11 +756,10 @@ const CustomerRegisterPage = () => {
                         key={goal}
                         type="button"
                         onClick={() => setPackageFilter(goal)}
-                        className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-                          packageFilter === goal
+                        className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${packageFilter === goal
                             ? 'bg-[#C2410C] text-white shadow-sm'
                             : 'bg-[#FFFFFF] border border-[#E2E8F0] text-[#64748B] hover:border-[#FFEDD5]'
-                        }`}
+                          }`}
                       >
                         {isGoalMatch && <span>🎯</span>}
                         <span>{goal}</span>
@@ -800,99 +799,99 @@ const CustomerRegisterPage = () => {
                       return 0;
                     })
                     .map(pkg => {
-                    const Icon = GOAL_ICONS[pkg.fitnessGoal] || Activity;
-                    const color = GOAL_COLORS[pkg.fitnessGoal] || '#F97316';
-                    const isSelected = form.selectedPackageId === pkg._id;
+                      const Icon = GOAL_ICONS[pkg.fitnessGoal] || Activity;
+                      const color = GOAL_COLORS[pkg.fitnessGoal] || '#F97316';
+                      const isSelected = form.selectedPackageId === pkg._id;
 
-                    return (
-                      <div key={pkg._id}
-                        onClick={() => selectPackage(pkg._id)}
-                        className={`rounded-2xl p-5 border-2 cursor-pointer transition-all ${isSelected ? 'border-[#FDBA74] shadow-md' : 'border-[#E2E8F0] hover:border-[#FFEDD5]'}`}>
-                        {/* Package header */}
-                        <div className="flex items-start justify-between mb-3">
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: `${color}15` }}>
-                              <Icon size={20} style={{ color }} />
-                            </div>
-                            <div>
-                              <div className="flex items-center flex-wrap gap-2">
-                                <h3 className="font-bold text-[#111827] text-sm">{pkg.name}</h3>
-                                {pkg.isPopular && (
-                                  <span className="text-[10px] bg-[#C2410C] text-white font-bold font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
-                                    <Star size={8} className="fill-white" /> Popular
-                                  </span>
-                                )}
-                                {pkg.fitnessGoal === form.fitnessGoal && (
-                                  <span className="text-[10px] bg-[#F8FAFC] text-[#EA580C] border border-[#E2E8F0] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
-                                    🎯 Recommended for your goal
-                                  </span>
-                                )}
+                      return (
+                        <div key={pkg._id}
+                          onClick={() => selectPackage(pkg._id)}
+                          className={`rounded-2xl p-5 border-2 cursor-pointer transition-all ${isSelected ? 'border-[#FDBA74] shadow-md' : 'border-[#E2E8F0] hover:border-[#FFEDD5]'}`}>
+                          {/* Package header */}
+                          <div className="flex items-start justify-between mb-3">
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: `${color}15` }}>
+                                <Icon size={20} style={{ color }} />
                               </div>
-                              <div className="flex items-center gap-2 mt-0.5">
-                                <span className="text-xs font-semibold text-[#EA580C]">{pkg.fitnessGoal}</span>
-                                <span className="text-[#E2E8F0]">·</span>
-                                <span className="text-xs text-[#64748B]">{pkg.trainingType}</span>
-                                <span className="text-[#E2E8F0]">·</span>
-                                <span className="text-xs text-[#64748B]">{pkg.duration}</span>
-                              </div>
-                            </div>
-                          </div>
-                          <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 mt-1 transition-all ${isSelected ? 'border-[#FDBA74] bg-[#C2410C]' : 'border-[#E2E8F0]'}`}>
-                            {isSelected && <Check size={12} className="text-white" strokeWidth={3} />}
-                          </div>
-                        </div>
-
-                        {pkg.description && (
-                          <p className="text-xs text-[#64748B] mb-3 leading-relaxed">{pkg.description}</p>
-                        )}
-
-                        {/* Features */}
-                        {pkg.features.length > 0 && (
-                          <div className="mb-4">
-                            <p className="text-xs font-bold text-[#111827] mb-2 uppercase tracking-wider">Features:</p>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-1">
-                              {pkg.features.slice(0, 6).map((f, i) => (
-                                <div key={i} className="flex items-center gap-1.5 text-xs text-[#64748B]">
-                                  <Check size={10} style={{ color }} strokeWidth={3} className="shrink-0" />
-                                  {f}
+                              <div>
+                                <div className="flex items-center flex-wrap gap-2">
+                                  <h3 className="font-bold text-[#111827] text-sm">{pkg.name}</h3>
+                                  {pkg.isPopular && (
+                                    <span className="text-[10px] bg-[#C2410C] text-white font-bold font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+                                      <Star size={8} className="fill-white" /> Popular
+                                    </span>
+                                  )}
+                                  {pkg.fitnessGoal === form.fitnessGoal && (
+                                    <span className="text-[10px] bg-[#F8FAFC] text-[#EA580C] border border-[#E2E8F0] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+                                      🎯 Recommended for your goal
+                                    </span>
+                                  )}
                                 </div>
-                              ))}
+                                <div className="flex items-center gap-2 mt-0.5">
+                                  <span className="text-xs font-semibold text-[#EA580C]">{pkg.fitnessGoal}</span>
+                                  <span className="text-[#E2E8F0]">·</span>
+                                  <span className="text-xs text-[#64748B]">{pkg.trainingType}</span>
+                                  <span className="text-[#E2E8F0]">·</span>
+                                  <span className="text-xs text-[#64748B]">{pkg.duration}</span>
+                                </div>
+                              </div>
+                            </div>
+                            <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 mt-1 transition-all ${isSelected ? 'border-[#FDBA74] bg-[#C2410C]' : 'border-[#E2E8F0]'}`}>
+                              {isSelected && <Check size={12} className="text-white" strokeWidth={3} />}
                             </div>
                           </div>
-                        )}
 
-                        {/* Billing plan selection */}
-                        {isSelected && (
-                          <div className="border-t border-[#E2E8F0] pt-3 mt-1 space-y-2">
-                            <p className="text-xs font-bold text-[#111827] mb-2">Choose your billing plan:</p>
-                            <div className="grid grid-cols-2 gap-3">
-                              {(pkg.availablePlans === 'monthly' || pkg.availablePlans === 'both') && (
-                                <button type="button"
-                                  onClick={e => { e.stopPropagation(); setForm((f: any) => ({ ...f, selectedBillingPlan: 'monthly' })); setErrors((e: any) => { const n = { ...e }; delete n['selectedBillingPlan']; return n; }); }}
-                                  className={`p-3 rounded-xl border-2 text-center transition-all ${form.selectedBillingPlan === 'monthly' ? 'border-[#FDBA74] bg-[#F8FAFC]' : 'border-[#E2E8F0] hover:border-[#FFEDD5]'}`}>
-                                  <span className="block text-xs font-semibold text-[#64748B]">Monthly</span>
-                                  <span className="block text-lg font-black text-[#EA580C]">₹{pkg.monthlyPrice.toLocaleString('en-IN')}</span>
-                                  <span className="block text-[10px] text-[#64748B]">per month</span>
-                                </button>
-                              )}
-                              {(pkg.availablePlans === 'annual' || pkg.availablePlans === 'both') && (
-                                <button type="button"
-                                  onClick={e => { e.stopPropagation(); setForm((f: any) => ({ ...f, selectedBillingPlan: 'annual' })); setErrors((e: any) => { const n = { ...e }; delete n['selectedBillingPlan']; return n; }); }}
-                                  className={`p-3 rounded-xl border-2 text-center transition-all ${form.selectedBillingPlan === 'annual' ? 'border-[#15803D] bg-[#F8FAFC]' : 'border-[#E2E8F0] hover:border-[#E2E8F0]'}`}>
-                                  <span className="block text-xs font-semibold text-[#64748B]">Annual</span>
-                                  <span className="block text-lg font-black text-[#15803D]">₹{pkg.annualPrice.toLocaleString('en-IN')}</span>
-                                  <span className="block text-[10px] text-[#EA580C] font-semibold">per year · Save more</span>
-                                </button>
+                          {pkg.description && (
+                            <p className="text-xs text-[#64748B] mb-3 leading-relaxed">{pkg.description}</p>
+                          )}
+
+                          {/* Features */}
+                          {pkg.features.length > 0 && (
+                            <div className="mb-4">
+                              <p className="text-xs font-bold text-[#111827] mb-2 uppercase tracking-wider">Features:</p>
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-1">
+                                {pkg.features.slice(0, 6).map((f, i) => (
+                                  <div key={i} className="flex items-center gap-1.5 text-xs text-[#64748B]">
+                                    <Check size={10} style={{ color }} strokeWidth={3} className="shrink-0" />
+                                    {f}
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Billing plan selection */}
+                          {isSelected && (
+                            <div className="border-t border-[#E2E8F0] pt-3 mt-1 space-y-2">
+                              <p className="text-xs font-bold text-[#111827] mb-2">Choose your billing plan:</p>
+                              <div className="grid grid-cols-2 gap-3">
+                                {(pkg.availablePlans === 'monthly' || pkg.availablePlans === 'both') && (
+                                  <button type="button"
+                                    onClick={e => { e.stopPropagation(); setForm((f: any) => ({ ...f, selectedBillingPlan: 'monthly' })); setErrors((e: any) => { const n = { ...e }; delete n['selectedBillingPlan']; return n; }); }}
+                                    className={`p-3 rounded-xl border-2 text-center transition-all ${form.selectedBillingPlan === 'monthly' ? 'border-[#FDBA74] bg-[#F8FAFC]' : 'border-[#E2E8F0] hover:border-[#FFEDD5]'}`}>
+                                    <span className="block text-xs font-semibold text-[#64748B]">Monthly</span>
+                                    <span className="block text-lg font-black text-[#EA580C]">₹{pkg.monthlyPrice.toLocaleString('en-IN')}</span>
+                                    <span className="block text-[10px] text-[#64748B]">per month</span>
+                                  </button>
+                                )}
+                                {(pkg.availablePlans === 'annual' || pkg.availablePlans === 'both') && (
+                                  <button type="button"
+                                    onClick={e => { e.stopPropagation(); setForm((f: any) => ({ ...f, selectedBillingPlan: 'annual' })); setErrors((e: any) => { const n = { ...e }; delete n['selectedBillingPlan']; return n; }); }}
+                                    className={`p-3 rounded-xl border-2 text-center transition-all ${form.selectedBillingPlan === 'annual' ? 'border-[#15803D] bg-[#F8FAFC]' : 'border-[#E2E8F0] hover:border-[#E2E8F0]'}`}>
+                                    <span className="block text-xs font-semibold text-[#64748B]">Annual</span>
+                                    <span className="block text-lg font-black text-[#15803D]">₹{pkg.annualPrice.toLocaleString('en-IN')}</span>
+                                    <span className="block text-[10px] text-[#EA580C] font-semibold">per year · Save more</span>
+                                  </button>
+                                )}
+                              </div>
+                              {errors.selectedBillingPlan && (
+                                <p className="text-[#EA580C] text-xs mt-1">{errors.selectedBillingPlan}</p>
                               )}
                             </div>
-                            {errors.selectedBillingPlan && (
-                              <p className="text-[#EA580C] text-xs mt-1">{errors.selectedBillingPlan}</p>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
+                          )}
+                        </div>
+                      );
+                    })}
                 </div>
               )}
 

@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Building2, MapPin, Clock, ArrowLeft, Loader2, Dumbbell, Activity, CheckCircle, Wifi, Users, Droplets, Plus, Edit, X } from 'lucide-react';
 import api from '../../utils/api';
@@ -236,7 +236,7 @@ const GymAdminAddBranch = () => {
             </div>
             <div>
               <label className="block text-sm font-bold text-[#64748B] mb-2">Pincode *</label>
-              <input required type="text" value={form.pinCode} onChange={e => setForm({...form, pinCode: e.target.value})} placeholder="Pincode" className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-3 text-[#111827] outline-none focus:border-[#FDBA74]" />
+              <input required type="text" inputMode="numeric" maxLength={6} pattern="\d{6}" title="Enter a valid 6-digit pincode" value={form.pinCode} onChange={e => setForm({...form, pinCode: e.target.value.replace(/\D/g, '').slice(0, 6)})} placeholder="6-digit pincode" className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-3 text-[#111827] outline-none focus:border-[#FDBA74]" />
             </div>
           </div>
         </div>

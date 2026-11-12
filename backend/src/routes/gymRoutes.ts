@@ -16,12 +16,13 @@ import {
   addGymReview,
   getGymOwnerReviews
 } from '../controllers/gymController';
-import { authenticate } from '../middlewares/auth';
+import { authenticate, authorize } from '../middlewares/auth';
 
 const router = express.Router();
+const staffAuth = authorize(['GYM_OWNER', 'GYM_MANAGER', 'ADMIN', 'SUPER_ADMIN']);
 
-router.post('/', createGym);
-router.get('/', getGyms);
+router.post('/', authenticate, authorize(['SUPER_ADMIN', 'ADMIN', 'GYM_OWNER']), createGym);
+router.get('/', authenticate, authorize(['SUPER_ADMIN', 'ADMIN']), getGyms);
 router.get('/public', getPublicGyms);
 router.get('/community-testimonials', getCommunityTestimonials);
 router.get('/public/:id', getPublicGymById);
@@ -31,12 +32,12 @@ router.get('/my-gym', authenticate, getMyGym);
 router.post('/select', authenticate, selectCustomerGym);
 router.put('/select', authenticate, selectCustomerGym);
 router.get('/owner/reviews', authenticate, getGymOwnerReviews);
-router.put('/my-gym/location', authenticate, updateGymLocation);
-router.get('/:id', getGymById);
-router.patch('/:id/status', updateGymStatus);
-router.patch('/:id/payment-settings', authenticate, updatePaymentSettings);
-router.put('/:id', updateGym);
-router.delete('/:id', deleteGym);
+router.put('/my-gym/location', authenticate, staffAuth, updateGymLocation);
+router.get('/:id', authenticate, getGymById);
+router.patch('/:id/status', authenticate, authorize(['SUPER_ADMIN', 'ADMIN']), updateGymStatus);
+router.patch('/:id/payment-settings', authenticate, staffAuth, updatePaymentSettings);
+router.put('/:id', authenticate, staffAuth, updateGym);
+router.delete('/:id', authenticate, authorize(['SUPER_ADMIN', 'ADMIN']), deleteGym);
 
 export default router;
 

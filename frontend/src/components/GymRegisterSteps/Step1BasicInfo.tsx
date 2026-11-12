@@ -272,7 +272,7 @@ const Step1BasicInfo: React.FC<Step1Props> = ({ form, set, errors, inputCls, sel
           </div>
           <div>
             <label className="block text-sm font-semibold text-[#334155] mb-2">PIN Code</label>
-            <input maxLength={6} inputMode="numeric" value={form.pinCode} onChange={e => set('pinCode', e.target.value.replace(/\D/g, ''))} placeholder="PIN" className={inputCls('pinCode')} />
+            <input maxLength={6} inputMode="numeric" pattern="\d{6}" value={form.pinCode} onChange={e => set('pinCode', e.target.value.replace(/\D/g, '').slice(0, 6))} placeholder="6-digit PIN code" className={inputCls('pinCode')} />
           </div>
         </div>
       </div>

@@ -54,16 +54,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       try {
         setToken(storedToken);
         const parsed = JSON.parse(storedUser);
-        if (parsed.firstName?.toLowerCase() === 'ananth' || parsed.email === 'ananth@gmail.com') {
-          parsed.firstName = 'Ananth';
-          parsed.lastName = '';
-          parsed.subscriptionPlan = 'GOLD';
-          parsed.subscriptionStatus = 'Active';
-          parsed.subscriptionStartDate = parsed.subscriptionStartDate && !parsed.subscriptionStartDate.includes('2026-09-17') ? parsed.subscriptionStartDate : '2026-09-29T15:00:00.000Z';
-          parsed.subscriptionExpiryDate = parsed.subscriptionExpiryDate && !parsed.subscriptionExpiryDate.includes('2026-10-17') ? parsed.subscriptionExpiryDate : '2026-10-29T15:00:00.000Z';
-          parsed.subscriptionExpiry = parsed.subscriptionExpiry && !parsed.subscriptionExpiry.includes('2026-10-17') ? parsed.subscriptionExpiry : '2026-10-29T15:00:00.000Z';
-          localStorage.setItem('aigym_user', JSON.stringify(parsed));
-        }
         setUser(parsed);
 
         // Sync with backend
@@ -76,15 +66,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 if (refreshed.phone && !refreshed.mobile) refreshed.mobile = refreshed.phone;
                 if (!refreshed.id && refreshed._id) refreshed.id = refreshed._id;
 
-                if (refreshed.firstName?.toLowerCase() === 'ananth' || refreshed.email === 'ananth@gmail.com') {
-                  refreshed.firstName = 'Ananth';
-                  refreshed.lastName = '';
-                  refreshed.subscriptionPlan = 'GOLD';
-                  refreshed.subscriptionStatus = 'Active';
-                  refreshed.subscriptionStartDate = refreshed.subscriptionStartDate && !refreshed.subscriptionStartDate.includes('2026-09-17') ? refreshed.subscriptionStartDate : '2026-09-29T15:00:00.000Z';
-                  refreshed.subscriptionExpiryDate = refreshed.subscriptionExpiryDate && !refreshed.subscriptionExpiryDate.includes('2026-10-17') ? refreshed.subscriptionExpiryDate : '2026-10-29T15:00:00.000Z';
-                  refreshed.subscriptionExpiry = refreshed.subscriptionExpiry && !refreshed.subscriptionExpiry.includes('2026-10-17') ? refreshed.subscriptionExpiry : '2026-10-29T15:00:00.000Z';
-                }
                 setUser(refreshed);
                 localStorage.setItem('aigym_user', JSON.stringify(refreshed));
               }

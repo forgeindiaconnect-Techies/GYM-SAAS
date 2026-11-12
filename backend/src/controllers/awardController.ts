@@ -127,9 +127,10 @@ export const getEligibleCandidates = async (req: AuthRequest, res: Response): Pr
     }
 
     if (award.recipientType === 'Customer') {
-      // Find all active or registered gym customers
+      // Find all active or registered gym customers strictly within this gym
       const customers = await (User as any).find({
-        $or: [{ gymId }, { role: 'MEMBER' }]
+        gymId,
+        role: 'MEMBER'
       }).select('firstName lastName email profilePicture createdAt').lean();
 
       const candidateResults: any[] = [];
@@ -200,9 +201,10 @@ export const getEligibleCandidates = async (req: AuthRequest, res: Response): Pr
       return;
     }
 
-    // Trainer Candidates
+    // Trainer Candidates strictly within this gym
     const trainers = await (User as any).find({
-      $or: [{ gymId, role: 'TRAINER' }, { role: 'TRAINER' }]
+      gymId,
+      role: 'TRAINER'
     }).select('firstName lastName email profilePicture').lean();
 
     const trainerResults: any[] = [];

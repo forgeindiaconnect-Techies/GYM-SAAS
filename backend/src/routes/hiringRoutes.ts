@@ -91,6 +91,8 @@ router.get('/owner/interviews', authenticate, getOwnerInterviews);
 router.get('/admin/interviews', authenticate, getOwnerInterviews);
 router.patch('/owner/interviews/:id', authenticate, updateInterview);
 router.patch('/admin/interviews/:id', authenticate, updateInterview);
+router.patch('/owner/interviews/:id/status', authenticate, updateInterview);
+router.patch('/admin/interviews/:id/status', authenticate, updateInterview);
 
 router.post('/owner/applications/:id/offer', authenticate, issueJobOffer);
 router.post('/admin/offers', authenticate, issueJobOffer);
@@ -110,6 +112,12 @@ router.post('/owner/hiring-requests/:id/negotiate', authenticate, ownerNegotiate
 // Trainer routes
 // ==========================================
 router.post('/trainer/apply/:jobId', authenticate, resumeUpload.single('resume'), applyToJob);
+router.post('/trainer/apply', authenticate, resumeUpload.single('resume'), (req: any, res, next) => {
+  if (!req.params.jobId && req.body?.jobId) {
+    req.params.jobId = req.body.jobId;
+  }
+  return applyToJob(req, res);
+});
 router.get('/trainer/my-applications', authenticate, getTrainerApplications);
 router.get('/trainer/applications', authenticate, getTrainerApplications);
 router.get('/trainer/my-applications/:id', authenticate, getTrainerApplicationById);
@@ -117,8 +125,12 @@ router.get('/trainer/applications/:id', authenticate, getTrainerApplicationById)
 router.patch('/trainer/my-applications/:id/withdraw', authenticate, withdrawApplication);
 router.patch('/trainer/applications/:id/withdraw', authenticate, withdrawApplication);
 router.get('/trainer/my-interviews', authenticate, getTrainerInterviews);
+router.get('/trainer/interviews', authenticate, getTrainerInterviews);
 router.get('/trainer/my-offers', authenticate, getTrainerOffers);
+router.get('/trainer/offers', authenticate, getTrainerOffers);
 router.post('/trainer/my-offers/:id/respond', authenticate, respondToJobOffer);
+router.post('/trainer/offers/:id/respond', authenticate, respondToJobOffer);
+router.patch('/trainer/offers/:id/respond', authenticate, respondToJobOffer);
 
 // Direct Hiring: Trainer
 router.get('/trainer/hiring-requests', authenticate, getTrainerHiringRequests);

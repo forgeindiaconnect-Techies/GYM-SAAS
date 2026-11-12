@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, Loader2, Building2, MapPin } from 'lucide-react';
 import api from '../utils/api';
 
@@ -247,7 +247,7 @@ export const CustomerEnquiryModal = ({ isOpen, onClose, gymId, gymName }: Custom
             <button
               type="submit"
               disabled={loading || fetchingBranches}
-              className="flex-1 py-2.5 px-4 bg-[#C2410C] text-white font-bold font-bold rounded-xl hover:bg-[#FFF7ED] transition-colors flex items-center justify-center disabled:opacity-70 text-sm shadow-sm"
+              className="flex-1 py-2.5 px-4 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold rounded-xl transition-colors flex items-center justify-center disabled:opacity-70 text-sm shadow-sm"
             >
               {loading ? <><Loader2 className="animate-spin mr-2" size={18} /> Submitting...</> : 'Submit Enquiry'}
             </button>

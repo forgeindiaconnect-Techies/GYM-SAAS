@@ -1,4 +1,5 @@
 import { Response } from 'express';
+import mongoose from 'mongoose';
 import { AuthRequest } from '../middlewares/auth';
 import Payment from '../models/Payment';
 import TrainerSession from '../models/TrainerSession';
@@ -321,7 +322,14 @@ export const getRevenueAnalytics = async (req: AuthRequest, res: Response): Prom
     } : {};
 
     const gymFilter = targetGymId ? { gymId: targetGymId } : {};
-    const branchFilter = branchIdQuery && branchIdQuery !== 'all' ? { branchId: branchIdQuery } : {};
+    let branchFilter: any = {};
+    if (branchIdQuery && branchIdQuery !== 'all') {
+      if (branchIdQuery === 'main') {
+        branchFilter = { $or: [{ branchId: { $exists: false } }, { branchId: null }] };
+      } else if (mongoose.Types.ObjectId.isValid(branchIdQuery)) {
+        branchFilter = { branchId: branchIdQuery };
+      }
+    }
 
     // 1. Members Revenue (from Payment)
     let approvedPayments: any[] = [];

@@ -36,6 +36,14 @@ router.get('/pending', gymOwnerAuth, getPendingPayments);
 router.get('/withdrawals', gymOwnerAuth, getWithdrawalRequests);
 router.post('/withdrawals/payout', gymOwnerAuth, createManualTrainerWithdrawal);
 router.put('/withdrawals/:id/status', gymOwnerAuth, updateWithdrawalStatus);
+router.put('/withdrawals/:id/approve', gymOwnerAuth, (req, res) => {
+  req.body = { ...(req.body || {}), status: req.body?.status || 'Completed' };
+  return updateWithdrawalStatus(req, res);
+});
+router.put('/withdrawals/:id/reject', gymOwnerAuth, (req, res) => {
+  req.body = { ...(req.body || {}), status: req.body?.status || 'Rejected' };
+  return updateWithdrawalStatus(req, res);
+});
 router.post('/process', gymOwnerAuth, processPayment);
 router.get('/history', gymOwnerAuth, getPaymentHistoryGymOwner);
 router.get('/gym-earnings', gymOwnerAuth, getTrainerEarningsGymOwner);

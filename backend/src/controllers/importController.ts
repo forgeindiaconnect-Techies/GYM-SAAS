@@ -334,7 +334,7 @@ export const validateImport = async (req: AuthRequest, res: Response): Promise<v
       userId: { $in: existingUsers.map(u => u._id) },
       gymId,
       status: { $in: [CustomerMembershipStatus.ACTIVE, CustomerMembershipStatus.PAYMENT_VERIFICATION_PENDING] },
-    }).populate('planId');
+    }).populate('packageId');
     const membershipMap = new Map<string, any>();
     existingMemberships.forEach(m => membershipMap.set(m.userId.toString(), m));
 
@@ -560,7 +560,7 @@ export const executeImport = async (req: AuthRequest, res: Response): Promise<vo
           if (data.weight) updateData.weight = data.weight;
           if (data.mobile) updateData.mobile = data.mobile;
           if (branchId) updateData.branchId = branchId;
-          if (trainerId) updateData.trainerId = trainerId;
+          if (trainerId) updateData.assignedTrainer = trainerId;
 
           await User.findByIdAndUpdate(existingUserId, { $set: updateData });
 

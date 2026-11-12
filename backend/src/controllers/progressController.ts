@@ -194,7 +194,7 @@ export const triggerAIReanalysis = async (req: AuthRequest, res: Response): Prom
     await notify({
       recipientId: targetCustomerId,
       recipientRole: 'MEMBER',
-      gymId: (gymId || latestRec.gymId).toString(),
+      gymId: (gymId || latestRec?.gymId)?.toString() || '',
       title: 'Progress AI Re-Analysis Completed',
       message: `Your updated progress re-analysis (Version ${newVersion}) has been generated and sent to your trainer for review.`,
       type: 'success',

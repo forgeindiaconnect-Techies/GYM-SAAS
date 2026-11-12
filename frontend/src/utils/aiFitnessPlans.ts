@@ -456,6 +456,18 @@ export const getUnifiedWeeklyWorkouts = (aiRec?: any): Record<string, DayWorkout
   // If AI generated custom exercises, we can overlay or return
   const result: Record<string, DayWorkout> = JSON.parse(JSON.stringify(DEFAULT_WEEKLY_WORKOUTS));
 
+  const mapExerciseList = (list: any[]) =>
+    list.map((e: any) => ({
+      name: e.name || e.exerciseName || 'Exercise',
+      sets: Number(e.sets) || 3,
+      reps: String(e.reps || e.repetitions || '10-12'),
+      rest: String(e.rest || e.restTime || '60s'),
+      duration: e.duration ? String(e.duration) : '10 mins',
+      difficulty: e.difficulty || 'Intermediate',
+      targetMuscleGroup: e.targetMuscleGroup || e.targetMuscle || 'General',
+      instructions: e.instructions || e.trainerNotes || 'Perform exercise with strict form and full range of motion.'
+    }));
+
   if (aiRec.workoutRecommendation?.weeklySchedule && Array.isArray(aiRec.workoutRecommendation.weeklySchedule)) {
     aiRec.workoutRecommendation.weeklySchedule.forEach((item: any) => {
       const day = item.day || item.dayName;
@@ -466,22 +478,32 @@ export const getUnifiedWeeklyWorkouts = (aiRec?: any): Record<string, DayWorkout
     });
   }
 
-  // If specific exercises exist in aiRec.workoutPlan or originalAiDraft
+  const dailyWorkouts =
+    aiRec.finalApprovedPlan?.workoutPlan?.dailyWorkouts ||
+    aiRec.workoutRecommendation?.dailyWorkouts ||
+    aiRec.originalAiDraft?.workoutRecommendation?.dailyWorkouts;
+
+  if (dailyWorkouts && typeof dailyWorkouts === 'object') {
+    Object.keys(dailyWorkouts).forEach((day) => {
+      const d = dailyWorkouts[day];
+      if (d && result[day]) {
+        if (d.focus) result[day].focus = d.focus;
+        if (d.duration) result[day].duration = d.duration;
+        if (d.targetMuscle) result[day].targetMuscle = d.targetMuscle;
+        if (Array.isArray(d.exercises) && d.exercises.length > 0) {
+          result[day].exercises = mapExerciseList(d.exercises);
+        }
+      }
+    });
+    return result;
+  }
+
+  // Fallback for legacy recs without dailyWorkouts: overlay Monday exercises
   const exercises = aiRec.finalApprovedPlan?.workoutPlan || aiRec.workoutPlan || aiRec.originalAiDraft?.workoutPlan;
   if (Array.isArray(exercises) && exercises.length > 0) {
-    // Put primary exercises in Monday / Tuesday / etc. if available
     const mondayExercises = exercises.slice(0, 4);
     if (mondayExercises.length > 0) {
-      result.Monday.exercises = mondayExercises.map((e: any) => ({
-        name: e.name || e.exerciseName || 'Exercise',
-        sets: Number(e.sets) || 3,
-        reps: String(e.reps || e.repetitions || '10-12'),
-        rest: String(e.rest || e.restTime || '60s'),
-        duration: e.duration ? String(e.duration) : '10 mins',
-        difficulty: e.difficulty || 'Intermediate',
-        targetMuscleGroup: e.targetMuscleGroup || e.targetMuscle || 'General',
-        instructions: e.instructions || e.trainerNotes || 'Perform exercise with strict form and full range of motion.'
-      }));
+      result.Monday.exercises = mapExerciseList(mondayExercises);
     }
   }
 

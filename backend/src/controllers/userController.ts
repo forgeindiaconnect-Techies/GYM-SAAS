@@ -39,7 +39,7 @@ export const getUsersByRole = async (req: AuthRequest, res: Response): Promise<v
 
     const rawUsers = await User.find(filter)
       .populate('gymId')
-      .populate('branchId', 'name')
+      .populate('branchId', 'branchName name')
       .populate('assignedTrainer', 'name trainerId specialization email')
       .select('-passwordHash')
       .sort({ createdAt: -1 })
@@ -186,6 +186,21 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
     if (!user) {
       res.status(404).json({ success: false, message: 'User not found' });
       return;
+    }
+
+    const callerRole = String(authReq.user?.role || '').toUpperCase();
+    if (callerRole === Role.MEMBER || callerRole === Role.TRAINER) {
+      if (String(authReq.user?.id) !== String(id)) {
+        res.status(403).json({ success: false, message: 'Unauthorized: you can only update your own profile' });
+        return;
+      }
+      // Prevent self-escalation of privileged account/subscription fields
+      delete updateData.role;
+      delete updateData.approvalStatus;
+      delete updateData.isActive;
+      delete updateData.subscriptionStatus;
+      delete updateData.paymentStatus;
+      delete updateData.gymId;
     }
 
     // Strict gym ownership check for Gym Owners / Managers

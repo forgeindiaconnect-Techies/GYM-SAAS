@@ -1124,7 +1124,7 @@ export const getMyAssignedClients = async (req: AuthRequest, res: Response): Pro
       };
     });
 
-    res.status(200).json({ success: true, clients });
+    res.status(200).json({ success: true, clients, members: clients });
   } catch (error: any) {
     console.error('Error in getMyAssignedClients:', error);
     res.status(500).json({ success: false, message: 'Server error', error: error.message });

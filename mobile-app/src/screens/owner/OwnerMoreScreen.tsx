@@ -23,7 +23,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../constants/theme';
 import { useAuth } from '../../context/AuthContext';
 import { api, resolveMediaUrl } from '../../api/client';
-import { sanitizeTenDigitPhone } from '../../utils/phoneUtils';
+import { sanitizeTenDigitPhone, sanitizeSixDigitPinCode, isValidSixDigitPinCode } from '../../utils/phoneUtils';
 import * as ImagePicker from 'expo-image-picker';
 import { FileDownloader } from '../../utils/fileDownloader';
 import { OwnerTrainersScreen } from './OwnerTrainersScreen';
@@ -6177,6 +6177,10 @@ export const OwnerMoreScreen: React.FC<{
     }
     if (!branchForm.city.trim()) {
       Alert.alert('Required Field', 'Please enter the city.');
+      return;
+    }
+    if (!branchForm.pinCode.trim() || !isValidSixDigitPinCode(branchForm.pinCode.trim())) {
+      Alert.alert('Invalid PIN Code', 'Please enter a valid 6-digit PIN code.');
       return;
     }
 
@@ -17810,10 +17814,11 @@ export const OwnerMoreScreen: React.FC<{
                   <TextInput
                     style={styles.prodFormInput}
                     value={branchForm.pinCode}
-                    onChangeText={(text) => setBranchForm(prev => ({ ...prev, pinCode: text }))}
+                    onChangeText={(text) => setBranchForm(prev => ({ ...prev, pinCode: sanitizeSixDigitPinCode(text) }))}
                     placeholder="e.g. 560038"
                     placeholderTextColor="#94A3B8"
-                    keyboardType="numeric"
+                    keyboardType="number-pad"
+                    maxLength={6}
                   />
                 </View>
               </View>

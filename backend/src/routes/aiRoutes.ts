@@ -29,6 +29,26 @@ router.get('/trainer/customers', authenticate, authorize(['TRAINER']), getAssign
 router.get('/trainer/customer/:customerId', authenticate, authorize(['TRAINER']), getCustomerRecommendation);
 router.get('/trainer/recommendations', authenticate, authorize(['TRAINER']), getTrainerRecommendations);
 router.put('/trainer/recommendation/:id/review', authenticate, authorize(['TRAINER']), reviewRecommendation);
+router.post('/trainer/approve', authenticate, authorize(['TRAINER']), (req: any, res: any) => {
+  if (!req.params.id && req.body?.recommendationId) {
+    req.params.id = req.body.recommendationId;
+  }
+  req.body = { ...(req.body || {}), action: 'APPROVE_AS_IS' };
+  return reviewRecommendation(req, res);
+});
+router.post('/trainer/suggest-changes', authenticate, authorize(['TRAINER']), (req: any, res: any) => {
+  if (!req.params.id && req.body?.recommendationId) {
+    req.params.id = req.body.recommendationId;
+  }
+  const suggestions = req.body?.trainerSuggestions || req.body?.trainerNotes || '';
+  req.body = {
+    ...(req.body || {}),
+    action: 'EDIT_AND_APPROVE',
+    trainerNotes: suggestions,
+    trainerRecommendations: req.body?.trainerRecommendations || suggestions
+  };
+  return reviewRecommendation(req, res);
+});
 router.post('/trainer/reply', authenticate, authorize(['TRAINER']), trainerReplyToMember);
 // Admin Routes
 router.get('/admin/recommendations', authenticate, authorize(['GYM_OWNER', 'GYM_ADMIN', 'ADMIN']), getAdminRecommendations);

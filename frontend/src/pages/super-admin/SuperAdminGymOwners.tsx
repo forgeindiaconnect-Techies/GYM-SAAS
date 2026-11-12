@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Search, Loader2, AlertCircle, Phone, Mail, Building2, Eye, Edit2, X, Check, Users, Clock, CheckCircle, XCircle, ShieldAlert, Trash2, Download, FileText, Table as TableIcon, Star, Plus, MapPin, CreditCard, Dumbbell, Zap, Crown, Leaf, TrendingUp, Cpu, Activity, Target } from 'lucide-react';
 import api from '../../utils/api';
 import { exportToPDF, exportToExcel, exportToWord } from '../../utils/export';
@@ -1954,8 +1954,13 @@ const SuperAdminGymOwners = () => {
                   <div>
                     <label className="block text-xs font-semibold text-[#64748B] mb-1.5">PIN Code</label>
                     <input 
+                      type="text"
+                      inputMode="numeric"
+                      maxLength={6}
+                      pattern="\d{6}"
+                      placeholder="6-digit PIN code"
                       value={editForm.gymData?.location?.pinCode || ''} 
-                      onChange={e => setEditForm({...editForm, gymData: {...editForm.gymData, location: {...editForm.gymData?.location, pinCode: e.target.value}}})} 
+                      onChange={e => setEditForm({...editForm, gymData: {...editForm.gymData, location: {...editForm.gymData?.location, pinCode: e.target.value.replace(/\D/g, '').slice(0, 6)}}})} 
                       className="w-full bg-[#FFFFFF] border border-[#E2E8F0] text-[#111827] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#FDBA74] transition-colors"
                     />
                   </div>

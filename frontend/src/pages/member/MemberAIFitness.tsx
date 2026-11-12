@@ -13,442 +13,7 @@ import {
   getUnifiedWeeklyWorkouts,
   getUnifiedWeeklyDiet
 } from '../../utils/aiFitnessPlans';
-
-interface ExerciseItem {
-  name: string;
-  sets: number | string;
-  reps: string;
-  duration?: string;
-  rest?: string;
-  difficulty?: string;
-  targetMuscleGroup?: string;
-  instructions?: string;
-  videoUrl?: string;
-}
-
-interface DayWorkout {
-  day: string;
-  focus: string;
-  duration: string;
-  targetMuscle: string;
-  exercises: ExerciseItem[];
-}
-
-const DEFAULT_WEEKLY_WORKOUTS: Record<string, DayWorkout> = {
-  Monday: {
-    day: 'Monday',
-    focus: 'Lower Body & Core Fundamentals',
-    duration: '50 mins',
-    targetMuscle: 'Quadriceps, Glutes, Hamstrings & Core',
-    exercises: [
-      {
-        name: 'Barbell Squats',
-        sets: 4,
-        reps: '8 - 12',
-        rest: '90s',
-        duration: '12 mins',
-        difficulty: 'Beginner / Intermediate',
-        targetMuscleGroup: 'Quadriceps, Glutes, Hamstrings',
-        instructions: 'Feet shoulder-width apart. Keep chest upright, brace core, and descend until thighs are parallel to the ground.'
-      },
-      {
-        name: 'Flat Dumbbell Bench Press',
-        sets: 3,
-        reps: '10 - 12',
-        rest: '60s',
-        duration: '10 mins',
-        difficulty: 'Beginner',
-        targetMuscleGroup: 'Chest, Front Deltoids, Triceps',
-        instructions: 'Lie flat on the bench with feet planted. Lower dumbbells with control to chest level, press up without clanking dumbbells.'
-      },
-      {
-        name: 'Push-ups / Close-Grip Pushups',
-        sets: 3,
-        reps: '12 - 15',
-        rest: '60s',
-        duration: '8 mins',
-        difficulty: 'Beginner',
-        targetMuscleGroup: 'Chest, Triceps, Shoulders',
-        instructions: 'Maintain a straight plank line from head to heels. Elbows tucked at 45 degrees, lower smoothly and press up.'
-      },
-      {
-        name: 'Plank with Shoulder Taps',
-        sets: 3,
-        reps: '45 - 60 sec hold',
-        rest: '45s',
-        duration: '6 mins',
-        difficulty: 'Beginner',
-        targetMuscleGroup: 'Transverse Abdominis, Obliques',
-        instructions: 'Hold high plank with feet slightly wide for stability. Tap opposite shoulder without rocking your hips.'
-      }
-    ]
-  },
-  Tuesday: {
-    day: 'Tuesday',
-    focus: 'Upper Body Push & Pull Strength',
-    duration: '45 mins',
-    targetMuscle: 'Upper Back, Lats, Biceps & Shoulders',
-    exercises: [
-      {
-        name: 'Lat Pulldowns',
-        sets: 4,
-        reps: '10 - 12',
-        rest: '60s',
-        duration: '10 mins',
-        difficulty: 'Beginner',
-        targetMuscleGroup: 'Latissimus Dorsi, Biceps',
-        instructions: 'Slight lean back in torso. Pull the bar down to upper chest level, driving elbows downward and back.'
-      },
-      {
-        name: 'Seated Cable Row',
-        sets: 3,
-        reps: '10 - 12',
-        rest: '60s',
-        duration: '10 mins',
-        difficulty: 'Beginner',
-        targetMuscleGroup: 'Rhomboids, Middle Traps, Lats',
-        instructions: 'Keep back flat with neutral spine. Pull handle toward belly button, squeezing shoulder blades together.'
-      },
-      {
-        name: 'Standing Dumbbell Bicep Curls',
-        sets: 3,
-        reps: '12 - 15',
-        rest: '45s',
-        duration: '8 mins',
-        difficulty: 'Beginner',
-        targetMuscleGroup: 'Biceps Brachii',
-        instructions: 'Pin elbows to your ribs. Curl weights smoothly upward with supination at the top, lower with a 2-second negative.'
-      },
-      {
-        name: 'Overhead Dumbbell Shoulder Press',
-        sets: 3,
-        reps: '10 - 12',
-        rest: '60s',
-        duration: '10 mins',
-        difficulty: 'Beginner / Intermediate',
-        targetMuscleGroup: 'Anterior & Lateral Deltoids',
-        instructions: 'Sit tall with lower back supported. Press dumbbells upward in a slight arc overhead until arms are extended.'
-      }
-    ]
-  },
-  Wednesday: {
-    day: 'Wednesday',
-    focus: 'Active Recovery & Functional Mobility',
-    duration: '30 mins',
-    targetMuscle: 'Joint Mobility, Core Stabilizers & Aerobic Conditioning',
-    exercises: [
-      {
-        name: 'Deep Squat Mobility Holds & Hip Openers',
-        sets: 3,
-        reps: '60 sec hold',
-        rest: '30s',
-        duration: '8 mins',
-        difficulty: 'Beginner',
-        targetMuscleGroup: 'Hip Flexors, Adductors, Ankles',
-        instructions: 'Descend into a deep primal squat. Press knees outward with elbows to decompress hips and lower back.'
-      },
-      {
-        name: 'Cat-Cow & Thoracic Spine Rotations',
-        sets: 3,
-        reps: '12 reps',
-        rest: '30s',
-        duration: '6 mins',
-        difficulty: 'Beginner',
-        targetMuscleGroup: 'Spinal Erectors, Thoracic Cage',
-        instructions: 'On hands and knees, cycle through gentle arching and rounding while breathing rhythmically.'
-      },
-      {
-        name: 'Hanging Knee Raises & Core Plank',
-        sets: 3,
-        reps: '12 - 15 reps',
-        rest: '45s',
-        duration: '8 mins',
-        difficulty: 'Beginner',
-        targetMuscleGroup: 'Lower Abs, Hip Flexors',
-        instructions: 'Hang from pull-up bar with firm grip. Lift knees toward chest with controlled motion, avoid swinging.'
-      },
-      {
-        name: 'Zone 2 Low-Intensity Incline Walk',
-        sets: 1,
-        reps: '20 mins steady',
-        rest: '0s',
-        duration: '20 mins',
-        difficulty: 'Beginner',
-        targetMuscleGroup: 'Cardiovascular Health',
-        instructions: 'Set treadmill to 4-6% incline at comfortable walking pace (5 km/h). Maintain easy conversation breathing.'
-      }
-    ]
-  },
-  Thursday: {
-    day: 'Thursday',
-    focus: 'Legs, Posterior Chain & Glutes Power',
-    duration: '50 mins',
-    targetMuscle: 'Hamstrings, Gluteus Maximus & Calves',
-    exercises: [
-      {
-        name: 'Dumbbell Romanian Deadlifts',
-        sets: 4,
-        reps: '10 - 12',
-        rest: '75s',
-        duration: '12 mins',
-        difficulty: 'Beginner / Intermediate',
-        targetMuscleGroup: 'Hamstrings, Glutes, Lower Back',
-        instructions: 'Keep slight bend in knees. Hinge backwards at hips, keeping dumbbells close to your shins until deep stretch is felt.'
-      },
-      {
-        name: 'Dumbbell Walking Lunges',
-        sets: 3,
-        reps: '12 reps / leg',
-        rest: '60s',
-        duration: '10 mins',
-        difficulty: 'Beginner',
-        targetMuscleGroup: 'Quadriceps, Glutes',
-        instructions: 'Step forward into a lunge with 90-degree bend in front knee. Push through front heel to step into the next lunge.'
-      },
-      {
-        name: 'Glute Bridges / Hip Thrusts',
-        sets: 3,
-        reps: '15 reps (2s hold)',
-        rest: '45s',
-        duration: '8 mins',
-        difficulty: 'Beginner',
-        targetMuscleGroup: 'Gluteus Maximus & Core',
-        instructions: 'Lie on back with knees bent and feet flat. Drive hips upward, pause and squeeze glutes hard at the top.'
-      },
-      {
-        name: 'Standing Calf Raises',
-        sets: 4,
-        reps: '15 - 20 reps',
-        rest: '45s',
-        duration: '6 mins',
-        difficulty: 'Beginner',
-        targetMuscleGroup: 'Gastrocnemius, Soleus',
-        instructions: 'Elevate balls of feet on a step. Lower heels for full stretch, push through toes to peak contraction.'
-      }
-    ]
-  },
-  Friday: {
-    day: 'Friday',
-    focus: 'Upper Body Hypertrophy & Arms',
-    duration: '45 mins',
-    targetMuscle: 'Chest, Triceps, Deltoids & Lats',
-    exercises: [
-      {
-        name: 'Incline Dumbbell Bench Press',
-        sets: 4,
-        reps: '10 - 12',
-        rest: '75s',
-        duration: '10 mins',
-        difficulty: 'Intermediate',
-        targetMuscleGroup: 'Clavicular Upper Chest, Front Delts',
-        instructions: 'Bench set to 30-degree incline. Press dumbbells upwards while maintaining stable shoulder retraction.'
-      },
-      {
-        name: 'Dumbbell Lateral Shoulder Raises',
-        sets: 3,
-        reps: '12 - 15',
-        rest: '45s',
-        duration: '8 mins',
-        difficulty: 'Beginner',
-        targetMuscleGroup: 'Lateral Deltoids (Shoulder Width)',
-        instructions: 'Raise dumbbells to sides with slight elbow bend until parallel with floor. Lead with elbows.'
-      },
-      {
-        name: 'Cable Tricep Pushdown',
-        sets: 3,
-        reps: '12 - 15',
-        rest: '45s',
-        duration: '8 mins',
-        difficulty: 'Beginner',
-        targetMuscleGroup: 'Triceps Lateral & Medial Head',
-        instructions: 'Lock elbows at ribs. Push cable bar or rope down until arms are fully extended, squeeze triceps.'
-      },
-      {
-        name: 'Incline Dumbbell Hammer Curls',
-        sets: 3,
-        reps: '12 reps',
-        rest: '45s',
-        duration: '8 mins',
-        difficulty: 'Beginner',
-        targetMuscleGroup: 'Brachialis, Biceps, Forearms',
-        instructions: 'Palms facing each other throughout the movement. Curl weights with full range of motion.'
-      }
-    ]
-  },
-  Saturday: {
-    day: 'Saturday',
-    focus: 'Conditioning, HIIT & Core Burn',
-    duration: '35 mins',
-    targetMuscle: 'Cardiovascular, Total Body & Core Endurance',
-    exercises: [
-      {
-        name: 'Kettlebell Swings / Deadlifts',
-        sets: 4,
-        reps: '20 reps',
-        rest: '60s',
-        duration: '10 mins',
-        difficulty: 'Beginner / Intermediate',
-        targetMuscleGroup: 'Posterior Chain, Glutes, Hips',
-        instructions: 'Snap hips forward explosively. The swing power comes from glutes and hips, not arms.'
-      },
-      {
-        name: 'Bodyweight Jump Squats',
-        sets: 3,
-        reps: '15 reps',
-        rest: '45s',
-        duration: '8 mins',
-        difficulty: 'Intermediate',
-        targetMuscleGroup: 'Quadriceps, Calves, Power Output',
-        instructions: 'Squat down smoothly, explode upward into a jump, and land softly absorbing impact through knees.'
-      },
-      {
-        name: 'Mountain Climbers & Plank Hold',
-        sets: 3,
-        reps: '45 sec continuous',
-        rest: '30s',
-        duration: '6 mins',
-        difficulty: 'Beginner',
-        targetMuscleGroup: 'Core, Shoulder Stabilizers',
-        instructions: 'High plank position. Drive knees alternately towards chest at a rapid, controlled tempo.'
-      },
-      {
-        name: 'Russian Twists',
-        sets: 3,
-        reps: '20 reps',
-        rest: '45s',
-        duration: '6 mins',
-        difficulty: 'Beginner',
-        targetMuscleGroup: 'Internal & External Obliques',
-        instructions: 'Sit with knees bent, lean back 45 degrees. Rotate torso from left to right tapping the floor.'
-      }
-    ]
-  },
-  Sunday: {
-    day: 'Sunday',
-    focus: 'Full Body Rest & Neural Regeneration',
-    duration: '25 mins',
-    targetMuscle: 'Myofascial Tissue, Flexibility & Recovery',
-    exercises: [
-      {
-        name: 'Foam Roller Full Body Release',
-        sets: 1,
-        reps: '10 mins flow',
-        rest: '0s',
-        duration: '10 mins',
-        difficulty: 'All Levels',
-        targetMuscleGroup: 'IT Bands, Quads, Lats, Calves',
-        instructions: 'Slowly roll over tender muscle knots, pausing on trigger points for 20-30 seconds.'
-      },
-      {
-        name: 'Dynamic Yoga Flow & Child\'s Pose',
-        sets: 1,
-        reps: '15 mins flow',
-        rest: '0s',
-        duration: '15 mins',
-        difficulty: 'All Levels',
-        targetMuscleGroup: 'Full Body Flexibility',
-        instructions: 'Flow through downward dog, cobra, and deep child\'s pose with slow nasal diaphragmatic breathing.'
-      },
-      {
-        name: 'Light Outdoor Nature Walk',
-        sets: 1,
-        reps: '20 mins walk',
-        rest: '0s',
-        duration: '20 mins',
-        difficulty: 'All Levels',
-        targetMuscleGroup: 'Aerobic System & Mental Reset',
-        instructions: 'Unhurried outdoor stroll to encourage blood circulation and reduce systemic inflammation.'
-      }
-    ]
-  }
-};
-
-const DEFAULT_WEEKLY_DIET: Record<string, any> = {
-  Monday: {
-    day: 'Monday',
-    focus: 'Lean Muscle & Metabolic Activation',
-    calories: 2150,
-    macros: { protein: '155g', carbs: '210g', fats: '58g' },
-    morning: 'Warm lemon & ginger water (500ml) + 5 soaked almonds. Pre-workout: 1 small banana with peanut butter.',
-    breakfast: '3 scrambled whole eggs with spinach & mushrooms, 2 slices whole-wheat artisan bread, black coffee.',
-    midMorning: '1 crisp apple + 1 cup low-fat Greek yogurt with dash of cinnamon.',
-    lunch: '180g grilled chicken breast + 1 cup brown rice + steamed broccoli & carrots with extra virgin olive oil.',
-    evening: '1 scoop Whey Protein Isolate shaken with cold water + handful of roasted chana.',
-    dinner: '160g baked salmon fillet (or yellow dal tadka with paneer) + small baked sweet potato + mixed garden salad.'
-  },
-  Tuesday: {
-    day: 'Tuesday',
-    focus: 'Strength Fuel & High-Fiber Endurance',
-    calories: 2200,
-    macros: { protein: '155g', carbs: '215g', fats: '60g' },
-    morning: 'Warm water with Himalayan pink salt & chia seeds. Pre-workout: 2 rice cakes with almond butter.',
-    breakfast: 'Rolled oats porridge in unsweetened almond milk topped with fresh blueberries, pumpkin seeds & protein scoop.',
-    midMorning: 'Handful of raw walnuts (30g) and golden raisins + green tea.',
-    lunch: 'Shredded chicken quinoa bowl (or rajma kidney bean bowl) with avocado, cherry tomatoes & lime vinaigrette.',
-    evening: 'Sprouted moong bean salad with diced cucumbers, tomatoes & lemon chaat masala.',
-    dinner: 'Grilled lemon-herb chicken skewers + sautéed asparagus & baby spinach + clear vegetable broth soup.'
-  },
-  Wednesday: {
-    day: 'Wednesday',
-    focus: 'Cellular Repair & Anti-Inflammatory Nutrition',
-    calories: 2180,
-    macros: { protein: '160g', carbs: '200g', fats: '62g' },
-    morning: 'Warm fenugreek (methi) water (500ml) + 1 slice whole-grain toast with mashed avocado.',
-    breakfast: 'Vegetable egg-white omelette (4 whites, 1 yolk) with diced peppers & mushrooms + 1 sweet orange.',
-    midMorning: '1 bowl fresh cubed papaya or chilled watermelon + mint infused water.',
-    lunch: 'Pan-seared salmon fillet (180g) or chana masala + 1 cup steamed quinoa + beetroot & rocket salad.',
-    evening: 'Low-fat Greek yogurt cup with 1 tsp ground flaxseeds & sliced strawberries.',
-    dinner: 'Stir-fried chicken breast strips (or grilled paneer) with zucchini, snow peas & bok choy in sesame oil.'
-  },
-  Thursday: {
-    day: 'Thursday',
-    focus: 'Lean Carb Cycling & Sustained Energy',
-    calories: 2120,
-    macros: { protein: '152g', carbs: '205g', fats: '59g' },
-    morning: 'Warm water with 1 tbsp raw apple cider vinegar + 2 Medjool dates + 4 walnut halves.',
-    breakfast: 'High-protein smoothie bowl: unsweetened almond milk, ripe banana, spinach & whey protein isolate.',
-    midMorning: 'Crisp cucumber & carrot crudités with 3 tbsp roasted red pepper hummus dip.',
-    lunch: 'Lemon-rosemary grilled chicken thigh (200g) or spiced vegetable khichdi + roasted zucchini & low-fat curd.',
-    evening: 'Roasted fox nuts (makhana) lightly seasoned with pink salt + antioxidant green tea.',
-    dinner: 'Steamed white cod fillet (or grilled paneer steaks) + hearty vegetable minestrone soup + French beans.'
-  },
-  Friday: {
-    day: 'Friday',
-    focus: 'Peak Performance & Glycogen Replenishment',
-    calories: 2240,
-    macros: { protein: '158g', carbs: '220g', fats: '64g' },
-    morning: 'Freshly brewed green tea + 5 soaked almonds + 1 small banana.',
-    breakfast: 'Poached eggs on toasted artisan sourdough bread + sautéed baby spinach & grilled cherry tomatoes.',
-    midMorning: '1 whole ripe juicy pear or fresh guava slices with rock salt.',
-    lunch: 'Chicken & bell pepper fajita bowl over wild brown rice with fresh guacamole & pico de gallo.',
-    evening: '3 boiled egg whites seasoned with black pepper + iced peppermint tea.',
-    dinner: 'Pan-seared tuna steak (or Thai tofu & broccoli red curry) + cauliflower rice + cucumber sesame salad.'
-  },
-  Saturday: {
-    day: 'Saturday',
-    focus: 'Weekend Vitality & Clean Refuel',
-    calories: 2280,
-    macros: { protein: '162g', carbs: '230g', fats: '63g' },
-    morning: 'Warm water with fresh lemon juice + 1 crisp apple with 1 tbsp creamy peanut butter.',
-    breakfast: 'Protein oat pancakes (oats, banana, egg whites) topped with fresh blueberries & 1 tsp pure raw honey.',
-    midMorning: 'Fresh tender coconut water with soft coconut meat + pumpkin seeds.',
-    lunch: 'Mediterranean grilled chicken wrap in whole-wheat tortilla with cucumber-tomato tabbouleh & tzatziki.',
-    evening: 'Steamed edamame pods tossed with sea salt & pepper + iced unsweetened green tea.',
-    dinner: 'Herb-roasted chicken breast + baked sweet potato wedges + grilled asparagus spears.'
-  },
-  Sunday: {
-    day: 'Sunday',
-    focus: 'Gut Reset & Active Recovery Nutrition',
-    calories: 2100,
-    macros: { protein: '148g', carbs: '200g', fats: '58g' },
-    morning: 'Warm water infused with fresh mint leaves and lemon slices + chamomile tea.',
-    breakfast: 'Traditional Shakshuka (3 poached eggs in rich tomato, pepper & cumin sauce) + 1 slice multigrain toast.',
-    midMorning: '1 whole fresh ruby pomegranate or 2 peeled golden kiwis.',
-    lunch: 'Herb-infused roasted chicken breast (or dal tadka with paneer) + 1 cup steamed basmati rice + cucumber raita.',
-    evening: 'Antioxidant trail mix (almonds, walnuts, dried cranberries, pumpkin seeds) + herbal tea.',
-    dinner: 'Grilled white fish fillet (or vegetable red lentil stew) + steamed broccoli + warm turmeric golden milk.'
-  }
-};
+import type { ExerciseItem } from '../../utils/aiFitnessPlans';
 
 const MemberAIFitness: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -473,33 +38,58 @@ const MemberAIFitness: React.FC = () => {
 
   // Form & Customer Profile State
   const [formData, setFormData] = useState({
-    fullName: 'Renugopal Y',
-    email: 'member@gym.com',
-    mobile: '+91 98765 43210',
-    city: 'Chennai',
-    pinCode: '600001',
-    dateOfBirth: '1998-05-15',
+    fullName: '',
+    email: '',
+    mobile: '',
+    city: '',
+    pinCode: '',
+    dateOfBirth: '',
     age: '28',
-    gender: 'Male',
-    height: '175',
-    weight: '74',
+    gender: 'Not specified',
+    height: '170',
+    weight: '70',
     fitnessGoal: 'Weight Loss',
     currentFitnessLevel: 'Beginner (New to training)',
     preferredTraining: 'Offline (In-Gym Training)',
-    preferredWorkoutTime: 'Morning (07:00 AM - 09:00 AM)',
+    preferredWorkoutTime: 'Morning (7-9am)',
     availableWorkoutDays: '4 Days / Week',
     equipmentAvailability: 'Full Commercial Gym (Weights & Machines)',
     dietaryPreferences: 'Vegetarian',
-    emergencyContactName: 'Vijay Kumar',
-    emergencyContactRelation: 'Brother',
-    emergencyContactMobile: '+91 98765 43211',
+    emergencyContactName: '',
+    emergencyContactRelation: '',
+    emergencyContactMobile: '',
     healthConsiderations: 'None (Cleared for regular resistance training)',
     injuries: 'None',
     doctorRestrictions: 'None',
     averageSleep: '7-8 hours',
     stressLevel: 'Moderate',
-    targetWeight: '68'
+    targetWeight: '63'
   });
+
+  const computeSuggestedTargetWeight = (w: number, goalStr: string): string => {
+    const lower = (goalStr || '').toLowerCase();
+    if (lower.includes('weight loss') || lower.includes('fat loss')) {
+      return String(Math.max(45, Math.round(w * 0.9)));
+    }
+    if (lower.includes('muscle') || lower.includes('weight gain')) {
+      return String(Math.round(w + 4));
+    }
+    return String(w);
+  };
+
+  const mapLevelOption = (lvl?: string): string => {
+    const l = (lvl || '').toLowerCase();
+    if (l.includes('advanced')) return 'Advanced (3+ yrs)';
+    if (l.includes('intermediate')) return 'Intermediate (1-3 yrs)';
+    return 'Beginner (New to training)';
+  };
+
+  const mapTrainingOption = (mode?: string): string => {
+    const m = (mode || '').toLowerCase();
+    if (m.includes('hybrid')) return 'Hybrid (Gym + Home)';
+    if (m.includes('online') || m.includes('home')) return 'Online / Home Workout';
+    return 'Offline (In-Gym Training)';
+  };
 
   useEffect(() => {
     checkAccessAndLoad();
@@ -523,6 +113,8 @@ const MemberAIFitness: React.FC = () => {
             formattedDob = dob.toISOString().split('T')[0];
           }
 
+          const rawWeight = Number(u.weight) || 70;
+          const resolvedGoal = u.fitnessGoal || 'Weight Loss';
           setFormData(prev => ({
             ...prev,
             fullName: `${u.firstName || ''} ${u.lastName || ''}`.trim() || prev.fullName,
@@ -535,11 +127,13 @@ const MemberAIFitness: React.FC = () => {
             gender: u.gender || prev.gender,
             height: u.height ? u.height.toString() : prev.height,
             weight: u.weight ? u.weight.toString() : prev.weight,
-            fitnessGoal: u.fitnessGoal || prev.fitnessGoal,
-            currentFitnessLevel: u.experienceLevel || prev.currentFitnessLevel,
-            preferredTraining: u.preferredTraining || prev.preferredTraining,
+            targetWeight: u.targetWeight ? String(u.targetWeight) : computeSuggestedTargetWeight(rawWeight, resolvedGoal),
+            fitnessGoal: resolvedGoal,
+            currentFitnessLevel: u.experienceLevel ? mapLevelOption(u.experienceLevel) : prev.currentFitnessLevel,
+            preferredTraining: u.preferredTraining ? mapTrainingOption(u.preferredTraining) : prev.preferredTraining,
             preferredWorkoutTime: u.preferredWorkoutTime || prev.preferredWorkoutTime,
             availableWorkoutDays: u.preferredWorkoutDays || prev.availableWorkoutDays,
+            dietaryPreferences: u.dietPreference || u.dietaryPreferences || prev.dietaryPreferences,
             emergencyContactName: u.emergencyContact?.name || prev.emergencyContactName,
             emergencyContactRelation: u.emergencyContact?.relationship || prev.emergencyContactRelation,
             emergencyContactMobile: u.emergencyContact?.mobile || prev.emergencyContactMobile,
@@ -636,9 +230,11 @@ const MemberAIFitness: React.FC = () => {
   }
 
   // BMI Calculation
-  const heightM = (parseFloat(formData.height) || 175) / 100;
-  const weightKg = parseFloat(formData.weight) || 74;
-  const bmi = (weightKg / (heightM * heightM)).toFixed(1);
+  const heightM = (parseFloat(formData.height) || 170) / 100;
+  const weightKg = parseFloat(formData.weight) || 70;
+  const bmiNum = weightKg / (heightM * heightM);
+  const bmi = bmiNum.toFixed(1);
+  const bmiLabel = bmiNum < 18.5 ? 'Underweight' : bmiNum < 25 ? 'Normal' : bmiNum < 30 ? 'Overweight' : 'Obese';
 
   return (
     <div className="max-w-6xl mx-auto space-y-8 pb-16 animate-fade-in">
@@ -717,7 +313,7 @@ const MemberAIFitness: React.FC = () => {
 
           <div className="p-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl">
             <span className="text-[10px] text-[#64748B] uppercase font-bold block mb-1">BMI (Calculated)</span>
-            <p className="text-sm font-extrabold text-[#EA580C]">{bmi} <span className="text-[10px] font-normal text-[#EA580C]">(Normal)</span></p>
+            <p className="text-sm font-extrabold text-[#EA580C]">{bmi} <span className="text-[10px] font-normal text-[#EA580C]">({bmiLabel})</span></p>
           </div>
 
           <div className="p-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl">
@@ -750,10 +346,105 @@ const MemberAIFitness: React.FC = () => {
 
           <div className="p-3.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl">
             <span className="font-bold text-[#64748B] block text-[10px] uppercase mb-1">Emergency Contact</span>
-            <p className="font-semibold text-[#111827]">{formData.emergencyContactName} ({formData.emergencyContactRelation})</p>
+            <p className="font-semibold text-[#111827]">
+              {formData.emergencyContactName
+                ? `${formData.emergencyContactName}${formData.emergencyContactRelation ? ` (${formData.emergencyContactRelation})` : ''}`
+                : 'Not specified'}
+            </p>
           </div>
         </div>
       </div>
+
+      {/* ===================== EMPTY STATE BEFORE AI GENERATION ===================== */}
+      {!recommendation && (
+        <div className="bg-[#FFFFFF] border border-[#FDBA74]/60 rounded-3xl p-8 md:p-10 shadow-xs text-center space-y-4">
+          <div className="w-16 h-16 rounded-2xl bg-[#FFF7ED] border border-[#FFEDD5] text-[#EA580C] flex items-center justify-center mx-auto">
+            <Sparkles size={28} />
+          </div>
+          <div className="max-w-xl mx-auto space-y-2">
+            <h3 className="text-xl font-extrabold text-[#111827]">
+              Ready to Generate Your Personalized AI Plan, {formData.fullName || 'Member'}
+            </h3>
+            <p className="text-sm text-[#64748B] leading-relaxed">
+              Review your customer details above (or calibrate your preferences below) and click <strong className="text-[#EA580C]">Generate with AI</strong> to receive your tailored biometric analysis, Monday–Sunday workout schedule, and personalized 7-day nutrition plan.
+            </p>
+          </div>
+          <div className="pt-2">
+            <button
+              type="button"
+              onClick={() => handleSubmitAssessment()}
+              disabled={isSubmitting}
+              className="px-8 py-3.5 bg-gradient-to-r from-[#EA580C] to-[#C2410C] hover:opacity-95 text-[#FFFFFF] font-extrabold rounded-2xl text-sm inline-flex items-center justify-center gap-2 shadow-md shadow-orange-500/15 transition-all cursor-pointer active:scale-95 disabled:opacity-50"
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 size={16} className="animate-spin" />
+                  <span>Generating Personalized AI Plan...</span>
+                </>
+              ) : (
+                <>
+                  <Sparkles size={16} />
+                  <span>Generate with AI</span>
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ===================== AI GENERATED OUTPUT (ONLY AFTER CLICKING GENERATE WITH AI) ===================== */}
+      {recommendation && (
+        <>
+          {/* AI Analysis & Summary Card */}
+          {recommendation.aiAnalysis && (
+            <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-3xl p-6 md:p-8 shadow-xs space-y-5">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#E2E8F0] gap-2">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-2xl bg-[#FFF7ED] text-[#EA580C] flex items-center justify-center shrink-0">
+                    <Sparkles size={20} />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold text-[#111827]">Personalized AI Fitness Analysis</h2>
+                    <p className="text-xs text-[#64748B]">
+                      Tailored for {formData.fullName || 'Member'} • Goal: {formData.fitnessGoal} ({formData.height} cm, {formData.weight} kg → {formData.targetWeight} kg)
+                    </p>
+                  </div>
+                </div>
+                <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5] self-start sm:self-auto">
+                  {recommendation.status || 'AI Generated'} • v{recommendation.version || 1}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                {recommendation.aiAnalysis.goalAnalysis && (
+                  <div className="p-4 bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl space-y-1.5">
+                    <span className="font-extrabold text-[#EA580C] uppercase text-[10px] block">Goal &amp; Metabolic Pathway</span>
+                    <p className="text-[#111827] leading-relaxed font-medium">{recommendation.aiAnalysis.goalAnalysis}</p>
+                  </div>
+                )}
+                {recommendation.aiAnalysis.recommendedApproach && (
+                  <div className="p-4 bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl space-y-1.5">
+                    <span className="font-extrabold text-[#EA580C] uppercase text-[10px] block">Recommended Training Approach</span>
+                    <p className="text-[#111827] leading-relaxed font-medium">{recommendation.aiAnalysis.recommendedApproach}</p>
+                  </div>
+                )}
+                {recommendation.aiAnalysis.assessment && (
+                  <div className="p-4 bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl space-y-1.5">
+                    <span className="font-extrabold text-[#64748B] uppercase text-[10px] block">Baseline Progress Tracking</span>
+                    <p className="text-[#111827] leading-relaxed font-medium">{recommendation.aiAnalysis.assessment}</p>
+                  </div>
+                )}
+                {recommendation.aiAnalysis.limitations && (
+                  <div className="p-4 bg-[#FFF7ED]/70 border border-[#FFEDD5] rounded-2xl space-y-1.5">
+                    <span className="font-extrabold text-[#C2410C] uppercase text-[10px] flex items-center gap-1">
+                      <ShieldAlert size={13} /> Safety &amp; Form Guidelines
+                    </span>
+                    <p className="text-[#111827] leading-relaxed font-medium">{recommendation.aiAnalysis.limitations}</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
 
       {/* ===================== 2. MONDAY TO SUNDAY WORKOUT PLAN (WITH ANIMATED VIDEO DEMOS) ===================== */}
       <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-3xl p-6 md:p-8 shadow-xs space-y-6">
@@ -784,7 +475,7 @@ const MemberAIFitness: React.FC = () => {
         <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2">
           {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map((day) => {
             const isSelected = selectedWorkoutDay === day;
-            const dayData = DEFAULT_WEEKLY_WORKOUTS[day];
+            const dayData = weeklyWorkouts[day];
 
             return (
               <button
@@ -927,7 +618,7 @@ const MemberAIFitness: React.FC = () => {
         <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2">
           {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map((day) => {
             const isSelected = selectedDietDay === day;
-            const dietData = DEFAULT_WEEKLY_DIET[day];
+            const dietData = weeklyDiet[day];
 
             return (
               <button
@@ -1015,6 +706,8 @@ const MemberAIFitness: React.FC = () => {
           <span className="font-extrabold text-[#EA580C] shrink-0">Optimal Electrolyte Balance</span>
         </div>
       </div>
+        </>
+      )}
 
       {/* ===================== 4. INTERACTIVE PREFERENCES & AI GENERATOR FORM ===================== */}
       <form onSubmit={handleSubmitAssessment} className="space-y-6">

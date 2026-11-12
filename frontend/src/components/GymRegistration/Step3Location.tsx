@@ -1,4 +1,4 @@
-﻿export const Step3Location = ({ data, updateData, errors }: any) => {
+export const Step3Location = ({ data, updateData, errors }: any) => {
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="border-b border-[#E2E8F0] pb-4 mb-6">
@@ -49,8 +49,11 @@
           <label className="block text-sm font-medium text-[#64748B] mb-2">Pincode *</label>
           <input
             type="text"
+            inputMode="numeric"
+            maxLength={6}
+            pattern="\d{6}"
             value={data.pincode}
-            onChange={(e) => updateData({ pincode: e.target.value })}
+            onChange={(e) => updateData({ pincode: e.target.value.replace(/\D/g, '').slice(0, 6) })}
             className={`w-full bg-[#FFFFFF] border ${errors.pincode ? 'border-[#F8FAFC]' : 'border-[#E2E8F0]'} rounded-xl px-4 py-3 text-sm text-[#111827] outline-none focus:border-[#FDBA74]`}
             placeholder="e.g. 400001"
           />

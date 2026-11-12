@@ -59,7 +59,7 @@ export const createSessionRequest = async (req: AuthRequest, res: Response): Pro
       }
     }
     if (!trainer) {
-      trainer = await Trainer.findOne({ $or: [{ _id: trainerId }, { userId: trainerId }] });
+      trainer = await Trainer.findOne({ trainerId: String(trainerId) });
     }
     if (!trainer && mongoose.Types.ObjectId.isValid(trainerId)) {
       const userTrainer = await User.findById(trainerId);
@@ -177,7 +177,7 @@ export const acceptSession = async (req: AuthRequest, res: Response): Promise<vo
     await notify({
       recipientId: session.customerId.toString(),
       recipientRole: 'MEMBER',
-      gymId: session.gymId.toString(),
+      gymId: session.gymId?.toString() || '',
       title: 'Booking Approved',
       message: `Your training session with ${trainer.name} on ${session.date} at ${session.startTime} has been confirmed.`,
       type: 'success',
@@ -218,7 +218,7 @@ export const rejectSession = async (req: AuthRequest, res: Response): Promise<vo
     await notify({
       recipientId: session.customerId.toString(),
       recipientRole: 'MEMBER',
-      gymId: session.gymId.toString(),
+      gymId: session.gymId?.toString() || '',
       title: 'Booking Request Rejected',
       message: `Your session request for ${session.date} at ${session.startTime} was declined by ${trainer.name}.`,
       type: 'error',
@@ -270,7 +270,7 @@ export const payForSession = async (req: AuthRequest, res: Response): Promise<vo
     await notify({
       recipientId: (trainerOwner?.userId || session.trainerId).toString(),
       recipientRole: 'TRAINER',
-      gymId: session.gymId.toString(),
+      gymId: session.gymId?.toString() || '',
       title: 'Session Confirmed',
       message: `Payment received for session on ${session.date}.`,
       type: 'success',
@@ -348,7 +348,7 @@ export const cancelSession = async (req: AuthRequest, res: Response): Promise<vo
     await notify({
       recipientId,
       recipientRole: role,
-      gymId: session.gymId.toString(),
+      gymId: session.gymId?.toString() || '',
       title: 'Session Cancelled',
       message: `Session on ${session.date} has been cancelled.`,
       type: 'error',
@@ -431,7 +431,7 @@ export const completeSession = async (req: AuthRequest, res: Response): Promise<
     await notify({
       recipientId: session.customerId.toString(),
       recipientRole: 'MEMBER',
-      gymId: session.gymId.toString(),
+      gymId: session.gymId?.toString() || '',
       title: 'Session Completed',
       message: `Your session on ${session.date} is complete. Please rate your trainer!`,
       type: 'info',
@@ -561,7 +561,7 @@ export const checkOutSession = async (req: AuthRequest, res: Response): Promise<
         await notify({
           recipientId: gym.ownerId.toString(),
           recipientRole: 'GYM_OWNER',
-          gymId: session.gymId.toString(),
+          gymId: session.gymId?.toString() || '',
           title: 'Member Checked Out',
           message: `${cName} completed training session with ${tName} and checked out at ${timeStr}.`,
           type: 'success',
@@ -629,7 +629,7 @@ export const submitSessionNotes = async (req: AuthRequest, res: Response): Promi
     await notify({
       recipientId: session.customerId.toString(),
       recipientRole: 'MEMBER',
-      gymId: session.gymId.toString(),
+      gymId: session.gymId?.toString() || '',
       title: 'Session Completed',
       message: 'Your trainer submitted session notes. You can view feedback and leave a rating.',
       type: 'success',
@@ -760,7 +760,7 @@ export const refundSession = async (req: AuthRequest, res: Response): Promise<vo
     await notify({
       recipientId: session.customerId.toString(),
       recipientRole: 'MEMBER',
-      gymId: session.gymId.toString(),
+      gymId: session.gymId?.toString() || '',
       title: 'Session Refunded',
       message: `Your payment for session on ${session.date} has been refunded.`,
       type: 'info',
@@ -804,7 +804,7 @@ export const updateAdminSessionStatus = async (req: AuthRequest, res: Response):
     await notify({
       recipientId: session.customerId.toString(),
       recipientRole: 'MEMBER',
-      gymId: session.gymId.toString(),
+      gymId: session.gymId?.toString() || '',
       title: `Session Updated (${session.status})`,
       message: `Your session booking ${session.bookingId || ''} has been updated to ${session.status}.`,
       type: 'info',

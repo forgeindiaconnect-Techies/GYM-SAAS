@@ -555,16 +555,16 @@ export default function TrainerRegisterPage() {
           {jobInfo && (
             <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-4 text-left space-y-2 text-xs">
               <div className="flex items-center justify-between">
-                <span className="text-slate-400">Position:</span>
-                <span className="font-bold text-white">{jobInfo.title}</span>
+                <span className="text-slate-500">Position:</span>
+                <span className="font-bold text-[#111827]">{jobInfo.title}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-slate-400">Gym Facility:</span>
+                <span className="text-slate-500">Gym Facility:</span>
                 <span className="font-bold text-[#EA580C]">{jobInfo.gymName}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-slate-400">Status:</span>
-                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-yellow-500/10 text-yellow-400 border border-yellow-500/20">
+                <span className="text-slate-500">Status:</span>
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
                   Pending Review
                 </span>
               </div>
@@ -580,7 +580,7 @@ export default function TrainerRegisterPage() {
             </button>
             <button
               onClick={() => navigate('/trainer/jobs')}
-              className="px-6 py-3 bg-[#FFFFFF] hover:bg-[#FFF7ED] text-white border border-[#E2E8F0] font-semibold rounded-xl text-xs sm:text-sm transition-all cursor-pointer"
+              className="px-6 py-3 bg-[#FFFFFF] hover:bg-[#FFF7ED] text-[#111827] border border-[#E2E8F0] font-semibold rounded-xl text-xs sm:text-sm transition-all cursor-pointer"
             >
               Browse More Jobs
             </button>
@@ -634,14 +634,14 @@ export default function TrainerRegisterPage() {
                   </h3>
                   <p className="text-xs text-[#64748B] flex items-center gap-1.5 mt-0.5">
                     <Building2 size={13} className="text-[#EA580C]" />
-                    <span className="font-semibold text-white">{jobInfo.gymName}</span>
+                    <span className="font-semibold text-[#111827]">{jobInfo.gymName}</span>
                     <span>·</span>
                     <MapPin size={13} className="text-slate-500" />
                     <span>{jobInfo.location}</span>
                   </p>
                 </div>
               </div>
-              <span className="hidden sm:inline-flex px-3 py-1 bg-[#F8FAFC] text-[10px] font-mono text-slate-400 border border-[#E2E8F0] rounded-full">
+              <span className="hidden sm:inline-flex px-3 py-1 bg-[#F8FAFC] text-[10px] font-mono text-slate-600 border border-[#E2E8F0] rounded-full">
                 ID: {jobInfo.id.slice(-6).toUpperCase()}
               </span>
             </div>
@@ -728,7 +728,7 @@ export default function TrainerRegisterPage() {
               </div>
 
               <div className="space-y-1 text-center sm:text-left flex-1">
-                <label className="block text-xs font-bold text-white">
+                <label className="block text-xs font-bold text-[#111827]">
                   Profile Photo <span className="text-slate-500 font-normal">(Optional)</span>
                 </label>
                 <p className="text-[11px] text-[#64748B]">
@@ -748,7 +748,7 @@ export default function TrainerRegisterPage() {
                     type="button"
                     onClick={() => photoInputRef.current?.click()}
                     disabled={uploadingPhoto}
-                    className="px-3 py-1.5 rounded-xl bg-[#F8FAFC] hover:bg-[#FFF7ED] border border-[#E2E8F0] text-xs font-semibold text-slate-200 hover:text-[#C2410C] flex items-center gap-1.5 transition-all"
+                    className="px-3 py-1.5 rounded-xl bg-[#F8FAFC] hover:bg-[#FFF7ED] border border-[#E2E8F0] text-xs font-semibold text-slate-700 hover:text-[#C2410C] flex items-center gap-1.5 transition-all"
                   >
                     <Camera size={13} className="text-[#EA580C]" />
                     <span>{form.profilePhoto ? 'Change Photo' : 'Upload Photo'}</span>
@@ -758,7 +758,7 @@ export default function TrainerRegisterPage() {
                     <button
                       type="button"
                       onClick={() => setForm((prev) => ({ ...prev, profilePhoto: '' }))}
-                      className="px-2.5 py-1.5 rounded-xl bg-[#F8FAFC] hover:bg-red-50 border border-[#E2E8F0] text-xs text-slate-400 hover:text-[#B91C1C] transition-all"
+                      className="px-2.5 py-1.5 rounded-xl bg-[#F8FAFC] hover:bg-red-50 border border-[#E2E8F0] text-xs text-slate-600 hover:text-[#B91C1C] transition-all"
                       title="Remove Photo"
                     >
                       <Trash2 size={13} />
@@ -771,7 +771,7 @@ export default function TrainerRegisterPage() {
             {/* First Name & Last Name */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
               <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1">
+                <label className="block text-xs font-bold text-slate-700 mb-1">
                   First Name <span className="text-[#B91C1C]">*</span>
                 </label>
                 <input
@@ -780,7 +780,7 @@ export default function TrainerRegisterPage() {
                   placeholder="e.g. John"
                   value={form.firstName}
                   onChange={(e) => setForm({ ...form, firstName: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] focus:border-[#FDBA74] rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none transition-colors"
+                  className="w-full px-4 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] focus:border-[#FDBA74] rounded-xl text-xs text-[#111827] placeholder-slate-400 focus:outline-none transition-colors"
                 />
                 {fieldErrors.firstName && (
                   <p className="text-[#B91C1C] text-[11px] mt-1 flex items-center gap-1">
@@ -790,7 +790,7 @@ export default function TrainerRegisterPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1">
+                <label className="block text-xs font-bold text-slate-700 mb-1">
                   Last Name <span className="text-[#B91C1C]">*</span>
                 </label>
                 <input
@@ -799,7 +799,7 @@ export default function TrainerRegisterPage() {
                   placeholder="e.g. Doe"
                   value={form.lastName}
                   onChange={(e) => setForm({ ...form, lastName: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] focus:border-[#FDBA74] rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none transition-colors"
+                  className="w-full px-4 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] focus:border-[#FDBA74] rounded-xl text-xs text-[#111827] placeholder-slate-400 focus:outline-none transition-colors"
                 />
                 {fieldErrors.lastName && (
                   <p className="text-[#B91C1C] text-[11px] mt-1 flex items-center gap-1">
@@ -813,7 +813,7 @@ export default function TrainerRegisterPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <label className="block text-xs font-bold text-slate-300">
+                  <label className="block text-xs font-bold text-slate-700">
                     Email Address <span className="text-[#B91C1C]">*</span>
                   </label>
                   {otpVerified && (
@@ -847,7 +847,7 @@ export default function TrainerRegisterPage() {
                         : fieldErrors.email
                         ? 'border-red-500/60'
                         : 'border-[#E2E8F0] focus:border-[#FDBA74]'
-                    } rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none disabled:opacity-75 transition-colors pr-24`}
+                    } rounded-xl text-xs text-[#111827] placeholder-slate-400 focus:outline-none disabled:opacity-75 transition-colors pr-24`}
                   />
 
                   {/* Send OTP / Change Button */}
@@ -896,8 +896,8 @@ export default function TrainerRegisterPage() {
                 {!isLoggedInTrainer && !otpVerified && otpSent && (
                   <div className="mt-2.5 p-3 rounded-xl bg-[#F8FAFC] border border-[#FFEDD5] space-y-2.5 shadow-md">
                     <div className="flex items-center justify-between text-[11px]">
-                      <span className="font-semibold text-white">Enter 6-digit OTP code</span>
-                      <span className="text-[10px] text-slate-400">Sent to your inbox</span>
+                      <span className="font-semibold text-[#111827]">Enter 6-digit OTP code</span>
+                      <span className="text-[10px] text-slate-600">Sent to your inbox</span>
                     </div>
 
                     <div className="flex items-center gap-2">
@@ -961,7 +961,7 @@ export default function TrainerRegisterPage() {
 
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <label className="block text-xs font-bold text-slate-300">
+                  <label className="block text-xs font-bold text-slate-700">
                     Mobile Number <span className="text-[#B91C1C]">*</span>
                   </label>
                   <span className="text-[10px] text-slate-500 font-mono">
@@ -997,7 +997,7 @@ export default function TrainerRegisterPage() {
                         });
                       }
                     }}
-                    className="w-full px-3.5 py-2.5 bg-transparent text-xs text-white placeholder-slate-500 focus:outline-none tracking-wider font-medium"
+                    className="w-full px-3.5 py-2.5 bg-transparent text-xs text-[#111827] placeholder-slate-400 focus:outline-none tracking-wider font-medium"
                   />
                 </div>
 
@@ -1015,7 +1015,7 @@ export default function TrainerRegisterPage() {
 
             {/* Current City / Location */}
             <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1">
+              <label className="block text-xs font-bold text-slate-700 mb-1">
                 Current City / Location <span className="text-[#B91C1C]">*</span>
               </label>
               <input
@@ -1024,7 +1024,7 @@ export default function TrainerRegisterPage() {
                 placeholder="e.g. Bangalore, Karnataka"
                 value={form.city}
                 onChange={(e) => setForm({ ...form, city: e.target.value })}
-                className="w-full px-4 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] focus:border-[#FDBA74] rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none transition-colors"
+                className="w-full px-4 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] focus:border-[#FDBA74] rounded-xl text-xs text-[#111827] placeholder-slate-400 focus:outline-none transition-colors"
               />
               {fieldErrors.city && (
                 <p className="text-[#B91C1C] text-[11px] mt-1 flex items-center gap-1">
@@ -1045,13 +1045,13 @@ export default function TrainerRegisterPage() {
             {/* Specialization & Years of Experience */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
               <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1">
+                <label className="block text-xs font-bold text-slate-700 mb-1">
                   Primary Specialization <span className="text-[#B91C1C]">*</span>
                 </label>
                 <select
                   value={form.specialization}
                   onChange={(e) => setForm({ ...form, specialization: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] focus:border-[#FDBA74] rounded-xl text-xs text-white focus:outline-none cursor-pointer"
+                  className="w-full px-4 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] focus:border-[#FDBA74] rounded-xl text-xs text-[#111827] focus:outline-none cursor-pointer"
                 >
                   {SPECIALIZATIONS.map((s) => (
                     <option key={s} value={s}>
@@ -1062,13 +1062,13 @@ export default function TrainerRegisterPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1">
+                <label className="block text-xs font-bold text-slate-700 mb-1">
                   Years of Experience <span className="text-[#B91C1C]">*</span>
                 </label>
                 <select
                   value={form.experience}
                   onChange={(e) => setForm({ ...form, experience: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] focus:border-[#FDBA74] rounded-xl text-xs text-white focus:outline-none cursor-pointer"
+                  className="w-full px-4 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] focus:border-[#FDBA74] rounded-xl text-xs text-[#111827] focus:outline-none cursor-pointer"
                 >
                   {EXPERIENCE_OPTIONS.map((opt) => (
                     <option key={opt} value={opt}>
@@ -1081,7 +1081,7 @@ export default function TrainerRegisterPage() {
 
             {/* Preferred Training Mode */}
             <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1.5">
+              <label className="block text-xs font-bold text-slate-700 mb-1.5">
                 Preferred Training Mode <span className="text-[#B91C1C]">*</span>
               </label>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
@@ -1100,10 +1100,10 @@ export default function TrainerRegisterPage() {
                     >
                       <span className="text-lg">{mode.icon}</span>
                       <div className="flex-1 min-w-0">
-                        <div className={`text-xs font-bold truncate ${selected ? 'text-[#EA580C]' : 'text-white'}`}>
+                        <div className={`text-xs font-bold truncate ${selected ? 'text-[#EA580C]' : 'text-[#111827]'}`}>
                           {mode.label}
                         </div>
-                        <div className="text-[10px] text-slate-400 truncate">{mode.desc}</div>
+                        <div className="text-[10px] text-slate-600 truncate">{mode.desc}</div>
                       </div>
                       {selected && <Check size={14} className="text-[#EA580C] shrink-0" />}
                     </button>
@@ -1115,7 +1115,7 @@ export default function TrainerRegisterPage() {
             {/* Certifications & Education */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
               <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1">
+                <label className="block text-xs font-bold text-slate-700 mb-1">
                   Certifications <span className="text-slate-500 font-normal">(Optional)</span>
                 </label>
                 <input
@@ -1123,12 +1123,12 @@ export default function TrainerRegisterPage() {
                   placeholder="e.g. ACE CPT, ISSA, CPR/AED, K11"
                   value={form.certifications}
                   onChange={(e) => setForm({ ...form, certifications: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] focus:border-[#FDBA74] rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none transition-colors"
+                  className="w-full px-4 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] focus:border-[#FDBA74] rounded-xl text-xs text-[#111827] placeholder-slate-400 focus:outline-none transition-colors"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1">
+                <label className="block text-xs font-bold text-slate-700 mb-1">
                   Education / Qualifications <span className="text-slate-500 font-normal">(Optional)</span>
                 </label>
                 <input
@@ -1136,7 +1136,7 @@ export default function TrainerRegisterPage() {
                   placeholder="e.g. B.Sc Exercise Science / Certified Coach"
                   value={form.qualifications}
                   onChange={(e) => setForm({ ...form, qualifications: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] focus:border-[#FDBA74] rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none transition-colors"
+                  className="w-full px-4 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] focus:border-[#FDBA74] rounded-xl text-xs text-[#111827] placeholder-slate-400 focus:outline-none transition-colors"
                 />
               </div>
             </div>
@@ -1144,7 +1144,7 @@ export default function TrainerRegisterPage() {
             {/* Previous Gym & Expected Salary */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
               <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1">
+                <label className="block text-xs font-bold text-slate-700 mb-1">
                   Previous Gym / Employer Name <span className="text-slate-500 font-normal">(Optional)</span>
                 </label>
                 <input
@@ -1152,12 +1152,12 @@ export default function TrainerRegisterPage() {
                   placeholder="e.g. Gold's Gym, Cult.fit, Anytime Fitness"
                   value={form.previousGym}
                   onChange={(e) => setForm({ ...form, previousGym: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] focus:border-[#FDBA74] rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none transition-colors"
+                  className="w-full px-4 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] focus:border-[#FDBA74] rounded-xl text-xs text-[#111827] placeholder-slate-400 focus:outline-none transition-colors"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1">
+                <label className="block text-xs font-bold text-slate-700 mb-1">
                   Expected Salary (INR) <span className="text-slate-500 font-normal">(Optional)</span>
                 </label>
                 <input
@@ -1165,7 +1165,7 @@ export default function TrainerRegisterPage() {
                   placeholder="e.g. 35,000 / Monthly"
                   value={form.expectedSalary}
                   onChange={(e) => setForm({ ...form, expectedSalary: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] focus:border-[#FDBA74] rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none transition-colors"
+                  className="w-full px-4 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] focus:border-[#FDBA74] rounded-xl text-xs text-[#111827] placeholder-slate-400 focus:outline-none transition-colors"
                 />
               </div>
             </div>
@@ -1173,13 +1173,13 @@ export default function TrainerRegisterPage() {
             {/* Availability to Join & Preferred Work Location */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
               <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1">
+                <label className="block text-xs font-bold text-slate-700 mb-1">
                   Availability to Join <span className="text-[#B91C1C]">*</span>
                 </label>
                 <select
                   value={form.availability}
                   onChange={(e) => setForm({ ...form, availability: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] focus:border-[#FDBA74] rounded-xl text-xs text-white focus:outline-none cursor-pointer"
+                  className="w-full px-4 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] focus:border-[#FDBA74] rounded-xl text-xs text-[#111827] focus:outline-none cursor-pointer"
                 >
                   {AVAILABILITY_OPTIONS.map((a) => (
                     <option key={a} value={a}>
@@ -1190,7 +1190,7 @@ export default function TrainerRegisterPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1">
+                <label className="block text-xs font-bold text-slate-700 mb-1">
                   Preferred Work Location <span className="text-[#B91C1C]">*</span>
                 </label>
                 <input
@@ -1199,7 +1199,7 @@ export default function TrainerRegisterPage() {
                   placeholder="e.g. Indiranagar, Bangalore / Tirupattur"
                   value={form.preferredLocation}
                   onChange={(e) => setForm({ ...form, preferredLocation: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] focus:border-[#FDBA74] rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none transition-colors"
+                  className="w-full px-4 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] focus:border-[#FDBA74] rounded-xl text-xs text-[#111827] placeholder-slate-400 focus:outline-none transition-colors"
                 />
                 {fieldErrors.preferredLocation && (
                   <p className="text-[#B91C1C] text-[11px] mt-1 flex items-center gap-1">
@@ -1218,7 +1218,7 @@ export default function TrainerRegisterPage() {
               <span className="text-xs uppercase font-bold text-[#EA580C] tracking-wider block">
                 3. Resume & Documents
               </span>
-              <span className="text-[11px] text-slate-400">PDF, DOC, DOCX up to 10MB</span>
+              <span className="text-[11px] text-slate-600">PDF, DOC, DOCX up to 10MB</span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -1239,10 +1239,10 @@ export default function TrainerRegisterPage() {
                       <FileText size={16} />
                     </div>
                     <div>
-                      <span className="text-xs font-bold text-white block">
+                      <span className="text-xs font-bold text-[#111827] block">
                         Upload Resume / CV <span className="text-[#B91C1C]">*</span>
                       </span>
-                      <span className="text-[10px] text-slate-400">PDF, DOC, DOCX</span>
+                      <span className="text-[10px] text-slate-600">PDF, DOC, DOCX</span>
                     </div>
                   </div>
 
@@ -1266,7 +1266,7 @@ export default function TrainerRegisterPage() {
                 {form.resumeUrl ? (
                   <div className="mt-3 p-2.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] flex items-center justify-between text-xs">
                     <div className="truncate flex-1 pr-2">
-                      <p className="font-semibold text-white truncate">{form.resumeOriginalName || 'Resume.pdf'}</p>
+                      <p className="font-semibold text-[#111827] truncate">{form.resumeOriginalName || 'Resume.pdf'}</p>
                       {resumeSizeText && <p className="text-[10px] text-slate-500">{resumeSizeText}</p>}
                     </div>
                     <div className="flex items-center gap-1.5 shrink-0">
@@ -1274,7 +1274,7 @@ export default function TrainerRegisterPage() {
                         type="button"
                         onClick={() => resumeInputRef.current?.click()}
                         disabled={uploadingResume}
-                        className="p-1.5 rounded-lg bg-[#FFFFFF] hover:bg-[#FFF7ED] text-slate-300 hover:text-[#C2410C]"
+                        className="p-1.5 rounded-lg bg-[#FFFFFF] hover:bg-[#FFF7ED] text-slate-600 hover:text-[#C2410C]"
                         title="Replace Resume"
                       >
                         <RefreshCw size={13} className={uploadingResume ? 'animate-spin' : ''} />
@@ -1282,7 +1282,7 @@ export default function TrainerRegisterPage() {
                       <button
                         type="button"
                         onClick={() => setForm((prev) => ({ ...prev, resumeUrl: '', resumeOriginalName: '' }))}
-                        className="p-1.5 rounded-lg bg-[#FFFFFF] hover:bg-red-50 text-slate-400 hover:text-[#B91C1C]"
+                        className="p-1.5 rounded-lg bg-[#FFFFFF] hover:bg-red-50 text-slate-600 hover:text-[#B91C1C]"
                         title="Remove Resume"
                       >
                         <Trash2 size={13} />
@@ -1329,10 +1329,10 @@ export default function TrainerRegisterPage() {
                       <Award size={16} />
                     </div>
                     <div>
-                      <span className="text-xs font-bold text-white block">
+                      <span className="text-xs font-bold text-[#111827] block">
                         Fitness Certifications <span className="text-slate-500 font-normal">(Optional)</span>
                       </span>
-                      <span className="text-[10px] text-slate-400">PDF, JPG, PNG</span>
+                      <span className="text-[10px] text-slate-600">PDF, JPG, PNG</span>
                     </div>
                   </div>
 
@@ -1356,7 +1356,7 @@ export default function TrainerRegisterPage() {
                 {form.certificationUrl ? (
                   <div className="mt-3 p-2.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] flex items-center justify-between text-xs">
                     <div className="truncate flex-1 pr-2">
-                      <p className="font-semibold text-white truncate">{form.certificationOriginalName || 'Certification.pdf'}</p>
+                      <p className="font-semibold text-[#111827] truncate">{form.certificationOriginalName || 'Certification.pdf'}</p>
                       {certSizeText && <p className="text-[10px] text-slate-500">{certSizeText}</p>}
                     </div>
                     <div className="flex items-center gap-1.5 shrink-0">
@@ -1364,7 +1364,7 @@ export default function TrainerRegisterPage() {
                         type="button"
                         onClick={() => certInputRef.current?.click()}
                         disabled={uploadingCert}
-                        className="p-1.5 rounded-lg bg-[#FFFFFF] hover:bg-[#FFF7ED] text-slate-300 hover:text-[#C2410C]"
+                        className="p-1.5 rounded-lg bg-[#FFFFFF] hover:bg-[#FFF7ED] text-slate-600 hover:text-[#C2410C]"
                         title="Replace Document"
                       >
                         <RefreshCw size={13} className={uploadingCert ? 'animate-spin' : ''} />
@@ -1372,7 +1372,7 @@ export default function TrainerRegisterPage() {
                       <button
                         type="button"
                         onClick={() => setForm((prev) => ({ ...prev, certificationUrl: '', certificationOriginalName: '' }))}
-                        className="p-1.5 rounded-lg bg-[#FFFFFF] hover:bg-red-50 text-slate-400 hover:text-[#B91C1C]"
+                        className="p-1.5 rounded-lg bg-[#FFFFFF] hover:bg-red-50 text-slate-600 hover:text-[#B91C1C]"
                         title="Remove Document"
                       >
                         <Trash2 size={13} />
@@ -1414,7 +1414,7 @@ export default function TrainerRegisterPage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 <div>
-                  <label className="block text-xs font-bold text-slate-300 mb-1">
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
                     Password <span className="text-[#B91C1C]">*</span>
                   </label>
                   <div className="relative">
@@ -1424,7 +1424,7 @@ export default function TrainerRegisterPage() {
                       placeholder="Minimum 8 characters"
                       value={form.password}
                       onChange={(e) => setForm({ ...form, password: e.target.value })}
-                      className="w-full px-4 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] focus:border-[#FDBA74] rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none pr-10 transition-colors"
+                      className="w-full px-4 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] focus:border-[#FDBA74] rounded-xl text-xs text-[#111827] placeholder-slate-400 focus:outline-none pr-10 transition-colors"
                     />
                     <button
                       type="button"
@@ -1443,14 +1443,14 @@ export default function TrainerRegisterPage() {
                   {/* Password strength visual indicator */}
                   {form.password && (
                     <div className="mt-2 space-y-1">
-                      <div className="h-1.5 w-full bg-[#FFFFFF] rounded-full overflow-hidden flex gap-1">
+                      <div className="h-1.5 w-full bg-[#E2E8F0] rounded-full overflow-hidden flex gap-1">
                         <div
                           className={`h-full rounded-full transition-all duration-300 ${pwdStrength.color}`}
                           style={{ width: `${pwdStrength.score}%` }}
                         />
                       </div>
                       <div className="flex justify-between text-[10px] text-slate-500">
-                        <span>Strength: <strong className="text-white">{pwdStrength.label}</strong></span>
+                        <span>Strength: <strong className="text-[#111827]">{pwdStrength.label}</strong></span>
                         <span>Use letters, numbers &amp; symbols</span>
                       </div>
                     </div>
@@ -1458,7 +1458,7 @@ export default function TrainerRegisterPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-300 mb-1">
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
                     Confirm Password <span className="text-[#B91C1C]">*</span>
                   </label>
                   <div className="relative">
@@ -1468,7 +1468,7 @@ export default function TrainerRegisterPage() {
                       placeholder="Repeat password"
                       value={form.confirmPassword}
                       onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
-                      className="w-full px-4 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] focus:border-[#FDBA74] rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none pr-10 transition-colors"
+                      className="w-full px-4 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] focus:border-[#FDBA74] rounded-xl text-xs text-[#111827] placeholder-slate-400 focus:outline-none pr-10 transition-colors"
                     />
                     <button
                       type="button"
@@ -1495,7 +1495,7 @@ export default function TrainerRegisterPage() {
                     onChange={(e) => setForm({ ...form, acceptTerms: e.target.checked })}
                     className="mt-0.5 rounded border-[#E2E8F0] text-[#EA580C] focus:ring-0 cursor-pointer"
                   />
-                  <span className="text-xs text-slate-400 leading-relaxed">
+                  <span className="text-xs text-slate-600 leading-relaxed">
                     I agree to the Gymora{' '}
                     <Link to="/terms-of-service" className="text-[#EA580C] hover:underline" target="_blank">
                       Terms of Service
@@ -1548,7 +1548,7 @@ export default function TrainerRegisterPage() {
 
         {/* Existing account footer link */}
         {!isLoggedInTrainer && (
-          <div className="pt-4 border-t border-[#E2E8F0] text-center text-xs text-slate-400">
+          <div className="pt-4 border-t border-[#E2E8F0] text-center text-xs text-slate-600">
             Already have a Trainer account?{' '}
             <Link
               to={jobId ? `/login?portal=trainer&redirect=${encodeURIComponent(`/register/trainer?jobId=${jobId}`)}` : '/login?portal=trainer'}

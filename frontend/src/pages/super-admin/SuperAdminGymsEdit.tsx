@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link, useParams } from 'react-router-dom';
 import { ArrowLeft, Building2, MapPin, Phone, CreditCard, Save } from 'lucide-react';
 import api from '../../utils/api';
@@ -73,7 +73,10 @@ const SuperAdminGymsEdit = () => {
   }, [id]);
 
   const handleChange = (e: any) => {
-    const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+    let value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+    if (e.target.name === 'pinCode' && typeof value === 'string') {
+      value = value.replace(/\D/g, '').slice(0, 6);
+    }
     setForm({ ...form, [e.target.name]: value });
   };
 
@@ -81,6 +84,11 @@ const SuperAdminGymsEdit = () => {
     setError('');
     if (!form.name || !form.gymType || !form.email || !form.phone || !form.address || !form.city || !form.state || !form.pinCode || !form.subscriptionPlan || !form.subscriptionStartDate) {
       setError('Please fill in all required fields marked with *');
+      window.scrollTo(0, 0);
+      return;
+    }
+    if (!/^\d{6}$/.test(form.pinCode.trim())) {
+      setError('Please enter a valid 6-digit pincode');
       window.scrollTo(0, 0);
       return;
     }
@@ -257,7 +265,7 @@ const SuperAdminGymsEdit = () => {
               </div>
               <div>
                 <label className="block text-sm font-medium text-[#64748B] mb-2">Pincode *</label>
-                <input type="text" name="pinCode" value={form.pinCode} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-4 py-3 text-sm focus:border-[#FDBA74] outline-none transition-colors" placeholder="10001" />
+                <input type="text" inputMode="numeric" maxLength={6} pattern="\d{6}" name="pinCode" value={form.pinCode} onChange={handleChange} className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-4 py-3 text-sm focus:border-[#FDBA74] outline-none transition-colors" placeholder="6-digit pincode" />
               </div>
             </div>
           </section>

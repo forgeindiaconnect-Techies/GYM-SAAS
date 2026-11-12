@@ -41,6 +41,7 @@ router.post('/:id/accept', authenticate, acceptSession);
 router.post('/:id/reject', authenticate, rejectSession);
 router.post('/:id/complete', authenticate, completeSession);
 router.post('/:id/session-notes', authenticate, submitSessionNotes);
+router.post('/:id/notes', authenticate, submitSessionNotes);
 router.post('/:id/attendance', authenticate, updateSessionAttendance);
 router.patch('/:id/attendance', authenticate, updateSessionAttendance);
 router.patch('/:id', authenticate, updateSessionAttendance);

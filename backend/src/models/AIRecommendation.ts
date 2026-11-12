@@ -50,6 +50,7 @@ export interface IAIRecommendation extends Document {
       difficulty: string;
       targetMuscleGroup: string;
     }>;
+    dailyWorkouts?: Record<string, any>;
   };
   workoutPlan?: any[];
   
@@ -253,6 +254,7 @@ const aiRecommendationSchema = new Schema<IAIRecommendation>({
       difficulty: String,
       targetMuscleGroup: String,
     }],
+    dailyWorkouts: { type: Schema.Types.Mixed },
   },
   workoutPlan: [{ type: Schema.Types.Mixed }],
   

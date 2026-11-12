@@ -27,12 +27,12 @@ export default function TrainerJobOffers() {
   const fetchOffers = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem('token');
-      const res = await axios.get('http://localhost:5600/api/hiring/trainer/offers', {
+      const token = localStorage.getItem('aigym_token') || sessionStorage.getItem('aigym_token') || localStorage.getItem('token');
+      const res = await axios.get('http://localhost:5600/api/hiring/trainer/my-offers', {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.data.success) {
-        setOffers(res.data.data);
+        setOffers(res.data.offers || res.data.data || []);
       }
     } catch (err) {
       console.error('Failed to load offers:', err);
@@ -47,7 +47,7 @@ export default function TrainerJobOffers() {
 
     setActionLoading(true);
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('aigym_token') || sessionStorage.getItem('aigym_token') || localStorage.getItem('token');
       const res = await axios.patch(
         `http://localhost:5600/api/hiring/trainer/offers/${offerId}/respond`,
         { status },

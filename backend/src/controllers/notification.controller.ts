@@ -44,8 +44,14 @@ const getNotificationQuery = (user: any, branchQuery?: string) => {
       recipientId: { $in: idVariants },
       $or: [{ gymId: gymMatch }, { gymId: { $exists: false } }, { gymId: null }],
     };
-  } else if (gymId && (role === 'MEMBER' || role === 'CUSTOMER')) {
-    conditions.push({ gymId: gymMatch, recipientRole: 'MEMBER' });
+  } else if (role === 'MEMBER' || role === 'CUSTOMER') {
+    // Strict member isolation: only show notifications addressed to this specific customer
+    return {
+      recipientId: { $in: userIds },
+      ...(gymId
+        ? { $or: [{ gymId: gymMatch }, { gymId: { $exists: false } }, { gymId: null }] }
+        : {}),
+    };
   }
 
   return { $or: conditions };

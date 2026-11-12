@@ -58,6 +58,7 @@ router.patch('/campaigns/:id/status', authenticate, toggleGymCampaignStatus);
 router.get('/owner/stats', authenticate, getOwnerReferralStats);
 router.get('/owner/records', authenticate, getOwnerReferralRecords);
 router.post('/owner/records/:id/issue-reward', authenticate, issueReferralRewardManual);
+router.post('/:id/issue-reward', authenticate, issueReferralRewardManual);
 
 // Custom Rewards (Owner & Member)
 router.get('/custom-rewards', authenticate, getCustomRewards);
@@ -78,6 +79,11 @@ router.get('/my-full-history', authenticate, getCustomerDetailedPointsHistory);
 router.get('/my-detailed-history', authenticate, getCustomerDetailedPointsHistory);
 router.post('/quote-redemption', authenticate, quoteRedemption);
 router.post('/redeem-custom', authenticate, redeemCustomRewardCustomer);
+router.post('/custom-rewards/:rewardId/redeem', authenticate, (req: any, res, next) => {
+  if (!req.body) req.body = {};
+  if (!req.body.rewardId) req.body.rewardId = req.params.rewardId;
+  return redeemCustomRewardCustomer(req, res);
+});
 router.post('/redeem', authenticate, redeemCustomerReward);
 router.post('/my-rewards/redeem', authenticate, redeemCustomerReward);
 router.post('/invite-email', authenticate, sendEmailInvite);

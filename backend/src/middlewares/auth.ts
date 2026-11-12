@@ -139,8 +139,8 @@ export const authorize = (roles: string[]) => {
     const userRole = (req.user.role || '').toUpperCase().trim();
     const normalizedRoles = roles.map(r => r.toUpperCase().trim());
 
-    // Super Admin, Admin, and Gym Owner have master override for their own routes
-    if (userRole === 'SUPER_ADMIN' || userRole === 'ADMIN' || userRole === 'GYM_OWNER') {
+    // Only SUPER_ADMIN has master override across routes
+    if (userRole === 'SUPER_ADMIN') {
       return next();
     }
 

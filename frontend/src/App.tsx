@@ -476,9 +476,9 @@ function App() {
             </ProtectedRoute>
           } />
 
-                    {/* Gym Admin Routes */}
+          {/* Gym Admin Routes */}
           <Route path="/admin" element={
-            <ProtectedRoute allowedRoles={['ADMIN', 'GYM_OWNER', 'MEMBER', 'TRAINER', 'SUPER_ADMIN']}>
+            <ProtectedRoute allowedRoles={['ADMIN', 'GYM_OWNER', 'GYM_MANAGER', 'SUPER_ADMIN']}>
               <GymAdminLayout />
             </ProtectedRoute>
           }>
@@ -544,7 +544,7 @@ function App() {
 
 {/* Super Admin Routes */}
           <Route path="/super-admin" element={
-            <ProtectedRoute allowedRoles={['SUPER_ADMIN', 'ADMIN', 'GYM_OWNER', 'MEMBER', 'TRAINER']}>
+            <ProtectedRoute allowedRoles={['SUPER_ADMIN', 'ADMIN']}>
               <SuperAdminLayout />
             </ProtectedRoute>
           }>

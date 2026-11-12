@@ -258,7 +258,9 @@ export const updateGym = async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params;
     const {
       name, gymType, logo, description, email, phone, website,
-      address, city, state, pinCode,
+      address, area, city, state, country, pinCode, latitude, longitude,
+      location: bodyLocation,
+      establishedYear, trainingMode, operatingHours, taxId,
       subscriptionPlan, subscriptionStartDate, subscriptionEndDate, subscriptionStatus,
       status, memberCapacity, trainerCapacity, equipment, subscriptionPlans
     } = req.body;
@@ -277,18 +279,40 @@ export const updateGym = async (req: Request, res: Response): Promise<void> => {
     if (email) updateData.email = email;
     if (phone) updateData.phone = phone;
     if (website !== undefined) updateData.website = website;
+    if (establishedYear !== undefined && establishedYear !== '') updateData.establishedYear = Number(establishedYear);
+    if (trainingMode) updateData.trainingMode = trainingMode;
+    if (operatingHours !== undefined) updateData.operatingHours = operatingHours;
+    if (taxId !== undefined) updateData.taxId = taxId;
     if (memberCapacity !== undefined) updateData.memberCapacity = memberCapacity;
     if (trainerCapacity !== undefined) updateData.trainerCapacity = trainerCapacity;
     if (equipment) updateData.equipment = equipment;
     if (status) updateData.status = status;
     if (subscriptionPlans) updateData.subscriptionPlans = subscriptionPlans;
 
-    if (address || city || state || pinCode) {
+    const locInput = (bodyLocation && typeof bodyLocation === 'object') ? bodyLocation : {};
+    const mergedAddress = locInput.address ?? address;
+    const mergedArea = locInput.area ?? area;
+    const mergedCity = locInput.city ?? city;
+    const mergedState = locInput.state ?? state;
+    const mergedCountry = locInput.country ?? country;
+    const mergedPinCode = locInput.pinCode ?? pinCode;
+    const mergedLat = locInput.latitude ?? latitude;
+    const mergedLng = locInput.longitude ?? longitude;
+
+    if (
+      mergedAddress !== undefined || mergedArea !== undefined || mergedCity !== undefined ||
+      mergedState !== undefined || mergedCountry !== undefined || mergedPinCode !== undefined ||
+      mergedLat !== undefined || mergedLng !== undefined
+    ) {
       updateData.location = {
-        address: address || gym.location?.address,
-        city: city || gym.location?.city,
-        state: state || gym.location?.state,
-        pinCode: pinCode || gym.location?.pinCode,
+        address: mergedAddress !== undefined ? mergedAddress : gym.location?.address,
+        area: mergedArea !== undefined ? mergedArea : gym.location?.area,
+        city: mergedCity !== undefined ? mergedCity : gym.location?.city,
+        state: mergedState !== undefined ? mergedState : gym.location?.state,
+        country: mergedCountry !== undefined ? mergedCountry : gym.location?.country,
+        pinCode: mergedPinCode !== undefined ? mergedPinCode : gym.location?.pinCode,
+        latitude: mergedLat !== undefined ? mergedLat : gym.location?.latitude,
+        longitude: mergedLng !== undefined ? mergedLng : gym.location?.longitude,
       };
     }
 
@@ -922,7 +946,6 @@ export const getCommunityTestimonials = async (req: Request, res: Response): Pro
       .lean();
 
     const realMemberReviews: any[] = [];
-    const reviewedMemberUserIds = new Set<string>();
 
     gymsWithReviews.forEach((gym: any) => {
       if (!Array.isArray(gym.reviews)) return;
@@ -937,10 +960,6 @@ export const getCommunityTestimonials = async (req: Request, res: Response): Pro
         const planName = memberUser?.subscriptionPlan ? `${memberUser.subscriptionPlan.toUpperCase()} MEMBER` : 'STARTER MEMBER';
         const locParts = [gym.location?.city, gym.location?.state].filter(Boolean);
         const locStr = locParts.length > 0 ? ` • ${locParts.join(', ')}` : '';
-
-        if (r.userId) reviewedMemberUserIds.add(r.userId.toString());
-        if (memberUser?._id) reviewedMemberUserIds.add(memberUser._id.toString());
-        if (r.userName) reviewedMemberUserIds.add(r.userName.trim().toLowerCase());
 
         realMemberReviews.push({
           id: `member-gym-review-${gym._id}-${r._id || r.userId || Math.random()}`,
@@ -963,38 +982,8 @@ export const getCommunityTestimonials = async (req: Request, res: Response): Pro
     // Sort real gym reviews newest first
     realMemberReviews.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
-    const memberQuotes = [
-      'The AI workout plans adjusted exactly to my home equipment and schedule. I lost 15lbs in two months without feeling overworked.',
-      'Having access to certified trainers combined with personalized AI routines on my phone completely changed my fitness journey.',
-      'The nutrition guidance and dynamic calorie goals helped me gain clean muscle while keeping my energy high throughout the workday.',
-      'No more guessing in the gym. Every set, rep, and recovery rest is calculated for maximum results.',
-      'From QR code attendance to real-time progress charts, Gymora makes showing up at the gym an exciting daily habit.'
-    ];
-
-    const fallbackMemberTestimonials: any[] = [];
-    members.forEach((mem, idx) => {
-      const name = `${mem.firstName || ''} ${mem.lastName || ''}`.trim();
-      if (
-        reviewedMemberUserIds.has(mem._id.toString()) ||
-        (name && reviewedMemberUserIds.has(name.toLowerCase()))
-      ) {
-        return; // Member already included via their actual gym review
-      }
-
-      const planName = mem.subscriptionPlan ? `${mem.subscriptionPlan.toUpperCase()} MEMBER` : 'PREMIUM MEMBER';
-      fallbackMemberTestimonials.push({
-        id: `member-${mem._id}`,
-        userId: mem._id,
-        name: name || 'Gym Member',
-        role: planName,
-        category: 'Member',
-        type: 'member',
-        rating: 5,
-        text: memberQuotes[idx % memberQuotes.length]
-      });
-    });
-
-    const memberTestimonials = [...realMemberReviews, ...fallbackMemberTestimonials];
+    // Only include members who actually submitted a real review
+    const memberTestimonials = realMemberReviews;
 
     // Curate a balanced primary showcase: 1 Member, 1 Trainer, 1 Gym Owner (matching the 3-column landing UI)
     const featured: any[] = [];
@@ -1102,7 +1091,7 @@ export const getGymOwnerReviews = async (req: AuthRequest, res: Response): Promi
     if (!gym && userId) {
       gym = await Gym.findOne({ ownerId: userId });
     }
-    if (!gym) {
+    if (!gym && String((req.user as any)?.role || '').toUpperCase() === 'SUPER_ADMIN') {
       gym = await Gym.findOne({ status: GymStatus.ACTIVE });
     }
 

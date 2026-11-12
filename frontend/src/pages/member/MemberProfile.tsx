@@ -78,7 +78,7 @@ const MemberProfile = ({ hideEdit = false }: { hideEdit?: boolean }) => {
       lastName: displayUser?.lastName || '',
       mobile: displayUser?.mobile || '',
       city: displayUser?.city || '',
-      pinCode: displayUser?.pinCode || '',
+      pinCode: (displayUser?.pinCode || '').replace(/\D/g, '').slice(0, 6),
       dateOfBirth: displayUser?.dateOfBirth ? new Date(displayUser.dateOfBirth).toISOString().split('T')[0] : '',
       gender: displayUser?.gender || '',
       height: displayUser?.height || '',
@@ -91,6 +91,10 @@ const MemberProfile = ({ hideEdit = false }: { hideEdit?: boolean }) => {
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (formData.pinCode.trim() && !/^\d{6}$/.test(formData.pinCode.trim())) {
+      alert('Please enter a valid 6-digit pincode');
+      return;
+    }
     setIsSaving(true);
     try {
       const response = await api.put(`/users/${displayUser.id || displayUser._id}`, formData);
@@ -308,8 +312,12 @@ const MemberProfile = ({ hideEdit = false }: { hideEdit?: boolean }) => {
                   <label className="block text-xs sm:text-sm font-semibold text-[#111827] mb-1.5">Pincode</label>
                   <input
                     type="text"
+                    inputMode="numeric"
+                    maxLength={6}
+                    pattern="\d{6}"
                     value={formData.pinCode}
-                    onChange={(e) => setFormData({ ...formData, pinCode: e.target.value })}
+                    onChange={(e) => setFormData({ ...formData, pinCode: e.target.value.replace(/\D/g, '').slice(0, 6) })}
+                    placeholder="6-digit pincode"
                     className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-3.5 py-2.5 sm:py-3 text-xs sm:text-sm text-[#111827] focus:border-[#FDBA74] focus:ring-2 focus:ring-[#F97316]/20 outline-none transition-all"
                   />
                 </div>

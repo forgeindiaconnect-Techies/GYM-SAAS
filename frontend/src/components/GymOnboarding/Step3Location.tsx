@@ -1,4 +1,4 @@
-﻿import { MapPin } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 
 export const Step3Location = ({ data, updateData, errors }: any) => {
   return (
@@ -59,10 +59,13 @@ export const Step3Location = ({ data, updateData, errors }: any) => {
           <label className="block text-sm font-medium text-[#64748B] mb-2">Pincode</label>
           <input
             type="text"
+            inputMode="numeric"
+            maxLength={6}
+            pattern="\d{6}"
             value={data.pincode}
-            onChange={(e) => updateData({ pincode: e.target.value })}
+            onChange={(e) => updateData({ pincode: e.target.value.replace(/\D/g, '').slice(0, 6) })}
             className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-4 py-3 text-sm text-[#111827] outline-none focus:border-[#FDBA74]"
-            placeholder="10001"
+            placeholder="6-digit pincode"
           />
         </div>
 

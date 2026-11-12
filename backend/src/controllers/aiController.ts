@@ -24,34 +24,88 @@ export { mockAIGeneration };
 
 
 /* ── 1. Customer Assessment & AI Analysis Generation ──────────────────────────── */
+const normalizeExperienceLevel = (val?: string): 'Beginner' | 'Intermediate' | 'Advanced' | undefined => {
+  if (!val) return undefined;
+  const lower = String(val).toLowerCase();
+  if (lower.includes('advanced')) return 'Advanced';
+  if (lower.includes('intermediate')) return 'Intermediate';
+  if (lower.includes('beginner')) return 'Beginner';
+  return undefined;
+};
+
+const normalizePreferredTraining = (val?: string): 'Offline' | 'Online' | 'Hybrid' | undefined => {
+  if (!val) return undefined;
+  const lower = String(val).toLowerCase();
+  if (lower.includes('hybrid')) return 'Hybrid';
+  if (lower.includes('online') || lower.includes('home')) return 'Online';
+  if (lower.includes('offline') || lower.includes('gym')) return 'Offline';
+  return undefined;
+};
+
+const normalizeGender = (val?: string): 'Male' | 'Female' | 'Other' | 'Prefer not to say' | undefined => {
+  if (!val) return undefined;
+  const allowed = ['Male', 'Female', 'Other', 'Prefer not to say'] as const;
+  return allowed.find((g) => g.toLowerCase() === String(val).trim().toLowerCase());
+};
+
 export const generateRecommendation = async (req: any, res: any) => {
   try {
-    const fitnessProfile = req.body.fitnessProfile || (req.body.goal || req.body.fitnessGoal || req.body.age ? req.body : null);
+    const rawProfile = req.body.fitnessProfile || (req.body.goal || req.body.fitnessGoal || req.body.age ? req.body : null);
     const customerId = req.user.id;
     const userGymId = req.user.gymId;
 
-    if (!fitnessProfile) {
+    if (!rawProfile) {
       return res.status(400).json({ success: false, message: 'Fitness profile assessment data is required' });
     }
 
     const userDoc = await User.findById(customerId);
-    const gymId = userDoc?.gymId || userGymId;
+    let gymId = userDoc?.gymId || userGymId;
+    if (!gymId) {
+      const latestMembership = await CustomerMembership.findOne({ userId: customerId }).sort({ createdAt: -1 }).lean();
+      if (latestMembership?.gymId) {
+        gymId = latestMembership.gymId;
+      }
+    }
 
     if (!gymId) {
       return res.status(400).json({ success: false, message: 'Gym membership context is required to generate AI plans' });
     }
 
-    // Sync updated customer registered details to User profile
+    const computedAgeFromDob = (() => {
+      if (!userDoc?.dateOfBirth) return undefined;
+      const diffMs = Date.now() - new Date(userDoc.dateOfBirth).getTime();
+      return String(Math.max(14, Math.abs(new Date(diffMs).getUTCFullYear() - 1970)));
+    })();
+
+    const fitnessProfile = {
+      ...rawProfile,
+      fullName: rawProfile.fullName || `${userDoc?.firstName || ''} ${userDoc?.lastName || ''}`.trim() || 'Member',
+      age: rawProfile.age || computedAgeFromDob || '28',
+      gender: rawProfile.gender || userDoc?.gender || 'Not specified',
+      height: rawProfile.height || userDoc?.height || 170,
+      weight: rawProfile.weight || userDoc?.weight || 70,
+      fitnessGoal: rawProfile.fitnessGoal || rawProfile.goal || userDoc?.fitnessGoal || 'General Fitness',
+      currentFitnessLevel: rawProfile.currentFitnessLevel || userDoc?.experienceLevel || 'Beginner',
+      preferredTraining: rawProfile.preferredTraining || userDoc?.preferredTraining || 'Offline',
+      preferredWorkoutTime: rawProfile.preferredWorkoutTime || userDoc?.preferredWorkoutTime || 'Morning',
+      availableWorkoutDays: rawProfile.availableWorkoutDays || (userDoc as any)?.preferredWorkoutDays || '4 Days / Week',
+      city: rawProfile.city || userDoc?.city,
+    };
+
+    // Sync updated customer registered details to User profile safely (validating enums)
     if (userDoc) {
-      if (fitnessProfile.height) userDoc.height = Number(fitnessProfile.height);
-      if (fitnessProfile.weight) userDoc.weight = Number(fitnessProfile.weight);
-      if (fitnessProfile.fitnessGoal) userDoc.fitnessGoal = fitnessProfile.fitnessGoal;
-      if (fitnessProfile.currentFitnessLevel) userDoc.experienceLevel = fitnessProfile.currentFitnessLevel;
-      if (fitnessProfile.preferredTraining) userDoc.preferredTraining = fitnessProfile.preferredTraining;
-      if (fitnessProfile.preferredWorkoutTime) userDoc.preferredWorkoutTime = fitnessProfile.preferredWorkoutTime;
-      if (fitnessProfile.gender) userDoc.gender = fitnessProfile.gender;
-      if (fitnessProfile.city) userDoc.city = fitnessProfile.city;
-      if (fitnessProfile.pinCode) userDoc.pinCode = fitnessProfile.pinCode;
+      if (fitnessProfile.height && !isNaN(Number(fitnessProfile.height))) userDoc.height = Number(fitnessProfile.height);
+      if (fitnessProfile.weight && !isNaN(Number(fitnessProfile.weight))) userDoc.weight = Number(fitnessProfile.weight);
+      if (fitnessProfile.fitnessGoal) userDoc.fitnessGoal = String(fitnessProfile.fitnessGoal);
+      const normExp = normalizeExperienceLevel(fitnessProfile.currentFitnessLevel);
+      if (normExp) userDoc.experienceLevel = normExp;
+      const normTrain = normalizePreferredTraining(fitnessProfile.preferredTraining);
+      if (normTrain) userDoc.preferredTraining = normTrain;
+      if (fitnessProfile.preferredWorkoutTime) userDoc.preferredWorkoutTime = String(fitnessProfile.preferredWorkoutTime);
+      const normGender = normalizeGender(fitnessProfile.gender);
+      if (normGender) userDoc.gender = normGender;
+      if (fitnessProfile.city) userDoc.city = String(fitnessProfile.city);
+      if (fitnessProfile.pinCode) userDoc.pinCode = String(fitnessProfile.pinCode);
       if (fitnessProfile.emergencyContactName || fitnessProfile.emergencyContactMobile) {
         userDoc.emergencyContact = {
           name: fitnessProfile.emergencyContactName || userDoc.emergencyContact?.name || '',

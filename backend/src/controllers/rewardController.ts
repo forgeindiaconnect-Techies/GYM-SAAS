@@ -7,6 +7,7 @@ import CustomerPointsWallet from '../models/CustomerPointsWallet';
 import PointsTransaction from '../models/PointsTransaction';
 import ChallengeParticipant from '../models/ChallengeParticipant';
 import TrainerSession from '../models/TrainerSession';
+import Trainer from '../models/Trainer';
 import User from '../models/User';
 import Notification from '../models/Notification';
 import StoreProduct from '../models/StoreProduct';
@@ -879,17 +880,21 @@ export const getTrainerRewards = async (req: AuthRequest, res: Response): Promis
       return;
     }
 
+    const trainerDoc = await Trainer.findOne({ userId: trainerId }).select('_id');
+    const trainerIdList: any[] = [trainerId];
+    if (trainerDoc?._id) trainerIdList.push(trainerDoc._id);
+
     // Compute Trainer Verified Performance metrics:
     // 1. Completed sessions
     const completedSessionsCount = await (TrainerSession as any).countDocuments({
-      trainerId,
+      trainerId: { $in: trainerIdList },
       gymId,
       $or: [{ status: 'Completed' }, { attendanceStatus: 'Present' }]
     });
 
     // 2. Average rating from completed sessions
     const sessionsWithRating = await (TrainerSession as any).find({
-      trainerId,
+      trainerId: { $in: trainerIdList },
       gymId,
       customerRating: { $exists: true, $gt: 0 }
     }).select('customerRating');
@@ -898,7 +903,7 @@ export const getTrainerRewards = async (req: AuthRequest, res: Response): Promis
     const averageRating = sessionsWithRating.length > 0 ? (totalRatings / sessionsWithRating.length).toFixed(1) : '5.0';
 
     // 3. Assigned customers count
-    const assignedCustomersCount = (await TrainerSession.find({ trainerId, gymId }).distinct('customerId')).length;
+    const assignedCustomersCount = (await TrainerSession.find({ trainerId: { $in: trainerIdList }, gymId }).distinct('customerId')).length;
 
     // Fetch trainer rewards
     const rewards = await RewardDefinition.find({

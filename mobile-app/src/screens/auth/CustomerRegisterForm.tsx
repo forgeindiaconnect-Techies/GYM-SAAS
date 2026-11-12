@@ -14,7 +14,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../constants/theme';
 import { useAuth } from '../../context/AuthContext';
 import { api } from '../../api/client';
-import { sanitizeTenDigitPhone, isValidTenDigitPhone } from '../../utils/phoneUtils';
+import { sanitizeTenDigitPhone, isValidTenDigitPhone, sanitizeSixDigitPinCode, isValidSixDigitPinCode } from '../../utils/phoneUtils';
 
 export interface CustomerRegisterFormProps {
   onBackToLogin: () => void;
@@ -118,6 +118,7 @@ export const CustomerRegisterForm: React.FC<CustomerRegisterFormProps> = ({ onBa
     if (s === 1) {
       if (!form.gender) errs.gender = 'Gender is required';
       if (!form.city.trim()) errs.city = 'City is required';
+      if (form.pinCode.trim() && !isValidSixDigitPinCode(form.pinCode.trim())) errs.pinCode = 'Enter a valid 6-digit PIN code';
       if (!form.height.trim()) errs.height = 'Height is required (cm)';
       if (!form.weight.trim()) errs.weight = 'Weight is required (kg)';
       if (!form.emergencyContactName.trim()) errs.emergencyContactName = 'Emergency contact name is required';
@@ -377,13 +378,15 @@ export const CustomerRegisterForm: React.FC<CustomerRegisterFormProps> = ({ onBa
 
             <Text style={styles.fieldLabel}>PIN Code (Optional)</Text>
             <TextInput
-              style={styles.input}
+              style={[styles.input, errors.pinCode && styles.inputError]}
               placeholder="e.g. 560038"
               placeholderTextColor={COLORS.textMuted}
               keyboardType="number-pad"
+              maxLength={6}
               value={form.pinCode}
-              onChangeText={val => updateField('pinCode', val)}
+              onChangeText={val => updateField('pinCode', sanitizeSixDigitPinCode(val))}
             />
+            {errors.pinCode && <Text style={styles.errorText}>{errors.pinCode}</Text>}
 
             <View style={styles.rowTwoCols}>
               <View style={styles.colHalf}>

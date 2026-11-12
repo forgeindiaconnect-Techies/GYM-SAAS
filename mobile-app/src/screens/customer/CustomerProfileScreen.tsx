@@ -16,7 +16,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../context/AuthContext';
 import { api } from '../../api/client';
-import { sanitizeTenDigitPhone, isValidTenDigitPhone } from '../../utils/phoneUtils';
+import { sanitizeTenDigitPhone, isValidTenDigitPhone, sanitizeSixDigitPinCode, isValidSixDigitPinCode } from '../../utils/phoneUtils';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -100,7 +100,7 @@ export const CustomerProfileScreen: React.FC = () => {
       lastName: user.lastName || '',
       mobile: sanitizeTenDigitPhone(user.mobile || ''),
       city: user.city || '',
-      pinCode: user.pinCode || '',
+      pinCode: sanitizeSixDigitPinCode(user.pinCode || ''),
       gender: user.gender || 'Male',
       height: user.height || '180',
       weight: user.weight || '85',
@@ -118,6 +118,10 @@ export const CustomerProfileScreen: React.FC = () => {
     }
     if (formData.mobile && !isValidTenDigitPhone(formData.mobile)) {
       Alert.alert('Invalid Mobile Number', 'Please enter a valid 10-digit mobile number.');
+      return;
+    }
+    if (formData.pinCode.trim() && !isValidSixDigitPinCode(formData.pinCode.trim())) {
+      Alert.alert('Invalid PIN Code', 'Please enter a valid 6-digit PIN code.');
       return;
     }
     if (formData.emergencyMobile && !isValidTenDigitPhone(formData.emergencyMobile)) {
@@ -347,11 +351,11 @@ export const CustomerProfileScreen: React.FC = () => {
                     <Text style={styles.fieldLabel}>Pin Code</Text>
                     <TextInput
                       style={styles.fieldInput}
-                      keyboardType="numeric"
+                      keyboardType="number-pad"
                       maxLength={6}
                       value={formData.pinCode}
-                      onChangeText={(t) => setFormData({ ...formData, pinCode: t })}
-                      placeholder="Pin Code"
+                      onChangeText={(t) => setFormData({ ...formData, pinCode: sanitizeSixDigitPinCode(t) })}
+                      placeholder="6-digit Pin Code"
                     />
                   </View>
                 </View>

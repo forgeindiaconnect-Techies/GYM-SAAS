@@ -105,7 +105,7 @@ export default function GymAdminHiredTrainers() {
             items.push({
               id: `offer_${o._id}`,
               sourceType: 'JOB_OFFER',
-              trainerName: app?.fullName || trainer?.name || 'Trainer',
+              trainerName: app?.name || app?.fullName || trainer?.name || 'Trainer',
               trainerEmail: app?.email || trainer?.email,
               trainerPhone: app?.phone || trainer?.phone,
               trainerPhoto: trainer?.profilePhoto,
@@ -117,7 +117,7 @@ export default function GymAdminHiredTrainers() {
               joiningDate: o.joiningDate,
               status: 'Offer Accepted',
               confirmedDate: o.updatedAt,
-              notes: o.terms
+              notes: o.termsAndConditions || o.terms
             });
           });
       }

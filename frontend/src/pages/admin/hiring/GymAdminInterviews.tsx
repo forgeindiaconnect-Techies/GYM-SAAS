@@ -39,7 +39,7 @@ export default function GymAdminInterviews() {
         params
       });
       if (res.data.success) {
-        setInterviews(res.data.data);
+        setInterviews(res.data.interviews || res.data.data || []);
       }
     } catch (err) {
       console.error('Failed to load interviews:', err);

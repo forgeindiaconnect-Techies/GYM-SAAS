@@ -26,8 +26,11 @@ const resolveGymForOwner = async (req: AuthRequest) => {
     const gym = await Gym.findById(req.query.gymId);
     if (gym) return gym;
   }
-  const fallbackGym = await Gym.findOne({ status: 'ACTIVE' } as any) || await Gym.findOne().sort({ createdAt: -1 });
-  return fallbackGym;
+  if (String(req.user?.role || '').toUpperCase() === 'SUPER_ADMIN') {
+    const fallbackGym = await Gym.findOne({ status: 'ACTIVE' } as any) || await Gym.findOne().sort({ createdAt: -1 });
+    return fallbackGym;
+  }
+  return null;
 };
 
 // Generic file upload endpoint for Resumes, Certifications & Photos
@@ -733,7 +736,7 @@ export const getOwnerInterviews = async (req: AuthRequest, res: Response): Promi
       .populate('jobId', 'title location')
       .sort({ date: 1 });
 
-    res.status(200).json({ success: true, interviews });
+    res.status(200).json({ success: true, interviews, data: interviews });
   } catch (error: any) {
     console.error('Error fetching owner interviews:', error);
     res.status(500).json({ success: false, message: 'Failed to fetch interviews', error: error.message });
@@ -856,7 +859,7 @@ export const getOwnerOffers = async (req: AuthRequest, res: Response): Promise<v
       .populate('jobId', 'title location')
       .sort({ createdAt: -1 });
 
-    res.status(200).json({ success: true, offers });
+    res.status(200).json({ success: true, offers, data: offers });
   } catch (error: any) {
     console.error('Error fetching owner offers:', error);
     res.status(500).json({ success: false, message: 'Failed to fetch job offers', error: error.message });
@@ -952,11 +955,13 @@ export const applyToJob = async (req: AuthRequest, res: Response): Promise<void>
 
     const {
       name,
+      fullName,
       email,
       phone,
       qualifications,
       certifications,
       workExperience,
+      yearsOfExperience,
       expertise,
       expectedSalary,
       preferredLocation,
@@ -973,13 +978,13 @@ export const applyToJob = async (req: AuthRequest, res: Response): Promise<void>
       jobId: job._id,
       gymId: job.gymId,
       trainerId: trainerUser._id,
-      name: name || `${trainerUser.firstName} ${trainerUser.lastName}`.trim(),
+      name: name || fullName || `${trainerUser.firstName} ${trainerUser.lastName}`.trim(),
       email: email || trainerUser.email,
       phone: phone || trainerUser.mobile,
       profilePhoto: trainerUser.profilePhoto || req.body.profilePhoto,
       qualifications: qualifications || '',
       certifications: certifications || '',
-      workExperience: workExperience || '',
+      workExperience: workExperience || yearsOfExperience || '',
       expertise: expertiseList,
       expectedSalary: expectedSalary || '',
       preferredLocation: preferredLocation || '',
@@ -1131,7 +1136,7 @@ export const getTrainerInterviews = async (req: AuthRequest, res: Response): Pro
       .populate('jobId', 'title location')
       .sort({ date: 1 });
 
-    res.status(200).json({ success: true, interviews });
+    res.status(200).json({ success: true, interviews, data: interviews });
   } catch (error: any) {
     console.error('Error fetching trainer interviews:', error);
     res.status(500).json({ success: false, message: 'Failed to fetch interviews', error: error.message });
@@ -1145,7 +1150,7 @@ export const getTrainerOffers = async (req: AuthRequest, res: Response): Promise
       .populate('jobId', 'title location employmentType')
       .sort({ createdAt: -1 });
 
-    res.status(200).json({ success: true, offers });
+    res.status(200).json({ success: true, offers, data: offers });
   } catch (error: any) {
     console.error('Error fetching trainer job offers:', error);
     res.status(500).json({ success: false, message: 'Failed to fetch job offers', error: error.message });
@@ -1155,7 +1160,9 @@ export const getTrainerOffers = async (req: AuthRequest, res: Response): Promise
 export const respondToJobOffer = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const { id } = req.params; // offerId
-    const { action, declineReason } = req.body; // action: 'Accept' | 'Decline'
+    const { action: rawAction, status: rawStatus, declineReason } = req.body;
+    const normalizedInput = rawAction || rawStatus;
+    const action = normalizedInput === 'Accepted' ? 'Accept' : normalizedInput === 'Declined' ? 'Decline' : normalizedInput;
 
     if (!['Accept', 'Decline'].includes(action)) {
       res.status(400).json({ success: false, message: 'Action must be "Accept" or "Decline"' });
@@ -1340,11 +1347,13 @@ export const getPublicTrainers = async (req: any, res: Response): Promise<void> 
     }
 
     if (expertise && typeof expertise === 'string' && expertise !== 'all') {
-      query.$or = query.$or || [];
-      query.$or.push(
-        { expertise: { $regex: expertise.trim(), $options: 'i' } },
-        { specialization: { $regex: expertise.trim(), $options: 'i' } }
-      );
+      query.$and = query.$and || [];
+      query.$and.push({
+        $or: [
+          { expertise: { $regex: expertise.trim(), $options: 'i' } },
+          { specialization: { $regex: expertise.trim(), $options: 'i' } }
+        ]
+      });
     }
 
     if (experience && typeof experience === 'string' && experience !== 'all') {

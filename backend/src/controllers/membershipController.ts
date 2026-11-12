@@ -3,6 +3,7 @@ import { AuthRequest } from '../middlewares/auth';
 import CustomerMembership, { CustomerMembershipStatus } from '../models/CustomerMembership';
 import User, { Role, ApprovalStatus, SubscriptionStatus } from '../models/User';
 import Gym from '../models/Gym';
+import GymPackage from '../models/GymPackage';
 import Notification from '../models/Notification';
 import Payment, { PaymentStatus } from '../models/Payment';
 import GymRewardSettings from '../models/GymRewardSettings';
@@ -717,6 +718,48 @@ export const runMembershipExpiryCheck = async (): Promise<{ processed: number; r
   } catch (err) {
     console.error('Error running membership expiry check:', err);
     return { processed: 0, remindersSent: 0 };
+  }
+};
+
+export const getMembershipPlans = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    let gymId = (req.query.gymId as string) || (req.user?.gymId as string);
+    if (!gymId && req.user?.id) {
+      const ownerGym = await Gym.findOne({ ownerId: req.user.id }).select('_id').lean();
+      if (ownerGym?._id) {
+        gymId = String(ownerGym._id);
+      }
+    }
+
+    const filter: any = { status: 'Active' };
+    if (gymId) filter.gymId = gymId;
+
+    const packages = await GymPackage.find(filter).sort({ isPopular: -1, createdAt: -1 }).lean();
+    const plans: any[] = packages.map((pkg: any) => ({
+      ...pkg,
+      planName: pkg.name,
+    }));
+
+    if (gymId) {
+      const gym = await Gym.findById(gymId).select('subscriptionPlans').lean();
+      if (Array.isArray(gym?.subscriptionPlans)) {
+        for (const sp of gym.subscriptionPlans) {
+          if (sp?.name && !plans.some((p) => (p.name || p.planName) === sp.name)) {
+            plans.push({
+              name: sp.name,
+              planName: sp.name,
+              price: sp.price,
+              duration: sp.duration,
+              features: sp.features,
+            });
+          }
+        }
+      }
+    }
+
+    res.status(200).json({ success: true, plans });
+  } catch (err: any) {
+    res.status(500).json({ success: false, message: err.message || 'Failed to fetch membership plans' });
   }
 };
 

@@ -41,39 +41,72 @@ export const mockAIGeneration = (fitnessProfile: any) => {
 
   // BMI Calculation
   const heightM = height / 100;
-  const bmi = heightM > 0 ? (weight / (heightM * heightM)).toFixed(1) : '22.0';
+  const bmiNum = heightM > 0 ? weight / (heightM * heightM) : 22.0;
+  const bmi = bmiNum.toFixed(1);
+  const bmiCategory = bmiNum < 18.5 ? 'Underweight' : bmiNum < 25 ? 'Normal' : bmiNum < 30 ? 'Overweight' : 'Obese';
+
+  // BMR & Calorie Target Calculation (Mifflin-St Jeor)
+  const isFemale = String(gender).toLowerCase() === 'female';
+  const bmr = Math.round(10 * weight + 6.25 * height - 5 * age + (isFemale ? -161 : 5));
+  const activityMultiplier = 1.45;
+  const maintenanceCalories = Math.round(bmr * activityMultiplier);
+
+  const lowerGoal = goal.toLowerCase();
+  const isWeightLossGoal = lowerGoal.includes('weight loss') || lowerGoal.includes('fat loss');
+  const isMuscleGoal = lowerGoal.includes('muscle') || lowerGoal.includes('hypertrophy') || lowerGoal.includes('weight gain');
+  const isStrengthGoal = lowerGoal.includes('strength');
+  const isEnduranceGoal = lowerGoal.includes('endurance') || lowerGoal.includes('stamina');
+
+  const baseTargetCalories = isWeightLossGoal
+    ? Math.max(1450, maintenanceCalories - 450)
+    : isMuscleGoal
+    ? maintenanceCalories + 300
+    : isStrengthGoal
+    ? maintenanceCalories + 150
+    : maintenanceCalories;
+
+  const proteinGrams = Math.round(weight * (isMuscleGoal || isStrengthGoal ? 2.0 : 1.7));
+  const fatGrams = Math.round((baseTargetCalories * 0.25) / 9);
+  const carbGrams = Math.max(100, Math.round((baseTargetCalories - proteinGrams * 4 - fatGrams * 9) / 4));
+  const targetWeightDisplay = fitnessProfile.targetWeight || (isWeightLossGoal ? Math.max(45, Math.round(weight * 0.9)) : isMuscleGoal ? Math.round(weight + 4) : weight);
 
   let goalAnalysis = '';
   let recommendedApproach = '';
   let assessment = '';
   let limitations = '';
 
-  const lowerGoal = goal.toLowerCase();
+  const customerName = fitnessProfile.fullName || 'Member';
+  const workoutTime = fitnessProfile.preferredWorkoutTime || 'Morning';
 
-  if (lowerGoal.includes('weight loss') || lowerGoal.includes('fat loss')) {
-    goalAnalysis = `Targeting sustainable fat reduction with a controlled caloric deficit (~350–500 kcal/day). Given the current BMI of ${bmi} and ${activityLevel.toLowerCase()} baseline, the objective is preserving lean muscle tissue while optimizing metabolic expenditure.`;
-    recommendedApproach = 'High-density resistance training (compound movements) combined with post-workout Zone 2 cardio (20–25 mins) and steady step accumulation (8,000–10,000 steps/day).';
-    assessment = `Baseline assessment should include: Bodyweight (weekly), Body Measurements (waist, hips, chest, arms – monthly), basic strength tests (e.g., max reps push-ups, planks for time, bodyweight squats), and a 1-mile walk/run test to establish cardiovascular fitness. Monitor perceived exertion (RPE) for all exercises to guide progression.`;
-    limitations = injuries !== 'None reported' 
-      ? `Reported considerations: "${injuries}". Strictly avoid ballistic impact on affected joints; substitute high-impact movements with low-impact alternatives.`
-      : 'Maintain strict pelvic stability and avoid spinal flexion under fatigue. High-volume plyometrics should be phased gradually.';
-  } else if (lowerGoal.includes('muscle') || lowerGoal.includes('hypertrophy') || lowerGoal.includes('weight gain')) {
-    goalAnalysis = `Prioritizing mechanical tension, metabolic stress, and myofibrillar hypertrophy. Requires a slight hypercaloric surplus (+250–350 kcal/day) with high bioavailability protein (1.8g–2.2g per kg bodyweight).`;
-    recommendedApproach = 'Targeted resistance split with 8–12 repetition ranges, 2–3 RIR (reps in reserve), and structured eccentric control (2–3 second tempo).';
-    assessment = `Baseline assessment should include: Bodyweight (weekly), Body Measurements (waist, hips, chest, arms – monthly), basic strength tests (e.g., max reps push-ups, planks for time, bodyweight squats), and a 1-mile walk/run test to establish cardiovascular fitness. Monitor perceived exertion (RPE) for all exercises to guide progression.`;
-    limitations = injuries !== 'None reported'
-      ? `Medical consideration: "${injuries}". Eliminate excessive overhead or deep compression loads where indicated. Prioritize machine guidance for stability.`
-      : 'Ensure adequate scapular retraction and core bracing prior to heavy compounds. Prioritize full range of motion over absolute load.';
-  } else if (lowerGoal.includes('strength')) {
-    goalAnalysis = `Neuromuscular adaptation and force production focus. Low-repetition compound lifts (3–6 reps) at 75–85% 1RM with extended recovery periods.`;
-    recommendedApproach = 'Linear progression model focusing on Squat, Hinge, Push, and Pull movement patterns with 90–120s inter-set recovery.';
-    assessment = `Baseline assessment should include: Bodyweight (weekly), Body Measurements (waist, hips, chest, arms – monthly), basic strength tests (e.g., max reps push-ups, planks for time, bodyweight squats), and a 1-mile walk/run test to establish cardiovascular fitness. Monitor perceived exertion (RPE) for all exercises to guide progression.`;
-    limitations = 'Ensure mandatory spotters for maximal pressing and squatting. Deload week advised every 5th training week.';
+  if (isWeightLossGoal) {
+    goalAnalysis = `Personalized for ${customerName} (BMI ${bmi} - ${bmiCategory}, ${weight} kg -> Target ${targetWeightDisplay} kg): targeting sustainable fat reduction at ~${baseTargetCalories} kcal/day (${proteinGrams}g protein, ${carbGrams}g carbs, ${fatGrams}g fats). Focuses on preserving lean muscle mass while accelerating metabolic expenditure during your ${workoutTime} sessions.`;
+    recommendedApproach = 'High-density resistance training (compound movements) combined with post-workout Zone 2 cardio (20–25 mins) and daily step accumulation (8,000–10,000 steps/day).';
+    assessment = `Baseline tracking for ${customerName}: Weekly morning weigh-ins (starting ${weight} kg), monthly waist/hips/chest measurements, max-rep push-ups & timed plank checks, and RPE monitoring across every session.`;
+    limitations = injuries !== 'None reported' && injuries !== 'None' && !String(injuries).startsWith('None (')
+      ? `Reported considerations: "${injuries}". Avoid high-impact joint loading on affected areas and prioritize controlled tempo alternatives.`
+      : 'Maintain strict pelvic stability and neutral spine under fatigue. Increase cardio incline gradually to protect knees and ankles.';
+  } else if (isMuscleGoal) {
+    goalAnalysis = `Personalized for ${customerName} (BMI ${bmi} - ${bmiCategory}, ${weight} kg -> Target ${targetWeightDisplay} kg): clean muscle hypertrophy surplus of ~${baseTargetCalories} kcal/day with ${proteinGrams}g daily protein (~${(proteinGrams / weight).toFixed(1)}g/kg) paired with progressive overload during ${workoutTime} workouts.`;
+    recommendedApproach = 'Targeted hypertrophy split (8–12 rep range, 2–3 RIR, 2–3 second eccentric control) emphasizing mechanical tension and weekly volume progression.';
+    assessment = `Baseline tracking for ${customerName}: Bi-weekly weight checks (starting ${weight} kg), chest/arm/thigh tape measurements every 4 weeks, and logbook tracking of progressive weight/rep increases.`;
+    limitations = injuries !== 'None reported' && injuries !== 'None' && !String(injuries).startsWith('None (')
+      ? `Medical consideration: "${injuries}". Substitute painful free-weight angles with machine-stabilized paths.`
+      : 'Ensure proper scapular retraction and core bracing before compound lifts. Prioritize full range of motion over ego lifting.';
+  } else if (isStrengthGoal) {
+    goalAnalysis = `Personalized for ${customerName} (BMI ${bmi} - ${bmiCategory}, ${weight} kg): maximal force & neuromuscular strength development fueled by ~${baseTargetCalories} kcal/day (${proteinGrams}g protein) timed around ${workoutTime} training.`;
+    recommendedApproach = 'Linear strength progression anchored on Squat, Hinge, Push, and Pull patterns (4–6 heavy reps with 90–120s rest) plus targeted accessory stability.';
+    assessment = `Baseline tracking for ${customerName}: Track working-set 5RM/8RM benchmarks on main compound lifts and monitor bar speed and joint recovery weekly.`;
+    limitations = 'Use safety pins or a spotter on heavy squats/presses. Schedule a lighter deload every 5th week.';
+  } else if (isEnduranceGoal) {
+    goalAnalysis = `Personalized for ${customerName} (BMI ${bmi} - ${bmiCategory}, ${weight} kg): aerobic capacity & muscular stamina optimization supported by ~${baseTargetCalories} kcal/day (${carbGrams}g carbs for glycogen replenishment, ${proteinGrams}g protein for recovery).`;
+    recommendedApproach = 'Mixed-modal conditioning combining metabolic resistance circuits (12–20 reps, 30–45s rest) with Zone 2 aerobic base and interval bursts.';
+    assessment = `Baseline tracking for ${customerName}: Monitor resting heart rate, 1.5 km pace/recovery heart rate drop at 1 minute, and circuit work capacity.`;
+    limitations = 'Prioritize electrolyte hydration and ankle/calf warm-up prior to conditioning blocks.';
   } else {
-    goalAnalysis = `Holistic physical conditioning improving cardiovascular endurance, functional mobility, metabolic efficiency, and lean muscle tone.`;
-    recommendedApproach = 'Full-body functional resistance circuit interspersed with mobility drills and active recovery periods.';
-    assessment = `Baseline assessment should include: Bodyweight (weekly), Body Measurements (waist, hips, chest, arms – monthly), basic strength tests (e.g., max reps push-ups, planks for time, bodyweight squats), and a 1-mile walk/run test to establish cardiovascular fitness. Monitor perceived exertion (RPE) for all exercises to guide progression.`;
-    limitations = 'Emphasize dynamic joint mobilization during warm-up. Keep heart rate within 65-75% max HR during conditioning blocks.';
+    goalAnalysis = `Personalized for ${customerName} (BMI ${bmi} - ${bmiCategory}, ${weight} kg -> Target ${targetWeightDisplay} kg): holistic strength, mobility, and metabolic health supported by ~${baseTargetCalories} kcal/day (${proteinGrams}g protein, ${carbGrams}g carbs, ${fatGrams}g fats).`;
+    recommendedApproach = 'Balanced full-body functional resistance, posture/mobility restoration, and moderate-intensity cardiovascular conditioning.';
+    assessment = `Baseline tracking for ${customerName}: Weekly bodyweight check, mobility range checks (deep squat & overhead reach), and stamina progression.`;
+    limitations = 'Emphasize dynamic joint mobilization during warm-up and controlled nasal breathing during conditioning.';
   }
 
   let days = parseInt(fitnessProfile.availableWorkoutDays) || 4;
@@ -82,132 +115,300 @@ export const mockAIGeneration = (fitnessProfile: any) => {
   if (String(fitnessProfile.availableWorkoutDays).includes('5-6')) days = 6;
   if (String(fitnessProfile.availableWorkoutDays).includes('Every day') || String(fitnessProfile.availableWorkoutDays).includes('7')) days = 6;
 
-  const scheduleTemplate = [
-    { day: 'Monday', workout: 'Lower Body & Core Fundamentals', duration: '50 min' },
-    { day: 'Tuesday', workout: 'Upper Body Push & Pull', duration: '45 min' },
-    { day: 'Wednesday', workout: 'Active Recovery & Mobility Flow', duration: '30 min' },
-    { day: 'Thursday', workout: 'Legs, Posterior Chain & Glutes', duration: '50 min' },
-    { day: 'Friday', workout: 'Upper Body Hypertrophy & Arms', duration: '45 min' },
-    { day: 'Saturday', workout: 'Conditioning & Core Endurance', duration: '35 min' },
-    { day: 'Sunday', workout: 'Full Body Rest & Neural Regeneration', duration: '-' },
-  ];
+  const isHomeOrBodyweight = equipment.toLowerCase().includes('home') || equipment.toLowerCase().includes('bodyweight') || equipment.toLowerCase().includes('no equipment');
+  const repRange = isStrengthGoal ? '5-6' : isWeightLossGoal || isEnduranceGoal ? '12-15' : '8-12';
+  const restTime = isStrengthGoal ? '120s' : isWeightLossGoal ? '45s' : '60s';
+  const setCount = String(level).toLowerCase().includes('advanced') ? 4 : 3;
 
-  const weeklySchedule = scheduleTemplate.map((item, index) => {
-    if (days <= 3 && (index === 1 || index === 3 || index === 5)) {
-      return { ...item, workout: 'Rest & Walking', duration: '30 min' };
-    }
-    if (days === 4 && (index === 2 || index === 5)) {
-      return { ...item, workout: 'Rest / Light Mobility', duration: '20 min' };
-    }
-    return item;
+  const makeEx = (name: string, targetMuscleGroup: string, instructions: string, customReps?: string, customDuration = '10 mins') => ({
+    name,
+    sets: setCount,
+    reps: customReps || repRange,
+    rest: restTime,
+    duration: customDuration,
+    difficulty: level,
+    targetMuscleGroup,
+    instructions
   });
 
-  // 9 Diverse Exercises matching Image 2
-  const defaultExercises = [
-    { name: 'Barbell Squats', sets: 3, reps: '8-12', duration: '12 min', rest: '90s', difficulty: level, targetMuscleGroup: 'Quadriceps, Glutes, Hamstrings' },
-    { name: 'Dumbbell Bench Press', sets: 3, reps: '10-15', duration: '10 min', rest: '60-75s', difficulty: level, targetMuscleGroup: 'Chest, Shoulders, Triceps' },
-    { name: 'Lat Pulldowns', sets: 3, reps: '10-15', duration: '10 min', rest: '60-75s', difficulty: level, targetMuscleGroup: 'Lats, Biceps' },
-    { name: 'Overhead Dumbbell Press (Seated)', sets: 3, reps: '10-15', duration: '10 min', rest: '60s', difficulty: level, targetMuscleGroup: 'Shoulders, Triceps' },
-    { name: 'Dumbbell Romanian Deadlifts', sets: 3, reps: '10-12', duration: '10 min', rest: '60-75s', difficulty: level, targetMuscleGroup: 'Hamstrings, Glutes, Lower Back' },
-    { name: 'Seated Cable Row', sets: 3, reps: '10-12', duration: '10 min', rest: '60s', difficulty: level, targetMuscleGroup: 'Upper Back, Lats' },
-    { name: 'Dumbbell Walking Lunges', sets: 3, reps: '10-12/leg', duration: '8 min', rest: '60s', difficulty: level, targetMuscleGroup: 'Quadriceps, Glutes' },
-    { name: 'Plank with Shoulder Taps', sets: 3, reps: '45-60 sec', duration: '6 min', rest: '45s', difficulty: level, targetMuscleGroup: 'Core, Abdominals' },
-    { name: 'Glute Bridges / Bicep Curls', sets: 3, reps: '12-15', duration: '6 min', rest: '45s', difficulty: level, targetMuscleGroup: 'Glutes & Stabilizers' }
+  const dailyWorkouts: Record<string, any> = isHomeOrBodyweight
+    ? {
+        Monday: {
+          day: 'Monday',
+          focus: isWeightLossGoal ? 'Lower Body Fat-Burn Circuit' : 'Home Lower Body & Core Strength',
+          duration: '45 mins',
+          targetMuscle: 'Quadriceps, Glutes & Core',
+          exercises: [
+            makeEx('Bodyweight Goblet Squats', 'Quadriceps & Glutes', 'Drop hips between heels, keep chest proud and drive up powerfully.'),
+            makeEx('Reverse Alternating Lunges', 'Glutes & Hamstrings', 'Step back into a 90-degree lunge, control descent without knee wobble.'),
+            makeEx('Glute Bridges (2s Squeeze)', 'Gluteus Maximus', 'Drive through heels and hold top hip extension for 2 seconds.'),
+            makeEx('Plank with Shoulder Taps', 'Deep Core & Obliques', 'Brace abs tight and tap opposite shoulder without hip sway.', '45 sec')
+          ]
+        },
+        Tuesday: {
+          day: 'Tuesday',
+          focus: 'Upper Body Push & Pull (Home)',
+          duration: '40 mins',
+          targetMuscle: 'Chest, Shoulders, Back & Triceps',
+          exercises: [
+            makeEx('Tempo Push-ups', 'Chest, Front Delts & Triceps', 'Lower for 3 seconds, pause at bottom, press cleanly overhead.'),
+            makeEx('Pike Push-ups', 'Shoulders & Upper Chest', 'Hips raised in inverted V, lower head smoothly toward floor.'),
+            makeEx('Resistance Band / Inverted Rows', 'Upper Back & Lats', 'Pull chest to bar or row band tightly, squeezing shoulder blades.'),
+            makeEx('Close-Grip Diamond Push-ups', 'Triceps & Inner Chest', 'Keep elbows tucked close to ribs through full range.')
+          ]
+        },
+        Wednesday: {
+          day: 'Wednesday',
+          focus: 'Active Recovery, Core & Mobility',
+          duration: '30 mins',
+          targetMuscle: 'Hip Mobility, Spine & Core',
+          exercises: [
+            makeEx('Deep Squat Mobility Holds', 'Hips & Ankles', 'Hold bottom squat position pushing knees outward gently.', '60 sec hold', '8 mins'),
+            makeEx('Dead Bug Core Stabilizers', 'Transverse Abdominis', 'Press lower back flat into floor while extending opposite arm and leg.', '12 / side'),
+            makeEx('Bird-Dog Extensions', 'Lower Back & Glutes', 'Extend opposite arm and leg smoothly with 2s pause.', '12 / side'),
+            makeEx('Brisk Outdoor / Indoor March', 'Cardiovascular System', 'Maintain steady Zone 2 aerobic pace.', '20 mins', '20 mins')
+          ]
+        },
+        Thursday: {
+          day: 'Thursday',
+          focus: isWeightLossGoal ? 'Metabolic Conditioning & Posterior Chain' : 'Hamstrings, Glutes & Stamina',
+          duration: '45 mins',
+          targetMuscle: 'Hamstrings, Glutes & Cardiovascular Engine',
+          exercises: [
+            makeEx('Single-Leg Romanian Deadlift', 'Hamstrings & Balance', 'Hinge at hips keeping spine neutral until stretch is felt.'),
+            makeEx('Bulgarian Split Squats (Chair/Couch)', 'Quadriceps & Glutes', 'Rear foot elevated, drop back knee vertically toward floor.'),
+            makeEx('Step-ups on Sturdy Platform', 'Legs & Conditioning', 'Drive cleanly through front heel without pushing off rear toes.'),
+            makeEx('Hollow Body Core Hold', 'Deep Abdominals', 'Flatten lower back against floor with legs & shoulders lifted.', '35-45 sec')
+          ]
+        },
+        Friday: {
+          day: 'Friday',
+          focus: 'Full Body Sculpt & Upper Back',
+          duration: '40 mins',
+          targetMuscle: 'Shoulders, Back, Arms & Core',
+          exercises: [
+            makeEx('Superman Back Extensions', 'Erector Spinae & Rear Delts', 'Lift chest and legs gently, squeezing upper back.', '15 reps'),
+            makeEx('Band / Dumbbell Lateral Raises', 'Lateral Deltoids', 'Lift arms smoothly to shoulder height without shrugging traps.'),
+            makeEx('Incline Push-ups', 'Chest & Shoulders', 'Hands on bench/sofa edge, maintain strict straight body line.'),
+            makeEx('Side Plank Hip Dips', 'Obliques & Lateral Hip', 'Lift hips smoothly while keeping shoulders stacked.', '35 sec / side')
+          ]
+        },
+        Saturday: {
+          day: 'Saturday',
+          focus: isWeightLossGoal ? 'High-Output Cardio & Core Burn' : 'Conditioning & Athletic Endurance',
+          duration: '35 mins',
+          targetMuscle: 'Full Body Conditioning & Abs',
+          exercises: [
+            makeEx('Controlled Mountain Climbers', 'Cardio & Core', 'Drive knees steadily toward chest without lifting hips.', '45 sec'),
+            makeEx('Jumping Jacks / Step Jacks', 'Aerobic Conditioning', 'Rhythmic steady pace for cardiovascular warmup and burn.', '60 sec'),
+            makeEx('Bicycle Crunches (Slow Tempo)', 'Rectus Abdominis & Obliques', 'Rotate ribcage, not just elbows, toward opposite knee.', '20 total'),
+            makeEx('Shadow Boxing / Brisk Jog', 'Stamina & Fat Oxidation', 'Steady continuous movement to finish session.', '12 mins', '12 mins')
+          ]
+        },
+        Sunday: {
+          day: 'Sunday',
+          focus: 'Rest, Hydration & Gentle Recovery',
+          duration: '20 mins',
+          targetMuscle: 'Full Body Parasympathetic Recovery',
+          exercises: [
+            makeEx('Cat-Cow Spinal Flow', 'Spine & Posture', 'Breathe slowly through gentle flexion and extension.', '12 slow cycles', '8 mins'),
+            makeEx('Seated Hamstring & Hip Stretch', 'Lower Body Flexibility', 'Hold mild comfortable stretch for 45 seconds per side.', '45 sec / side', '8 mins'),
+            makeEx('Light Recovery Walk', 'Circulation & Step Target', 'Relaxed walk outdoors to reach daily steps.', '20 mins', '20 mins')
+          ]
+        }
+      }
+    : {
+        Monday: {
+          day: 'Monday',
+          focus: isWeightLossGoal ? 'Lower Body Strength + Fat-Loss Finisher' : isStrengthGoal ? 'Heavy Squat & Lower Body Power' : 'Lower Body & Core Fundamentals',
+          duration: '50 mins',
+          targetMuscle: 'Quadriceps, Glutes, Hamstrings & Core',
+          exercises: [
+            makeEx('Barbell Squats', 'Quadriceps, Glutes & Hamstrings', 'Chest proud, brace core, descend with controlled depth and drive up cleanly.'),
+            makeEx('Leg Press Machine', 'Quadriceps & Glutes', 'Full knee bend without lifting lower back off pad.'),
+            makeEx('Dumbbell Walking Lunges', 'Glutes, Quads & Stabilizers', 'Step long, lower back knee smoothly, push cleanly through front heel.'),
+            makeEx(isWeightLossGoal ? 'Incline Treadmill Brisk Walk (Zone 2)' : 'Plank with Shoulder Taps', isWeightLossGoal ? 'Cardiovascular Fat Oxidation' : 'Core & Stability', isWeightLossGoal ? 'Set incline 6-8% at 5.2 km/h for steady aerobic burn.' : 'Hold crisp plank without hip wobble.', isWeightLossGoal ? '20 mins' : '45-60 sec', isWeightLossGoal ? '20 mins' : '8 mins')
+          ]
+        },
+        Tuesday: {
+          day: 'Tuesday',
+          focus: isMuscleGoal ? 'Upper Body Push & Pull Hypertrophy' : 'Upper Body Compound Strength',
+          duration: '45 mins',
+          targetMuscle: 'Chest, Lats, Shoulders & Arms',
+          exercises: [
+            makeEx('Flat Dumbbell Bench Press', 'Chest, Front Delts & Triceps', 'Retract shoulder blades, lower dumbbells to chest line and press cleanly.'),
+            makeEx('Lat Pulldowns', 'Latissimus Dorsi & Biceps', 'Drive elbows downward toward hips to upper chest without leaning far back.'),
+            makeEx('Overhead Dumbbell Shoulder Press', 'Anterior & Lateral Deltoids', 'Press weights smoothly overhead without overarching lower back.'),
+            makeEx('Seated Cable Row', 'Rhomboids, Mid Back & Lats', 'Pull handle smoothly toward torso squeezing shoulder blades together.')
+          ]
+        },
+        Wednesday: {
+          day: 'Wednesday',
+          focus: isWeightLossGoal ? 'Zone 2 Cardio, Mobility & Core Circuit' : 'Active Recovery, Mobility & Core',
+          duration: '35 mins',
+          targetMuscle: 'Cardiovascular Endurance, Hips & Core',
+          exercises: [
+            makeEx('Deep Squat Mobility Holds & Hip Openers', 'Hip Flexors & Ankles', 'Spend 60s opening hips and ankle dorsiflexion.', '60 sec hold', '8 mins'),
+            makeEx('Hanging Knee Raises', 'Lower Abs & Grip', 'Lift knees under full control with zero swinging.'),
+            makeEx('Cable Woodchoppers', 'Obliques & Rotational Core', 'Pivot hips cleanly while keeping arms extended.', '12 / side'),
+            makeEx(isEnduranceGoal || isWeightLossGoal ? 'Stationary Cycling / Elliptical Intervals' : 'Zone 2 Low-Intensity Incline Walk', 'Cardio & Recovery', 'Alternate steady moderate pace to boost endurance without soreness.', '20 mins', '20 mins')
+          ]
+        },
+        Thursday: {
+          day: 'Thursday',
+          focus: 'Posterior Chain, Hamstrings & Glutes',
+          duration: '50 mins',
+          targetMuscle: 'Hamstrings, Glutes, Lower Back & Calves',
+          exercises: [
+            makeEx('Romanian Deadlifts (RDL)', 'Hamstrings & Glutes', 'Hinge hips backward with slight knee bend until deep hamstring stretch.'),
+            makeEx('Bulgarian Split Squats', 'Quads, Glutes & Balance', 'Rear foot elevated, drop hips vertically keeping torso upright.'),
+            makeEx('Lying / Seated Hamstring Curl', 'Hamstrings', 'Lower weight over 3 seconds, squeeze hard at full curl.'),
+            makeEx('Standing Calf Raises', 'Gastrocnemius & Soleus', 'Pause 2 seconds in full stretch at bottom and full peak at top.')
+          ]
+        },
+        Friday: {
+          day: 'Friday',
+          focus: isStrengthGoal ? 'Upper Body Heavy Push & Accessories' : 'Upper Body Hypertrophy & Arms',
+          duration: '45 mins',
+          targetMuscle: 'Upper Chest, Deltoids, Biceps & Triceps',
+          exercises: [
+            makeEx('Incline Dumbbell Bench Press', 'Upper Chest & Shoulders', '30-degree incline, smooth eccentric and full lockout.'),
+            makeEx('Dumbbell Lateral Raises', 'Lateral Deltoids', 'Lead with elbows to shoulder height, avoid swinging torso.'),
+            makeEx('Standing Dumbbell Bicep Curls', 'Biceps Brachii', 'Keep elbows pinned at sides and control the lowering phase.'),
+            makeEx('Rope Tricep Pushdowns', 'Triceps Brachii', 'Extend elbows fully and spread rope gently at bottom.')
+          ]
+        },
+        Saturday: {
+          day: 'Saturday',
+          focus: isWeightLossGoal ? 'Metabolic Circuit & Conditioning' : 'Full-Body Conditioning & Core Finisher',
+          duration: '40 mins',
+          targetMuscle: 'Back, Core & Aerobic Conditioning',
+          exercises: [
+            makeEx('Chest-Supported Dumbbell Row', 'Upper Back & Rear Delts', 'Pull dumbbells toward hips squeezing rear shoulders cleanly.'),
+            makeEx('Face Pulls (Cable Rope)', 'Rear Delts & Rotator Cuff', 'Pull rope toward forehead keeping elbows high for shoulder health.'),
+            makeEx('Farmer Carries (Dumbbells)', 'Grip, Traps & Core Stability', 'Walk tall with packed shoulders and braced core.', '40 meters'),
+            makeEx('Rowing Ergometer / Incline Walk', 'Conditioning & Fat Burn', 'Steady challenging aerobic finish.', '15 mins', '15 mins')
+          ]
+        },
+        Sunday: {
+          day: 'Sunday',
+          focus: 'Rest Day & Neural Recovery',
+          duration: '20 mins',
+          targetMuscle: 'Full Body Recovery & Flexibility',
+          exercises: [
+            makeEx('Thoracic Spine & Cat-Cow Mobility', 'Upper Back & Spine', 'Smooth breathing through spinal flexion and extension.', '12 cycles', '8 mins'),
+            makeEx('Pigeon & Couch Hip Stretch', 'Hip Flexors & Glutes', 'Relax into stretch for 45 seconds per side.', '45 sec / side', '8 mins'),
+            makeEx('Outdoor Recovery Walk', 'Active Step Target', 'Gentle walk to encourage blood flow and recovery.', '20 mins', '20 mins')
+          ]
+        }
+      };
+
+  // Respect days/week preference on recovery days
+  if (days <= 3) {
+    dailyWorkouts.Tuesday = { ...dailyWorkouts.Tuesday, focus: 'Active Recovery Walk & Stretching', duration: '25 mins', exercises: dailyWorkouts.Sunday.exercises };
+    dailyWorkouts.Thursday = { ...dailyWorkouts.Thursday, focus: 'Light Mobility & Core Stability', duration: '25 mins', exercises: dailyWorkouts.Wednesday.exercises };
+  }
+
+  const weeklySchedule = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map((day) => ({
+    day,
+    workout: dailyWorkouts[day].focus,
+    duration: dailyWorkouts[day].duration
+  }));
+
+  const exercises = [
+    ...dailyWorkouts.Monday.exercises.slice(0, 3),
+    ...dailyWorkouts.Tuesday.exercises.slice(0, 3),
+    ...dailyWorkouts.Thursday.exercises.slice(0, 3)
   ];
 
-  const isHomeOrBodyweight = equipment.toLowerCase().includes('home') || equipment.toLowerCase().includes('bodyweight') || equipment.toLowerCase().includes('no equipment');
-  const exercises = isHomeOrBodyweight ? [
-    { name: 'Bodyweight Goblet Squats', sets: 3, reps: '12-15', duration: '10 min', rest: '45s', difficulty: level, targetMuscleGroup: 'Quadriceps, Glutes' },
-    { name: 'Tempo Push-ups', sets: 3, reps: '10-12', duration: '8 min', rest: '60s', difficulty: level, targetMuscleGroup: 'Chest, Shoulders, Triceps' },
-    { name: 'Reverse Lunges', sets: 3, reps: '12-14/leg', duration: '8 min', rest: '45s', difficulty: level, targetMuscleGroup: 'Hamstrings, Glutes' },
-    { name: 'Glute Bridges (Hold 2s)', sets: 3, reps: '15', duration: '6 min', rest: '45s', difficulty: level, targetMuscleGroup: 'Glutes & Core' },
-    { name: 'Pike Push-ups / Shoulder Taps', sets: 3, reps: '10-12', duration: '6 min', rest: '45s', difficulty: level, targetMuscleGroup: 'Shoulders, Triceps' },
-    { name: 'Inverted Rows (Under Table/Bar)', sets: 3, reps: '10-12', duration: '8 min', rest: '60s', difficulty: level, targetMuscleGroup: 'Back, Lats, Biceps' },
-    { name: 'Single-Leg Romanian Deadlift', sets: 3, reps: '10/leg', duration: '8 min', rest: '45s', difficulty: level, targetMuscleGroup: 'Hamstrings, Glutes' },
-    { name: 'Plank with Shoulder Taps', sets: 3, reps: '45-60 sec', duration: '5 min', rest: '45s', difficulty: level, targetMuscleGroup: 'Core, Abdominals' },
-    { name: 'Hollow Body Hold', sets: 3, reps: '30-45 sec', duration: '5 min', rest: '45s', difficulty: level, targetMuscleGroup: 'Deep Abdominals' }
-  ] : defaultExercises;
+  // Diet matching non-repeating 7-day Monday to Sunday plan based on dietPref and calorie target
+  const lowerDiet = String(dietPref).toLowerCase();
+  const isVegan = lowerDiet.includes('vegan');
+  const isEggetarian = lowerDiet.includes('egg');
+  const isVeg = !isVegan && !isEggetarian && lowerDiet.includes('veg') && !lowerDiet.includes('non');
 
-  // Diet matching non-repeating 7-day Monday to Sunday plan
-  const isVeg = dietPref.toLowerCase().includes('veg') && !dietPref.toLowerCase().includes('non');
-  
+  const mealCalAdjustments = [0, 40, -20, -50, 60, 90, -60];
+  const dayMacros = (offset: number) => {
+    const cal = Math.max(1400, Math.round(baseTargetCalories + offset));
+    const p = proteinGrams;
+    const f = fatGrams;
+    const c = Math.max(90, Math.round((cal - p * 4 - f * 9) / 4));
+    return {
+      calories: cal,
+      macros: { protein: `${p}g`, carbs: `${c}g`, fats: `${f}g` }
+    };
+  };
+
   const dailyMealPlans = [
     {
       day: 'Monday',
-      morning: 'Warm ginger-lemon water + 5 soaked almonds. Pre-workout: 1 banana with peanut butter.',
-      breakfast: isVeg ? '150g Paneer bhurji with tomatoes, spinach, and 2 slices whole-wheat toast.' : '3-4 scrambled whole eggs with spinach, mushrooms, and 2 slices whole-wheat toast.',
-      midMorning: '1 small crisp apple + 1 cup low-fat Greek yogurt.',
-      lunch: isVeg ? '150g grilled tofu steak + 1 cup brown rice + mixed cucumber & tomato garden salad with olive oil.' : '180g grilled chicken breast + 1 cup brown rice + mixed cucumber & tomato garden salad with olive oil.',
+      morning: 'Warm ginger-lemon water + 5 soaked almonds. Pre-workout: 1 banana with 1 tsp peanut butter.',
+      breakfast: isVegan ? '150g scrambled spiced tofu with spinach, tomatoes, and 2 slices whole-wheat toast.' : isVeg ? '150g Paneer bhurji with tomatoes, spinach, and 2 slices whole-wheat toast.' : isEggetarian ? '3 scrambled eggs + 1 egg white with spinach, mushrooms, and 2 slices whole-wheat toast.' : '3-4 scrambled whole eggs with spinach, mushrooms, and 2 slices whole-wheat toast.',
+      midMorning: isVegan ? '1 small crisp apple + handful of roasted pumpkin seeds.' : '1 small crisp apple + 1 cup low-fat Greek yogurt.',
+      lunch: isVegan || isVeg ? '150g grilled tofu/paneer + 1 cup brown rice + mixed cucumber & tomato salad with olive oil.' : '180g grilled chicken breast + 1 cup brown rice + mixed cucumber & tomato salad with olive oil.',
       evening: 'Roasted spiced chana (chickpeas) + roasted pumpkin seeds + green tea.',
-      dinner: isVeg ? 'Yellow dal tadka + sautéed broccoli & bell peppers + 1 small baked sweet potato.' : 'Steamed fish fillet with lemon & herbs + 1 bowl lentil soup + small baked sweet potato.',
-      calories: 2150,
-      macros: { protein: '150g', carbs: '210g', fats: '58g' }
+      dinner: isVegan || isVeg ? 'Yellow dal tadka + sautéed broccoli & bell peppers + 1 small baked sweet potato.' : isEggetarian ? 'Yellow dal tadka + 2 boiled egg whites + sautéed broccoli & small baked sweet potato.' : 'Steamed fish fillet with lemon & herbs + 1 bowl lentil soup + small baked sweet potato.',
+      ...dayMacros(mealCalAdjustments[0])
     },
     {
       day: 'Tuesday',
       morning: 'Warm water with pinch of pink Himalayan salt & chia seeds. Pre-workout: 2 rice cakes with almond butter.',
-      breakfast: isVeg ? 'Rolled oats porridge in almond milk topped with fresh blueberries, chia seeds, and plant protein scoop.' : 'Rolled oats porridge in almond milk topped with fresh blueberries, chia seeds, and 1 scoop whey protein.',
+      breakfast: isVegan ? 'Rolled oats porridge in almond milk topped with fresh blueberries, chia seeds, and plant protein.' : 'Rolled oats porridge in almond milk topped with fresh blueberries, chia seeds, and 1 scoop protein.',
       midMorning: 'Handful (30g) of raw walnuts and golden raisins.',
-      lunch: isVeg ? 'Spiced rajma (kidney bean) quinoa bowl with diced avocado, cherry tomatoes, and lime vinaigrette.' : 'Turkey or shredded chicken quinoa bowl with diced avocado, bell peppers, and lime vinaigrette.',
-      evening: 'Sprouted moong bean salad with diced onions, tomatoes, coriander, and chaat masala.',
-      dinner: isVeg ? 'Grilled soya chunks / cottage cheese skewers + sautéed asparagus + clear vegetable soup.' : 'Grilled lemon herb chicken skewers + sautéed asparagus + clear vegetable broth.',
-      calories: 2200,
-      macros: { protein: '155g', carbs: '215g', fats: '60g' }
+      lunch: isVegan || isVeg || isEggetarian ? 'Spiced rajma (kidney bean) quinoa bowl with diced avocado, cherry tomatoes, and lime dressing.' : 'Shredded grilled chicken quinoa bowl with diced avocado, bell peppers, and lime vinaigrette.',
+      evening: 'Sprouted moong bean salad with diced onions, tomatoes, coriander, and lemon juice.',
+      dinner: isVegan ? 'Grilled tempeh / soya chunk skewers + sautéed asparagus + clear vegetable soup.' : isVeg ? 'Grilled soya chunks / cottage cheese skewers + sautéed asparagus + clear vegetable soup.' : isEggetarian ? '2 whole eggs poached in spiced vegetable soup + sautéed asparagus + soya chunks.' : 'Grilled lemon-herb chicken skewers + sautéed asparagus + clear vegetable broth.',
+      ...dayMacros(mealCalAdjustments[1])
     },
     {
       day: 'Wednesday',
       morning: 'Warm fenugreek (methi) infused water. Pre-workout: 1 slice whole-grain toast with mashed avocado.',
-      breakfast: isVeg ? 'Moong dal chilla (savory pancakes) stuffed with crumbled paneer & mint chutney, 1 orange.' : 'Vegetable egg white omelette with diced bell peppers, baby spinach, and 1 whole fresh orange.',
+      breakfast: isVegan ? 'Besan & moong dal chilla stuffed with grated veggies & mint chutney + 1 fresh orange.' : isVeg ? 'Moong dal chilla (savory pancakes) stuffed with crumbled paneer & mint chutney, 1 orange.' : 'Vegetable omelette with diced bell peppers, baby spinach, and 1 whole fresh orange.',
       midMorning: '1 bowl of diced fresh papaya or chilled watermelon cubes.',
-      lunch: isVeg ? 'Chickpea (chana) and spinach curry with 1 cup steamed quinoa and fresh beetroot salad.' : 'Pan-seared salmon fillet with 1 cup steamed quinoa and fresh beetroot & rocket salad.',
-      evening: 'Greek yogurt cup topped with 1 tsp ground flaxseeds and fresh sliced strawberries.',
-      dinner: isVeg ? 'Pan-seared cottage cheese (paneer) with portobello mushrooms & zucchini in light sesame oil.' : 'Stir-fried chicken breast strips with zucchini, snap peas, and bok choy in light sesame oil.',
-      calories: 2180,
-      macros: { protein: '160g', carbs: '200g', fats: '62g' }
+      lunch: isVegan || isVeg || isEggetarian ? 'Chickpea (chana) and spinach curry with 1 cup steamed quinoa and fresh beetroot salad.' : 'Pan-seared salmon fillet with 1 cup steamed quinoa and fresh beetroot & rocket salad.',
+      evening: isVegan ? 'Soy yogurt cup topped with 1 tsp ground flaxseeds and fresh sliced strawberries.' : 'Greek yogurt cup topped with 1 tsp ground flaxseeds and fresh sliced strawberries.',
+      dinner: isVegan ? 'Pan-seared sesame tofu with portobello mushrooms & zucchini in light stir-fry.' : isVeg ? 'Pan-seared cottage cheese (paneer) with mushrooms & zucchini in light sesame oil.' : isEggetarian ? 'Stir-fried egg & veggie bowl with mushrooms, zucchini, and light sesame oil.' : 'Stir-fried chicken breast strips with zucchini, snap peas, and bok choy in light sesame oil.',
+      ...dayMacros(mealCalAdjustments[2])
     },
     {
       day: 'Thursday',
       morning: 'Warm water with 1 tbsp raw apple cider vinegar. Pre-workout: 2 Medjool dates + 4 walnut halves.',
-      breakfast: isVeg ? 'High-protein green smoothie bowl: spinach, banana, plant protein, topped with hemp and pumpkin seeds.' : 'High-protein smoothie bowl: unsweetened almond milk, banana, whey isolate, topped with pumpkin seeds.',
+      breakfast: isVegan || isVeg ? 'High-protein green smoothie bowl: spinach, banana, protein scoop, topped with hemp and pumpkin seeds.' : 'High-protein smoothie bowl: almond milk, banana, whey/egg protein, topped with pumpkin seeds.',
       midMorning: 'Crisp cucumber & carrot crudités with 2 tbsp roasted red pepper hummus.',
-      lunch: isVeg ? 'Spiced vegetable & lentil khichdi with roasted cumin seeds + 1 cup low-fat curd (dahi).' : 'Lemon-rosemary grilled chicken thigh with Mediterranean roasted zucchini, bell peppers, and baby potatoes.',
-      evening: 'Fox nuts (makhana) lightly roasted in half-tsp ghee with rock salt + organic green tea.',
-      dinner: isVeg ? 'Grilled paneer steaks with large bowl of vegetable minestrone soup and sautéed French beans.' : 'Steamed cod or white fish fillet with hearty vegetable minestrone soup and sautéed French beans.',
-      calories: 2120,
-      macros: { protein: '152g', carbs: '205g', fats: '59g' }
+      lunch: isVegan ? 'Spiced vegetable & lentil khichdi with roasted cumin + 1 bowl fresh kachumber salad.' : isVeg || isEggetarian ? 'Spiced vegetable & lentil khichdi with roasted cumin + 1 cup low-fat curd (dahi).' : 'Lemon-rosemary grilled chicken with Mediterranean roasted zucchini, peppers, and baby potatoes.',
+      evening: 'Fox nuts (makhana) dry-roasted with rock salt + organic green tea.',
+      dinner: isVegan ? 'Grilled spiced tofu steaks with hearty vegetable minestrone soup and sautéed French beans.' : isVeg ? 'Grilled paneer steaks with large bowl of vegetable minestrone soup and sautéed French beans.' : isEggetarian ? 'Vegetable minestrone soup with 3 boiled egg whites and sautéed French beans.' : 'Steamed white fish fillet with hearty vegetable minestrone soup and sautéed French beans.',
+      ...dayMacros(mealCalAdjustments[3])
     },
     {
       day: 'Friday',
       morning: 'Freshly brewed green tea + 5 overnight soaked almonds. Pre-workout: 1 small banana with sunflower butter.',
-      breakfast: isVeg ? 'Smashed avocado and grilled spiced tofu on toasted artisan sourdough bread with black coffee.' : 'Poached eggs on toasted artisan sourdough bread with sautéed spinach and black coffee.',
+      breakfast: isVegan || isVeg ? 'Smashed avocado and grilled spiced tofu/paneer on toasted sourdough bread with black coffee.' : 'Poached eggs on toasted artisan sourdough bread with sautéed spinach and black coffee.',
       midMorning: '1 whole ripe pear or fresh guava slices with a pinch of rock salt.',
-      lunch: isVeg ? 'Black bean, sweet corn, and sautéed fajita bell pepper bowl over wild brown rice with guacamole.' : 'Chicken & bell pepper fajita bowl over wild brown rice with fresh guacamole and pico de gallo.',
-      evening: isVeg ? 'Roasted chana and raw sunflower seeds mix + iced peppermint tea.' : '3 boiled egg whites seasoned with cracked black pepper + green tea.',
-      dinner: isVeg ? 'Thai tofu and broccoli red curry cooked in light coconut milk with cauliflower rice.' : 'Pan-seared tilapia or tuna steak with cauliflower rice, sautéed baby spinach, and side garden salad.',
-      calories: 2240,
-      macros: { protein: '158g', carbs: '220g', fats: '64g' }
+      lunch: isVegan || isVeg || isEggetarian ? 'Black bean, sweet corn, and sautéed fajita bell pepper bowl over wild brown rice with guacamole.' : 'Chicken & bell pepper fajita bowl over wild brown rice with fresh guacamole and pico de gallo.',
+      evening: isVegan || isVeg ? 'Roasted chana and raw sunflower seeds mix + iced peppermint tea.' : '3 boiled egg whites seasoned with cracked black pepper + green tea.',
+      dinner: isVegan || isVeg ? 'Thai tofu/paneer and broccoli red curry cooked in light coconut milk with cauliflower rice.' : isEggetarian ? 'Thai broccoli curry with soft-boiled eggs in light coconut broth + cauliflower rice.' : 'Pan-seared tilapia or tuna steak with cauliflower rice, sautéed spinach, and side salad.',
+      ...dayMacros(mealCalAdjustments[4])
     },
     {
       day: 'Saturday',
       morning: 'Warm water with freshly squeezed lemon juice. Pre-workout: 1 crisp apple with 1 tbsp peanut butter.',
-      breakfast: isVeg ? 'Protein oat pancakes (oats, banana, flax meal) topped with fresh blueberries and 1 tsp pure maple syrup.' : 'Protein oat pancakes (oats, banana, egg whites, whey) topped with fresh blueberries and 1 tsp maple syrup.',
+      breakfast: isVegan || isVeg ? 'Protein oat pancakes (oats, banana, flax meal) topped with fresh blueberries.' : 'Protein oat pancakes (oats, banana, egg whites, whey) topped with fresh blueberries.',
       midMorning: 'Fresh tender coconut water with soft coconut kernel.',
-      lunch: isVeg ? 'Crispy falafel & roasted garlic hummus whole-wheat wrap with diced cucumber-tomato tabbouleh.' : 'Mediterranean grilled chicken wrap in whole-wheat tortilla with cucumber-tomato tabbouleh.',
-      evening: 'Steamed edamame pods tossed with Himalayan sea salt + iced black/green tea.',
-      dinner: isVeg ? 'Oven-roasted paneer & bell pepper skewers with roasted potato wedges and grilled asparagus.' : 'Herb-roasted chicken breast with oven-baked potato wedges and grilled asparagus.',
-      calories: 2280,
-      macros: { protein: '162g', carbs: '230g', fats: '63g' }
+      lunch: isVegan || isVeg || isEggetarian ? 'Baked chickpea falafel & garlic hummus whole-wheat wrap with cucumber-tomato salad.' : 'Mediterranean grilled chicken wrap in whole-wheat tortilla with cucumber-tomato tabbouleh.',
+      evening: 'Steamed edamame pods tossed with Himalayan sea salt + iced green tea.',
+      dinner: isVegan ? 'Oven-roasted tofu & bell pepper skewers with roasted potato wedges and grilled asparagus.' : isVeg ? 'Oven-roasted paneer & bell pepper skewers with roasted potato wedges and grilled asparagus.' : isEggetarian ? 'Herb-baked egg frittata with bell peppers, potato wedges, and grilled asparagus.' : 'Herb-roasted chicken breast with oven-baked potato wedges and grilled asparagus.',
+      ...dayMacros(mealCalAdjustments[5])
     },
     {
       day: 'Sunday',
-      morning: 'Warm water infused with fresh mint leaves and lemon slices. Pre-workout / Active Rest: Chamomile herbal tea.',
-      breakfast: isVeg ? 'Tofu scramble shakshuka simmered in spiced tomatoes, onions, and bell peppers with multigrain toast.' : 'Traditional shakshuka (eggs poached in rich spiced tomato-pepper sauce) with 1 slice multigrain toast.',
+      morning: 'Warm water infused with fresh mint leaves and lemon slices. Active Rest: Chamomile herbal tea.',
+      breakfast: isVegan || isVeg ? 'Tofu scramble shakshuka simmered in spiced tomatoes, onions, and bell peppers with multigrain toast.' : 'Traditional shakshuka (eggs poached in spiced tomato-pepper sauce) with 1 slice multigrain toast.',
       midMorning: '1 whole fresh pomegranate or 2 peeled kiwis.',
-      lunch: isVeg ? 'Hearty mixed yellow and black dal tadka with paneer cubes + 1 cup steamed basmati rice + cucumber raita.' : 'Herb-infused roasted chicken breast + 1 cup steamed basmati rice + roasted cumin cucumber raita.',
+      lunch: isVegan ? 'Hearty mixed dal tadka with steamed basmati rice + cucumber-mint salad.' : isVeg || isEggetarian ? 'Hearty mixed yellow & black dal tadka with paneer + 1 cup steamed rice + cucumber raita.' : 'Herb-infused roasted chicken breast + 1 cup steamed basmati rice + roasted cumin cucumber raita.',
       evening: 'Antioxidant trail mix (almonds, walnuts, dried cranberries, pumpkin seeds).',
-      dinner: isVeg ? 'Hearty vegetable & lentil hot pot stew with steamed broccoli, carrots, and warm turmeric golden milk before bed.' : 'Grilled white fish or chicken bone broth soup with steamed carrots, broccoli, and warm golden milk before bed.',
-      calories: 2100,
-      macros: { protein: '148g', carbs: '200g', fats: '58g' }
+      dinner: isVegan ? 'Hearty vegetable & lentil hot pot stew with steamed broccoli, carrots, and warm turmeric almond milk.' : isVeg || isEggetarian ? 'Hearty vegetable & lentil hot pot stew with broccoli, carrots, and warm turmeric golden milk.' : 'Grilled fish or chicken broth soup with steamed carrots, broccoli, and warm golden milk.',
+      ...dayMacros(mealCalAdjustments[6])
     }
   ];
 
@@ -230,7 +431,8 @@ export const mockAIGeneration = (fitnessProfile: any) => {
     },
     workoutRecommendation: {
       weeklySchedule,
-      exercises
+      exercises,
+      dailyWorkouts
     },
     dietRecommendation: {
       dailyMealPlans,
@@ -494,7 +696,8 @@ CRITICAL RULES FOR DIET GENERATION:
         aiAnalysis: { ...fallback.aiAnalysis, ...parsed.aiAnalysis },
         workoutRecommendation: {
           weeklySchedule: parsed.workoutRecommendation.weeklySchedule || fallback.workoutRecommendation.weeklySchedule,
-          exercises: parsed.workoutRecommendation.exercises || fallback.workoutRecommendation.exercises
+          exercises: parsed.workoutRecommendation.exercises || fallback.workoutRecommendation.exercises,
+          dailyWorkouts: parsed.workoutRecommendation.dailyWorkouts || fallback.workoutRecommendation.dailyWorkouts
         },
         dietRecommendation: { 
           ...fallback.dietRecommendation, 

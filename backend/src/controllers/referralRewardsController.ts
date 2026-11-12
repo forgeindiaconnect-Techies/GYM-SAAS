@@ -623,7 +623,7 @@ export const getCustomRewards = async (req: AuthRequest, res: Response): Promise
       return;
     }
 
-    const rewards = await RewardDefinition.find({
+    const rawRewards = await RewardDefinition.find({
       gymId: gymId as any,
       status: 'Active',
       $or: [
@@ -632,6 +632,15 @@ export const getCustomRewards = async (req: AuthRequest, res: Response): Promise
         { requiredPoints: { $gt: 0 } }
       ]
     }).sort({ createdAt: -1 });
+
+    const rewards = rawRewards.map((r: any) => {
+      const obj = r.toObject ? r.toObject() : r;
+      return {
+        ...obj,
+        pointsRequired: obj.requiredPoints,
+        requiresApproval: obj.requireApproval
+      };
+    });
 
     res.status(200).json({ success: true, count: rewards.length, rewards });
   } catch (err: any) {
@@ -738,7 +747,8 @@ export const redeemCustomRewardCustomer = async (req: AuthRequest, res: Response
   try {
     const userId = req.user?.id;
     const gymId = req.user?.gymId;
-    const { rewardId, notes } = req.body;
+    const rewardId = req.body?.rewardId || req.params?.rewardId;
+    const notes = req.body?.notes;
 
     if (!userId || !gymId) {
       res.status(401).json({ success: false, message: 'Unauthorized' });

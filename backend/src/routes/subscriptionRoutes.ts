@@ -11,7 +11,7 @@ import {
   deleteSubscription,
   resendSubscriptionEmail
 } from '../controllers/subscriptionController';
-import { authenticate } from '../middlewares/auth';
+import { authenticate, authorize } from '../middlewares/auth';
 
 const router = express.Router();
 
@@ -23,8 +23,8 @@ router.post('/upgrade', authenticate, upgradeSubscription);
 router.post('/resend-email', authenticate, resendSubscriptionEmail);
 router.get('/my', authenticate, getMySubscription);
 router.get('/my-history', authenticate, getMySubscriptionHistory);
-router.get('/all', authenticate, getAllSubscriptions);
-router.put('/:id/status', authenticate, updateSubscriptionStatus);
-router.delete('/:id', authenticate, deleteSubscription);
+router.get('/all', authenticate, authorize(['SUPER_ADMIN', 'ADMIN']), getAllSubscriptions);
+router.put('/:id/status', authenticate, authorize(['SUPER_ADMIN', 'ADMIN']), updateSubscriptionStatus);
+router.delete('/:id', authenticate, authorize(['SUPER_ADMIN', 'ADMIN']), deleteSubscription);
 
 export default router;

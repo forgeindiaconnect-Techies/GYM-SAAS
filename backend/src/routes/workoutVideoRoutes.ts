@@ -10,6 +10,7 @@ import { authenticate } from '../middlewares/auth';
 const router = express.Router();
 
 router.post('/assign', authenticate, createWorkoutVideo);
+router.post('/', authenticate, createWorkoutVideo);
 router.get('/', authenticate, (req: any, res: any) => req.user?.role === 'MEMBER' ? getCustomerWorkoutVideos(req, res) : getTrainerWorkoutVideos(req, res));
 router.get('/customer', authenticate, getCustomerWorkoutVideos);
 router.get('/trainer', authenticate, getTrainerWorkoutVideos);

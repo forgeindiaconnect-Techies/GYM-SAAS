@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import {
-  Bot, Dumbbell, TrendingUp, Calendar, MapPin, AlertCircle,
+  Bot, Dumbbell, TrendingUp, Calendar, AlertCircle,
   Loader2, Sparkles, Clock, Flame, User, ArrowRight,
   ShieldCheck, Activity, Award, Utensils, Building2,
-  Phone, Mail, Bell, Star, HelpCircle, Settings,
+  Bell, Star, HelpCircle, Settings,
   CreditCard, CalendarCheck, RefreshCw, Users, CheckCircle2
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -79,8 +79,8 @@ const MemberDashboard = () => {
           </div>
           <p className="text-sm text-[#64748B] mt-1">
             {selectedGym
-              ? `Connected to ${selectedGym.name} • Real-time training, gym profile, and progress tracker`
-              : 'Select a gym below to explore its profile, packages, and available trainers.'}
+              ? `Connected to ${selectedGym.name} • Real-time training and progress tracker`
+              : 'Select a gym below to explore its packages and available trainers.'}
           </p>
         </div>
 
@@ -109,8 +109,8 @@ const MemberDashboard = () => {
         </div>
       ) : (
         <>
-          {/* 1. Selected Gym Section (or Find a Gym Prompt) */}
-          {!selectedGym ? (
+          {/* 1. Find a Gym Prompt (shown only when no gym is selected) */}
+          {!selectedGym && (
             <div className="bg-gradient-to-br from-[#FFFBF7] to-white border-2 border-dashed border-[#FDBA74] rounded-3xl p-8 flex flex-col md:flex-row items-center justify-between gap-6">
               <div className="flex items-start gap-4">
                 <div className="w-14 h-14 rounded-2xl bg-[#FFF7ED] border border-[#FFEDD5] flex items-center justify-center text-[#EA580C] shrink-0">
@@ -130,96 +130,6 @@ const MemberDashboard = () => {
               >
                 <Building2 size={16} /> Find a Gym / Choose a Gym
               </button>
-            </div>
-          ) : (
-            <div className="bg-white border border-[#E2E8F0] rounded-3xl p-6 shadow-xs space-y-5">
-              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
-                <div className="flex items-start gap-4 min-w-0">
-                  <div className="w-20 h-20 rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] flex items-center justify-center overflow-hidden shrink-0">
-                    {selectedGym.logo || selectedGym.images?.[0] ? (
-                      <img src={selectedGym.logo || selectedGym.images[0]} alt={selectedGym.name} className="w-full h-full object-cover" />
-                    ) : (
-                      <Building2 className="text-[#EA580C]" size={30} />
-                    )}
-                  </div>
-                  <div className="min-w-0 space-y-1.5">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="text-[11px] font-bold uppercase tracking-wider text-[#EA580C]">Selected Gym</span>
-                      {selectedGym.gymType && (
-                        <span className="px-2 py-0.5 bg-[#FFF7ED] text-[#C2410C] border border-[#FFEDD5] rounded-full text-[10px] font-bold">
-                          {selectedGym.gymType}
-                        </span>
-                      )}
-                    </div>
-                    <h2 className="text-xl md:text-2xl font-black text-[#111827] truncate">{selectedGym.name}</h2>
-                    <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-[#64748B]">
-                      <span className="flex items-center gap-1">
-                        <MapPin size={13} className="text-[#EA580C]" />
-                        {[selectedGym.location?.address, selectedGym.location?.area, selectedGym.location?.city, selectedGym.location?.state].filter(Boolean).join(', ') || 'Address available'}
-                      </span>
-                      {selectedGym.phone && (
-                        <span className="flex items-center gap-1">
-                          <Phone size={13} className="text-[#EA580C]" /> {selectedGym.phone}
-                        </span>
-                      )}
-                      {selectedGym.email && (
-                        <span className="flex items-center gap-1">
-                          <Mail size={13} className="text-[#EA580C]" /> {selectedGym.email}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex flex-wrap items-center gap-2.5 shrink-0">
-                  <Link
-                    to="/member/my-gym"
-                    className="px-4 py-2.5 rounded-xl bg-[#F8FAFC] hover:bg-[#FFF7ED] border border-[#E2E8F0] text-xs font-bold text-[#111827] transition-colors"
-                  >
-                    View Full Gym & Packages
-                  </Link>
-                  <button
-                    type="button"
-                    onClick={() => setIsGymSelectorOpen(true)}
-                    className="px-4 py-2.5 rounded-xl bg-[#FFF7ED] hover:bg-[#FFEDD5] border border-[#FFEDD5] text-xs font-bold text-[#C2410C] transition-colors cursor-pointer flex items-center gap-1.5"
-                  >
-                    <RefreshCw size={13} /> Change Gym
-                  </button>
-                </div>
-              </div>
-
-              {selectedGym.description && (
-                <p className="text-xs md:text-sm text-[#475569] leading-relaxed border-t border-[#F1F5F9] pt-4">
-                  {selectedGym.description}
-                </p>
-              )}
-
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-1">
-                <div className="p-3 rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0]">
-                  <p className="text-[11px] text-[#64748B] font-semibold">Facilities & Services</p>
-                  <p className="text-sm font-black text-[#111827] mt-0.5">
-                    {(selectedGym.facilities?.length || 0) + (selectedGym.services?.length || 0)} Listed
-                  </p>
-                </div>
-                <div className="p-3 rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0]">
-                  <p className="text-[11px] text-[#64748B] font-semibold">Equipment</p>
-                  <p className="text-sm font-black text-[#111827] mt-0.5">
-                    {selectedGym.equipment?.length || 0} Items
-                  </p>
-                </div>
-                <div className="p-3 rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0]">
-                  <p className="text-[11px] text-[#64748B] font-semibold">Membership Packages</p>
-                  <p className="text-sm font-black text-[#111827] mt-0.5">
-                    {selectedGym.packages?.length || selectedGym.subscriptionPlans?.length || 0} Plans
-                  </p>
-                </div>
-                <div className="p-3 rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0]">
-                  <p className="text-[11px] text-[#64748B] font-semibold">Active Trainers</p>
-                  <p className="text-sm font-black text-[#EA580C] mt-0.5">
-                    {availableTrainers.length} Coaches
-                  </p>
-                </div>
-              </div>
             </div>
           )}
 

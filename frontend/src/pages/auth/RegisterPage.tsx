@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Activity, AlertCircle, Loader2, ChevronRight, ChevronLeft, Check, Eye, EyeOff, ArrowLeft, Lock } from 'lucide-react';
@@ -116,6 +116,7 @@ const RegisterPage = () => {
     if (step === 1) {
       if (!form.gender) e.gender = 'Gender is required';
       if (!form.city.trim()) e.city = 'City is required';
+      if (form.pinCode.trim() && !/^\d{6}$/.test(form.pinCode.trim())) e.pinCode = 'Enter a valid 6-digit PIN code';
     }
     if (step === 2) {
       if (!form.fitnessGoal) e.fitnessGoal = 'Please select a fitness goal';
@@ -354,7 +355,8 @@ const RegisterPage = () => {
                 </div>
                 <div>
                   <label className="block text-sm text-[#64748B] mb-2">PIN Code</label>
-                  <input id="reg-pinCode" value={form.pinCode} onChange={e => set('pinCode', e.target.value)} placeholder="6-digit PIN code" className={inputCls('pinCode')} />
+                  <input id="reg-pinCode" type="text" inputMode="numeric" maxLength={6} pattern="\d{6}" value={form.pinCode} onChange={e => set('pinCode', e.target.value.replace(/\D/g, '').slice(0, 6))} placeholder="6-digit PIN code" className={inputCls('pinCode')} />
+                  {errors.pinCode && <p className="text-red-500 text-xs mt-1">{errors.pinCode}</p>}
                 </div>
               </div>
               <div>

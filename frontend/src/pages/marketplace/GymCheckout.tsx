@@ -79,7 +79,7 @@ const GymCheckout = () => {
           setPlan(parsed.plan);
           setBranch(parsed.branch);
           if (parsed.gym?._id) {
-            api.get(`/referrals/settings?gymId=${parsed.gym._id}`).then(res => setRewardSettings(res.data?.settings)).catch(() => {});
+            api.get(`/referrals/settings/public?gymId=${parsed.gym._id}`).then(res => setRewardSettings(res.data?.settings)).catch(() => {});
           }
           return;
         } catch {
@@ -98,7 +98,7 @@ const GymCheckout = () => {
     setBranch(branchData);
 
     if (gymData?._id) {
-      api.get(`/referrals/settings?gymId=${gymData._id}`).then(res => setRewardSettings(res.data?.settings)).catch(() => {});
+      api.get(`/referrals/settings/public?gymId=${gymData._id}`).then(res => setRewardSettings(res.data?.settings)).catch(() => {});
     }
 
     const isPaid = Number(planData.price || 0) > 0 && !planData.name?.toLowerCase().includes('trial');
@@ -267,11 +267,11 @@ const GymCheckout = () => {
     }
   };
 
-  // Success Confirmation Screen (Pure Black & Charcoal Theme with Sand Gold Highlights)
+  // Success Confirmation Screen
   if (paymentSuccess) {
     const mem = paymentSuccess.membership || {};
     return (
-      <div className="min-h-screen bg-[#FFFFFF] text-white pt-24 pb-16 px-4 flex items-center justify-center">
+      <div className="min-h-screen bg-[#FFFFFF] text-[#111827] pt-24 pb-16 px-4 flex items-center justify-center">
         <div className="max-w-xl w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-3xl p-8 sm:p-10 shadow-2xl text-center space-y-6 relative overflow-hidden">
           {/* Subtle Ambient Glow */}
           <div className="absolute top-0 right-1/4 w-48 h-48 bg-[#FFF7ED] rounded-full blur-3xl pointer-events-none" />
@@ -301,7 +301,7 @@ const GymCheckout = () => {
               <Mail size={18} />
             </div>
             <div>
-              <p className="text-sm font-semibold text-white">Confirmation Email Dispatched</p>
+              <p className="text-sm font-semibold text-[#111827]">Confirmation Email Dispatched</p>
               <p className="text-xs text-[#64748B] mt-0.5 leading-relaxed">
                 A verified payment receipt with your membership ID, included features snapshot, and validity details has been sent to <span className="text-[#EA580C] font-medium">{user?.email || 'your registered email'}</span>.
               </p>
@@ -322,7 +322,7 @@ const GymCheckout = () => {
             )}
             <div className="flex justify-between">
               <span className="text-[#64748B]">Gym Name:</span>
-              <span className="font-semibold text-white">{paymentSuccess.gymName}</span>
+              <span className="font-semibold text-[#111827]">{paymentSuccess.gymName}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-[#64748B]">Purchased Package:</span>
@@ -330,7 +330,7 @@ const GymCheckout = () => {
             </div>
             <div className="flex justify-between">
               <span className="text-[#64748B]">Validity Duration:</span>
-              <span className="font-medium text-white">{paymentSuccess.duration}</span>
+              <span className="font-medium text-[#111827]">{paymentSuccess.duration}</span>
             </div>
             <div className="flex justify-between border-t border-[#E2E8F0] pt-3">
               <span className="text-[#64748B]">Total Paid:</span>
@@ -340,21 +340,21 @@ const GymCheckout = () => {
             </div>
             <div className="flex justify-between text-xs text-[#64748B]">
               <span>Payment Mode:</span>
-              <span className="font-medium text-gray-200">{paymentSuccess.paymentMethod}</span>
+              <span className="font-medium text-[#111827]">{paymentSuccess.paymentMethod}</span>
             </div>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-3 relative z-10">
             <button
               onClick={() => navigate('/member/subscription')}
-              className="flex-1 py-3.5 bg-[#C2410C] hover:bg-[#3651D4] text-[#FFFFFF] font-bold font-bold rounded-xl transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer"
+              className="flex-1 py-3.5 bg-[#C2410C] hover:bg-[#9A3412] text-[#FFFFFF] font-bold rounded-xl transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer"
             >
               <span>View My Membership</span>
               <ExternalLink size={16} />
             </button>
             <button
               onClick={() => navigate('/member/dashboard')}
-              className="py-3.5 px-6 bg-[#FFFFFF] hover:bg-[#FFF7ED] border border-[#E2E8F0] text-gray-300 font-semibold rounded-xl transition-all cursor-pointer"
+              className="py-3.5 px-6 bg-[#FFFFFF] hover:bg-[#FFF7ED] border border-[#E2E8F0] text-[#334155] font-semibold rounded-xl transition-all cursor-pointer"
             >
               Dashboard
             </button>
@@ -365,7 +365,7 @@ const GymCheckout = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#FFFFFF] text-white pt-24 pb-16 px-4 relative overflow-hidden">
+    <div className="min-h-screen bg-[#FFFFFF] text-[#111827] pt-24 pb-16 px-4 relative overflow-hidden">
       {/* Background Glow Accents */}
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#FFF7ED] rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[#FFF7ED] rounded-full blur-3xl pointer-events-none" />
@@ -433,7 +433,7 @@ const GymCheckout = () => {
                             <Icon size={18} />
                           </div>
                           <div className="min-w-0">
-                            <p className={`font-bold text-sm leading-tight ${isSelected ? 'text-[#EA580C]' : 'text-white'}`}>{method.label}</p>
+                            <p className={`font-bold text-sm leading-tight ${isSelected ? 'text-[#EA580C]' : 'text-[#111827]'}`}>{method.label}</p>
                             <p className="text-[11px] text-[#64748B] mt-0.5 leading-snug">{method.desc}</p>
                           </div>
                         </button>
@@ -455,7 +455,7 @@ const GymCheckout = () => {
                       <div className="space-y-2 text-center sm:text-left flex-1">
                         <p className="text-xs font-bold uppercase tracking-wider text-[#EA580C]">Scan QR Code</p>
                         <p className="text-xs text-[#64748B]">Scan with Google Pay, PhonePe, Paytm, or BHIM to pay instantly.</p>
-                        <div className="text-xs font-mono bg-[#FFFFFF] px-3 py-1.5 rounded-lg border border-[#E2E8F0] inline-block font-bold text-gray-200">
+                        <div className="text-xs font-mono bg-[#FFFFFF] px-3 py-1.5 rounded-lg border border-[#E2E8F0] inline-block font-bold text-[#334155]">
                           UPI ID: <span className="text-[#EA580C]">aigym@icici</span>
                         </div>
                       </div>
@@ -467,7 +467,7 @@ const GymCheckout = () => {
                         value={upiId}
                         onChange={(e) => setUpiId(e.target.value)}
                         placeholder="yourname@okhdfcbank"
-                        className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-gray-500 outline-none focus:border-[#FDBA74]"
+                        className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-3.5 py-2.5 text-sm text-[#111827] placeholder-[#94A3B8] outline-none focus:border-[#FDBA74]"
                       />
                     </div>
                   </div>
@@ -482,7 +482,7 @@ const GymCheckout = () => {
                         value={cardDetails.name}
                         onChange={(e) => setCardDetails({ ...cardDetails, name: e.target.value })}
                         placeholder="Name on card"
-                        className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-gray-500 outline-none focus:border-[#FDBA74]"
+                        className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-3.5 py-2.5 text-sm text-[#111827] placeholder-[#94A3B8] outline-none focus:border-[#FDBA74]"
                       />
                     </div>
                     <div>
@@ -493,7 +493,7 @@ const GymCheckout = () => {
                         onChange={(e) => setCardDetails({ ...cardDetails, number: e.target.value })}
                         placeholder="4532 •••• •••• 8901"
                         maxLength={19}
-                        className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-gray-500 outline-none focus:border-[#FDBA74] font-mono"
+                        className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-3.5 py-2.5 text-sm text-[#111827] placeholder-[#94A3B8] outline-none focus:border-[#FDBA74] font-mono"
                       />
                     </div>
                     <div className="grid grid-cols-2 gap-3">
@@ -505,7 +505,7 @@ const GymCheckout = () => {
                           onChange={(e) => setCardDetails({ ...cardDetails, expiry: e.target.value })}
                           placeholder="MM/YY"
                           maxLength={5}
-                          className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-gray-500 outline-none focus:border-[#FDBA74]"
+                          className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-3.5 py-2.5 text-sm text-[#111827] placeholder-[#94A3B8] outline-none focus:border-[#FDBA74]"
                         />
                       </div>
                       <div>
@@ -516,7 +516,7 @@ const GymCheckout = () => {
                           onChange={(e) => setCardDetails({ ...cardDetails, cvv: e.target.value })}
                           placeholder="•••"
                           maxLength={4}
-                          className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-gray-500 outline-none focus:border-[#FDBA74]"
+                          className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-3.5 py-2.5 text-sm text-[#111827] placeholder-[#94A3B8] outline-none focus:border-[#FDBA74]"
                         />
                       </div>
                     </div>
@@ -529,7 +529,7 @@ const GymCheckout = () => {
                     <select
                       value={bankName}
                       onChange={(e) => setBankName(e.target.value)}
-                      className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-3.5 py-2.5 text-sm text-white outline-none focus:border-[#FDBA74]"
+                      className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-3.5 py-2.5 text-sm text-[#111827] outline-none focus:border-[#FDBA74]"
                     >
                       <option value="HDFC Bank">HDFC Bank</option>
                       <option value="State Bank of India">State Bank of India (SBI)</option>
@@ -544,7 +544,7 @@ const GymCheckout = () => {
                 {paymentMethod === 'Cash at Gym' && (
                   <div className="p-4 bg-[#FFF7ED] border border-[#FFEDD5] rounded-2xl text-xs text-[#EA580C] space-y-1">
                     <p className="font-bold">Pay At Gym Counter</p>
-                    <p className="text-gray-300">Your membership package will be pre-registered. You can pay via Cash, POS card machine, or UPI at the front desk upon arrival.</p>
+                    <p className="text-[#475569]">Your membership package will be pre-registered. You can pay via Cash, POS card machine, or UPI at the front desk upon arrival.</p>
                   </div>
                 )}
               </div>
@@ -555,8 +555,8 @@ const GymCheckout = () => {
               onClick={handleCheckout}
               className={`w-full py-4 rounded-2xl font-bold text-base flex items-center justify-center space-x-2 transition-all shadow-lg ${
                 isProcessing
-                  ? 'bg-gray-800 text-[#64748B] cursor-not-allowed'
-                  : 'bg-[#C2410C] text-white hover:bg-[#3651D4] cursor-pointer'
+                  ? 'bg-[#E2E8F0] text-[#64748B] cursor-not-allowed'
+                  : 'bg-[#C2410C] text-white hover:bg-[#9A3412] cursor-pointer'
               }`}
             >
               {isProcessing ? (
@@ -584,7 +584,7 @@ const GymCheckout = () => {
               <div className="flex items-start gap-3">
                 <Building2 size={18} className="text-[#EA580C] shrink-0 mt-0.5" />
                 <div>
-                  <p className="font-bold text-white truncate">{gym.name || 'Selected Gym'}</p>
+                  <p className="font-bold text-[#111827] truncate">{gym.name || 'Selected Gym'}</p>
                   <p className="text-xs text-[#64748B]">{branch?.branchName ? `${branch.branchName} • ` : ''}{gym.location?.city || 'India'}</p>
                 </div>
               </div>
@@ -593,7 +593,7 @@ const GymCheckout = () => {
               
               <div className="bg-[#F8FAFC] p-3.5 rounded-2xl border border-[#E2E8F0] space-y-1">
                 <div className="flex items-center justify-between">
-                  <span className="font-bold text-sm text-white">{plan.name}</span>
+                  <span className="font-bold text-sm text-[#111827]">{plan.name}</span>
                   <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5]">
                     {plan.duration || (isFreeTrial ? '1 Week' : '1 Month')}
                   </span>
@@ -609,7 +609,7 @@ const GymCheckout = () => {
             {/* Referral Code Coupon Input */}
             {!isFreeTrial && (
               <div className="p-3.5 bg-[#F8FAFC] rounded-2xl border border-[#E2E8F0] space-y-2.5">
-                <div className="flex items-center justify-between text-xs font-bold text-white">
+                <div className="flex items-center justify-between text-xs font-bold text-[#111827]">
                   <span className="flex items-center gap-1.5"><Gift size={14} className="text-[#EA580C]" /> Referral Code</span>
                   {appliedReferral && (
                     <span className="text-[10px] text-[#15803D] bg-[#FFF7ED] px-2 py-0.5 rounded-full font-bold border border-[#E2E8F0]/20">Applied</span>
@@ -625,13 +625,13 @@ const GymCheckout = () => {
                       setRefError('');
                     }}
                     placeholder="Enter referral code"
-                    className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-3 py-1.5 text-xs text-white uppercase font-mono outline-none focus:border-[#FDBA74]"
+                    className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-3 py-1.5 text-xs text-[#111827] placeholder-[#94A3B8] uppercase font-mono outline-none focus:border-[#FDBA74]"
                   />
                   <button
                     type="button"
                     disabled={!referralCodeInput || refChecking}
                     onClick={() => handleApplyReferral()}
-                    className="px-3.5 py-1.5 bg-[#C2410C] hover:bg-[#3651D4] disabled:bg-gray-800 disabled:text-[#64748B] text-[#FFFFFF] font-bold text-xs font-bold rounded-xl transition-all whitespace-nowrap cursor-pointer"
+                    className="px-3.5 py-1.5 bg-[#C2410C] hover:bg-[#9A3412] disabled:bg-[#CBD5E1] disabled:text-[#475569] text-[#FFFFFF] font-bold text-xs rounded-xl transition-all whitespace-nowrap cursor-pointer"
                   >
                     {refChecking ? '...' : 'Apply'}
                   </button>
@@ -661,7 +661,7 @@ const GymCheckout = () => {
                       onChange={(e) => setUsePoints(e.target.checked)}
                       className="w-4 h-4 rounded text-[#EA580C] bg-[#FFFFFF] border-[#E2E8F0] focus:ring-0 cursor-pointer"
                     />
-                    <span className="text-xs font-bold text-white flex items-center gap-1.5">
+                    <span className="text-xs font-bold text-[#111827] flex items-center gap-1.5">
                       <Coins size={14} className="text-[#EA580C]" />
                       Redeem Referral Points
                     </span>
@@ -675,7 +675,7 @@ const GymCheckout = () => {
                   <div className="space-y-2 pt-2 border-t border-[#E2E8F0]/60">
                     <div className="flex items-center justify-between text-[11px] text-[#64748B]">
                       <span>Points to Redeem:</span>
-                      <span className="font-bold text-white">{pointsToRedeem} pts</span>
+                      <span className="font-bold text-[#111827]">{pointsToRedeem} pts</span>
                     </div>
                     <input
                       type="range"
@@ -702,7 +702,7 @@ const GymCheckout = () => {
             <div className="border-t border-[#E2E8F0] pt-4 space-y-2.5 text-sm">
               <div className="flex justify-between text-xs">
                 <span className="text-[#64748B]">Package Price</span>
-                <span className="text-white font-medium">
+                <span className="text-[#111827] font-medium">
                   {isFreeTrial ? '₹0' : `₹${numPrice.toLocaleString('en-IN')}`}
                 </span>
               </div>
@@ -721,7 +721,7 @@ const GymCheckout = () => {
               {!isFreeTrial && (
                 <div className="flex justify-between text-xs">
                   <span className="text-[#64748B]">Taxes (18% GST)</span>
-                  <span className="text-white font-medium">₹{tax.toLocaleString('en-IN')}</span>
+                  <span className="text-[#111827] font-medium">₹{tax.toLocaleString('en-IN')}</span>
                 </div>
               )}
             </div>
@@ -732,7 +732,7 @@ const GymCheckout = () => {
                 {isFreeTrial && <p className="text-[11px] text-[#EA580C] font-semibold">No Payment Required</p>}
               </div>
               <div className="text-right">
-                <div className="text-2xl font-black text-white">
+                <div className="text-2xl font-black text-[#111827]">
                   {isFreeTrial ? '₹0' : `₹${total.toLocaleString('en-IN')}`}
                 </div>
               </div>

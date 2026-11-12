@@ -1,14 +1,14 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useState, useEffect, useCallback } from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  ScrollView, 
-  TextInput, 
-  TouchableOpacity, 
-  Alert, 
-  Modal, 
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TextInput,
+  TouchableOpacity,
+  Alert,
+  Modal,
   Linking,
   ActivityIndicator,
   RefreshControl,
@@ -19,7 +19,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { COLORS } from '../../constants/theme';
 import { useAuth } from '../../context/AuthContext';
-import { sanitizeTenDigitPhone, isValidTenDigitPhone } from '../../utils/phoneUtils';
+import { sanitizeTenDigitPhone, isValidTenDigitPhone, sanitizeSixDigitPinCode, isValidSixDigitPinCode } from '../../utils/phoneUtils';
 import { api } from '../../api/client';
 import { FileDownloader } from '../../utils/fileDownloader';
 
@@ -234,9 +234,9 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
           }];
         }
 
-        const hasTrial = membershipHistory.some((h: any) => 
-          (h.planName || '').toLowerCase().includes('trial') || 
-          h.status === 'Free Trial' || 
+        const hasTrial = membershipHistory.some((h: any) =>
+          (h.planName || '').toLowerCase().includes('trial') ||
+          h.status === 'Free Trial' ||
           h.paymentMethod === 'Trial'
         );
         if (!hasTrial && u.subscriptionStatus === 'Free Trial') {
@@ -255,9 +255,9 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
         membershipHistory.sort((a, b) => new Date(b.createdAt || b.startDate || 0).getTime() - new Date(a.createdAt || a.startDate || 0).getTime());
 
         const status = u.approvalStatus === 'PENDING' ? 'Pending' :
-                       u.approvalStatus === 'APPROVED' ? 'Active' :
-                       u.approvalStatus === 'REJECTED' ? 'Rejected' :
-                       u.approvalStatus === 'SUSPENDED' ? 'Inactive' : (u.subscriptionStatus || 'Inactive');
+          u.approvalStatus === 'APPROVED' ? 'Active' :
+            u.approvalStatus === 'REJECTED' ? 'Rejected' :
+              u.approvalStatus === 'SUSPENDED' ? 'Inactive' : (u.subscriptionStatus || 'Inactive');
 
         const fullName = `${u.firstName || ''} ${u.lastName || ''}`.trim() || u.name || 'Member';
         const resolvedPlan = u.subscriptionPlan || membership?.planName || 'Starter';
@@ -381,9 +381,9 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
 
   const filteredMembers = members.filter((m) => {
     const q = memberSearch.trim().toLowerCase();
-    const matchesSearch = !q || 
-      (m.name || '').toLowerCase().includes(q) || 
-      (m.email || '').toLowerCase().includes(q) || 
+    const matchesSearch = !q ||
+      (m.name || '').toLowerCase().includes(q) ||
+      (m.email || '').toLowerCase().includes(q) ||
       (m.phone || '').includes(q);
 
     if (!matchesSearch) return false;
@@ -461,10 +461,10 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
         const historyStr =
           m.membershipHistory && m.membershipHistory.length > 1
             ? m.membershipHistory
-                .slice()
-                .reverse()
-                .map((h: any) => h.planName || h.status || 'Free Trial')
-                .join(' -> ')
+              .slice()
+              .reverse()
+              .map((h: any) => h.planName || h.status || 'Free Trial')
+              .join(' -> ')
             : m.plan || '-';
         return [
           m.name || '-',
@@ -549,9 +549,9 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
 
   const filteredEnquiries = enquiries.filter((e) => {
     const q = enquirySearch.trim().toLowerCase();
-    const matchesSearch = !q || 
-      (e.customerName || '').toLowerCase().includes(q) || 
-      (e.email || '').toLowerCase().includes(q) || 
+    const matchesSearch = !q ||
+      (e.customerName || '').toLowerCase().includes(q) ||
+      (e.email || '').toLowerCase().includes(q) ||
       (e.phone || '').includes(q) ||
       (e.enquiryId || '').toLowerCase().includes(q);
 
@@ -647,12 +647,12 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
       `Are you sure you want to delete ${member.name}? This will remove their membership and access records.`,
       [
         { text: 'Cancel', style: 'cancel' },
-        { 
-          text: 'Delete', 
+        {
+          text: 'Delete',
           style: 'destructive',
           onPress: async () => {
             try {
-              await api.delete(`/users/${member.id}`).catch(() => {});
+              await api.delete(`/users/${member.id}`).catch(() => { });
               setMembers(prev => prev.filter(m => m.id !== member.id));
               if (selectedMember?.id === member.id) {
                 setViewMemberModalVisible(false);
@@ -704,7 +704,7 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
     setEditHeight(member.rawHeight ? String(member.rawHeight) : '');
     setEditWeight(member.rawWeight ? String(member.rawWeight) : '');
     setEditCity(member.city !== 'Not specified' ? member.city : '');
-    setEditPinCode(member.pinCode || '');
+    setEditPinCode(sanitizeSixDigitPinCode(member.pinCode || ''));
     setEditTrainer(member.trainer !== 'Unassigned' ? member.trainer : '');
     setEditEmergencyName(member.emergencyName !== 'N/A' ? member.emergencyName : '');
     setEditEmergencyPhone(member.emergencyPhone !== 'N/A' ? sanitizeTenDigitPhone(member.emergencyPhone) : '');
@@ -720,6 +720,10 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
     }
     if (editEmergencyPhone.trim() && !isValidTenDigitPhone(editEmergencyPhone)) {
       Alert.alert('Invalid Phone', 'Emergency contact number must be exactly 10 digits.');
+      return;
+    }
+    if (editPinCode.trim() && !isValidSixDigitPinCode(editPinCode.trim())) {
+      Alert.alert('Invalid PIN Code', 'PIN code must be exactly 6 digits.');
       return;
     }
     try {
@@ -748,7 +752,7 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
           mobile: editEmergencyPhone,
           relationship: editEmergencyRelation
         }
-      }).catch(() => {});
+      }).catch(() => { });
 
       // If status changed, update via /users/:id/status
       if (editStatus !== selectedMember.status) {
@@ -756,7 +760,7 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
         if (editStatus === 'Active') apiStatus = 'APPROVED';
         else if (editStatus === 'Inactive') apiStatus = 'SUSPENDED';
         else if (editStatus === 'Rejected') apiStatus = 'REJECTED';
-        await api.put(`/users/${selectedMember.id}/status`, { status: apiStatus }).catch(() => {});
+        await api.put(`/users/${selectedMember.id}/status`, { status: apiStatus }).catch(() => { });
       }
 
       setMembers(prev => prev.map(m => m.id === selectedMember.id ? {
@@ -1063,10 +1067,10 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
           onPress={() => setActiveSection('members')}
           activeOpacity={0.7}
         >
-          <Ionicons 
-            name="people" 
-            size={16} 
-            color={activeSection === 'members' ? COLORS.primary : COLORS.textMuted} 
+          <Ionicons
+            name="people"
+            size={16}
+            color={activeSection === 'members' ? COLORS.primary : COLORS.textMuted}
           />
           <Text style={[styles.segmentText, activeSection === 'members' && styles.segmentTextActive]}>
             Members ({members.length})
@@ -1078,10 +1082,10 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
           onPress={() => setActiveSection('enquiries')}
           activeOpacity={0.7}
         >
-          <Ionicons 
-            name="chatbubbles" 
-            size={16} 
-            color={activeSection === 'enquiries' ? COLORS.primary : COLORS.textMuted} 
+          <Ionicons
+            name="chatbubbles"
+            size={16}
+            color={activeSection === 'enquiries' ? COLORS.primary : COLORS.textMuted}
           />
           <Text style={[styles.segmentText, activeSection === 'enquiries' && styles.segmentTextActive]}>
             Customer Enquiries ({enquiries.length})
@@ -1089,8 +1093,8 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
         </TouchableOpacity>
       </View>
 
-      <ScrollView 
-        style={styles.scrollArea} 
+      <ScrollView
+        style={styles.scrollArea}
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
         refreshControl={
@@ -1165,9 +1169,9 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
 
             {/* Filter Chips + Search Bar Card matching Web layout */}
             <View style={styles.filterSearchPanel}>
-              <ScrollView 
-                horizontal 
-                showsHorizontalScrollIndicator={false} 
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
                 contentContainerStyle={styles.filtersScrollCompact}
               >
                 {memberFilterTabs.map((tab) => {
@@ -1242,7 +1246,7 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
                               <Ionicons name="mail-outline" size={12} color={COLORS.textMuted} />
                               <Text style={styles.contactEmailText} numberOfLines={1}>{m.email}</Text>
                             </View>
-                            <TouchableOpacity 
+                            <TouchableOpacity
                               style={styles.contactSubRow}
                               onPress={() => handleCall(m.phone)}
                             >
@@ -1253,20 +1257,20 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
                         </View>
 
                         {/* Status Badge */}
-                        <TouchableOpacity 
+                        <TouchableOpacity
                           style={[
                             styles.webStatusBadge,
                             isPending ? styles.statusBadgePending :
-                            isActive ? styles.statusBadgeActive :
-                            isRejected ? styles.statusBadgeRejected : styles.statusBadgeInactive
+                              isActive ? styles.statusBadgeActive :
+                                isRejected ? styles.statusBadgeRejected : styles.statusBadgeInactive
                           ]}
                           onPress={() => handleOpenStatusModal(m)}
                         >
                           <Text style={[
                             styles.webStatusText,
                             isPending ? styles.statusTextPending :
-                            isActive ? styles.statusTextActive :
-                            isRejected ? styles.statusTextRejected : styles.statusTextInactive
+                              isActive ? styles.statusTextActive :
+                                isRejected ? styles.statusTextRejected : styles.statusTextInactive
                           ]}>
                             {m.status}
                           </Text>
@@ -1284,7 +1288,7 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
 
                           {/* Multiple Plans Badge */}
                           {plansCount > 1 && (
-                            <TouchableOpacity 
+                            <TouchableOpacity
                               style={styles.multiPlanBadge}
                               onPress={() => setExpandedPlanMemberId(isExpanded ? null : m.id)}
                             >
@@ -1352,7 +1356,7 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
 
                       {/* Web Actions Row: View, Edit, Delete, Status */}
                       <View style={styles.webActionsRow}>
-                        <TouchableOpacity 
+                        <TouchableOpacity
                           style={styles.webActionBtn}
                           onPress={() => {
                             setSelectedMember(m);
@@ -1363,7 +1367,7 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
                           <Text style={styles.webActionLabel}>View</Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity 
+                        <TouchableOpacity
                           style={styles.webActionBtn}
                           onPress={() => handleOpenEdit(m)}
                         >
@@ -1371,7 +1375,7 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
                           <Text style={[styles.webActionLabel, { color: COLORS.blue }]}>Edit</Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity 
+                        <TouchableOpacity
                           style={styles.webActionBtn}
                           onPress={() => handleDeleteMember(m)}
                         >
@@ -1379,7 +1383,7 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
                           <Text style={[styles.webActionLabel, { color: COLORS.rose }]}>Delete</Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity 
+                        <TouchableOpacity
                           style={[styles.webActionBtn, styles.statusActionBtn]}
                           onPress={() => handleOpenStatusModal(m)}
                         >
@@ -1433,9 +1437,9 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
             </View>
 
             {/* Enquiry Filters matching Web App */}
-            <ScrollView 
-              horizontal 
-              showsHorizontalScrollIndicator={false} 
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
               contentContainerStyle={styles.filtersScroll}
             >
               {enquiryFilterTabs.map((tab) => {
@@ -1479,16 +1483,16 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
                         <View style={[
                           styles.webEnquiryStatusBadge,
                           isNew ? styles.enquiryBadgeNew :
-                          isConverted ? styles.enquiryBadgeConverted :
-                          isContacted ? styles.enquiryBadgeContacted :
-                          isFollowUp ? styles.enquiryBadgeFollowUp : styles.enquiryBadgeClosed
+                            isConverted ? styles.enquiryBadgeConverted :
+                              isContacted ? styles.enquiryBadgeContacted :
+                                isFollowUp ? styles.enquiryBadgeFollowUp : styles.enquiryBadgeClosed
                         ]}>
                           <Text style={[
                             styles.webEnquiryStatusText,
                             isNew ? styles.enquiryTextNew :
-                            isConverted ? styles.enquiryTextConverted :
-                            isContacted ? styles.enquiryTextContacted :
-                            isFollowUp ? styles.enquiryTextFollowUp : styles.enquiryTextClosed
+                              isConverted ? styles.enquiryTextConverted :
+                                isContacted ? styles.enquiryTextContacted :
+                                  isFollowUp ? styles.enquiryTextFollowUp : styles.enquiryTextClosed
                           ]}>
                             {e.status}
                           </Text>
@@ -1497,7 +1501,7 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
 
                       {/* Contact Details */}
                       <View style={styles.enquiryContactBox}>
-                        <TouchableOpacity 
+                        <TouchableOpacity
                           style={styles.enquiryContactLine}
                           onPress={() => handleCall(e.phone)}
                         >
@@ -1505,7 +1509,7 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
                           <Text style={styles.enquiryContactValue}>{e.phone}</Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity 
+                        <TouchableOpacity
                           style={styles.enquiryContactLine}
                           onPress={() => handleMail(e.email)}
                         >
@@ -1528,7 +1532,7 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
 
                       {/* Action Row matching Web: View Details → and Convert to Member */}
                       <View style={styles.enquiryActionRow}>
-                        <TouchableOpacity 
+                        <TouchableOpacity
                           style={styles.viewDetailsBtn}
                           onPress={() => {
                             setSelectedEnquiry(e);
@@ -1541,7 +1545,7 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
                           <Ionicons name="arrow-forward" size={15} color={COLORS.primary} />
                         </TouchableOpacity>
 
-                        <TouchableOpacity 
+                        <TouchableOpacity
                           style={styles.quickConvertBtn}
                           onPress={() => handleConvertEnquiry(e)}
                           activeOpacity={0.7}
@@ -1569,7 +1573,7 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
                 <Text style={styles.modalTitle}>Member Profile</Text>
                 <Text style={styles.modalSubtitle}>Comprehensive membership & personal details</Text>
               </View>
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={styles.modalCloseBtn}
                 onPress={() => setViewMemberModalVisible(false)}
               >
@@ -1590,14 +1594,14 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
                       <View style={[
                         styles.webStatusBadge,
                         selectedMember.status === 'Active' ? styles.statusBadgeActive :
-                        selectedMember.status === 'Pending' ? styles.statusBadgePending :
-                        selectedMember.status === 'Rejected' ? styles.statusBadgeRejected : styles.statusBadgeInactive
+                          selectedMember.status === 'Pending' ? styles.statusBadgePending :
+                            selectedMember.status === 'Rejected' ? styles.statusBadgeRejected : styles.statusBadgeInactive
                       ]}>
                         <Text style={[
                           styles.webStatusText,
                           selectedMember.status === 'Active' ? styles.statusTextActive :
-                          selectedMember.status === 'Pending' ? styles.statusTextPending :
-                          selectedMember.status === 'Rejected' ? styles.statusTextRejected : styles.statusTextInactive
+                            selectedMember.status === 'Pending' ? styles.statusTextPending :
+                              selectedMember.status === 'Rejected' ? styles.statusTextRejected : styles.statusTextInactive
                         ]}>
                           {selectedMember.status}
                         </Text>
@@ -1612,7 +1616,7 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
 
                 {/* Quick Contact Bar */}
                 <View style={styles.quickContactBar}>
-                  <TouchableOpacity 
+                  <TouchableOpacity
                     style={styles.quickContactBtn}
                     onPress={() => handleCall(selectedMember.phone)}
                   >
@@ -1620,7 +1624,7 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
                     <Text style={styles.quickContactText}>{selectedMember.phone}</Text>
                   </TouchableOpacity>
 
-                  <TouchableOpacity 
+                  <TouchableOpacity
                     style={styles.quickContactBtn}
                     onPress={() => handleMail(selectedMember.email)}
                   >
@@ -1796,15 +1800,15 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
 
             {/* Bottom Actions Bar with Download Invoice */}
             <View style={[styles.modalBottomBar, { gap: 8 }]}>
-              <TouchableOpacity 
-                style={[styles.modalCancelBtn, { flex: 0.8 }]} 
+              <TouchableOpacity
+                style={[styles.modalCancelBtn, { flex: 0.8 }]}
                 onPress={() => setViewMemberModalVisible(false)}
               >
                 <Text style={styles.modalCancelText}>Close</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity 
-                style={[styles.modalSubmitBtn, { flex: 1.4, backgroundColor: COLORS.primary }]} 
+              <TouchableOpacity
+                style={[styles.modalSubmitBtn, { flex: 1.4, backgroundColor: COLORS.primary }]}
                 onPress={() => {
                   if (selectedMember) handleDownloadMemberInvoice(selectedMember);
                 }}
@@ -1813,8 +1817,8 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
                 <Text style={styles.modalSubmitText}>Download Invoice</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity 
-                style={[styles.modalSubmitBtn, { flex: 1, backgroundColor: COLORS.blue }]} 
+              <TouchableOpacity
+                style={[styles.modalSubmitBtn, { flex: 1, backgroundColor: COLORS.blue }]}
                 onPress={() => {
                   setViewMemberModalVisible(false);
                   handleOpenEdit(selectedMember);
@@ -1838,7 +1842,7 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
                 <Text style={styles.modalTitle}>Edit Member Profile</Text>
                 <Text style={styles.modalSubtitle}>Update personal, membership and fitness details</Text>
               </View>
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={styles.modalCloseBtn}
                 onPress={() => setEditMemberModalVisible(false)}
               >
@@ -1948,9 +1952,10 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
                     <TextInput
                       style={styles.modalInput}
                       value={editPinCode}
-                      onChangeText={setEditPinCode}
-                      placeholder="PIN Code"
-                      keyboardType="numeric"
+                      onChangeText={val => setEditPinCode(sanitizeSixDigitPinCode(val))}
+                      placeholder="6-digit PIN Code"
+                      keyboardType="number-pad"
+                      maxLength={6}
                     />
                   </View>
                 </View>
@@ -2047,15 +2052,15 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
             </ScrollView>
 
             <View style={styles.modalBottomBar}>
-              <TouchableOpacity 
-                style={styles.modalCancelBtn} 
+              <TouchableOpacity
+                style={styles.modalCancelBtn}
                 onPress={() => setEditMemberModalVisible(false)}
                 disabled={isSavingEdit}
               >
                 <Text style={styles.modalCancelText}>Cancel</Text>
               </TouchableOpacity>
-              <TouchableOpacity 
-                style={[styles.modalSubmitBtn, isSavingEdit && { opacity: 0.7 }]} 
+              <TouchableOpacity
+                style={[styles.modalSubmitBtn, isSavingEdit && { opacity: 0.7 }]}
                 onPress={handleSaveEdit}
                 disabled={isSavingEdit}
               >
@@ -2101,8 +2106,8 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
                 <View style={[
                   styles.statusSelectDot,
                   st === 'Active' ? { backgroundColor: COLORS.emerald } :
-                  st === 'Pending' ? { backgroundColor: '#F59E0B' } :
-                  st === 'Rejected' ? { backgroundColor: COLORS.rose } : { backgroundColor: COLORS.textMuted }
+                    st === 'Pending' ? { backgroundColor: '#F59E0B' } :
+                      st === 'Rejected' ? { backgroundColor: COLORS.rose } : { backgroundColor: COLORS.textMuted }
                 ]} />
                 <Text style={[
                   styles.statusSelectLabel,
@@ -2116,8 +2121,8 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
               </TouchableOpacity>
             ))}
 
-            <TouchableOpacity 
-              style={[styles.modalCancelBtn, { marginTop: 12 }]} 
+            <TouchableOpacity
+              style={[styles.modalCancelBtn, { marginTop: 12 }]}
               onPress={() => setStatusModalVisible(false)}
             >
               <Text style={styles.modalCancelText}>Cancel</Text>
@@ -2135,7 +2140,7 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
                 <Text style={styles.modalTitle}>Enquiry Details</Text>
                 <Text style={styles.modalSubtitle}>Prospective member lead overview</Text>
               </View>
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={styles.modalCloseBtn}
                 onPress={() => setEnquiryDetailModalVisible(false)}
               >
@@ -2158,7 +2163,7 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
 
                 {/* Contact Row */}
                 <View style={styles.enquiryDetailGrid}>
-                  <TouchableOpacity 
+                  <TouchableOpacity
                     style={styles.detailActionPill}
                     onPress={() => handleCall(selectedEnquiry.phone)}
                   >
@@ -2166,7 +2171,7 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
                     <Text style={styles.detailActionPillText}>{selectedEnquiry.phone}</Text>
                   </TouchableOpacity>
 
-                  <TouchableOpacity 
+                  <TouchableOpacity
                     style={styles.detailActionPill}
                     onPress={() => handleMail(selectedEnquiry.email)}
                   >
@@ -2239,14 +2244,14 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
             )}
 
             <View style={styles.modalBottomBar}>
-              <TouchableOpacity 
-                style={styles.modalCancelBtn} 
+              <TouchableOpacity
+                style={styles.modalCancelBtn}
                 onPress={() => setEnquiryDetailModalVisible(false)}
               >
                 <Text style={styles.modalCancelText}>Close</Text>
               </TouchableOpacity>
-              <TouchableOpacity 
-                style={[styles.modalSubmitBtn, { backgroundColor: COLORS.emerald }]} 
+              <TouchableOpacity
+                style={[styles.modalSubmitBtn, { backgroundColor: COLORS.emerald }]}
                 onPress={() => handleConvertEnquiry(selectedEnquiry)}
               >
                 <Ionicons name="person-add" size={14} color={COLORS.white} style={{ marginRight: 6 }} />
@@ -2785,15 +2790,15 @@ export const OwnerMembersScreen: React.FC<{ initialSection?: 'members' | 'enquir
             />
 
             <View style={styles.modalActions}>
-              <TouchableOpacity 
-                style={styles.modalCancelBtn} 
+              <TouchableOpacity
+                style={styles.modalCancelBtn}
                 onPress={() => setAddEnquiryModalVisible(false)}
                 disabled={isSubmittingEnquiry}
               >
                 <Text style={styles.modalCancelText}>Cancel</Text>
               </TouchableOpacity>
-              <TouchableOpacity 
-                style={[styles.modalSubmitBtn, isSubmittingEnquiry && { opacity: 0.7 }]} 
+              <TouchableOpacity
+                style={[styles.modalSubmitBtn, isSubmittingEnquiry && { opacity: 0.7 }]}
                 onPress={handleCreateEnquiry}
                 disabled={isSubmittingEnquiry}
               >

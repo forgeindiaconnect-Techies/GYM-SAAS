@@ -24,12 +24,12 @@ export default function TrainerInterviews() {
   const fetchInterviews = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem('token');
-      const res = await axios.get('http://localhost:5600/api/hiring/trainer/interviews', {
+      const token = localStorage.getItem('aigym_token') || sessionStorage.getItem('aigym_token') || localStorage.getItem('token');
+      const res = await axios.get('http://localhost:5600/api/hiring/trainer/my-interviews', {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.data.success) {
-        setInterviews(res.data.data);
+        setInterviews(res.data.interviews || res.data.data || []);
       }
     } catch (err) {
       console.error('Failed to load interviews:', err);

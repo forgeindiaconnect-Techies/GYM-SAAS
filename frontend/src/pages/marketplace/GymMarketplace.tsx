@@ -146,7 +146,7 @@ const GymMarketplace = () => {
       <div className="relative w-full min-h-screen overflow-hidden flex flex-col justify-between">
 
         {/* Floating Top Header */}
-        <header className="absolute top-0 left-0 right-0 z-30 px-4 sm:px-8 py-5 flex items-center justify-between pointer-events-auto bg-gradient-to-b from-black/70 via-black/25 to-transparent pt-safe">
+        <header className="absolute top-0 left-0 right-0 z-30 px-4 sm:px-8 pt-8 sm:pt-9 pb-5 flex items-center justify-between pointer-events-auto bg-gradient-to-b from-black/70 via-black/25 to-transparent">
           <Link to="/" className="flex items-center space-x-2.5 group">
             <div className="w-10 h-10 bg-gradient-to-br from-[#EA580C] to-[#C2410C] rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/15">
               <Activity className="text-[#FFFFFF]" size={22} strokeWidth={2.5} />

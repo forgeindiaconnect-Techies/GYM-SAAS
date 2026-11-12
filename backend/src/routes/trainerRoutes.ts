@@ -30,8 +30,10 @@ router.post('/profile', completeProfile); // Completes profile, sets to pending
 // Trainer self-profile & isolated dashboard routes
 router.get('/dashboard-summary', authenticate, getTrainerDashboardSummary);
 router.get('/my-clients', authenticate, getMyAssignedClients);
+router.get('/my-members', authenticate, getMyAssignedClients);
 router.get('/my-profile', authenticate, getMyProfile);
 router.patch('/my-profile', authenticate, updateMyProfile);
+router.put('/my-profile', authenticate, updateMyProfile);
 router.patch('/availability', authenticate, toggleTrainerAvailability);
 
 // Member routes

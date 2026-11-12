@@ -50,7 +50,7 @@ const renderContentList = (val: any) => {
     const items = val.map(s => String(s).trim()).filter(Boolean);
     if (items.length === 0) return null;
     return (
-      <ul className="text-xs text-slate-300 space-y-1.5 list-disc pl-5">
+      <ul className="text-xs text-slate-700 space-y-1.5 list-disc pl-5">
         {items.map((item, idx) => (
           <li key={idx} className="leading-relaxed">{item}</li>
         ))}
@@ -63,14 +63,14 @@ const renderContentList = (val: any) => {
     const lines = trimmed.split(/\r?\n|•/).map(s => s.trim().replace(/^[-*]\s*/, '')).filter(Boolean);
     if (lines.length > 1) {
       return (
-        <ul className="text-xs text-slate-300 space-y-1.5 list-disc pl-5">
+        <ul className="text-xs text-slate-700 space-y-1.5 list-disc pl-5">
           {lines.map((item, idx) => (
             <li key={idx} className="leading-relaxed">{item}</li>
           ))}
         </ul>
       );
     }
-    return <p className="text-xs text-slate-300 leading-relaxed whitespace-pre-line">{trimmed}</p>;
+    return <p className="text-xs text-slate-700 leading-relaxed whitespace-pre-line">{trimmed}</p>;
   }
   return null;
 };
@@ -397,7 +397,7 @@ export function TrainerRecruitmentSection() {
                     ? `No vacancies found in "${jobLocation}"`
                     : 'No vacancies found matching your search'}
                 </h3>
-                <p className="text-xs text-slate-400 max-w-sm mx-auto mb-4">
+                <p className="text-xs text-slate-600 max-w-sm mx-auto mb-4">
                   Check back soon as new gym coaching roles are posted regularly by verified gym owners.
                 </p>
                 <button
@@ -406,7 +406,7 @@ export function TrainerRecruitmentSection() {
                     setJobLocation('');
                     setJobEmployment('all');
                   }}
-                  className="px-4 py-2 bg-[#FFFFFF] text-slate-300 text-xs font-semibold rounded-xl border border-[#E2E8F0] hover:text-[#C2410C] hover:border-[#FDBA74] transition-colors"
+                  className="px-4 py-2 bg-[#FFFFFF] text-slate-700 text-xs font-semibold rounded-xl border border-[#E2E8F0] hover:text-[#C2410C] hover:border-[#FDBA74] transition-colors"
                 >
                   Clear Filters
                 </button>
@@ -423,13 +423,13 @@ export function TrainerRecruitmentSection() {
                         <h3 className="text-base sm:text-lg font-bold text-[#111827] group-hover:text-[#EA580C] transition-colors">
                           {job.title}
                         </h3>
-                        <span className="px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-300 border border-teal-500/30 text-[10px] font-bold uppercase tracking-wider">
+                        <span className="px-2 py-0.5 rounded-full bg-teal-50 text-teal-700 border border-teal-200 text-[10px] font-bold uppercase tracking-wider">
                           {job.employmentType}
                         </span>
                       </div>
 
-                      <div className="flex items-center gap-3 text-xs text-slate-400 flex-wrap">
-                        <span className="font-semibold text-white flex items-center gap-1">
+                      <div className="flex items-center gap-3 text-xs text-slate-600 flex-wrap">
+                        <span className="font-semibold text-[#111827] flex items-center gap-1">
                           <Building2 className="w-3.5 h-3.5 text-[#EA580C]" />
                           {job.gymName || 'Premier Fitness Club'}
                         </span>
@@ -445,11 +445,11 @@ export function TrainerRecruitmentSection() {
                         </span>
                       </div>
 
-                      <div className="flex items-center gap-2 text-xs text-slate-300 pt-1">
+                      <div className="flex items-center gap-2 text-xs text-slate-700 pt-1">
                         <span className="px-2 py-0.5 bg-[#FFFFFF] border border-[#E2E8F0] rounded-md text-[#EA580C] font-mono font-bold">
                           {formatSalary(job)}
                         </span>
-                        <span className="px-2 py-0.5 bg-[#FFFFFF] border border-[#E2E8F0] rounded-md text-slate-300">
+                        <span className="px-2 py-0.5 bg-[#FFFFFF] border border-[#E2E8F0] rounded-md text-slate-700 font-medium">
                           Exp: {formatExperience(job)}
                         </span>
                       </div>
@@ -458,7 +458,7 @@ export function TrainerRecruitmentSection() {
                     <div className="flex items-center gap-2.5 shrink-0">
                       <button
                         onClick={() => setSelectedJob(job)}
-                        className="px-4 py-2 bg-[#FFFFFF] hover:bg-[#FFF7ED] text-slate-300 hover:text-[#C2410C] rounded-xl text-xs font-semibold border border-[#E2E8F0] transition-all"
+                        className="px-4 py-2 bg-[#FFFFFF] hover:bg-[#FFF7ED] text-slate-700 hover:text-[#C2410C] rounded-xl text-xs font-semibold border border-[#E2E8F0] transition-all"
                       >
                         View Vacancy Details
                       </button>
@@ -490,12 +490,12 @@ export function TrainerRecruitmentSection() {
               <div className="space-y-1.5">
                 <div className="flex items-center gap-2.5 flex-wrap">
                   <h3 className="text-xl font-bold text-[#111827]">{selectedJob.title}</h3>
-                  <span className="px-2.5 py-0.5 rounded-full bg-teal-500/10 text-teal-300 border border-teal-500/30 text-[10px] font-bold uppercase tracking-wider">
+                  <span className="px-2.5 py-0.5 rounded-full bg-teal-50 text-teal-700 border border-teal-200 text-[10px] font-bold uppercase tracking-wider">
                     {selectedJob.employmentType}
                   </span>
                 </div>
-                <div className="flex items-center gap-3 text-xs text-slate-400 flex-wrap">
-                  <span className="font-semibold text-white flex items-center gap-1">
+                <div className="flex items-center gap-3 text-xs text-slate-600 flex-wrap">
+                  <span className="font-semibold text-[#111827] flex items-center gap-1">
                     <Building2 className="w-3.5 h-3.5 text-[#EA580C]" />
                     {selectedJob.gymName || 'Premier Fitness Club'}
                   </span>
@@ -533,7 +533,7 @@ export function TrainerRecruitmentSection() {
                 <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider block">
                   Employment Type
                 </span>
-                <span className="font-semibold text-white mt-0.5 block">
+                <span className="font-semibold text-[#111827] mt-0.5 block">
                   {selectedJob.employmentType}
                 </span>
               </div>
@@ -541,7 +541,7 @@ export function TrainerRecruitmentSection() {
                 <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider block">
                   Experience Required
                 </span>
-                <span className="font-semibold text-white mt-0.5 block">
+                <span className="font-semibold text-[#111827] mt-0.5 block">
                   {formatExperience(selectedJob)}
                 </span>
               </div>
@@ -569,10 +569,10 @@ export function TrainerRecruitmentSection() {
             {/* Job Description */}
             {selectedJob.description && (
               <div>
-                <h4 className="font-bold text-slate-300 uppercase text-[10px] tracking-wider mb-1.5">
+                <h4 className="font-bold text-slate-600 uppercase text-[10px] tracking-wider mb-1.5">
                   Job Description
                 </h4>
-                <div className="bg-[#FFFFFF] p-3.5 rounded-xl border border-[#E2E8F0] text-slate-300 text-xs leading-relaxed whitespace-pre-line">
+                <div className="bg-[#FFFFFF] p-3.5 rounded-xl border border-[#E2E8F0] text-slate-700 text-xs leading-relaxed whitespace-pre-line">
                   {selectedJob.description}
                 </div>
               </div>
@@ -581,7 +581,7 @@ export function TrainerRecruitmentSection() {
             {/* Key Responsibilities */}
             {Boolean(selectedJob.responsibilities) && (
               <div>
-                <h4 className="font-bold text-slate-300 uppercase text-[10px] tracking-wider mb-1.5">
+                <h4 className="font-bold text-slate-600 uppercase text-[10px] tracking-wider mb-1.5">
                   Key Responsibilities
                 </h4>
                 <div className="bg-[#FFFFFF] p-3.5 rounded-xl border border-[#E2E8F0]">
@@ -593,7 +593,7 @@ export function TrainerRecruitmentSection() {
             {/* Qualifications */}
             {Boolean(selectedJob.qualifications) && (
               <div>
-                <h4 className="font-bold text-slate-300 uppercase text-[10px] tracking-wider mb-1.5">
+                <h4 className="font-bold text-slate-600 uppercase text-[10px] tracking-wider mb-1.5">
                   Qualifications & Requirements
                 </h4>
                 <div className="bg-[#FFFFFF] p-3.5 rounded-xl border border-[#E2E8F0]">
@@ -605,7 +605,7 @@ export function TrainerRecruitmentSection() {
             {/* Certifications */}
             {Boolean(selectedJob.certifications) && (
               <div>
-                <h4 className="font-bold text-slate-300 uppercase text-[10px] tracking-wider mb-1.5">
+                <h4 className="font-bold text-slate-600 uppercase text-[10px] tracking-wider mb-1.5">
                   Certifications
                 </h4>
                 <div className="bg-[#FFFFFF] p-3.5 rounded-xl border border-[#E2E8F0]">
@@ -618,7 +618,7 @@ export function TrainerRecruitmentSection() {
             <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#E2E8F0]">
               <button
                 onClick={() => setSelectedJob(null)}
-                className="px-4 py-2 bg-[#FFFFFF] text-slate-300 rounded-xl text-xs font-semibold hover:bg-[#FFF7ED] transition-colors"
+                className="px-4 py-2 bg-[#FFFFFF] border border-[#E2E8F0] text-slate-700 rounded-xl text-xs font-semibold hover:bg-[#FFF7ED] hover:text-[#C2410C] transition-colors"
               >
                 Close
               </button>

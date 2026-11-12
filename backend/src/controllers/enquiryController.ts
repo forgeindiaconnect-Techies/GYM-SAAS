@@ -111,7 +111,7 @@ export const getEnquiries = async (req: AuthRequest, res: Response): Promise<voi
 
     const enquiries = await Enquiry.find(filter)
       .populate('gymId', 'name location')
-      .populate('branchId', 'name location')
+      .populate('branchId', 'branchName address')
       .sort({ createdAt: -1 });
 
     res.status(200).json({ success: true, enquiries });
@@ -135,7 +135,10 @@ export const updateEnquiryStatus = async (req: AuthRequest, res: Response): Prom
     }
 
     // Verify ownership if not super admin
-    if (user?.role !== Role.SUPER_ADMIN && enquiry.gymOwnerId.toString() !== user?.id) {
+    const isSuperAdmin = user?.role === Role.SUPER_ADMIN;
+    const matchesOwner = enquiry.gymOwnerId && enquiry.gymOwnerId.toString() === user?.id;
+    const matchesGym = user?.gymId && enquiry.gymId && enquiry.gymId.toString() === String(user.gymId);
+    if (!isSuperAdmin && !matchesOwner && !matchesGym) {
       res.status(403).json({ success: false, message: 'Forbidden' });
       return;
     }
