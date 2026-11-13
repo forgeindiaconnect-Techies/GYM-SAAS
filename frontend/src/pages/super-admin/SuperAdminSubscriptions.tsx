@@ -223,14 +223,14 @@ const EditPlanModal = ({ plan, onClose, onSave }: { plan: any; onClose: () => vo
               <label className="block text-xs font-medium text-[#64748B] mb-2">Monthly Price (₹)</label>
               <input type="number" value={form.priceMonthly}
                 onChange={e => setForm(f => ({ ...f, priceMonthly: +e.target.value }))}
-                className="w-full bg-[#FFFFFF] border border-[#E2E8F0] text-[#111827] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#F8FAFC]"
+                className="w-full bg-[#FFFFFF] border border-[#E2E8F0] text-[#111827] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#FDBA74] focus:ring-1 focus:ring-[#FDBA74]"
               />
             </div>
             <div>
               <label className="block text-xs font-medium text-[#64748B] mb-2">Annual Price (₹)</label>
               <input type="number" value={form.priceAnnual}
                 onChange={e => setForm(f => ({ ...f, priceAnnual: +e.target.value }))}
-                className="w-full bg-[#FFFFFF] border border-[#E2E8F0] text-[#111827] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#F8FAFC]"
+                className="w-full bg-[#FFFFFF] border border-[#E2E8F0] text-[#111827] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#FDBA74] focus:ring-1 focus:ring-[#FDBA74]"
               />
             </div>
           </div>
@@ -247,7 +247,7 @@ const EditPlanModal = ({ plan, onClose, onSave }: { plan: any; onClose: () => vo
                 <label className="block text-xs font-medium text-[#64748B] mb-2">{label}</label>
                 <input type="number" value={(form as any)[key]}
                   onChange={e => setForm(f => ({ ...f, [key]: +e.target.value }))}
-                  className="w-full bg-[#FFFFFF] border border-[#E2E8F0] text-[#111827] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#F8FAFC]"
+                  className="w-full bg-[#FFFFFF] border border-[#E2E8F0] text-[#111827] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#FDBA74] focus:ring-1 focus:ring-[#FDBA74]"
                 />
               </div>
             ))}
@@ -871,9 +871,9 @@ const CreatePlanModal = ({ onClose, onSave }: { onClose: () => void; onSave: (pl
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4 sm:p-6 overflow-y-auto">
-      <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl max-w-2xl w-full shadow-2xl flex flex-col overflow-hidden max-h-[85vh] my-auto animate-in fade-in zoom-in-95 duration-150">
+      <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl max-w-2xl w-full shadow-2xl flex flex-col max-h-[90vh] my-auto animate-in fade-in zoom-in-95 duration-150">
         {/* Modal Header */}
-        <div className="flex items-center justify-between p-6 border-b border-[#E2E8F0] shrink-0 bg-[#FFFFFF]">
+        <div className="flex items-center justify-between p-6 border-b border-[#E2E8F0] shrink-0 bg-[#FFFFFF] rounded-t-2xl">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-[#FFF7ED] rounded-xl flex items-center justify-center">
               <Plus size={20} className="text-[#EA580C]" />
@@ -883,14 +883,13 @@ const CreatePlanModal = ({ onClose, onSave }: { onClose: () => void; onSave: (pl
               <p className="text-[#64748B] text-sm">Fill in the details to add a new subscription plan</p>
             </div>
           </div>
-          <button onClick={onClose} className="text-[#64748B] hover:text-[#C2410C]">
+          <button onClick={onClose} className="text-[#64748B] hover:text-[#C2410C] p-1.5 rounded-lg hover:bg-[#FFF7ED] transition-colors cursor-pointer">
             <XCircle size={20} />
           </button>
         </div>
 
         {/* Modal Body */}
-        <div className="flex-1 overflow-hidden bg-[#FFFFFF]">
-          <div className="h-full overflow-y-auto custom-scrollbar p-6 space-y-6">
+        <div className="flex-1 min-h-0 overflow-y-auto p-6 space-y-6 bg-[#FFFFFF]">
 
             {/* Basic Info */}
             <div>
@@ -904,7 +903,7 @@ const CreatePlanModal = ({ onClose, onSave }: { onClose: () => void; onSave: (pl
                       value={form.name}
                       onChange={e => { setForm(f => ({ ...f, name: e.target.value })); setErrors(er => ({ ...er, name: '' })); }}
                       placeholder="e.g. Enterprise"
-                      className={`w-full bg-[#FFFFFF] border ${errors.name ? 'border-[#F8FAFC]' : 'border-[#E2E8F0]'} text-[#111827] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#F8FAFC] transition-colors`}
+                      className={`w-full bg-[#FFFFFF] border ${errors.name ? 'border-[#EA580C] bg-red-50/20' : 'border-[#E2E8F0]'} text-[#111827] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#FDBA74] focus:ring-1 focus:ring-[#FDBA74] transition-colors`}
                     />
                     {errors.name && <p className="text-[#EA580C] text-xs mt-1">{errors.name}</p>}
                   </div>
@@ -913,7 +912,7 @@ const CreatePlanModal = ({ onClose, onSave }: { onClose: () => void; onSave: (pl
                     <select
                       value={form.selectedIconIdx}
                       onChange={e => setForm(f => ({ ...f, selectedIconIdx: +e.target.value }))}
-                      className="w-full bg-[#FFFFFF] border border-[#E2E8F0] text-[#111827] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#F8FAFC]"
+                      className="w-full bg-[#FFFFFF] border border-[#E2E8F0] text-[#111827] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#FDBA74] focus:ring-1 focus:ring-[#FDBA74] cursor-pointer"
                     >
                       {ICON_OPTIONS.map((opt, i) => (
                         <option key={i} value={i}>{opt.label}</option>
@@ -928,7 +927,7 @@ const CreatePlanModal = ({ onClose, onSave }: { onClose: () => void; onSave: (pl
                     value={form.tagline}
                     onChange={e => { setForm(f => ({ ...f, tagline: e.target.value })); setErrors(er => ({ ...er, tagline: '' })); }}
                     placeholder="e.g. For large-scale gym chains"
-                    className={`w-full bg-[#FFFFFF] border ${errors.tagline ? 'border-[#F8FAFC]' : 'border-[#E2E8F0]'} text-[#111827] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#F8FAFC]`}
+                    className={`w-full bg-[#FFFFFF] border ${errors.tagline ? 'border-[#EA580C] bg-red-50/20' : 'border-[#E2E8F0]'} text-[#111827] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#FDBA74] focus:ring-1 focus:ring-[#FDBA74] transition-colors`}
                   />
                   {errors.tagline && <p className="text-[#EA580C] text-xs mt-1">{errors.tagline}</p>}
                 </div>
@@ -940,26 +939,26 @@ const CreatePlanModal = ({ onClose, onSave }: { onClose: () => void; onSave: (pl
               <h3 className="text-[#111827] font-bold text-sm uppercase tracking-wider mb-4 pb-2 border-b border-[#E2E8F0]">Pricing (₹)</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-[#64748B] mb-2">Monthly Price</label>
+                  <label className="block text-xs font-medium text-[#64748B] mb-2">Monthly Price (₹)</label>
                   <input
                     type="number" min={0}
                     value={form.priceMonthly}
                     onChange={e => setForm(f => ({ ...f, priceMonthly: +e.target.value }))}
-                    className="w-full bg-[#FFFFFF] border border-[#E2E8F0] text-[#111827] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#F8FAFC]"
+                    className="w-full bg-[#FFFFFF] border border-[#E2E8F0] text-[#111827] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#FDBA74] focus:ring-1 focus:ring-[#FDBA74] transition-colors"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-[#64748B] mb-2">Annual Price</label>
+                  <label className="block text-xs font-medium text-[#64748B] mb-2">Annual Price (₹)</label>
                   <input
                     type="number" min={0}
                     value={form.priceAnnual}
                     onChange={e => setForm(f => ({ ...f, priceAnnual: +e.target.value }))}
-                    className="w-full bg-[#FFFFFF] border border-[#E2E8F0] text-[#111827] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#F8FAFC]"
+                    className="w-full bg-[#FFFFFF] border border-[#E2E8F0] text-[#111827] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#FDBA74] focus:ring-1 focus:ring-[#FDBA74] transition-colors"
                   />
                 </div>
               </div>
               {form.priceMonthly > 0 && form.priceAnnual > 0 && form.priceMonthly * 12 > form.priceAnnual && (
-                <p className="text-green-400 text-xs mt-2 font-semibold">
+                <p className="text-green-600 text-xs mt-2 font-semibold">
                   ✓ Annual savings: ₹{(form.priceMonthly * 12 - form.priceAnnual).toLocaleString('en-IN')}/year
                 </p>
               )}
@@ -984,7 +983,7 @@ const CreatePlanModal = ({ onClose, onSave }: { onClose: () => void; onSave: (pl
                       type="number"
                       value={(form as any)[key]}
                       onChange={e => setForm(f => ({ ...f, [key]: +e.target.value }))}
-                      className="w-full bg-[#FFFFFF] border border-[#E2E8F0] text-[#111827] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#F8FAFC]"
+                      className="w-full bg-[#FFFFFF] border border-[#E2E8F0] text-[#111827] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#FDBA74] focus:ring-1 focus:ring-[#FDBA74] transition-colors"
                     />
                   </div>
                 ))}
@@ -1000,20 +999,22 @@ const CreatePlanModal = ({ onClose, onSave }: { onClose: () => void; onSave: (pl
                   const isIncluded = selectedFeatures.includes(feat);
                   const isLocked = lockedFeatures.includes(feat);
                   return (
-                    <div key={feat} className={`flex items-center justify-between px-3 py-2.5 rounded-xl border text-sm transition-colors ${isIncluded ? 'bg-green-500/5 border-green-500/20' : isLocked ? 'bg-[#F8FAFC]/5 border-[#F8FAFC]/20' : 'bg-[#FFFFFF] border-[#E2E8F0]'}`}>
-                      <span className={isIncluded ? 'text-[#111827]' : isLocked ? 'text-[#64748B] line-through' : 'text-[#64748B]'}>{feat}</span>
+                    <div key={feat} className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl border text-sm transition-colors ${isIncluded ? 'bg-green-50/70 border-green-200' : isLocked ? 'bg-red-50/40 border-red-200' : 'bg-[#FFFFFF] border-[#E2E8F0]'}`}>
+                      <span className={isIncluded ? 'text-[#111827] font-medium' : isLocked ? 'text-[#94A3B8] line-through' : 'text-[#64748B]'}>{feat}</span>
                       <div className="flex items-center space-x-2">
                         <button
+                          type="button"
                           onClick={() => toggleFeature(feat)}
                           title="Include feature"
-                          className={`w-7 h-7 rounded-lg flex items-center justify-center transition-colors ${isIncluded ? 'bg-green-500 text-[#111827]' : 'bg-[#333] text-[#64748B] hover:bg-green-500/20 hover:text-green-400'}`}
+                          className={`w-7 h-7 rounded-lg flex items-center justify-center transition-colors cursor-pointer ${isIncluded ? 'bg-green-600 text-white shadow-sm' : 'bg-[#F8FAFC] border border-[#E2E8F0] text-[#64748B] hover:bg-green-50 hover:text-green-600 hover:border-green-300'}`}
                         >
                           <CheckCircle size={14} />
                         </button>
                         <button
+                          type="button"
                           onClick={() => toggleLocked(feat)}
                           title="Mark as locked/unavailable"
-                          className={`w-7 h-7 rounded-lg flex items-center justify-center transition-colors ${isLocked ? 'bg-[#F8FAFC]/80 text-black' : 'bg-[#333] text-[#64748B] hover:bg-[#FFF7ED]/20 hover:text-[#EA580C]'}`}
+                          className={`w-7 h-7 rounded-lg flex items-center justify-center transition-colors cursor-pointer ${isLocked ? 'bg-red-500 text-white shadow-sm' : 'bg-[#F8FAFC] border border-[#E2E8F0] text-[#64748B] hover:bg-red-50 hover:text-red-500 hover:border-red-300'}`}
                         >
                           <XCircle size={14} />
                         </button>
@@ -1031,11 +1032,12 @@ const CreatePlanModal = ({ onClose, onSave }: { onClose: () => void; onSave: (pl
                   onChange={e => setNewFeatureText(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && addCustomFeature()}
                   placeholder="Add a custom feature..."
-                  className="flex-1 bg-[#FFFFFF] border border-[#E2E8F0] text-[#111827] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#F8FAFC]"
+                  className="flex-1 bg-[#FFFFFF] border border-[#E2E8F0] text-[#111827] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#FDBA74] focus:ring-1 focus:ring-[#FDBA74]"
                 />
                 <button
+                  type="button"
                   onClick={addCustomFeature}
-                  className="px-4 py-2.5 bg-[#FFF7ED] border border-[#F8FAFC]/30 text-[#EA580C] rounded-xl text-sm font-bold hover:bg-[#FFF7ED]/20 transition-colors"
+                  className="px-4 py-2.5 bg-[#FFF7ED] border border-[#FFEDD5] text-[#EA580C] font-bold rounded-xl text-sm hover:bg-[#FFEDD5] transition-colors cursor-pointer"
                 >
                   + Add
                 </button>
@@ -1044,32 +1046,38 @@ const CreatePlanModal = ({ onClose, onSave }: { onClose: () => void; onSave: (pl
 
             {/* Preview */}
             {(form.name || selectedFeatures.length > 0) && (
-              <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl p-4">
-                <p className="text-[#64748B] text-xs uppercase tracking-wider font-bold mb-3">Preview</p>
+              <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-4">
+                <p className="text-[#64748B] text-xs uppercase tracking-wider font-bold mb-2">Preview</p>
                 <p className="text-[#111827] font-bold text-base">{form.name || 'Plan Name'}</p>
                 <p className="text-[#64748B] text-xs mb-2">{form.tagline || 'Tagline'}</p>
-                <p className="text-[#EA580C] font-bold">₹{form.priceMonthly.toLocaleString('en-IN')}/mo · ₹{form.priceAnnual.toLocaleString('en-IN')}/yr</p>
+                <p className="text-[#EA580C] font-bold text-sm">₹{form.priceMonthly.toLocaleString('en-IN')}/mo · ₹{form.priceAnnual.toLocaleString('en-IN')}/yr</p>
                 <div className="mt-2 text-xs text-[#64748B]">
                   {selectedFeatures.length} included · {lockedFeatures.length} locked
                 </div>
               </div>
             )}
           </div>
-        </div>
 
-        {/* Footer */}
-        <div className="flex space-x-3 p-6 border-t border-[#E2E8F0] shrink-0 bg-[#FFFFFF]">
-          <button onClick={onClose} className="flex-1 py-3 bg-[#FFFFFF] text-[#111827] rounded-xl font-bold border border-[#E2E8F0] hover:bg-[#FFF7ED] transition-colors text-sm">Cancel</button>
-          <button
-            onClick={handleSave}
-            className="flex-1 py-3 bg-[#F8FAFC] text-white rounded-xl font-bold hover:bg-[#9A3412] transition-colors text-sm flex items-center justify-center space-x-2 shadow-lg shadow-teal-500/30"
-          >
-            <CheckCircle size={16} />
-            <span>Save Plan</span>
-          </button>
+          {/* Footer */}
+          <div className="flex items-center space-x-3 p-6 border-t border-[#E2E8F0] shrink-0 bg-[#FFFFFF] rounded-b-2xl">
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 py-3 bg-[#F8FAFC] text-[#111827] rounded-xl font-bold border border-[#E2E8F0] hover:bg-[#FFF7ED] hover:text-[#C2410C] hover:border-[#FDBA74] transition-colors text-sm cursor-pointer shadow-sm"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={handleSave}
+              className="flex-1 py-3 bg-[#C2410C] hover:bg-[#9A3412] text-white rounded-xl font-bold transition-all text-sm flex items-center justify-center space-x-2 shadow-md shadow-orange-500/20 cursor-pointer"
+            >
+              <CheckCircle size={16} className="text-white" />
+              <span className="font-bold text-white">Save Plan</span>
+            </button>
+          </div>
         </div>
       </div>
-    </div>
   );
 };
 
