@@ -365,6 +365,16 @@ const SuperAdminNotifications: React.FC = () => {
                   </span>
                 </div>
               </div>
+
+              <div className="pt-2">
+                <button
+                  type="button"
+                  onClick={() => setSelected(null)}
+                  className="w-full py-2.5 rounded-xl bg-[#F8FAFC] hover:bg-[#FFF7ED] border border-[#E2E8F0] hover:border-[#FDBA74] text-[#111827] hover:text-[#C2410C] font-bold text-xs transition cursor-pointer shadow-sm"
+                >
+                  Close
+                </button>
+              </div>
             </div>
           </div>
         </div>

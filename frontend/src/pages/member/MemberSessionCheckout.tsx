@@ -1,10 +1,10 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Loader2, CreditCard, CheckCircle2, ArrowLeft, Calendar, Clock, MapPin, Video } from 'lucide-react';
-import QRCode from 'react-qr-code';
+import { Loader2, CreditCard, CheckCircle2, ArrowLeft, Calendar, Clock, MapPin, Video, Shield, Crown } from 'lucide-react';
 import api from '../../utils/api';
+import PaymentModal, { type PaymentConfirmData } from '../../components/common/PaymentModal';
 
-const PAYMENT_METHODS = ['UPI', 'Credit / Debit Card', 'Net Banking', 'Cash at Gym'];
+const PAYMENT_METHODS = ['Card', 'UPI', 'NetBanking'];
 
 const MemberSessionCheckout = () => {
   const navigate = useNavigate();
@@ -12,8 +12,10 @@ const MemberSessionCheckout = () => {
   const [session, setSession] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [placing, setPlacing] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState('UPI');
+  const [paymentMethod, setPaymentMethod] = useState<'Card' | 'UPI' | 'NetBanking'>('Card');
   const [success, setSuccess] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [paymentError, setPaymentError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchSession = async () => {
@@ -37,17 +39,27 @@ const MemberSessionCheckout = () => {
     if (id) fetchSession();
   }, [id, navigate]);
 
-  const placeOrder = async () => {
+  const handleOpenPaymentModal = () => {
+    setPaymentError(null);
+    setShowPaymentModal(true);
+  };
+
+  const handleModalConfirm = async (data: PaymentConfirmData) => {
     try {
       setPlacing(true);
+      setPaymentError(null);
       const res = await api.post(`/trainer-sessions/${id}/pay`, {
-        paymentMethod
+        paymentMethod: data.paymentMethod,
+        transactionReference: `TXN-${Date.now()}`
       });
       if (res.data.success) {
+        setShowPaymentModal(false);
         setSuccess(true);
       }
     } catch (err: any) {
-      alert(err.response?.data?.message || 'Payment failed. Please try again.');
+      const msg = err.response?.data?.message || 'Payment failed. Please try again.';
+      setPaymentError(msg);
+      throw new Error(msg);
     } finally {
       setPlacing(false);
     }
@@ -92,92 +104,48 @@ const MemberSessionCheckout = () => {
       <div className="grid lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
           {/* Payment */}
-          <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-6">
-            <h3 className="text-lg font-bold text-[#111827] mb-4 flex items-center gap-2"><CreditCard size={19} className="text-[#EA580C]" /> Payment Method</h3>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
-              {PAYMENT_METHODS.map((method) => (
-                <label 
-                  key={method} 
-                  className={`flex flex-col p-4 border rounded-xl cursor-pointer transition-colors ${
-                    paymentMethod === method 
-                      ? 'border-[#FDBA74] bg-[#FFF7ED]' 
-                      : 'border-[#E2E8F0] hover:border-[#FFEDD5]'
-                  }`}
-                >
-                  <div className="flex items-center justify-between mb-1">
-                    <span className={`font-bold ${paymentMethod === method ? 'text-[#EA580C]' : 'text-[#64748B]'}`}>{method}</span>
-                    <input 
-                      type="radio" 
-                      name="payment_method" 
-                      value={method} 
-                      checked={paymentMethod === method} 
-                      onChange={(e) => setPaymentMethod(e.target.value)} 
-                      className="hidden" 
-                    />
-                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${paymentMethod === method ? 'border-[#FDBA74]' : 'border-[#E2E8F0]'}`}>
-                      {paymentMethod === method && <div className="w-2.5 h-2.5 bg-[#C2410C] rounded-full"></div>}
-                    </div>
-                  </div>
-                </label>
-              ))}
+          <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-6 space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-bold text-[#111827] flex items-center gap-2">
+                <CreditCard size={19} className="text-[#EA580C]" /> Payment Selection
+              </h3>
+              <div className="flex items-center gap-1.5 text-xs text-[#64748B]">
+                <Shield size={14} className="text-[#EA580C]" />
+                <span>256-bit TLS Encrypted</span>
+              </div>
             </div>
 
-            <div className="bg-[#F8FAFC] border border-[#E2E8F0] p-5 rounded-xl">
-              {paymentMethod === 'UPI' && (
-                <div className="space-y-4">
-                  <div className="flex flex-col md:flex-row gap-6">
-                    <div className="flex-1 space-y-4">
-                      <p className="text-sm font-bold text-[#111827]">Pay using UPI App</p>
-                      <div className="flex flex-wrap gap-2">
-                        {['Google Pay', 'PhonePe', 'Paytm', 'BHIM'].map(app => (
-                           <button key={app} className="px-3 py-1.5 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-xs font-bold text-[#64748B] hover:border-[#FDBA74] hover:text-[#EA580C] transition-colors shadow-sm">{app}</button>
-                        ))}
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <div className="h-px bg-[#E2E8F0] flex-1"></div>
-                        <span className="text-[10px] font-black text-[#9A3412] uppercase tracking-wider">OR</span>
-                        <div className="h-px bg-[#E2E8F0] flex-1"></div>
-                      </div>
-                      <div>
-                        <label className="text-xs font-bold text-[#64748B] uppercase mb-1 block">Enter UPI ID</label>
-                        <input placeholder="e.g. yourname@bank" className={inputCls} />
-                      </div>
-                    </div>
-                    
-                    <div className="flex flex-col items-center justify-center md:border-l md:border-[#E2E8F0] md:pl-8 pt-4 md:pt-0 border-t md:border-t-0 border-[#E2E8F0] min-w-[180px]">
-                      <div className="relative p-4 bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl mb-3 shadow-sm flex items-center justify-center">
-                        <QRCode value={`upi://pay?pa=aigym@ybl&pn=AI%20Gym&am=${session.fee}&cu=INR`} size={80} bgColor="transparent" fgColor="#FFFFFF" level="L" />
-                      </div>
-                      <p className="text-sm font-bold text-[#111827]">Scan QR to Pay</p>
-                      <p className="text-[10px] font-semibold text-[#EA580C] uppercase tracking-wider mt-0.5">Any UPI App</p>
-                    </div>
-                  </div>
-                </div>
+            <div>
+              <label className="text-xs font-bold text-[#64748B] uppercase tracking-wider block mb-2">
+                SELECT PAYMENT METHOD
+              </label>
+              <div className="grid grid-cols-3 gap-2">
+                {PAYMENT_METHODS.map(method => (
+                  <button
+                    key={method}
+                    type="button"
+                    onClick={() => setPaymentMethod(method as any)}
+                    className={`py-2 px-3 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
+                      paymentMethod === method
+                        ? 'bg-[#C2410C] text-white border-[#FDBA74]'
+                        : 'bg-[#F8FAFC] text-[#64748B] border-[#E2E8F0] hover:border-[#FDBA74]'
+                    }`}
+                  >
+                    {method}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="p-4 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs text-[#64748B]">
+              {paymentMethod === 'Card' && (
+                <p>Card Number, Expiry, and CVV will be verified via secure 256-bit TLS encryption in the confirmation modal.</p>
               )}
-              
-              {paymentMethod === 'Credit / Debit Card' && (
-                <div className="space-y-4">
-                  <p className="text-sm font-bold text-[#111827]">Enter Card Details</p>
-                  <div>
-                    <label className="text-xs font-bold text-[#64748B] uppercase mb-1 block">Card Number</label>
-                    <input placeholder="XXXX XXXX XXXX XXXX" maxLength={19} className={inputCls} />
-                  </div>
-                  <div>
-                    <label className="text-xs font-bold text-[#64748B] uppercase mb-1 block">Name on Card</label>
-                    <input placeholder="John Doe" className={inputCls} />
-                  </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="text-xs font-bold text-[#64748B] uppercase mb-1 block">Expiry</label>
-                      <input placeholder="MM/YY" maxLength={5} className={inputCls} />
-                    </div>
-                    <div>
-                      <label className="text-xs font-bold text-[#64748B] uppercase mb-1 block">CVV</label>
-                      <input type="password" placeholder="***" maxLength={3} className={inputCls} />
-                    </div>
-                  </div>
-                </div>
+              {paymentMethod === 'UPI' && (
+                <p>Pay via Google Pay, PhonePe, Paytm, BHIM, UPI ID or Scan QR in the payment dialog.</p>
+              )}
+              {paymentMethod === 'NetBanking' && (
+                <p>Transfer directly via your online bank portal securely with instant booking confirmation.</p>
               )}
             </div>
           </div>
@@ -231,9 +199,9 @@ const MemberSessionCheckout = () => {
             </div>
 
             <button
-              onClick={placeOrder}
+              onClick={handleOpenPaymentModal}
               disabled={placing}
-              className="w-full py-4 bg-[#C2410C] text-white font-bold font-bold rounded-xl hover:bg-[#9A3412] transition-colors shadow-lg disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full py-4 bg-[#C2410C] text-white font-bold rounded-xl hover:bg-[#9A3412] transition-colors shadow-lg disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
             >
               {placing ? <Loader2 className="animate-spin" size={20} /> : `Pay ₹${session.fee} & Confirm`}
             </button>
@@ -241,6 +209,33 @@ const MemberSessionCheckout = () => {
           </div>
         </div>
       </div>
+
+      {/* Confirmation & Payment Modal */}
+      <PaymentModal
+        isOpen={showPaymentModal}
+        onClose={() => setShowPaymentModal(false)}
+        title={`Confirm Session with ${session.trainerId?.name || 'Trainer'}`}
+        subtitle="Unlock 1-on-1 personalized coaching & guidance"
+        icon={<Crown size={24} />}
+        summaryItems={[
+          {
+            label: 'Selected Trainer',
+            value: session.trainerId?.name || 'Personal Trainer'
+          },
+          {
+            label: 'Session Mode',
+            value: `${session.mode || 'In-Person'} Session`
+          },
+          {
+            label: 'Scheduled Date & Time',
+            value: `${new Date(session.date).toLocaleDateString()} (${session.startTime} - ${session.endTime})`
+          }
+        ]}
+        totalAmount={session.fee || 0}
+        onConfirm={handleModalConfirm}
+        loading={placing}
+        error={paymentError}
+      />
     </div>
   );
 };

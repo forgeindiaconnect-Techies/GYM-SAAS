@@ -1,4 +1,4 @@
-﻿import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Mic, Square, Trash2, Send, Play, Pause, AlertCircle, Loader2 } from 'lucide-react';
 
 interface VoiceRecorderProps {
@@ -20,6 +20,8 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({ onSend, onCancel, 
   const previewAudioRef = useRef<HTMLAudioElement | null>(null);
   const timerRef = useRef<any>(null);
   const streamRef = useRef<MediaStream | null>(null);
+  const startTimeRef = useRef<number>(0);
+  const isCancelledRef = useRef<boolean>(false);
 
   // Pick best supported MIME type
   const getSupportedMimeType = () => {
@@ -43,6 +45,11 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({ onSend, onCancel, 
     audioBlobRef.current = null;
     setRecordDuration(0);
 
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
       setErrorMsg('Voice recording is not supported in this browser.');
       setRecordingState('idle');
@@ -51,6 +58,10 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({ onSend, onCancel, 
 
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      if (isCancelledRef.current) {
+        stream.getTracks().forEach(track => track.stop());
+        return;
+      }
       streamRef.current = stream;
 
       const mimeType = getSupportedMimeType();
@@ -76,12 +87,16 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({ onSend, onCancel, 
       mediaRecorder.start(200); // 200ms slice
       setRecordingState('recording');
 
-      // Start timer
+      // Start elapsed timer calculated from wall clock time (guarantees steady 1, 2, 3, 4, 5, 6...)
+      startTimeRef.current = Date.now();
       timerRef.current = setInterval(() => {
-        setRecordDuration(prev => prev + 1);
-      }, 1000);
+        if (!startTimeRef.current) return;
+        const elapsed = Math.floor((Date.now() - startTimeRef.current) / 1000);
+        setRecordDuration(elapsed);
+      }, 500);
 
     } catch (err: any) {
+      if (isCancelledRef.current) return;
       console.error('Microphone access error:', err);
       if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
         setErrorMsg('Microphone access was denied. Please allow microphone permissions in your browser address bar.');
@@ -93,14 +108,26 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({ onSend, onCancel, 
   };
 
   useEffect(() => {
+    isCancelledRef.current = false;
     startRecording();
 
     return () => {
+      isCancelledRef.current = true;
       // Clean up timer
-      if (timerRef.current) clearInterval(timerRef.current);
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+      // Stop mediaRecorder if still running
+      if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
+        try {
+          mediaRecorderRef.current.stop();
+        } catch (e) {}
+      }
       // Clean up stream tracks
       if (streamRef.current) {
         streamRef.current.getTracks().forEach(track => track.stop());
+        streamRef.current = null;
       }
       // Revoke preview URL
       if (audioUrlRef.current) {
@@ -110,14 +137,24 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({ onSend, onCancel, 
   }, []);
 
   const stopRecording = () => {
-    if (timerRef.current) clearInterval(timerRef.current);
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+    if (startTimeRef.current) {
+      const finalElapsed = Math.max(1, Math.floor((Date.now() - startTimeRef.current) / 1000));
+      setRecordDuration(finalElapsed);
+    }
 
     if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
-      mediaRecorderRef.current.stop();
+      try {
+        mediaRecorderRef.current.stop();
+      } catch (e) {}
     }
 
     if (streamRef.current) {
       streamRef.current.getTracks().forEach(track => track.stop());
+      streamRef.current = null;
     }
   };
 

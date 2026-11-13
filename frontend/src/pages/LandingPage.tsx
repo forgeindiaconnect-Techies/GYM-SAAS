@@ -6,6 +6,7 @@ import api from '../utils/api';
 import { FeaturePreview } from '../components/Landing/FeaturePreview';
 import { TourSlide } from '../components/Landing/TourSlide';
 import { TrainerRecruitmentSection } from '../components/Landing/TrainerRecruitmentSection';
+import { AthleteSilhouette } from '../components/common/AthleteSilhouette';
 import builderImg1 from '../assets/builder image 1.jpg';
 import builderImg2 from '../assets/builder image 2.jpg';
 import builderImg3 from '../assets/builder image 3.jpg';
@@ -38,6 +39,13 @@ const LandingPage = () => {
   const [activeVideo, setActiveVideo] = useState<{ url: string; title: string } | null>(null);
   const [featuredGyms, setFeaturedGyms] = useState<any[]>([]);
   const [gymsLoading, setGymsLoading] = useState(true);
+  const [platformStats, setPlatformStats] = useState<{
+    activeMembers?: number;
+    partnerGyms?: number;
+    certifiedTrainers?: number;
+    workoutsLogged?: number;
+  } | null>(null);
+  const [statsLoading, setStatsLoading] = useState(true);
 
   const [communityReviews, setCommunityReviews] = useState<any[]>([]);
   const [communityLoading, setCommunityLoading] = useState(true);
@@ -106,6 +114,15 @@ const LandingPage = () => {
       .then(res => setFeaturedGyms((res.data.gyms || []).slice(0, 3)))
       .catch(() => setFeaturedGyms([]))
       .finally(() => setGymsLoading(false));
+
+    api.get('/gyms/platform-stats')
+      .then(res => {
+        if (res.data && res.data.success && res.data.stats) {
+          setPlatformStats(res.data.stats);
+        }
+      })
+      .catch(() => { })
+      .finally(() => setStatsLoading(false));
 
     api.get('/gyms/community-testimonials')
       .then(res => {
@@ -183,6 +200,14 @@ const LandingPage = () => {
     e.preventDefault();
     window.scrollTo({ top: 0, behavior: 'smooth' });
     navigate('/', { replace: true });
+  };
+
+  const formatStat = (num?: number) => {
+    if (num === undefined || num === null) return '0';
+    if (num >= 1000000) return `${(num / 1000000).toFixed(1).replace(/\.0$/, '')}M+`;
+    if (num >= 10000) return `${(num / 1000).toFixed(0)}K+`;
+    if (num >= 1000) return `${num.toLocaleString('en-IN')}+`;
+    return num.toLocaleString('en-IN');
   };
 
   return (
@@ -450,10 +475,10 @@ const LandingPage = () => {
                 {/* Customer Portal Card */}
                 <Link
                   to="/portal/customer"
-                  className="bg-[#FFFFFF] border border-[#E2E8F0] hover:border-[#FDBA74] rounded-2xl p-6 transition-all group shadow-sm hover:shadow-md hover:-translate-y-0.5 block flex-1"
+                  className="bg-[#FFFFFF] border border-[#E2E8F0] hover:border-[#FDBA74] rounded-2xl p-6 transition-colors group shadow-sm block flex-1"
                 >
                   <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-[#FFF7ED] text-[#EA580C] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                    <div className="w-12 h-12 rounded-xl bg-[#FFF7ED] text-[#EA580C] flex items-center justify-center shrink-0">
                       <User size={24} />
                     </div>
                     <div>
@@ -468,10 +493,10 @@ const LandingPage = () => {
                 {/* Trainer Portal Card */}
                 <Link
                   to="/trainers"
-                  className="bg-[#FFFFFF] border border-[#E2E8F0] hover:border-[#FDBA74] rounded-2xl p-6 transition-all group shadow-sm hover:shadow-md hover:-translate-y-0.5 block flex-1"
+                  className="bg-[#FFFFFF] border border-[#E2E8F0] hover:border-[#FDBA74] rounded-2xl p-6 transition-colors group shadow-sm block flex-1"
                 >
                   <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-[#FFF7ED] text-[#EA580C] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                    <div className="w-12 h-12 rounded-xl bg-[#FFF7ED] text-[#EA580C] flex items-center justify-center shrink-0">
                       <UserCheck size={24} />
                     </div>
                     <div>
@@ -486,10 +511,10 @@ const LandingPage = () => {
                 {/* Gym Owner Portal Card */}
                 <Link
                   to="/portal/gym-owner"
-                  className="bg-[#FFFFFF] border border-[#E2E8F0] hover:border-[#FDBA74] rounded-2xl p-6 transition-all group shadow-sm hover:shadow-md hover:-translate-y-0.5 block flex-1"
+                  className="bg-[#FFFFFF] border border-[#E2E8F0] hover:border-[#FDBA74] rounded-2xl p-6 transition-colors group shadow-sm block flex-1"
                 >
                   <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-[#FFF7ED] text-[#EA580C] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                    <div className="w-12 h-12 rounded-xl bg-[#FFF7ED] text-[#EA580C] flex items-center justify-center shrink-0">
                       <Building2 size={24} />
                     </div>
                     <div>
@@ -786,13 +811,19 @@ const LandingPage = () => {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 divide-x divide-[#E2E8F0]">
               {[
-                { label: 'Active Members', value: '50K+' },
-                { label: 'Partner Gyms', value: '1,200+' },
-                { label: 'Certified Trainers', value: '800+' },
-                { label: 'Workouts Logged', value: '2M+' }
+                { label: 'Active Members', value: formatStat(platformStats?.activeMembers) },
+                { label: 'Partner Gyms', value: formatStat(platformStats?.partnerGyms) },
+                { label: 'Certified Trainers', value: formatStat(platformStats?.certifiedTrainers) },
+                { label: 'Workouts Logged', value: formatStat(platformStats?.workoutsLogged) }
               ].map((stat, idx) => (
                 <div key={idx} className={`text-center ${idx % 2 === 0 ? 'pr-8' : 'pl-8 md:pl-0'} ${idx > 0 && idx % 2 === 0 ? 'pl-8 border-l-0 md:border-l' : ''}`}>
-                  <div className="text-4xl md:text-5xl font-extrabold text-[#EA580C] mb-2 tracking-tight">{stat.value}</div>
+                  <div className="text-4xl md:text-5xl font-extrabold text-[#EA580C] mb-2 tracking-tight">
+                    {statsLoading ? (
+                      <span className="inline-block animate-pulse text-[#CBD5E1]">...</span>
+                    ) : (
+                      stat.value
+                    )}
+                  </div>
                   <div className="text-[#64748B] font-medium text-sm md:text-base uppercase tracking-wider">{stat.label}</div>
                 </div>
               ))}
@@ -1139,61 +1170,157 @@ const LandingPage = () => {
         </section>
       </main>
 
-      {/* Detailed Footer */}
-      <footer className="border-t border-[#E2E8F0] bg-[#F8FAFC] pt-16 pb-8 text-[#64748B]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
-            <div className="col-span-1 md:col-span-1">
+      {/* Detailed Footer Replicated from Reference Design */}
+      <footer className="relative overflow-hidden bg-[#FFFFFF] border-t border-[#E2E8F0] pt-14 pb-0 text-[#475569]">
+        {/* Top-Left Ambient Warm Swoosh */}
+        <div className="pointer-events-none absolute -top-24 -left-24 w-96 h-96 bg-gradient-to-br from-[#EA580C]/15 via-orange-300/10 to-transparent rounded-full blur-3xl" />
+        
+        {/* Top-Right Warm Glow */}
+        <div className="pointer-events-none absolute top-0 right-0 w-[520px] h-[420px] bg-gradient-to-bl from-orange-400/15 via-amber-300/10 to-transparent rounded-full blur-3xl" />
+        
+        {/* Right Athlete Silhouette Watermark */}
+        <div className="pointer-events-none absolute right-0 bottom-10 w-72 sm:w-80 md:w-[380px] h-auto opacity-[0.14] select-none text-[#EA580C] overflow-hidden">
+          <AthleteSilhouette className="w-full h-full" />
+        </div>
+
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 lg:gap-10 mb-12 md:divide-x md:divide-[#E2E8F0]/70">
+            {/* Column 1: Brand */}
+            <div className="col-span-1 md:col-span-1 md:pr-8">
               {/* Footer logo — scrolls to top */}
-              <button onClick={scrollToTop} className="flex items-center space-x-2 mb-4 group cursor-pointer">
-                <div className="w-8 h-8 bg-[#C2410C] rounded-lg flex items-center justify-center shadow-md shadow-orange-500/15">
-                  <Activity className="text-white" size={18} />
+              <button onClick={scrollToTop} className="flex items-center space-x-2.5 mb-4 group cursor-pointer text-left">
+                <div className="w-9 h-9 bg-gradient-to-br from-[#EA580C] to-[#C2410C] rounded-xl flex items-center justify-center shadow-md shadow-orange-500/20 group-hover:scale-105 transition-transform">
+                  <Activity className="text-white" size={20} strokeWidth={2.5} />
                 </div>
-                <span className="text-xl font-bold tracking-tight text-[#111827]">Gymora</span>
+                <span className="text-2xl font-black tracking-tight text-[#111827]">Gymora</span>
               </button>
-              <p className="text-[#64748B] text-sm leading-relaxed mb-6">
+              <p className="text-[#475569] text-sm leading-relaxed mb-6 font-normal">
                 The ultimate fitness ecosystem combining AI intelligence with human expertise for unmatched results.
               </p>
-              <div className="flex space-x-4">
-                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-[#64748B] hover:text-[#EA580C] transition-colors"><FaInstagram size={20} /></a>
-                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-[#64748B] hover:text-[#EA580C] transition-colors"><FaTwitter size={20} /></a>
-                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-[#64748B] hover:text-[#EA580C] transition-colors"><FaFacebook size={20} /></a>
-                <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="text-[#64748B] hover:text-[#EA580C] transition-colors"><FaYoutube size={20} /></a>
+              {/* Circular dark social icons */}
+              <div className="flex items-center space-x-3">
+                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-[#111827] text-white flex items-center justify-center hover:bg-[#EA580C] transition-all shadow-sm hover:scale-110" aria-label="Instagram">
+                  <FaInstagram size={14} />
+                </a>
+                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-[#111827] text-white flex items-center justify-center hover:bg-[#EA580C] transition-all shadow-sm hover:scale-110" aria-label="Twitter">
+                  <FaTwitter size={14} />
+                </a>
+                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-[#111827] text-white flex items-center justify-center hover:bg-[#EA580C] transition-all shadow-sm hover:scale-110" aria-label="Facebook">
+                  <FaFacebook size={14} />
+                </a>
+                <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-[#111827] text-white flex items-center justify-center hover:bg-[#EA580C] transition-all shadow-sm hover:scale-110" aria-label="YouTube">
+                  <FaYoutube size={14} />
+                </a>
               </div>
             </div>
 
-            <div>
-              <h4 className="text-[#111827] font-semibold mb-4">Navigate</h4>
-              <ul className="space-y-2 text-sm text-[#64748B]">
-                <li><button onClick={() => { window.scrollTo({ top: 0, behavior: 'smooth' }); setIsFeaturesOpen(true); }} className="hover:text-[#EA580C] transition-colors cursor-pointer">Features</button></li>
-                <li><button onClick={() => { window.scrollTo({ top: 0, behavior: 'smooth' }); setTourJourney('select'); setTourStep(1); setIsTourOpen(true); }} className="hover:text-[#EA580C] transition-colors cursor-pointer">Video Tour</button></li>
-                <li><a href="#gyms" className="hover:text-[#EA580C] transition-colors">Gyms</a></li>
-                <li><a href="#pricing" className="hover:text-[#EA580C] transition-colors">Pricing</a></li>
+            {/* Column 2: Navigate */}
+            <div className="md:px-8">
+              <h4 className="text-[#111827] font-bold text-base mb-4 tracking-tight">Navigate</h4>
+              <ul className="space-y-2.5 text-sm text-[#475569]">
+                <li>
+                  <button onClick={() => { window.scrollTo({ top: 0, behavior: 'smooth' }); setIsFeaturesOpen(true); }} className="flex items-center group py-0.5 hover:text-[#EA580C] transition-colors cursor-pointer">
+                    <span className="text-[#EA580C] font-bold text-xs mr-2 transition-transform duration-200 group-hover:translate-x-1 select-none">&gt;</span>
+                    <span>Features</span>
+                  </button>
+                </li>
+                <li>
+                  <button onClick={() => { window.scrollTo({ top: 0, behavior: 'smooth' }); setTourJourney('select'); setTourStep(1); setIsTourOpen(true); }} className="flex items-center group py-0.5 hover:text-[#EA580C] transition-colors cursor-pointer">
+                    <span className="text-[#EA580C] font-bold text-xs mr-2 transition-transform duration-200 group-hover:translate-x-1 select-none">&gt;</span>
+                    <span>Video Tour</span>
+                  </button>
+                </li>
+                <li>
+                  <a href="#gyms" className="flex items-center group py-0.5 hover:text-[#EA580C] transition-colors">
+                    <span className="text-[#EA580C] font-bold text-xs mr-2 transition-transform duration-200 group-hover:translate-x-1 select-none">&gt;</span>
+                    <span>Gyms</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="#pricing" className="flex items-center group py-0.5 hover:text-[#EA580C] transition-colors">
+                    <span className="text-[#EA580C] font-bold text-xs mr-2 transition-transform duration-200 group-hover:translate-x-1 select-none">&gt;</span>
+                    <span>Pricing</span>
+                  </a>
+                </li>
               </ul>
             </div>
 
-            <div>
-              <h4 className="text-[#111827] font-semibold mb-4">Company</h4>
-              <ul className="space-y-2 text-sm text-[#64748B]">
-                <li><Link to="/about" className="hover:text-[#EA580C] transition-colors">About Us</Link></li>
-                <li><Link to="/blog" className="hover:text-[#EA580C] transition-colors">Blog</Link></li>
-                <li><Link to="/contact" className="hover:text-[#EA580C] transition-colors">Contact</Link></li>
+            {/* Column 3: Company */}
+            <div className="md:px-8">
+              <h4 className="text-[#111827] font-bold text-base mb-4 tracking-tight">Company</h4>
+              <ul className="space-y-2.5 text-sm text-[#475569]">
+                <li>
+                  <Link to="/about" className="flex items-center group py-0.5 hover:text-[#EA580C] transition-colors">
+                    <span className="text-[#EA580C] font-bold text-xs mr-2 transition-transform duration-200 group-hover:translate-x-1 select-none">&gt;</span>
+                    <span>About Us</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/blog" className="flex items-center group py-0.5 hover:text-[#EA580C] transition-colors">
+                    <span className="text-[#EA580C] font-bold text-xs mr-2 transition-transform duration-200 group-hover:translate-x-1 select-none">&gt;</span>
+                    <span>Blog</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/contact" className="flex items-center group py-0.5 hover:text-[#EA580C] transition-colors">
+                    <span className="text-[#EA580C] font-bold text-xs mr-2 transition-transform duration-200 group-hover:translate-x-1 select-none">&gt;</span>
+                    <span>Contact</span>
+                  </Link>
+                </li>
               </ul>
             </div>
 
-            <div>
-              <h4 className="text-[#111827] font-semibold mb-4">Account</h4>
-              <ul className="space-y-2 text-sm text-[#64748B]">
-                <li><Link to="/login" className="hover:text-[#EA580C] transition-colors">Log In</Link></li>
-                <li><Link to="/register/customer" className="hover:text-[#EA580C] transition-colors">Sign In (Register)</Link></li>
-                <li><Link to="/privacy-policy" className="hover:text-[#EA580C] transition-colors">Privacy Policy</Link></li>
-                <li><Link to="/terms-of-service" className="hover:text-[#EA580C] transition-colors">Terms of Service</Link></li>
+            {/* Column 4: Account */}
+            <div className="md:pl-8">
+              <h4 className="text-[#111827] font-bold text-base mb-4 tracking-tight">Account</h4>
+              <ul className="space-y-2.5 text-sm text-[#475569]">
+                <li>
+                  <Link to="/login" className="flex items-center group py-0.5 hover:text-[#EA580C] transition-colors">
+                    <span className="text-[#EA580C] font-bold text-xs mr-2 transition-transform duration-200 group-hover:translate-x-1 select-none">&gt;</span>
+                    <span>Log In</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/register/customer" className="flex items-center group py-0.5 hover:text-[#EA580C] transition-colors">
+                    <span className="text-[#EA580C] font-bold text-xs mr-2 transition-transform duration-200 group-hover:translate-x-1 select-none">&gt;</span>
+                    <span>Sign In (Register)</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/privacy-policy" className="flex items-center group py-0.5 hover:text-[#EA580C] transition-colors">
+                    <span className="text-[#EA580C] font-bold text-xs mr-2 transition-transform duration-200 group-hover:translate-x-1 select-none">&gt;</span>
+                    <span>Privacy Policy</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/terms-of-service" className="flex items-center group py-0.5 hover:text-[#EA580C] transition-colors">
+                    <span className="text-[#EA580C] font-bold text-xs mr-2 transition-transform duration-200 group-hover:translate-x-1 select-none">&gt;</span>
+                    <span>Terms of Service</span>
+                  </Link>
+                </li>
               </ul>
             </div>
           </div>
+        </div>
 
-          <div className="border-t border-[#E2E8F0] pt-8 text-center text-sm text-[#64748B]">
-            <p>&copy; {new Date().getFullYear()} Gymora Technologies Inc. All rights reserved.</p>
+        {/* Arched Dark Bottom Copyright Bar */}
+        <div className="relative w-full bg-[#0B132B] text-slate-300 pt-7 pb-6 mt-6">
+          {/* Arched Top Orange Accent Curve */}
+          <div className="absolute -top-3.5 left-0 right-0 h-4 overflow-hidden pointer-events-none">
+            <svg viewBox="0 0 1200 30" preserveAspectRatio="none" className="w-full h-full fill-[#0B132B]">
+              <path d="M0,30 Q600,0 1200,30 L1200,30 L0,30 Z" />
+            </svg>
+            <svg viewBox="0 0 1200 30" preserveAspectRatio="none" className="absolute top-0 left-0 w-full h-full fill-none stroke-[#EA580C] stroke-[2.5]">
+              <path d="M0,30 Q600,0 1200,30" />
+            </svg>
+          </div>
+
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-center gap-4 text-xs font-medium">
+            <div className="hidden sm:block flex-1 h-px bg-slate-700/60 max-w-xs" />
+            <p className="text-center text-slate-300">
+              &copy; {new Date().getFullYear()} <span className="text-[#FB923C] font-semibold">Gymora Technologies Inc.</span> All rights reserved.
+            </p>
+            <div className="hidden sm:block flex-1 h-px bg-slate-700/60 max-w-xs" />
           </div>
         </div>
       </footer>

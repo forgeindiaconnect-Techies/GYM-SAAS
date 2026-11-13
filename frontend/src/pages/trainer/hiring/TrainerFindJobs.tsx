@@ -90,7 +90,7 @@ export default function TrainerFindJobs() {
       const items = val.map(s => String(s).trim()).filter(Boolean);
       if (items.length === 0) return null;
       return (
-        <ul className="text-xs text-slate-300 space-y-1.5 list-disc list-inside">
+        <ul className="text-xs text-[#334155] space-y-1.5 list-disc list-inside">
           {items.map((item, idx) => (
             <li key={idx}>{item}</li>
           ))}
@@ -103,14 +103,14 @@ export default function TrainerFindJobs() {
       const lines = trimmed.split(/\r?\n|•/).map(s => s.trim()).filter(Boolean);
       if (lines.length > 1) {
         return (
-          <ul className="text-xs text-slate-300 space-y-1.5 list-disc list-inside">
+          <ul className="text-xs text-[#334155] space-y-1.5 list-disc list-inside">
             {lines.map((item, idx) => (
               <li key={idx}>{item}</li>
             ))}
           </ul>
         );
       }
-      return <p className="text-xs text-slate-300 leading-relaxed whitespace-pre-line">{trimmed}</p>;
+      return <p className="text-xs text-[#334155] leading-relaxed whitespace-pre-line">{trimmed}</p>;
     }
     return null;
   };
@@ -594,7 +594,7 @@ export default function TrainerFindJobs() {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setSelectedJob(null)}
-                  className="px-4 py-2 bg-[#FFFFFF] hover:bg-[#FFF7ED] text-slate-300 rounded-xl text-xs font-medium border border-[#E2E8F0]"
+                  className="px-4 py-2 bg-[#FFFFFF] hover:bg-[#FFF7ED] text-[#1E293B] hover:text-[#C2410C] rounded-xl text-xs font-bold border border-[#CBD5E1] hover:border-[#FDBA74] transition-all cursor-pointer shadow-xs"
                 >
                   Close
                 </button>
@@ -801,7 +801,7 @@ export default function TrainerFindJobs() {
                 <button
                   type="button"
                   onClick={() => setShowApplyModal(false)}
-                  className="px-4 py-2 bg-[#FFFFFF] hover:bg-[#FFF7ED] text-slate-300 rounded-xl"
+                  className="px-4 py-2 bg-[#FFFFFF] hover:bg-[#FFF7ED] text-[#1E293B] hover:text-[#C2410C] rounded-xl text-xs font-bold border border-[#CBD5E1] hover:border-[#FDBA74] transition-all cursor-pointer"
                 >
                   Cancel
                 </button>

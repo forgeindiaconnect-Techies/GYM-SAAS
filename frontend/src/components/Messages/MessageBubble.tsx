@@ -1,7 +1,8 @@
 ﻿import React, { useState } from 'react';
-import { FileText, Download, ExternalLink, Video, File, X, ZoomIn } from 'lucide-react';
+import { FileText, Download, ExternalLink, Video, File, X, ZoomIn, Image as ImageIcon } from 'lucide-react';
 import AudioMessagePlayer from './AudioMessagePlayer';
 import { formatFileSize } from './AttachmentPreview';
+import { isSafeMediaUrl } from '../../utils/url';
 
 export interface MessageAttachment {
   url: string;
@@ -102,6 +103,17 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
               <div className="space-y-2 mb-2">
                 {attachments.map((att, i) => {
                   if (att.fileType === 'image') {
+                    if (!isSafeMediaUrl(att.url)) {
+                      return (
+                        <div key={i} className="p-3 bg-black/5 rounded-xl flex items-center gap-2.5 text-xs border border-black/10">
+                          <ImageIcon size={18} className="text-[#EA580C] shrink-0" />
+                          <div className="min-w-0">
+                            <span className="font-bold block truncate">{att.fileName || 'Photo Attachment'}</span>
+                            <span className="text-[10px] opacity-75 block">Local device photo</span>
+                          </div>
+                        </div>
+                      );
+                    }
                     return (
                       <div key={i} className="relative group overflow-hidden rounded-xl border border-black/10">
                         <img
@@ -110,6 +122,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
                           className="max-h-72 max-w-full rounded-xl object-cover cursor-pointer hover:opacity-95 transition-opacity"
                           onClick={() => setLightboxUrl(att.url)}
                           loading="lazy"
+                          onError={(e) => { (e.currentTarget as HTMLElement).style.display = 'none'; }}
                         />
                         <button
                           type="button"
@@ -123,6 +136,14 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
                   }
 
                   if (att.fileType === 'video') {
+                    if (!isSafeMediaUrl(att.url)) {
+                      return (
+                        <div key={i} className="p-3 bg-black/5 rounded-xl flex items-center gap-2.5 text-xs border border-black/10">
+                          <Video size={18} className="text-[#EA580C] shrink-0" />
+                          <span className="font-bold truncate">{att.fileName || 'Video Attachment'}</span>
+                        </div>
+                      );
+                    }
                     return (
                       <div key={i} className="rounded-xl overflow-hidden border border-black/10 max-w-full">
                         <video

@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Loader2, MapPin, Truck, CreditCard, CheckCircle2, ArrowLeft, Coins, Sparkles, Gift } from 'lucide-react';
-import QRCode from 'react-qr-code';
+import { Loader2, MapPin, Truck, CreditCard, CheckCircle2, ArrowLeft, Coins, Sparkles, ShoppingBag, Shield } from 'lucide-react';
 import api from '../../utils/api';
 import { useAuth } from '../../contexts/AuthContext';
+import PaymentModal, { type PaymentConfirmData } from '../../components/common/PaymentModal';
 
-const PAYMENT_METHODS = ['UPI', 'Credit / Debit Card', 'Net Banking', 'Cash at Gym'];
+const PAYMENT_METHODS = ['Card', 'UPI', 'NetBanking', 'Cash at Gym'];
 
 const MemberCheckout = () => {
   const navigate = useNavigate();
@@ -15,10 +15,12 @@ const MemberCheckout = () => {
   const [loading, setLoading] = useState(true);
   const [placing, setPlacing] = useState(false);
   const [fulfilmentType, setFulfilmentType] = useState<'Gym Pickup' | 'Delivery'>('Gym Pickup');
-  const [paymentMethod, setPaymentMethod] = useState('UPI');
-  const [bankName, setBankName] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState<'Card' | 'UPI' | 'NetBanking' | 'Cash at Gym'>('Card');
+  const [bankName, setBankName] = useState('State Bank of India (SBI)');
   const [delivery, setDelivery] = useState({ name: '', phone: '', address: '', city: '', state: '', pinCode: '' });
   const [placedOrder, setPlacedOrder] = useState<any>(null);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [paymentModalError, setPaymentModalError] = useState<string | null>(null);
 
   // Rewards & Points State
   const [pointsBalance, setPointsBalance] = useState<number>(0);
@@ -72,7 +74,7 @@ const MemberCheckout = () => {
 
   useEffect(() => { load(); }, []);
 
-  const placeOrder = async () => {
+  const handleInitiatePayment = () => {
     if (items.length === 0) { alert('Your cart is empty.'); return; }
     if (fulfilmentType === 'Delivery') {
       for (const key of ['name', 'phone', 'address', 'city', 'state', 'pinCode'] as const) {
@@ -82,22 +84,39 @@ const MemberCheckout = () => {
         }
       }
     }
+    if (paymentMethod === 'Cash at Gym') {
+      executeCheckout('Cash at Gym');
+      return;
+    }
+    setPaymentModalError(null);
+    setShowPaymentModal(true);
+  };
+
+  const executeCheckout = async (chosenMethod: string, chosenBank?: string) => {
     try {
       setPlacing(true);
+      setPaymentModalError(null);
       const res = await api.post('/store/customer/checkout', {
         fulfilmentType,
         deliveryDetails: fulfilmentType === 'Delivery' ? delivery : undefined,
-        paymentMethod,
-        bankName: paymentMethod === 'Net Banking' ? bankName : undefined,
+        paymentMethod: chosenMethod,
+        bankName: chosenBank || (chosenMethod === 'NetBanking' ? bankName : undefined),
         discount: discountAmount,
         pointsToRedeem: usePoints ? pointsToRedeem : 0
       });
+      setShowPaymentModal(false);
       setPlacedOrder(res.data.order);
     } catch (err: any) {
-      alert(err.response?.data?.message || 'Checkout failed. Please try again.');
+      const msg = err.response?.data?.message || 'Checkout failed. Please try again.';
+      setPaymentModalError(msg);
+      if (!showPaymentModal) alert(msg);
     } finally {
       setPlacing(false);
     }
+  };
+
+  const handleModalConfirm = async (data: PaymentConfirmData) => {
+    await executeCheckout(data.paymentMethod, data.bankName);
   };
 
   if (placedOrder) {
@@ -201,133 +220,51 @@ const MemberCheckout = () => {
           </div>
 
           {/* Payment */}
-          <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-6">
-            <h3 className="text-lg font-bold text-[#111827] mb-4 flex items-center gap-2"><CreditCard size={19} className="text-[#EA580C]" /> Payment Method</h3>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
-              {PAYMENT_METHODS.filter(m => fulfilmentType === 'Delivery' ? m !== 'Cash at Gym' : true).map((method) => (
-                <label 
-                  key={method} 
-                  className={`flex flex-col p-4 border rounded-xl cursor-pointer transition-colors ${
-                    paymentMethod === method 
-                      ? 'border-[#FDBA74] bg-[#FFF7ED]' 
-                      : 'border-[#E2E8F0] hover:border-[#FFEDD5]'
-                  }`}
-                >
-                  <div className="flex items-center justify-between mb-1">
-                    <span className={`font-bold ${paymentMethod === method ? 'text-[#EA580C]' : 'text-[#64748B]'}`}>{method}</span>
-                    <input 
-                      type="radio" 
-                      name="payment_method" 
-                      value={method} 
-                      checked={paymentMethod === method} 
-                      onChange={(e) => setPaymentMethod(e.target.value)} 
-                      className="hidden" 
-                    />
-                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${paymentMethod === method ? 'border-[#FDBA74]' : 'border-[#E2E8F0]'}`}>
-                      {paymentMethod === method && <div className="w-2.5 h-2.5 bg-[#C2410C] rounded-full"></div>}
-                    </div>
-                  </div>
-                </label>
-              ))}
+          <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-6 space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-bold text-[#111827] flex items-center gap-2">
+                <CreditCard size={19} className="text-[#EA580C]" /> Payment Selection
+              </h3>
+              <div className="flex items-center gap-1.5 text-xs text-[#64748B]">
+                <Shield size={14} className="text-[#EA580C]" />
+                <span>256-bit TLS Encrypted</span>
+              </div>
             </div>
 
-            <div className="bg-[#F8FAFC] border border-[#E2E8F0] p-5 rounded-xl">
-              {paymentMethod === 'UPI' && (
-                <div className="space-y-4">
-                  <div className="flex flex-col md:flex-row gap-6">
-                    <div className="flex-1 space-y-4">
-                      <p className="text-sm font-bold text-[#111827]">Pay using UPI App</p>
-                      <div className="flex flex-wrap gap-2">
-                        {['Google Pay', 'PhonePe', 'Paytm', 'BHIM'].map(app => (
-                           <button key={app} className="px-3 py-1.5 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-xs font-bold text-[#64748B] hover:border-[#FDBA74] hover:text-[#EA580C] transition-colors shadow-sm">{app}</button>
-                        ))}
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <div className="h-px bg-[#E2E8F0] flex-1"></div>
-                        <span className="text-[10px] font-black text-[#9A3412] uppercase tracking-wider">OR</span>
-                        <div className="h-px bg-[#E2E8F0] flex-1"></div>
-                      </div>
-                      <div>
-                        <label className="text-xs font-bold text-[#64748B] uppercase mb-1 block">Enter UPI ID</label>
-                        <input placeholder="e.g. yourname@bank" className={inputCls} />
-                      </div>
-                    </div>
-                    
-                    <div className="flex flex-col items-center justify-center md:border-l md:border-[#E2E8F0] md:pl-8 pt-4 md:pt-0 border-t md:border-t-0 border-[#E2E8F0] min-w-[180px]">
-                      <div className="relative p-4 bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl mb-3 shadow-sm flex items-center justify-center">
-                        <div className="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-[#F8FAFC] rounded-tl-sm"></div>
-                        <div className="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-[#F8FAFC] rounded-tr-sm"></div>
-                        <div className="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 border-[#F8FAFC] rounded-bl-sm"></div>
-                        <div className="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-[#F8FAFC] rounded-br-sm"></div>
-                        <QRCode value={`upi://pay?pa=aigymstore@ybl&pn=AI%20Gym%20Store&am=${finalTotal}&cu=INR`} size={80} bgColor="transparent" fgColor="#FFFFFF" level="L" />
-                      </div>
-                      <p className="text-sm font-bold text-[#111827]">Scan QR to Pay</p>
-                      <p className="text-[10px] font-semibold text-[#9A3412] uppercase tracking-wider mt-0.5">Any UPI App</p>
-                    </div>
-                  </div>
-                </div>
-              )}
-              
-              {paymentMethod === 'Credit / Debit Card' && (
-                <div className="space-y-4">
-                  <p className="text-sm font-bold text-[#111827]">Enter Card Details</p>
-                  <div>
-                    <label className="text-xs font-bold text-[#64748B] uppercase mb-1 block">Card Number</label>
-                    <input placeholder="XXXX XXXX XXXX XXXX" maxLength={19} className={inputCls} />
-                  </div>
-                  <div>
-                    <label className="text-xs font-bold text-[#64748B] uppercase mb-1 block">Name on Card</label>
-                    <input placeholder="John Doe" className={inputCls} />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="text-xs font-bold text-[#64748B] uppercase mb-1 block">Expiry (MM/YY)</label>
-                      <input placeholder="MM/YY" maxLength={5} className={inputCls} />
-                    </div>
-                    <div>
-                      <label className="text-xs font-bold text-[#64748B] uppercase mb-1 block">CVV</label>
-                      <input type="password" placeholder="***" maxLength={4} className={inputCls} />
-                    </div>
-                  </div>
-                </div>
-              )}
-              
-              {paymentMethod === 'Net Banking' && (
-                <div className="space-y-4">
-                  <p className="text-sm font-bold text-[#111827]">Select your Bank</p>
-                  <select
-                    className={inputCls}
-                    value={bankName}
-                    onChange={(e) => setBankName(e.target.value)}
+            <div>
+              <label className="text-xs font-bold text-[#64748B] uppercase tracking-wider block mb-2">
+                SELECT PAYMENT METHOD
+              </label>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                {PAYMENT_METHODS.filter(m => fulfilmentType === 'Delivery' ? m !== 'Cash at Gym' : true).map(method => (
+                  <button
+                    key={method}
+                    type="button"
+                    onClick={() => setPaymentMethod(method as any)}
+                    className={`py-2 px-3 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
+                      paymentMethod === method
+                        ? 'bg-[#C2410C] text-white border-[#FDBA74]'
+                        : 'bg-[#F8FAFC] text-[#64748B] border-[#E2E8F0] hover:border-[#FDBA74]'
+                    }`}
                   >
-                    <option value="">Choose a bank...</option>
-                    <option value="State Bank of India (SBI)">State Bank of India (SBI)</option>
-                    <option value="HDFC Bank">HDFC Bank</option>
-                    <option value="ICICI Bank">ICICI Bank</option>
-                    <option value="Axis Bank">Axis Bank</option>
-                    <option value="Kotak Mahindra Bank">Kotak Mahindra Bank</option>
-                    <option value="Punjab National Bank (PNB)">Punjab National Bank (PNB)</option>
-                    <option value="Bank of Baroda">Bank of Baroda</option>
-                    <option value="Canara Bank">Canara Bank</option>
-                    <option value="Other Banks">Other Banks...</option>
-                  </select>
-                  {!bankName && (
-                    <p className="text-xs text-amber-600 font-medium">Please select a bank to continue</p>
-                  )}
-                </div>
+                    {method}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="p-4 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs text-[#64748B]">
+              {paymentMethod === 'Card' && (
+                <p>Securely enter your Card Number, Expiry, and CVV in the payment confirmation dialog.</p>
               )}
-              
+              {paymentMethod === 'UPI' && (
+                <p>Pay via Google Pay, PhonePe, Paytm, BHIM, UPI ID or Scan QR in the payment dialog.</p>
+              )}
+              {paymentMethod === 'NetBanking' && (
+                <p>Transfer directly via your online bank portal securely with instant confirmation.</p>
+              )}
               {paymentMethod === 'Cash at Gym' && (
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-[#FFF7ED] rounded-full flex items-center justify-center shrink-0">
-                    <CheckCircle2 size={20} className="text-[#EA580C]" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-bold text-[#111827]">Pay at Front Desk</p>
-                    <p className="text-xs text-[#64748B] mt-0.5">Your order will be reserved. Please pay by cash or card when you pick up your items.</p>
-                  </div>
-                </div>
+                <p>Pay directly at the gym reception desk when collecting your reserved products.</p>
               )}
             </div>
           </div>
@@ -363,7 +300,7 @@ const MemberCheckout = () => {
                     onChange={(e) => setUsePoints(e.target.checked)}
                     className="w-4 h-4 rounded text-[#EA580C] bg-[#FFFFFF] border-[#E2E8F0] focus:ring-0 cursor-pointer"
                   />
-                  <span className="text-xs font-bold text-white flex items-center gap-1.5">
+                  <span className="text-xs font-bold text-[#111827] flex items-center gap-1.5">
                     <Coins size={14} className="text-[#EA580C]" />
                     Use Referral Points
                   </span>
@@ -377,7 +314,7 @@ const MemberCheckout = () => {
                 <div className="space-y-2 pt-2 border-t border-[#E2E8F0]/60">
                   <div className="flex items-center justify-between text-[11px] text-[#64748B]">
                     <span>Points to Redeem:</span>
-                    <span className="font-bold text-white">{pointsToRedeem} pts</span>
+                    <span className="font-bold text-[#111827]">{pointsToRedeem} pts</span>
                   </div>
                   <input
                     type="range"
@@ -424,15 +361,42 @@ const MemberCheckout = () => {
             </div>
           </div>
           <button
-            onClick={placeOrder}
+            onClick={handleInitiatePayment}
             disabled={placing}
-            className="mt-6 w-full py-3 bg-gradient-to-r from-[#EA580C] to-[#C2410C] text-[#FFFFFF] font-bold font-bold rounded-xl shadow-lg shadow-orange-500/15 hover:opacity-90 transition-opacity flex items-center justify-center gap-2 disabled:opacity-40"
+            className="mt-6 w-full py-3 bg-gradient-to-r from-[#EA580C] to-[#C2410C] text-[#FFFFFF] font-bold rounded-xl shadow-lg shadow-orange-500/15 hover:opacity-90 transition-opacity flex items-center justify-center gap-2 disabled:opacity-40 cursor-pointer"
           >
             {placing ? <Loader2 className="animate-spin" size={18} /> : <CheckCircle2 size={18} />}
             {placing ? 'Placing Order...' : `Pay ₹${finalTotal} & Place Order`}
           </button>
         </div>
       </div>
+
+      {/* Confirmation & Payment Modal */}
+      <PaymentModal
+        isOpen={showPaymentModal}
+        onClose={() => setShowPaymentModal(false)}
+        title="Confirm Store Order"
+        subtitle="Complete secure payment for your gym store items"
+        icon={<ShoppingBag size={24} />}
+        summaryItems={[
+          {
+            label: 'Selected Items',
+            value: `${items.length} item${items.length > 1 ? 's' : ''}`
+          },
+          {
+            label: 'Fulfilment Method',
+            value: fulfilmentType
+          },
+          {
+            label: fulfilmentType === 'Delivery' ? 'Delivery Address' : 'Pickup Desk',
+            value: fulfilmentType === 'Delivery' ? `${delivery.name || 'Member'}, ${delivery.city || 'Address'}` : 'Gym Front Desk'
+          }
+        ]}
+        totalAmount={finalTotal}
+        onConfirm={handleModalConfirm}
+        loading={placing}
+        error={paymentModalError}
+      />
     </div>
   );
 };

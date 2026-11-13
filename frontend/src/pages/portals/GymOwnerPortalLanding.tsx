@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import gymLandingImg1 from '../../assets/GYM landing page image 1.jpg';
 import gymLandingImg2 from '../../assets/GYM landing page image 2.jpg';
 import { TourSlide } from '../../components/Landing/TourSlide';
+import { AthleteSilhouette } from '../../components/common/AthleteSilhouette';
 import { FaInstagram, FaTwitter, FaYoutube, FaFacebook } from 'react-icons/fa';
 import { 
   Building2, 
@@ -1098,109 +1099,146 @@ const GymOwnerPortalLanding = () => {
         </div>
       </section>
 
-      {/* Footer matching reference design */}
-      <footer className="border-t border-[#E2E8F0] bg-[#F8FAFC] pt-16 pb-8 text-[#64748B]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
-            <div className="col-span-1 md:col-span-1">
+      {/* Footer Replicated from Reference Design */}
+      <footer className="relative overflow-hidden bg-[#FFFFFF] border-t border-[#E2E8F0] pt-14 pb-0 text-[#475569]">
+        {/* Top-Left Ambient Warm Swoosh */}
+        <div className="pointer-events-none absolute -top-24 -left-24 w-96 h-96 bg-gradient-to-br from-[#EA580C]/15 via-orange-300/10 to-transparent rounded-full blur-3xl" />
+        
+        {/* Top-Right Warm Glow */}
+        <div className="pointer-events-none absolute top-0 right-0 w-[520px] h-[420px] bg-gradient-to-bl from-orange-400/15 via-amber-300/10 to-transparent rounded-full blur-3xl" />
+        
+        {/* Right Athlete Silhouette Watermark */}
+        <div className="pointer-events-none absolute right-0 bottom-10 w-72 sm:w-80 md:w-[380px] h-auto opacity-[0.14] select-none text-[#EA580C] overflow-hidden">
+          <AthleteSilhouette className="w-full h-full" />
+        </div>
+
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 lg:gap-10 mb-12 md:divide-x md:divide-[#E2E8F0]/70">
+            <div className="col-span-1 md:col-span-1 md:pr-8">
               {/* Footer logo — scrolls to top */}
               <button 
                 onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} 
-                className="flex items-center space-x-2 mb-4 group cursor-pointer text-left"
+                className="flex items-center space-x-2.5 mb-4 group cursor-pointer text-left"
               >
-                <div className="w-8 h-8 bg-[#C2410C] rounded-lg flex items-center justify-center shadow-md shadow-orange-500/15">
-                  <Activity className="text-[#FFFFFF]" size={18} />
+                <div className="w-9 h-9 bg-gradient-to-br from-[#EA580C] to-[#C2410C] rounded-xl flex items-center justify-center shadow-md shadow-orange-500/20 group-hover:scale-105 transition-transform">
+                  <Activity className="text-[#FFFFFF]" size={20} strokeWidth={2.5} />
                 </div>
-                <span className="text-xl font-bold tracking-tight text-[#111827]">Gymora</span>
+                <span className="text-2xl font-black tracking-tight text-[#111827]">Gymora</span>
               </button>
-              <p className="text-[#64748B] text-sm leading-relaxed mb-6">
+              <p className="text-[#475569] text-sm leading-relaxed mb-6 font-normal">
                 The ultimate fitness ecosystem combining AI intelligence with human expertise for unmatched results.
               </p>
-              <div className="flex space-x-4">
-                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-[#64748B] hover:text-[#EA580C] transition-colors"><FaInstagram size={20} /></a>
-                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-[#64748B] hover:text-[#EA580C] transition-colors"><FaTwitter size={20} /></a>
-                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-[#64748B] hover:text-[#EA580C] transition-colors"><FaFacebook size={20} /></a>
-                <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="text-[#64748B] hover:text-[#EA580C] transition-colors"><FaYoutube size={20} /></a>
+              <div className="flex items-center space-x-3">
+                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-[#111827] text-white flex items-center justify-center hover:bg-[#EA580C] transition-all shadow-sm hover:scale-110" aria-label="Instagram"><FaInstagram size={14} /></a>
+                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-[#111827] text-white flex items-center justify-center hover:bg-[#EA580C] transition-all shadow-sm hover:scale-110" aria-label="Twitter"><FaTwitter size={14} /></a>
+                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-[#111827] text-white flex items-center justify-center hover:bg-[#EA580C] transition-all shadow-sm hover:scale-110" aria-label="Facebook"><FaFacebook size={14} /></a>
+                <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-[#111827] text-white flex items-center justify-center hover:bg-[#EA580C] transition-all shadow-sm hover:scale-110" aria-label="YouTube"><FaYoutube size={14} /></a>
               </div>
             </div>
 
-            <div>
-              <h4 className="text-[#111827] font-semibold mb-4">Gym Management</h4>
-              <ul className="space-y-2 text-sm text-[#64748B]">
+            <div className="md:px-8">
+              <h4 className="text-[#111827] font-bold text-base mb-4 tracking-tight">Gym Management</h4>
+              <ul className="space-y-2.5 text-sm text-[#475569]">
                 <li>
                   <button
                     onClick={() => setActiveFooterModal('gym-profile')}
-                    className="hover:text-[#EA580C] transition-colors cursor-pointer text-left"
+                    className="flex items-center group py-0.5 hover:text-[#EA580C] transition-colors cursor-pointer text-left w-full"
                   >
-                    Gym Profile
+                    <span className="text-[#EA580C] font-bold text-xs mr-2 transition-transform duration-200 group-hover:translate-x-1 select-none">&gt;</span>
+                    <span>Gym Profile</span>
                   </button>
                 </li>
                 <li>
                   <button
                     onClick={() => setActiveFooterModal('trainer-hiring')}
-                    className="hover:text-[#EA580C] transition-colors cursor-pointer text-left"
+                    className="flex items-center group py-0.5 hover:text-[#EA580C] transition-colors cursor-pointer text-left w-full"
                   >
-                    Trainer Hiring
+                    <span className="text-[#EA580C] font-bold text-xs mr-2 transition-transform duration-200 group-hover:translate-x-1 select-none">&gt;</span>
+                    <span>Trainer Hiring</span>
                   </button>
                 </li>
                 <li>
                   <button
                     onClick={() => setActiveFooterModal('subscription-plans')}
-                    className="hover:text-[#EA580C] transition-colors cursor-pointer text-left"
+                    className="flex items-center group py-0.5 hover:text-[#EA580C] transition-colors cursor-pointer text-left w-full"
                   >
-                    Subscription Plans
+                    <span className="text-[#EA580C] font-bold text-xs mr-2 transition-transform duration-200 group-hover:translate-x-1 select-none">&gt;</span>
+                    <span>Subscription Plans</span>
                   </button>
                 </li>
               </ul>
             </div>
 
-            <div>
-              <h4 className="text-[#111827] font-semibold mb-4">Support &amp; Resources</h4>
-              <ul className="space-y-2 text-sm text-[#64748B]">
+            {/* Column 3: Support & Resources */}
+            <div className="md:px-8">
+              <h4 className="text-[#111827] font-bold text-base mb-4 tracking-tight">Support &amp; Resources</h4>
+              <ul className="space-y-2.5 text-sm text-[#475569]">
                 <li>
                   <button
                     onClick={() => setActiveFooterModal('help-support')}
-                    className="hover:text-[#EA580C] transition-colors cursor-pointer text-left"
+                    className="flex items-center group py-0.5 hover:text-[#EA580C] transition-colors cursor-pointer text-left w-full"
                   >
-                    Help &amp; Support
+                    <span className="text-[#EA580C] font-bold text-xs mr-2 transition-transform duration-200 group-hover:translate-x-1 select-none">&gt;</span>
+                    <span>Help &amp; Support</span>
                   </button>
                 </li>
                 <li>
                   <button
                     onClick={() => setActiveFooterModal('faqs')}
-                    className="hover:text-[#EA580C] transition-colors cursor-pointer text-left"
+                    className="flex items-center group py-0.5 hover:text-[#EA580C] transition-colors cursor-pointer text-left w-full"
                   >
-                    FAQs
+                    <span className="text-[#EA580C] font-bold text-xs mr-2 transition-transform duration-200 group-hover:translate-x-1 select-none">&gt;</span>
+                    <span>FAQs</span>
                   </button>
                 </li>
               </ul>
             </div>
 
-            <div>
-              <h4 className="text-[#111827] font-semibold mb-4">Legal</h4>
-              <ul className="space-y-2 text-sm text-[#64748B]">
+            {/* Column 4: Legal */}
+            <div className="md:pl-8">
+              <h4 className="text-[#111827] font-bold text-base mb-4 tracking-tight">Legal</h4>
+              <ul className="space-y-2.5 text-sm text-[#475569]">
                 <li>
                   <button
                     onClick={() => setActiveFooterModal('privacy-policy')}
-                    className="hover:text-[#EA580C] transition-colors cursor-pointer text-left"
+                    className="flex items-center group py-0.5 hover:text-[#EA580C] transition-colors cursor-pointer text-left w-full"
                   >
-                    Privacy Policy
+                    <span className="text-[#EA580C] font-bold text-xs mr-2 transition-transform duration-200 group-hover:translate-x-1 select-none">&gt;</span>
+                    <span>Privacy Policy</span>
                   </button>
                 </li>
                 <li>
                   <button
                     onClick={() => setActiveFooterModal('terms-conditions')}
-                    className="hover:text-[#EA580C] transition-colors cursor-pointer text-left"
+                    className="flex items-center group py-0.5 hover:text-[#EA580C] transition-colors cursor-pointer text-left w-full"
                   >
-                    Terms &amp; Conditions
+                    <span className="text-[#EA580C] font-bold text-xs mr-2 transition-transform duration-200 group-hover:translate-x-1 select-none">&gt;</span>
+                    <span>Terms &amp; Conditions</span>
                   </button>
                 </li>
               </ul>
             </div>
           </div>
+        </div>
 
-          <div className="border-t border-[#E2E8F0] pt-8 text-center text-sm text-[#64748B]">
-            <p>&copy; {new Date().getFullYear()} Gymora Technologies Inc. All rights reserved.</p>
+        {/* Arched Dark Bottom Copyright Bar */}
+        <div className="relative w-full bg-[#0B132B] text-slate-300 pt-7 pb-6 mt-6">
+          {/* Arched Top Orange Accent Curve */}
+          <div className="absolute -top-3.5 left-0 right-0 h-4 overflow-hidden pointer-events-none">
+            <svg viewBox="0 0 1200 30" preserveAspectRatio="none" className="w-full h-full fill-[#0B132B]">
+              <path d="M0,30 Q600,0 1200,30 L1200,30 L0,30 Z" />
+            </svg>
+            <svg viewBox="0 0 1200 30" preserveAspectRatio="none" className="absolute top-0 left-0 w-full h-full fill-none stroke-[#EA580C] stroke-[2.5]">
+              <path d="M0,30 Q600,0 1200,30" />
+            </svg>
+          </div>
+
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-center gap-4 text-xs font-medium">
+            <div className="hidden sm:block flex-1 h-px bg-slate-700/60 max-w-xs" />
+            <p className="text-center text-slate-300">
+              &copy; {new Date().getFullYear()} <span className="text-[#FB923C] font-semibold">Gymora Technologies Inc.</span> All rights reserved.
+            </p>
+            <div className="hidden sm:block flex-1 h-px bg-slate-700/60 max-w-xs" />
           </div>
         </div>
       </footer>

@@ -527,7 +527,7 @@ export default function GymAdminHiringRequests() {
                 <div className="flex items-center justify-end gap-3 pt-3">
                   <button
                     onClick={() => setConfirmModalOpen(false)}
-                    className="px-4 py-2 bg-[#FFFFFF] text-slate-300 rounded-xl text-xs font-semibold hover:bg-[#FFF7ED]"
+                    className="px-4 py-2 bg-[#FFFFFF] hover:bg-[#FFF7ED] text-[#1E293B] hover:text-[#C2410C] rounded-xl text-xs font-bold border border-[#CBD5E1] hover:border-[#FDBA74] transition-all cursor-pointer"
                   >
                     Cancel
                   </button>
@@ -623,7 +623,7 @@ export default function GymAdminHiringRequests() {
                     value={counterMessage}
                     onChange={(e) => setCounterMessage(e.target.value)}
                     placeholder="Explain the revised compensation structure or answer their counter question..."
-                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-white text-sm focus:border-purple-400"
+                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-[#111827] text-sm focus:border-purple-400"
                   />
                 </div>
 
@@ -631,7 +631,7 @@ export default function GymAdminHiringRequests() {
                   <button
                     type="button"
                     onClick={() => setNegotiateModalOpen(false)}
-                    className="px-4 py-2 bg-[#FFFFFF] text-slate-300 rounded-xl text-xs font-semibold hover:bg-[#FFF7ED]"
+                    className="px-4 py-2 bg-[#FFFFFF] hover:bg-[#FFF7ED] text-[#1E293B] hover:text-[#C2410C] rounded-xl text-xs font-bold border border-[#CBD5E1] hover:border-[#FDBA74] transition-all cursor-pointer"
                   >
                     Cancel
                   </button>
@@ -772,7 +772,7 @@ export default function GymAdminHiringRequests() {
             <div className="flex justify-end pt-3 border-t border-[#E2E8F0]">
               <button
                 onClick={() => setViewModalOpen(false)}
-                className="px-4 py-2 bg-[#FFFFFF] text-slate-300 rounded-xl text-xs font-semibold hover:bg-[#FFF7ED]"
+                className="px-4 py-2 bg-[#FFFFFF] hover:bg-[#FFF7ED] text-[#1E293B] hover:text-[#C2410C] rounded-xl text-xs font-bold border border-[#CBD5E1] hover:border-[#FDBA74] transition-all cursor-pointer shadow-xs"
               >
                 Close
               </button>

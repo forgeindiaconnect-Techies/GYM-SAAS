@@ -167,7 +167,7 @@ export default function MemberChallenges() {
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   // Navigation Dropdown State
-  const [openDropdown, setOpenDropdown] = useState<'performance' | 'rewards' | 'master' | null>(null);
+  const [openDropdown, setOpenDropdown] = useState<'master' | null>(null);
   const dropdownContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -457,81 +457,31 @@ export default function MemberChallenges() {
         {/* Top Navigation Row: Category Dropdowns + Master View Selector Dropdown */}
         <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
           
-          {/* Category Dropdowns */}
+          {/* Category Navigation Tabs */}
           <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
             {CATEGORIES.map(cat => {
               const isCatActive = cat.subTabs.includes(activeTab);
-              const isOpen = openDropdown === cat.id;
               const CatIcon = cat.icon;
 
               return (
-                <div key={cat.id} className="relative">
-                  <button
-                    onClick={() => {
-                      if (!isCatActive) {
-                        setActiveTab(cat.subTabs[0]);
-                      }
-                      setOpenDropdown(isOpen ? null : cat.id);
-                    }}
-                    className={clsx(
-                      "flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer whitespace-nowrap",
-                      isCatActive
-                        ? "bg-[#C2410C] text-white shadow-lg shadow-orange-500/15 border border-[#FDBA74]"
-                        : "bg-[#FFFFFF] text-[#64748B] hover:text-[#C2410C] hover:bg-[#FFF7ED] border border-[#E2E8F0]"
-                    )}
-                  >
-                    <CatIcon className={clsx("w-4 h-4", isCatActive ? "text-white" : "text-[#64748B]")} />
-                    <span>{cat.title}</span>
-                    <ChevronDown className={clsx("w-3.5 h-3.5 transition-transform duration-200", isOpen && "rotate-180")} />
-                  </button>
-
-                  {/* Dropdown Menu for Category */}
-                  {isOpen && (
-                    <div className="absolute left-0 top-full mt-2 w-72 bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl shadow-2xl z-50 p-2 space-y-1">
-                      <div className="px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-wider text-[#64748B] border-b border-[#E2E8F0]/60 mb-1">
-                        {cat.title} Options
-                      </div>
-                      {cat.subTabs.map(subId => {
-                        const item = ALL_TAB_ITEMS.find(t => t.id === subId)!;
-                        const isSubActive = activeTab === subId;
-                        const SubIcon = item.icon;
-                        return (
-                          <button
-                            key={subId}
-                            onClick={() => {
-                              setActiveTab(subId);
-                              setOpenDropdown(null);
-                            }}
-                            className={clsx(
-                              "w-full flex items-center justify-between p-2.5 rounded-xl text-left transition-all cursor-pointer group",
-                              isSubActive
-                                ? "bg-[#FFF7ED] border border-[#FFEDD5] text-[#C2410C]"
-                                : "hover:bg-[#FFF7ED] text-[#334155] hover:text-[#C2410C]"
-                            )}
-                          >
-                            <div className="flex items-center gap-2.5 min-w-0">
-                              <div className={clsx(
-                                "w-8 h-8 rounded-lg flex items-center justify-center shrink-0",
-                                isSubActive ? "bg-[#C2410C] text-white" : "bg-[#F8FAFC] border border-[#E2E8F0] text-[#64748B] group-hover:text-[#C2410C]"
-                              )}>
-                                <SubIcon className={clsx("w-4 h-4", item.gold && !isSubActive && "text-[#EA580C]")} />
-                              </div>
-                              <div className="truncate">
-                                <div className={clsx("text-xs font-bold", isSubActive ? "text-[#C2410C]" : "text-[#111827]")}>
-                                  {item.label}
-                                </div>
-                                <div className="text-[10px] text-[#64748B] truncate">
-                                  {item.description}
-                                </div>
-                              </div>
-                            </div>
-                            {isSubActive && <Check className="w-4 h-4 text-[#EA580C] shrink-0 ml-2" />}
-                          </button>
-                        );
-                      })}
-                    </div>
+                <button
+                  key={cat.id}
+                  onClick={() => {
+                    if (!isCatActive) {
+                      setActiveTab(cat.subTabs[0]);
+                    }
+                    setOpenDropdown(null);
+                  }}
+                  className={clsx(
+                    "flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer whitespace-nowrap",
+                    isCatActive
+                      ? "bg-[#C2410C] text-white shadow-lg shadow-orange-500/15 border border-[#FDBA74]"
+                      : "bg-[#FFFFFF] text-[#64748B] hover:text-[#C2410C] hover:bg-[#FFF7ED] border border-[#E2E8F0]"
                   )}
-                </div>
+                >
+                  <CatIcon className={clsx("w-4 h-4", isCatActive ? "text-white" : "text-[#64748B]")} />
+                  <span>{cat.title}</span>
+                </button>
               );
             })}
           </div>
@@ -540,14 +490,17 @@ export default function MemberChallenges() {
           <div className="relative">
             <button
               onClick={() => setOpenDropdown(openDropdown === 'master' ? null : 'master')}
-              className="w-full md:w-auto flex items-center justify-between gap-3 px-3.5 py-2.5 rounded-xl bg-[#FFFFFF] hover:bg-[#FFF7ED] border border-[#E2E8F0] text-[#111827] text-xs sm:text-sm font-semibold transition-all cursor-pointer shadow-sm"
+              className={clsx(
+                "w-full md:w-auto flex items-center justify-between gap-3 px-3.5 py-2.5 rounded-xl bg-[#FFFFFF] hover:bg-[#FFF7ED] border text-[#111827] text-xs sm:text-sm font-semibold transition-all cursor-pointer shadow-sm",
+                openDropdown === 'master' ? "border-[#EA580C] ring-2 ring-[#EA580C]/20 bg-[#FFF7ED]" : "border-[#E2E8F0]"
+              )}
             >
               <div className="flex items-center gap-2">
                 <currentTabItem.icon className={clsx("w-4 h-4", currentTabItem.gold ? "text-[#EA580C]" : "text-[#EA580C]")} />
                 <span className="text-[#64748B] font-medium hidden sm:inline">Current View:</span>
                 <span className="font-bold text-[#111827]">{currentTabItem.label}</span>
               </div>
-              <ChevronDown className={clsx("w-3.5 h-3.5 text-[#64748B] transition-transform duration-200", openDropdown === 'master' && "rotate-180")} />
+              <ChevronDown className={clsx("w-3.5 h-3.5 text-[#64748B] transition-transform duration-200", openDropdown === 'master' && "rotate-180 text-[#EA580C]")} />
             </button>
 
             {/* Master Grouped Dropdown Menu */}

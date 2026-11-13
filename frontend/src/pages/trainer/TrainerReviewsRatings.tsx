@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import {
   Star, MessageSquare, TrendingUp, Award, RefreshCw,
-  Calendar, ChevronDown, Filter, User
+  Calendar, ChevronDown, Filter, User, Check
 } from 'lucide-react';
 import api from '../../utils/api';
 
@@ -51,6 +51,18 @@ const TrainerReviewsRatings = () => {
   const [error, setError] = useState('');
   const [filterStar, setFilterStar] = useState<number | 'all'>('all');
   const [sortOrder, setSortOrder] = useState<'newest' | 'highest' | 'lowest'>('newest');
+  const [isSortOpen, setIsSortOpen] = useState(false);
+  const sortRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (sortRef.current && !sortRef.current.contains(e.target as Node)) {
+        setIsSortOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   useEffect(() => {
     fetchReviews();
@@ -72,13 +84,30 @@ const TrainerReviewsRatings = () => {
     }
   };
 
-  const filteredReviews = reviews
-    .filter(r => filterStar === 'all' || r.customerRating === filterStar)
-    .sort((a, b) => {
-      if (sortOrder === 'newest') return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
-      if (sortOrder === 'highest') return b.customerRating - a.customerRating;
-      return a.customerRating - b.customerRating;
-    });
+  const filteredReviews = useMemo(() => {
+    return [...reviews]
+      .filter(r => {
+        if (filterStar === 'all') return true;
+        return Math.round(Number(r.customerRating)) === Number(filterStar);
+      })
+      .sort((a, b) => {
+        const ratingA = Number(a.customerRating) || 0;
+        const ratingB = Number(b.customerRating) || 0;
+        const timeA = new Date(a.updatedAt || (a as any).createdAt || a.date || 0).getTime() || 0;
+        const timeB = new Date(b.updatedAt || (b as any).createdAt || b.date || 0).getTime() || 0;
+
+        if (sortOrder === 'highest') {
+          const diff = ratingB - ratingA;
+          return diff !== 0 ? diff : timeB - timeA;
+        }
+        if (sortOrder === 'lowest') {
+          const diff = ratingA - ratingB;
+          return diff !== 0 ? diff : timeA - timeB;
+        }
+        // 'newest'
+        return timeB - timeA;
+      });
+  }, [reviews, filterStar, sortOrder]);
 
   const getRatingColor = (rating: number) => {
     if (rating >= 4.5) return 'text-[#EA580C]';
@@ -169,35 +198,98 @@ const TrainerReviewsRatings = () => {
       )}
 
       {/* Filters */}
-      <div className="flex flex-wrap items-center gap-3 bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl px-5 py-4 shadow-sm">
-        <Filter size={15} className="text-[#64748B] shrink-0" />
-        <span className="text-sm font-semibold text-[#64748B] mr-1">Filter:</span>
-        {(['all', 5, 4, 3, 2, 1] as const).map(s => (
-          <button
-            key={s}
-            onClick={() => setFilterStar(s)}
-            className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${
-              filterStar === s
-                ? 'bg-[#C2410C] text-white border-[#FDBA74] shadow'
-                : 'bg-[#F8FAFC] text-[#64748B] border-[#E2E8F0] hover:border-[#FDBA74] hover:text-[#EA580C]'
-            }`}
-          >
-            {s === 'all' ? 'All Stars' : (
-              <><Star size={11} fill={filterStar === s ? 'white' : '#B45309'} stroke={filterStar === s ? 'white' : '#B45309'} /> {s}</>
+      <div className="flex flex-wrap items-center justify-between gap-3 bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-4 sm:px-5 sm:py-4 shadow-sm">
+        {/* Star Rating Pills */}
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="flex items-center gap-1.5 text-sm font-bold text-[#111827] mr-1">
+            <Filter size={15} className="text-[#EA580C]" />
+            <span>Filter:</span>
+          </div>
+          {(['all', 5, 4, 3, 2, 1] as const).map(s => {
+            const isActive = filterStar === s;
+            return (
+              <button
+                key={s}
+                type="button"
+                onClick={() => setFilterStar(s)}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
+                  isActive
+                    ? 'bg-[#C2410C] text-white border-[#FDBA74] shadow-md shadow-orange-500/15'
+                    : 'bg-[#F8FAFC] text-[#64748B] border-[#E2E8F0] hover:border-[#EA580C] hover:text-[#EA580C] hover:bg-[#FFF7ED]'
+                }`}
+              >
+                {s === 'all' ? (
+                  'All Stars'
+                ) : (
+                  <>
+                    <Star size={12} fill={isActive ? 'white' : '#EA580C'} stroke={isActive ? 'white' : '#EA580C'} />
+                    <span>{s}★</span>
+                  </>
+                )}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Sort Selector Dropdown */}
+        <div className="flex items-center gap-2 ml-auto">
+          <span className="text-xs font-semibold text-[#64748B] hidden sm:inline">Sort:</span>
+          <div className="relative" ref={sortRef}>
+            <button
+              type="button"
+              onClick={() => setIsSortOpen(prev => !prev)}
+              className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer border shadow-xs ${
+                isSortOpen
+                  ? 'bg-[#FFF7ED] text-[#EA580C] border-[#EA580C] ring-2 ring-[#EA580C]/20'
+                  : 'bg-[#F8FAFC] hover:bg-[#FFF7ED] text-[#111827] border-[#E2E8F0] hover:border-[#EA580C]'
+              }`}
+            >
+              <span>
+                {sortOrder === 'newest'
+                  ? 'Newest First'
+                  : sortOrder === 'highest'
+                  ? 'Highest Rated'
+                  : 'Lowest Rated'}
+              </span>
+              <ChevronDown
+                size={14}
+                className={`text-[#64748B] transition-transform duration-200 ${
+                  isSortOpen ? 'rotate-180 text-[#EA580C]' : ''
+                }`}
+              />
+            </button>
+
+            {isSortOpen && (
+              <div className="absolute right-0 top-full mt-2 w-44 bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl shadow-xl z-50 p-1.5 space-y-1">
+                {[
+                  { id: 'newest', label: 'Newest First' },
+                  { id: 'highest', label: 'Highest Rated' },
+                  { id: 'lowest', label: 'Lowest Rated' },
+                ].map(opt => {
+                  const isSelected = sortOrder === opt.id;
+                  return (
+                    <button
+                      key={opt.id}
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSortOrder(opt.id as any);
+                        setIsSortOpen(false);
+                      }}
+                      className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold text-left transition-all cursor-pointer ${
+                        isSelected
+                          ? 'bg-[#FFF7ED] text-[#EA580C]'
+                          : 'text-[#334155] hover:bg-[#F8FAFC] hover:text-[#EA580C]'
+                      }`}
+                    >
+                      <span>{opt.label}</span>
+                      {isSelected && <Check size={14} className="text-[#EA580C] shrink-0" />}
+                    </button>
+                  );
+                })}
+              </div>
             )}
-          </button>
-        ))}
-        <div className="ml-auto flex items-center gap-2">
-          <ChevronDown size={14} className="text-[#64748B]" />
-          <select
-            value={sortOrder}
-            onChange={e => setSortOrder(e.target.value as any)}
-            className="text-xs font-medium text-[#64748B] bg-transparent border-none outline-none cursor-pointer"
-          >
-            <option value="newest">Newest First</option>
-            <option value="highest">Highest Rated</option>
-            <option value="lowest">Lowest Rated</option>
-          </select>
+          </div>
         </div>
       </div>
 
@@ -207,10 +299,21 @@ const TrainerReviewsRatings = () => {
           <div className="w-16 h-16 bg-[#F8FAFC] rounded-2xl flex items-center justify-center mx-auto mb-4">
             <Star size={32} className="text-[#64748B]" />
           </div>
-          <h3 className="text-lg font-bold text-[#64748B] mb-2">No reviews yet.</h3>
+          <h3 className="text-lg font-bold text-[#111827] mb-2">No reviews match your filter</h3>
           <p className="text-[#64748B] text-sm max-w-sm mx-auto">
-            Once customers complete a session and leave a rating, it will appear here.
+            {filterStar !== 'all'
+              ? `No ${filterStar}-star reviews found. Click below to view all reviews.`
+              : 'Once customers complete a session and leave a rating, it will appear here.'}
           </p>
+          {filterStar !== 'all' && (
+            <button
+              type="button"
+              onClick={() => setFilterStar('all')}
+              className="mt-4 px-4 py-2 bg-[#FFF7ED] hover:bg-[#FFEDD5] text-[#EA580C] text-xs font-bold rounded-xl border border-[#FDBA74] transition-all cursor-pointer shadow-xs"
+            >
+              Reset to All Stars
+            </button>
+          )}
         </div>
       ) : (
         <div className="space-y-4">

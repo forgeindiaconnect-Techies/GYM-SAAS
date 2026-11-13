@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import api from '../../utils/api';
 import { FaInstagram, FaTwitter, FaFacebook, FaYoutube } from 'react-icons/fa';
+import { AthleteSilhouette } from '../common/AthleteSilhouette';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 type ModalKey =
@@ -491,121 +492,144 @@ const CustomerPortalFooter = () => {
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
 
   const FOOTER_LINK_CLASS =
-    'text-sm text-[#64748B] hover:text-[#EA580C] transition-colors cursor-pointer text-left block w-full py-0.5';
+    'flex items-center group py-0.5 text-sm text-[#475569] hover:text-[#EA580C] transition-colors cursor-pointer text-left w-full';
 
   return (
     <>
-      {/* ─── Footer ─────────────────────────────────────────────────────────── */}
-      <footer className="bg-[#FFFFFF] border-t border-[#F8FAFC] pt-16 pb-12 mt-auto">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-10 mb-12">
+      {/* ─── Footer Replicated from Reference Design ──────────────────────── */}
+      <footer className="relative overflow-hidden bg-[#FFFFFF] border-t border-[#E2E8F0] pt-14 pb-0 text-[#475569] mt-auto">
+        {/* Top-Left Ambient Warm Swoosh */}
+        <div className="pointer-events-none absolute -top-24 -left-24 w-96 h-96 bg-gradient-to-br from-[#EA580C]/15 via-orange-300/10 to-transparent rounded-full blur-3xl" />
+        
+        {/* Top-Right Warm Glow */}
+        <div className="pointer-events-none absolute top-0 right-0 w-[520px] h-[420px] bg-gradient-to-bl from-orange-400/15 via-amber-300/10 to-transparent rounded-full blur-3xl" />
+        
+        {/* Right Athlete Silhouette Watermark */}
+        <div className="pointer-events-none absolute right-0 bottom-10 w-72 sm:w-80 md:w-[380px] h-auto opacity-[0.14] select-none text-[#EA580C] overflow-hidden">
+          <AthleteSilhouette className="w-full h-full" />
+        </div>
+
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-8 mb-12 lg:divide-x lg:divide-[#E2E8F0]/70">
 
             {/* Brand Column */}
-            <div className="lg:col-span-4">
+            <div className="lg:col-span-4 lg:pr-6">
               <button
                 onClick={scrollToTop}
-                className="inline-flex items-center space-x-2.5 mb-4 hover:opacity-80 transition-opacity cursor-pointer text-left"
+                className="inline-flex items-center space-x-2.5 mb-4 group cursor-pointer text-left"
               >
-                <div className="w-8 h-8 bg-[#C2410C] rounded-lg flex items-center justify-center shadow-md shadow-orange-500/15">
-                  <Activity className="text-[#FFFFFF]" size={18} strokeWidth={2.5} />
+                <div className="w-9 h-9 bg-gradient-to-br from-[#EA580C] to-[#C2410C] rounded-xl flex items-center justify-center shadow-md shadow-orange-500/20 group-hover:scale-105 transition-transform">
+                  <Activity className="text-[#FFFFFF]" size={20} strokeWidth={2.5} />
                 </div>
-                <span className="text-xl font-bold tracking-tight text-[#111827]">Gymora</span>
+                <span className="text-2xl font-black tracking-tight text-[#111827]">Gymora</span>
               </button>
-              <p className="text-sm font-semibold text-[#EA580C] mb-2">Your fitness journey, simplified.</p>
-              <p className="text-[#64748B] text-sm leading-relaxed mb-6">
+              <p className="text-sm font-semibold text-[#EA580C] mb-1.5">Your fitness journey, simplified.</p>
+              <p className="text-[#475569] text-sm leading-relaxed mb-6 font-normal">
                 Track your fitness progress, follow personalized workout plans, connect with trainers,
                 and stay consistent with your fitness goals.
               </p>
-              <div className="flex space-x-4">
-                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-[#64748B] hover:text-[#EA580C] transition-colors" aria-label="Instagram"><FaInstagram size={20} /></a>
-                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-[#64748B] hover:text-[#EA580C] transition-colors" aria-label="Twitter"><FaTwitter size={20} /></a>
-                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-[#64748B] hover:text-[#EA580C] transition-colors" aria-label="Facebook"><FaFacebook size={20} /></a>
-                <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="text-[#64748B] hover:text-[#EA580C] transition-colors" aria-label="YouTube"><FaYoutube size={20} /></a>
+              {/* Circular dark social icons */}
+              <div className="flex items-center space-x-3">
+                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-[#111827] text-white flex items-center justify-center hover:bg-[#EA580C] transition-all shadow-sm hover:scale-110" aria-label="Instagram"><FaInstagram size={14} /></a>
+                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-[#111827] text-white flex items-center justify-center hover:bg-[#EA580C] transition-all shadow-sm hover:scale-110" aria-label="Twitter"><FaTwitter size={14} /></a>
+                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-[#111827] text-white flex items-center justify-center hover:bg-[#EA580C] transition-all shadow-sm hover:scale-110" aria-label="Facebook"><FaFacebook size={14} /></a>
+                <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-[#111827] text-white flex items-center justify-center hover:bg-[#EA580C] transition-all shadow-sm hover:scale-110" aria-label="YouTube"><FaYoutube size={14} /></a>
               </div>
             </div>
 
             {/* Section A: Fitness */}
-            <div className="lg:col-span-2">
-              <h4 className="text-sm font-bold text-[#111827] mb-4">Fitness</h4>
-              <ul className="space-y-3">
+            <div className="lg:col-span-2 lg:px-4">
+              <h4 className="text-base font-bold text-[#111827] mb-4 tracking-tight">Fitness</h4>
+              <ul className="space-y-2.5">
                 <li>
                   <button onClick={() => openModal('my-workout-plans')} className={FOOTER_LINK_CLASS}>
-                    My Workout Plans
+                    <span className="text-[#EA580C] font-bold text-xs mr-2 transition-transform duration-200 group-hover:translate-x-1 select-none">&gt;</span>
+                    <span>My Workout Plans</span>
                   </button>
                 </li>
                 <li>
                   <button onClick={() => openModal('my-diet-plans')} className={FOOTER_LINK_CLASS}>
-                    My Diet Plans
+                    <span className="text-[#EA580C] font-bold text-xs mr-2 transition-transform duration-200 group-hover:translate-x-1 select-none">&gt;</span>
+                    <span>My Diet Plans</span>
                   </button>
                 </li>
                 <li>
                   <button onClick={() => openModal('find-a-trainer')} className={FOOTER_LINK_CLASS}>
-                    Find a Trainer
+                    <span className="text-[#EA580C] font-bold text-xs mr-2 transition-transform duration-200 group-hover:translate-x-1 select-none">&gt;</span>
+                    <span>Find a Trainer</span>
                   </button>
                 </li>
                 <li>
                   <button onClick={() => openModal('progress-tracking')} className={FOOTER_LINK_CLASS}>
-                    Progress Tracking
+                    <span className="text-[#EA580C] font-bold text-xs mr-2 transition-transform duration-200 group-hover:translate-x-1 select-none">&gt;</span>
+                    <span>Progress Tracking</span>
                   </button>
                 </li>
               </ul>
             </div>
 
             {/* Section B: Customer Support */}
-            <div className="lg:col-span-2">
-              <h4 className="text-sm font-bold text-[#111827] mb-4">Customer Support</h4>
-              <ul className="space-y-3">
+            <div className="lg:col-span-2 lg:px-4">
+              <h4 className="text-base font-bold text-[#111827] mb-4 tracking-tight">Support</h4>
+              <ul className="space-y-2.5">
                 <li>
                   <button onClick={() => openModal('faqs')} className={FOOTER_LINK_CLASS}>
-                    Frequently Asked Questions
+                    <span className="text-[#EA580C] font-bold text-xs mr-2 transition-transform duration-200 group-hover:translate-x-1 select-none">&gt;</span>
+                    <span>FAQs</span>
                   </button>
                 </li>
                 <li>
                   <button onClick={() => openModal('contact-us')} className={FOOTER_LINK_CLASS}>
-                    Contact Us
+                    <span className="text-[#EA580C] font-bold text-xs mr-2 transition-transform duration-200 group-hover:translate-x-1 select-none">&gt;</span>
+                    <span>Contact Us</span>
                   </button>
                 </li>
               </ul>
             </div>
 
             {/* Section C: Membership */}
-            <div className="lg:col-span-2">
-              <h4 className="text-sm font-bold text-[#111827] mb-4">Membership</h4>
-              <ul className="space-y-3">
+            <div className="lg:col-span-2 lg:px-4">
+              <h4 className="text-base font-bold text-[#111827] mb-4 tracking-tight">Membership</h4>
+              <ul className="space-y-2.5">
                 <li>
                   <button onClick={() => openModal('my-membership')} className={FOOTER_LINK_CLASS}>
-                    My Membership
+                    <span className="text-[#EA580C] font-bold text-xs mr-2 transition-transform duration-200 group-hover:translate-x-1 select-none">&gt;</span>
+                    <span>My Membership</span>
                   </button>
                 </li>
                 <li>
                   <button onClick={() => openModal('my-payments')} className={FOOTER_LINK_CLASS}>
-                    My Payments
+                    <span className="text-[#EA580C] font-bold text-xs mr-2 transition-transform duration-200 group-hover:translate-x-1 select-none">&gt;</span>
+                    <span>My Payments</span>
                   </button>
                 </li>
                 <li>
                   <button onClick={() => openModal('my-orders')} className={FOOTER_LINK_CLASS}>
-                    My Orders
+                    <span className="text-[#EA580C] font-bold text-xs mr-2 transition-transform duration-200 group-hover:translate-x-1 select-none">&gt;</span>
+                    <span>My Orders</span>
                   </button>
                 </li>
                 <li>
                   <button onClick={() => openModal('rewards-referrals')} className={FOOTER_LINK_CLASS}>
-                    Rewards &amp; Referrals
+                    <span className="text-[#EA580C] font-bold text-xs mr-2 transition-transform duration-200 group-hover:translate-x-1 select-none">&gt;</span>
+                    <span>Rewards &amp; Referrals</span>
                   </button>
                 </li>
               </ul>
             </div>
 
             {/* Section D: Legal */}
-            <div className="lg:col-span-2">
-              <h4 className="text-sm font-bold text-[#111827] mb-4">Legal</h4>
-              <ul className="space-y-3">
+            <div className="lg:col-span-2 lg:pl-4">
+              <h4 className="text-base font-bold text-[#111827] mb-4 tracking-tight">Legal</h4>
+              <ul className="space-y-2.5">
                 <li>
                   <Link
                     to="/privacy-policy"
                     state={{ from: '/portal/customer', fromLabel: 'Back to Customer' }}
                     className={FOOTER_LINK_CLASS}
                   >
-                    Privacy Policy
+                    <span className="text-[#EA580C] font-bold text-xs mr-2 transition-transform duration-200 group-hover:translate-x-1 select-none">&gt;</span>
+                    <span>Privacy Policy</span>
                   </Link>
                 </li>
                 <li>
@@ -614,7 +638,8 @@ const CustomerPortalFooter = () => {
                     state={{ from: '/portal/customer', fromLabel: 'Back to Customer' }}
                     className={FOOTER_LINK_CLASS}
                   >
-                    Terms &amp; Conditions
+                    <span className="text-[#EA580C] font-bold text-xs mr-2 transition-transform duration-200 group-hover:translate-x-1 select-none">&gt;</span>
+                    <span>Terms &amp; Conditions</span>
                   </Link>
                 </li>
                 <li>
@@ -623,16 +648,33 @@ const CustomerPortalFooter = () => {
                     state={{ from: '/portal/customer', fromLabel: 'Back to Customer' }}
                     className={FOOTER_LINK_CLASS}
                   >
-                    Cancellation &amp; Refund Policy
+                    <span className="text-[#EA580C] font-bold text-xs mr-2 transition-transform duration-200 group-hover:translate-x-1 select-none">&gt;</span>
+                    <span>Refund Policy</span>
                   </Link>
                 </li>
               </ul>
             </div>
           </div>
+        </div>
 
-          {/* Centered Copyright Line */}
-          <div className="border-t border-[#F8FAFC] pt-8 text-center text-sm text-[#64748B]">
-            <p>&copy; {new Date().getFullYear()} Gymora Technologies Inc. All rights reserved.</p>
+        {/* Arched Dark Bottom Copyright Bar */}
+        <div className="relative w-full bg-[#0B132B] text-slate-300 pt-7 pb-6 mt-6">
+          {/* Arched Top Orange Accent Curve */}
+          <div className="absolute -top-3.5 left-0 right-0 h-4 overflow-hidden pointer-events-none">
+            <svg viewBox="0 0 1200 30" preserveAspectRatio="none" className="w-full h-full fill-[#0B132B]">
+              <path d="M0,30 Q600,0 1200,30 L1200,30 L0,30 Z" />
+            </svg>
+            <svg viewBox="0 0 1200 30" preserveAspectRatio="none" className="absolute top-0 left-0 w-full h-full fill-none stroke-[#EA580C] stroke-[2.5]">
+              <path d="M0,30 Q600,0 1200,30" />
+            </svg>
+          </div>
+
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-center gap-4 text-xs font-medium">
+            <div className="hidden sm:block flex-1 h-px bg-slate-700/60 max-w-xs" />
+            <p className="text-center text-slate-300">
+              &copy; {new Date().getFullYear()} <span className="text-[#FB923C] font-semibold">Gymora Technologies Inc.</span> All rights reserved.
+            </p>
+            <div className="hidden sm:block flex-1 h-px bg-slate-700/60 max-w-xs" />
           </div>
         </div>
       </footer>

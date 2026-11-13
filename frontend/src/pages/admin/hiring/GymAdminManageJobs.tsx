@@ -19,8 +19,29 @@ import {
   AlertCircle,
   ChevronRight,
   UserCheck,
-  Award
+  Award,
+  X,
+  Save,
+  Loader2,
+  Building2
 } from 'lucide-react';
+
+const COMMON_EXPERTISE = [
+  'Strength & Conditioning',
+  'Functional Training',
+  'Bodybuilding',
+  'CrossFit',
+  'HIIT & Cardio',
+  'Yoga & Flexibility',
+  'Pilates',
+  'Weight Loss & Fat Reduction',
+  'Nutrition & Dietetics',
+  'Sports Injury & Rehabilitation',
+  'Kettlebell Training',
+  'Olympic Weightlifting',
+  'Zumba & Aerobics',
+  'Boxing & Kickboxing'
+];
 
 const GymAdminManageJobs: React.FC = () => {
   const navigate = useNavigate();
@@ -30,6 +51,14 @@ const GymAdminManageJobs: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+
+  // Edit Job Modal State (in-page editing)
+  const [editingJob, setEditingJob] = useState<any | null>(null);
+  const [editFormData, setEditFormData] = useState<any>(null);
+  const [editLoading, setEditLoading] = useState(false);
+  const [editError, setEditError] = useState<string | null>(null);
+  const [editSuccess, setEditSuccess] = useState<string | null>(null);
+  const [customExpertiseInput, setCustomExpertiseInput] = useState('');
 
   const fetchJobs = async () => {
     try {
@@ -91,6 +120,115 @@ const GymAdminManageJobs: React.FC = () => {
       alert(err.response?.data?.message || 'Failed to delete job');
     } finally {
       setActionLoading(null);
+    }
+  };
+
+  const handleOpenEditModal = (job: any) => {
+    setEditingJob(job);
+    setEditError(null);
+    setEditSuccess(null);
+    setCustomExpertiseInput('');
+    setEditFormData({
+      title: job.title || '',
+      expertise: Array.isArray(job.expertise) ? [...job.expertise] : [],
+      description: job.description || '',
+      responsibilities: job.responsibilities || '',
+      experience: job.experience || '1-2 Years',
+      qualifications: job.qualifications || '',
+      certifications: job.certifications || '',
+      salaryMin: job.salaryMin !== undefined && job.salaryMin !== null ? String(job.salaryMin) : '',
+      salaryMax: job.salaryMax !== undefined && job.salaryMax !== null ? String(job.salaryMax) : '',
+      salaryType: job.salaryType || 'Monthly',
+      isSalaryNegotiable: Boolean(job.isSalaryNegotiable),
+      employmentType: job.employmentType || 'Full-time',
+      trainingMode: (job.trainingMode as 'Online' | 'Offline' | 'Hybrid') || 'Offline',
+      location: job.location || '',
+      workingHours: job.workingHours || '',
+      vacanciesCount: job.vacanciesCount || 1,
+      deadline: job.deadline ? new Date(job.deadline).toISOString().split('T')[0] : '',
+      status: job.status || 'Published'
+    });
+  };
+
+  const handleCloseEditModal = () => {
+    setEditingJob(null);
+    setEditFormData(null);
+    setEditError(null);
+    setEditSuccess(null);
+    setCustomExpertiseInput('');
+  };
+
+  const toggleEditExpertise = (skill: string) => {
+    if (!editFormData) return;
+    setEditFormData((prev: any) => {
+      const exists = prev.expertise.includes(skill);
+      return {
+        ...prev,
+        expertise: exists
+          ? prev.expertise.filter((s: string) => s !== skill)
+          : [...prev.expertise, skill]
+      };
+    });
+  };
+
+  const handleAddCustomEditExpertise = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && customExpertiseInput.trim() && editFormData) {
+      e.preventDefault();
+      const val = customExpertiseInput.trim();
+      if (!editFormData.expertise.includes(val)) {
+        setEditFormData((prev: any) => ({
+          ...prev,
+          expertise: [...prev.expertise, val]
+        }));
+      }
+      setCustomExpertiseInput('');
+    }
+  };
+
+  const handleSaveEdit = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!editingJob || !editFormData) return;
+
+    if (!editFormData.title.trim()) {
+      setEditError('Please enter a job title');
+      return;
+    }
+    if (!editFormData.description.trim()) {
+      setEditError('Please enter a job description');
+      return;
+    }
+    if (!editFormData.location.trim()) {
+      setEditError('Please enter a work location');
+      return;
+    }
+
+    try {
+      setEditLoading(true);
+      setEditError(null);
+      setEditSuccess(null);
+
+      const payload = {
+        ...editFormData,
+        salaryMin: editFormData.salaryMin ? Number(editFormData.salaryMin) : undefined,
+        salaryMax: editFormData.salaryMax ? Number(editFormData.salaryMax) : undefined,
+        vacanciesCount: Number(editFormData.vacanciesCount) || 1,
+        deadline: editFormData.deadline ? new Date(editFormData.deadline) : undefined
+      };
+
+      const res = await api.put(`/hiring/owner/jobs/${editingJob._id}`, payload);
+      if (res.data.success) {
+        const updated = res.data.job || { ...editingJob, ...payload };
+        setJobs(prev => prev.map(j => (j._id === editingJob._id ? { ...j, ...updated } : j)));
+        setEditSuccess('Job vacancy updated successfully!');
+        setTimeout(() => {
+          handleCloseEditModal();
+        }, 800);
+      }
+    } catch (err: any) {
+      console.error('Save error:', err);
+      setEditError(err.response?.data?.message || 'Failed to update job vacancy');
+    } finally {
+      setEditLoading(false);
     }
   };
 
@@ -330,13 +468,14 @@ const GymAdminManageJobs: React.FC = () => {
                       {job.status === 'Published' ? 'Close Job' : 'Publish Job'}
                     </button>
 
-                    <Link
-                      to={`/admin/hiring/jobs/edit/${job._id}`}
-                      className="p-2 bg-[#F8FAFC] hover:bg-[#E2E8F0] text-[#111827] rounded-xl border border-[#E2E8F0] transition-all"
-                      title="Edit Job"
+                    <button
+                      type="button"
+                      onClick={() => handleOpenEditModal(job)}
+                      className="p-2 bg-[#F8FAFC] hover:bg-[#FFF7ED] text-[#111827] hover:text-[#EA580C] rounded-xl border border-[#E2E8F0] hover:border-[#FDBA74] transition-all cursor-pointer shadow-2xs"
+                      title="Edit Job Vacancy"
                     >
                       <Edit3 size={15} />
-                    </Link>
+                    </button>
 
                     {deleteConfirmId === job._id ? (
                       <div className="flex items-center gap-1.5">
@@ -367,6 +506,428 @@ const GymAdminManageJobs: React.FC = () => {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* In-Page Edit Job Vacancy Modal */}
+      {editingJob && editFormData && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-xs overflow-y-auto animate-in fade-in duration-150">
+          <div
+            className="relative w-full max-w-3xl my-8 bg-[#FFFFFF] border border-[#E2E8F0] rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-150"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="p-5 sm:p-6 border-b border-[#E2E8F0] flex items-center justify-between gap-3 bg-gradient-to-r from-[#FFF7ED] via-[#FFFFFF] to-[#FFFFFF] shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="w-11 h-11 rounded-2xl bg-[#FFF7ED] border border-[#FFEDD5] text-[#EA580C] flex items-center justify-center shrink-0 shadow-xs">
+                  <Briefcase size={22} />
+                </div>
+                <div>
+                  <h2 className="text-lg sm:text-xl font-black text-[#111827] tracking-tight">
+                    Edit Job Vacancy
+                  </h2>
+                  <p className="text-xs text-[#64748B] mt-0.5 truncate max-w-xs sm:max-w-md">
+                    Updating: <span className="font-semibold text-[#111827]">{editingJob.title}</span>
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={handleCloseEditModal}
+                disabled={editLoading}
+                className="w-9 h-9 rounded-xl bg-[#F8FAFC] hover:bg-[#F1F5F9] text-[#64748B] hover:text-[#111827] border border-[#E2E8F0] flex items-center justify-center transition-all cursor-pointer shrink-0"
+                title="Close"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            {/* Scrollable Form Body */}
+            <form onSubmit={handleSaveEdit} className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-5">
+              {/* Error & Success Alerts */}
+              {editError && (
+                <div className="p-3.5 rounded-xl bg-red-50 border border-red-500/30 text-[#B91C1C] text-xs flex items-center gap-2">
+                  <AlertCircle size={16} className="shrink-0" />
+                  <span>{editError}</span>
+                </div>
+              )}
+              {editSuccess && (
+                <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-500/30 text-[#15803D] text-xs flex items-center gap-2">
+                  <CheckCircle2 size={16} className="shrink-0" />
+                  <span>{editSuccess}</span>
+                </div>
+              )}
+
+              {/* 1. Job Title & Status */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="md:col-span-2">
+                  <label className="block text-xs font-bold text-[#111827] mb-1.5">
+                    Job Title <span className="text-[#B91C1C]">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={editFormData.title}
+                    onChange={(e) => setEditFormData({ ...editFormData, title: e.target.value })}
+                    placeholder="e.g. Senior Strength & Conditioning Coach"
+                    className="w-full px-4 py-2.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs text-[#111827] focus:outline-none focus:border-[#FDBA74]"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-[#111827] mb-1.5">
+                    Job Status
+                  </label>
+                  <select
+                    value={editFormData.status}
+                    onChange={(e) => setEditFormData({ ...editFormData, status: e.target.value })}
+                    className="w-full px-3.5 py-2.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs text-[#111827] font-semibold focus:outline-none focus:border-[#FDBA74]"
+                  >
+                    <option value="Published">Published (Active)</option>
+                    <option value="Draft">Draft</option>
+                    <option value="Closed">Closed</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* 2. Employment Type, Required Experience & Vacancies */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-[#111827] mb-1.5">
+                    Employment Type <span className="text-[#B91C1C]">*</span>
+                  </label>
+                  <select
+                    value={editFormData.employmentType}
+                    onChange={(e) => setEditFormData({ ...editFormData, employmentType: e.target.value })}
+                    className="w-full px-3.5 py-2.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs text-[#111827] focus:outline-none focus:border-[#FDBA74]"
+                  >
+                    <option value="Full-time">Full-time</option>
+                    <option value="Part-time">Part-time</option>
+                    <option value="Contract">Contract</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-[#111827] mb-1.5">
+                    Required Experience <span className="text-[#B91C1C]">*</span>
+                  </label>
+                  <select
+                    value={editFormData.experience}
+                    onChange={(e) => setEditFormData({ ...editFormData, experience: e.target.value })}
+                    className="w-full px-3.5 py-2.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs text-[#111827] focus:outline-none focus:border-[#FDBA74]"
+                  >
+                    <option value="Fresher / Entry Level">Fresher / Entry Level</option>
+                    <option value="1-2 Years">1-2 Years</option>
+                    <option value="3-5 Years">3-5 Years</option>
+                    <option value="5-8 Years">5-8 Years</option>
+                    <option value="8+ Years (Master Trainer)">8+ Years (Master Trainer)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-[#111827] mb-1.5">
+                    Number of Vacancies <span className="text-[#B91C1C]">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="50"
+                    value={editFormData.vacanciesCount}
+                    onChange={(e) => setEditFormData({ ...editFormData, vacanciesCount: Math.max(1, parseInt(e.target.value) || 1) })}
+                    className="w-full px-4 py-2.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs text-[#111827] focus:outline-none focus:border-[#FDBA74]"
+                  />
+                </div>
+              </div>
+
+              {/* 3. Expertise & Coaching Domains */}
+              <div>
+                <label className="block text-xs font-bold text-[#111827] mb-1.5">
+                  Coaching Domains & Expertise
+                </label>
+                <p className="text-[11px] text-[#64748B] mb-2.5">
+                  Click to select or remove specializations required for this position.
+                </p>
+                <div className="flex flex-wrap gap-1.5 mb-3 max-h-36 overflow-y-auto p-1 bg-[#F8FAFC] rounded-2xl border border-[#E2E8F0]/70">
+                  {COMMON_EXPERTISE.map((skill) => {
+                    const isSelected = editFormData.expertise?.includes(skill);
+                    return (
+                      <button
+                        type="button"
+                        key={skill}
+                        onClick={() => toggleEditExpertise(skill)}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all border cursor-pointer ${
+                          isSelected
+                            ? 'bg-[#C2410C] text-white border-[#FDBA74] shadow-xs'
+                            : 'bg-[#FFFFFF] text-[#64748B] hover:text-[#111827] border-[#E2E8F0] hover:border-[#FDBA74]'
+                        }`}
+                      >
+                        {skill}
+                      </button>
+                    );
+                  })}
+                </div>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={customExpertiseInput}
+                    onChange={(e) => setCustomExpertiseInput(e.target.value)}
+                    onKeyDown={handleAddCustomEditExpertise}
+                    placeholder="Type custom skill and press Enter..."
+                    className="w-full max-w-sm px-3.5 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs text-[#111827] focus:outline-none focus:border-[#FDBA74]"
+                  />
+                  {customExpertiseInput.trim() && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const val = customExpertiseInput.trim();
+                        if (!editFormData.expertise.includes(val)) {
+                          setEditFormData({
+                            ...editFormData,
+                            expertise: [...editFormData.expertise, val]
+                          });
+                        }
+                        setCustomExpertiseInput('');
+                      }}
+                      className="px-3 py-2 bg-[#FFF7ED] text-[#EA580C] hover:bg-[#FFEDD5] border border-[#FDBA74] rounded-xl text-xs font-bold transition-all cursor-pointer"
+                    >
+                      Add
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* 4. Training Mode */}
+              <div>
+                <label className="block text-xs font-bold text-[#111827] mb-1.5">
+                  Training Mode <span className="text-[#B91C1C]">*</span>
+                </label>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                  {(['Online', 'Offline', 'Hybrid'] as const).map((mode) => {
+                    const icons: Record<string, string> = { Online: '💻', Offline: '🏋️', Hybrid: '🔄' };
+                    const descriptions: Record<string, string> = {
+                      Online: 'Remote sessions',
+                      Offline: 'In-person at gym',
+                      Hybrid: 'Blended delivery'
+                    };
+                    const isSelected = editFormData.trainingMode === mode;
+                    return (
+                      <button
+                        type="button"
+                        key={mode}
+                        onClick={() => setEditFormData({ ...editFormData, trainingMode: mode })}
+                        className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl border text-left transition-all cursor-pointer ${
+                          isSelected
+                            ? 'bg-[#FFF7ED] border-[#FDBA74] text-[#EA580C] shadow-xs'
+                            : 'bg-[#F8FAFC] border-[#E2E8F0] text-[#64748B] hover:border-[#FDBA74] hover:text-[#111827]'
+                        }`}
+                      >
+                        <span className="text-base">{icons[mode]}</span>
+                        <div className="flex-1 min-w-0">
+                          <div className={`text-xs font-bold ${isSelected ? 'text-[#EA580C]' : 'text-[#111827]'}`}>
+                            {mode}
+                          </div>
+                          <div className="text-[10px] text-[#64748B] truncate">{descriptions[mode]}</div>
+                        </div>
+                        {isSelected && <CheckCircle2 size={14} className="text-[#EA580C] shrink-0" />}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* 5. Compensation / Salary Range */}
+              <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-[#111827] flex items-center gap-1.5">
+                    <IndianRupee size={14} className="text-[#EA580C]" />
+                    <span>Salary & Compensation Structure</span>
+                  </span>
+                  <label className="flex items-center gap-2 cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={editFormData.isSalaryNegotiable}
+                      onChange={(e) => setEditFormData({ ...editFormData, isSalaryNegotiable: e.target.checked })}
+                      className="rounded text-[#EA580C] focus:ring-0 bg-[#FFFFFF] border-[#E2E8F0]"
+                    />
+                    <span className="text-xs text-[#64748B]">Negotiable</span>
+                  </label>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div>
+                    <label className="block text-[11px] text-[#64748B] mb-1">Min Salary (₹)</label>
+                    <input
+                      type="number"
+                      placeholder="e.g. 25000"
+                      value={editFormData.salaryMin}
+                      onChange={(e) => setEditFormData({ ...editFormData, salaryMin: e.target.value })}
+                      className="w-full px-3.5 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-xs text-[#111827] focus:outline-none focus:border-[#FDBA74]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] text-[#64748B] mb-1">Max Salary (₹)</label>
+                    <input
+                      type="number"
+                      placeholder="e.g. 45000"
+                      value={editFormData.salaryMax}
+                      onChange={(e) => setEditFormData({ ...editFormData, salaryMax: e.target.value })}
+                      className="w-full px-3.5 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-xs text-[#111827] focus:outline-none focus:border-[#FDBA74]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] text-[#64748B] mb-1">Frequency</label>
+                    <select
+                      value={editFormData.salaryType}
+                      onChange={(e) => setEditFormData({ ...editFormData, salaryType: e.target.value })}
+                      className="w-full px-3.5 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-xs text-[#111827] focus:outline-none focus:border-[#FDBA74]"
+                    >
+                      <option value="Monthly">Per Month</option>
+                      <option value="Hourly">Per Hour</option>
+                      <option value="Per Session">Per Session</option>
+                      <option value="Annual">Per Annum (CTC)</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              {/* 6. Location, Working Hours & Application Deadline */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-[#111827] mb-1.5 flex items-center gap-1.5">
+                    <MapPin size={13} className="text-[#EA580C]" /> Location <span className="text-[#B91C1C]">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={editFormData.location}
+                    onChange={(e) => setEditFormData({ ...editFormData, location: e.target.value })}
+                    placeholder="e.g. Indiranagar, Bangalore"
+                    className="w-full px-4 py-2.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs text-[#111827] focus:outline-none focus:border-[#FDBA74]"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-[#111827] mb-1.5 flex items-center gap-1.5">
+                    <Clock size={13} className="text-[#EA580C]" /> Working Hours / Shift
+                  </label>
+                  <input
+                    type="text"
+                    value={editFormData.workingHours}
+                    onChange={(e) => setEditFormData({ ...editFormData, workingHours: e.target.value })}
+                    placeholder="e.g. 6:00 AM - 2:00 PM"
+                    className="w-full px-4 py-2.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs text-[#111827] focus:outline-none focus:border-[#FDBA74]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-[#111827] mb-1.5 flex items-center gap-1.5">
+                    <Calendar size={13} className="text-[#EA580C]" /> Application Deadline
+                  </label>
+                  <input
+                    type="date"
+                    value={editFormData.deadline}
+                    onChange={(e) => setEditFormData({ ...editFormData, deadline: e.target.value })}
+                    className="w-full px-4 py-2.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs text-[#111827] focus:outline-none focus:border-[#FDBA74]"
+                  />
+                  {editFormData.deadline && new Date(editFormData.deadline).setHours(23, 59, 59, 999) < Date.now() && (
+                    <p className="text-[10px] text-[#B91C1C] mt-1 flex items-center gap-1 font-semibold">
+                      <AlertCircle size={11} /> Deadline expired
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* 7. Job Description */}
+              <div>
+                <label className="block text-xs font-bold text-[#111827] mb-1.5">
+                  Job Description <span className="text-[#B91C1C]">*</span>
+                </label>
+                <textarea
+                  rows={3}
+                  value={editFormData.description}
+                  onChange={(e) => setEditFormData({ ...editFormData, description: e.target.value })}
+                  placeholder="Provide an overview of this coaching vacancy..."
+                  className="w-full px-4 py-2.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs text-[#111827] focus:outline-none focus:border-[#FDBA74] leading-relaxed"
+                  required
+                />
+              </div>
+
+              {/* 8. Key Responsibilities */}
+              <div>
+                <label className="block text-xs font-bold text-[#111827] mb-1.5">
+                  Key Responsibilities
+                </label>
+                <textarea
+                  rows={2}
+                  value={editFormData.responsibilities}
+                  onChange={(e) => setEditFormData({ ...editFormData, responsibilities: e.target.value })}
+                  placeholder="• Conduct member fitness assessments and 1-on-1 personal training..."
+                  className="w-full px-4 py-2.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs text-[#111827] focus:outline-none focus:border-[#FDBA74] leading-relaxed"
+                />
+              </div>
+
+              {/* 9. Qualifications & Certifications */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-[#111827] mb-1.5">
+                    Required Qualifications
+                  </label>
+                  <input
+                    type="text"
+                    value={editFormData.qualifications}
+                    onChange={(e) => setEditFormData({ ...editFormData, qualifications: e.target.value })}
+                    placeholder="e.g. Degree in Physical Education or Sports Science"
+                    className="w-full px-4 py-2.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs text-[#111827] focus:outline-none focus:border-[#FDBA74]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-[#111827] mb-1.5">
+                    Preferred Certifications
+                  </label>
+                  <input
+                    type="text"
+                    value={editFormData.certifications}
+                    onChange={(e) => setEditFormData({ ...editFormData, certifications: e.target.value })}
+                    placeholder="e.g. ACE, NASM, ISSA, CPR / AED"
+                    className="w-full px-4 py-2.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs text-[#111827] focus:outline-none focus:border-[#FDBA74]"
+                  />
+                </div>
+              </div>
+            </form>
+
+            {/* Modal Footer */}
+            <div className="p-4 sm:px-6 border-t border-[#E2E8F0] bg-[#F8FAFC] flex items-center justify-end gap-3 shrink-0">
+              <button
+                type="button"
+                onClick={handleCloseEditModal}
+                disabled={editLoading}
+                className="px-4 py-2.5 bg-[#FFFFFF] hover:bg-[#F1F5F9] text-xs font-bold text-[#64748B] hover:text-[#111827] rounded-xl border border-[#E2E8F0] transition-all cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleSaveEdit}
+                disabled={editLoading}
+                className="px-5 py-2.5 bg-[#C2410C] hover:bg-[#9A3412] text-white text-xs font-bold rounded-xl flex items-center gap-2 transition-all cursor-pointer shadow-md shadow-orange-500/15 disabled:opacity-60"
+              >
+                {editLoading ? (
+                  <>
+                    <Loader2 size={14} className="animate-spin" />
+                    <span>Saving Changes...</span>
+                  </>
+                ) : (
+                  <>
+                    <Save size={14} />
+                    <span>Save Changes</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

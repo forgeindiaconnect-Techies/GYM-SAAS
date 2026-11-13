@@ -640,7 +640,7 @@ export default function GymAdminBrowseTrainers() {
               </button>
               <button
                 onClick={() => setSelectedTrainer(null)}
-                className="px-6 py-3 bg-[#FFFFFF] hover:bg-[#FFF7ED] border border-[#E2E8F0] text-slate-300 hover:text-[#C2410C] text-xs font-semibold rounded-xl transition-all cursor-pointer"
+                className="px-6 py-3 bg-[#FFFFFF] hover:bg-[#FFF7ED] border border-[#CBD5E1] hover:border-[#FDBA74] text-[#1E293B] hover:text-[#C2410C] text-xs font-bold rounded-xl transition-all cursor-pointer shadow-xs"
               >
                 Close
               </button>

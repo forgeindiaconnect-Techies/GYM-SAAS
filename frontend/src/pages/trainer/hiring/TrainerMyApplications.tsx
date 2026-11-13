@@ -385,8 +385,8 @@ export default function TrainerMyApplications() {
                     <FileText size={18} />
                   </div>
                   <div>
-                    <span className="font-bold text-white block">Submitted Resume Document</span>
-                    <span className="text-[11px] text-slate-400">PDF / Word Document</span>
+                    <span className="font-bold text-[#111827] block">Submitted Resume Document</span>
+                    <span className="text-[11px] text-slate-500">PDF / Word Document</span>
                   </div>
                 </div>
 
@@ -406,7 +406,7 @@ export default function TrainerMyApplications() {
               <button
                 type="button"
                 onClick={() => setSelectedApp(null)}
-                className="px-5 py-2.5 bg-[#FFFFFF] hover:bg-[#FFF7ED] border border-[#E2E8F0] text-white rounded-xl text-xs font-semibold cursor-pointer"
+                className="px-5 py-2.5 bg-[#FFFFFF] hover:bg-[#FFF7ED] border border-[#CBD5E1] hover:border-[#FDBA74] text-[#1E293B] hover:text-[#C2410C] rounded-xl text-xs font-bold transition-all cursor-pointer shadow-xs"
               >
                 Close Details
               </button>

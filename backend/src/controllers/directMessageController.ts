@@ -159,6 +159,8 @@ export const getContacts = async (req: AuthRequest, res: Response): Promise<void
           }
         }
 
+        const safePhoto = (u.profilePhoto && !u.profilePhoto.startsWith('file:') && !u.profilePhoto.startsWith('content:')) ? u.profilePhoto : '';
+
         return {
           id: u._id.toString(),
           _id: u._id.toString(),
@@ -166,7 +168,7 @@ export const getContacts = async (req: AuthRequest, res: Response): Promise<void
           lastName: u.lastName,
           name: `${u.firstName} ${u.lastName}`.trim(),
           email: u.email,
-          profilePhoto: u.profilePhoto || '',
+          profilePhoto: safePhoto,
           role: u.role,
           specialization: u.specialization || '',
           isActive: u.isActive !== false,
@@ -444,11 +446,14 @@ export const sendMessage = async (req: AuthRequest, res: Response): Promise<void
       return;
     }
 
-    // Normalize attachments
+    // Normalize attachments and sanitize unsafe device file URIs
     let normalizedAttachments: IAttachment[] = [];
     if (hasAttachments) {
-      normalizedAttachments = attachments;
-    } else if (hasSingleAttachment) {
+      normalizedAttachments = attachments.filter((att: any) => {
+        const u = att?.url;
+        return typeof u === 'string' && !u.startsWith('file:') && !u.startsWith('content:');
+      });
+    } else if (hasSingleAttachment && typeof attachmentUrl === 'string' && !attachmentUrl.startsWith('file:') && !attachmentUrl.startsWith('content:')) {
       normalizedAttachments = [{
         url: attachmentUrl,
         fileName: fileName || (messageType === 'voice' ? 'voice-message.webm' : 'attachment'),

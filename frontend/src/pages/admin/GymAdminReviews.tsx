@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import {
   Star,
   Building2,
@@ -12,7 +12,9 @@ import {
   CheckCircle2,
   Users,
   Clock,
-  Sparkles
+  Sparkles,
+  ChevronDown,
+  Check
 } from 'lucide-react';
 import api from '../../utils/api';
 
@@ -98,6 +100,18 @@ export default function GymAdminReviews() {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [starFilter, setStarFilter] = useState<number | 'all'>('all');
   const [sortOrder, setSortOrder] = useState<'newest' | 'highest' | 'lowest'>('newest');
+  const [isSortOpen, setIsSortOpen] = useState<boolean>(false);
+  const sortRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (sortRef.current && !sortRef.current.contains(e.target as Node)) {
+        setIsSortOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const fetchReviews = async (isManualRefresh = false) => {
     if (isManualRefresh) setRefreshing(true);
@@ -120,41 +134,87 @@ export default function GymAdminReviews() {
     fetchReviews();
   }, []);
 
+  // Safe date parser helper
+  const parseTime = (dateVal?: any): number => {
+    if (!dateVal) return 0;
+    if (dateVal instanceof Date) return dateVal.getTime();
+    const t = new Date(dateVal).getTime();
+    if (!isNaN(t)) return t;
+    if (typeof dateVal === 'string' && dateVal.includes('/')) {
+      const parts = dateVal.split('/');
+      if (parts.length === 3) {
+        const d = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`).getTime();
+        if (!isNaN(d)) return d;
+      }
+    }
+    return 0;
+  };
+
   // Filtered Gym Reviews
   const filteredGymReviews = useMemo(() => {
-    if (!data?.gymReviews) return [];
-    return data.gymReviews
+    if (!data?.gymReviews || !Array.isArray(data.gymReviews)) return [];
+    return [...data.gymReviews]
       .filter((r) => {
-        const matchesStar = starFilter === 'all' || Math.round(r.rating) === starFilter;
+        const rating = Number(r.rating) || 0;
+        const matchesStar = starFilter === 'all' || Math.round(rating) === Number(starFilter);
+        const search = searchTerm.trim().toLowerCase();
         const matchesSearch =
-          r.userName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          r.review?.toLowerCase().includes(searchTerm.toLowerCase());
+          !search ||
+          (r.userName && r.userName.toLowerCase().includes(search)) ||
+          (r.review && r.review.toLowerCase().includes(search));
         return matchesStar && matchesSearch;
       })
       .sort((a, b) => {
-        if (sortOrder === 'highest') return b.rating - a.rating;
-        if (sortOrder === 'lowest') return a.rating - b.rating;
-        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+        const ratingA = Number(a.rating) || 0;
+        const ratingB = Number(b.rating) || 0;
+        const timeA = parseTime(a.createdAt);
+        const timeB = parseTime(b.createdAt);
+
+        if (sortOrder === 'highest') {
+          const diff = ratingB - ratingA;
+          return diff !== 0 ? diff : timeB - timeA;
+        }
+        if (sortOrder === 'lowest') {
+          const diff = ratingA - ratingB;
+          return diff !== 0 ? diff : timeA - timeB;
+        }
+        // 'newest'
+        return timeB - timeA;
       });
   }, [data?.gymReviews, starFilter, searchTerm, sortOrder]);
 
   // Filtered Trainer Reviews
   const filteredTrainerReviews = useMemo(() => {
-    if (!data?.trainerReviews) return [];
-    return data.trainerReviews
+    if (!data?.trainerReviews || !Array.isArray(data.trainerReviews)) return [];
+    return [...data.trainerReviews]
       .filter((r) => {
-        const matchesStar = starFilter === 'all' || Math.round(r.rating) === starFilter;
+        const rating = Number(r.rating) || 0;
+        const matchesStar = starFilter === 'all' || Math.round(rating) === Number(starFilter);
+        const search = searchTerm.trim().toLowerCase();
         const matchesSearch =
-          r.customerName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          r.trainerName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          r.trainerSpecialization?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          r.review?.toLowerCase().includes(searchTerm.toLowerCase());
+          !search ||
+          (r.customerName && r.customerName.toLowerCase().includes(search)) ||
+          (r.trainerName && r.trainerName.toLowerCase().includes(search)) ||
+          (r.trainerSpecialization && r.trainerSpecialization.toLowerCase().includes(search)) ||
+          (r.review && r.review.toLowerCase().includes(search));
         return matchesStar && matchesSearch;
       })
       .sort((a, b) => {
-        if (sortOrder === 'highest') return b.rating - a.rating;
-        if (sortOrder === 'lowest') return a.rating - b.rating;
-        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+        const ratingA = Number(a.rating) || 0;
+        const ratingB = Number(b.rating) || 0;
+        const timeA = parseTime(a.createdAt || (a as any).sessionDate);
+        const timeB = parseTime(b.createdAt || (b as any).sessionDate);
+
+        if (sortOrder === 'highest') {
+          const diff = ratingB - ratingA;
+          return diff !== 0 ? diff : timeB - timeA;
+        }
+        if (sortOrder === 'lowest') {
+          const diff = ratingA - ratingB;
+          return diff !== 0 ? diff : timeA - timeB;
+        }
+        // 'newest'
+        return timeB - timeA;
       });
   }, [data?.trainerReviews, starFilter, searchTerm, sortOrder]);
 
@@ -348,17 +408,62 @@ export default function GymAdminReviews() {
         </div>
 
         {/* Sort selector */}
-        <div className="flex items-center gap-2 px-2">
+        <div className="flex items-center gap-2 px-2 relative" ref={sortRef}>
           <span className="text-xs font-semibold text-[#64748B] hidden md:inline">Sort:</span>
-          <select
-            value={sortOrder}
-            onChange={(e) => setSortOrder(e.target.value as any)}
-            className="text-xs font-semibold text-[#111827] bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg px-2.5 py-2 outline-none focus:border-[#FDBA74]"
+          <button
+            type="button"
+            onClick={() => setIsSortOpen((prev) => !prev)}
+            className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer border shadow-xs ${
+              isSortOpen
+                ? 'bg-[#FFF7ED] text-[#EA580C] border-[#EA580C] ring-2 ring-[#EA580C]/20'
+                : 'bg-[#F8FAFC] hover:bg-[#FFF7ED] text-[#111827] border-[#E2E8F0] hover:border-[#EA580C]'
+            }`}
           >
-            <option value="newest">Newest First</option>
-            <option value="highest">Highest Rating (5★ → 1★)</option>
-            <option value="lowest">Lowest Rating (1★ → 5★)</option>
-          </select>
+            <span>
+              {sortOrder === 'newest'
+                ? 'Newest First'
+                : sortOrder === 'highest'
+                ? 'Highest Rating (5★ → 1★)'
+                : 'Lowest Rating (1★ → 5★)'}
+            </span>
+            <ChevronDown
+              size={14}
+              className={`text-[#64748B] transition-transform duration-200 ${
+                isSortOpen ? 'rotate-180 text-[#EA580C]' : ''
+              }`}
+            />
+          </button>
+
+          {isSortOpen && (
+            <div className="absolute right-2 top-full mt-2 w-56 bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl shadow-xl z-50 p-1.5 space-y-1">
+              {[
+                { id: 'newest', label: 'Newest First' },
+                { id: 'highest', label: 'Highest Rating (5★ → 1★)' },
+                { id: 'lowest', label: 'Lowest Rating (1★ → 5★)' },
+              ].map((opt) => {
+                const isSelected = sortOrder === opt.id;
+                return (
+                  <button
+                    key={opt.id}
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSortOrder(opt.id as any);
+                      setIsSortOpen(false);
+                    }}
+                    className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold text-left transition-all cursor-pointer ${
+                      isSelected
+                        ? 'bg-[#FFF7ED] text-[#EA580C]'
+                        : 'text-[#334155] hover:bg-[#F8FAFC] hover:text-[#EA580C]'
+                    }`}
+                  >
+                    <span>{opt.label}</span>
+                    {isSelected && <Check size={14} className="text-[#EA580C] shrink-0" />}
+                  </button>
+                );
+              })}
+            </div>
+          )}
         </div>
       </div>
 
@@ -388,6 +493,7 @@ export default function GymAdminReviews() {
               <Filter className="w-3.5 h-3.5 text-[#EA580C]" /> Filter:
             </span>
             <button
+              type="button"
               onClick={() => setStarFilter('all')}
               className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border cursor-pointer ${
                 starFilter === 'all'
@@ -397,20 +503,24 @@ export default function GymAdminReviews() {
             >
               All Stars
             </button>
-            {[5, 4, 3, 2, 1].map((s) => (
-              <button
-                key={s}
-                onClick={() => setStarFilter(s)}
-                className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold transition-all border cursor-pointer ${
-                  starFilter === s
-                    ? 'bg-[#C2410C] text-white border-[#C2410C] shadow-sm shadow-orange-500/15'
-                    : 'bg-[#FFFFFF] text-[#64748B] hover:text-[#C2410C] hover:bg-[#FFF7ED] border-[#E2E8F0]'
-                }`}
-              >
-                <span>{s}</span>
-                <Star className={`w-3 h-3 ${starFilter === s ? 'fill-white text-white' : 'fill-amber-400 text-[#B45309]'}`} />
-              </button>
-            ))}
+            {[5, 4, 3, 2, 1].map((s) => {
+              const isActive = starFilter === s;
+              return (
+                <button
+                  key={s}
+                  type="button"
+                  onClick={() => setStarFilter(isActive ? 'all' : s)}
+                  className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold transition-all border cursor-pointer ${
+                    isActive
+                      ? 'bg-[#C2410C] text-white border-[#C2410C] shadow-sm shadow-orange-500/15'
+                      : 'bg-[#FFFFFF] text-[#64748B] hover:text-[#C2410C] hover:bg-[#FFF7ED] border-[#E2E8F0]'
+                  }`}
+                >
+                  <span>{s}</span>
+                  <Star className={`w-3 h-3 ${isActive ? 'fill-white text-white' : 'fill-amber-400 text-[#B45309]'}`} />
+                </button>
+              );
+            })}
           </div>
         </div>
 

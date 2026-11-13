@@ -14,7 +14,8 @@ import {
   getCommunityTestimonials,
   updateGymLocation,
   addGymReview,
-  getGymOwnerReviews
+  getGymOwnerReviews,
+  getPlatformStats
 } from '../controllers/gymController';
 import { authenticate, authorize } from '../middlewares/auth';
 
@@ -24,6 +25,7 @@ const staffAuth = authorize(['GYM_OWNER', 'GYM_MANAGER', 'ADMIN', 'SUPER_ADMIN']
 router.post('/', authenticate, authorize(['SUPER_ADMIN', 'ADMIN', 'GYM_OWNER']), createGym);
 router.get('/', authenticate, authorize(['SUPER_ADMIN', 'ADMIN']), getGyms);
 router.get('/public', getPublicGyms);
+router.get('/platform-stats', getPlatformStats);
 router.get('/community-testimonials', getCommunityTestimonials);
 router.get('/public/:id', getPublicGymById);
 router.post('/public/:id/reviews', authenticate, addGymReview);

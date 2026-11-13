@@ -5,6 +5,7 @@ import {
   Dumbbell, Paperclip, Mic, AlertCircle, FilePlus
 } from 'lucide-react';
 import api from '../../utils/api';
+import { isSafeMediaUrl } from '../../utils/url';
 import { useAuth } from '../../contexts/AuthContext';
 import MemberTrainingTabs from '../../components/Member/MemberTrainingTabs';
 import MessageBubble from '../../components/Messages/MessageBubble';
@@ -415,7 +416,7 @@ const MemberMessages = () => {
                     }`}
                   >
                     <div className="relative shrink-0">
-                      {contact.profilePhoto ? (
+                      {isSafeMediaUrl(contact.profilePhoto) ? (
                         <img
                           src={contact.profilePhoto}
                           alt={contact.name}
@@ -457,7 +458,7 @@ const MemberMessages = () => {
               <div className="p-4 bg-[#FFFFFF] border-b border-[#E2E8F0] flex justify-between items-center">
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-[#FFF7ED] rounded-full flex items-center justify-center font-bold text-[#EA580C] border border-[#E2E8F0] shrink-0 overflow-hidden">
-                    {selectedContact.profilePhoto ? (
+                    {isSafeMediaUrl(selectedContact.profilePhoto) ? (
                       <img src={selectedContact.profilePhoto} alt="" className="w-full h-full object-cover" />
                     ) : (
                       selectedContact.name[0] || 'T'

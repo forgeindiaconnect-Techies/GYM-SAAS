@@ -1,8 +1,9 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
   CalendarCheck, CheckCircle, XCircle, Clock,
-  Calendar, Search, Loader2, Dumbbell, Download
+  Calendar, Search, Loader2, Dumbbell, Download, X
 } from 'lucide-react';
+import clsx from 'clsx';
 import api from '../../utils/api';
 import TrainerClientsTabs from '../../components/Trainer/TrainerClientsTabs';
 import { exportToExcel, exportToPDF } from '../../utils/export';
@@ -164,67 +165,106 @@ const TrainerAttendance = () => {
       </div>
 
       {/* Filters Bar */}
-      <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-4 flex flex-col md:flex-row gap-3 justify-between items-center shadow-sm">
-        <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+      <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-4 shadow-sm space-y-3">
+        {/* Top Controls Row: Search + Date Selector */}
+        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
           {/* Search */}
-          <div className="relative w-full sm:w-56">
-            <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#64748B]" />
+          <div className="relative w-full md:w-72">
+            <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#64748B]" />
             <input
               type="text"
               placeholder="Search member..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-8 pr-3 py-1.5 bg-[#F8FAFC] rounded-xl text-xs outline-none focus:bg-[#FFFFFF] focus:border-[#FDBA74] border border-transparent"
+              className="w-full pl-9 pr-3.5 py-2 bg-[#F8FAFC] rounded-xl text-xs sm:text-sm outline-none focus:bg-[#FFFFFF] focus:border-[#EA580C] focus:ring-2 focus:ring-[#EA580C]/10 border border-[#E2E8F0] text-[#111827] placeholder:text-[#94A3B8] transition-all"
             />
           </div>
 
-          {/* Quick Date Filters */}
-          <div className="flex items-center gap-1.5">
-            <button
-              onClick={() => setSelectedDate('')}
-              className={`text-xs px-3 py-1.5 rounded-xl font-bold transition ${
-                !selectedDate ? 'bg-[#C2410C] text-white shadow-sm' : 'bg-[#F8FAFC] text-[#64748B] hover:bg-gray-200'
-              }`}
-            >
-              All Dates
-            </button>
-            <button
-              onClick={() => setSelectedDate(todayStr)}
-              className={`text-xs px-3 py-1.5 rounded-xl font-bold transition ${
-                selectedDate === todayStr ? 'bg-[#C2410C] text-white shadow-sm' : 'bg-[#F8FAFC] text-[#64748B] hover:bg-gray-200'
-              }`}
-            >
-              Today
-            </button>
-          </div>
+          {/* Quick Date Filters + Date Picker Group */}
+          <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+            <div className="inline-flex p-1 bg-[#F1F5F9] rounded-xl border border-[#E2E8F0]">
+              <button
+                type="button"
+                onClick={() => setSelectedDate('')}
+                className={clsx(
+                  "text-xs px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer",
+                  !selectedDate
+                    ? "bg-[#C2410C] text-white shadow-sm"
+                    : "text-[#64748B] hover:text-[#C2410C] hover:bg-[#FFFFFF]"
+                )}
+              >
+                All Dates
+              </button>
+              <button
+                type="button"
+                onClick={() => setSelectedDate(todayStr)}
+                className={clsx(
+                  "text-xs px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer",
+                  selectedDate === todayStr
+                    ? "bg-[#C2410C] text-white shadow-sm"
+                    : "text-[#64748B] hover:text-[#C2410C] hover:bg-[#FFFFFF]"
+                )}
+              >
+                Today
+              </button>
+            </div>
 
-          {/* Date Picker */}
-          <div className="flex items-center gap-2 bg-[#F8FAFC] px-3 py-1.5 rounded-xl border border-transparent focus-within:border-[#FDBA74]">
-            <Calendar size={15} className="text-[#64748B]" />
-            <input
-              type="date"
-              value={selectedDate}
-              onChange={(e) => setSelectedDate(e.target.value)}
-              className="bg-transparent text-xs font-semibold text-[#111827] outline-none"
-            />
+            {/* Date Picker */}
+            <div className={clsx(
+              "flex items-center gap-2 px-3 py-1.5 rounded-xl border transition-all bg-[#F8FAFC]",
+              selectedDate && selectedDate !== todayStr
+                ? "border-[#EA580C] bg-[#FFF7ED] text-[#EA580C] shadow-sm"
+                : "border-[#E2E8F0] text-[#64748B] hover:border-[#CBD5E1]"
+            )}>
+              <Calendar size={14} className={selectedDate && selectedDate !== todayStr ? "text-[#EA580C]" : "text-[#64748B]"} />
+              <input
+                type="date"
+                value={selectedDate}
+                onChange={(e) => setSelectedDate(e.target.value)}
+                className="bg-transparent text-xs font-semibold text-[#111827] outline-none cursor-pointer"
+              />
+              {selectedDate && (
+                <button
+                  type="button"
+                  onClick={() => setSelectedDate('')}
+                  title="Clear date"
+                  className="p-0.5 text-[#94A3B8] hover:text-[#EA580C] transition"
+                >
+                  <X size={12} />
+                </button>
+              )}
+            </div>
           </div>
         </div>
 
-        {/* Status Pills */}
-        <div className="flex items-center gap-1.5 overflow-x-auto w-full md:w-auto">
-          {['All', 'Present', 'Absent', 'Late', 'Self-Learning'].map((status) => (
-            <button
-              key={status}
-              onClick={() => setStatusFilter(status)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
-                statusFilter === status
-                  ? 'bg-[#C2410C] text-white shadow-sm'
-                  : 'bg-[#F8FAFC] text-[#64748B] hover:text-[#C2410C]'
-              }`}
-            >
-              {status}
-            </button>
-          ))}
+        {/* Bottom Status Filter Row */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-3 border-t border-[#F1F5F9]">
+          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-[#94A3B8] mr-1 hidden sm:inline">
+              Status:
+            </span>
+            {['All', 'Present', 'Absent', 'Late', 'Self-Learning'].map((status) => {
+              const isActive = statusFilter === status;
+              return (
+                <button
+                  key={status}
+                  onClick={() => setStatusFilter(status)}
+                  className={clsx(
+                    "px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer",
+                    isActive
+                      ? "bg-[#C2410C] text-white shadow-md shadow-orange-500/20 border border-[#FDBA74]"
+                      : "bg-[#F8FAFC] text-[#64748B] hover:text-[#C2410C] hover:bg-[#FFF7ED] border border-[#E2E8F0]"
+                  )}
+                >
+                  {status}
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="text-xs font-semibold text-[#64748B] sm:text-right shrink-0">
+            Showing <span className="font-bold text-[#111827]">{filteredSessions.length}</span> record{filteredSessions.length === 1 ? '' : 's'}
+          </div>
         </div>
       </div>
 

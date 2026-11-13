@@ -306,11 +306,15 @@ const GymMarketplace = () => {
         {/* Scroll Down Arrow */}
         <button
           onClick={scrollToGyms}
-          className="relative z-20 mx-auto pb-6 flex flex-col items-center gap-1.5 text-white/70 hover:text-[#EA580C] transition-colors cursor-pointer"
+          className="relative z-20 mx-auto pb-8 flex flex-col items-center cursor-pointer group"
           style={{ animation: 'bounce 2s infinite' }}
         >
-          <span className="text-[10px] tracking-[0.2em] uppercase font-semibold">Explore Gyms</span>
-          <ChevronDown size={22} />
+          <div className="flex flex-col items-center gap-1 px-5 py-2 rounded-full bg-white/95 hover:bg-white backdrop-blur-md border border-orange-200 shadow-lg shadow-orange-500/15 group-hover:shadow-orange-500/30 transition-all">
+            <span className="text-xs tracking-[0.22em] uppercase font-extrabold text-[#EA580C] group-hover:text-[#C2410C] transition-colors">
+              Explore Gyms
+            </span>
+            <ChevronDown size={20} className="text-[#EA580C] group-hover:text-[#C2410C] stroke-[2.5] transition-colors" />
+          </div>
         </button>
       </div>
 
@@ -321,8 +325,8 @@ const GymMarketplace = () => {
           to { opacity: 1; transform: translateY(0); }
         }
         @keyframes bounce {
-          0%, 100% { transform: translateX(-50%) translateY(0); }
-          50% { transform: translateX(-50%) translateY(-8px); }
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-8px); }
         }
       `}</style>
 

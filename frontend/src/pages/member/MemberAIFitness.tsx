@@ -578,10 +578,10 @@ const MemberAIFitness: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setActiveDemoExercise(ex)}
-                  className="w-full mt-2 py-2.5 px-3 bg-[#FFFFFF] border border-[#F8FAFC] hover:border-[#FDBA74] text-[#EA580C] hover:bg-[#FFF7ED] rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-2xs group-hover:bg-[#C2410C] group-hover:text-[#FFFFFF] font-bold"
+                  className="w-full mt-2 py-2.5 px-3 bg-white hover:bg-[#EA580C] active:bg-[#C2410C] text-[#EA580C] hover:text-white active:text-white border border-[#FFEDD5] hover:border-[#EA580C] rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs hover:shadow-md"
                 >
-                  <Play size={13} className="fill-current" />
-                  <span>Watch Animated Video Guide</span>
+                  <Play size={13} className="fill-current text-inherit shrink-0" />
+                  <span className="text-inherit font-bold">Watch Animated Video Guide</span>
                 </button>
               </div>
             ))}
@@ -855,14 +855,14 @@ const MemberAIFitness: React.FC = () => {
         >
           <div className="relative bg-[#FFFFFF] rounded-3xl max-w-2xl w-full shadow-2xl border border-[#F8FAFC] my-auto max-h-[88vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
             {/* Modal Header */}
-            <div className="p-4 sm:p-5 bg-gradient-to-r from-stone-900 to-[#FFFFFF] text-white flex items-center justify-between shrink-0 border-b border-[#E2E8F0]">
+            <div className="p-4 sm:p-5 bg-white text-[#111827] flex items-center justify-between shrink-0 border-b border-[#E2E8F0]">
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-[#C2410C] text-white font-bold shadow-xs">
+                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5] shadow-xs">
                     Animated Video Guide
                   </span>
-                  <span className="text-xs text-white/70">
-                    Target: <strong className="text-white">{activeDemoExercise.targetMuscleGroup}</strong>
+                  <span className="text-xs text-[#64748B]">
+                    Target: <strong className="text-[#111827]">{activeDemoExercise.targetMuscleGroup}</strong>
                   </span>
                 </div>
                 <h3 className="text-lg sm:text-xl font-black mt-1 text-[#111827]">{activeDemoExercise.name}</h3>
@@ -871,7 +871,7 @@ const MemberAIFitness: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setActiveDemoExercise(null)}
-                className="p-2 text-white/70 hover:text-white bg-[#FFFFFF]/10 hover:bg-[#FFFFFF]/20 rounded-full transition-colors cursor-pointer"
+                className="p-2 text-[#64748B] hover:text-[#111827] bg-[#F8FAFC] hover:bg-[#E2E8F0] rounded-full transition-colors cursor-pointer"
                 title="Close Guide"
               >
                 <X size={20} />
