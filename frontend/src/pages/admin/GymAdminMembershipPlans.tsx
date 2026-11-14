@@ -369,9 +369,6 @@ const GymAdminMembershipPlans = () => {
                         )}
                       </div>
                     </div>
-                    <button onClick={e => openEdit(pkg, e)} className="p-2 text-[#64748B] hover:text-[#EA580C] hover:bg-[#FFF7ED] rounded-xl transition-colors cursor-pointer" title="Edit">
-                      <Edit2 size={16} />
-                    </button>
                   </div>
 
                   {pkg.description ? (

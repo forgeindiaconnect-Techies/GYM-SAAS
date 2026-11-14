@@ -1,4 +1,4 @@
-﻿import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { getDashboardRoute, isSubscriptionActive } from '../utils/routeHelpers';
 
@@ -10,6 +10,7 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute = ({ children, allowedRoles, requireSubscription }: ProtectedRouteProps) => {
   const { user, isAuthenticated, isLoading } = useAuth();
+  const location = useLocation();
 
   if (isLoading) {
     return (
@@ -30,10 +31,16 @@ const ProtectedRoute = ({ children, allowedRoles, requireSubscription }: Protect
 
   // Subscription & Approval gate for member dashboard
   if (requireSubscription && user.role === 'MEMBER') {
-    if (user.approvalStatus === 'PENDING') return <Navigate to="/status?type=pending" replace />;
     if (user.approvalStatus === 'REJECTED') return <Navigate to="/status?type=rejected" replace />;
     if (user.approvalStatus === 'SUSPENDED') return <Navigate to="/status?type=suspended" replace />;
     if (user.isActive === false) return <Navigate to="/status?type=inactive" replace />;
+    if (user.approvalStatus === 'PENDING') {
+      // Allow viewing their actual membership details page even while pending approval
+      if (location.pathname === '/member/subscription') {
+        return <>{children}</>;
+      }
+      return <Navigate to="/member/subscription" replace />;
+    }
   }
 
   // Subscription & Approval gate for gym owner dashboard

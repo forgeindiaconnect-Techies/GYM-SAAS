@@ -1471,24 +1471,24 @@ const LandingPage = () => {
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-[#FFFFFF]/90 backdrop-blur-md animate-in fade-in duration-300" onClick={handleBackToHome}>
           <div className="relative w-full max-w-6xl bg-[#FFFFFF] rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(183,110,121,0.15)] flex flex-col h-[85vh] border border-[#E2E8F0]" onClick={e => e.stopPropagation()}>
             {/* Header */}
-            <div className="flex justify-between items-center p-4 border-b border-[#E2E8F0] bg-[#FFFFFF] shrink-0">
+            <div className="flex justify-between items-center px-6 py-4 border-b border-[#E2E8F0] bg-[#FFFFFF] shrink-0">
               <div className="flex items-center space-x-3">
-                <PlayCircle className="text-[#EA580C]" size={20} />
-                <span className="font-bold text-white text-sm tracking-wide uppercase">
+                <PlayCircle className="text-[#EA580C]" size={22} />
+                <span className="font-bold text-[#111827] text-sm sm:text-base tracking-wide uppercase">
                   {tourJourney === 'select' ? 'Choose Your Journey' : tourJourney === 'customer' ? 'Customer Journey' : 'Gym Owner Journey'}
                 </span>
               </div>
-              <div className="flex items-center gap-2.5">
+              <div className="flex items-center gap-3">
                 <button
                   onClick={handleBackToHome}
-                  className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold text-xs sm:text-sm rounded-full transition-all shadow-md cursor-pointer"
+                  className="flex items-center gap-1.5 px-4 py-2 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold text-xs sm:text-sm rounded-xl transition-all shadow-md cursor-pointer"
                   title="Back to Home"
                 >
                   <ArrowLeft size={16} />
                   <span>Back to Home</span>
                 </button>
-                <button onClick={() => setIsTourOpen(false)} className="text-[#64748B] hover:text-[#C2410C] transition-colors cursor-pointer p-1">
-                  <X size={22} />
+                <button onClick={() => setIsTourOpen(false)} className="text-[#64748B] hover:text-[#C2410C] transition-colors cursor-pointer p-1.5 hover:bg-[#FFF7ED] rounded-lg">
+                  <X size={20} />
                 </button>
               </div>
             </div>

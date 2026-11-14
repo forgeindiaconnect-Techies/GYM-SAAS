@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search, Loader2, Eye, X, MapPin, Truck, PackageCheck, CheckCircle2, XCircle } from 'lucide-react';
+import { Search, Loader2, Eye, X, MapPin, Truck, PackageCheck, CheckCircle2, XCircle, Trash2, AlertTriangle } from 'lucide-react';
 import api from '../../../utils/api';
 
 const statusColor: Record<string, string> = {
@@ -134,6 +134,26 @@ const GymStoreOrders = () => {
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [refundPrompt, setRefundPrompt] = useState<any>(null);
   const [refundReason, setRefundReason] = useState('');
+  const [deleteConfirmOrder, setDeleteConfirmOrder] = useState<any>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleDeleteOrder = async () => {
+    if (!deleteConfirmOrder?._id) return;
+    try {
+      setIsDeleting(true);
+      await api.delete(`/store/admin/orders/${deleteConfirmOrder._id}`);
+      alert(`Order #${deleteConfirmOrder.orderNumber || deleteConfirmOrder._id} deleted successfully.`);
+      if (selected?._id === deleteConfirmOrder._id) {
+        setSelected(null);
+      }
+      setDeleteConfirmOrder(null);
+      await load();
+    } catch (err: any) {
+      alert(err.response?.data?.message || 'Failed to delete order.');
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   const load = async () => {
     try {
@@ -265,8 +285,16 @@ const GymStoreOrders = () => {
                             <option key={st} value={st} disabled={st === o.status}>{st}</option>
                           ))}
                         </select>
-                        <button onClick={() => setSelected(o)} className="px-3 py-1.5 bg-[#F8FAFC] text-[#EA580C] rounded-lg hover:bg-[#FFF7ED] transition-colors text-xs font-bold inline-flex items-center gap-1 shrink-0">
+                        <button onClick={() => setSelected(o)} className="px-3 py-1.5 bg-[#F8FAFC] text-[#EA580C] rounded-lg hover:bg-[#FFF7ED] transition-colors text-xs font-bold inline-flex items-center gap-1 shrink-0 cursor-pointer">
                           <Eye size={13} /> View
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setDeleteConfirmOrder(o)}
+                          className="p-1.5 text-rose-600 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer shrink-0"
+                          title="Delete Order"
+                        >
+                          <Trash2 size={15} />
                         </button>
                       </div>
                     </td>
@@ -476,6 +504,13 @@ const GymStoreOrders = () => {
                       Mark {next}
                     </button>
                   ))}
+                  <button
+                    type="button"
+                    onClick={() => setDeleteConfirmOrder(selected)}
+                    className="py-3 px-4 rounded-xl font-bold transition-colors bg-red-50 text-red-600 hover:bg-red-100 flex items-center justify-center gap-1.5 cursor-pointer border border-red-200"
+                  >
+                    <Trash2 size={16} /> Delete Order
+                  </button>
                 </div>
               )}
 
@@ -545,6 +580,38 @@ const GymStoreOrders = () => {
             <div className="flex gap-3 mt-5">
               <button onClick={() => { setRefundPrompt(null); setRefundReason(''); }} className="flex-1 py-2.5 bg-[#F8FAFC] text-[#111827] font-bold rounded-xl hover:bg-gray-200 transition-colors">Cancel</button>
               <button onClick={() => { changeStatus(refundPrompt._id, 'Refunded', refundReason); setRefundPrompt(null); }} className="flex-1 py-2.5 bg-[#C2410C] text-white font-bold font-bold rounded-xl hover:bg-[#9A3412] transition-colors" disabled={updatingId === refundPrompt._id}>Confirm Refund</button>
+            </div>
+          </div>
+        </div>
+      )}
+      {deleteConfirmOrder && (
+        <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-[#FFFFFF] rounded-2xl max-w-md w-full p-6 shadow-2xl relative border border-[#E2E8F0]">
+            <div className="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center mb-4">
+              <AlertTriangle size={24} />
+            </div>
+            <h2 className="text-xl font-bold text-[#111827] mb-2">Delete Order</h2>
+            <p className="text-sm text-[#64748B] mb-4">
+              Are you sure you want to delete order <strong className="text-[#111827]">#{deleteConfirmOrder.orderNumber || deleteConfirmOrder._id}</strong>? Any active product inventory will be safely restocked and historical financial integrity preserved.
+            </p>
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => setDeleteConfirmOrder(null)}
+                disabled={isDeleting}
+                className="flex-1 py-2.5 bg-[#F8FAFC] border border-[#E2E8F0] text-[#111827] font-bold rounded-xl hover:bg-gray-100 transition-colors cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleDeleteOrder}
+                disabled={isDeleting}
+                className="flex-1 py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-md shadow-red-600/20"
+              >
+                {isDeleting ? <Loader2 size={16} className="animate-spin" /> : <Trash2 size={16} />}
+                <span>{isDeleting ? 'Deleting...' : 'Confirm Delete'}</span>
+              </button>
             </div>
           </div>
         </div>

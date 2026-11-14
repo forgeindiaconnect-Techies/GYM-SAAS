@@ -3,6 +3,7 @@ import mongoose, { Document, Schema } from 'mongoose';
 export enum CustomerMembershipStatus {
   FREE_TRIAL = 'Free Trial',
   ACTIVE = 'Active',
+  PENDING_APPROVAL = 'Pending Approval',
   PAYMENT_VERIFICATION_PENDING = 'Payment Verification Pending',
   EXPIRED = 'Expired',
   REJECTED = 'Rejected',
@@ -20,6 +21,7 @@ export interface ICustomerMembership extends Document {
   receiptNumber?: string;
   orderId?: string;
   fitnessGoal?: string;
+  fitnessGoals?: string[];
   billingPlan?: 'monthly' | 'annual';
   planName: string;
   packageDescription?: string;
@@ -66,6 +68,7 @@ const customerMembershipSchema = new Schema<ICustomerMembership>(
     receiptNumber: { type: String, index: true },
     orderId: { type: String, index: true },
     fitnessGoal: { type: String },
+    fitnessGoals: [{ type: String }],
     billingPlan: { type: String, enum: ['monthly', 'annual'] },
     planName: { type: String, required: true },
     packageDescription: { type: String },

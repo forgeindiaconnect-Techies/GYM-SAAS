@@ -268,13 +268,6 @@ const MemberStorePayments = () => {
                 <h2 className="text-xl font-bold text-[#111827]">Payment Details</h2>
                 <p className="text-sm text-[#64748B]">Order #{selectedPayment.orderNumber}</p>
               </div>
-              {/* Download PDF inside modal too */}
-              <button
-                onClick={() => downloadReceipt(selectedPayment)}
-                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#EA580C] to-[#C2410C] text-[#FFFFFF] font-bold font-bold rounded-xl text-sm hover:opacity-90 transition-opacity shadow-md shadow-orange-500/15 mt-1"
-              >
-                <Download size={15} /> Download PDF
-              </button>
             </div>
 
             <div className="space-y-4 mt-6">

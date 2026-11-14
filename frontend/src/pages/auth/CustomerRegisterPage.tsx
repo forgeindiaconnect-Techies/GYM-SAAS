@@ -35,7 +35,7 @@ const GOAL_COLORS: Record<string, string> = {
 const initialForm = {
   firstName: '', lastName: '', email: '', mobile: '', password: '', confirmPassword: '',
   dateOfBirth: '', gender: '', city: '', pinCode: '', height: '', weight: '',
-  fitnessGoal: '', experienceLevel: '', preferredTraining: '', preferredWorkoutTime: '', preferredWorkoutDays: '',
+  fitnessGoal: '', fitnessGoals: [] as string[], experienceLevel: '', preferredTraining: '', preferredWorkoutTime: '', preferredWorkoutDays: '',
   emergencyContactName: '', emergencyContactMobile: '', emergencyContactRelation: '',
   acceptTerms: false, acceptPrivacy: false,
   // Package selection
@@ -224,9 +224,13 @@ const CustomerRegisterPage = () => {
     setErrors((e: any) => { const n = { ...e }; delete n[field]; return n; });
   };
 
-  // When fitness goal changes on step 2, update goal
-  const setFitnessGoal = (goal: string) => {
-    setForm((f: any) => ({ ...f, fitnessGoal: goal }));
+  // When fitness goal changes on step 2: single-selection only
+  const selectFitnessGoal = (goal: string) => {
+    setForm((f: any) => ({
+      ...f,
+      fitnessGoal: goal,
+      fitnessGoals: [goal]
+    }));
     setErrors((e: any) => { const n = { ...e }; delete n['fitnessGoal']; return n; });
   };
 
@@ -244,8 +248,14 @@ const CustomerRegisterPage = () => {
       if (!form.email.trim()) e.email = 'Email is required';
       else if (!/\S+@\S+\.\S+/.test(form.email)) e.email = 'Enter a valid email';
       else if (!otpVerified) e.email = 'Please verify your email with OTP';
-      if (!form.mobile.trim()) e.mobile = 'Mobile is required';
-      else if (!/^\d{10}$/.test(form.mobile)) e.mobile = 'Enter a valid 10-digit mobile number';
+      
+      const cleanMobile = form.mobile.replace(/\D/g, '');
+      if (!cleanMobile) {
+        e.mobile = 'Mobile number is required';
+      } else if (!/^[6-9]\d{9}$/.test(cleanMobile)) {
+        e.mobile = 'Mobile number must be 10 digits and start with 6, 7, 8, or 9';
+      }
+      
       if (!form.password) e.password = 'Password is required';
       else if (form.password.length < 8) e.password = 'Password must be at least 8 characters';
       if (form.password !== form.confirmPassword) e.confirmPassword = 'Passwords do not match';
@@ -261,7 +271,8 @@ const CustomerRegisterPage = () => {
       if (!form.emergencyContactRelation.trim()) e.emergencyContactRelation = 'Emergency contact relationship is required';
     }
     if (step === 2) {
-      if (!form.fitnessGoal) e.fitnessGoal = 'Please select a fitness goal';
+      const hasGoal = form.fitnessGoal || (Array.isArray(form.fitnessGoals) && form.fitnessGoals.length > 0);
+      if (!hasGoal) e.fitnessGoal = 'Please select a fitness goal';
       if (!form.experienceLevel) e.experienceLevel = 'Please select your experience level';
       if (!form.preferredTraining) e.preferredTraining = 'Please select your preferred workout type';
       if (!form.preferredWorkoutDays) e.preferredWorkoutDays = 'Please select your preferred workout days';
@@ -300,6 +311,10 @@ const CustomerRegisterPage = () => {
       const targetGymId = intentData?.gymId || validatedReferral?.referrer?.gymId || selectedPkg?.gymId;
       const targetBranchId = intentData?.branchId;
 
+      const selectedGoalsList = Array.isArray(form.fitnessGoals) && form.fitnessGoals.length > 0 
+        ? form.fitnessGoals 
+        : (form.fitnessGoal ? [form.fitnessGoal] : []);
+
       const res = await api.post('/auth/register', {
         firstName: form.firstName.trim(),
         lastName: form.lastName.trim(),
@@ -310,7 +325,8 @@ const CustomerRegisterPage = () => {
         gender: form.gender || undefined,
         city: form.city || undefined,
         pinCode: form.pinCode || undefined,
-        fitnessGoal: form.fitnessGoal || undefined,
+        fitnessGoal: selectedGoalsList.join(', ') || form.fitnessGoal || undefined,
+        fitnessGoals: selectedGoalsList,
         experienceLevel: form.experienceLevel || undefined,
         preferredTraining: form.preferredTraining || undefined,
         preferredWorkoutDays: form.preferredWorkoutDays || undefined,
@@ -345,7 +361,8 @@ const CustomerRegisterPage = () => {
               branchId: targetBranchId,
               packageId: form.selectedPackageId,
               billingPlan: form.selectedBillingPlan,
-              fitnessGoal: form.fitnessGoal,
+              fitnessGoal: selectedGoalsList.join(', ') || form.fitnessGoal,
+              fitnessGoals: selectedGoalsList,
               planName: selectedPkg?.name || 'Standard',
               price: form.selectedBillingPlan === 'annual' ? selectedPkg?.annualPrice : selectedPkg?.monthlyPrice,
               paymentMethod: 'UPI',
@@ -371,7 +388,12 @@ const CustomerRegisterPage = () => {
           }
         }
 
-        navigate('/member/dashboard', { replace: true });
+        // Direct user to membership details if pending approval, else dashboard
+        if (res.data.user.approvalStatus === 'PENDING') {
+          navigate('/member/subscription', { replace: true });
+        } else {
+          navigate('/member/dashboard', { replace: true });
+        }
       } else {
         sessionStorage.removeItem('customer_reg_step');
         sessionStorage.removeItem('customer_reg_form');
@@ -473,7 +495,7 @@ const CustomerRegisterPage = () => {
                     <label className="block text-xs font-semibold text-[#EA580C] mb-2">Enter OTP sent to your email</label>
                     <div className="flex gap-2">
                       <input type="text" value={otp} onChange={e => setOtp(e.target.value)} placeholder="123456" className="w-full bg-[#FFFFFF] border border-green-200 text-[#111827] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#FDBA74] transition-colors flex-1" maxLength={6} />
-                      <button type="button" onClick={handleVerifyOtp} className="px-4 py-2 bg-[#FFFFFF] text-white rounded-lg text-sm font-bold hover:bg-gray-800 transition-colors whitespace-nowrap">Verify</button>
+                      <button type="button" onClick={handleVerifyOtp} className="px-5 py-2 bg-[#C2410C] hover:bg-[#9A3412] text-white rounded-lg text-sm font-bold transition-colors whitespace-nowrap shadow-sm cursor-pointer">Verify</button>
                     </div>
                   </div>
                 )}
@@ -489,11 +511,24 @@ const CustomerRegisterPage = () => {
                 </div>
                 <div onClick={() => { if (!otpVerified) handleMobileClick(); }} className={!otpVerified ? 'cursor-not-allowed' : ''}>
                   <input id="reg-mobile" type="tel" maxLength={10} value={form.mobile}
-                    onChange={e => { if (!otpVerified) { handleMobileClick(); return; } const v = e.target.value.replace(/\D/g, ''); if (v.length <= 10) set('mobile', v); }}
+                    onChange={e => {
+                      if (!otpVerified) { handleMobileClick(); return; }
+                      const raw = e.target.value.replace(/\D/g, '');
+                      if (raw.length > 0 && !['6', '7', '8', '9'].includes(raw[0])) {
+                        setErrors(prev => ({ ...prev, mobile: 'Mobile number must start with 6, 7, 8, or 9' }));
+                        return;
+                      }
+                      if (raw.length <= 10) {
+                        set('mobile', raw);
+                        if (raw.length === 10) {
+                          setErrors(prev => { const n = { ...prev }; delete n['mobile']; return n; });
+                        }
+                      }
+                    }}
                     onClick={e => { if (!otpVerified) { e.stopPropagation(); handleMobileClick(e); } }}
                     onFocus={e => { if (!otpVerified) { e.target.blur(); handleMobileClick(e); } }}
                     readOnly={!otpVerified}
-                    placeholder={otpVerified ? '10-digit number' : 'Please verify email first'}
+                    placeholder={otpVerified ? '10-digit number (starts with 6-9)' : 'Please verify email first'}
                     className={inputCls('mobile') + (!otpVerified ? ' bg-[#F8FAFC]/70 cursor-not-allowed select-none' : '')} />
                 </div>
                 {errors.mobile && <p className="text-[#EA580C] text-xs mt-1">{errors.mobile}</p>}
@@ -668,18 +703,28 @@ const CustomerRegisterPage = () => {
             <div className="space-y-6">
               <h2 className="text-lg font-semibold text-[#111827] mb-1">Fitness Preferences</h2>
               <div>
-                <label className="block text-sm text-[#64748B] mb-3">Fitness Goal *</label>
+                <div className="flex items-center justify-between mb-3">
+                  <label className="block text-sm text-[#64748B]">Fitness Goal *</label>
+                  {form.fitnessGoal && (
+                    <span className="text-xs text-[#EA580C] font-semibold">
+                      {form.fitnessGoal} selected
+                    </span>
+                  )}
+                </div>
                 <div className="flex flex-wrap gap-2">
                   {FITNESS_GOALS.map(g => {
                     const Icon = GOAL_ICONS[g] || Activity;
-                    const color = GOAL_COLORS[g] || '#F97316';
-                    const isActive = form.fitnessGoal === g;
+                    const isActive = form.fitnessGoal === g || (Array.isArray(form.fitnessGoals) && form.fitnessGoals.length === 1 && form.fitnessGoals[0] === g);
                     return (
-                      <button key={g} type="button" onClick={() => setFitnessGoal(g)}
-                        className={`px-3 py-2 rounded-lg text-sm border transition-colors cursor-pointer flex items-center gap-1.5 ${isActive ? 'text-white border-transparent font-semibold' : 'bg-[#FFFFFF] border-[#E2E8F0] text-[#64748B] hover:border-[#FFEDD5]'}`}
-                        style={isActive ? { backgroundColor: color, borderColor: color } : {}}>
+                      <button key={g} type="button" onClick={() => selectFitnessGoal(g)}
+                        className={`px-3 py-2 rounded-lg text-sm border transition-all cursor-pointer flex items-center gap-1.5 ${
+                          isActive 
+                            ? 'bg-[#C2410C] text-white border-[#FDBA74] font-semibold shadow-sm' 
+                            : 'bg-[#FFFFFF] border-[#E2E8F0] text-[#64748B] hover:border-[#FFEDD5] hover:text-[#111827]'
+                        }`}>
                         <Icon size={14} />
-                        {g}
+                        <span>{g}</span>
+                        {isActive && <Check size={13} className="ml-0.5" />}
                       </button>
                     );
                   })}

@@ -49,37 +49,37 @@ const SuperAdminLayout = () => {
 
   const renderSidebar = () => (
     <>
-      {/* Logo */}
-      <div className="p-5 border-b border-[#E2E8F0]">
-        <div className="flex items-center justify-between">
-          <Link to="/" className="flex items-center space-x-2.5" onClick={() => setSidebarOpen(false)}>
-            <div className="w-9 h-9 bg-[#C2410C] text-white font-bold rounded-xl flex items-center justify-center shadow-md shadow-orange-500/20 shrink-0">
-              <ShieldCheck className="text-white" size={20} />
-            </div>
-            <div className="flex flex-col leading-tight">
-              <span className="text-sm font-bold tracking-tight text-[#111827]">SUPER</span>
-              <span className="text-sm font-bold tracking-tight text-[#EA580C]">ADMIN</span>
-            </div>
-          </Link>
-          <button
-            type="button"
-            onClick={() => setSidebarOpen(false)}
-            className="lg:hidden w-8 h-8 flex items-center justify-center bg-[#F8FAFC] border border-[#E2E8F0] text-[#64748B] hover:text-[#EA580C] rounded-lg hover:bg-[#FFF7ED] active:bg-[#FFEDD5] transition-colors shrink-0 cursor-pointer"
-            aria-label="Close menu"
-          >
-            <X size={18} />
-          </button>
-        </div>
-        <div className="mt-4 flex items-center space-x-3">
-          <div className="w-10 h-10 bg-[#FFF7ED] border border-[#FFEDD5] rounded-full flex items-center justify-center text-[#C2410C] font-bold text-base shadow-xs shrink-0">
-            {user?.firstName?.[0] || 'S'}
+      {/* Logo Header aligned with main header h-16 */}
+      <div className="h-16 px-5 border-b border-[#E2E8F0] flex items-center justify-between shrink-0">
+        <Link to="/" className="flex items-center space-x-2.5" onClick={() => setSidebarOpen(false)}>
+          <div className="w-9 h-9 bg-[#C2410C] text-white font-bold rounded-xl flex items-center justify-center shadow-md shadow-orange-500/20 shrink-0">
+            <ShieldCheck className="text-white" size={20} />
           </div>
-          <div className="flex-1 overflow-hidden">
-            <p className="font-semibold text-sm text-[#111827] truncate">{user?.firstName || 'Super'} {user?.lastName || 'Admin'}</p>
-            <div className="flex items-center gap-1.5 mt-0.5">
-              <span className="text-xs text-[#64748B] font-medium truncate">Root Access</span>
-              <span className="px-1.5 py-0.5 bg-[#FFF7ED] text-[#C2410C] border border-[#FFEDD5] rounded text-[9px] font-bold uppercase tracking-wider">SUPER</span>
-            </div>
+          <div className="flex flex-col leading-tight">
+            <span className="text-sm font-bold tracking-tight text-[#111827]">SUPER</span>
+            <span className="text-sm font-bold tracking-tight text-[#EA580C]">ADMIN</span>
+          </div>
+        </Link>
+        <button
+          type="button"
+          onClick={() => setSidebarOpen(false)}
+          className="lg:hidden w-8 h-8 flex items-center justify-center bg-[#F8FAFC] border border-[#E2E8F0] text-[#64748B] hover:text-[#EA580C] rounded-lg hover:bg-[#FFF7ED] active:bg-[#FFEDD5] transition-colors shrink-0 cursor-pointer"
+          aria-label="Close menu"
+        >
+          <X size={18} />
+        </button>
+      </div>
+
+      {/* Admin Profile User Badge */}
+      <div className="px-4 py-3 border-b border-[#E2E8F0] bg-[#F8FAFC]/50 flex items-center space-x-3 shrink-0">
+        <div className="w-9 h-9 bg-[#FFF7ED] border border-[#FFEDD5] rounded-full flex items-center justify-center text-[#C2410C] font-bold text-sm shadow-xs shrink-0">
+          {user?.firstName?.[0] || 'S'}
+        </div>
+        <div className="flex-1 overflow-hidden">
+          <p className="font-semibold text-sm text-[#111827] truncate">{user?.firstName || 'Super'} {user?.lastName || 'Admin'}</p>
+          <div className="flex items-center gap-1.5 mt-0.5">
+            <span className="text-xs text-[#64748B] font-medium truncate">Root Access</span>
+            <span className="px-1.5 py-0.5 bg-[#FFF7ED] text-[#C2410C] border border-[#FFEDD5] rounded text-[9px] font-bold uppercase tracking-wider">SUPER</span>
           </div>
         </div>
       </div>

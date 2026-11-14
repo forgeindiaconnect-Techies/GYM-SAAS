@@ -1344,7 +1344,7 @@ export const getGymOrders = async (req: AuthRequest, res: Response): Promise<voi
     const effectiveBranchId = req.user?.branchId || branchIdQuery;
 
     const { status, paymentStatus, search, page = '1', limit = '40' } = req.query;
-    const filter: any = { gymId };
+    const filter: any = { gymId, isDeleted: { $ne: true } };
     if (effectiveBranchId && effectiveBranchId !== 'all') {
       if (effectiveBranchId === 'main') {
         filter.$or = [{ branchId: { $exists: false } }, { branchId: null }];
@@ -1486,6 +1486,38 @@ export const updateOrderStatus = async (req: AuthRequest, res: Response): Promis
     res.status(200).json({ success: true, message: `Order is now ${targetStatus}`, order, previousStatus: prev });
   } catch (error: any) {
     res.status(500).json({ success: false, message: 'Server error', error: error.message });
+  }
+};
+
+export const deleteGymOrder = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    if (!(await requireStoreOwner(req, res))) return;
+    const gymId = await getGymIdForUser(req.user!.id);
+    if (!gymId) {
+      res.status(404).json({ success: false, message: 'Gym not found' });
+      return;
+    }
+    const { id } = req.params;
+    const order = await StoreOrder.findOne({ _id: id, gymId });
+    if (!order) {
+      res.status(404).json({ success: false, message: 'Order not found' });
+      return;
+    }
+
+    // Restock items if order was active/pending
+    if (order.status !== StoreOrderStatus.CANCELLED && order.status !== StoreOrderStatus.COMPLETED && order.status !== StoreOrderStatus.REFUNDED) {
+      await restockOrderItems(order);
+    }
+
+    // Preserve financial and transaction logs via soft delete
+    order.status = StoreOrderStatus.CANCELLED;
+    order.cancellationReason = req.body?.reason || 'Order deleted by gym owner';
+    (order as any).isDeleted = true;
+    await order.save();
+
+    res.status(200).json({ success: true, message: 'Order deleted successfully', orderId: order._id });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: 'Failed to delete order', error: error.message });
   }
 };
 

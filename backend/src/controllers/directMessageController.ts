@@ -57,23 +57,6 @@ export const getContacts = async (req: AuthRequest, res: Response): Promise<void
 
     let contactIdsSet = new Set<string>();
 
-    // 1. Gather users with existing direct message history
-    const messageHistory = await DirectMessage.find({
-      $or: [
-        { senderId: new mongoose.Types.ObjectId(currentUserId) },
-        { receiverId: new mongoose.Types.ObjectId(currentUserId) }
-      ]
-    }).select('senderId receiverId');
-
-    messageHistory.forEach((msg) => {
-      if (msg.senderId.toString() !== currentUserId) {
-        contactIdsSet.add(msg.senderId.toString());
-      }
-      if (msg.receiverId.toString() !== currentUserId) {
-        contactIdsSet.add(msg.receiverId.toString());
-      }
-    });
-
     // 2. Gather role-specific contacts
     let activeTrainerCtx: any = null;
     if (currentUser.role === 'TRAINER') {
@@ -84,33 +67,58 @@ export const getContacts = async (req: AuthRequest, res: Response): Promise<void
         return;
       }
       const assignedIds = await getTrainerAssignedCustomerIds(activeTrainerCtx);
-      assignedIds.forEach((id) => contactIdsSet.add(id));
-    } else {
+      contactIdsSet = new Set<string>(assignedIds);
+    } else if (currentUser.role === 'MEMBER') {
       // Customer / Member side:
+      // STRICT ISOLATION: Only include trainers who are assigned to the member or have an approved/scheduled session
       const Trainer = (await import('../models/Trainer')).default;
+      const validTrainerUserIds = new Set<string>();
+
       if (currentUser.assignedTrainer) {
         const assignedTrainerDoc: any = await Trainer.findById(currentUser.assignedTrainer).select('userId').lean();
-        contactIdsSet.add(String(assignedTrainerDoc?.userId || currentUser.assignedTrainer));
-      }
-
-      // Find trainers from booked sessions
-      const sessions = await TrainerSession.find({ customerId: currentUserId }).select('trainerId').lean();
-      for (const s of sessions) {
-        if (s.trainerId) {
-          const tDoc: any = await Trainer.findById(s.trainerId).select('userId').lean();
-          contactIdsSet.add(String(tDoc?.userId || s.trainerId));
+        if (assignedTrainerDoc?.userId) {
+          validTrainerUserIds.add(String(assignedTrainerDoc.userId));
+        } else if (mongoose.Types.ObjectId.isValid(String(currentUser.assignedTrainer))) {
+          validTrainerUserIds.add(String(currentUser.assignedTrainer));
         }
       }
 
-      // Include trainers in the same gym
-      if (currentUser.gymId) {
-        const gymTrainers = await Trainer.find({ gymId: currentUser.gymId, status: 'Active' }).select('userId').lean();
-        gymTrainers.forEach((t: any) => {
-          if (t.userId && String(t.userId) !== currentUserId) {
-            contactIdsSet.add(String(t.userId));
+      // Find trainers from active/approved booked sessions
+      const sessions = await (TrainerSession as any).find({
+        customerId: currentUserId,
+        status: { $in: ['Approved', 'Confirmed', 'Scheduled', 'In Progress', 'Completed'] }
+      }).select('trainerId').lean();
+
+      for (const s of sessions) {
+        if (s.trainerId) {
+          const tDoc: any = await Trainer.findById(s.trainerId).select('userId').lean();
+          if (tDoc?.userId) {
+            validTrainerUserIds.add(String(tDoc.userId));
+          } else if (mongoose.Types.ObjectId.isValid(String(s.trainerId))) {
+            validTrainerUserIds.add(String(s.trainerId));
           }
-        });
+        }
       }
+
+      // Customers only see their assigned or booked trainers
+      contactIdsSet = validTrainerUserIds;
+    } else {
+      // Admin / Staff / other
+      const messageHistory = await DirectMessage.find({
+        $or: [
+          { senderId: new mongoose.Types.ObjectId(currentUserId) },
+          { receiverId: new mongoose.Types.ObjectId(currentUserId) }
+        ]
+      }).select('senderId receiverId');
+
+      messageHistory.forEach((msg) => {
+        if (msg.senderId.toString() !== currentUserId) {
+          contactIdsSet.add(msg.senderId.toString());
+        }
+        if (msg.receiverId.toString() !== currentUserId) {
+          contactIdsSet.add(msg.receiverId.toString());
+        }
+      });
     }
 
     const contactIds = Array.from(contactIdsSet).filter((id) => mongoose.Types.ObjectId.isValid(id) && id !== currentUserId);
@@ -238,16 +246,42 @@ export const getHistory = async (req: AuthRequest, res: Response): Promise<void>
       }
       if (otherUser.role === 'MEMBER') {
         const assigned = await isCustomerAssignedToTrainer(trainerCtx, resolvedOtherId);
-        const hasPriorMsg = await DirectMessage.exists({
-          $or: [
-            { senderId: currentObjId, receiverId: otherObjId },
-            { senderId: otherObjId, receiverId: currentObjId }
-          ]
-        });
-        if (!assigned && !hasPriorMsg) {
+        if (!assigned) {
           res.status(403).json({ success: false, message: 'Unauthorized: customer is not assigned to you' });
           return;
         }
+      }
+    } else if (req.user?.role === 'MEMBER') {
+      const currentMember: any = await User.findById(currentUserId).select('assignedTrainer gymId').lean();
+      const Trainer = (await import('../models/Trainer')).default;
+      
+      let isAssigned = false;
+      if (currentMember?.assignedTrainer) {
+        const assignedTrainerDoc: any = await Trainer.findById(currentMember.assignedTrainer).select('userId').lean();
+        if (assignedTrainerDoc?.userId && String(assignedTrainerDoc.userId) === resolvedOtherId) {
+          isAssigned = true;
+        } else if (String(currentMember.assignedTrainer) === resolvedOtherId) {
+          isAssigned = true;
+        }
+      }
+
+      if (!isAssigned) {
+        const otherTrainerDoc: any = await Trainer.findOne({ userId: otherObjId }).select('_id').lean();
+        const hasSession = await (TrainerSession as any).exists({
+          customerId: currentObjId,
+          $or: [
+            { trainerId: otherTrainerDoc?._id },
+            { trainerId: otherObjId }
+          ],
+          status: { $in: ['Approved', 'Confirmed', 'Scheduled', 'In Progress', 'Completed'] }
+        });
+        if (hasSession) isAssigned = true;
+      }
+
+      const otherUserRole: any = await User.findById(otherObjId).select('role').lean();
+      if (otherUserRole?.role === 'TRAINER' && !isAssigned) {
+        res.status(403).json({ success: false, message: 'Unauthorized: you can only view messages with your assigned trainer' });
+        return;
       }
     }
 
@@ -423,6 +457,39 @@ export const sendMessage = async (req: AuthRequest, res: Response): Promise<void
         const check = await verifyTrainerBelongsToCustomerGym(String(receiver._id), sender.gymId);
         if (!check.valid) {
           res.status(403).json({ success: false, message: check.message || 'Unauthorized: trainer not active in your selected gym' });
+          return;
+        }
+
+        // Strict customer-to-trainer check: Must be assigned or have an approved booking
+        const Trainer = (await import('../models/Trainer')).default;
+        let isAssignedTrainer = false;
+        if (sender.assignedTrainer) {
+          const assignedTrainerDoc: any = await Trainer.findById(sender.assignedTrainer).select('userId').lean();
+          if (assignedTrainerDoc?.userId && String(assignedTrainerDoc.userId) === String(receiver._id)) {
+            isAssignedTrainer = true;
+          } else if (String(sender.assignedTrainer) === String(receiver._id)) {
+            isAssignedTrainer = true;
+          }
+        }
+
+        if (!isAssignedTrainer) {
+          const targetTrainerDoc: any = await Trainer.findOne({ userId: receiver._id }).select('_id').lean();
+          const hasBooking = await (TrainerSession as any).exists({
+            customerId: sender._id,
+            $or: [
+              { trainerId: targetTrainerDoc?._id },
+              { trainerId: receiver._id }
+            ],
+            status: { $in: ['Approved', 'Confirmed', 'Scheduled', 'In Progress', 'Completed'] }
+          });
+          if (hasBooking) isAssignedTrainer = true;
+        }
+
+        if (!isAssignedTrainer) {
+          res.status(403).json({
+            success: false,
+            message: 'Unauthorized: You can only message trainers who are assigned to you or have an approved session booking.'
+          });
           return;
         }
       }

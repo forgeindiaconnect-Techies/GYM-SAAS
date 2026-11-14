@@ -21,6 +21,7 @@ export enum ApprovalStatus {
 
 export enum SubscriptionStatus {
   NONE = 'None',
+  PENDING = 'Pending',
   FREE_TRIAL = 'Free Trial',
   ACTIVE = 'Active',
   PAYMENT_VERIFICATION_PENDING = 'Payment Verification Pending',
@@ -71,6 +72,7 @@ export interface IUser extends Document {
   height?: number; // cm
   weight?: number; // kg
   fitnessGoal?: string;
+  fitnessGoals?: string[];
   experienceLevel?: 'Beginner' | 'Intermediate' | 'Advanced';
   preferredTraining?: 'Offline' | 'Online' | 'Hybrid';
   preferredWorkoutTime?: string;
@@ -149,6 +151,7 @@ const userSchema = new Schema<IUser>(
     height: { type: Number },
     weight: { type: Number },
     fitnessGoal: { type: String },
+    fitnessGoals: [{ type: String }],
     experienceLevel: { type: String, enum: ['Beginner', 'Intermediate', 'Advanced'] },
     preferredTraining: { type: String, enum: ['Offline', 'Online', 'Hybrid'] },
     preferredWorkoutTime: { type: String },

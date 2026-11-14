@@ -24,6 +24,7 @@ import {
   getGymOrders,
   getGymOrderById,
   updateOrderStatus,
+  deleteGymOrder,
   getMyOrders,
   getMyOrderById,
   cancelMyOrder,
@@ -71,6 +72,7 @@ router.delete('/admin/products/:id', authenticate, authorize(ADMIN_ROLES), delet
 router.get('/admin/orders', authenticate, authorize(ADMIN_ROLES), getGymOrders);
 router.get('/admin/orders/:id', authenticate, authorize(ADMIN_ROLES), getGymOrderById);
 router.patch('/admin/orders/:id/status', authenticate, authorize(ADMIN_ROLES), updateOrderStatus);
+router.delete('/admin/orders/:id', authenticate, authorize(ADMIN_ROLES), deleteGymOrder);
 
 router.post('/admin/offline-sales', authenticate, authorize(ADMIN_ROLES), recordOfflineSale);
 router.get('/admin/offline-sales', authenticate, authorize(ADMIN_ROLES), getOfflineSales);

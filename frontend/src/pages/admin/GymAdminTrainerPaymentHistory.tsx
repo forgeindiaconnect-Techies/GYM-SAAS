@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { History, Filter, Search, CheckCircle, XCircle, Clock, AlertCircle, ArrowRight, FileText, Download } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import jsPDF from 'jspdf';
@@ -355,15 +355,8 @@ const GymAdminTrainerPaymentHistory = () => {
 
             <div className="p-4 bg-[#F8FAFC] border-t border-[#F8FAFC] flex justify-end gap-3 shrink-0">
               <button
-                onClick={() => handleDownloadSinglePDF(selectedPayment)}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-[#C2410C] text-white font-bold rounded-xl text-sm font-bold hover:bg-[#9A3412] transition-colors shadow-sm cursor-pointer"
-              >
-                <Download size={15} />
-                Download PDF
-              </button>
-              <button
                 onClick={() => setSelectedPayment(null)}
-                className="px-4 py-2 bg-[#FFFFFF] border border-[#F8FAFC] text-[#64748B] rounded-xl text-sm font-bold hover:bg-[#FFF7ED] transition-colors cursor-pointer"
+                className="px-4 py-2 bg-[#FFFFFF] border border-[#E2E8F0] hover:border-[#EA580C] text-[#64748B] hover:text-[#EA580C] rounded-xl text-sm font-bold hover:bg-[#FFF7ED] transition-colors cursor-pointer shadow-xs"
               >
                 Close
               </button>

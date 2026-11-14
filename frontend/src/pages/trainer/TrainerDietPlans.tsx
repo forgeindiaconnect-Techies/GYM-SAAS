@@ -8,7 +8,6 @@ import {
   X, 
   Clock, 
   CheckCircle2, 
-  UserCheck, 
   Sparkles, 
   Info,
   Send,
@@ -497,24 +496,14 @@ const TrainerDietPlans = () => {
             </div>
 
             {/* Modal Footer Actions */}
-            <div className="p-4 sm:p-5 border-t border-[#E2E8F0] bg-[#F8FAFC] flex flex-wrap justify-between items-center gap-3 shrink-0">
+            <div className="p-4 sm:p-5 border-t border-[#E2E8F0] bg-[#F8FAFC] flex justify-end items-center gap-3 shrink-0">
               <button
                 type="button"
-                onClick={() => setAssignModalOpen(true)}
-                className="px-4 py-2 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold rounded-xl text-sm font-bold flex items-center gap-2 transition-all shadow-sm active:scale-95"
+                onClick={() => setSelectedPlan(null)}
+                className="px-6 py-2.5 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold rounded-xl text-sm transition-all shadow-sm active:scale-95 cursor-pointer"
               >
-                <UserCheck size={16} /> Assign to Client
+                Close
               </button>
-
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => setSelectedPlan(null)}
-                  className="px-5 py-2 rounded-xl text-sm font-bold text-[#64748B] hover:bg-[#FFF7ED] transition-colors"
-                >
-                  Close
-                </button>
-              </div>
             </div>
           </div>
         </div>

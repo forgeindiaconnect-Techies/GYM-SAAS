@@ -243,8 +243,8 @@ const GymStoreSalesHistory = () => {
           <input value={productName} onChange={(e) => setProductName(e.target.value)} placeholder="Filter by product name..." className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl pl-9 pr-4 py-2 text-sm text-[#111827] focus:border-[#FDBA74] outline-none" />
           <Search className="absolute left-3 top-2.5 text-[#64748B]" size={16} />
         </div>
-        <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-3 py-2 text-sm text-[#111827] focus:border-[#FDBA74] outline-none" />
-        <input type="date" value={to} onChange={(e) => setTo(e.target.value)} className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-3 py-2 text-sm text-[#111827] focus:border-[#FDBA74] outline-none" />
+        <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} onClick={(e) => { try { e.currentTarget.showPicker?.(); } catch {} }} className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-3 py-2 text-sm text-[#111827] focus:border-[#FDBA74] outline-none cursor-pointer" />
+        <input type="date" value={to} onChange={(e) => setTo(e.target.value)} onClick={(e) => { try { e.currentTarget.showPicker?.(); } catch {} }} className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-3 py-2 text-sm text-[#111827] focus:border-[#FDBA74] outline-none cursor-pointer" />
       </div>
 
       {loading ? (

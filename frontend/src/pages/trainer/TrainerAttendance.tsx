@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   CalendarCheck, CheckCircle, XCircle, Clock,
   Calendar, Search, Loader2, Dumbbell, Download, X
@@ -35,8 +35,46 @@ const TrainerAttendance = () => {
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [statusFilter, setStatusFilter] = useState<string>('All');
   const [searchTerm, setSearchTerm] = useState('');
+  const [markingId, setMarkingId] = useState<string | null>(null);
 
   const todayStr = new Date().toISOString().split('T')[0];
+  const dateInputRef = useRef<HTMLInputElement>(null);
+
+  const openDatePicker = () => {
+    try {
+      if (dateInputRef.current) {
+        if ('showPicker' in HTMLInputElement.prototype) {
+          dateInputRef.current.showPicker();
+        } else {
+          dateInputRef.current.focus();
+        }
+      }
+    } catch {
+      dateInputRef.current?.focus();
+    }
+  };
+
+  const handleMarkAttendance = async (sessionId: string, newStatus: 'Present' | 'Absent') => {
+    try {
+      setMarkingId(sessionId);
+      const res = await api.patch(`/trainer-sessions/${sessionId}/attendance`, {
+        attendanceStatus: newStatus,
+        checkInTime: newStatus === 'Present' ? new Date().toISOString() : undefined
+      });
+      if (res.data?.success) {
+        setSessions(prev => prev.map(s => s._id === sessionId ? {
+          ...s,
+          attendanceStatus: newStatus,
+          status: newStatus === 'Present' ? 'Completed' : s.status,
+          checkInTime: newStatus === 'Present' ? (s.checkInTime || new Date().toISOString()) : s.checkInTime
+        } : s));
+      }
+    } catch (err: any) {
+      alert(err.response?.data?.message || 'Failed to update attendance');
+    } finally {
+      setMarkingId(null);
+    }
+  };
 
   const fetchAttendance = async () => {
     try {
@@ -210,25 +248,51 @@ const TrainerAttendance = () => {
             </div>
 
             {/* Date Picker */}
-            <div className={clsx(
-              "flex items-center gap-2 px-3 py-1.5 rounded-xl border transition-all bg-[#F8FAFC]",
-              selectedDate && selectedDate !== todayStr
-                ? "border-[#EA580C] bg-[#FFF7ED] text-[#EA580C] shadow-sm"
-                : "border-[#E2E8F0] text-[#64748B] hover:border-[#CBD5E1]"
-            )}>
-              <Calendar size={14} className={selectedDate && selectedDate !== todayStr ? "text-[#EA580C]" : "text-[#64748B]"} />
+            <div
+              onClick={(e) => {
+                if ((e.target as HTMLElement).closest('button[data-clear]')) return;
+                openDatePicker();
+              }}
+              className={clsx(
+                "flex items-center gap-2 px-3 py-1.5 rounded-xl border transition-all bg-[#F8FAFC] cursor-pointer hover:border-[#EA580C]",
+                selectedDate && selectedDate !== todayStr
+                  ? "border-[#EA580C] bg-[#FFF7ED] text-[#EA580C] shadow-sm"
+                  : "border-[#E2E8F0] text-[#64748B]"
+              )}
+            >
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  openDatePicker();
+                }}
+                className="text-inherit hover:opacity-80 transition cursor-pointer flex items-center justify-center p-0.5"
+                title="Open calendar"
+              >
+                <Calendar size={14} className={selectedDate && selectedDate !== todayStr ? "text-[#EA580C]" : "text-[#64748B]"} />
+              </button>
               <input
+                ref={dateInputRef}
                 type="date"
                 value={selectedDate}
                 onChange={(e) => setSelectedDate(e.target.value)}
-                className="bg-transparent text-xs font-semibold text-[#111827] outline-none cursor-pointer"
+                onClick={(e) => {
+                  try {
+                    e.currentTarget.showPicker?.();
+                  } catch {}
+                }}
+                className="bg-transparent text-xs font-semibold text-[#111827] outline-none cursor-pointer no-calendar-indicator [&::-webkit-calendar-picker-indicator]:hidden"
               />
               {selectedDate && (
                 <button
                   type="button"
-                  onClick={() => setSelectedDate('')}
+                  data-clear
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedDate('');
+                  }}
                   title="Clear date"
-                  className="p-0.5 text-[#94A3B8] hover:text-[#EA580C] transition"
+                  className="p-0.5 text-[#94A3B8] hover:text-[#EA580C] transition cursor-pointer"
                 >
                   <X size={12} />
                 </button>
@@ -366,12 +430,12 @@ const TrainerAttendance = () => {
                     </div>
                   </div>
 
-                  {/* Status Badge */}
+                  {/* Status Badge & Action Controls */}
                   <div className="flex items-center gap-2 shrink-0">
                     <span
                       className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 ${
                         currentStatus === 'Present'
-                          ? 'bg-[#F8FAFC] text-[#EA580C] border border-[#E2E8F0]'
+                          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                           : currentStatus === 'Late'
                           ? 'bg-amber-100 text-amber-800 border border-amber-300'
                           : currentStatus === 'Self-Learning'
@@ -381,12 +445,40 @@ const TrainerAttendance = () => {
                           : 'bg-[#F8FAFC] text-[#111827] border border-[#E2E8F0]'
                       }`}
                     >
-                      {currentStatus === 'Present' && <CheckCircle size={14} className="text-[#EA580C]" />}
+                      {currentStatus === 'Present' && <CheckCircle size={14} className="text-emerald-600" />}
                       {currentStatus === 'Late' && <Clock size={14} className="text-amber-700" />}
                       {currentStatus === 'Self-Learning' && <Dumbbell size={14} className="text-[#EA580C]" />}
                       {currentStatus === 'Absent' && <XCircle size={14} className="text-rose-700" />}
                       <span>{currentStatus}</span>
                     </span>
+
+                    {/* Quick Action Controls: Never repeat the current status */}
+                    <div className="flex items-center gap-1.5">
+                      {currentStatus !== 'Present' && (
+                        <button
+                          type="button"
+                          disabled={markingId === session._id}
+                          onClick={() => handleMarkAttendance(session._id, 'Present')}
+                          className="px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 bg-emerald-50 text-emerald-700 hover:bg-emerald-600 hover:text-white border border-emerald-300 cursor-pointer shadow-2xs"
+                          title="Mark Client as Present"
+                        >
+                          <CheckCircle size={13} />
+                          <span>Mark Present</span>
+                        </button>
+                      )}
+                      {currentStatus !== 'Absent' && (
+                        <button
+                          type="button"
+                          disabled={markingId === session._id}
+                          onClick={() => handleMarkAttendance(session._id, 'Absent')}
+                          className="px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 bg-rose-50 text-rose-700 hover:bg-rose-600 hover:text-white border border-rose-300 cursor-pointer shadow-2xs"
+                          title="Mark Client as Absent"
+                        >
+                          <XCircle size={13} />
+                          <span>Mark Absent</span>
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
               );

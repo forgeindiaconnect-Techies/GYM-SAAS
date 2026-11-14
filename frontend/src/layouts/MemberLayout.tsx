@@ -82,11 +82,13 @@ const MemberLayout = () => {
     }
   };
 
+  const isPendingApproval = user?.approvalStatus === 'PENDING' || user?.approvalStatus === 'Pending';
+
   useEffect(() => {
-    if (isExpired && location.pathname !== '/member/subscription') {
+    if ((isExpired || isPendingApproval) && location.pathname !== '/member/subscription') {
       navigate('/member/subscription', { replace: true });
     }
-  }, [isExpired, location.pathname, navigate]);
+  }, [isExpired, isPendingApproval, location.pathname, navigate]);
 
   useEffect(() => {
     if (user?.subscriptionExpiry) {
@@ -206,7 +208,14 @@ const MemberLayout = () => {
     }
   ];
 
-  const displayNavGroups = isExpired ? [
+  const displayNavGroups = isPendingApproval ? [
+    {
+      title: 'Membership Status',
+      items: [
+        { label: 'Membership Details', path: '/member/subscription', icon: CreditCard },
+      ]
+    }
+  ] : isExpired ? [
     {
       title: 'Membership Required',
       items: [
@@ -218,7 +227,9 @@ const MemberLayout = () => {
   const isTrainingRoute = (location.pathname !== '/member/trainer-plan' && location.pathname !== '/member/trainers-plan') &&
     ['/member/find-trainers', '/member/training', '/member/trainer', '/member/bookings', '/member/online-sessions', '/member/book-session'].some(p => location.pathname === p || location.pathname.startsWith(p + '/'));
   const isStoreRoute = ['/member/store'].some(p => location.pathname.startsWith(p));
-  const currentNav = isExpired
+  const currentNav = isPendingApproval
+    ? { label: 'Membership Details', path: '/member/subscription', icon: CreditCard }
+    : isExpired
     ? { label: 'Membership Plan', path: '/member/subscription', icon: CreditCard }
     : (navGroups.flatMap(g => g.items).find(item => item.path === location.pathname) 
       || (location.pathname === '/member/workout-videos' ? { label: 'My Workout Plan', path: '/member/workout', icon: Dumbbell } : null)
@@ -227,44 +238,49 @@ const MemberLayout = () => {
 
   const renderSidebar = () => (
     <>
-      {/* Logo */}
-      <div className="p-5 border-b border-[#E2E8F0]">
-        <div className="flex items-center justify-between">
-          <Link to="/" className="flex items-center space-x-2.5" onClick={() => setSidebarOpen(false)}>
-            <div className="w-9 h-9 bg-[#C2410C] text-white font-bold rounded-xl flex items-center justify-center shadow-md shadow-orange-500/20 shrink-0">
-              <Activity className="text-white" size={20} />
-            </div>
-            <span className="text-xl font-bold tracking-tight text-[#111827] truncate max-w-[150px]" title={gym?.name || 'Gymora'}>
-              {gym?.name || 'Gymora'}
-            </span>
-          </Link>
-          <button
-            type="button"
-            onClick={() => setSidebarOpen(false)}
-            className="lg:hidden w-8 h-8 flex items-center justify-center bg-[#F8FAFC] border border-[#E2E8F0] text-[#64748B] hover:text-[#EA580C] rounded-lg hover:bg-[#FFF7ED] active:bg-[#FFEDD5] transition-colors shrink-0 cursor-pointer"
-            aria-label="Close menu"
-          >
-            <X size={18} />
-          </button>
-        </div>
-        <div className="mt-4 flex items-center space-x-3">
-          <div className="w-10 h-10 bg-[#FFF7ED] border border-[#FFEDD5] rounded-full flex items-center justify-center text-[#C2410C] font-bold text-base shadow-xs shrink-0">
-            {user?.firstName?.[0] || 'U'}
+      {/* Logo Header aligned with main header h-16 */}
+      <div className="h-16 px-5 border-b border-[#E2E8F0] flex items-center justify-between shrink-0">
+        <Link to="/" className="flex items-center space-x-2.5" onClick={() => setSidebarOpen(false)}>
+          <div className="w-9 h-9 bg-[#C2410C] text-white font-bold rounded-xl flex items-center justify-center shadow-md shadow-orange-500/20 shrink-0">
+            <Activity className="text-white" size={20} />
           </div>
-          <div className="flex-1 overflow-hidden">
-            <p className="font-semibold text-sm text-[#111827] truncate">{user?.firstName} {user?.lastName}</p>
-            <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
-              <span className="text-xs text-[#64748B] font-medium truncate">
-                {isExpired
-                  ? 'Membership Expired'
-                  : (user?.subscriptionPlan ? `${user.subscriptionPlan} Plan` : (gym?.name || 'No Gym Selected'))}
+          <span className="text-xl font-bold tracking-tight text-[#111827] truncate max-w-[150px]" title={gym?.name || 'Gymora'}>
+            {gym?.name || 'Gymora'}
+          </span>
+        </Link>
+        <button
+          type="button"
+          onClick={() => setSidebarOpen(false)}
+          className="lg:hidden w-8 h-8 flex items-center justify-center bg-[#F8FAFC] border border-[#E2E8F0] text-[#64748B] hover:text-[#EA580C] rounded-lg hover:bg-[#FFF7ED] active:bg-[#FFEDD5] transition-colors shrink-0 cursor-pointer"
+          aria-label="Close menu"
+        >
+          <X size={18} />
+        </button>
+      </div>
+
+      {/* Member Profile User Badge */}
+      <div className="px-4 py-3 border-b border-[#E2E8F0] bg-[#F8FAFC]/50 flex items-center space-x-3 shrink-0">
+        <div className="w-9 h-9 bg-[#FFF7ED] border border-[#FFEDD5] rounded-full flex items-center justify-center text-[#C2410C] font-bold text-sm shadow-xs shrink-0">
+          {user?.firstName?.[0] || 'U'}
+        </div>
+        <div className="flex-1 overflow-hidden">
+          <p className="font-semibold text-sm text-[#111827] truncate">{user?.firstName} {user?.lastName}</p>
+          <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
+            <span className="text-xs text-[#64748B] font-medium truncate">
+              {isExpired
+                ? 'Membership Expired'
+                : isPendingApproval
+                ? 'Pending Admin Approval'
+                : (user?.subscriptionPlan ? `${user.subscriptionPlan} Plan` : (gym?.name || 'No Gym Selected'))}
+            </span>
+            <span className={`w-2 h-2 rounded-full ${
+              isExpired ? 'bg-red-500' : isPendingApproval ? 'bg-amber-500 animate-pulse' : 'bg-emerald-500'
+            }`} />
+            {user?.customerId && (
+              <span className="px-1.5 py-0.5 bg-[#FFF7ED] text-[#C2410C] border border-[#FFEDD5] rounded text-[9px] font-bold uppercase tracking-wider">
+                {user.customerId}
               </span>
-              {user?.customerId && (
-                <span className="px-1.5 py-0.5 bg-[#FFF7ED] text-[#C2410C] border border-[#FFEDD5] rounded text-[9px] font-bold uppercase tracking-wider">
-                  {user.customerId}
-                </span>
-              )}
-            </div>
+            )}
           </div>
         </div>
       </div>
@@ -311,6 +327,19 @@ const MemberLayout = () => {
           </div>
         ))}
       </nav>
+
+      {/* Locked Menus Notice when Pending Admin Approval */}
+      {isPendingApproval && (
+        <div className="mx-3 my-2 p-3 bg-amber-50 border border-amber-200 rounded-xl text-center">
+          <div className="w-8 h-8 mx-auto mb-1.5 bg-amber-100 rounded-full flex items-center justify-center text-amber-800">
+            <Lock size={15} />
+          </div>
+          <p className="text-xs font-bold text-amber-900 mb-0.5">Dashboard Locked</p>
+          <p className="text-[11px] text-amber-800 leading-tight">
+            Awaiting Admin Approval. Dashboard features unlock once approved.
+          </p>
+        </div>
+      )}
 
       {/* Locked Menus Notice when Free Trial is completed / expired */}
       {isExpired && (
@@ -404,12 +433,12 @@ const MemberLayout = () => {
             </button>
             {currentNav && <currentNav.icon size={20} className="text-[#EA580C] hidden sm:block" />}
             <h2 className="text-sm sm:text-base md:text-lg font-bold tracking-tight text-[#111827] truncate max-w-[200px] sm:max-w-none">
-              {currentNav?.label || 'Customer Dashboard'}
+              {isPendingApproval ? 'Membership Details (Pending Approval)' : (currentNav?.label || 'Customer Dashboard')}
             </h2>
           </div>
 
           <div className="flex items-center space-x-2 sm:space-x-3 md:space-x-5">
-            {!isExpired && (
+            {!isExpired && !isPendingApproval && (
               <div className="relative" ref={notifRef}>
                 <button
                   onClick={() => setNotifOpen(!notifOpen)}
@@ -513,7 +542,17 @@ const MemberLayout = () => {
                 )}
               </div>
             )}
-            {!isExpired ? (
+            {isPendingApproval ? (
+              <div className="flex items-center space-x-2">
+                <div className="text-right hidden md:block">
+                  <p className="text-sm font-semibold text-[#111827] leading-none mb-0.5">{user?.firstName} {user?.lastName}</p>
+                  <span className="text-[11px] font-bold text-amber-800 bg-amber-100 border border-amber-300 px-2 py-0.5 rounded-full">Pending Admin Approval</span>
+                </div>
+                <div className="w-9 h-9 bg-amber-600 text-white rounded-full flex items-center justify-center font-bold text-sm shadow">
+                  {user?.firstName?.[0] || 'U'}
+                </div>
+              </div>
+            ) : !isExpired ? (
               <Link to="/member/profile" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
                 <div className="text-right hidden md:block">
                   <p className="text-sm font-semibold text-[#111827] leading-none mb-0.5">{user?.firstName} {user?.lastName}</p>

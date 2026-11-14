@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { FileText, Download, ExternalLink, Video, File, X, ZoomIn, Image as ImageIcon } from 'lucide-react';
 import AudioMessagePlayer from './AudioMessagePlayer';
 import { formatFileSize } from './AttachmentPreview';
@@ -160,24 +160,18 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
                   return (
                     <div
                       key={i}
-                      className={`flex items-center justify-between gap-3 p-3 rounded-xl border transition-all ${
-                        isMine
-                          ? 'bg-[#FFF7ED] border-[#E2E8F0]/40 text-white'
-                          : 'bg-[#F8FAFC] border-[#E2E8F0] text-[#111827]'
-                      }`}
+                      className="flex items-center justify-between gap-3 p-3 rounded-xl border border-[#E2E8F0] bg-[#FFFFFF] text-[#111827] shadow-xs transition-all"
                     >
                       <div className="flex items-center gap-2.5 overflow-hidden">
-                        <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${
-                          isMine ? 'bg-[#FFFFFF]/20 text-white' : 'bg-[#F8FAFC] text-[#EA580C]'
-                        }`}>
+                        <div className="w-9 h-9 rounded-lg bg-[#FFF7ED] text-[#EA580C] flex items-center justify-center shrink-0 border border-[#FFEDD5]">
                           <FileText size={20} />
                         </div>
                         <div className="overflow-hidden">
-                          <p className="font-bold text-xs truncate" title={att.fileName}>
+                          <p className="font-bold text-xs truncate text-[#111827]" title={att.fileName}>
                             {att.fileName}
                           </p>
                           {att.fileSize ? (
-                            <span className="text-[10px] opacity-80 font-semibold block">
+                            <span className="text-[10px] text-[#64748B] font-semibold block">
                               {formatFileSize(att.fileSize)}
                             </span>
                           ) : null}
@@ -189,11 +183,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
                         target="_blank"
                         rel="noreferrer"
                         download={att.fileName}
-                        className={`p-2 rounded-lg transition-transform active:scale-95 shrink-0 flex items-center justify-center ${
-                          isMine
-                            ? 'bg-[#FFFFFF] text-[#EA580C] hover:bg-[#FFFFFF]/90'
-                            : 'bg-[#C2410C] text-white hover:bg-[#9A3412]'
-                        }`}
+                        className="p-2 rounded-lg bg-[#C2410C] hover:bg-[#9A3412] text-white transition-transform active:scale-95 shrink-0 flex items-center justify-center shadow-xs"
                         title="Download or view file"
                       >
                         <Download size={14} />

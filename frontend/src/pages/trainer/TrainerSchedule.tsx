@@ -231,11 +231,11 @@ const TrainerSchedule = () => {
         </div>
         {filterDate === 'Custom' && (
           <div className="flex gap-3 items-center pt-2">
-            <input type="date" value={customFrom} onChange={e => setCustomFrom(e.target.value)}
-              className="px-3 py-2 text-sm border border-[#E2E8F0] rounded-xl focus:border-[#FDBA74] focus:outline-none" />
+            <input type="date" value={customFrom} onChange={e => setCustomFrom(e.target.value)} onClick={(e) => { try { e.currentTarget.showPicker?.(); } catch {} }}
+              className="px-3 py-2 text-sm border border-[#E2E8F0] rounded-xl focus:border-[#FDBA74] focus:outline-none cursor-pointer" />
             <span className="text-[#64748B] text-sm">to</span>
-            <input type="date" value={customTo} onChange={e => setCustomTo(e.target.value)}
-              className="px-3 py-2 text-sm border border-[#E2E8F0] rounded-xl focus:border-[#FDBA74] focus:outline-none" />
+            <input type="date" value={customTo} onChange={e => setCustomTo(e.target.value)} onClick={(e) => { try { e.currentTarget.showPicker?.(); } catch {} }}
+              className="px-3 py-2 text-sm border border-[#E2E8F0] rounded-xl focus:border-[#FDBA74] focus:outline-none cursor-pointer" />
           </div>
         )}
       </div>

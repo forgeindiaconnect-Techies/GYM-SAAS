@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   Search, MessageSquare, RefreshCw, Brain, CheckCircle2, Clock,
   ChevronDown, ChevronUp, Dumbbell, Salad, User, X, Filter, Send,
@@ -65,6 +65,7 @@ const TrainerAIFeedback = () => {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
   const [dateFilter, setDateFilter] = useState('');
+  const dateFilterInputRef = useRef<HTMLInputElement>(null);
   const [sortByDate, setSortByDate] = useState<'desc' | 'asc'>('desc');
   const [groupByDate, setGroupByDate] = useState(true);
   const [expanded, setExpanded] = useState<string | null>(null);
@@ -432,19 +433,52 @@ const TrainerAIFeedback = () => {
             </div>
 
             {/* Specific Date Filter */}
-            <div className="flex items-center gap-1.5 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-2.5 py-1.5">
-              <Calendar size={15} className="text-[#EA580C]" />
+            <div
+              onClick={() => {
+                try {
+                  dateFilterInputRef.current?.showPicker?.();
+                } catch {
+                  dateFilterInputRef.current?.focus();
+                }
+              }}
+              className="flex items-center gap-1.5 bg-[#FFFFFF] border border-[#E2E8F0] hover:border-[#EA580C] rounded-xl px-2.5 py-1.5 cursor-pointer"
+            >
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  try {
+                    dateFilterInputRef.current?.showPicker?.();
+                  } catch {
+                    dateFilterInputRef.current?.focus();
+                  }
+                }}
+                title="Open calendar"
+                className="text-[#EA580C] hover:opacity-80 transition cursor-pointer flex items-center p-0.5"
+              >
+                <Calendar size={15} />
+              </button>
               <input
+                ref={dateFilterInputRef}
                 type="date"
                 value={dateFilter}
                 onChange={e => setDateFilter(e.target.value)}
+                onClick={(e) => {
+                  try {
+                    e.currentTarget.showPicker?.();
+                  } catch {}
+                }}
                 title="Filter by specific date"
-                className="bg-transparent text-xs font-semibold text-[#64748B] focus:outline-none cursor-pointer"
+                className="bg-transparent text-xs font-semibold text-[#64748B] focus:outline-none cursor-pointer no-calendar-indicator [&::-webkit-calendar-picker-indicator]:hidden"
               />
               {dateFilter && (
                 <button
-                  onClick={() => setDateFilter('')}
-                  className="text-[#64748B] hover:text-[#C2410C] p-0.5"
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setDateFilter('');
+                  }}
+                  className="text-[#64748B] hover:text-[#C2410C] p-0.5 cursor-pointer"
                   title="Clear date filter"
                 >
                   <X size={12} />

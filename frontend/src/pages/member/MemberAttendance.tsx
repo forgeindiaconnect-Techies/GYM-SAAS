@@ -322,14 +322,42 @@ const MemberAttendance = () => {
             </button>
 
             {/* Calendar Date Input */}
-            <div className="relative inline-flex items-center">
-              <Calendar size={14} className="absolute left-3 text-[#EA580C] pointer-events-none" />
+            <div
+              onClick={() => {
+                try {
+                  dateInputRef.current?.showPicker?.();
+                } catch {
+                  dateInputRef.current?.focus();
+                }
+              }}
+              className="relative inline-flex items-center cursor-pointer"
+            >
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  try {
+                    dateInputRef.current?.showPicker?.();
+                  } catch {
+                    dateInputRef.current?.focus();
+                  }
+                }}
+                title="Open calendar"
+                className="absolute left-3 text-[#EA580C] hover:opacity-80 transition cursor-pointer flex items-center z-10"
+              >
+                <Calendar size={14} />
+              </button>
               <input
                 ref={dateInputRef}
                 type="date"
                 value={selectedDate}
                 onChange={(e) => setSelectedDate(e.target.value)}
-                className="bg-[#FFFFFF] border border-[#E2E8F0] hover:border-[#FDBA74] focus:border-[#FDBA74] text-[#111827] font-bold text-xs rounded-xl pl-9 pr-3 py-1.5 outline-none cursor-pointer shadow-xs transition-colors [color-scheme:dark]"
+                onClick={(e) => {
+                  try {
+                    e.currentTarget.showPicker?.();
+                  } catch {}
+                }}
+                className="bg-[#FFFFFF] border border-[#E2E8F0] hover:border-[#FDBA74] focus:border-[#FDBA74] text-[#111827] font-bold text-xs rounded-xl pl-9 pr-3 py-1.5 outline-none cursor-pointer shadow-xs transition-colors no-calendar-indicator [&::-webkit-calendar-picker-indicator]:hidden"
                 title="Select any date to check attendance"
               />
             </div>

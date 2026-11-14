@@ -249,6 +249,26 @@ const MemberSubscription = () => {
 
   return (
     <div className="max-w-5xl mx-auto space-y-8 pb-12 text-[#111827]">
+      {/* ── Pending Admin Approval Notice ─────────────────────────── */}
+      {user?.approvalStatus === 'PENDING' && (
+        <div className="bg-amber-50 border-2 border-amber-300 rounded-2xl p-5 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div className="flex items-start gap-4">
+            <div className="w-11 h-11 rounded-xl bg-amber-100 flex items-center justify-center text-amber-700 shrink-0 mt-0.5 border border-amber-300">
+              <Clock size={24} />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h2 className="text-lg font-bold text-amber-900">Pending Admin Approval</h2>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-amber-200 text-amber-800">In Review</span>
+              </div>
+              <p className="text-amber-800 text-xs sm:text-sm mt-0.5 leading-relaxed">
+                Your registration and membership payment are currently awaiting Gym Admin approval. Your dashboard features will be unlocked as soon as the administrator verifies your details.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* ── Expired / Free Trial Completed Banner ─────────────────── */}
       {(isTrialCompleted || isCurrentExpired) && (
         <div className="bg-[#FFFFFF] border-2 border-[#FFEDD5] rounded-2xl p-6 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
@@ -314,14 +334,22 @@ const MemberSubscription = () => {
                 <div className={`px-4 py-1.5 rounded-full text-xs font-bold flex items-center gap-2 border ${
                   isTrialCompleted ? 'bg-[#F8FAFC] text-[#64748B] border-[#E2E8F0]' :
                   isCurrentExpired ? 'bg-red-50 text-[#B91C1C] border-red-500/40' :
+                  user?.approvalStatus === 'PENDING' || currentMembership.status === 'Pending Approval' || currentMembership.status === 'Payment Verification Pending' ? 'bg-amber-50 text-amber-700 border-amber-300' :
+                  user?.approvalStatus === 'REJECTED' || currentMembership.status === 'Rejected' ? 'bg-red-50 text-red-700 border-red-300' :
                   isTrial ? 'bg-[#FFF7ED] text-[#EA580C] border-[#FFEDD5]' :
-                  isActive ? 'bg-[#FFF7ED] text-[#C2410C] border-[#FFEDD5]' : 'bg-amber-50 text-amber-600 border-amber-300'
+                  isActive ? 'bg-emerald-50 text-emerald-700 border-emerald-300' : 'bg-amber-50 text-amber-700 border-amber-300'
                 }`}>
-                  <span className={`w-2 h-2 rounded-full ${isActive ? 'bg-[#15803D] animate-pulse' : isCurrentExpired ? 'bg-[#B91C1C]' : 'bg-[#B45309]'}`}></span> 
-                  {isTrialCompleted ? 'Free Trial Completed' :
+                  <span className={`w-2 h-2 rounded-full ${
+                    user?.approvalStatus === 'PENDING' || currentMembership.status === 'Pending Approval' || currentMembership.status === 'Payment Verification Pending' ? 'bg-amber-500 animate-pulse' :
+                    user?.approvalStatus === 'REJECTED' || currentMembership.status === 'Rejected' ? 'bg-red-500' :
+                    isActive ? 'bg-[#15803D] animate-pulse' : isCurrentExpired ? 'bg-[#B91C1C]' : 'bg-[#B45309]'
+                  }`}></span> 
+                  {user?.approvalStatus === 'PENDING' || currentMembership.status === 'Pending Approval' || currentMembership.status === 'Payment Verification Pending' ? 'Pending Admin Approval' :
+                   user?.approvalStatus === 'REJECTED' || currentMembership.status === 'Rejected' ? 'Rejected' :
+                   isTrialCompleted ? 'Free Trial Completed' :
                    isCurrentExpired ? 'Plan Expired' :
                    isTrial ? 'Free Trial Active' :
-                   isActive ? 'Active' : 'Pending Verification'}
+                   isActive ? 'Approved' : 'Pending Approval'}
                 </div>
               </div>
             </div>

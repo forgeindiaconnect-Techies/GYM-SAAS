@@ -4,33 +4,53 @@ export const TourSlide = ({ journey, step, setJourney, onNavigate }: { journey: 
   
   if (journey === 'select') {
     return (
-      <div className="flex flex-col md:flex-row items-stretch justify-center gap-8 w-full max-w-4xl mx-auto h-full animate-in fade-in zoom-in duration-500">
-        <div onClick={() => onNavigate ? onNavigate('/portal/customer') : setJourney('customer')} className="flex-1 w-full bg-[#FFFFFF] border-2 border-[#FFFFFF] rounded-3xl p-8 hover:border-[#FDBA74] hover:bg-[#FFFFFF]/80 transition-all cursor-pointer group shadow-xl flex flex-col">
-          <div className="w-16 h-16 bg-[#FFF7ED] rounded-2xl flex items-center justify-center text-[#EA580C] mb-6 group-hover:scale-110 transition-transform">
-            <User size={32} />
+      <div className="flex flex-col md:flex-row items-stretch justify-center gap-6 w-full max-w-4xl mx-auto animate-in fade-in zoom-in duration-500">
+        <div
+          onClick={() => onNavigate ? onNavigate('/portal/customer') : setJourney('customer')}
+          className="flex-1 w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-3xl p-6 sm:p-8 hover:border-[#EA580C] hover:shadow-xl transition-all cursor-pointer group shadow-sm flex flex-col justify-between min-h-[420px]"
+        >
+          <div>
+            <div className="w-14 h-14 bg-[#FFF7ED] border border-[#FFEDD5] rounded-2xl flex items-center justify-center text-[#EA580C] mb-5 group-hover:scale-105 transition-transform">
+              <User size={28} />
+            </div>
+            <h3 className="text-xl sm:text-2xl font-bold text-[#111827] mb-2 group-hover:text-[#EA580C] transition-colors">Customer Journey</h3>
+            <p className="text-sm text-[#64748B] mb-5">See how a fitness enthusiast joins a gym, gets AI guidance, and tracks progress.</p>
+            <ul className="space-y-2.5 mb-6">
+              {['Join a gym', 'Create fitness profile', 'Get AI recommendations', 'Connect with trainers', 'Track progress'].map((item, idx) => (
+                <li key={idx} className="flex items-center text-sm text-[#111827]">
+                  <CheckCircle size={15} className="text-[#EA580C] mr-2 shrink-0" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
           </div>
-          <h3 className="text-2xl font-bold text-[#111827] mb-3 group-hover:text-[#EA580C] transition-colors">Customer Journey</h3>
-          <p className="text-[#64748B] mb-6">See how a fitness enthusiast joins a gym, gets AI guidance, and tracks progress.</p>
-          <ul className="space-y-3 mb-8 flex-1">
-            {['Join a gym', 'Create fitness profile', 'Get AI recommendations', 'Connect with trainers', 'Track progress'].map((item, idx) => (
-              <li key={idx} className="flex items-center text-sm text-[#111827]"><CheckCircle size={16} className="text-[#EA580C] mr-2" /> {item}</li>
-            ))}
-          </ul>
-          <div className="inline-flex items-center gap-2 text-[#EA580C] font-bold">Start Journey <ArrowRight size={16} /></div>
+          <div className="mt-auto pt-4 border-t border-[#F1F5F9] inline-flex items-center gap-2 text-[#EA580C] font-bold text-sm group-hover:translate-x-1 transition-transform">
+            <span>Start Journey</span> <ArrowRight size={16} />
+          </div>
         </div>
 
-        <div onClick={() => onNavigate ? onNavigate('/portal/gym-owner') : setJourney('owner')} className="flex-1 w-full bg-[#FFFFFF] border-2 border-[#FFFFFF] rounded-3xl p-8 hover:border-[#FDBA74] hover:bg-[#FFFFFF]/80 transition-all cursor-pointer group shadow-xl flex flex-col">
-          <div className="w-16 h-16 bg-[#FFF7ED] rounded-2xl flex items-center justify-center text-[#EA580C] mb-6 group-hover:scale-110 transition-transform">
-            <Activity size={32} />
+        <div
+          onClick={() => onNavigate ? onNavigate('/portal/gym-owner') : setJourney('owner')}
+          className="flex-1 w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-3xl p-6 sm:p-8 hover:border-[#EA580C] hover:shadow-xl transition-all cursor-pointer group shadow-sm flex flex-col justify-between min-h-[420px]"
+        >
+          <div>
+            <div className="w-14 h-14 bg-[#FFF7ED] border border-[#FFEDD5] rounded-2xl flex items-center justify-center text-[#EA580C] mb-5 group-hover:scale-105 transition-transform">
+              <Activity size={28} />
+            </div>
+            <h3 className="text-xl sm:text-2xl font-bold text-[#111827] mb-2 group-hover:text-[#EA580C] transition-colors">Gym Owner Journey</h3>
+            <p className="text-sm text-[#64748B] mb-5">See how a gym owner registers, gets approved, and manages their facility.</p>
+            <ul className="space-y-2.5 mb-6">
+              {['Register gym', 'Get Superadmin approval', 'Choose SaaS subscription', 'Complete payment', 'Access Dashboard'].map((item, idx) => (
+                <li key={idx} className="flex items-center text-sm text-[#111827]">
+                  <CheckCircle size={15} className="text-[#EA580C] mr-2 shrink-0" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
           </div>
-          <h3 className="text-2xl font-bold text-[#111827] mb-3 group-hover:text-[#EA580C] transition-colors">Gym Owner Journey</h3>
-          <p className="text-[#64748B] mb-6">See how a gym owner registers, gets approved, and manages their facility.</p>
-          <ul className="space-y-3 mb-8 flex-1">
-            {['Register gym', 'Get Superadmin approval', 'Choose SaaS subscription', 'Complete payment', 'Access Dashboard'].map((item, idx) => (
-              <li key={idx} className="flex items-center text-sm text-[#111827]"><CheckCircle size={16} className="text-[#EA580C] mr-2" /> {item}</li>
-            ))}
-          </ul>
-          <div className="inline-flex items-center gap-2 text-[#EA580C] font-bold">Start Journey <ArrowRight size={16} /></div>
+          <div className="mt-auto pt-4 border-t border-[#F1F5F9] inline-flex items-center gap-2 text-[#EA580C] font-bold text-sm group-hover:translate-x-1 transition-transform">
+            <span>Start Journey</span> <ArrowRight size={16} />
+          </div>
         </div>
       </div>
     );

@@ -238,7 +238,7 @@ const MemberBookSession = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-3">
             <label className="text-sm font-medium text-[#64748B] flex items-center gap-2"><Calendar size={16}/> Select Date</label>
-            <input type="date" required value={formData.date} onChange={e => setFormData({...formData, date: e.target.value})} min={new Date().toISOString().split('T')[0]} className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-3 text-[#111827] focus:border-[#FDBA74] focus:ring-1 focus:ring-[#F97316]/30 transition-all outline-none" />
+            <input type="date" required value={formData.date} onChange={e => setFormData({...formData, date: e.target.value})} onClick={(e) => { try { e.currentTarget.showPicker?.(); } catch {} }} min={new Date().toISOString().split('T')[0]} className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-3 text-[#111827] focus:border-[#FDBA74] focus:ring-1 focus:ring-[#F97316]/30 transition-all outline-none cursor-pointer" />
           </div>
           <div className="space-y-3">
             <label className="text-sm font-medium text-[#64748B] flex items-center gap-2"><Clock size={16}/> Select Time</label>

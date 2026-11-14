@@ -70,7 +70,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 localStorage.setItem('aigym_user', JSON.stringify(refreshed));
               }
             })
-            .catch(() => {});
+            .catch(() => { });
         });
       } catch {
         localStorage.removeItem('aigym_token');
@@ -121,9 +121,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const refreshUser = () => {
+  const refreshUser = async () => {
     const storedToken = localStorage.getItem('aigym_token') || sessionStorage.getItem('aigym_token');
     const storedUser = localStorage.getItem('aigym_user') || sessionStorage.getItem('aigym_user');
+    if (storedToken) {
+      try {
+        const { default: api } = await import('../utils/api');
+        const res = await api.get('/auth/me');
+        if (res.data?.user) {
+          const parsed = storedUser ? JSON.parse(storedUser) : {};
+          const refreshed = { ...parsed, ...res.data.user };
+          setUser(refreshed);
+          localStorage.setItem('aigym_user', JSON.stringify(refreshed));
+          return;
+        }
+      } catch {}
+    }
     if (storedToken && storedUser) {
       try {
         setToken(storedToken);

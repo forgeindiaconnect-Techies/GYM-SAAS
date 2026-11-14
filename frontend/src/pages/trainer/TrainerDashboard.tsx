@@ -4,7 +4,7 @@ import {
   Loader2, Bot, CheckCircle2, Eye,
   Activity, Dumbbell, TrendingUp,
   MessageSquare, Check, X, Clock, FileText,
-  Award, Bell, Star, UtensilsCrossed
+  Award, Bell, Star, UtensilsCrossed, CalendarCheck, CheckCircle, XCircle
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
@@ -22,6 +22,29 @@ const TrainerDashboard = () => {
   const [dashboardSummary, setDashboardSummary] = useState<any>(null);
   const [trainerProfile, setTrainerProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [markingAttendanceId, setMarkingAttendanceId] = useState<string | null>(null);
+
+  const handleDashboardMarkAttendance = async (sessionId: string, newStatus: 'Present' | 'Absent') => {
+    try {
+      setMarkingAttendanceId(sessionId);
+      const res = await api.patch(`/trainer-sessions/${sessionId}/attendance`, {
+        attendanceStatus: newStatus,
+        checkInTime: newStatus === 'Present' ? new Date().toISOString() : undefined
+      });
+      if (res.data?.success) {
+        setSessions(prev => prev.map(s => s._id === sessionId ? {
+          ...s,
+          attendanceStatus: newStatus,
+          status: newStatus === 'Present' ? 'Completed' : s.status,
+          checkInTime: newStatus === 'Present' ? (s.checkInTime || new Date().toISOString()) : s.checkInTime
+        } : s));
+      }
+    } catch (err: any) {
+      alert(err.response?.data?.message || 'Failed to update attendance');
+    } finally {
+      setMarkingAttendanceId(null);
+    }
+  };
 
   useEffect(() => {
     fetchDashboardData();
@@ -370,6 +393,120 @@ const TrainerDashboard = () => {
                           )}
                         </div>
                       )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          {/* DEDICATED SECTION: Client Attendance Marking (Requirement 10) */}
+          <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#F8FAFC] pb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold border border-emerald-200">
+                  <CalendarCheck size={22} />
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-[#111827] flex items-center gap-2">
+                    Client Attendance Marking
+                    <span className="px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5]">
+                      {sessions.length} Scheduled
+                    </span>
+                  </h2>
+                  <p className="text-xs text-[#64748B] mt-0.5">
+                    Mark attendance for your assigned clients and scheduled training sessions.
+                  </p>
+                </div>
+              </div>
+
+              <Link
+                to="/trainer/attendance"
+                className="text-xs text-[#EA580C] font-bold hover:underline flex items-center gap-1 self-start sm:self-center cursor-pointer"
+              >
+                View Full Attendance Roster →
+              </Link>
+            </div>
+
+            {sessions.length === 0 ? (
+              <div className="text-center py-10 text-[#64748B] bg-[#F8FAFC] border border-dashed border-[#E2E8F0] rounded-2xl p-6">
+                <CalendarCheck size={32} className="text-[#64748B] mx-auto mb-2" />
+                <h4 className="font-bold text-sm text-[#111827]">No Sessions Scheduled</h4>
+                <p className="text-xs text-[#64748B] mt-1">
+                  Once clients book training sessions with you, they will appear here for daily attendance marking.
+                </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {sessions.slice(0, 6).map((session) => {
+                  const currentStatus = session.attendanceStatus || (session.status === 'Completed' ? 'Present' : 'Pending');
+                  const isPresent = currentStatus === 'Present';
+                  const isAbsent = currentStatus === 'Absent';
+                  const clientName = session.customerId
+                    ? `${session.customerId.firstName || ''} ${session.customerId.lastName || ''}`.trim()
+                    : (session.customerName || 'Assigned Client');
+
+                  return (
+                    <div
+                      key={session._id}
+                      className="border border-[#E2E8F0] rounded-2xl p-4 bg-[#F8FAFC] hover:bg-[#FFFFFF] transition-all shadow-xs flex flex-col justify-between space-y-3"
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <div className="w-9 h-9 rounded-full bg-[#FFF7ED] text-[#EA580C] flex items-center justify-center font-bold text-xs shrink-0 overflow-hidden border border-[#FFEDD5]">
+                            {session.customerId?.profilePhoto ? (
+                              <img src={session.customerId.profilePhoto} alt={clientName} className="w-full h-full object-cover rounded-full" />
+                            ) : (
+                              clientName[0] || 'C'
+                            )}
+                          </div>
+                          <div className="min-w-0">
+                            <h4 className="font-bold text-sm text-[#111827] truncate">{clientName}</h4>
+                            <p className="text-[11px] text-[#64748B] truncate">{session.date} • {session.startTime} - {session.endTime}</p>
+                          </div>
+                        </div>
+
+                        <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full border ${
+                          isPresent ? 'bg-emerald-50 text-emerald-700 border-emerald-300' :
+                          isAbsent ? 'bg-rose-50 text-rose-700 border-rose-300' :
+                          'bg-amber-50 text-amber-700 border-amber-300'
+                        }`}>
+                          {currentStatus}
+                        </span>
+                      </div>
+
+                      {session.bookingId && (
+                        <div className="text-[10px] text-[#64748B] font-mono flex items-center justify-between">
+                          <span>Booking: <strong>{session.bookingId}</strong></span>
+                          <span className="capitalize text-[#EA580C] font-semibold">{session.mode || 'Offline'}</span>
+                        </div>
+                      )}
+
+                      {/* Attendance Action Controls: Never repeat the current status */}
+                      <div className="flex items-center gap-2 pt-2 border-t border-[#E2E8F0]">
+                        {currentStatus !== 'Present' && (
+                          <button
+                            type="button"
+                            disabled={markingAttendanceId === session._id}
+                            onClick={() => handleDashboardMarkAttendance(session._id, 'Present')}
+                            className="flex-1 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 bg-emerald-50 text-emerald-700 hover:bg-emerald-600 hover:text-white border border-emerald-300 cursor-pointer shadow-2xs"
+                          >
+                            <CheckCircle size={13} />
+                            <span>Mark Present</span>
+                          </button>
+                        )}
+                        {currentStatus !== 'Absent' && (
+                          <button
+                            type="button"
+                            disabled={markingAttendanceId === session._id}
+                            onClick={() => handleDashboardMarkAttendance(session._id, 'Absent')}
+                            className="flex-1 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 bg-rose-50 text-rose-700 hover:bg-rose-600 hover:text-white border border-rose-300 cursor-pointer shadow-2xs"
+                          >
+                            <XCircle size={13} />
+                            <span>Mark Absent</span>
+                          </button>
+                        )}
+                      </div>
                     </div>
                   );
                 })}

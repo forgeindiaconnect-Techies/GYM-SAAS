@@ -333,7 +333,7 @@ const GymAdminPendingTrainerPayments = () => {
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-[#64748B] mb-1">Payment Date *</label>
-                  <input type="date" value={payForm.paymentDate} onChange={e => setPayForm({ ...payForm, paymentDate: e.target.value })} className="w-full border border-[#F8FAFC] rounded-xl px-3 py-2 text-sm outline-none focus:border-[#FDBA74]" />
+                  <input type="date" value={payForm.paymentDate} onChange={e => setPayForm({ ...payForm, paymentDate: e.target.value })} onClick={(e) => { try { e.currentTarget.showPicker?.(); } catch {} }} className="w-full border border-[#F8FAFC] rounded-xl px-3 py-2 text-sm outline-none focus:border-[#FDBA74] cursor-pointer" />
                 </div>
               </div>
 

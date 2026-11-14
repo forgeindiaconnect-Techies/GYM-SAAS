@@ -28,6 +28,28 @@
   ==============================================================
 */
 
+/* Hide Edge and IE native password reveal icons to prevent duplicate eye icons */
+input::-ms-reveal,
+input::-ms-clear {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* Hide native WebKit calendar picker indicator to prevent duplicate calendar icon */
+.no-calendar-indicator::-webkit-calendar-picker-indicator,
+input.no-calendar-indicator::-webkit-calendar-picker-indicator {
+  display: none !important;
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  opacity: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  pointer-events: none !important;
+}
+
 @theme {
   --color-primary: #F97316;
   --color-primary-dark: #EA580C;

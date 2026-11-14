@@ -267,18 +267,11 @@ const PrivacyPolicy = () => {
           </div>
         )}
 
-        {/* Footer Back */}
+        {/* Footer */}
         <div className="mt-16 pt-8 border-t border-[#E2E8F0] flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-[#64748B] text-xs sm:text-sm text-center sm:text-left">
             © 2026 Gymora. Dedicated to member privacy, fitness data security, and platform transparency.
           </p>
-          <button
-            onClick={handleBack}
-            className="flex items-center gap-2 px-5 py-2.5 bg-[#C2410C] hover:bg-[#9A3412] text-white text-xs sm:text-sm font-bold rounded-xl transition-all shadow-md"
-          >
-            <ArrowLeft size={16} />
-            <span>{returnLabel}</span>
-          </button>
         </div>
       </main>
     </div>

@@ -321,13 +321,6 @@ const GymAdminEquipment = () => {
                 <h3 className="text-lg font-bold text-[#111827]">{eq.name}</h3>
                 <p className="text-sm text-[#64748B] mt-0.5">{eq.brand || `Quantity: ${eq.quantity || 1}`}</p>
               </div>
-              <button 
-                onClick={() => handleEditClick(eq)} 
-                className="text-[#64748B] hover:text-[#EA580C] hover:bg-[#FFF7ED] p-1.5 rounded-lg transition-colors"
-                title="Edit Equipment"
-              >
-                <Edit2 size={18} />
-              </button>
             </div>
 
             <div className="space-y-4">

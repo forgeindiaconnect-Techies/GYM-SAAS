@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import {
   ArrowLeft, Loader2, ShieldCheck, FileText, CreditCard,
   QrCode, Landmark, Banknote, CheckCircle2, Sparkles, Building2,
-  Gift, Tag, AlertCircle, Mail, Receipt, ExternalLink, Coins
+  Gift, Tag, AlertCircle, Mail, Receipt, ExternalLink, Coins, Clock
 } from 'lucide-react';
 import QRCode from 'react-qr-code';
 import api from '../../utils/api';
@@ -20,7 +20,7 @@ const PAYMENT_METHODS = [
 const GymCheckout = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, isAuthenticated, refreshUser } = useAuth();
+  const { user, isAuthenticated, refreshUser, updateUser } = useAuth();
 
   const [gym, setGym] = useState<any>(null);
   const [branch, setBranch] = useState<any>(null);
@@ -66,7 +66,7 @@ const GymCheckout = () => {
         } else if (pts >= 100) {
           setPointsToRedeem(pts);
         }
-      }).catch(() => {});
+      }).catch(() => { });
     }
 
     // Expect state to be passed from GymDetails
@@ -79,7 +79,7 @@ const GymCheckout = () => {
           setPlan(parsed.plan);
           setBranch(parsed.branch);
           if (parsed.gym?._id) {
-            api.get(`/referrals/settings/public?gymId=${parsed.gym._id}`).then(res => setRewardSettings(res.data?.settings)).catch(() => {});
+            api.get(`/referrals/settings/public?gymId=${parsed.gym._id}`).then(res => setRewardSettings(res.data?.settings)).catch(() => { });
           }
           return;
         } catch {
@@ -98,7 +98,7 @@ const GymCheckout = () => {
     setBranch(branchData);
 
     if (gymData?._id) {
-      api.get(`/referrals/settings/public?gymId=${gymData._id}`).then(res => setRewardSettings(res.data?.settings)).catch(() => {});
+      api.get(`/referrals/settings/public?gymId=${gymData._id}`).then(res => setRewardSettings(res.data?.settings)).catch(() => { });
     }
 
     const isPaid = Number(planData.price || 0) > 0 && !planData.name?.toLowerCase().includes('trial');
@@ -168,12 +168,12 @@ const GymCheckout = () => {
 
   const numPrice = Number(plan.price) || 0;
   const isFreeTrial = numPrice === 0 || plan.name?.toLowerCase().includes('trial');
-  
+
   // Calculate Referral Discount
   const rawDiscount = appliedReferral
     ? (appliedReferral.refereeReward?.discountType === 'Percentage'
-        ? (numPrice * (appliedReferral.refereeReward?.value || 0)) / 100
-        : (appliedReferral.refereeReward?.value || 0))
+      ? (numPrice * (appliedReferral.refereeReward?.value || 0)) / 100
+      : (appliedReferral.refereeReward?.value || 0))
     : 0;
   const referralDiscount = isFreeTrial ? 0 : Math.min(numPrice, Math.round(rawDiscount));
 
@@ -237,6 +237,15 @@ const GymCheckout = () => {
       const res = await api.post('/memberships/join', payload);
 
       sessionStorage.removeItem('checkout_intent');
+      if (updateUser) {
+        updateUser({
+          approvalStatus: 'PENDING',
+          subscriptionStatus: 'Pending',
+          gymId: gym._id,
+          gymName: gym.name,
+          subscriptionPlan: plan.name,
+        });
+      }
       if (refreshUser) await refreshUser();
 
       setPaymentSuccess({
@@ -344,19 +353,18 @@ const GymCheckout = () => {
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-3 relative z-10">
+          <div className="bg-amber-50 border border-amber-300 rounded-2xl p-4 text-xs text-amber-900 flex items-center justify-center gap-2.5 font-semibold relative z-10 text-left">
+            <Clock size={18} className="text-amber-700 shrink-0 animate-pulse" />
+            <span>Account Status: <strong>Pending Admin Approval</strong>. Once the gym administrator approves your registration, full customer dashboard access will be unlocked.</span>
+          </div>
+
+          <div className="flex flex-col gap-3 relative z-10">
             <button
               onClick={() => navigate('/member/subscription')}
-              className="flex-1 py-3.5 bg-[#C2410C] hover:bg-[#9A3412] text-[#FFFFFF] font-bold rounded-xl transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full py-3.5 bg-[#C2410C] hover:bg-[#9A3412] text-[#FFFFFF] font-bold rounded-xl transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer"
             >
               <span>View My Membership</span>
               <ExternalLink size={16} />
-            </button>
-            <button
-              onClick={() => navigate('/member/dashboard')}
-              className="py-3.5 px-6 bg-[#FFFFFF] hover:bg-[#FFF7ED] border border-[#E2E8F0] text-[#334155] font-semibold rounded-xl transition-all cursor-pointer"
-            >
-              Dashboard
             </button>
           </div>
         </div>
@@ -371,7 +379,7 @@ const GymCheckout = () => {
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[#FFF7ED] rounded-full blur-3xl pointer-events-none" />
 
       <div className="relative z-10 max-w-5xl mx-auto flex flex-col lg:flex-row gap-8">
-        
+
         {/* Left Column - Payment Details */}
         <div className="flex-1 space-y-6">
           <button
@@ -380,7 +388,7 @@ const GymCheckout = () => {
           >
             <ArrowLeft size={16} /> Back to Gym Details
           </button>
-          
+
           <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6">
             <div className="border-b border-[#E2E8F0] pb-4 flex items-center justify-between">
               <div>
@@ -423,11 +431,10 @@ const GymCheckout = () => {
                           key={method.id}
                           type="button"
                           onClick={() => setPaymentMethod(method.id as any)}
-                          className={`p-4 rounded-2xl border text-left transition-all flex items-start gap-3.5 cursor-pointer ${
-                            isSelected
-                              ? 'border-[#FDBA74] bg-[#FFF7ED] ring-1 ring-[#F97316]'
-                              : 'border-[#E2E8F0] bg-[#F8FAFC] hover:border-[#FFEDD5] hover:bg-[#FFFFFF]'
-                          }`}
+                          className={`p-4 rounded-2xl border text-left transition-all flex items-start gap-3.5 cursor-pointer ${isSelected
+                            ? 'border-[#FDBA74] bg-[#FFF7ED] ring-1 ring-[#F97316]'
+                            : 'border-[#E2E8F0] bg-[#F8FAFC] hover:border-[#FFEDD5] hover:bg-[#FFFFFF]'
+                            }`}
                         >
                           <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${isSelected ? 'bg-[#C2410C] text-white' : 'bg-[#F8FAFC] text-[#64748B]'}`}>
                             <Icon size={18} />
@@ -550,14 +557,13 @@ const GymCheckout = () => {
               </div>
             )}
 
-            <button 
+            <button
               disabled={isProcessing}
               onClick={handleCheckout}
-              className={`w-full py-4 rounded-2xl font-bold text-base flex items-center justify-center space-x-2 transition-all shadow-lg ${
-                isProcessing
-                  ? 'bg-[#E2E8F0] text-[#64748B] cursor-not-allowed'
-                  : 'bg-[#C2410C] text-white hover:bg-[#9A3412] cursor-pointer'
-              }`}
+              className={`w-full py-4 rounded-2xl font-bold text-base flex items-center justify-center space-x-2 transition-all shadow-lg ${isProcessing
+                ? 'bg-[#E2E8F0] text-[#64748B] cursor-not-allowed'
+                : 'bg-[#C2410C] text-white hover:bg-[#9A3412] cursor-pointer'
+                }`}
             >
               {isProcessing ? (
                 <span className="flex items-center gap-2">
@@ -579,7 +585,7 @@ const GymCheckout = () => {
               <FileText className="text-[#EA580C]" size={19} />
               Order Summary
             </h3>
-            
+
             <div className="space-y-3.5 text-sm">
               <div className="flex items-start gap-3">
                 <Building2 size={18} className="text-[#EA580C] shrink-0 mt-0.5" />
@@ -588,9 +594,9 @@ const GymCheckout = () => {
                   <p className="text-xs text-[#64748B]">{branch?.branchName ? `${branch.branchName} • ` : ''}{gym.location?.city || 'India'}</p>
                 </div>
               </div>
-              
+
               <div className="w-full h-px bg-[#E2E8F0]"></div>
-              
+
               <div className="bg-[#F8FAFC] p-3.5 rounded-2xl border border-[#E2E8F0] space-y-1">
                 <div className="flex items-center justify-between">
                   <span className="font-bold text-sm text-[#111827]">{plan.name}</span>
@@ -737,7 +743,7 @@ const GymCheckout = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className="mt-4 flex items-start gap-2 text-[11px] text-[#64748B] bg-[#F8FAFC] p-3 rounded-xl border border-[#E2E8F0]">
               <ShieldCheck size={14} className="shrink-0 text-[#15803D] mt-0.5" />
               <p>Safe & Encrypted checkout. Instant membership activation with automated confirmation email.</p>

@@ -325,7 +325,6 @@ export const joinGym = async (req: AuthRequest, res: Response): Promise<void> =>
       membershipId: membershipIdCode,
       receiptNumber: receiptNumberCode,
       orderId: orderIdCode,
-      fitnessGoal: verifiedFitnessGoal || undefined,
       billingPlan: packageId ? (billingPlan === 'annual' ? 'annual' : 'monthly') : undefined,
       planName: planName || (isFreeTrial ? 'Free Trial' : 'Standard'),
       packageDescription: verifiedDescription || undefined,
@@ -338,7 +337,9 @@ export const joinGym = async (req: AuthRequest, res: Response): Promise<void> =>
       paymentMethod: isFreeTrial ? 'Free Trial' : (paymentMethod || 'UPI'),
       paymentReference: finalTxnReference,
       paymentProofUrl,
-      status: isFreeTrial ? CustomerMembershipStatus.FREE_TRIAL : CustomerMembershipStatus.ACTIVE,
+      fitnessGoal: verifiedFitnessGoal || fitnessGoal || undefined,
+      fitnessGoals: Array.isArray(req.body.fitnessGoals) ? req.body.fitnessGoals : (fitnessGoal ? [fitnessGoal] : []),
+      status: CustomerMembershipStatus.PENDING_APPROVAL,
       startDate: startDate,
       endDate: endDate,
       confirmationEmailStatus: 'Pending',
@@ -348,9 +349,9 @@ export const joinGym = async (req: AuthRequest, res: Response): Promise<void> =>
 
     const userDoc = await User.findByIdAndUpdate(userId, {
       $set: {
-        paymentStatus: 'Approved',
-        approvalStatus: ApprovalStatus.APPROVED,
-        subscriptionStatus: isFreeTrial ? SubscriptionStatus.FREE_TRIAL : SubscriptionStatus.ACTIVE,
+        paymentStatus: 'Pending Verification',
+        approvalStatus: ApprovalStatus.PENDING,
+        subscriptionStatus: SubscriptionStatus.PENDING,
         subscriptionPlan: planName || (isFreeTrial ? 'Free Trial' : 'Standard'),
         subscriptionExpiry: endDate,
         subscriptionExpiryDate: endDate,
@@ -458,7 +459,8 @@ export const joinGym = async (req: AuthRequest, res: Response): Promise<void> =>
     res.status(201).json({
       success: true,
       message: isFreeTrial ? 'Free trial activated successfully' : `${planName} activated successfully!`,
-      membership
+      membership,
+      user: userDoc
     });
   } catch (error: any) {
     res.status(500).json({ success: false, message: 'Server error', error: error.message });

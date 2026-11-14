@@ -22,15 +22,20 @@ export const resumeUpload = multer({
     const allowedMimes = [
       'application/pdf',
       'application/msword',
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-      'image/jpeg',
-      'image/png',
-      'image/webp'
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
     ];
-    if (allowedMimes.includes(file.mimetype) || file.originalname.match(/\.(pdf|doc|docx|jpg|jpeg|png)$/i)) {
+    const isDocExt = file.originalname.match(/\.(pdf|doc|docx)$/i);
+    const isDocMime = allowedMimes.includes(file.mimetype);
+
+    // Reject all images, screenshots, and unsupported files
+    if (file.mimetype.startsWith('image/') || file.originalname.match(/\.(jpg|jpeg|png|webp|gif|bmp|svg)$/i)) {
+      return cb(new Error('Screenshots and image files are not accepted. Only PDF (.pdf) and Word documents (.doc, .docx) are allowed as resumes.'));
+    }
+
+    if (isDocMime || isDocExt) {
       cb(null, true);
     } else {
-      cb(new Error('Only PDF, Word documents (.doc, .docx) or image files are allowed for resumes.'));
+      cb(new Error('Invalid document format. Only PDF (.pdf) and Word documents (.doc, .docx) up to 10MB are allowed for resumes.'));
     }
   },
 });

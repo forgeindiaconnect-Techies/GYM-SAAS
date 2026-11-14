@@ -769,10 +769,30 @@ export default function TrainerFindJobs() {
                 <input
                   type="file"
                   required
-                  accept=".pdf,.doc,.docx,image/*"
+                  accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                   onChange={(e) => {
                     if (e.target.files && e.target.files[0]) {
-                      setResumeFile(e.target.files[0]);
+                      const file = e.target.files[0];
+                      const isImg = file.type.startsWith('image/') || file.name.match(/\.(jpg|jpeg|png|webp|gif|bmp|svg)$/i);
+                      if (isImg) {
+                        alert('Screenshots and image files are not accepted. Please upload your resume in PDF (.pdf) or Word (.doc, .docx) format.');
+                        e.target.value = '';
+                        setResumeFile(null);
+                        return;
+                      }
+                      if (!file.name.match(/\.(pdf|doc|docx)$/i)) {
+                        alert('Invalid document format. Only PDF (.pdf) and Word documents (.doc, .docx) are allowed.');
+                        e.target.value = '';
+                        setResumeFile(null);
+                        return;
+                      }
+                      if (file.size > 10 * 1024 * 1024) {
+                        alert('Resume file size exceeds the 10MB limit.');
+                        e.target.value = '';
+                        setResumeFile(null);
+                        return;
+                      }
+                      setResumeFile(file);
                     }
                   }}
                   className="w-full text-[#64748B] text-xs file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-[#C2410C] file:text-white hover:file:bg-[#9A3412] cursor-pointer"
