@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Search, Loader2, AlertCircle, User, Building2, Trash2, Mail,
   Eye, X, Phone, Calendar, Clock, MapPin, Copy, Check, ShieldAlert

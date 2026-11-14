@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { X, Save, UserCheck } from 'lucide-react';
 
 interface Props {
