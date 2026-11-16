@@ -16,6 +16,13 @@ import { authenticate, authorize, optionalAuthenticate } from '../middlewares/au
 
 const router = express.Router();
 
+// General Recommendations Route (dispatches by role)
+router.get('/recommendations', authenticate, (req: any, res: any) => {
+  if (req.user?.role === 'MEMBER') return getLatestRecommendation(req, res);
+  if (req.user?.role === 'TRAINER') return getTrainerRecommendations(req, res);
+  return getAdminRecommendations(req, res);
+});
+
 // Member Routes
 router.post('/member/generate', authenticate, authorize(['MEMBER']), generateRecommendation);
 router.get('/member/latest', authenticate, authorize(['MEMBER']), getLatestRecommendation);

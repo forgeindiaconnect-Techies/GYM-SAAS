@@ -439,15 +439,6 @@ const GymOwnerPortalLanding = () => {
 
             {/* Navigation Action Buttons */}
             <div className="flex items-center gap-[0.55vw] h-full">
-              <Link
-                to="/"
-                style={{ WebkitTapHighlightColor: 'transparent' }}
-                className="h-full px-[1.2vw] rounded-full bg-[#EA580C] hover:bg-[#D94806] text-white font-extrabold text-[clamp(11px,1.02vw,15px)] flex items-center justify-center leading-none gap-1.5 shadow-sm active:scale-95 transition-all outline-none"
-              >
-                <ArrowLeft className="w-[1.1vw] h-[1.1vw] min-w-[13px] min-h-[13px] stroke-[2.5]" />
-                <span>Back</span>
-              </Link>
-
               <button
                 type="button"
                 onClick={() => { setTourStep(1); setIsTourOpen(true); }}
@@ -573,14 +564,6 @@ const GymOwnerPortalLanding = () => {
                 {/* Mobile Quick Action Touch Bar (ensures effortless tap access on smaller mobile screens) */}
         <div className="block sm:hidden px-3.5 py-3 bg-[#FFF7ED] border-y border-[#FFEDD5]">
           <div className="flex items-center justify-between gap-2">
-            <Link
-              to="/"
-              className="px-3 py-2 rounded-xl text-xs font-bold text-[#FFFFFF] bg-[#EA580C] active:scale-95 flex items-center gap-1 shadow-sm"
-            >
-              <ArrowLeft size={13} />
-              <span>Back</span>
-            </Link>
-
             <button
               type="button"
               onClick={() => { setTourStep(1); setIsTourOpen(true); }}

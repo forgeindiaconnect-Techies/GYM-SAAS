@@ -362,15 +362,9 @@ const GymOwnerRegisterPage = () => {
             <div className="flex items-center gap-3">
               <Link
                 to="/login"
-                className="flex-1 py-2.5 bg-[#F8FAFC] hover:bg-[#E2E8F0] text-[#111827] font-bold rounded-xl text-xs transition-colors text-center border border-[#E2E8F0]"
+                className="w-full py-2.5 bg-[#F8FAFC] hover:bg-[#E2E8F0] text-[#111827] font-bold rounded-xl text-xs transition-colors text-center border border-[#E2E8F0]"
               >
                 Go to Login
-              </Link>
-              <Link
-                to="/"
-                className="flex-1 py-2.5 bg-[#F8FAFC] hover:bg-[#E2E8F0] text-[#111827] font-bold rounded-xl text-xs transition-colors text-center border border-[#E2E8F0]"
-              >
-                Back to Home
               </Link>
             </div>
           </div>

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export const LIVE_RENDER_API_URL = 'https://gym-saas-35l3.onrender.com/api';
+export const LIVE_RENDER_API_URL = 'https://gym-saas-vu70.onrender.com/api';
 export const LOCAL_WIFI_API_URL = 'http://192.168.1.29:5600/api';
 export const LOCALHOST_API_URL = 'http://localhost:5600/api';
 

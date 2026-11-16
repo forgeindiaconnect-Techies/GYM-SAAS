@@ -536,7 +536,7 @@ export const TourSlide = ({ journey, step, setJourney, onNavigate }: { journey: 
       {
         id: 3, title: 'Superadmin Review', desc: 'We verify every partner to ensure quality',
         render: () => (
-          <div className="w-full max-w-xl bg-[#FFFFFF] rounded-2xl shadow-2xl p-8 animate-in fade-in slide-in-from-right-10">
+          <div className="w-full max-w-xl mx-auto bg-[#FFFFFF] rounded-2xl shadow-2xl p-8 animate-in fade-in zoom-in">
             <div className="flex flex-col items-center">
               <div className="relative mb-8">
                 <div className="w-24 h-24 rounded-full border-4 border-yellow-400 border-t-transparent animate-spin"></div>

@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { clsx } from 'clsx';
 import { useAuth } from '../contexts/AuthContext';
+import api from '../utils/api';
 import { ExpiryPopup } from '../components/ExpiryPopup';
 import GymSmartAssistant from '../components/GymSmartAssistant';
 import {
@@ -124,6 +125,47 @@ const GymAdminLayout = () => {
       });
     }
   }, [user]);
+
+  const routePrefetchMap: Record<string, string[]> = {
+    '/admin/dashboard': ['/memberships/gym', '/users?role=MEMBER', '/trainers', '/trainer-sessions/gym', '/store/admin/sales', '/notifications'],
+    '/admin/trainers': ['/trainers', '/trainers/invitations/list'],
+    '/admin/members': ['/users?role=MEMBER', '/memberships/gym', '/trainers'],
+    '/admin/hiring/jobs': ['/hiring/jobs'],
+    '/admin/hiring/applications': ['/hiring/applications'],
+    '/admin/enquiries': ['/enquiries'],
+    '/admin/exercises': ['/exercises'],
+    '/admin/equipment': ['/branches', '/gyms'],
+    '/admin/membership-plans': ['/gym-packages', '/subscriptions'],
+    '/admin/payments': ['/payments/gym'],
+    '/admin/store': ['/store/admin/sales', '/store/products'],
+    '/admin/store/products': ['/store/products'],
+    '/admin/store/inventory': ['/store/products', '/store/inventory'],
+    '/admin/store/orders': ['/store/orders'],
+    '/admin/revenue-analytics': ['/analytics/revenue'],
+    '/admin/reports': ['/reports/summary'],
+    '/admin/notifications': ['/notifications'],
+    '/admin/reviews': ['/reviews/gym'],
+    '/admin/branches': ['/branches'],
+  };
+
+  const handlePrefetch = (path: string) => {
+    const endpoints = routePrefetchMap[path];
+    if (endpoints && Array.isArray(endpoints)) {
+      endpoints.forEach(ep => {
+        (api as any).prefetch(ep);
+      });
+    }
+  };
+
+  useEffect(() => {
+    // Prime the top dashboard routes in background after idle
+    const timer = setTimeout(() => {
+      ['/admin/dashboard', '/admin/members', '/admin/trainers', '/admin/enquiries', '/admin/equipment'].forEach(p => {
+        routePrefetchMap[p]?.forEach(ep => (api as any).prefetch(ep));
+      });
+    }, 400);
+    return () => clearTimeout(timer);
+  }, []);
 
   const getNavGroups = () => {
     const groups = [
@@ -335,6 +377,7 @@ const GymAdminLayout = () => {
                     <Link
                       key={item.path}
                       to={item.path}
+                      onMouseEnter={() => handlePrefetch(item.path)}
                       onClick={() => setSidebarOpen(false)}
                       className={clsx(
                         'flex items-center space-x-3 px-3 py-2 rounded-xl transition-all duration-150 text-sm font-medium group',

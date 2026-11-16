@@ -23,7 +23,12 @@ const router = express.Router();
 const staffAuth = authorize(['GYM_OWNER', 'GYM_MANAGER', 'ADMIN', 'SUPER_ADMIN']);
 
 router.post('/', authenticate, authorize(['SUPER_ADMIN', 'ADMIN', 'GYM_OWNER']), createGym);
-router.get('/', authenticate, authorize(['SUPER_ADMIN', 'ADMIN']), getGyms);
+router.get('/', authenticate, (req: any, res: any, next: any) => {
+  if (req.user?.role === 'MEMBER') {
+    return getMyGym(req, res);
+  }
+  return authorize(['SUPER_ADMIN', 'ADMIN', 'GYM_OWNER'])(req, res, () => getGyms(req, res));
+});
 router.get('/public', getPublicGyms);
 router.get('/platform-stats', getPlatformStats);
 router.get('/community-testimonials', getCommunityTestimonials);

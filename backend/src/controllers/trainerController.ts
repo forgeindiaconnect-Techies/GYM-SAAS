@@ -145,8 +145,8 @@ export const manualAddTrainer = async (req: AuthRequest, res: Response): Promise
           normalizedStatus === 'Pending'
             ? ApprovalStatus.PENDING
             : normalizedStatus === 'Inactive' || normalizedStatus === 'Suspended'
-            ? ApprovalStatus.SUSPENDED
-            : ApprovalStatus.APPROVED
+              ? ApprovalStatus.SUSPENDED
+              : ApprovalStatus.APPROVED
       });
 
       await user.save();
@@ -256,7 +256,7 @@ export const inviteTrainer = async (req: AuthRequest, res: Response): Promise<vo
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
 
     const gym = await Gym.findById(resolvedGymId);
-    
+
     if (gym && gym.trainingMode !== 'both' && trainingMode !== 'both' && gym.trainingMode !== trainingMode) {
       res.status(400).json({ success: false, message: `Trainer mode ${trainingMode} is not supported by this gym (${gym.trainingMode})` });
       return;
@@ -292,7 +292,7 @@ export const verifyInvitation = async (req: AuthRequest, res: Response): Promise
     const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
 
     const invitation = await TrainerInvitation.findOne({ tokenHash }).populate('gymId', 'name location trainingMode');
-    
+
     if (!invitation) {
       res.status(404).json({ success: false, message: 'Invalid invitation link' });
       return;
@@ -334,7 +334,7 @@ export const acceptInvitation = async (req: AuthRequest, res: Response): Promise
 
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(password, salt);
-    
+
     const [firstName, ...lastNames] = name.split(' ');
     const lastName = lastNames.join(' ') || ' ';
 
@@ -430,7 +430,16 @@ export const getMyGymTrainers = async (req: AuthRequest, res: Response): Promise
 export const getTrainers = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const gymOwner = req.user;
-    if (!gymOwner || !isAuthorizedStaff(gymOwner.role)) {
+    if (!gymOwner) {
+      res.status(403).json({ success: false, message: 'Unauthorized' });
+      return;
+    }
+
+    if (gymOwner.role === Role.MEMBER) {
+      return getMyGymTrainers(req, res);
+    }
+
+    if (!isAuthorizedStaff(gymOwner.role)) {
       res.status(403).json({ success: false, message: 'Unauthorized' });
       return;
     }
@@ -740,14 +749,14 @@ export const updateTrainer = async (req: AuthRequest, res: Response): Promise<vo
 
     const { id } = req.params;
     const resolvedGymId = (await resolveGymId(req)) || gymOwner.gymId;
-    
+
     const allowedUpdates = [
       'name', 'phone', 'profilePhoto', 'specialization', 'experience',
       'trainingMode', 'qualifications', 'certifications', 'expertise',
       'bio', 'fee', 'paymentType', 'availableDays',
       'availableStartTime', 'availableEndTime', 'availableSlot', 'branchId'
     ];
-    
+
     const updateData: any = {};
     allowedUpdates.forEach(field => {
       if (req.body[field] !== undefined) updateData[field] = req.body[field];
@@ -908,12 +917,12 @@ export const getTrainerDashboardSummary = async (req: AuthRequest, res: Response
     ] = await Promise.all([
       assignedCustomerIds.length > 0
         ? User.countDocuments({
-            _id: { $in: assignedCustomerIds },
-            gymId: gymObjectId,
-            role: Role.MEMBER,
-            isActive: { $ne: false },
-            approvalStatus: { $ne: ApprovalStatus.DELETED },
-          } as any)
+          _id: { $in: assignedCustomerIds },
+          gymId: gymObjectId,
+          role: Role.MEMBER,
+          isActive: { $ne: false },
+          approvalStatus: { $ne: ApprovalStatus.DELETED },
+        } as any)
         : Promise.resolve(0),
       TrainerSession.countDocuments({
         gymId: gymObjectId,

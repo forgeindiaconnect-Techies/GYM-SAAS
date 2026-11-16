@@ -15,6 +15,7 @@ import { authenticate } from '../middlewares/auth';
 const router = express.Router();
 
 // Customer
+router.get('/my', authenticate, getMyPublishedPlan);
 router.get('/my-plan', authenticate, getMyPublishedPlan);
 
 // Trainer / Staff

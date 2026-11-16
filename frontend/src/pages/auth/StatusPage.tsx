@@ -1,4 +1,4 @@
-﻿import { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 import { Activity, Clock, Mail, LogOut, XCircle, AlertTriangle, ArrowLeft } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
@@ -132,30 +132,22 @@ const StatusPage = () => {
     <div className="min-h-screen bg-[#F8FAFC] flex flex-col justify-center px-4 relative">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(212,255,0,0.04)_0%,_transparent_60%)] pointer-events-none" />
 
-      {/* Top Left Back to Home / Landing Page Arrow */}
+      {/* Top Left Gymora Logo */}
       <Link 
         to="/" 
-        id="back-to-home-arrow"
-        className="absolute top-6 left-6 sm:top-8 sm:left-8 text-[#64748B] hover:text-[#EA580C] flex items-center gap-2.5 transition-all z-20 group"
-        title="Back to Landing Page"
+        className="absolute top-6 left-6 sm:top-8 sm:left-8 flex items-center gap-2.5 transition-all z-20 group"
+        title="Gymora Home"
       >
-        <div className="w-10 h-10 rounded-full bg-[#FFFFFF] border border-[#E2E8F0] flex items-center justify-center shadow-sm group-hover:border-[#FDBA74] group-hover:bg-[#FFF7ED] transition-all">
-          <ArrowLeft size={20} className="text-[#64748B] group-hover:text-[#EA580C] group-hover:-translate-x-0.5 transition-transform" />
+        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#EA580C] to-[#C2410C] flex items-center justify-center shadow-md group-hover:scale-105 transition-all">
+          <Activity size={22} className="text-white" strokeWidth={2.5} />
         </div>
-        <span className="font-semibold text-sm text-[#64748B] group-hover:text-[#EA580C]">Back to Landing Page</span>
+        <span className="font-bold text-lg text-[#111827] group-hover:text-[#EA580C] transition-colors">Gymora</span>
       </Link>
 
       <div className="relative z-10 w-full max-w-xl mx-auto">
         {renderContent()}
 
-        <div className="flex items-center justify-center space-x-6">
-          <Link 
-            to="/" 
-            className="flex items-center space-x-2 text-[#64748B] hover:text-[#EA580C] transition-colors text-sm font-medium"
-          >
-            <ArrowLeft size={16} /><span>Back to Landing Page</span>
-          </Link>
-          <span className="text-[#E2E8F0]">|</span>
+        <div className="flex items-center justify-center">
           <button onClick={logout} className="flex items-center space-x-2 text-[#64748B] hover:text-[#EA580C] transition-colors text-sm font-medium">
             <LogOut size={16} /><span>Sign out</span>
           </button>

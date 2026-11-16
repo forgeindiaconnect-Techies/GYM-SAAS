@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { clsx } from 'clsx';
 import { useAuth } from '../contexts/AuthContext';
+import api from '../utils/api';
 import GymSmartAssistant from '../components/GymSmartAssistant';
 import {
   LayoutDashboard, Building2, Send, User, LogOut,
@@ -43,6 +44,34 @@ const SuperAdminLayout = () => {
       ],
     },
   ];
+
+  const routePrefetchMap: Record<string, string[]> = {
+    '/super-admin/dashboard': ['/super-admin/stats', '/gyms', '/subscriptions'],
+    '/super-admin/gym-owners': ['/gyms', '/users?role=ADMIN'],
+    '/super-admin/invitations': ['/super-admin/invitations'],
+    '/super-admin/revenue-analytics': ['/super-admin/revenue-analytics'],
+    '/super-admin/subscriptions': ['/subscriptions'],
+    '/super-admin/notifications': ['/notifications'],
+    '/super-admin/profile': ['/auth/me'],
+  };
+
+  const handlePrefetch = (path: string) => {
+    const endpoints = routePrefetchMap[path];
+    if (endpoints && Array.isArray(endpoints)) {
+      endpoints.forEach(ep => {
+        (api as any).prefetch(ep);
+      });
+    }
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      ['/super-admin/dashboard', '/super-admin/gym-owners', '/super-admin/subscriptions'].forEach(p => {
+        routePrefetchMap[p]?.forEach(ep => (api as any).prefetch(ep));
+      });
+    }, 400);
+    return () => clearTimeout(timer);
+  }, []);
 
   const allNavItems = navGroups.flatMap(g => g.items);
   const currentNav = allNavItems.find(item => item.path === location.pathname);
@@ -99,6 +128,7 @@ const SuperAdminLayout = () => {
                   <Link
                     key={item.path}
                     to={item.path}
+                    onMouseEnter={() => handlePrefetch(item.path)}
                     onClick={() => setSidebarOpen(false)}
                     className={clsx(
                       'flex items-center space-x-3 px-3 py-2 rounded-xl transition-all duration-150 text-sm font-medium group',

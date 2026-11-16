@@ -494,20 +494,8 @@ export default function SuperAdminFeatureDetail() {
       <nav className="border-b border-[#E2E8F0] bg-[#FFFFFF]/95 backdrop-blur-md sticky top-0 z-40">
         <div className="max-w-[1600px] w-full mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <Link
-              to="/portal/super-admin"
-              className="flex items-center space-x-2 text-[#64748B] hover:text-[#C2410C] transition-colors group mr-4"
-            >
-              <div className="w-8 h-8 rounded-lg bg-[#FFFFFF] border border-[#E2E8F0] flex items-center justify-center group-hover:border-[#FFEDD5]">
-                <ArrowLeft size={16} className="text-[#EA580C]" />
-              </div>
-              <span className="text-xs font-semibold hidden sm:inline">Back to Super Admin</span>
-            </Link>
-
-            <div className="h-5 w-px bg-[#E2E8F0] hidden sm:block" />
-
-            <div className="flex items-center space-x-2">
-              <div className="w-9 h-9 bg-[#C2410C] rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/15">
+            <Link to="/portal/super-admin" className="flex items-center space-x-2 group">
+              <div className="w-9 h-9 bg-[#C2410C] rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/15 group-hover:scale-105 transition-transform">
                 <ShieldCheck className="text-black" size={20} />
               </div>
               <div>
@@ -516,7 +504,7 @@ export default function SuperAdminFeatureDetail() {
                   Super Admin Governance Suite
                 </span>
               </div>
-            </div>
+            </Link>
           </div>
 
           <div className="flex items-center space-x-3">

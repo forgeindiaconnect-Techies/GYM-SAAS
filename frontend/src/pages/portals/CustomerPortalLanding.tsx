@@ -257,13 +257,6 @@ const CustomerPortalLanding = () => {
 
           {/* Action Links */}
           <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
-            <Link
-              to="/"
-              className="px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold text-[#FFFFFF] bg-[#C2410C] hover:bg-[#9A3412] transition-all shadow-md shadow-orange-500/15 flex items-center gap-1 shrink-0"
-            >
-              <ArrowLeft size={14} className="sm:w-4 sm:h-4" />
-              <span>Back</span>
-            </Link>
             <button
               type="button"
               onClick={() => setIsFeaturesOpen(true)}
@@ -324,15 +317,6 @@ const CustomerPortalLanding = () => {
 
             {/* Navigation Action Buttons */}
             <div className="flex items-center gap-[0.55vw] h-full">
-              <Link
-                to="/"
-                style={{ WebkitTapHighlightColor: 'transparent' }}
-                className="h-full px-[1.2vw] rounded-full bg-[#EA580C] hover:bg-[#D94806] text-white font-extrabold text-[clamp(11px,1.02vw,15px)] flex items-center justify-center leading-none gap-1.5 shadow-sm active:scale-95 transition-all outline-none"
-              >
-                <ArrowLeft className="w-[1.1vw] h-[1.1vw] min-w-[13px] min-h-[13px] stroke-[2.5]" />
-                <span>Back</span>
-              </Link>
-
               <button
                 type="button"
                 onClick={() => setIsFeaturesOpen(true)}
@@ -505,14 +489,6 @@ const CustomerPortalLanding = () => {
         {/* Mobile Quick Action Touch Bar */}
         <div className="block sm:hidden px-3.5 py-3 bg-[#FFF7ED] border-y border-[#FFEDD5]">
           <div className="flex items-center justify-between gap-2">
-            <Link
-              to="/"
-              className="px-3.5 py-2 rounded-xl text-xs font-bold text-[#EA580C] bg-white border border-[#FFEDD5] active:scale-95 flex items-center gap-1 shadow-xs"
-            >
-              <ArrowLeft size={13} />
-              <span>Back</span>
-            </Link>
-
             <button
               type="button"
               onClick={() => setIsFeaturesOpen(true)}

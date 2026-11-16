@@ -119,6 +119,16 @@ export const getTrainerWorkoutPlans = async (req: AuthRequest, res: Response): P
 export const getWorkoutPlanById = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
+
+    if (id === 'my' || id === 'my-plan') {
+      return getMyPublishedPlan(req, res);
+    }
+
+    if (typeof id !== 'string' || !mongoose.Types.ObjectId.isValid(id)) {
+      res.status(404).json({ success: false, message: 'Workout plan not found' });
+      return;
+    }
+
     const plan = await WorkoutPlan.findById(id)
       .populate({
         path: 'workoutDays.exercises.exerciseId',

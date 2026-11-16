@@ -302,13 +302,6 @@ const SuperAdminPortalLanding = () => {
           {/* Action Links */}
           <div className="flex items-center gap-3">
             <Link
-              to="/"
-              className="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#FFFFFF] bg-[#C2410C] hover:bg-[#9A3412] transition-all shadow-md shadow-orange-500/15 flex items-center gap-1.5"
-            >
-              <ArrowLeft size={16} />
-              <span>Back</span>
-            </Link>
-            <Link
               to="/login?portal=super-admin"
               className="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#FFFFFF] bg-[#C2410C] hover:bg-[#9A3412] transition-all shadow-md shadow-orange-500/15 flex items-center gap-1.5"
             >
@@ -347,13 +340,6 @@ const SuperAdminPortalLanding = () => {
               >
                 <span>Super Admin Secure Login</span>
                 <ChevronRight size={18} />
-              </Link>
-              <Link
-                to="/"
-                className="w-full sm:w-auto px-7 py-3.5 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold rounded-xl transition-all flex items-center justify-center space-x-2 shadow-lg shadow-orange-500/15 hover:shadow-teal-500/30"
-              >
-                <ArrowLeft size={16} />
-                <span>Return to Public Home</span>
               </Link>
             </div>
 

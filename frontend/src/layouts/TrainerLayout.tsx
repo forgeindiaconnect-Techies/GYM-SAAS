@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { clsx } from 'clsx';
 import { useAuth } from '../contexts/AuthContext';
+import api from '../utils/api';
 import GymSmartAssistant from '../components/GymSmartAssistant';
 import {
   LayoutDashboard, User, Users, FileText,
@@ -37,6 +38,38 @@ const TrainerLayout = () => {
       });
     }
   }, [user]);
+
+  const routePrefetchMap: Record<string, string[]> = {
+    '/trainer/dashboard': ['/trainer-sessions/trainer', '/workout-plans', '/trainers/my-clients'],
+    '/trainer/profile': ['/auth/me'],
+    '/trainer/ai-assistant': ['/ai/recommendations'],
+    '/trainer/members': ['/trainers/my-clients'],
+    '/trainer/schedule': ['/trainer-sessions/trainer'],
+    '/trainer/workout-plans': ['/workout-plans'],
+    '/trainer/diet-plans': ['/diet-progress'],
+    '/trainer/equipments': ['/equipment'],
+    '/trainer/earnings': ['/trainer-payments/my'],
+    '/trainer/my-fee': ['/trainer-payments/fee'],
+    '/trainer/notifications': ['/notifications'],
+  };
+
+  const handlePrefetch = (path: string) => {
+    const endpoints = routePrefetchMap[path];
+    if (endpoints && Array.isArray(endpoints)) {
+      endpoints.forEach(ep => {
+        (api as any).prefetch(ep);
+      });
+    }
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      ['/trainer/dashboard', '/trainer/members', '/trainer/schedule', '/trainer/workout-plans'].forEach(p => {
+        routePrefetchMap[p]?.forEach(ep => (api as any).prefetch(ep));
+      });
+    }, 400);
+    return () => clearTimeout(timer);
+  }, []);
 
   const navGroups = [
     {
@@ -169,6 +202,7 @@ const TrainerLayout = () => {
                   <Link
                     key={item.path}
                     to={item.path}
+                    onMouseEnter={() => handlePrefetch(item.path)}
                     onClick={() => setSidebarOpen(false)}
                     className={clsx(
                       'flex items-center space-x-3 px-3 py-2 rounded-xl transition-all duration-150 text-sm font-medium group',

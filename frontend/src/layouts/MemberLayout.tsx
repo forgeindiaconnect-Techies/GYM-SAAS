@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { clsx } from 'clsx';
 import { useAuth } from '../contexts/AuthContext';
+import api from '../utils/api';
 import {
   LayoutDashboard, User, CreditCard, Dumbbell,
   Utensils, Bot, CalendarCheck,
@@ -157,6 +158,41 @@ const MemberLayout = () => {
     });
   }, [user]);
 
+  const routePrefetchMap: Record<string, string[]> = {
+    '/member/dashboard': ['/memberships/my', '/trainer-sessions/member', '/workout-plans/my-plan', '/diet-progress/my'],
+    '/member/my-gym': ['/gyms/my-gym', '/memberships/my'],
+    '/member/find-trainers': ['/trainers/my-gym'],
+    '/member/trainer-plan': ['/workout-plans/my-plan', '/diet-progress/my'],
+    '/member/ai-assistant': ['/ai/member/latest', '/workout-plans/my-plan'],
+    '/member/workout': ['/workout-plans/my-plan'],
+    '/member/diet': ['/diet-progress/my'],
+    '/member/attendance': ['/attendance/my'],
+    '/member/subscription': ['/memberships/my'],
+    '/member/payments': ['/payments/my'],
+    '/member/store': ['/store/products'],
+    '/member/referrals': ['/referrals/my'],
+    '/member/challenges': ['/challenges'],
+    '/member/bookings': ['/trainer-sessions/member'],
+  };
+
+  const handlePrefetch = (path: string) => {
+    const endpoints = routePrefetchMap[path];
+    if (endpoints && Array.isArray(endpoints)) {
+      endpoints.forEach(ep => {
+        (api as any).prefetch(ep);
+      });
+    }
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      ['/member/dashboard', '/member/workout', '/member/diet', '/member/find-trainers', '/member/subscription'].forEach(p => {
+        routePrefetchMap[p]?.forEach(ep => (api as any).prefetch(ep));
+      });
+    }, 400);
+    return () => clearTimeout(timer);
+  }, []);
+
   const navGroups = [
     {
       title: 'Overview',
@@ -304,6 +340,7 @@ const MemberLayout = () => {
                   <Link
                     key={item.path}
                     to={item.path}
+                    onMouseEnter={() => handlePrefetch(item.path)}
                     onClick={() => setSidebarOpen(false)}
                     className={clsx(
                       'flex items-center space-x-3 px-3 py-2 rounded-xl transition-all duration-150 text-sm font-medium group',
