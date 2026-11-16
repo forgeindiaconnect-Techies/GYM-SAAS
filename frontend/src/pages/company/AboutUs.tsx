@@ -1,4 +1,4 @@
-﻿import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Activity, ArrowLeft } from 'lucide-react';
 
 const AboutUs = () => {
@@ -11,9 +11,6 @@ const AboutUs = () => {
               <Activity className="text-black" size={20} />
             </div>
             <span className="text-xl font-bold tracking-tight text-[#EA580C]">Gymora</span>
-          </Link>
-          <Link to="/" className="text-sm font-medium text-[#64748B] hover:text-[#EA580C] flex items-center space-x-2">
-            <ArrowLeft size={16} /> <span>Back to Home</span>
           </Link>
         </div>
       </nav>

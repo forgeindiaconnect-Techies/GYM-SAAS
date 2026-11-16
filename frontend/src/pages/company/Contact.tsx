@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Activity, ArrowLeft, Mail, Phone, MapPin, CheckCircle2, AlertCircle, Loader2, Send } from 'lucide-react';
+import { Activity, Mail, Phone, MapPin, CheckCircle2, AlertCircle, Loader2, Send } from 'lucide-react';
 import api from '../../utils/api';
 
 const Contact = () => {
@@ -90,18 +90,12 @@ const Contact = () => {
     <div className="min-h-screen bg-[#F8FAFC] text-[#111827] selection:bg-[#C2410C] selection:text-[#111827]">
       <nav className="border-b border-[#E2E8F0] bg-[#FFFFFF]/80 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-          <Link to="/" className="flex items-center space-x-2 group">
+          <Link to={returnPath} className="flex items-center space-x-2 group">
             <div className="w-8 h-8 bg-[#C2410C] rounded-sm flex items-center justify-center group-hover:scale-105 transition-transform">
               <Activity className="text-black" size={20} />
             </div>
             <span className="text-xl font-bold tracking-tight text-[#EA580C]">Gymora</span>
           </Link>
-          <button
-            onClick={handleBack}
-            className="text-sm font-medium text-[#64748B] hover:text-[#EA580C] flex items-center space-x-2 transition-colors cursor-pointer"
-          >
-            <ArrowLeft size={16} /> <span>{returnLabel}</span>
-          </button>
         </div>
       </nav>
 

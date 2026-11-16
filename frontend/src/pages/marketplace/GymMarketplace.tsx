@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Star, MapPin, Search, Navigation, Activity, Loader2, Volume2, VolumeX, ChevronDown, ArrowLeft } from 'lucide-react';
+import { Star, MapPin, Search, Navigation, Activity, Loader2, Volume2, VolumeX, ChevronDown } from 'lucide-react';
 import api from '../../utils/api';
 import { CustomerEnquiryModal } from '../../components/CustomerEnquiryModal';
 
@@ -28,8 +28,6 @@ const GymMarketplace = () => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const location = useLocation();
 
-  const returnPath: string = (location.state as any)?.from || '/portal/customer';
-  const returnLabel: string = (location.state as any)?.fromLabel || (returnPath === '/' ? 'Back to Home' : 'Back to Customer');
 
   // If navigated here with openEnquiry state (from landing page "Enquire Now"), scroll to gyms
   useEffect(() => {
@@ -153,16 +151,6 @@ const GymMarketplace = () => {
             </div>
             <span className="text-2xl font-bold tracking-tight text-white group-hover:text-[#EA580C] transition-colors drop-shadow-md">Gymora</span>
           </Link>
-
-          <div className="flex items-center gap-3">
-            <Link 
-              to={returnPath} 
-              className="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#FFFFFF] bg-[#C2410C] hover:bg-[#9A3412] transition-all shadow-md shadow-orange-500/15 flex items-center gap-1.5"
-            >
-              <ArrowLeft size={16} />
-              <span>{returnLabel}</span>
-            </Link>
-          </div>
         </header>
 
         {/* YouTube Video Background with Enhanced Brightness & Clarity */}

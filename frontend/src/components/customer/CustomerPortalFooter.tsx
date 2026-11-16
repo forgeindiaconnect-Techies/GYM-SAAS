@@ -393,7 +393,7 @@ const FAQAccordion = () => {
                 <cat.icon size={16} />
               </div>
               <span className="font-semibold text-[#111827] text-sm">{cat.category}</span>
-              <span className="text-xs text-[#E2E8F0] bg-[#FFFFFF] px-2 py-0.5 rounded-full">
+              <span className="text-xs font-bold text-[#C2410C] bg-[#FFF7ED] border border-[#FFEDD5] px-2.5 py-0.5 rounded-full">
                 {cat.faqs.length}
               </span>
             </div>

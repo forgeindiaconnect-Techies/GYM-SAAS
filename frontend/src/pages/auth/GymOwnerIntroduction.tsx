@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import {
-  Building2, MapPin, LayoutDashboard, Users, UserPlus, BrainCircuit, Activity, ArrowRight, SkipForward, ArrowLeft
+  Building2, MapPin, LayoutDashboard, Users, UserPlus, BrainCircuit, Activity, ArrowRight
 } from 'lucide-react';
 
 const steps = [
@@ -63,24 +63,6 @@ const GymOwnerIntroduction = () => {
               </div>
               <span className="text-xl font-bold tracking-tight text-[#111827] group-hover:text-[#EA580C] transition-colors">Gymora</span>
             </Link>
-
-            <div className="flex items-center gap-3">
-              <Link 
-                to="/portal/gym-owner"
-                className="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#FFFFFF] bg-[#C2410C] hover:bg-[#9A3412] transition-all flex items-center gap-1.5 cursor-pointer shadow-md shadow-orange-500/15"
-              >
-                <ArrowLeft size={16} />
-                <span>Back to Gym Owner</span>
-              </Link>
-
-              <Link 
-                to="/register/gym-owner"
-                className="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#FFFFFF] bg-[#C2410C] hover:bg-[#9A3412] transition-all flex items-center gap-1.5 cursor-pointer shadow-md shadow-orange-500/15"
-              >
-                <span>Skip Introduction</span>
-                <SkipForward size={14} />
-              </Link>
-            </div>
           </div>
         </div>
       </nav>

@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Activity, ArrowLeft, ArrowRight, Search, Clock, Calendar } from 'lucide-react';
 import { BLOG_POSTS } from '../../data/blogData';
@@ -30,12 +30,6 @@ const Blog = () => {
               <Activity className="text-black" size={20} />
             </div>
             <span className="text-xl font-bold tracking-tight text-[#EA580C]">Gymora</span>
-          </Link>
-          <Link
-            to="/"
-            className="text-sm font-medium text-[#64748B] hover:text-[#EA580C] flex items-center space-x-2 transition-colors"
-          >
-            <ArrowLeft size={16} /> <span>Back to Home</span>
           </Link>
         </div>
       </nav>

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  ArrowLeft,
   HelpCircle,
   ChevronDown,
   Sparkles,
@@ -69,14 +68,6 @@ export const TrainerFaqsPage: React.FC = () => {
   return (
     <TrainerPageLayout>
       <div className="py-16 md:py-24 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <Link
-          to="/trainers"
-          className="inline-flex items-center gap-2 text-xs font-bold text-[#64748B] hover:text-[#EA580C] transition-colors mb-8"
-        >
-          <ArrowLeft size={16} />
-          <span>Back to Trainer Landing Page</span>
-        </Link>
-
         <div className="mb-12">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FFF7ED] border border-[#FFEDD5] text-[#EA580C] text-xs font-semibold mb-4">
             <HelpCircle size={13} />

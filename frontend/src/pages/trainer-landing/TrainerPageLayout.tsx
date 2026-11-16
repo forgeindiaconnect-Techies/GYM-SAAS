@@ -4,7 +4,6 @@ import {
   Activity,
   UserCheck,
   ArrowRight,
-  ArrowLeft,
   ShieldCheck,
   ChevronRight,
   ArrowUp,
@@ -86,15 +85,8 @@ export const TrainerPageLayout: React.FC<TrainerPageLayoutProps> = ({ children, 
               </Link>
             </div>
 
-            {/* Action Buttons: Back, Login */}
+            {/* Action Buttons: Login */}
             <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-              <Link
-                to="/"
-                className="px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#FFFFFF] bg-[#C2410C] hover:bg-[#9A3412] transition-all shadow-md shadow-orange-500/15 flex items-center gap-1.5 shrink-0 whitespace-nowrap"
-              >
-                <ArrowLeft size={16} />
-                <span>Back</span>
-              </Link>
               <Link
                 to="/login?portal=trainer"
                 className="px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#FFFFFF] bg-[#C2410C] hover:bg-[#9A3412] transition-all shadow-md shadow-orange-500/15 flex items-center gap-1.5 shrink-0 whitespace-nowrap"

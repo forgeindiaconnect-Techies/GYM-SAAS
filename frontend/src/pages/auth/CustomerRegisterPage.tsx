@@ -420,11 +420,6 @@ const CustomerRegisterPage = () => {
     <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center justify-center px-4 py-12">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(212,255,0,0.04)_0%,_transparent_60%)] pointer-events-none" />
 
-      {/* Back to Customer Button */}
-      <Link to="/portal/customer" className="absolute top-8 left-8 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#FFFFFF] bg-[#C2410C] hover:bg-[#9A3412] transition-all shadow-md shadow-orange-500/15 flex items-center gap-2 z-10">
-        <ArrowLeft size={16} />
-        <span>Back to Customer</span>
-      </Link>
 
       {/* Logo */}
       <Link to="/portal/customer" className="flex items-center space-x-2 mb-8 group z-10">

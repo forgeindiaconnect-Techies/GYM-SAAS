@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import type { FormEvent } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { Activity, AlertCircle, Loader2, ArrowLeft, Check, ChevronLeft, ChevronRight, Clock, Mail, AlertTriangle, ShieldAlert } from 'lucide-react';
+import { Activity, AlertCircle, Loader2, Check, ChevronLeft, ChevronRight, Clock, Mail, AlertTriangle, ShieldAlert } from 'lucide-react';
 import api from '../../utils/api';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -317,11 +317,6 @@ const GymOwnerRegisterPage = () => {
       <div className="min-h-screen bg-[#FFFFFF] flex flex-col items-center justify-center p-4 relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(183,110,121,0.06)_0%,_transparent_60%)] pointer-events-none" />
 
-        <Link to="/" className="absolute top-8 left-8 text-[#64748B] hover:text-[#EA580C] flex items-center gap-2 transition-colors z-10">
-          <ArrowLeft size={20} />
-          <span className="font-medium text-sm">Back to Home</span>
-        </Link>
-
         <div className="w-full max-w-lg bg-[#FFFFFF] border border-rose-500/30 rounded-3xl p-8 sm:p-10 shadow-2xl text-center relative z-10">
           <div className="w-20 h-20 bg-rose-500/10 border border-rose-500/20 rounded-3xl flex items-center justify-center mx-auto mb-6 text-[#B91C1C]">
             <Clock size={40} className="stroke-[2.5]" />
@@ -388,10 +383,6 @@ const GymOwnerRegisterPage = () => {
     <div className="min-h-screen bg-[#FFFFFF] flex flex-col items-center justify-center px-3 sm:px-4 py-10 sm:py-16 relative">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(183,110,121,0.06)_0%,_transparent_60%)] pointer-events-none" />
 
-      <Link to="/portal/gym-owner" className="static sm:absolute sm:top-8 sm:left-8 mb-4 sm:mb-0 self-start sm:self-auto px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#FFFFFF] bg-[#C2410C] hover:bg-[#9A3412] transition-all shadow-md shadow-orange-500/15 flex items-center gap-2 z-10 cursor-pointer">
-        <ArrowLeft size={16} />
-        <span>Back to Gym Owner</span>
-      </Link>
 
       <Link to="/" className="flex items-center space-x-2.5 mt-4 sm:mt-2 mb-4 sm:mb-8 group z-10">
         <div className="w-10 h-10 bg-gradient-to-br from-[#EA580C] to-[#C2410C] rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/15">

@@ -4,7 +4,6 @@ import {
   UserCheck,
   Briefcase,
   ArrowRight,
-  ArrowLeft,
   Sparkles,
   Award,
   Building2,
@@ -214,15 +213,6 @@ export const TrainerLandingPage: React.FC = () => {
             {/* Navigation Action Buttons */}
             <div className="flex items-center gap-[0.7vw] h-full">
               <Link
-                to="/"
-                style={{ WebkitTapHighlightColor: 'transparent' }}
-                className="h-full px-[1.5vw] rounded-full bg-white hover:bg-orange-50 border border-[#E5E7EB] text-[#EA580C] font-bold text-[clamp(11px,1.05vw,15.5px)] flex items-center justify-center gap-1.5 shadow-xs active:scale-95 transition-all outline-none leading-none"
-              >
-                <ArrowLeft className="w-[1.1vw] h-[1.1vw] min-w-[13px] min-h-[13px] stroke-[2.5]" />
-                <span>Back</span>
-              </Link>
-
-              <Link
                 to="/login?portal=trainer"
                 style={{ WebkitTapHighlightColor: 'transparent' }}
                 className="h-full px-[1.8vw] rounded-full bg-gradient-to-r from-[#EA580C] to-[#F97316] text-white font-bold text-[clamp(11px,1.05vw,15.5px)] flex items-center justify-center gap-1.5 shadow-md shadow-orange-950/20 hover:brightness-105 active:scale-95 transition-all outline-none leading-none"
@@ -280,16 +270,8 @@ export const TrainerLandingPage: React.FC = () => {
         <div className="block sm:hidden px-3.5 py-3 bg-[#FFF7ED] border-y border-[#FFEDD5]">
           <div className="flex items-center justify-between gap-2">
             <Link
-              to="/"
-              className="px-3.5 py-2 rounded-xl text-xs font-bold text-[#EA580C] bg-white border border-[#FFEDD5] active:scale-95 flex items-center gap-1 shadow-xs"
-            >
-              <ArrowLeft size={13} />
-              <span>Back</span>
-            </Link>
-
-            <Link
               to="/careers"
-              className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-[#EA580C] active:scale-95 flex items-center gap-1.5 shadow-sm"
+              className="flex-1 px-4 py-2 rounded-xl text-xs font-bold text-white bg-[#EA580C] active:scale-95 flex items-center justify-center gap-1.5 shadow-sm"
             >
               <Dumbbell size={13} />
               <span>Explore Opportunities</span>
@@ -482,22 +464,6 @@ export const TrainerLandingPage: React.FC = () => {
                       </div>
                     </div>
                   </div>
-
-                  {/* Flowchart Connector Arrow Between Cards (Desktop) */}
-                  {!isLast && (
-                    <div className="hidden lg:flex absolute -right-3.5 top-[28%] z-20 w-7 h-7 rounded-full bg-[#FFFFFF] border border-[#FFEDD5] text-[#EA580C] items-center justify-center shadow-md pointer-events-none group-hover:scale-110 transition-transform">
-                      <ChevronRight size={14} strokeWidth={2.5} />
-                    </div>
-                  )}
-
-                  {/* Flowchart Connector Arrow for Mobile (Between stacked cards) */}
-                  {!isLast && (
-                    <div className="flex lg:hidden justify-center my-2 text-[#EA580C]">
-                      <div className="w-6 h-6 rounded-full bg-[#FFFFFF] border border-[#FFEDD5] flex items-center justify-center">
-                        <ChevronRight size={12} className="rotate-90" />
-                      </div>
-                    </div>
-                  )}
                 </div>
               );
             })}

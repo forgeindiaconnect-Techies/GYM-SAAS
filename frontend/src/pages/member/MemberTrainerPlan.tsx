@@ -336,15 +336,6 @@ const MemberTrainerPlan: React.FC = () => {
             Access your trainer-assigned and approved workout routines, meal plans, video demonstrations, gym exercise library, and approved equipment.
           </p>
         </div>
-
-        {/* Enter Manually Button */}
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="px-5 py-3 bg-gradient-to-r from-[#EA580C] to-[#C2410C] text-[#FFFFFF] font-bold font-bold rounded-2xl flex items-center space-x-2 shadow-lg shadow-orange-500/15 hover:shadow-orange-500/15 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer shrink-0"
-        >
-          <Plus size={18} />
-          <span>Enter Manually</span>
-        </button>
       </div>
 
       {/* Tabs Menu */}
@@ -529,17 +520,8 @@ const MemberTrainerPlan: React.FC = () => {
                   </div>
                   <h3 className="font-bold text-xl text-[#111827]">No Workout Plans Active Yet</h3>
                   <p className="text-sm text-[#64748B]">
-                    You can click &ldquo;Enter Manually&rdquo; above to create a workout routine and send it directly to your trainer for approval.
+                    Your assigned trainer will create and assign personalized workout routines directly to your account.
                   </p>
-                  <button
-                    onClick={() => {
-                      setModalPlanType('Workout Plan');
-                      setIsModalOpen(true);
-                    }}
-                    className="px-6 py-2.5 bg-[#C2410C] text-white font-bold font-bold rounded-xl text-sm hover:bg-[#9A3412] transition-colors"
-                  >
-                    Enter Workout Plan Manually
-                  </button>
                 </div>
               )}
             </div>
@@ -650,17 +632,8 @@ const MemberTrainerPlan: React.FC = () => {
                   </div>
                   <h3 className="font-bold text-xl text-[#111827]">No Diet Plan Approved Yet</h3>
                   <p className="text-sm text-[#64748B]">
-                    Click &ldquo;Enter Manually&rdquo; to input your preferred diet schedule and message your coach for immediate review.
+                    Your assigned coach will create and assign your personalized nutrition guide and meal schedule.
                   </p>
-                  <button
-                    onClick={() => {
-                      setModalPlanType('Diet Plan');
-                      setIsModalOpen(true);
-                    }}
-                    className="px-6 py-2.5 bg-[#C2410C] text-white font-bold font-bold rounded-xl text-sm hover:bg-[#9A3412] transition-colors"
-                  >
-                    Enter Diet Plan Manually
-                  </button>
                 </div>
               )}
             </div>

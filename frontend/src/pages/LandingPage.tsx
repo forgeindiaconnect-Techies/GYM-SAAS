@@ -806,28 +806,38 @@ const LandingPage = () => {
           </div>
         </section>
 
-        {/* Platform Stats */}
-        <section className="border-t border-[#E2E8F0] bg-[#F8FAFC] py-20">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 divide-x divide-[#E2E8F0]">
-              {[
-                { label: 'Active Members', value: formatStat(platformStats?.activeMembers) },
-                { label: 'Partner Gyms', value: formatStat(platformStats?.partnerGyms) },
-                { label: 'Certified Trainers', value: formatStat(platformStats?.certifiedTrainers) },
-                { label: 'Workouts Logged', value: formatStat(platformStats?.workoutsLogged) }
-              ].map((stat, idx) => (
-                <div key={idx} className={`text-center ${idx % 2 === 0 ? 'pr-8' : 'pl-8 md:pl-0'} ${idx > 0 && idx % 2 === 0 ? 'pl-8 border-l-0 md:border-l' : ''}`}>
-                  <div className="text-4xl md:text-5xl font-extrabold text-[#EA580C] mb-2 tracking-tight">
-                    {statsLoading ? (
-                      <span className="inline-block animate-pulse text-[#CBD5E1]">...</span>
-                    ) : (
-                      stat.value
-                    )}
+        {/* Platform Stats - Auto-scrolling left-to-right */}
+        <section className="border-t border-b border-[#E2E8F0] bg-[#F8FAFC] py-14 sm:py-16 relative overflow-hidden select-none">
+          {/* Left Edge Gradient Fade */}
+          <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-16 sm:w-32 bg-gradient-to-r from-[#F8FAFC] to-transparent z-10" />
+          {/* Right Edge Gradient Fade */}
+          <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-16 sm:w-32 bg-gradient-to-l from-[#F8FAFC] to-transparent z-10" />
+
+          {/* Scrolling Track (duplicated for seamless infinite loop) */}
+          <div className="animate-scroll-ltr flex items-center">
+            {Array.from({ length: 4 }).map((_, setIdx) => (
+              <div key={setIdx} className="flex items-center divide-x divide-[#E2E8F0] shrink-0 border-r border-[#E2E8F0]">
+                {[
+                  { label: 'Active Members', value: formatStat(platformStats?.activeMembers) },
+                  { label: 'Partner Gyms', value: formatStat(platformStats?.partnerGyms) },
+                  { label: 'Certified Trainers', value: formatStat(platformStats?.certifiedTrainers) },
+                  { label: 'Workouts Logged', value: formatStat(platformStats?.workoutsLogged) }
+                ].map((stat, idx) => (
+                  <div key={idx} className="px-8 sm:px-12 md:px-16 text-center shrink-0">
+                    <div className="text-4xl md:text-5xl font-extrabold text-[#EA580C] mb-2 tracking-tight">
+                      {statsLoading ? (
+                        <span className="inline-block animate-pulse text-[#CBD5E1]">...</span>
+                      ) : (
+                        stat.value
+                      )}
+                    </div>
+                    <div className="text-[#64748B] font-medium text-xs sm:text-sm md:text-base uppercase tracking-wider whitespace-nowrap">
+                      {stat.label}
+                    </div>
                   </div>
-                  <div className="text-[#64748B] font-medium text-sm md:text-base uppercase tracking-wider">{stat.label}</div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ))}
           </div>
         </section>
 
@@ -1327,16 +1337,6 @@ const LandingPage = () => {
       {/* Video Modal */}
       {activeVideo && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-8 md:p-12 bg-black/90 backdrop-blur-md animate-in fade-in duration-200" onClick={handleBackToHome}>
-          {/* Fixed Back to Home Button on overlay */}
-          <button
-            onClick={handleBackToHome}
-            className="fixed top-5 left-5 z-[110] flex items-center gap-2 px-4 py-2.5 bg-[#FFFFFF]/95 hover:bg-[#C2410C] text-[#111827] hover:text-[#FFFFFF] font-bold text-sm rounded-full border border-[#E2E8F0] hover:border-[#FDBA74] transition-all shadow-2xl backdrop-blur-md cursor-pointer group"
-            title="Back to Home"
-          >
-            <ArrowLeft size={18} className="text-[#EA580C] group-hover:text-[#FFFFFF] group-hover:-translate-x-0.5 transition-all" />
-            <span>Back to Home</span>
-          </button>
-
           <div
             className="relative w-full max-w-4xl max-h-[85vh] my-auto bg-[#FFFFFF] rounded-3xl overflow-hidden border border-[#E2E8F0] shadow-[0_25px_60px_rgba(0,0,0,0.9)] flex flex-col"
             onClick={(e) => e.stopPropagation()}
@@ -1348,14 +1348,6 @@ const LandingPage = () => {
                 <h3 className="text-[#111827] font-bold text-sm sm:text-base truncate">{activeVideo.title}</h3>
               </div>
               <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-                <button
-                  onClick={handleBackToHome}
-                  className="flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-4 py-1.5 sm:py-2 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold text-xs sm:text-sm rounded-full transition-all shadow-md hover:shadow-teal-500/25 cursor-pointer"
-                  title="Back to Home"
-                >
-                  <ArrowLeft size={16} />
-                  <span>Back to Home</span>
-                </button>
                 <a
                   href={activeVideo.url.startsWith('http') ? activeVideo.url : `https://www.youtube.com/watch?v=${activeVideo.url}`}
                   target="_blank"
@@ -1405,15 +1397,7 @@ const LandingPage = () => {
             <div className="flex justify-between items-center p-6 border-b border-[#E2E8F0] gap-4">
               <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#111827]">Everything You Need for a Smarter Fitness Journey</h2>
               <div className="flex items-center gap-2.5 shrink-0">
-                <button
-                  onClick={handleBackToHome}
-                  className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold text-xs sm:text-sm rounded-full transition-all shadow-md cursor-pointer"
-                  title="Back to Home"
-                >
-                  <ArrowLeft size={16} />
-                  <span>Back to Home</span>
-                </button>
-                <button onClick={() => setIsFeaturesOpen(false)} className="p-2 text-[#64748B] hover:text-[#C2410C] hover:bg-[#FFF7ED] rounded-full transition-colors cursor-pointer">
+                <button onClick={() => setIsFeaturesOpen(false)} className="p-2 text-[#64748B] hover:text-[#C2410C] hover:bg-[#FFF7ED] rounded-full transition-colors cursor-pointer" title="Close" aria-label="Close">
                   <X size={22} />
                 </button>
               </div>
@@ -1479,15 +1463,7 @@ const LandingPage = () => {
                 </span>
               </div>
               <div className="flex items-center gap-3">
-                <button
-                  onClick={handleBackToHome}
-                  className="flex items-center gap-1.5 px-4 py-2 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold text-xs sm:text-sm rounded-xl transition-all shadow-md cursor-pointer"
-                  title="Back to Home"
-                >
-                  <ArrowLeft size={16} />
-                  <span>Back to Home</span>
-                </button>
-                <button onClick={() => setIsTourOpen(false)} className="text-[#64748B] hover:text-[#C2410C] transition-colors cursor-pointer p-1.5 hover:bg-[#FFF7ED] rounded-lg">
+                <button onClick={() => setIsTourOpen(false)} className="text-[#64748B] hover:text-[#C2410C] transition-colors cursor-pointer p-1.5 hover:bg-[#FFF7ED] rounded-lg" title="Close" aria-label="Close">
                   <X size={20} />
                 </button>
               </div>

@@ -7,7 +7,6 @@ import {
   ShoppingBag,
   TrendingUp,
   Gift,
-  ArrowLeft,
   ArrowRight,
   CheckCircle2,
   Sparkles,
@@ -783,18 +782,6 @@ export default function GymOwnerFeatureDetail() {
       <nav className="border-b border-[#E2E8F0] bg-[#FFFFFF]/95 backdrop-blur-md sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <Link
-              to="/portal/gym-owner"
-              className="flex items-center space-x-2 text-[#64748B] hover:text-[#C2410C] transition-colors group mr-4"
-            >
-              <div className="w-8 h-8 rounded-lg bg-[#FFFFFF] border border-[#E2E8F0] flex items-center justify-center group-hover:border-[#FFEDD5]">
-                <ArrowLeft size={16} className="text-[#EA580C]" />
-              </div>
-              <span className="text-xs font-semibold hidden sm:inline">Back to Gym Owner</span>
-            </Link>
-
-            <div className="h-5 w-px bg-[#E2E8F0] hidden sm:block" />
-
             <div className="flex items-center space-x-2">
               <div className="w-9 h-9 bg-[#C2410C] rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/15">
                 <Activity className="text-black" size={20} />
@@ -1562,16 +1549,6 @@ export default function GymOwnerFeatureDetail() {
                   </Link>
                 );
               })}
-            </div>
-
-            <div className="pt-4 border-t border-[#E2E8F0] flex justify-center">
-              <Link
-                to="/portal/gym-owner"
-                className="px-6 py-2.5 bg-[#FFFFFF] hover:bg-[#FFF7ED] text-[#EA580C] font-semibold rounded-xl text-xs border border-[#E2E8F0] hover:border-[#FFEDD5] transition-all flex items-center gap-2"
-              >
-                <ArrowLeft size={14} />
-                <span>Return to Gym Owner Overview</span>
-              </Link>
             </div>
           </div>
         </section>

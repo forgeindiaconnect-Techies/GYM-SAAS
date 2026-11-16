@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import {
   Activity,
@@ -95,12 +95,6 @@ const BlogPost = () => {
               className="text-sm font-medium text-[#64748B] hover:text-[#EA580C] flex items-center space-x-2 transition-colors"
             >
               <ArrowLeft size={16} /> <span>All Articles</span>
-            </Link>
-            <Link
-              to="/"
-              className="hidden sm:inline-block text-sm font-medium text-[#64748B] hover:text-[#EA580C] transition-colors"
-            >
-              Back to Home
             </Link>
           </div>
         </div>

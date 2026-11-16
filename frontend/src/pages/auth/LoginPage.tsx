@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { Link, useNavigate, useSearchParams, useLocation } from 'react-router-dom';
-import { Eye, EyeOff, Activity, AlertCircle, Loader2, ArrowLeft, ShieldCheck, Building2, UserCheck } from 'lucide-react';
+import { Eye, EyeOff, Activity, AlertCircle, Loader2, ShieldCheck, Building2, UserCheck } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { getDashboardRoute, isSubscriptionActive } from '../../utils/routeHelpers';
 import api from '../../utils/api';
@@ -110,32 +110,6 @@ const LoginPage = () => {
       {/* Background glow */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(183,110,121,0.07)_0%,_transparent_65%)] pointer-events-none" />
 
-      {/* Dynamic Back Button */}
-      <Link 
-        to={
-          portal === 'customer' ? '/portal/customer' :
-          portal === 'gym-owner' ? '/portal/gym-owner' :
-          portal === 'trainer' ? '/trainers' :
-          portal === 'super-admin' ? '/portal/super-admin' : '/'
-        }
-        onClick={() => {
-          if (!portal) {
-            sessionStorage.removeItem('last_portal');
-          }
-          window.scrollTo(0, 0);
-        }}
-        className="absolute top-6 left-6 sm:top-8 sm:left-8 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#FFFFFF] bg-[#C2410C] hover:bg-[#9A3412] transition-all shadow-md shadow-orange-500/15 flex items-center gap-2 z-20 cursor-pointer"
-      >
-        <ArrowLeft size={16} />
-        <span>
-          {
-            portal === 'customer' ? 'Back to Customer' :
-            portal === 'gym-owner' ? 'Back' :
-            portal === 'trainer' ? 'Back to Trainer' :
-            portal === 'super-admin' ? 'Back to Super Admin' : 'Back'
-          }
-        </span>
-      </Link>
 
       {/* Logo */}
       <Link to="/" className="flex items-center space-x-2.5 mt-8 sm:mt-4 mb-6 sm:mb-8 group z-10">

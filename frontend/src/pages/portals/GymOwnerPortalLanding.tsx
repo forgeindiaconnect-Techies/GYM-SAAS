@@ -392,14 +392,6 @@ const GymOwnerPortalLanding = () => {
             Ready to hire fitness staff? Connect with certified trainers on Gymora.
           </div>
           <div className="flex items-center gap-3 w-full sm:w-auto">
-            <Link
-              to="/trainer"
-              onClick={() => setShowTrainerHiringWorkflow(false)}
-              className="w-full sm:w-auto px-4 py-2 rounded-xl bg-[#F8FAFC] hover:bg-[#E2E8F0] text-[#EA580C] border border-[#E2E8F0] font-semibold text-xs text-center transition-all flex items-center justify-center gap-1.5"
-            >
-              <span>Explore Trainer</span>
-              <ExternalLink size={14} />
-            </Link>
             <button
               onClick={() => setShowTrainerHiringWorkflow(false)}
               className="w-full sm:w-auto px-5 py-2 rounded-xl bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold text-xs transition-all text-center"
@@ -2006,42 +1998,23 @@ const GymOwnerPortalLanding = () => {
             onClick={e => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="flex justify-between items-center p-4 sm:p-5 border-b border-[#E2E8F0] bg-[#FFFFFF] shrink-0">
-              <div className="flex items-center space-x-3">
-                <div className="w-9 h-9 rounded-xl bg-[#FFF7ED] flex items-center justify-center text-[#EA580C]">
-                  <PlayCircle size={20} />
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="font-extrabold text-white text-sm sm:text-base tracking-wide uppercase">
-                      Gym Owner Operating Journey
-                    </span>
-                    <span className="inline-block text-[11px] font-bold text-[#EA580C] bg-[#FFF7ED] px-2.5 py-0.5 rounded-full border border-[#FFEDD5]">
-                      Step {tourStep} of 7
-                    </span>
-                  </div>
-                  <p className="text-[11px] text-[#64748B] hidden sm:block">
-                    Full onboarding lifecycle: registration, superadmin vetting, plan activation, biometric access & POS
-                  </p>
-                </div>
+            <div className="relative flex items-center justify-center p-4 sm:p-5 border-b border-[#E2E8F0] bg-[#FFFFFF] shrink-0">
+              <div className="text-center flex flex-col items-center justify-center">
+                <span className="inline-block text-[11px] font-bold text-[#EA580C] bg-[#FFF7ED] px-3 py-1 rounded-full border border-[#FFEDD5] mb-1">
+                  Step {tourStep} of 7
+                </span>
+                <p className="text-xs text-[#64748B] font-medium hidden sm:block">
+                  Full onboarding lifecycle: registration, superadmin vetting, plan activation, biometric access & POS
+                </p>
               </div>
-              <div className="flex items-center gap-2.5 h-full">
-                <button
-                  onClick={() => setIsTourOpen(false)}
-                  className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold text-xs sm:text-sm rounded-full transition-all shadow-md cursor-pointer"
-                  title="Back to Gym Owner"
-                >
-                  <ArrowLeft size={16} />
-                  <span>Back to Gym Owner</span>
-                </button>
-                <button
-                  onClick={() => setIsTourOpen(false)}
-                  className="text-[#64748B] hover:text-[#C2410C] transition-colors cursor-pointer p-1.5 hover:bg-[#FFF7ED] rounded-full"
-                  aria-label="Close Tour"
-                >
-                  <X size={22} />
-                </button>
-              </div>
+              <button
+                onClick={() => setIsTourOpen(false)}
+                className="absolute right-4 sm:right-6 text-[#64748B] hover:text-[#C2410C] transition-colors cursor-pointer p-1.5 hover:bg-[#FFF7ED] rounded-full"
+                aria-label="Close Tour"
+                title="Close"
+              >
+                <X size={22} />
+              </button>
             </div>
 
             {/* Slide Area */}
@@ -2054,17 +2027,9 @@ const GymOwnerPortalLanding = () => {
             </div>
 
             {/* Step Controls Footer */}
-            <div className="p-4 border-t border-[#E2E8F0] bg-[#FFFFFF] flex items-center justify-between shrink-0">
-              <button
-                onClick={() => setTourStep(s => (s > 1 ? s - 1 : 7))}
-                className="px-4 py-2 rounded-xl bg-[#FFFFFF] border border-[#E2E8F0] text-[#64748B] hover:text-[#C2410C] hover:border-[#FDBA74] text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
-              >
-                <ChevronLeft size={16} />
-                <span>Previous Step</span>
-              </button>
-
+            <div className="p-4 border-t border-[#E2E8F0] bg-[#FFFFFF] flex items-center justify-center shrink-0">
               {/* Progress Dots */}
-              <div className="hidden sm:flex items-center gap-1.5">
+              <div className="flex items-center gap-1.5">
                 {Array.from({ length: 7 }).map((_, i) => (
                   <button
                     key={i}
@@ -2076,14 +2041,6 @@ const GymOwnerPortalLanding = () => {
                   />
                 ))}
               </div>
-
-              <button
-                onClick={() => setTourStep(s => (s < 7 ? s + 1 : 1))}
-                className="px-4 py-2 rounded-xl bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold text-xs transition-all flex items-center gap-1.5 shadow-md cursor-pointer"
-              >
-                <span>{tourStep === 7 ? 'Restart Journey' : 'Next Step'}</span>
-                <ChevronRight size={16} />
-              </button>
             </div>
           </div>
         </div>

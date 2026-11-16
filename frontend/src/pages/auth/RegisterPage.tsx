@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Activity, AlertCircle, Loader2, ChevronRight, ChevronLeft, Check, Eye, EyeOff, ArrowLeft, Lock } from 'lucide-react';
+import { Activity, AlertCircle, Loader2, ChevronRight, ChevronLeft, Check, Eye, EyeOff, Lock } from 'lucide-react';
 import api from '../../utils/api';
 
 const STEPS = ['Account', 'Personal', 'Fitness', 'Emergency', 'Terms'];
@@ -184,12 +184,6 @@ const RegisterPage = () => {
   return (
     <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center justify-center px-4 py-12">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(212,255,0,0.04)_0%,_transparent_60%)] pointer-events-none" />
-
-      {/* Back to Home Arrow */}
-      <Link to="/" className="absolute top-8 left-8 text-[#64748B] hover:text-[#EA580C] flex items-center gap-2 transition-colors">
-        <ArrowLeft size={20} />
-        <span className="font-medium text-sm">Back to Home</span>
-      </Link>
 
       {/* Logo */}
       <Link to="/" className="flex items-center space-x-2 mb-8 group">

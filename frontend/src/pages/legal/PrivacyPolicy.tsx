@@ -58,7 +58,7 @@ const PrivacyPolicy = () => {
       {/* Nav */}
       <nav className="border-b border-[#E2E8F0] bg-[#FFFFFF]/95 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-          <Link to="/" className="flex items-center space-x-2.5 group">
+          <Link to={returnPath} className="flex items-center space-x-2.5 group">
             <div className="w-10 h-10 bg-gradient-to-br from-[#EA580C] to-[#C2410C] rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/15 group-hover:scale-105 transition-transform">
               <Activity className="text-[#FFFFFF]" size={22} strokeWidth={2.5} />
             </div>
@@ -67,12 +67,6 @@ const PrivacyPolicy = () => {
               {isSuperAdmin ? 'Super Admin Portal' : 'Customer Fitness Portal'}
             </span>
           </Link>
-          <button
-            onClick={handleBack}
-            className="flex items-center gap-1.5 px-4 py-2 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold text-xs sm:text-sm rounded-xl transition-all shadow-md shadow-orange-500/15 cursor-pointer"
-          >
-            <ArrowLeft size={16} /> <span>{returnLabel}</span>
-          </button>
         </div>
       </nav>
 

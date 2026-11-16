@@ -1,5 +1,5 @@
-import { useNavigate, useLocation } from 'react-router-dom';
-import { Activity, ArrowLeft, RefreshCw, Clock, AlertCircle, CheckCircle, FileText, Phone } from 'lucide-react';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { Activity, RefreshCw, Clock, AlertCircle, CheckCircle, FileText, Phone } from 'lucide-react';
 
 const CancellationRefundPolicy = () => {
   const navigate = useNavigate();
@@ -60,19 +60,12 @@ const CancellationRefundPolicy = () => {
       {/* Nav */}
       <nav className="border-b border-[#E2E8F0] bg-[#FFFFFF]/95 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-gradient-to-br from-[#EA580C] to-[#C2410C] rounded-lg flex items-center justify-center">
+          <Link to={returnPath} className="flex items-center gap-3 group cursor-pointer">
+            <div className="w-8 h-8 bg-gradient-to-br from-[#EA580C] to-[#C2410C] rounded-lg flex items-center justify-center shadow-sm shadow-orange-500/15 group-hover:scale-105 transition-transform">
               <Activity className="text-[#FFFFFF]" size={16} strokeWidth={2.5} />
             </div>
-            <span className="text-lg font-black tracking-tight text-[#111827]">Gymora</span>
-          </div>
-          <button
-            onClick={handleBack}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold text-xs sm:text-sm rounded-full transition-all shadow-md cursor-pointer"
-          >
-            <ArrowLeft size={14} />
-            <span>{returnLabel}</span>
-          </button>
+            <span className="text-lg font-black tracking-tight text-[#111827] group-hover:text-[#EA580C] transition-colors">Gymora</span>
+          </Link>
         </div>
       </nav>
 
@@ -271,15 +264,11 @@ const CancellationRefundPolicy = () => {
           </P>
         </Section>
 
-        {/* Back */}
+        {/* Footer */}
         <div className="mt-12 pt-8 border-t border-[#E2E8F0] flex items-center justify-between">
-          <button
-            onClick={handleBack}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold text-sm transition-all cursor-pointer"
-          >
-            <ArrowLeft size={16} />
-            {returnLabel}
-          </button>
+          <Link to={returnPath} className="text-sm font-semibold text-[#EA580C] hover:underline">
+            Gymora
+          </Link>
           <p className="text-xs text-[#64748B]">© 2026 Gymora. All rights reserved.</p>
         </div>
       </div>

@@ -4,7 +4,6 @@ import api from '../../utils/api';
 import { useAuth } from '../../contexts/AuthContext';
 import {
   Activity,
-  ArrowLeft,
   Briefcase,
   MapPin,
   Clock,
@@ -286,14 +285,6 @@ export default function Careers() {
       <nav className="border-b border-[#E2E8F0] bg-[#FFFFFF]/95 backdrop-blur-md sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Link
-              to="/trainers"
-              className="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold text-slate-700 hover:text-[#C2410C] bg-[#FFFFFF] hover:bg-[#FFF7ED] border border-[#E2E8F0] hover:border-[#FFEDD5] transition-all flex items-center gap-2 group"
-            >
-              <ArrowLeft size={16} className="text-[#EA580C] group-hover:-translate-x-0.5 transition-transform" />
-              <span>Back</span>
-            </Link>
-
             <Link to="/" className="flex items-center space-x-2.5">
               <div className="w-10 h-10 bg-[#C2410C] rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/15">
                 <Activity className="text-black" size={24} />
