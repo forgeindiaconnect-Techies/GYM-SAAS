@@ -141,7 +141,7 @@ const MemberDashboard = () => {
               </div>
               <div className="min-w-0">
                 <p className="text-[11px] text-[#64748B] font-bold uppercase tracking-wider">AI Fitness Analysis</p>
-                <p className="text-sm font-black text-[#111827] truncate mt-0.5">{aiAnalysis.status || 'Not Started'}</p>
+                <p className="text-sm font-bold text-[#111827] truncate mt-0.5">{aiAnalysis.status || 'Not Started'}</p>
               </div>
             </div>
 
@@ -151,7 +151,7 @@ const MemberDashboard = () => {
               </div>
               <div className="min-w-0">
                 <p className="text-[11px] text-[#64748B] font-bold uppercase tracking-wider">Attendance</p>
-                <p className="text-sm font-black text-[#111827] mt-0.5">{attendanceMod.count || 0}</p>
+                <p className="text-sm font-bold text-[#111827] mt-0.5">{attendanceMod.count || 0}</p>
               </div>
             </div>
 
@@ -161,7 +161,7 @@ const MemberDashboard = () => {
               </div>
               <div className="min-w-0">
                 <p className="text-[11px] text-[#64748B] font-bold uppercase tracking-wider">Membership</p>
-                <p className="text-xs font-bold text-[#111827] truncate mt-0.5">
+                <p className="text-sm font-bold text-[#111827] truncate mt-0.5">
                   {activeMembership ? activeMembership.planName : 'No active membership'}
                 </p>
               </div>
@@ -173,7 +173,7 @@ const MemberDashboard = () => {
               </div>
               <div className="min-w-0">
                 <p className="text-[11px] text-[#64748B] font-bold uppercase tracking-wider">Notifications</p>
-                <p className="text-xs font-bold text-[#111827] mt-0.5">
+                <p className="text-sm font-bold text-[#111827] truncate mt-0.5">
                   {notificationsMod.total > 0 ? `${notificationsMod.unread} unread (${notificationsMod.total} total)` : 'No notifications'}
                 </p>
               </div>
@@ -228,7 +228,7 @@ const MemberDashboard = () => {
                         <h4 className="font-bold text-sm text-[#111827] truncate">{tr.name}</h4>
                         <p className="text-xs font-semibold text-[#EA580C] truncate">{tr.specialization || 'Certified Trainer'}</p>
                         <p className="text-[11px] text-[#64748B] mt-0.5">
-                          {tr.experience ? `${tr.experience} yrs exp` : 'Coach'} • {tr.availabilityStatus || 'Available'}
+                          <strong className="font-bold text-[#111827]">{tr.experience ? `${tr.experience} yrs exp` : 'Coach'}</strong> • {tr.availabilityStatus || 'Available'}
                         </p>
                       </div>
                     </div>

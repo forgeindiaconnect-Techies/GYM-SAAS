@@ -7,11 +7,13 @@ import {
 import api from '../../utils/api';
 
 const statusConfig: Record<string, { label: string; cls: string }> = {
-  'AI Generated':       { label: 'AI Generated',       cls: 'bg-[#F8FAFC] text-[#EA580C]' },
-  'Trainer Approved':   { label: 'Trainer Approved',   cls: 'bg-green-100 text-green-700' },
-  'Sent':               { label: 'Sent to Client',     cls: 'bg-[#F8FAFC] text-[#EA580C]' },
-  'Revision Requested': { label: 'Revision Requested', cls: 'bg-yellow-100 text-yellow-700' },
-  'Pending':            { label: 'Pending',            cls: 'bg-[#F8FAFC] text-[#111827]' },
+  'AI Generated':            { label: 'AI Generated',            cls: 'bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5]' },
+  'Trainer Approved':        { label: 'Trainer Approved',        cls: 'bg-emerald-50 text-emerald-700 border border-emerald-200' },
+  'Sent':                    { label: 'Sent to Client',          cls: 'bg-blue-50 text-blue-700 border border-blue-200' },
+  'Revision Requested':      { label: 'Revision Requested',      cls: 'bg-yellow-50 text-yellow-700 border border-yellow-200' },
+  'Pending':                 { label: 'Pending',                 cls: 'bg-amber-50 text-amber-700 border border-amber-200' },
+  'Under Trainer Review':    { label: 'Under Trainer Review',    cls: 'bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold shadow-xs border border-[#FDBA74]' },
+  'Pending Trainer Review':  { label: 'Pending Trainer Review',  cls: 'bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold shadow-xs border border-[#FDBA74]' },
 };
 
 // ── Date & Timing formatting helpers ─────────────────────────────────────────
@@ -560,29 +562,32 @@ const TrainerAIFeedback = () => {
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm overflow-y-auto p-4">
           <div className="bg-[#FFFFFF] rounded-2xl max-w-2xl w-full mx-auto mt-12 mb-12 shadow-2xl overflow-hidden">
             {/* Modal Header */}
-            <div className="bg-gradient-to-r from-[#EA580C] to-[#C2410C] p-6 flex justify-between items-start">
-              <div>
+            <div className="bg-gradient-to-r from-[#EA580C] to-[#C2410C] p-5 sm:p-6 flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+              <div className="min-w-0">
                 <div className="flex items-center gap-2 mb-1">
-                  <Brain size={20} className="text-white/80" />
-                  <span className="text-white/80 text-sm font-semibold">AI Feedback Report</span>
+                  <Brain size={18} className="text-white/90" />
+                  <span className="text-white/90 text-xs sm:text-sm font-semibold">AI Feedback Report</span>
                 </div>
-                <h2 className="text-2xl font-bold text-[#111827]">{clientName(detail)}</h2>
-                <div className="text-white/80 text-sm mt-1 flex items-center gap-2 flex-wrap">
-                  <span>{detail.fitnessProfile?.goal || detail.fitnessProfile?.primaryGoal || 'General Fitness'}</span>
-                  <span>·</span>
-                  <span className="inline-flex items-center gap-1 bg-[#FFFFFF]/20 px-2 py-0.5 rounded-md text-xs font-semibold text-white">
+                <h2 className="text-xl sm:text-2xl font-black text-white truncate">{clientName(detail)}</h2>
+                <div className="text-white/90 text-xs sm:text-sm mt-1.5 flex items-center gap-2 flex-wrap">
+                  <span className="font-bold bg-white/20 px-2.5 py-0.5 rounded-lg text-xs text-white">
+                    {detail.fitnessProfile?.goal || detail.fitnessProfile?.primaryGoal || 'General Fitness'}
+                  </span>
+                  <span className="inline-flex items-center gap-1 bg-white/20 px-2 py-0.5 rounded-lg text-xs font-semibold text-white">
                     <Calendar size={12} /> {formatDateTime(detail.createdAt).date}
                   </span>
-                  <span className="inline-flex items-center gap-1 bg-[#FFFFFF]/20 px-2 py-0.5 rounded-md text-xs font-semibold text-white">
+                  <span className="inline-flex items-center gap-1 bg-white/20 px-2 py-0.5 rounded-lg text-xs font-semibold text-white">
                     <Clock size={12} /> {formatDateTime(detail.createdAt).time}
                   </span>
                 </div>
               </div>
-              <div className="flex items-center gap-3">
-                <span className={`px-3 py-1 rounded-full text-xs font-bold ${statusConfig[detail.status]?.cls || 'bg-[#FFFFFF]/20 text-white'}`}>
+              <div className="flex items-center justify-between sm:justify-end gap-3 shrink-0 self-stretch sm:self-start pt-1 sm:pt-0">
+                <span className={`px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap shadow-xs ${statusConfig[detail.status]?.cls || 'bg-white/20 text-white'}`}>
                   {statusConfig[detail.status]?.label || detail.status}
                 </span>
-                <button onClick={() => setDetail(null)} className="text-white/70 hover:text-white transition-colors"><X size={22} /></button>
+                <button onClick={() => setDetail(null)} className="p-1 text-white/80 hover:text-white rounded-lg hover:bg-white/10 transition-colors cursor-pointer">
+                  <X size={20} />
+                </button>
               </div>
             </div>
 

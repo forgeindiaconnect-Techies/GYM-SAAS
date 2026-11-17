@@ -562,7 +562,7 @@ const MemberReferrals: React.FC = () => {
             {/* Left Column (2 Cols): Code, Share Bar, Email Invite */}
             <div className="lg:col-span-2 space-y-6">
               {/* Unique Referral Invite */}
-              <div className="bg-[#FFFFFF] rounded-3xl border border-[#E2E8F0] p-6 sm:p-8 space-y-6 shadow-xl">
+              <div className="bg-[#FFFFFF] rounded-3xl border border-[#E2E8F0] p-4 sm:p-8 space-y-6 shadow-xl">
                 <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-4">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-2xl bg-[#FFF7ED] text-[#EA580C] flex items-center justify-center border border-[#FFEDD5]">
@@ -576,7 +576,7 @@ const MemberReferrals: React.FC = () => {
                 </div>
 
                 {/* Referral Code Box */}
-                <div className="p-5 bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl space-y-4">
+                <div className="p-4 sm:p-5 bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl space-y-4">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div>
                       <span className="text-xs uppercase font-bold text-[#64748B] tracking-wider">Your Referral Code</span>
@@ -604,20 +604,23 @@ const MemberReferrals: React.FC = () => {
                   </div>
 
                   {/* Share Link Input */}
-                  <div className="space-y-1.5 pt-2 border-t border-[#E2E8F0]/60">
-                    <span className="text-[11px] font-medium text-[#64748B]">Direct Referral Registration Link</span>
-                    <div className="flex items-center gap-2">
-                      <input
-                        type="text"
-                        readOnly
-                        value={shareLink}
-                        className="flex-1 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-3.5 py-2 text-xs text-[#64748B] font-mono select-all focus:outline-none"
-                      />
+                  <div className="space-y-2 pt-2 border-t border-[#E2E8F0]/60">
+                    <span className="text-[11px] font-medium text-[#64748B] block">Direct Referral Registration Link</span>
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 min-w-0 w-full">
+                      <div className="relative flex-1 min-w-0">
+                        <input
+                          type="text"
+                          readOnly
+                          value={shareLink}
+                          className="w-full bg-[#FFFFFF] border border-[#CBD5E1] rounded-xl px-3.5 py-2.5 text-xs text-[#64748B] font-mono select-all focus:outline-none truncate"
+                        />
+                      </div>
                       <button
                         onClick={handleCopyLink}
-                        className="px-4 py-2 bg-[#F8FAFC] hover:bg-[#E2E8F0] text-[#111827] rounded-xl text-xs font-bold transition-all border border-[#E2E8F0] shrink-0 cursor-pointer"
+                        className="flex items-center justify-center gap-2 px-4 py-2.5 bg-[#C2410C] hover:bg-[#9A3412] text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-orange-500/15 shrink-0 cursor-pointer"
                       >
-                        {copiedLink ? 'Copied Link!' : 'Copy Link'}
+                        {copiedLink ? <Check size={16} /> : <Copy size={16} />}
+                        <span>{copiedLink ? 'Copied Link!' : 'Copy Link'}</span>
                       </button>
                     </div>
                   </div>

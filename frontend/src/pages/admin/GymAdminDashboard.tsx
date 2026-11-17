@@ -264,9 +264,10 @@ const GymAdminDashboard = () => {
       <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-6 shadow-sm">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 border-b border-[#E2E8F0] pb-4">
           <div>
-            <div className="flex items-center gap-2">
-              <h2 className="text-xl font-bold text-[#111827]">Session Attendance &amp; Check-outs</h2>
-              <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#FFF7ED] text-[#15803D] border border-[#E2E8F0]/30">
+            <div className="flex flex-wrap items-center gap-2">
+              <h2 className="text-lg sm:text-xl font-bold text-[#111827]">Session Attendance &amp; Check-outs</h2>
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                 Live Status
               </span>
             </div>

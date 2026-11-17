@@ -196,17 +196,17 @@ const TrainerDashboard = () => {
           {/* Key Stat Cards */}
           <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-3.5 sm:gap-4">
             {[
-              { label: 'Total Clients', value: totalClientsCount.toString(), icon: Users, color: 'text-[#111827]', bg: 'bg-[#F8FAFC]', link: '/trainer/members' },
-              { label: 'Active Clients', value: activeClientsCount.toString(), icon: Dumbbell, color: 'text-[#15803D]', bg: 'bg-[#15803D]/10', link: '/trainer/assigned-users' },
-              { label: 'Upcoming Sessions', value: upcomingSessionsCount.toString(), icon: Calendar, color: 'text-[#111827]', bg: 'bg-[#F8FAFC]', link: '/trainer/sessions' },
-              { label: 'Completed Sessions', value: completedSessionsCount.toString(), icon: CheckCircle2, color: 'text-[#15803D]', bg: 'bg-[#15803D]/10', link: '/trainer/sessions' },
-              { label: 'Earnings', value: `₹${totalEarningsAmount.toLocaleString('en-IN')}`, icon: IndianRupee, color: 'text-[#111827]', bg: 'bg-[#F8FAFC]', link: '/trainer/earnings' },
-              { label: 'Pending AI Reviews', value: pendingAiReviews.length.toString(), icon: Bot, color: 'text-[#EA580C]', bg: 'bg-[#FFF7ED]', link: '/trainer/ai-recommendations' },
+              { label: 'Total Clients', value: totalClientsCount.toString(), icon: Users, color: 'text-blue-600', bg: 'bg-blue-50 border border-blue-100', link: '/trainer/members' },
+              { label: 'Active Clients', value: activeClientsCount.toString(), icon: Dumbbell, color: 'text-emerald-600', bg: 'bg-emerald-50 border border-emerald-100', link: '/trainer/assigned-users' },
+              { label: 'Upcoming Sessions', value: upcomingSessionsCount.toString(), icon: Calendar, color: 'text-indigo-600', bg: 'bg-indigo-50 border border-indigo-100', link: '/trainer/sessions' },
+              { label: 'Completed Sessions', value: completedSessionsCount.toString(), icon: CheckCircle2, color: 'text-teal-600', bg: 'bg-teal-50 border border-teal-100', link: '/trainer/sessions' },
+              { label: 'Earnings', value: `₹${totalEarningsAmount.toLocaleString('en-IN')}`, icon: IndianRupee, color: 'text-[#C2410C]', bg: 'bg-[#FFF7ED] border border-[#FFEDD5]', link: '/trainer/earnings' },
+              { label: 'Pending AI Reviews', value: pendingAiReviews.length.toString(), icon: Bot, color: 'text-amber-600', bg: 'bg-amber-50 border border-amber-100', link: '/trainer/ai-recommendations' },
             ].map((stat, i) => (
               <Link
                 key={i}
                 to={stat.link || '#'}
-                className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-3.5 sm:p-4 flex items-center gap-3 shadow-sm hover:shadow-md transition-all group min-w-0"
+                className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-3.5 sm:p-4 flex items-center gap-3 shadow-xs hover:shadow-md transition-all group min-w-0"
               >
                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${stat.bg} ${stat.color} group-hover:scale-105 transition-transform`}>
                   <stat.icon size={20} />
@@ -296,7 +296,7 @@ const TrainerDashboard = () => {
                           <span
                             className={`px-2.5 py-0.5 rounded-full text-[10px] font-extrabold border shrink-0 mt-0.5 ${
                               isApproved
-                                ? 'bg-[#F8FAFC] text-[#EA580C] border-[#E2E8F0]'
+                                ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
                                 : isPending
                                   ? 'bg-amber-100 text-amber-800 border-amber-300'
                                   : 'bg-[#F8FAFC] text-[#111827] border-[#E2E8F0]'
@@ -363,7 +363,7 @@ const TrainerDashboard = () => {
                             <button
                               onClick={() => handleApprovePlan(req._id)}
                               disabled={approvingId === req._id}
-                              className="flex-1 py-2 bg-gradient-to-r from-[#EA580C] to-emerald-500 hover:from-[#EA580C] hover:to-[#C2410C] text-[#FFFFFF] font-bold rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1 shadow-xs cursor-pointer disabled:opacity-50"
+                              className="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs transition-all flex items-center justify-center gap-1.5 shadow-md shadow-emerald-600/15 cursor-pointer disabled:opacity-50"
                             >
                               {approvingId === req._id ? (
                                 <Loader2 size={13} className="animate-spin" />
@@ -375,7 +375,7 @@ const TrainerDashboard = () => {
                             <button
                               onClick={() => handleRejectPlan(req._id)}
                               disabled={approvingId === req._id}
-                              className="px-3 py-2 bg-[#F8FAFC] hover:bg-[#FFF7ED] text-[#64748B] rounded-xl text-xs font-semibold transition-colors cursor-pointer"
+                              className="px-3.5 py-2.5 bg-[#FFFFFF] hover:bg-[#F8FAFC] text-[#64748B] border border-[#CBD5E1] rounded-xl text-xs font-bold transition-colors cursor-pointer"
                             >
                               Decline
                             </button>
@@ -383,8 +383,8 @@ const TrainerDashboard = () => {
                         </div>
                       ) : (
                         <div className="pt-2 border-t border-[#E2E8F0] flex items-center justify-between text-xs">
-                          <span className="font-bold text-[#EA580C] flex items-center gap-1">
-                            <CheckCircle2 size={13} /> Active on Customer Dashboard
+                          <span className="font-bold text-emerald-700 flex items-center gap-1">
+                            <CheckCircle2 size={13} className="text-emerald-600" /> Active on Customer Dashboard
                           </span>
                           {req.trainerFeedback && (
                             <span className="text-[11px] text-[#64748B] italic truncate max-w-[200px]">

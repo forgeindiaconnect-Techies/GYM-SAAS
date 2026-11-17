@@ -721,6 +721,18 @@ export const updateMyProfile = async (req: AuthRequest, res: Response): Promise<
       if (req.body[field] !== undefined) updateData[field] = req.body[field];
     });
 
+    if (updateData.phone && updateData.phone.trim().length > 0) {
+      const cleanPhone = updateData.phone.trim().replace(/^\+91/, '');
+      if (!/^[6-9]\d{9}$/.test(cleanPhone)) {
+        res.status(400).json({
+          success: false,
+          message: 'Invalid mobile number. Must be a 10-digit Indian number starting with 6, 7, 8, or 9.'
+        });
+        return;
+      }
+      updateData.phone = cleanPhone;
+    }
+
     const trainer = await Trainer.findOneAndUpdate(
       { userId },
       { $set: updateData },
@@ -761,6 +773,18 @@ export const updateTrainer = async (req: AuthRequest, res: Response): Promise<vo
     allowedUpdates.forEach(field => {
       if (req.body[field] !== undefined) updateData[field] = req.body[field];
     });
+
+    if (updateData.phone && updateData.phone.trim().length > 0) {
+      const cleanPhone = updateData.phone.trim().replace(/^\+91/, '');
+      if (!/^[6-9]\d{9}$/.test(cleanPhone)) {
+        res.status(400).json({
+          success: false,
+          message: 'Invalid mobile number. Must be a 10-digit Indian number starting with 6, 7, 8, or 9.'
+        });
+        return;
+      }
+      updateData.phone = cleanPhone;
+    }
 
     const trainerQuery: any = { _id: id };
     if (resolvedGymId) trainerQuery.gymId = resolvedGymId;

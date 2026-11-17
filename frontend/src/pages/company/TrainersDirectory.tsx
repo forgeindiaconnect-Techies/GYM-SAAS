@@ -516,7 +516,7 @@ export default function TrainersDirectory() {
                     </div>
                     <div className="bg-[#FFFFFF]/60 p-2.5 rounded-xl border border-[#E2E8F0]/60">
                       <span className="text-[10px] text-slate-500 uppercase block font-bold">PT Fee Per Session</span>
-                      <span className="font-mono font-bold text-slate-200 text-sm">
+                      <span className="font-mono font-bold text-slate-900 text-sm">
                         {trainer.personalTrainingFee || trainer.fee ? `₹${(trainer.personalTrainingFee || trainer.fee)?.toLocaleString()}` : 'Custom'}
                       </span>
                     </div>
@@ -527,7 +527,7 @@ export default function TrainersDirectory() {
                 <div className="flex items-center gap-2 pt-2">
                   <button
                     onClick={() => setSelectedTrainer(trainer)}
-                    className="flex-1 py-2.5 bg-[#FFFFFF] hover:bg-[#FFF7ED] text-white border border-[#E2E8F0] hover:border-[#FFEDD5] font-bold text-xs rounded-xl transition-all text-center"
+                    className="flex-1 py-2.5 bg-white hover:bg-orange-50 text-slate-900 hover:text-[#C2410C] border border-slate-300 hover:border-orange-300 font-bold text-xs rounded-xl transition-all text-center shadow-xs"
                   >
                     View Profile
                   </button>

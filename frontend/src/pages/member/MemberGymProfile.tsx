@@ -493,7 +493,7 @@ const MemberGymProfile = () => {
                         <p className="font-bold text-sm text-[#111827] truncate">{tr.name}</p>
                         <p className="text-xs text-[#EA580C] font-semibold truncate">{tr.specialization || 'Certified Trainer'}</p>
                         <p className="text-[11px] text-[#64748B]">
-                          {tr.experience ? `${tr.experience} yrs exp` : 'Coach'} • {tr.availabilityStatus || 'Available'}
+                          <strong className="font-bold text-[#111827]">{tr.experience ? `${tr.experience} yrs exp` : 'Coach'}</strong> • {tr.availabilityStatus || 'Available'}
                         </p>
                       </div>
                     </div>

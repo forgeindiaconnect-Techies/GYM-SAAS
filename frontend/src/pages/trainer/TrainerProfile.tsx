@@ -105,6 +105,10 @@ const TrainerProfile = () => {
   };
 
   const handleSave = async () => {
+    if (form.phone && form.phone.trim().length > 0 && !/^[6-9]\d{9}$/.test(form.phone.trim())) {
+      alert('Please enter a valid 10-digit mobile number starting with 6, 7, 8, or 9.');
+      return;
+    }
     setIsSaving(true);
     try {
       const res = await api.patch('/trainers/my-profile', {
@@ -389,8 +393,24 @@ const TrainerProfile = () => {
                 <h3 className="text-xs font-bold text-[#64748B] uppercase tracking-wider mb-3">Contact</h3>
                 <div className="grid grid-cols-1 gap-3">
                   <div>
-                    <label className="block text-sm font-semibold text-[#64748B] mb-1">Phone Number</label>
-                    <input type="tel" value={form.phone} onChange={e => setForm({...form, phone: e.target.value.replace(/\D/g, '').slice(0, 10)})} maxLength={10} className={inputCls} placeholder="10-digit number" />
+                    <label className="block text-sm font-semibold text-[#64748B] mb-1">Phone Number (10 digits, starts with 6-9)</label>
+                    <input
+                      type="tel"
+                      value={form.phone}
+                      onChange={e => {
+                        let val = e.target.value.replace(/\D/g, '');
+                        if (val.length === 1 && !/^[6-9]$/.test(val)) return;
+                        setForm({ ...form, phone: val.slice(0, 10) });
+                      }}
+                      maxLength={10}
+                      className={inputCls}
+                      placeholder="e.g. 9876543210"
+                    />
+                    {form.phone && form.phone.length > 0 && !/^[6-9]\d{9}$/.test(form.phone) && (
+                      <p className="text-[11px] text-red-600 font-semibold mt-1">
+                        Must be a valid 10-digit Indian mobile number starting with 6, 7, 8, or 9
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>

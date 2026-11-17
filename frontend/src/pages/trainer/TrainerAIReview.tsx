@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { 
   ArrowLeft, CheckCircle2, FileEdit, Trash2, Plus, 
@@ -452,11 +452,11 @@ const TrainerAIReview = () => {
 
       {/* CARD 2: AI Generated Analysis & Calorie Targets */}
       <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-3xl p-6 md:p-8 shadow-sm space-y-4">
-        <div className="flex items-center justify-between border-b border-[#F8FAFC] pb-3">
-          <div className="flex items-center gap-2">
-            <Sparkles size={20} className="text-[#EA580C]" />
-            <h2 className="text-lg font-bold text-[#111827]">AI Generated Assessment &amp; Health Analysis</h2>
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-[#F8FAFC] text-[#EA580C]">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#E2E8F0] pb-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <Sparkles size={20} className="text-[#EA580C] shrink-0" />
+            <h2 className="text-base sm:text-lg font-bold text-[#111827]">AI Generated Assessment &amp; Health Analysis</h2>
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5]">
               AI Output Reference
             </span>
           </div>
@@ -464,7 +464,7 @@ const TrainerAIReview = () => {
           <button
             type="button"
             onClick={() => setShowOriginalDraft(!showOriginalDraft)}
-            className="text-xs font-bold text-[#EA580C] hover:underline flex items-center gap-1 cursor-pointer"
+            className="text-xs font-bold text-[#EA580C] hover:text-[#C2410C] flex items-center gap-1 cursor-pointer self-start sm:self-auto shrink-0 transition-colors"
           >
             {showOriginalDraft ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
             {showOriginalDraft ? 'Hide Deep AI Insights' : 'View Full AI Insights'}
@@ -515,7 +515,7 @@ const TrainerAIReview = () => {
           <button
             type="button"
             onClick={addExercise}
-            className="px-4 py-2 bg-[#C2410C] hover:bg-[#FFF7ED] text-[#FFFFFF] font-bold rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors shadow-sm self-start sm:self-auto cursor-pointer"
+            className="px-4 py-2.5 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold rounded-xl text-xs flex items-center gap-1.5 transition-all shadow-md shadow-orange-500/15 self-start sm:self-auto cursor-pointer whitespace-nowrap"
           >
             <Plus size={14} /> Add Exercise to {selectedWorkoutDay}
           </button>
@@ -665,23 +665,24 @@ const TrainerAIReview = () => {
                   </div>
 
                   {/* Actions: Quick Replace & Remove */}
-                  <div className="flex items-center gap-1.5 self-end md:self-center shrink-0">
+                  <div className="flex items-center gap-2 self-end sm:self-center shrink-0 pt-2 sm:pt-0">
                     <button
                       type="button"
                       onClick={() => setReplacingIndex(replacingIndex === idx ? null : idx)}
-                      className="px-2.5 py-1.5 bg-[#FFFFFF] border border-[#E2E8F0] text-[#EA580C] rounded-lg text-xs font-semibold hover:bg-[#FFF7ED] cursor-pointer"
+                      className="px-3 py-1.5 bg-[#FFFFFF] border border-[#CBD5E1] hover:border-[#FDBA74] text-[#EA580C] hover:bg-[#FFF7ED] rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-1 cursor-pointer whitespace-nowrap"
                       title="Replace unsuitable exercise with alternative"
                     >
-                      <RefreshCw size={13} className="inline mr-1" /> Replace
+                      <RefreshCw size={13} className="shrink-0" />
+                      <span>Replace</span>
                     </button>
 
                     <button
                       type="button"
                       onClick={() => removeExercise(idx)}
-                      className="p-1.5 bg-[#FFFFFF] border border-red-200 text-red-600 rounded-lg hover:bg-red-50 transition-colors cursor-pointer"
+                      className="p-2 bg-[#FFFFFF] border border-red-200 text-red-600 rounded-xl hover:bg-red-50 transition-all shadow-xs cursor-pointer shrink-0"
                       title="Remove exercise"
                     >
-                      <Trash2 size={15} />
+                      <Trash2 size={14} />
                     </button>
                   </div>
                 </div>
@@ -769,8 +770,8 @@ const TrainerAIReview = () => {
         </div>
 
         {/* Daily Calorie & Macro Target Row */}
-        <div className="p-4 bg-[#F8FAFC] border border-[#F8FAFC] rounded-2xl space-y-3">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <div className="p-4 bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl space-y-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
             <div>
               <h4 className="font-extrabold text-sm text-[#111827]">
                 {selectedDietDay} Nutrition Focus: <span className="text-[#EA580C]">{activeDietDayData.focus}</span>
@@ -778,45 +779,45 @@ const TrainerAIReview = () => {
             </div>
 
             <div className="flex items-center gap-2 text-xs">
-              <span className="font-bold text-[#64748B]">Daily Calorie Target:</span>
+              <span className="font-bold text-[#64748B] whitespace-nowrap">Daily Calorie Target:</span>
               <input
                 type="number"
                 value={activeDietDayData.calories}
                 onChange={e => updateDietField('calories', Number(e.target.value))}
-                className="w-20 px-2 py-1 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg font-extrabold text-[#EA580C] text-center"
+                className="w-20 px-2 py-1 bg-[#FFFFFF] border border-[#CBD5E1] rounded-lg font-extrabold text-[#EA580C] text-center focus:border-[#FDBA74] outline-none"
               />
               <span className="text-xs font-bold text-[#64748B]">kcal</span>
             </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-3 text-xs pt-1">
-            <div className="p-2.5 bg-[#FFFFFF] border border-[#F8FAFC] rounded-xl flex items-center justify-between">
-              <span className="font-bold text-[#64748B] text-[11px] uppercase">Protein</span>
+          <div className="grid grid-cols-3 gap-2.5 text-xs pt-1">
+            <div className="p-2.5 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl flex flex-col items-center justify-center text-center shadow-xs">
+              <span className="font-bold text-[#64748B] text-[10px] uppercase tracking-wider block mb-1">Protein</span>
               <input
                 type="text"
                 value={activeDietDayData.macros?.protein || '155g'}
                 onChange={e => updateDietMacro('protein', e.target.value)}
-                className="w-16 px-1.5 py-0.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded font-bold text-center text-[#111827]"
+                className="w-full py-0.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg font-black text-center text-[#111827] text-xs outline-none focus:border-[#FDBA74]"
               />
             </div>
 
-            <div className="p-2.5 bg-[#FFFFFF] border border-[#F8FAFC] rounded-xl flex items-center justify-between">
-              <span className="font-bold text-[#64748B] text-[11px] uppercase">Carbs</span>
+            <div className="p-2.5 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl flex flex-col items-center justify-center text-center shadow-xs">
+              <span className="font-bold text-[#64748B] text-[10px] uppercase tracking-wider block mb-1">Carbs</span>
               <input
                 type="text"
                 value={activeDietDayData.macros?.carbs || '210g'}
                 onChange={e => updateDietMacro('carbs', e.target.value)}
-                className="w-16 px-1.5 py-0.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded font-bold text-center text-[#111827]"
+                className="w-full py-0.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg font-black text-center text-[#111827] text-xs outline-none focus:border-[#FDBA74]"
               />
             </div>
 
-            <div className="p-2.5 bg-[#FFFFFF] border border-[#F8FAFC] rounded-xl flex items-center justify-between">
-              <span className="font-bold text-[#64748B] text-[11px] uppercase">Fats</span>
+            <div className="p-2.5 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl flex flex-col items-center justify-center text-center shadow-xs">
+              <span className="font-bold text-[#64748B] text-[10px] uppercase tracking-wider block mb-1">Fats</span>
               <input
                 type="text"
                 value={activeDietDayData.macros?.fats || '58g'}
                 onChange={e => updateDietMacro('fats', e.target.value)}
-                className="w-16 px-1.5 py-0.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded font-bold text-center text-[#111827]"
+                className="w-full py-0.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg font-black text-center text-[#111827] text-xs outline-none focus:border-[#FDBA74]"
               />
             </div>
           </div>

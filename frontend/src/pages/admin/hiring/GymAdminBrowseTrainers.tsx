@@ -369,7 +369,7 @@ export default function GymAdminBrowseTrainers() {
                   </div>
                   <div className="bg-[#F8FAFC] p-2 rounded-xl border border-[#E2E8F0]">
                     <span className="text-[10px] text-slate-500 uppercase block font-bold">PT Fee / Session</span>
-                    <span className="font-mono font-bold text-[#111827]">
+                    <span className="font-mono font-bold text-slate-900">
                       {trainer.personalTrainingFee ? `₹${trainer.personalTrainingFee.toLocaleString()}` : 'Custom'}
                     </span>
                   </div>
@@ -379,7 +379,7 @@ export default function GymAdminBrowseTrainers() {
               <div className="flex items-center gap-2 pt-2">
                 <button
                   onClick={() => setSelectedTrainer(trainer)}
-                  className="flex-1 py-2.5 bg-[#FFFFFF] hover:bg-[#FFF7ED] text-[#111827] hover:text-[#C2410C] border border-[#CBD5E1] hover:border-[#FDBA74] font-bold text-xs rounded-xl transition-all shadow-xs"
+                  className="flex-1 py-2.5 bg-white hover:bg-orange-50 text-slate-900 hover:text-[#C2410C] border border-slate-300 hover:border-orange-300 font-bold text-xs rounded-xl transition-all shadow-xs text-center"
                 >
                   View Profile
                 </button>
