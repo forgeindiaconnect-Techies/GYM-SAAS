@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Dumbbell, User, X } from 'lucide-react';
 import api from '../../utils/api';
@@ -34,6 +34,11 @@ const TrainerInvitationPage = () => {
     e.preventDefault();
     if (formData.password !== formData.confirmPassword) {
       alert('Passwords do not match');
+      return;
+    }
+
+    if (!/^[6-9]\d{9}$/.test(formData.phone)) {
+      alert('Phone number must be exactly 10 digits and start with 6, 7, 8, or 9');
       return;
     }
     
@@ -143,7 +148,24 @@ const TrainerInvitationPage = () => {
               </div>
               <div>
                 <label className="block text-sm font-bold text-[#64748B] mb-1">Phone Number</label>
-                <input required type="tel" maxLength={10} value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value.replace(/\D/g, '').slice(0, 10)})} placeholder="10-digit number" className="w-full border border-[#E2E8F0] rounded-lg px-4 py-2 outline-none focus:border-[#FDBA74]" />
+                <input 
+                  required 
+                  type="tel" 
+                  maxLength={10} 
+                  value={formData.phone} 
+                  onChange={e => {
+                    const val = e.target.value.replace(/\D/g, '').slice(0, 10);
+                    if (val.length > 0 && !/^[6-9]/.test(val)) return;
+                    setFormData({...formData, phone: val});
+                  }} 
+                  placeholder="10-digit number (starts with 6-9)" 
+                  className="w-full border border-[#E2E8F0] rounded-lg px-4 py-2 outline-none focus:border-[#FDBA74]" 
+                />
+                {formData.phone && (!/^[6-9]\d{9}$/.test(formData.phone)) && (
+                  <p className="text-xs text-red-500 mt-1">
+                    {formData.phone.length < 10 ? `Enter 10 digits (${formData.phone.length}/10)` : 'Must start with 6, 7, 8, or 9'}
+                  </p>
+                )}
               </div>
               <div>
                 <label className="block text-sm font-bold text-[#64748B] mb-1">Password</label>

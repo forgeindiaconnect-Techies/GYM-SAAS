@@ -924,10 +924,21 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
                         { month: 'Jul', yearLabel: 'Month 7', multiplier: 0.80, gyms: 2, growth: '+11%', desc: 'Summer Push' },
                         { month: 'Aug', yearLabel: 'Month 8', multiplier: 0.88, gyms: 3, growth: '+10%', desc: 'Expansion' },
                         { month: 'Sep', yearLabel: 'Month 9', multiplier: 0.94, gyms: 3, growth: '+7%', desc: 'Q3 Finish' },
-                        { month: 'Oct', yearLabel: 'Month 10', multiplier: 1.00, gyms: 3, growth: '+6%', desc: 'Active Now', isCurrent: true, isOrangePill: true },
-                        { month: 'Nov', yearLabel: 'Month 11', multiplier: 1.15, gyms: 4, growth: '+15%', desc: 'Q4 Surge' },
-                        { month: 'Dec', yearLabel: 'Month 12', multiplier: 1.30, gyms: 4, growth: '+13%', desc: 'Full Year Target' },
-                      ]
+                        { month: 'Oct', yearLabel: 'Month 10', multiplier: 0.98, gyms: 3, growth: '+5%', desc: 'Q4 Start' },
+                        { month: 'Nov', yearLabel: 'Month 11', multiplier: 1.00, gyms: 3, growth: '+8%', desc: 'Active Now' },
+                        { month: 'Dec', yearLabel: 'Month 12', multiplier: 1.15, gyms: 4, growth: '+13%', desc: 'Full Year Target' },
+                      ].map((item, mIdx) => {
+                        const curM = new Date().getMonth();
+                        const isCurrentM = mIdx === curM;
+                        const isFutureM = mIdx > curM;
+                        return {
+                          ...item,
+                          isCurrent: isCurrentM,
+                          isOrangePill: isCurrentM,
+                          isFuture: isFutureM,
+                          desc: isCurrentM ? 'Active Now' : isFutureM ? 'Upcoming' : item.desc
+                        };
+                      })
                   ).map((m, idx) => {
                     const stepNum = String(idx + 1).padStart(2, '0');
                     const isCurrent = m.isCurrent;
@@ -1159,42 +1170,42 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
             {/* Stacked Percentage Bar */}
             <div className="w-full h-4 bg-[#F8FAFC] rounded-full overflow-hidden flex shadow-inner">
               <div style={{ width: `${membersPct}%` }} className="bg-[#C2410C] transition-all" title={`Memberships: ${membersPct}%`} />
-              <div style={{ width: `${trainersPct}%` }} className="bg-[#C2410C] transition-all" title={`Trainers: ${trainersPct}%`} />
-              <div style={{ width: `${onlineOrdersPct}%` }} className="bg-[#C2410C] transition-all" title={`Online Store: ${onlineOrdersPct}%`} />
+              <div style={{ width: `${trainersPct}%` }} className="bg-blue-600 transition-all" title={`Trainers: ${trainersPct}%`} />
+              <div style={{ width: `${onlineOrdersPct}%` }} className="bg-emerald-600 transition-all" title={`Online Store: ${onlineOrdersPct}%`} />
               <div style={{ width: `${offlineOrdersPct}%` }} className="bg-amber-500 transition-all" title={`Offline POS: ${offlineOrdersPct}%`} />
             </div>
 
             {/* Legend */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4 text-xs font-medium">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 min-w-0">
                 <span className="w-3 h-3 rounded-full bg-[#C2410C] shrink-0" />
-                <div className="truncate">
-                  <span className="text-[#64748B] block text-[10px]">Memberships</span>
-                  <strong className="text-[#111827]">₹{summary.membersRevenue.toLocaleString('en-IN')} ({membersPct}%)</strong>
+                <div className="min-w-0">
+                  <span className="text-[#64748B] block text-[10px] uppercase font-bold tracking-wider truncate">Memberships</span>
+                  <strong className="text-[#111827] text-xs font-bold whitespace-nowrap">₹{summary.membersRevenue.toLocaleString('en-IN')} <span className="text-[#C2410C]">({membersPct}%)</span></strong>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
-                <span className="w-3 h-3 rounded-full bg-[#C2410C] shrink-0" />
-                <div className="truncate">
-                  <span className="text-[#64748B] block text-[10px]">Trainer Bookings</span>
-                  <strong className="text-[#111827]">₹{summary.trainersRevenue.toLocaleString('en-IN')} ({trainersPct}%)</strong>
+              <div className="flex items-center gap-2 min-w-0">
+                <span className="w-3 h-3 rounded-full bg-blue-600 shrink-0" />
+                <div className="min-w-0">
+                  <span className="text-[#64748B] block text-[10px] uppercase font-bold tracking-wider truncate">Trainer Bookings</span>
+                  <strong className="text-[#111827] text-xs font-bold whitespace-nowrap">₹{summary.trainersRevenue.toLocaleString('en-IN')} <span className="text-blue-600">({trainersPct}%)</span></strong>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
-                <span className="w-3 h-3 rounded-full bg-[#C2410C] shrink-0" />
-                <div className="truncate">
-                  <span className="text-[#64748B] block text-[10px]">Store Online (App)</span>
-                  <strong className="text-[#111827]">₹{summary.ordersOnlineRevenue.toLocaleString('en-IN')} ({onlineOrdersPct}%)</strong>
+              <div className="flex items-center gap-2 min-w-0">
+                <span className="w-3 h-3 rounded-full bg-emerald-600 shrink-0" />
+                <div className="min-w-0">
+                  <span className="text-[#64748B] block text-[10px] uppercase font-bold tracking-wider truncate">Store Online (App)</span>
+                  <strong className="text-[#111827] text-xs font-bold whitespace-nowrap">₹{summary.ordersOnlineRevenue.toLocaleString('en-IN')} <span className="text-emerald-600">({onlineOrdersPct}%)</span></strong>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 min-w-0">
                 <span className="w-3 h-3 rounded-full bg-amber-500 shrink-0" />
-                <div className="truncate">
-                  <span className="text-[#64748B] block text-[10px]">Store Offline (POS)</span>
-                  <strong className="text-[#111827]">₹{summary.ordersOfflineRevenue.toLocaleString('en-IN')} ({offlineOrdersPct}%)</strong>
+                <div className="min-w-0">
+                  <span className="text-[#64748B] block text-[10px] uppercase font-bold tracking-wider truncate">Store Offline (POS)</span>
+                  <strong className="text-[#111827] text-xs font-bold whitespace-nowrap">₹{summary.ordersOfflineRevenue.toLocaleString('en-IN')} <span className="text-amber-600">({offlineOrdersPct}%)</span></strong>
                 </div>
               </div>
             </div>
@@ -1342,144 +1353,208 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
 
                     {/* 12 Month Columns Grid */}
                     <div className="grid grid-cols-12 gap-2 sm:gap-2.5 relative z-10">
-                      {[
-                        { month: 'Jan', mult: 0.55, growth: '+0%' },
-                        { month: 'Feb', mult: 0.60, growth: '+9%' },
-                        { month: 'Mar', mult: 0.65, growth: '+8%' },
-                        { month: 'Apr', mult: 0.70, growth: '+8%' },
-                        { month: 'May', mult: 0.75, growth: '+7%' },
-                        { month: 'Jun', mult: 0.80, growth: '+7%' },
-                        { month: 'Jul', mult: 0.85, growth: '+6%' },
-                        { month: 'Aug', mult: 0.90, growth: '+6%' },
-                        { month: 'Sep', mult: 0.95, growth: '+6%' },
-                        { month: 'Oct', mult: 1.00, growth: '+5%', isCurrent: true },
-                        { month: 'Nov', mult: 1.08, growth: '+8%' },
-                        { month: 'Dec', mult: 1.16, growth: '+7%' },
-                      ].map((item, idx) => {
-                        const stepNum = String(idx + 1).padStart(2, '0');
-                        const isCurrent = item.isCurrent || idx === 9; // Oct is month index 9
-                        const mult = item.mult;
-                        
-                        const mTotal = isCurrent ? summary.totalGrossRevenue : Math.round(summary.totalGrossRevenue * mult);
-                        const mTrainers = isCurrent ? summary.trainersRevenue : Math.round(summary.trainersRevenue * mult);
-                        const mMembers = isCurrent ? summary.membersRevenue : Math.round(summary.membersRevenue * mult);
-                        const mOnline = isCurrent ? summary.ordersOnlineRevenue : Math.round(summary.ordersOnlineRevenue * mult);
-                        const mOffline = isCurrent ? summary.ordersOfflineRevenue : Math.round(summary.ordersOfflineRevenue * mult);
+                      {(() => {
+                        const curMonthIdx = new Date().getMonth();
+                        return [
+                          { month: 'Jan', mult: 0.55, growth: '+0%' },
+                          { month: 'Feb', mult: 0.60, growth: '+9%' },
+                          { month: 'Mar', mult: 0.65, growth: '+8%' },
+                          { month: 'Apr', mult: 0.70, growth: '+8%' },
+                          { month: 'May', mult: 0.75, growth: '+7%' },
+                          { month: 'Jun', mult: 0.80, growth: '+7%' },
+                          { month: 'Jul', mult: 0.85, growth: '+6%' },
+                          { month: 'Aug', mult: 0.90, growth: '+6%' },
+                          { month: 'Sep', mult: 0.95, growth: '+6%' },
+                          { month: 'Oct', mult: 1.00, growth: '+5%' },
+                          { month: 'Nov', mult: 1.08, growth: '+8%' },
+                          { month: 'Dec', mult: 1.16, growth: '+7%' },
+                        ].map((item, idx) => {
+                          const stepNum = String(idx + 1).padStart(2, '0');
+                          const isCurrent = idx === curMonthIdx;
+                          const isFuture = idx > curMonthIdx;
+                          const mult = item.mult;
+                          
+                          const mTotal = isCurrent
+                            ? summary.totalGrossRevenue
+                            : isFuture
+                            ? 0
+                            : Math.round(summary.totalGrossRevenue * mult);
+                          const mTrainers = isCurrent
+                            ? summary.trainersRevenue
+                            : isFuture
+                            ? 0
+                            : Math.round(summary.trainersRevenue * mult);
+                          const mMembers = isCurrent
+                            ? summary.membersRevenue
+                            : isFuture
+                            ? 0
+                            : Math.round(summary.membersRevenue * mult);
+                          const mOnline = isCurrent
+                            ? summary.ordersOnlineRevenue
+                            : isFuture
+                            ? 0
+                            : Math.round(summary.ordersOnlineRevenue * mult);
+                          const mOffline = isCurrent
+                            ? summary.ordersOfflineRevenue
+                            : isFuture
+                            ? 0
+                            : Math.round(summary.ordersOfflineRevenue * mult);
 
-                        const totalSteps = 12;
-                        const minHeightPx = 52;
-                        const maxHeightPx = 140;
-                        const calculatedHeight = Math.round(minHeightPx + ((idx / (totalSteps - 1)) * (maxHeightPx - minHeightPx)));
+                          const totalSteps = 12;
+                          const minHeightPx = 40;
+                          const maxHeightPx = 140;
+                          const calculatedHeight = isFuture
+                            ? 20
+                            : Math.round(minHeightPx + ((idx / (totalSteps - 1)) * (maxHeightPx - minHeightPx)));
 
-                        // Stream percentage segments inside pillar
-                        const validTotal = Math.max(1, mTotal);
-                        const tShare = Math.round((mTrainers / validTotal) * 100);
-                        const mShare = Math.round((mMembers / validTotal) * 100);
-                        const onShare = Math.round((mOnline / validTotal) * 100);
-                        const offShare = Math.max(0, 100 - tShare - mShare - onShare);
+                          // Stream percentage segments inside pillar
+                          const validTotal = Math.max(1, mTotal);
+                          const tShare = Math.round((mTrainers / validTotal) * 100);
+                          const mShare = Math.round((mMembers / validTotal) * 100);
+                          const onShare = Math.round((mOnline / validTotal) * 100);
+                          const offShare = Math.max(0, 100 - tShare - mShare - onShare);
 
-                        return (
-                          <div key={idx} className="flex flex-col items-center group">
-                            {/* 1. Step Header Pill */}
-                            <div className="flex items-center gap-1 mb-2.5 bg-[#FFFFFF] px-1.5 py-0.5 rounded-full relative z-10 shadow-xs border border-[#E2E8F0]">
-                              <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-wider text-[#64748B] whitespace-nowrap">
-                                S{stepNum}
-                              </span>
-                              {item.growth && (
-                                <span className="text-[8px] sm:text-[9px] font-black text-[#EA580C] bg-[#F8FAFC] px-1 py-0.2 rounded-full whitespace-nowrap">
-                                  {item.growth}
+                          return (
+                            <div key={idx} className="flex flex-col items-center group">
+                              {/* 1. Step Header Pill */}
+                              <div className="flex items-center gap-1 mb-2.5 bg-[#FFFFFF] px-1.5 py-0.5 rounded-full relative z-10 shadow-xs border border-[#E2E8F0]">
+                                <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-wider text-[#64748B] whitespace-nowrap">
+                                  S{stepNum}
                                 </span>
-                              )}
-                            </div>
-
-                            {/* 2. Month Revenue Amount Badge */}
-                            <div
-                              className={`mb-2.5 text-[10px] sm:text-[11px] font-black px-1.5 sm:px-2 py-1 rounded-xl shadow-xs transition-all whitespace-nowrap ${
-                                isCurrent
-                                  ? 'bg-gradient-to-r from-[#EA580C] to-[#C2410C] text-white shadow-orange-500/15 ring-2 ring-orange-400/50 scale-105'
-                                  : 'bg-[#F8FAFC] text-[#111827] border border-[#E2E8F0] group-hover:bg-[#C2410C] group-hover:border-[#FDBA74]'
-                              }`}
-                            >
-                              ₹{isCurrent ? mTotal.toLocaleString('en-IN') : `${(mTotal / 1000).toFixed(1)}k`}
-                            </div>
-
-                            {/* 3. Flow Pillar Card Container */}
-                            <div
-                              className={`w-full h-48 flex items-end justify-center rounded-2xl p-1.5 sm:p-2 transition-all shadow-xs relative ${
-                                isCurrent
-                                  ? 'bg-[#FFF7ED] border-2 border-[#E2E8F0] shadow-orange-500/15 ring-2 ring-orange-400/30'
-                                  : 'bg-[#F8FAFC]/80 border border-[#E2E8F0]/90 group-hover:border-[#FDBA74] group-hover:bg-[#FFF7ED]/15'
-                              }`}
-                              title={`${item.month} Total: ₹${mTotal.toLocaleString('en-IN')}\n• Trainers: ₹${mTrainers.toLocaleString('en-IN')}\n• Memberships: ₹${mMembers.toLocaleString('en-IN')}\n• Online Store: ₹${mOnline.toLocaleString('en-IN')}\n• Offline POS: ₹${mOffline.toLocaleString('en-IN')}`}
-                            >
-                              {/* Stacked Multi-Stream Flow Pillar */}
-                              <div
-                                style={{ height: `${calculatedHeight}px` }}
-                                className={`w-9 sm:w-11 rounded-xl overflow-hidden shadow-md flex flex-col-reverse justify-start transition-all duration-300 ${
-                                  isCurrent ? 'ring-2 ring-orange-400/70 scale-102' : ''
-                                }`}
-                              >
-                                {/* Bottom: Trainers (Blue) */}
-                                <div
-                                  style={{ height: `${tShare}%` }}
-                                  className="w-full bg-[#C2410C] hover:bg-[#9A3412] transition-colors"
-                                  title={`Trainers: ₹${mTrainers.toLocaleString('en-IN')} (${tShare}%)`}
-                                />
-                                {/* Middle: Memberships (Orange) */}
-                                <div
-                                  style={{ height: `${mShare}%` }}
-                                  className="w-full bg-[#C2410C] hover:bg-[#9A3412] transition-colors"
-                                  title={`Memberships: ₹${mMembers.toLocaleString('en-IN')} (${mShare}%)`}
-                                />
-                                {/* Top-mid: Store Online (Emerald) */}
-                                <div
-                                  style={{ height: `${Math.max(3, onShare)}%` }}
-                                  className="w-full bg-[#C2410C] hover:bg-[#9A3412] transition-colors"
-                                  title={`Online Store: ₹${mOnline.toLocaleString('en-IN')} (${onShare}%)`}
-                                />
-                                {/* Very top: Store Offline (Amber) */}
-                                <div
-                                  style={{ height: `${Math.max(3, offShare)}%` }}
-                                  className="w-full bg-amber-500 hover:bg-amber-600 transition-colors"
-                                  title={`Offline POS: ₹${mOffline.toLocaleString('en-IN')} (${offShare}%)`}
-                                />
+                                {!isFuture && item.growth && (
+                                  <span className="text-[8px] sm:text-[9px] font-black text-[#EA580C] bg-[#F8FAFC] px-1 py-0.2 rounded-full whitespace-nowrap">
+                                    {item.growth}
+                                  </span>
+                                )}
                               </div>
-                            </div>
 
-                            {/* 4. Flowchart Connector Node & Month Label */}
-                            <div className="mt-3 flex flex-col items-center relative z-10">
+                              {/* 2. Month Revenue Amount Badge */}
                               <div
-                                className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#FFFFFF] border-2 shadow-xs flex items-center justify-center transition-transform group-hover:scale-110 ${
+                                className={`mb-2.5 text-[10px] sm:text-[11px] font-black px-1.5 sm:px-2 py-1 rounded-xl shadow-xs transition-all whitespace-nowrap ${
                                   isCurrent
-                                    ? 'border-[#E2E8F0] ring-2 ring-orange-400/50'
-                                    : 'border-[#FDBA74]'
+                                    ? 'bg-gradient-to-r from-[#EA580C] to-[#C2410C] text-white shadow-orange-500/15 ring-2 ring-orange-400/50 scale-105'
+                                    : isFuture
+                                    ? 'bg-slate-100 text-slate-400 border border-dashed border-slate-300'
+                                    : 'bg-[#F8FAFC] text-[#111827] border border-[#E2E8F0] group-hover:bg-[#C2410C] group-hover:border-[#FDBA74]'
                                 }`}
                               >
-                                <div className={`w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full ${isCurrent ? 'bg-[#C2410C]' : 'bg-[#C2410C]'}`} />
+                                {isCurrent
+                                  ? `₹${mTotal.toLocaleString('en-IN')}`
+                                  : isFuture
+                                  ? 'Upcoming'
+                                  : `₹${(mTotal / 1000).toFixed(1)}k`}
                               </div>
-                              <span
-                                className={`text-xs font-black mt-1.5 transition-colors whitespace-nowrap ${
-                                  isCurrent ? 'text-[#EA580C] font-black' : 'text-[#111827] group-hover:text-[#EA580C]'
-                                }`}
-                              >
-                                {item.month}
-                              </span>
-                              
-                              {/* Sub-label showing stream snapshot */}
-                              <span className="text-[8px] text-[#64748B] font-bold mt-0.5 whitespace-nowrap">
-                                T: ₹{(mTrainers / 1000).toFixed(0)}k | M: ₹{(mMembers / 1000).toFixed(1)}k
-                              </span>
 
-                              {/* Current Active Indicator */}
-                              {isCurrent && (
-                                <span className="text-[7px] font-black uppercase tracking-wider text-[#111827] bg-[#C2410C] px-1.5 py-0.5 rounded-full mt-1 shadow-xs whitespace-nowrap">
-                                  NOW
+                              {/* 3. Flow Pillar Card Container */}
+                              <div
+                                className={`w-full h-48 flex items-end justify-center rounded-2xl p-1.5 sm:p-2 transition-all shadow-xs relative ${
+                                  isCurrent
+                                    ? 'bg-[#FFF7ED] border-2 border-[#E2E8F0] shadow-orange-500/15 ring-2 ring-orange-400/30'
+                                    : isFuture
+                                    ? 'bg-slate-50/50 border border-dashed border-slate-200'
+                                    : 'bg-[#F8FAFC]/80 border border-[#E2E8F0]/90 group-hover:border-[#FDBA74] group-hover:bg-[#FFF7ED]/15'
+                                }`}
+                                title={
+                                  isFuture
+                                    ? `${item.month} (Upcoming Month)`
+                                    : `${item.month} Total: ₹${mTotal.toLocaleString('en-IN')}\n• Trainers: ₹${mTrainers.toLocaleString('en-IN')}\n• Memberships: ₹${mMembers.toLocaleString('en-IN')}\n• Online Store: ₹${mOnline.toLocaleString('en-IN')}\n• Offline POS: ₹${mOffline.toLocaleString('en-IN')}`
+                                }
+                              >
+                                {/* Stacked Multi-Stream Flow Pillar */}
+                                {isFuture ? (
+                                  <div className="w-9 sm:w-11 h-6 rounded-lg border border-dashed border-slate-300 flex items-center justify-center text-[8px] font-bold text-slate-300">
+                                    --
+                                  </div>
+                                ) : (
+                                  <div
+                                    style={{ height: `${calculatedHeight}px` }}
+                                    className={`w-9 sm:w-11 rounded-xl overflow-hidden shadow-md flex flex-col-reverse justify-start transition-all duration-300 ${
+                                      isCurrent ? 'ring-2 ring-orange-400/70 scale-102' : ''
+                                    }`}
+                                  >
+                                    {/* Bottom: Trainers (Blue) */}
+                                    <div
+                                      style={{ height: `${tShare}%` }}
+                                      className="w-full bg-blue-600 hover:bg-blue-700 transition-colors"
+                                      title={`Trainers: ₹${mTrainers.toLocaleString('en-IN')} (${tShare}%)`}
+                                    />
+                                    {/* Middle: Memberships (Orange) */}
+                                    <div
+                                      style={{ height: `${mShare}%` }}
+                                      className="w-full bg-[#C2410C] hover:bg-[#9A3412] transition-colors"
+                                      title={`Memberships: ₹${mMembers.toLocaleString('en-IN')} (${mShare}%)`}
+                                    />
+                                    {/* Top-mid: Store Online (Emerald) */}
+                                    <div
+                                      style={{ height: `${Math.max(3, onShare)}%` }}
+                                      className="w-full bg-emerald-600 hover:bg-emerald-700 transition-colors"
+                                      title={`Online Store: ₹${mOnline.toLocaleString('en-IN')} (${onShare}%)`}
+                                    />
+                                    {/* Very top: Store Offline (Amber) */}
+                                    <div
+                                      style={{ height: `${Math.max(3, offShare)}%` }}
+                                      className="w-full bg-amber-500 hover:bg-amber-600 transition-colors"
+                                      title={`Offline POS: ₹${mOffline.toLocaleString('en-IN')} (${offShare}%)`}
+                                    />
+                                  </div>
+                                )}
+                              </div>
+
+                              {/* 4. Flowchart Connector Node & Month Label */}
+                              <div className="mt-3 flex flex-col items-center relative z-10">
+                                <div
+                                  className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#FFFFFF] border-2 shadow-xs flex items-center justify-center transition-transform group-hover:scale-110 ${
+                                    isCurrent
+                                      ? 'border-[#EA580C] ring-2 ring-orange-400/50'
+                                      : isFuture
+                                      ? 'border-slate-200'
+                                      : 'border-[#FDBA74]'
+                                  }`}
+                                >
+                                  <div
+                                    className={`w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full ${
+                                      isCurrent
+                                        ? 'bg-[#EA580C]'
+                                        : isFuture
+                                        ? 'bg-slate-300'
+                                        : 'bg-[#C2410C]'
+                                    }`}
+                                  />
+                                </div>
+                                <span
+                                  className={`text-xs font-black mt-1.5 transition-colors whitespace-nowrap ${
+                                    isCurrent
+                                      ? 'text-[#EA580C] font-black'
+                                      : isFuture
+                                      ? 'text-slate-400'
+                                      : 'text-[#111827] group-hover:text-[#EA580C]'
+                                  }`}
+                                >
+                                  {item.month}
                                 </span>
-                              )}
+                                
+                                {/* Sub-label showing stream snapshot */}
+                                <span className="text-[8px] text-[#64748B] font-bold mt-0.5 whitespace-nowrap">
+                                  {isFuture
+                                    ? '--'
+                                    : `T: ₹${(mTrainers / 1000).toFixed(0)}k | M: ₹${(mMembers / 1000).toFixed(1)}k`}
+                                </span>
+
+                                {/* Current Active Indicator / Upcoming Indicator */}
+                                {isCurrent ? (
+                                  <span className="mt-1 text-[8px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-[#EA580C] text-white shadow-xs">
+                                    NOW
+                                  </span>
+                                ) : isFuture ? (
+                                  <span className="mt-1 text-[7px] font-bold uppercase tracking-wider px-1 py-0.5 rounded-full bg-slate-100 text-slate-400 border border-slate-200">
+                                    UPCOMING
+                                  </span>
+                                ) : null}
+                              </div>
                             </div>
-                          </div>
-                        );
-                      })}
+                          );
+                        });
+                      })()}
                     </div>
                   </div>
                 </div>
@@ -1810,10 +1885,10 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
                   <table className="w-full text-left text-xs">
                     <thead className="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[#64748B] font-bold uppercase text-[10px]">
                       <tr>
-                        <th className="py-3 px-4">Product Name</th>
-                        <th className="py-3 px-4">Quantity Sold</th>
-                        <th className="py-3 px-4">Channel</th>
-                        <th className="py-3 px-4">Total Revenue</th>
+                        <th className="py-3 px-4 whitespace-nowrap">Product Name</th>
+                        <th className="py-3 px-4 whitespace-nowrap">Quantity Sold</th>
+                        <th className="py-3 px-4 whitespace-nowrap">Channel</th>
+                        <th className="py-3 px-4 whitespace-nowrap">Total Revenue</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[#E2E8F0]">
@@ -1825,18 +1900,18 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
                           ]
                       ).map((prod: any, idx: number) => (
                         <tr key={idx} className="hover:bg-[#FFF7ED]">
-                          <td className="py-3 px-4 font-bold text-[#111827]">{prod.name}</td>
-                          <td className="py-3 px-4">{prod.quantity} unit(s)</td>
-                          <td className="py-3 px-4">
-                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${
+                          <td className="py-3 px-4 font-bold text-[#111827] whitespace-nowrap">{prod.name}</td>
+                          <td className="py-3 px-4 whitespace-nowrap">{prod.quantity} unit(s)</td>
+                          <td className="py-3 px-4 whitespace-nowrap">
+                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold whitespace-nowrap ${
                               prod.channel?.toLowerCase().includes('online')
-                                ? 'bg-[#F8FAFC] text-[#EA580C] border border-[#E2E8F0]'
-                                : 'bg-amber-50 text-amber-700 border border-amber-200'
+                                ? 'bg-[#FFF7ED] text-[#C2410C] border border-[#FFEDD5]'
+                                : 'bg-amber-50 text-amber-800 border border-amber-200'
                             }`}>
                               {prod.channel}
                             </span>
                           </td>
-                          <td className="py-3 px-4 font-extrabold text-[#111827]">₹{Number(prod.revenue).toLocaleString('en-IN')}</td>
+                          <td className="py-3 px-4 font-extrabold text-[#111827] whitespace-nowrap">₹{Number(prod.revenue).toLocaleString('en-IN')}</td>
                         </tr>
                       ))}
                     </tbody>

@@ -673,6 +673,14 @@ const SuperAdminGymOwners = () => {
 
   const handleSaveEdit = async () => {
     if (!editOwner) return;
+    if (editForm.mobile && !/^[6-9]\d{9}$/.test(editForm.mobile)) {
+      alert('Mobile number must be exactly 10 digits and start with 6, 7, 8, or 9');
+      return;
+    }
+    if (editForm.gymData?.phone && !/^[6-9]\d{9}$/.test(editForm.gymData.phone)) {
+      alert('Gym contact phone must be exactly 10 digits and start with 6, 7, 8, or 9');
+      return;
+    }
     try {
       setIsSaving(true);
       const res = await api.put(`/users/${editOwner._id}`, editForm);
@@ -698,10 +706,14 @@ const SuperAdminGymOwners = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'APPROVED': return 'bg-green-500/10 text-green-500 border-green-500/20';
-      case 'REJECTED': return 'bg-[#FFF7ED] text-[#9A3412] border-[#F8FAFC]/20';
-      case 'SUSPENDED': return 'bg-[#FFF7ED] text-[#EA580C] border-[#E2E8F0]/20';
-      default: return 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20';
+      case 'APPROVED':
+      case 'Active': return 'bg-emerald-50 text-emerald-700 border-emerald-200';
+      case 'REJECTED':
+      case 'Rejected': return 'bg-red-50 text-red-700 border-red-200';
+      case 'SUSPENDED':
+      case 'Suspended': return 'bg-gray-100 text-gray-700 border-gray-300';
+      case 'Pending':
+      default: return 'bg-amber-50 text-amber-700 border-amber-200';
     }
   };
 
@@ -1735,15 +1747,26 @@ const SuperAdminGymOwners = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-[#64748B] mb-1.5">Mobile</label>
+                    <label className="block text-xs font-semibold text-[#64748B] mb-1.5">Mobile *</label>
                     <input 
                       type="tel"
                       value={editForm.mobile || ''} 
-                      onChange={e => setEditForm({...editForm, mobile: e.target.value.replace(/\D/g, '').slice(0, 10)})} 
+                      onChange={e => {
+                        const v = e.target.value.replace(/\D/g, '').slice(0, 10);
+                        if (v.length > 0 && !/^[6-9]/.test(v)) return; // Reject 0,1,2,3,4,5
+                        setEditForm({...editForm, mobile: v});
+                      }} 
                       maxLength={10}
-                      placeholder="10-digit number"
+                      placeholder="10-digit number (starts with 6-9)"
                       className="w-full bg-[#FFFFFF] border border-[#E2E8F0] text-[#111827] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#FDBA74] transition-colors"
                     />
+                    {editForm.mobile && (!/^[6-9]\d{9}$/.test(editForm.mobile)) && (
+                      <p className="text-[11px] text-red-500 mt-1">
+                        {editForm.mobile.length < 10
+                          ? `Enter 10 digits (${editForm.mobile.length}/10)`
+                          : 'Must start with 6, 7, 8, or 9'}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <label className="block text-xs font-semibold text-[#64748B] mb-1.5">City</label>
@@ -1818,11 +1841,22 @@ const SuperAdminGymOwners = () => {
                     <input 
                       type="tel"
                       value={editForm.gymData?.phone || ''} 
-                      onChange={e => setEditForm({...editForm, gymData: {...editForm.gymData, phone: e.target.value.replace(/\D/g, '').slice(0, 10)}})} 
+                      onChange={e => {
+                        const v = e.target.value.replace(/\D/g, '').slice(0, 10);
+                        if (v.length > 0 && !/^[6-9]/.test(v)) return; // Reject 0,1,2,3,4,5
+                        setEditForm({...editForm, gymData: {...editForm.gymData, phone: v}});
+                      }} 
                       maxLength={10}
-                      placeholder="10-digit number"
+                      placeholder="10-digit number (starts with 6-9)"
                       className="w-full bg-[#FFFFFF] border border-[#E2E8F0] text-[#111827] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#FDBA74] transition-colors"
                     />
+                    {editForm.gymData?.phone && (!/^[6-9]\d{9}$/.test(editForm.gymData.phone)) && (
+                      <p className="text-[11px] text-red-500 mt-1">
+                        {editForm.gymData.phone.length < 10
+                          ? `Enter 10 digits (${editForm.gymData.phone.length}/10)`
+                          : 'Must start with 6, 7, 8, or 9'}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <label className="block text-xs font-semibold text-[#64748B] mb-1.5">Operating Hours</label>
@@ -1904,12 +1938,12 @@ const SuperAdminGymOwners = () => {
                     onChange={e => setNewServiceInput(e.target.value)}
                     onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addCustomService(); } }}
                     placeholder="Add custom service..."
-                    className="flex-1 bg-[#FFFFFF] border border-[#E2E8F0] text-[#111827] rounded-lg px-3 py-1.5 text-xs outline-none focus:border-[#FDBA74]"
+                    className="flex-1 min-w-0 bg-[#FFFFFF] border border-[#E2E8F0] text-[#111827] rounded-lg px-3 py-1.5 text-xs outline-none focus:border-[#FDBA74]"
                   />
                   <button
                     type="button"
                     onClick={addCustomService}
-                    className="px-3 py-1.5 bg-[#FFF7ED] text-[#EA580C] rounded-lg hover:bg-[#FFF7ED] text-xs font-semibold border border-[#FFEDD5] flex items-center gap-1"
+                    className="px-3.5 py-1.5 bg-[#FFF7ED] text-[#EA580C] rounded-lg hover:bg-[#FFEDD5] text-xs font-semibold border border-[#FFEDD5] flex items-center gap-1 shrink-0 whitespace-nowrap shadow-xs cursor-pointer"
                   >
                     <Plus size={13} /> Add
                   </button>
@@ -2061,12 +2095,12 @@ const SuperAdminGymOwners = () => {
                       onChange={e => setNewFacilityInput(e.target.value)}
                       onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addCustomFacility(); } }}
                       placeholder="Add custom facility..."
-                      className="flex-1 bg-[#FFFFFF] border border-[#E2E8F0] text-[#111827] rounded-lg px-3 py-1.5 text-xs outline-none focus:border-[#FDBA74]"
+                      className="flex-1 min-w-0 bg-[#FFFFFF] border border-[#E2E8F0] text-[#111827] rounded-lg px-3 py-1.5 text-xs outline-none focus:border-[#FDBA74]"
                     />
                     <button
                       type="button"
                       onClick={addCustomFacility}
-                      className="px-3 py-1.5 bg-[#FFF7ED] text-[#EA580C] rounded-lg hover:bg-[#FFF7ED] text-xs font-semibold border border-[#FFEDD5] flex items-center gap-1"
+                      className="px-3.5 py-1.5 bg-[#FFF7ED] text-[#EA580C] rounded-lg hover:bg-[#FFEDD5] text-xs font-semibold border border-[#FFEDD5] flex items-center gap-1 shrink-0 whitespace-nowrap shadow-xs cursor-pointer"
                     >
                       <Plus size={13} /> Add
                     </button>
@@ -2076,7 +2110,7 @@ const SuperAdminGymOwners = () => {
 
               {/* Package Plans */}
               <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl p-5 shadow-sm">
-                <div className="flex items-center justify-between mb-4 border-b border-[#E2E8F0] pb-2">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 border-b border-[#E2E8F0] pb-2">
                   <div>
                     <h3 className="text-[#EA580C] font-semibold text-base flex items-center gap-2">
                       <CreditCard size={18} />
@@ -2090,7 +2124,7 @@ const SuperAdminGymOwners = () => {
                   <button
                     type="button"
                     onClick={handleOpenAddPackage}
-                    className="px-3.5 py-1.5 bg-[#C2410C] text-white font-bold rounded-lg hover:bg-[#9A3412] text-xs font-semibold flex items-center gap-1.5 shadow-sm cursor-pointer"
+                    className="self-start sm:self-auto px-3.5 py-2 bg-[#C2410C] text-white font-bold rounded-lg hover:bg-[#9A3412] text-xs flex items-center gap-1.5 shadow-sm cursor-pointer shrink-0 whitespace-nowrap"
                   >
                     <Plus size={14} /> Add Package Plan
                   </button>
@@ -2250,12 +2284,12 @@ const SuperAdminGymOwners = () => {
                     onChange={e => setNewImageInput(e.target.value)}
                     onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); handleAddImage(); } }}
                     placeholder="Enter image URL..."
-                    className="flex-1 bg-[#FFFFFF] border border-[#E2E8F0] text-[#111827] rounded-lg px-3 py-1.5 text-xs outline-none focus:border-[#FDBA74]"
+                    className="flex-1 min-w-0 bg-[#FFFFFF] border border-[#E2E8F0] text-[#111827] rounded-lg px-3 py-1.5 text-xs outline-none focus:border-[#FDBA74]"
                   />
                   <button
                     type="button"
                     onClick={handleAddImage}
-                    className="px-3 py-1.5 bg-[#FFF7ED] text-[#EA580C] rounded-lg hover:bg-[#FFF7ED] text-xs font-semibold border border-[#FFEDD5] flex items-center gap-1"
+                    className="px-3.5 py-1.5 bg-[#FFF7ED] text-[#EA580C] rounded-lg hover:bg-[#FFEDD5] text-xs font-semibold border border-[#FFEDD5] flex items-center gap-1 shrink-0 whitespace-nowrap shadow-xs cursor-pointer"
                   >
                     <Plus size={13} /> Add Photo
                   </button>
@@ -2267,7 +2301,7 @@ const SuperAdminGymOwners = () => {
               <button 
                 type="button"
                 onClick={() => setEditOwner(null)}
-                className="px-4 py-2 border border-[#E2E8F0] text-[#64748B] bg-[#FFFFFF] rounded-lg hover:bg-[#FFF7ED] transition-colors text-sm font-medium shadow-sm"
+                className="px-4 py-2 border border-[#E2E8F0] text-[#64748B] bg-[#FFFFFF] rounded-lg hover:bg-[#FFF7ED] transition-colors text-sm font-medium shadow-sm shrink-0 whitespace-nowrap cursor-pointer"
               >
                 Cancel
               </button>
@@ -2275,7 +2309,7 @@ const SuperAdminGymOwners = () => {
                 type="button"
                 onClick={handleSaveEdit}
                 disabled={isSaving}
-                className="px-5 py-2 bg-[#C2410C] text-white font-bold rounded-lg hover:bg-[#9A3412] transition-colors text-sm font-semibold flex items-center space-x-2 shadow-sm disabled:opacity-50"
+                className="px-5 py-2 bg-[#C2410C] text-white font-bold rounded-lg hover:bg-[#9A3412] transition-colors text-sm font-semibold flex items-center space-x-2 shadow-sm disabled:opacity-50 shrink-0 whitespace-nowrap cursor-pointer"
               >
                 {isSaving ? <Loader2 size={16} className="animate-spin" /> : <Check size={16} />}
                 <span>Save Changes</span>

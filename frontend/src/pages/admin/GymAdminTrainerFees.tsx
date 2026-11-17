@@ -273,32 +273,32 @@ const GymAdminTrainerFees = () => {
 
       {/* Summary Cards */}
       {!loading && (
-        <div className="grid grid-cols-3 gap-4">
-          <div className="bg-[#FFFFFF] border border-[#F8FAFC] rounded-xl p-4 flex items-center gap-3 shadow-sm">
-            <div className="w-10 h-10 rounded-lg bg-[#F8FAFC] flex items-center justify-center shrink-0">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+          <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl p-4 flex items-center gap-3 shadow-xs">
+            <div className="w-10 h-10 rounded-lg bg-[#FFF7ED] flex items-center justify-center shrink-0">
               <IndianRupee size={18} className="text-[#EA580C]" />
             </div>
             <div>
               <p className="text-xl font-bold text-[#111827]">{trainers.length}</p>
-              <p className="text-xs text-[#64748B]">Total Trainers</p>
+              <p className="text-xs text-[#64748B] whitespace-nowrap font-medium">Total Trainers</p>
             </div>
           </div>
-          <div className="bg-[#FFFFFF] border border-[#F8FAFC] rounded-xl p-4 flex items-center gap-3 shadow-sm">
-            <div className="w-10 h-10 rounded-lg bg-green-50 flex items-center justify-center shrink-0">
-              <CheckCircle size={18} className="text-[#EA580C]" />
+          <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl p-4 flex items-center gap-3 shadow-xs">
+            <div className="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center shrink-0">
+              <CheckCircle size={18} className="text-emerald-600" />
             </div>
             <div>
               <p className="text-xl font-bold text-[#111827]">{configuredCount}</p>
-              <p className="text-xs text-[#64748B]">Fee Configured</p>
+              <p className="text-xs text-[#64748B] whitespace-nowrap font-medium">Fee Configured</p>
             </div>
           </div>
-          <div className="bg-[#FFFFFF] border border-[#F8FAFC] rounded-xl p-4 flex items-center gap-3 shadow-sm">
+          <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl p-4 flex items-center gap-3 shadow-xs">
             <div className="w-10 h-10 rounded-lg bg-amber-50 flex items-center justify-center shrink-0">
               <AlertCircle size={18} className="text-amber-600" />
             </div>
             <div>
               <p className="text-xl font-bold text-[#111827]">{notConfiguredCount}</p>
-              <p className="text-xs text-[#64748B]">Pending Setup</p>
+              <p className="text-xs text-[#64748B] whitespace-nowrap font-medium">Pending Setup</p>
             </div>
           </div>
         </div>
@@ -312,12 +312,12 @@ const GymAdminTrainerFees = () => {
           placeholder="Search trainer..."
           value={search}
           onChange={e => setSearch(e.target.value)}
-          className="w-full pl-9 pr-4 py-2.5 border border-[#F8FAFC] rounded-xl text-sm outline-none focus:border-[#FDBA74] focus:ring-1 focus:ring-[#F97316]/30 transition bg-[#FFFFFF]"
+          className="w-full pl-9 pr-4 py-2.5 border border-[#CBD5E1] rounded-xl text-sm outline-none focus:border-[#FDBA74] focus:ring-1 focus:ring-[#F97316]/30 transition bg-[#FFFFFF]"
         />
       </div>
 
       {/* Table — ALL trainers */}
-      <div className="bg-[#FFFFFF] border border-[#F8FAFC] rounded-2xl overflow-hidden shadow-sm">
+      <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl overflow-x-auto shadow-xs custom-scrollbar">
         {loading ? (
           <div className="flex items-center justify-center py-24">
             <div className="w-8 h-8 border-4 border-[#FDBA74] border-t-transparent rounded-full animate-spin" />
@@ -330,19 +330,19 @@ const GymAdminTrainerFees = () => {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm">
+            <table className="w-full min-w-[750px] text-left text-sm">
               <thead>
-                <tr className="bg-[#F8FAFC] border-b border-[#F8FAFC]">
-                  <th className="px-5 py-3.5 font-semibold text-[#64748B]">Trainer</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#64748B]">Training Type</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#64748B] text-right">Fee (Salary)</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#64748B]">Billing Cycle</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#64748B]">Effective From</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#64748B]">Status</th>
-                  <th className="px-5 py-3.5 font-semibold text-[#64748B]">Action</th>
+                <tr className="bg-[#F8FAFC] border-b border-[#E2E8F0]">
+                  <th className="px-5 py-3.5 font-bold text-[#64748B] whitespace-nowrap">Trainer</th>
+                  <th className="px-5 py-3.5 font-bold text-[#64748B] whitespace-nowrap">Training Type</th>
+                  <th className="px-5 py-3.5 font-bold text-[#64748B] text-right whitespace-nowrap">Fee (Salary)</th>
+                  <th className="px-5 py-3.5 font-bold text-[#64748B] whitespace-nowrap">Billing Cycle</th>
+                  <th className="px-5 py-3.5 font-bold text-[#64748B] whitespace-nowrap">Effective From</th>
+                  <th className="px-5 py-3.5 font-bold text-[#64748B] whitespace-nowrap">Status</th>
+                  <th className="px-5 py-3.5 font-bold text-[#64748B] whitespace-nowrap">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#F8FAFC]">
+              <tbody className="divide-y divide-[#E2E8F0]">
                 {allRows.map(({ trainer, fee }) => (
                   <tr key={trainer._id} className="hover:bg-[#FFF7ED] transition-colors">
                     {/* Trainer */}
@@ -391,13 +391,13 @@ const GymAdminTrainerFees = () => {
                     </td>
 
                     {/* Status */}
-                    <td className="px-5 py-4">
+                    <td className="px-5 py-4 whitespace-nowrap">
                       {fee ? (
-                        <span className={`px-2.5 py-1 rounded-full text-xs font-bold flex items-center gap-1 w-fit ${
-                          fee.status === 'Active' ? 'bg-[#FFF7ED] text-[#EA580C]' :
-                          fee.status === 'Pending' ? 'bg-amber-100 text-amber-700' :
-                          fee.status === 'Rejected' ? 'bg-red-100 text-red-700' :
-                          'bg-[#F8FAFC] text-[#64748B]'
+                        <span className={`px-2.5 py-1 rounded-full text-xs font-bold flex items-center gap-1 w-fit border ${
+                          fee.status === 'Active' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                          fee.status === 'Pending' ? 'bg-amber-50 text-amber-700 border-amber-200' :
+                          fee.status === 'Rejected' ? 'bg-red-50 text-red-700 border-red-200' :
+                          'bg-slate-100 text-slate-600 border-slate-200'
                         }`}>
                           {fee.status === 'Pending' && <Clock size={12} />}
                           {fee.status === 'Rejected' && <XCircle size={12} />}
@@ -405,7 +405,7 @@ const GymAdminTrainerFees = () => {
                           {fee.status}
                         </span>
                       ) : (
-                        <span className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-100 text-amber-700 text-xs font-bold w-fit">
+                        <span className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200 text-xs font-bold w-fit">
                           <AlertCircle size={11} />
                           Not Set
                         </span>
@@ -413,11 +413,11 @@ const GymAdminTrainerFees = () => {
                     </td>
 
                     {/* Action */}
-                    <td className="px-5 py-4">
+                    <td className="px-5 py-4 whitespace-nowrap">
                       {fee ? (
                         <button
                           onClick={() => openEditFee(fee, trainer)}
-                          className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#F8FAFC] text-[#EA580C] border border-[#E2E8F0] rounded-lg text-xs font-semibold hover:bg-[#E2E8F0] transition-colors"
+                          className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#FFFFFF] hover:bg-[#FFF7ED] text-[#EA580C] border border-[#CBD5E1] hover:border-[#FDBA74] rounded-lg text-xs font-bold transition-all whitespace-nowrap shrink-0 shadow-xs"
                         >
                           <Edit size={13} />
                           Edit Fee
@@ -425,7 +425,7 @@ const GymAdminTrainerFees = () => {
                       ) : (
                         <button
                           onClick={() => openSetFee(trainer)}
-                          className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#C2410C] text-white font-bold rounded-lg text-xs font-bold hover:bg-[#9A3412] transition-colors shadow shadow-orange-500/15"
+                          className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#C2410C] text-white font-bold rounded-lg text-xs hover:bg-[#9A3412] transition-all shadow-md shadow-orange-500/15 whitespace-nowrap shrink-0"
                         >
                           <Plus size={13} />
                           Set Fee

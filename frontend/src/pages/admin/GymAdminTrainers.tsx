@@ -269,16 +269,16 @@ const GymAdminTrainers = () => {
         </button>
       </div>
 
-      <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl overflow-hidden">
-        <table className="w-full text-left text-sm text-[#64748B]">
+      <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl overflow-x-auto shadow-xs custom-scrollbar">
+        <table className="w-full min-w-[700px] text-left text-sm text-[#64748B]">
           <thead className="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[#111827]">
             <tr>
-              <th className="px-6 py-4 font-bold">Trainer Info</th>
-              <th className="px-6 py-4 font-bold">Specialization</th>
-              <th className="px-6 py-4 font-bold">Mode</th>
-              <th className="px-6 py-4 font-bold">Fee</th>
-              <th className="px-6 py-4 font-bold">Status</th>
-              <th className="px-6 py-4 font-bold">Actions</th>
+              <th className="px-6 py-4 font-bold whitespace-nowrap">Trainer Info</th>
+              <th className="px-6 py-4 font-bold whitespace-nowrap">Specialization</th>
+              <th className="px-6 py-4 font-bold whitespace-nowrap">Mode</th>
+              <th className="px-6 py-4 font-bold whitespace-nowrap">Fee</th>
+              <th className="px-6 py-4 font-bold whitespace-nowrap">Status</th>
+              <th className="px-6 py-4 font-bold whitespace-nowrap">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-[#E2E8F0]">
@@ -330,9 +330,10 @@ const GymAdminTrainers = () => {
                     </td>
                     <td className="px-6 py-4">
                       <span className={`px-2.5 py-1 rounded-full text-xs font-bold border ${
-                        trainer.status === 'Active' ? 'bg-[#FFF7ED] text-[#EA580C] border-[#FFEDD5]' : 
-                        trainer.status === 'Pending' ? 'bg-[#FFF7ED] text-[#EA580C] border-[#E2E8F0]/20' : 
-                        'bg-red-500/10 text-red-500 border-red-500/20'}`}>
+                        trainer.status === 'Active' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 
+                        trainer.status === 'Pending' ? 'bg-amber-50 text-amber-700 border-amber-200' : 
+                        trainer.status === 'Inactive' || trainer.status === 'Suspended' ? 'bg-slate-100 text-slate-600 border-slate-200' :
+                        'bg-red-50 text-red-700 border-red-200'}`}>
                         {trainer.status}
                       </span>
                     </td>

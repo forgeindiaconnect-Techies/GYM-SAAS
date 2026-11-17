@@ -989,8 +989,9 @@ export default function TrainerRegisterPage() {
                     value={form.mobile}
                     onChange={(e) => {
                       const digits = e.target.value.replace(/\D/g, '').slice(0, 10);
+                      if (digits.length > 0 && !/^[6-9]/.test(digits)) return;
                       setForm({ ...form, mobile: digits });
-                      if (digits.length === 10) {
+                      if (digits.length === 10 && /^[6-9]\d{9}$/.test(digits)) {
                         setFieldErrors((prev) => {
                           const next = { ...prev };
                           delete next.mobile;

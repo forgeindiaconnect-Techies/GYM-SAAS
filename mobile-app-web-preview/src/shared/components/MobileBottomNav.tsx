@@ -22,8 +22,13 @@ interface TabItem {
   icon: React.ElementType;
 }
 
-export const MobileBottomNav: React.FC = () => {
+interface MobileBottomNavProps {
+  role?: UserRole;
+}
+
+export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({ role: propRole }) => {
   const { activeRole } = useMobileAuth();
+  const currentRole = propRole || activeRole;
 
   const getTabsForRole = (role: UserRole): TabItem[] => {
     switch (role) {
@@ -54,7 +59,7 @@ export const MobileBottomNav: React.FC = () => {
     }
   };
 
-  const tabs = getTabsForRole(activeRole);
+  const tabs = getTabsForRole(currentRole);
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 px-2 py-1 shadow-lg shadow-slate-900/5 max-w-md mx-auto">

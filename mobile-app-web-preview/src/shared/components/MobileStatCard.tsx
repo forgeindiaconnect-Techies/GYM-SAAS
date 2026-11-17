@@ -2,24 +2,30 @@ import React from 'react';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 
 interface MobileStatCardProps {
-  label: string;
+  label?: string;
+  title?: string;
   value: string | number;
   change?: string;
   isPositive?: boolean;
   icon: React.ReactNode;
   iconBg?: string;
+  color?: string;
   onClick?: () => void;
 }
 
 export const MobileStatCard: React.FC<MobileStatCardProps> = ({
   label,
+  title,
   value,
   change,
   isPositive = true,
   icon,
-  iconBg = 'bg-orange-50 text-orange-600',
+  iconBg,
+  color,
   onClick,
 }) => {
+  const displayLabel = label || title || '';
+  const resolvedBg = iconBg || (color ? `bg-${color}-50 text-${color}-600` : 'bg-orange-50 text-orange-600');
   return (
     <div
       onClick={onClick}
@@ -29,7 +35,7 @@ export const MobileStatCard: React.FC<MobileStatCardProps> = ({
     >
       <div className="min-w-0">
         <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block truncate">
-          {label}
+          {displayLabel}
         </span>
         <div className="flex items-baseline gap-2 mt-0.5">
           <span className="text-xl font-black text-slate-900 tracking-tight">

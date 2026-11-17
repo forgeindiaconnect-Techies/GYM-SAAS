@@ -182,6 +182,30 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
       updateData.mobile = updateData.phone;
     }
 
+    if (updateData.mobile !== undefined && updateData.mobile !== null && updateData.mobile !== '') {
+      const cleanMobile = String(updateData.mobile).replace(/\D/g, '');
+      if (!/^[6-9]\d{9}$/.test(cleanMobile)) {
+        res.status(400).json({
+          success: false,
+          message: 'Mobile number must be exactly 10 digits and start with 6, 7, 8, or 9'
+        });
+        return;
+      }
+      updateData.mobile = cleanMobile;
+    }
+
+    if (updateData.emergencyContact?.mobile) {
+      const cleanEmerg = String(updateData.emergencyContact.mobile).replace(/\D/g, '');
+      if (cleanEmerg && !/^[6-9]\d{9}$/.test(cleanEmerg)) {
+        res.status(400).json({
+          success: false,
+          message: 'Emergency contact mobile must be exactly 10 digits and start with 6, 7, 8, or 9'
+        });
+        return;
+      }
+      updateData.emergencyContact.mobile = cleanEmerg;
+    }
+
     let user = await User.findById(id);
     if (!user) {
       res.status(404).json({ success: false, message: 'User not found' });
@@ -354,6 +378,16 @@ export const createUser = async (req: AuthRequest, res: Response): Promise<void>
     const gymId = req.body.gymId || req.user?.gymId;
     const finalEmail = (email || `member_${Date.now()}@gymora.com`).trim().toLowerCase();
     const finalPhone = mobile || phone || '';
+    if (finalPhone) {
+      const cleanMobile = String(finalPhone).replace(/\D/g, '');
+      if (!/^[6-9]\d{9}$/.test(cleanMobile)) {
+        res.status(400).json({
+          success: false,
+          message: 'Mobile number must be exactly 10 digits and start with 6, 7, 8, or 9'
+        });
+        return;
+      }
+    }
 
     let existingUser = await User.findOne({ email: finalEmail });
     if (existingUser) {

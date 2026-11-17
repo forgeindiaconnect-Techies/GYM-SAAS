@@ -3,7 +3,7 @@ import {
   CreditCard, Zap, Star, Crown, Sparkles, CheckCircle, XCircle,
   Users, Dumbbell, Building2, UserCheck, Edit3, Eye, ToggleLeft,
   ToggleRight, Plus, Search, Calendar, IndianRupee, Clock, AlertCircle, Trash2,
-  FileText, Printer, Download, X
+  FileText, Printer, Download, X, ChevronDown
 } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -138,19 +138,41 @@ const SAAS_PLANS = [
 // (real data fetched from API, see component state)
 
 const PLAN_COLORS: Record<string, string> = {
-  FREE_TRIAL: 'bg-slate-500/10 text-[#64748B] border-slate-500/30',
-  SILVER: 'bg-[#FFF7ED] text-[#9A3412] border-[#F8FAFC]/30',
-  GOLD: 'bg-[#FFF7ED] text-[#EA580C] border-[#FFEDD5]',
-  PREMIUM: 'bg-[#FFF7ED] text-[#EA580C] border-[#FFEDD5]',
-  BASIC: 'bg-slate-500/10 text-[#64748B] border-slate-500/30',
+  FREE_TRIAL: 'bg-emerald-50 text-emerald-700 border-emerald-200 font-bold',
+  SILVER: 'bg-zinc-100 text-zinc-700 border-zinc-300 font-bold',
+  GOLD: 'bg-amber-100 text-amber-800 border-amber-300 font-bold',
+  PLATINUM: 'bg-slate-200 text-slate-800 border-slate-400 font-bold',
+  PREMIUM: 'bg-purple-100 text-purple-800 border-purple-300 font-bold',
+  PROFESSIONAL: 'bg-blue-100 text-blue-800 border-blue-300 font-bold',
+  BASIC: 'bg-gray-100 text-gray-700 border-gray-300 font-bold',
+};
+
+const getPlanBadgeStyle = (planKey?: string): string => {
+  const normalized = (planKey || '').toUpperCase().replace(/[\s-]/g, '_');
+  if (normalized.includes('PLATINUM')) return 'bg-slate-200 text-slate-800 border-slate-400 font-bold';
+  if (normalized.includes('GOLD')) return 'bg-amber-100 text-amber-800 border-amber-300 font-bold';
+  if (normalized.includes('SILVER')) return 'bg-zinc-100 text-zinc-700 border-zinc-300 font-bold';
+  if (normalized.includes('PREMIUM')) return 'bg-purple-100 text-purple-800 border-purple-300 font-bold';
+  if (normalized.includes('PROFESSIONAL')) return 'bg-blue-100 text-blue-800 border-blue-300 font-bold';
+  if (normalized.includes('TRIAL')) return 'bg-emerald-50 text-emerald-700 border-emerald-200 font-bold';
+  return PLAN_COLORS[normalized] || 'bg-gray-100 text-gray-700 border-gray-300 font-bold';
 };
 
 const STATUS_COLORS: Record<string, string> = {
-  Active: 'bg-green-500/10 text-green-400 border-green-500/20',
-  Expired: 'bg-[#FFF7ED] text-[#EA580C] border-[#F8FAFC]/20',
-  Pending: 'bg-[#FFF7ED] text-[#EA580C] border-[#F8FAFC]/20',
-  Inactive: 'bg-[#333] text-[#64748B] border-[#E2E8F0]',
-  Rejected: 'bg-red-500/10 text-[#B91C1C] border-red-500/20',
+  Active: 'bg-emerald-100 text-emerald-800 border-emerald-300 font-bold',
+  Pending: 'bg-amber-100 text-amber-800 border-amber-300 font-bold',
+  Rejected: 'bg-red-100 text-red-800 border-red-300 font-bold',
+  Expired: 'bg-gray-100 text-gray-700 border-gray-300 font-bold',
+  Inactive: 'bg-gray-100 text-gray-700 border-gray-300 font-bold',
+};
+
+const getStatusBadgeStyle = (status?: string): string => {
+  const s = (status || '').toLowerCase();
+  if (s === 'active') return 'bg-emerald-100 text-emerald-800 border-emerald-300 font-bold';
+  if (s === 'pending') return 'bg-amber-100 text-amber-800 border-amber-300 font-bold';
+  if (s === 'rejected') return 'bg-red-100 text-red-800 border-red-300 font-bold';
+  if (s === 'expired' || s === 'inactive') return 'bg-gray-100 text-gray-700 border-gray-300 font-bold';
+  return 'bg-gray-100 text-gray-700 border-gray-300 font-bold';
 };
 
 const formatDate = (dateInput?: string | Date | null): string => {
@@ -1244,7 +1266,7 @@ const SuperAdminSubscriptions = () => {
         </div>
         <button
           onClick={() => setShowCreateModal(true)}
-          className="flex items-center space-x-2 px-5 py-2.5 bg-[#F8FAFC] text-black rounded-xl font-bold hover:bg-[#9A3412] transition-colors text-sm shadow-lg shadow-amber-500/20"
+          className="flex items-center space-x-2 px-5 py-2.5 bg-[#C2410C] hover:bg-[#9A3412] text-white rounded-xl font-bold transition-all text-sm shadow-md shadow-orange-500/20 shrink-0 whitespace-nowrap cursor-pointer"
         >
           <Plus size={16} />
           <span>Create New Plan</span>
@@ -1602,23 +1624,37 @@ const SuperAdminSubscriptions = () => {
                 className="w-full bg-[#FFFFFF] border border-[#E2E8F0] text-[#111827] rounded-xl pl-9 pr-4 py-2.5 text-sm outline-none focus:border-[#F8FAFC]"
               />
             </div>
-            <select value={filterPlan} onChange={e => setFilterPlan(e.target.value)}
-              className="bg-[#FFFFFF] border border-[#E2E8F0] text-[#111827] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#F8FAFC]">
-              <option value="ALL">All Plans</option>
-              <option value="FREE_TRIAL">Free Trial</option>
-              <option value="SILVER">Silver</option>
-              <option value="GOLD">Gold</option>
-              <option value="PREMIUM">Premium</option>
-            </select>
-            <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)}
-              className="bg-[#FFFFFF] border border-[#E2E8F0] text-[#111827] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#F8FAFC]">
-              <option value="ALL">All Statuses</option>
-              <option value="Active">Active</option>
-              <option value="Inactive">Inactive</option>
-              <option value="Pending">Pending</option>
-              <option value="Rejected">Rejected</option>
-              <option value="Expired">Expired</option>
-            </select>
+            <div className="relative min-w-[150px]">
+              <select 
+                value={filterPlan} 
+                onChange={e => setFilterPlan(e.target.value)}
+                className="appearance-none w-full bg-[#FFFFFF] border border-[#CBD5E1] text-[#111827] rounded-xl pl-4 pr-10 py-2.5 text-sm outline-none focus:border-[#FDBA74] cursor-pointer"
+              >
+                <option value="ALL">All Plans</option>
+                <option value="FREE_TRIAL">Free Trial</option>
+                <option value="SILVER">Silver</option>
+                <option value="GOLD">Gold</option>
+                <option value="PLATINUM">Platinum</option>
+                <option value="PREMIUM">Premium</option>
+                <option value="PROFESSIONAL">Professional</option>
+              </select>
+              <ChevronDown size={16} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#64748B] pointer-events-none" />
+            </div>
+            <div className="relative min-w-[150px]">
+              <select 
+                value={filterStatus} 
+                onChange={e => setFilterStatus(e.target.value)}
+                className="appearance-none w-full bg-[#FFFFFF] border border-[#CBD5E1] text-[#111827] rounded-xl pl-4 pr-10 py-2.5 text-sm outline-none focus:border-[#FDBA74] cursor-pointer"
+              >
+                <option value="ALL">All Statuses</option>
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+                <option value="Pending">Pending</option>
+                <option value="Rejected">Rejected</option>
+                <option value="Expired">Expired</option>
+              </select>
+              <ChevronDown size={16} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#64748B] pointer-events-none" />
+            </div>
           </div>
 
           <div className="overflow-x-auto">
@@ -1657,7 +1693,7 @@ const SuperAdminSubscriptions = () => {
                     </td>
                     <td className="px-5 py-4 text-[#64748B] text-sm">{gym.owner}</td>
                     <td className="px-5 py-4">
-                      <span className={`text-xs px-2.5 py-1 rounded-full font-bold border ${PLAN_COLORS[gym.plan]}`}>
+                      <span className={`text-xs px-2.5 py-1 rounded-full font-bold border ${getPlanBadgeStyle(gym.plan)}`}>
                         {SAAS_PLANS.find(p => p.key === gym.plan)?.name || gym.plan}
                       </span>
                     </td>
@@ -1671,29 +1707,31 @@ const SuperAdminSubscriptions = () => {
                     <td className="px-5 py-4 text-[#64748B] text-sm whitespace-nowrap">{formatDate(gym.start)}</td>
                     <td className="px-5 py-4 text-[#64748B] text-sm whitespace-nowrap">{formatDate(gym.renewal)}</td>
                     <td className="px-5 py-4">
-                      <select 
-                        value={gym.status}
-                        onChange={async (e) => {
-                          const newStatus = e.target.value;
-                          try {
-                            const res = await api.put(`/subscriptions/${gym.id}/status`, { status: newStatus });
-                            if (res.data.success) {
-                              setSubscribedGyms(prev => prev.map(g => g.id === gym.id ? { ...g, status: newStatus } : g));
+                      <div className="relative inline-block">
+                        <select 
+                          value={gym.status}
+                          onChange={async (e) => {
+                            const newStatus = e.target.value;
+                            try {
+                              const res = await api.put(`/subscriptions/${gym.id}/status`, { status: newStatus });
+                              if (res.data.success) {
+                                setSubscribedGyms(prev => prev.map(g => g.id === gym.id ? { ...g, status: newStatus } : g));
+                              }
+                            } catch (err) {
+                              console.error('Failed to update status', err);
                             }
-                          } catch (err) {
-                            console.error('Failed to update status', err);
-                            // Revert on error or show toast (optional)
-                          }
-                        }}
-                        onClick={(e) => e.stopPropagation()}
-                        className={`outline-none cursor-pointer inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border appearance-none ${STATUS_COLORS[gym.status] || 'bg-[#F8FAFC] text-[#64748B]'}`}
-                      >
-                        <option value="Active" className="bg-[#FFFFFF] text-green-500">Active</option>
-                        <option value="Inactive" className="bg-[#FFFFFF] text-[#64748B]">Inactive</option>
-                        <option value="Pending" className="bg-[#FFFFFF] text-[#EA580C]">Pending</option>
-                        <option value="Rejected" className="bg-[#FFFFFF] text-rose-600 font-bold">Rejected</option>
-                        <option value="Expired" className="bg-[#FFFFFF] text-[#EA580C]">Expired</option>
-                      </select>
+                          }}
+                          onClick={(e) => e.stopPropagation()}
+                          className={`outline-none cursor-pointer inline-flex items-center gap-1.5 pl-3 pr-7 py-1 rounded-full text-xs font-bold border appearance-none transition-colors ${getStatusBadgeStyle(gym.status)}`}
+                        >
+                          <option value="Active" className="bg-[#FFFFFF] text-emerald-800 font-bold">Active</option>
+                          <option value="Inactive" className="bg-[#FFFFFF] text-gray-700">Inactive</option>
+                          <option value="Pending" className="bg-[#FFFFFF] text-amber-800 font-bold">Pending</option>
+                          <option value="Rejected" className="bg-[#FFFFFF] text-red-800 font-bold">Rejected</option>
+                          <option value="Expired" className="bg-[#FFFFFF] text-gray-700">Expired</option>
+                        </select>
+                        <ChevronDown size={12} className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none opacity-60" />
+                      </div>
                     </td>
                     <td className="px-5 py-4">
                       <div className="flex items-center space-x-2">

@@ -34,6 +34,28 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
+    const cleanMobile = String(mobile).replace(/\D/g, '');
+    if (!/^[6-9]\d{9}$/.test(cleanMobile)) {
+      res.status(400).json({
+        success: false,
+        message: 'Mobile number must be exactly 10 digits and start with 6, 7, 8, or 9',
+        errorCode: 'INVALID_MOBILE'
+      });
+      return;
+    }
+
+    if (emergencyContact?.mobile) {
+      const cleanEmerg = String(emergencyContact.mobile).replace(/\D/g, '');
+      if (cleanEmerg && !/^[6-9]\d{9}$/.test(cleanEmerg)) {
+        res.status(400).json({
+          success: false,
+          message: 'Emergency contact mobile must be exactly 10 digits and start with 6, 7, 8, or 9',
+          errorCode: 'INVALID_EMERGENCY_MOBILE'
+        });
+        return;
+      }
+    }
+
     const normalizedEmail = String(email).trim().toLowerCase();
     const existingUser = await User.findOne({ email: normalizedEmail });
     if (existingUser) {
@@ -300,8 +322,8 @@ export const registerTrainer = async (req: Request, res: Response): Promise<void
     }
 
     const cleanMobile = mobile.replace(/[^0-9]/g, '');
-    if (cleanMobile.length < 10) {
-      res.status(400).json({ success: false, message: 'Please provide a valid 10-digit mobile number', errorCode: 'INVALID_MOBILE' });
+    if (!/^[6-9]\d{9}$/.test(cleanMobile)) {
+      res.status(400).json({ success: false, message: 'Please provide a valid 10-digit mobile number starting with 6, 7, 8, or 9', errorCode: 'INVALID_MOBILE' });
       return;
     }
 
@@ -517,6 +539,28 @@ export const registerGymOwner = async (req: Request, res: Response): Promise<voi
     if (!firstName || !lastName || !email || !mobile || !password || !gymName || !gymType || !address || !city) {
       res.status(400).json({ success: false, message: 'Required fields missing', errorCode: 'MISSING_FIELDS' });
       return;
+    }
+
+    const cleanMobile = String(mobile).replace(/\D/g, '');
+    if (!/^[6-9]\d{9}$/.test(cleanMobile)) {
+      res.status(400).json({
+        success: false,
+        message: 'Mobile number must be exactly 10 digits and start with 6, 7, 8, or 9',
+        errorCode: 'INVALID_MOBILE'
+      });
+      return;
+    }
+
+    if (gymContactNumber) {
+      const cleanGymPhone = String(gymContactNumber).replace(/\D/g, '');
+      if (cleanGymPhone && !/^[6-9]\d{9}$/.test(cleanGymPhone)) {
+        res.status(400).json({
+          success: false,
+          message: 'Gym contact number must be exactly 10 digits and start with 6, 7, 8, or 9',
+          errorCode: 'INVALID_GYM_PHONE'
+        });
+        return;
+      }
     }
 
     const existingUser = await User.findOne({ email });

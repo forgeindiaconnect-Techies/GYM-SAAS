@@ -108,7 +108,7 @@ const RegisterPage = () => {
       else if (!/\S+@\S+\.\S+/.test(form.email)) e.email = 'Enter a valid email';
       else if (!otpVerified) e.email = 'Please verify your email with OTP';
       if (!form.mobile.trim()) e.mobile = 'Mobile is required';
-      else if (!/^\d{10}$/.test(form.mobile)) e.mobile = 'Enter a valid 10-digit mobile number';
+      else if (!/^[6-9]\d{9}$/.test(form.mobile)) e.mobile = 'Mobile number must be 10 digits and start with 6, 7, 8, or 9';
       if (!form.password) e.password = 'Password is required';
       else if (form.password.length < 8) e.password = 'Password must be at least 8 characters';
       if (form.password !== form.confirmPassword) e.confirmPassword = 'Passwords do not match';
@@ -126,7 +126,7 @@ const RegisterPage = () => {
       if (!form.emergencyName.trim()) e.emergencyName = 'Emergency contact name is required';
       if (!form.emergencyRelationship) e.emergencyRelationship = 'Relationship is required';
       if (!form.emergencyMobile.trim()) e.emergencyMobile = 'Emergency mobile is required';
-      else if (!/^\d{10}$/.test(form.emergencyMobile)) e.emergencyMobile = 'Enter a valid 10-digit number';
+      else if (!/^[6-9]\d{9}$/.test(form.emergencyMobile)) e.emergencyMobile = 'Emergency mobile must be 10 digits and start with 6, 7, 8, or 9';
     }
     if (step === 4) {
       if (!form.acceptTerms) e.acceptTerms = 'You must accept the Terms & Conditions';

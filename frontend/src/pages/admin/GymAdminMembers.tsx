@@ -306,6 +306,14 @@ const GymAdminMembers = () => {
 
   const handleEditSave = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (editForm.phone && !/^[6-9]\d{9}$/.test(editForm.phone)) {
+      alert('Phone number must be exactly 10 digits and start with 6, 7, 8, or 9');
+      return;
+    }
+    if (editForm.emergencyPhone && !/^[6-9]\d{9}$/.test(editForm.emergencyPhone)) {
+      alert('Emergency contact phone must be exactly 10 digits and start with 6, 7, 8, or 9');
+      return;
+    }
     try {
       const nameParts = (editForm.name || '').trim().split(/\s+/);
       const firstName = nameParts[0] || editForm.originalUser?.firstName || 'Member';
@@ -373,13 +381,15 @@ const GymAdminMembers = () => {
 
   const getStatusColor = (status: string) => {
     switch(status) {
-      case 'Active': return 'bg-[#FFF7ED] text-[#15803D] border-[#E2E8F0]/30';
-      case 'Pending': return 'bg-amber-500/15 text-[#B45309] border-amber-500/30';
-      case 'Inactive': return 'bg-slate-700/30 text-[#64748B] border-slate-700';
-      case 'Rejected': return 'bg-red-500/15 text-[#B91C1C] border-red-500/30';
-      case 'New': return 'bg-[#FFF7ED] text-[#EA580C] border-[#FFEDD5]';
-      case 'Existing': return 'bg-[#FFFFFF] text-[#EA580C] border-[#E2E8F0]';
-      default: return 'bg-slate-800 text-[#64748B] border-slate-700';
+      case 'Active': return 'bg-emerald-50 text-emerald-700 border-emerald-200 font-bold';
+      case 'Pending': return 'bg-amber-50 text-amber-700 border-amber-200 font-bold';
+      case 'Inactive':
+      case 'Expired':
+      case 'Suspended': return 'bg-gray-100 text-gray-700 border-gray-300 font-bold';
+      case 'Rejected': return 'bg-red-50 text-red-700 border-red-200 font-bold';
+      case 'New': return 'bg-blue-50 text-blue-700 border-blue-200 font-bold';
+      case 'Existing': return 'bg-[#FFF7ED] text-[#EA580C] border-[#FFEDD5] font-bold';
+      default: return 'bg-gray-100 text-gray-700 border-gray-300 font-bold';
     }
   };
 
@@ -547,7 +557,7 @@ const GymAdminMembers = () => {
                       <p className="flex items-center text-xs text-[#111827] font-medium"><Phone size={12} className="mr-1.5 text-[#64748B] shrink-0"/> {member.phone}</p>
                     </div>
                   </td>
-                  <td className="px-6 py-4 align-middle">
+                  <td className="px-6 py-4 align-top">
                     <div className="space-y-1.5">
                       {/* Active/Current Plan Badge + History Tag */}
                       <div className="flex items-center gap-2 flex-wrap">
@@ -559,20 +569,21 @@ const GymAdminMembers = () => {
                               e.stopPropagation();
                               setSelectedMember(member);
                             }}
-                            className="text-[10px] font-bold bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5] px-2 py-0.5 rounded-md hover:bg-[#FFF7ED] transition-colors inline-flex items-center gap-1 cursor-pointer"
-                            title="Click to view plan history"
+                            className="text-[10px] font-bold bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5] px-2 py-0.5 rounded-md hover:bg-[#FFEDD5] transition-colors inline-flex items-center gap-1 cursor-pointer whitespace-nowrap"
+                            title="Click to view full plan history"
                           >
                             <History size={10} />
                             <span>{member.membershipHistory.length} Plans</span>
                           </button>
                         )}
                       </div>
-                      {/* Plan History — separate rows per plan */}
+                      {/* Plan History — compact preview showing max 2 recent with link */}
                       {member.membershipHistory && member.membershipHistory.length > 1 && (
                         <div className="space-y-1 mt-1">
                           {member.membershipHistory
                             .slice()
                             .reverse()
+                            .slice(0, 2)
                             .map((hist: any, hIdx: number) => (
                               <button
                                 key={hIdx}
@@ -581,7 +592,7 @@ const GymAdminMembers = () => {
                                   e.stopPropagation();
                                   setSelectedMember(member);
                                 }}
-                                className="flex items-center gap-2 text-[10px] bg-[#F8FAFC] px-2 py-1 rounded-lg border border-[#E2E8F0] w-full max-w-fit hover:border-[#FDBA74] hover:bg-[#FFF7ED] transition-colors cursor-pointer"
+                                className="flex items-center gap-1.5 text-[10px] bg-[#F8FAFC] px-2 py-0.5 rounded-lg border border-[#E2E8F0] w-full max-w-fit hover:border-[#FDBA74] hover:bg-[#FFF7ED] transition-colors cursor-pointer whitespace-nowrap"
                                 title={`${hist.planName || hist.status} (${hist.duration || 'N/A'})${hist.startDate ? ' — ' + new Date(hist.startDate).toLocaleDateString() : ''}`}
                               >
                                 <span className="text-[10px] font-bold text-[#64748B] shrink-0">
@@ -595,6 +606,18 @@ const GymAdminMembers = () => {
                                 )}
                               </button>
                             ))}
+                          {member.membershipHistory.length > 2 && (
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedMember(member);
+                              }}
+                              className="text-[10px] text-[#EA580C] font-semibold hover:underline block pt-0.5 cursor-pointer text-left"
+                            >
+                              + {member.membershipHistory.length - 2} more (view details)
+                            </button>
+                          )}
                         </div>
                       )}
                       <p className="flex items-center text-[11px] text-[#64748B]">
@@ -636,12 +659,12 @@ const GymAdminMembers = () => {
                       })()}
                     </div>
                   </td>
-                  <td className="px-6 py-4 align-middle text-center">
+                  <td className="px-6 py-4 align-top text-center">
                     <span className={`px-2.5 py-1 border rounded-lg text-xs font-bold transition-colors inline-block ${getStatusColor(member.status)}`}>
                       {member.status}
                     </span>
                   </td>
-                  <td className="px-6 py-4 align-middle text-right pr-6">
+                  <td className="px-6 py-4 align-top text-right pr-6">
                     <div className="flex justify-end gap-1.5 items-center relative">
                       <button onClick={() => setSelectedMember(member)} className="p-1.5 text-[#64748B] hover:text-[#EA580C] hover:bg-[#FFF7ED] rounded-lg transition-colors cursor-pointer" title="View Profile">
                         <Eye size={18} />
@@ -657,14 +680,15 @@ const GymAdminMembers = () => {
                       {/* Status Button */}
                       <button 
                         onClick={(e) => handleToggleStatusDropdown(e, member)} 
-                        className={`px-2.5 py-1.5 rounded-lg text-xs font-bold transition-colors flex items-center gap-1.5 border ml-1 ${
+                        className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 border ml-1 shrink-0 whitespace-nowrap shadow-xs cursor-pointer ${
                           statusDropdown?.memberId === member.id 
-                            ? 'bg-[#FFFFFF] text-white border-[#FFFFFF]' 
-                            : 'bg-[#FFFFFF] text-[#64748B] border-[#F8FAFC] hover:bg-[#FFF7ED]'
+                            ? 'bg-[#FFF7ED] text-[#EA580C] border-[#FFEDD5]' 
+                            : 'bg-[#FFFFFF] text-[#475569] border-[#CBD5E1] hover:bg-[#FFF7ED] hover:text-[#EA580C] hover:border-[#FFEDD5]'
                         }`} 
                         title="Set Status"
                       >
-                        <Activity size={14} className={statusDropdown?.memberId === member.id ? 'text-white' : 'text-[#64748B]'} /> Status
+                        <Activity size={14} className={statusDropdown?.memberId === member.id ? 'text-[#EA580C]' : 'text-[#64748B]'} />
+                        <span>Status</span>
                       </button>
                     </div>
                   </td>
@@ -743,7 +767,7 @@ const GymAdminMembers = () => {
                 <div>
                   <h3 className="text-2xl font-bold text-[#111827] mb-1 capitalize">{selectedMember.name}</h3>
                   <div className="flex gap-2">
-                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${selectedMember.status === 'Active' ? 'bg-[#FFF7ED] text-[#EA580C]' : 'bg-[#FFF7ED] text-[#9A3412]'}`}>
+                    <span className={`px-3 py-1 rounded-full text-xs font-bold border ${selectedMember.status === 'Active' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : selectedMember.status === 'Pending' ? 'bg-amber-50 text-amber-700 border-amber-200' : 'bg-gray-100 text-gray-700 border-gray-300'}`}>
                       {selectedMember.status}
                     </span>
                     <span className={`px-3 py-1 rounded-full text-xs font-semibold ${selectedMember.customerType === 'NEW_CUSTOMER' ? 'bg-[#F8FAFC] text-[#EA580C]' : 'bg-gray-500/10 text-[#111827]'}`}>
@@ -920,7 +944,7 @@ const GymAdminMembers = () => {
                                 {endDateStr && ` – ${new Date(endDateStr).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' })}`}
                               </p>
                               <p className="text-[11px] font-semibold text-[#64748B] mt-0.5">
-                                Status: <span className={item.status === 'Active' ? 'text-[#EA580C]' : 'text-[#64748B]'}>{item.status || 'Active'}</span>
+                                Status: <span className={item.status === 'Active' || !item.status ? 'text-emerald-700 font-bold' : item.status === 'Pending' ? 'text-amber-700 font-bold' : item.status === 'Rejected' ? 'text-red-700 font-bold' : 'text-gray-700 font-bold'}>{item.status || 'Active'}</span>
                               </p>
                             </div>
                           </div>
@@ -996,7 +1020,24 @@ const GymAdminMembers = () => {
                     </div>
                     <div>
                       <label className="block text-xs font-bold text-[#64748B] mb-1">Phone Number *</label>
-                      <input required type="tel" value={editForm.phone || ''} onChange={e => { const v = e.target.value.replace(/\D/g,''); if(v.length<=10) setEditForm({...editForm, phone: v}); }} maxLength={10} className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-2.5 outline-none focus:border-[#FDBA74] text-sm" placeholder="10-digit number" />
+                      <input 
+                        required 
+                        type="tel" 
+                        value={editForm.phone || ''} 
+                        onChange={e => { 
+                          const v = e.target.value.replace(/\D/g,'').slice(0, 10); 
+                          if (v.length > 0 && !/^[6-9]/.test(v)) return; // Reject 0,1,2,3,4,5
+                          setEditForm({...editForm, phone: v}); 
+                        }} 
+                        maxLength={10} 
+                        className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-2.5 outline-none focus:border-[#FDBA74] text-sm" 
+                        placeholder="10-digit number (starts with 6-9)" 
+                      />
+                      {editForm.phone && (!/^[6-9]\d{9}$/.test(editForm.phone)) && (
+                        <p className="text-[11px] text-red-500 mt-1">
+                          {editForm.phone.length < 10 ? `Enter 10 digits (${editForm.phone.length}/10)` : 'Must start with 6, 7, 8, or 9'}
+                        </p>
+                      )}
                     </div>
                     <div>
                       <label className="block text-xs font-bold text-[#64748B] mb-1">Gender</label>
@@ -1079,7 +1120,23 @@ const GymAdminMembers = () => {
                     </div>
                     <div>
                       <label className="block text-xs font-bold text-[#64748B] mb-1">Phone</label>
-                      <input type="tel" value={editForm.emergencyPhone || ''} onChange={e => { const v = e.target.value.replace(/\D/g,''); if(v.length<=10) setEditForm({...editForm, emergencyPhone: v}); }} maxLength={10} className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-2.5 outline-none focus:border-[#FDBA74] text-sm" placeholder="Phone" />
+                      <input 
+                        type="tel" 
+                        value={editForm.emergencyPhone || ''} 
+                        onChange={e => { 
+                          const v = e.target.value.replace(/\D/g,'').slice(0, 10); 
+                          if (v.length > 0 && !/^[6-9]/.test(v)) return; // Reject 0,1,2,3,4,5
+                          setEditForm({...editForm, emergencyPhone: v}); 
+                        }} 
+                        maxLength={10} 
+                        className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-2.5 outline-none focus:border-[#FDBA74] text-sm" 
+                        placeholder="10-digit number (starts with 6-9)" 
+                      />
+                      {editForm.emergencyPhone && (!/^[6-9]\d{9}$/.test(editForm.emergencyPhone)) && (
+                        <p className="text-[11px] text-red-500 mt-1">
+                          {editForm.emergencyPhone.length < 10 ? `Enter 10 digits (${editForm.emergencyPhone.length}/10)` : 'Must start with 6, 7, 8, or 9'}
+                        </p>
+                      )}
                     </div>
                     <div>
                       <label className="block text-xs font-bold text-[#64748B] mb-1">Relationship</label>

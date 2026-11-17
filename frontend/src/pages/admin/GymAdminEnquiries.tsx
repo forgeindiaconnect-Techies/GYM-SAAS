@@ -294,7 +294,7 @@ export const GymAdminEnquiries = () => {
                     <button 
                       onClick={() => updateStatus(selectedEnquiry._id, selectedEnquiry.status)}
                       disabled={updating}
-                      className="px-4 py-2 bg-[#F8FAFC] text-[#111827] font-semibold text-sm rounded-lg hover:bg-[#FFF7ED] transition-colors disabled:opacity-50"
+                      className="px-5 py-2.5 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold text-sm rounded-xl transition-all shadow-md shadow-orange-500/15 disabled:opacity-50 flex items-center gap-1.5"
                     >
                       {updating ? 'Saving...' : 'Save Notes'}
                     </button>

@@ -53,6 +53,10 @@ export const CustomerEnquiryModal = ({ isOpen, onClose, gymId, gymName }: Custom
       alert('Please fill out all required fields.');
       return;
     }
+    if (!/^[6-9]\d{9}$/.test(formData.mobileNumber)) {
+      alert('Mobile number must be exactly 10 digits and start with 6, 7, 8, or 9');
+      return;
+    }
     if (branches.length > 0 && !formData.branchId) {
       alert('Please select a branch.');
       return;
@@ -137,15 +141,21 @@ export const CustomerEnquiryModal = ({ isOpen, onClose, gymId, gymName }: Custom
                   type="tel"
                   required
                   maxLength={10}
-                  pattern="[0-9]{10}"
+                  pattern="[6-9][0-9]{9}"
                   value={formData.mobileNumber}
                   onChange={e => {
                     const val = e.target.value.replace(/\D/g, '').slice(0, 10);
+                    if (val.length > 0 && !/^[6-9]/.test(val)) return; // Reject 0,1,2,3,4,5
                     setFormData({ ...formData, mobileNumber: val });
                   }}
                   className="w-full bg-[#F8FAFC] border border-[#E2E8F0] text-[#111827] rounded-xl px-4 py-2.5 outline-none focus:border-[#FDBA74] focus:bg-[#FFFFFF] text-sm transition-all"
-                  placeholder="9876543210"
+                  placeholder="10-digit number (starts with 6-9)"
                 />
+                {formData.mobileNumber && (!/^[6-9]\d{9}$/.test(formData.mobileNumber)) && (
+                  <p className="text-xs text-red-500 mt-1">
+                    {formData.mobileNumber.length < 10 ? `Enter 10 digits (${formData.mobileNumber.length}/10)` : 'Must start with 6, 7, 8, or 9'}
+                  </p>
+                )}
               </div>
 
               <div className="space-y-1 md:col-span-2">

@@ -15,6 +15,15 @@ export const createEnquiry = async (req: Request, res: Response): Promise<void> 
       return;
     }
 
+    const cleanMobile = String(mobileNumber).replace(/\D/g, '');
+    if (!/^[6-9]\d{9}$/.test(cleanMobile)) {
+      res.status(400).json({
+        success: false,
+        message: 'Please provide a valid 10-digit mobile number starting with 6, 7, 8, or 9'
+      });
+      return;
+    }
+
     // Verify the gym and get the gymOwnerId
     const gym = await Gym.findById(gymId);
     if (!gym) {

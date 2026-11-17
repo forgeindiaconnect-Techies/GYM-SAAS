@@ -172,7 +172,7 @@ const GymOwnerRegisterPage = () => {
       if (!form.email.trim()) e.email = 'Email is required';
       else if (!/\S+@\S+\.\S+/.test(form.email)) e.email = 'Enter a valid email';
       if (!form.mobile.trim()) e.mobile = 'Mobile is required';
-      else if (!/^\d{10}$/.test(form.mobile)) e.mobile = 'Enter a valid 10-digit mobile number';
+      else if (!/^[6-9]\d{9}$/.test(form.mobile)) e.mobile = 'Mobile number must be 10 digits and start with 6, 7, 8, or 9';
       if (!form.password) e.password = 'Password is required';
       else if (form.password.length < 8) e.password = 'Password must be at least 8 characters';
       if (form.password !== form.confirmPassword) e.confirmPassword = 'Passwords do not match';
@@ -180,6 +180,7 @@ const GymOwnerRegisterPage = () => {
       
       if (!form.gymName.trim()) e.gymName = 'Gym name is required';
       if (!form.gymContactNumber.trim()) e.gymContactNumber = 'Gym contact number is required';
+      else if (!/^[6-9]\d{9}$/.test(form.gymContactNumber)) e.gymContactNumber = 'Gym contact number must be 10 digits and start with 6, 7, 8, or 9';
       if (!form.address.trim()) e.address = 'Address is required';
       if (!form.city.trim()) e.city = 'City is required';
       if (!form.state.trim()) e.state = 'State is required';
