@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../../utils/api';
 import {
   Briefcase,
   Building2,
@@ -84,10 +84,7 @@ export default function TrainerHiringRequests() {
     setLoading(true);
     setError('');
     try {
-      const token = localStorage.getItem('aigym_token') || sessionStorage.getItem('aigym_token') || localStorage.getItem('token');
-      const res = await axios.get('http://localhost:5600/api/hiring/trainer/hiring-requests', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await api.get('/hiring/trainer/hiring-requests');
       if (res.data.success) {
         setRequests(res.data.requests || res.data.data || []);
       }
@@ -103,15 +100,10 @@ export default function TrainerHiringRequests() {
     if (!selectedReq) return;
     setSubmittingAction(true);
     try {
-      const token = localStorage.getItem('aigym_token') || sessionStorage.getItem('aigym_token') || localStorage.getItem('token');
-      const res = await axios.post(
-        `http://localhost:5600/api/hiring/trainer/hiring-requests/${selectedReq._id}/respond`,
-        {
-          action,
-          ...extraPayload
-        },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const res = await api.post(`/hiring/trainer/hiring-requests/${selectedReq._id}/respond`, {
+        action,
+        ...extraPayload
+      });
 
       if (res.data.success) {
         setActionSuccessMsg(

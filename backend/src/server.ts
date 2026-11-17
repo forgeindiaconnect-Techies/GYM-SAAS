@@ -89,9 +89,13 @@ const corsOptions: cors.CorsOptions = {
 
 app.use(cors(corsOptions));
 
-// Health check endpoint for uptime and Render wake-up
+// Health check endpoints for uptime, Render wake-up and monitoring
+app.get('/health', (_req, res) => {
+  res.status(200).json({ status: 'ok', uptime: process.uptime(), time: new Date().toISOString() });
+});
+
 app.get('/api/health', (_req, res) => {
-  res.status(200).json({ status: 'ok', time: new Date().toISOString() });
+  res.status(200).json({ status: 'ok', message: 'API is running', time: new Date().toISOString() });
 });
 
 app.use(express.json({ limit: '50mb' }));
@@ -146,13 +150,33 @@ app.get('/', (req, res) => {
     status: 'online',
     message: 'Gymora Gym SaaS Backend API is live and operational',
     version: '1.0.0',
-    health: '/api/health',
+    health: '/health',
+    apiHealth: '/api/health',
     timestamp: new Date().toISOString()
   });
 });
 
-app.get('/api/health', (req, res) => {
-  res.status(200).json({ status: 'success', message: 'API is running' });
+// Structured JSON 404 handler for API routes
+app.use('/api', (req, res) => {
+  res.status(404).json({
+    success: false,
+    status: 404,
+    error: 'API endpoint not found',
+    path: req.originalUrl,
+    method: req.method,
+    message: `Cannot ${req.method} ${req.originalUrl}. Verify endpoint path and HTTP method.`
+  });
+});
+
+// Fallback 404 handler
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    status: 404,
+    error: 'Not Found',
+    path: req.originalUrl,
+    message: `Cannot ${req.method} ${req.originalUrl}`
+  });
 });
 
 const PORT = process.env.PORT || 5600;

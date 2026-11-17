@@ -123,6 +123,7 @@ const GymSmartAssistant = () => {
 
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
+  const [isTucked, setIsTucked] = useState(false);
   const [inputMessage, setInputMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -252,20 +253,45 @@ const GymSmartAssistant = () => {
   return (
     <>
       {/* ── Floating Action Trigger Button ── */}
-      {!isOpen && (
+      {!isOpen && isTucked && (
         <button
-          onClick={() => {
-            setIsOpen(true);
-            setIsMinimized(false);
-          }}
-          className="fixed bottom-[calc(0.75rem+env(safe-area-inset-bottom,0px))] right-3.5 sm:bottom-4 sm:right-6 z-40 bg-gradient-to-r from-[#EA580C] via-[#9A3412] to-[#EA580C] text-[#FFFFFF] font-bold py-2.5 px-3.5 sm:py-2.5 sm:px-4 rounded-full shadow-[0_4px_25px_rgba(183,110,121,0.45)] hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-2 border-2 border-[#FFEDD5] ring-4 ring-[#F97316]/25 group cursor-pointer"
-          title="Open Gym Smart Assistant"
+          onClick={() => setIsTucked(false)}
+          className="fixed bottom-24 right-0 z-40 bg-[#EA580C] hover:bg-[#9A3412] text-white p-2.5 rounded-l-2xl shadow-xl border-y border-l border-[#FFEDD5] cursor-pointer flex items-center justify-center transition-transform hover:-translate-x-1"
+          title="Show Gym Smart Assistant"
+          aria-label="Show Gym Smart Assistant"
         >
-          <div className="relative">
-            <Bot size={20} className="group-hover:rotate-12 transition-transform duration-300 text-white" />
-          </div>
-          <span className="font-bold text-xs sm:text-sm hidden sm:inline-block pr-1 tracking-tight text-white">Smart Assistant</span>
+          <Bot size={20} />
         </button>
+      )}
+
+      {!isOpen && !isTucked && (
+        <div className="fixed bottom-[calc(0.75rem+env(safe-area-inset-bottom,0px))] right-3.5 sm:bottom-4 sm:right-6 z-40 flex items-center gap-1.5 group">
+          <button
+            onClick={() => {
+              setIsOpen(true);
+              setIsMinimized(false);
+            }}
+            className="bg-gradient-to-r from-[#EA580C] via-[#9A3412] to-[#EA580C] text-[#FFFFFF] font-bold py-2.5 px-3.5 sm:py-2.5 sm:px-4 rounded-full shadow-[0_4px_25px_rgba(183,110,121,0.45)] hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-2 border-2 border-[#FFEDD5] ring-4 ring-[#F97316]/25 cursor-pointer"
+            title="Open Gym Smart Assistant"
+          >
+            <div className="relative">
+              <Bot size={20} className="group-hover:rotate-12 transition-transform duration-300 text-white" />
+            </div>
+            <span className="font-bold text-xs sm:text-sm hidden sm:inline-block pr-1 tracking-tight text-white">Smart Assistant</span>
+          </button>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsTucked(true);
+            }}
+            className="w-6 h-6 rounded-full bg-white/95 hover:bg-white text-slate-600 hover:text-[#C2410C] border border-[#CBD5E1] shadow-md flex items-center justify-center text-xs cursor-pointer opacity-75 hover:opacity-100 transition-opacity"
+            title="Tuck assistant to side"
+            aria-label="Tuck assistant to side"
+          >
+            <X size={12} />
+          </button>
+        </div>
       )}
 
       {/* ── Smart Assistant Window / Drawer ── */}

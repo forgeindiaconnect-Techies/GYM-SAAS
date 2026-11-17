@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../../utils/api';
 import {
   Calendar,
   Clock,
@@ -24,10 +24,7 @@ export default function TrainerInterviews() {
   const fetchInterviews = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem('aigym_token') || sessionStorage.getItem('aigym_token') || localStorage.getItem('token');
-      const res = await axios.get('http://localhost:5600/api/hiring/trainer/my-interviews', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await api.get('/hiring/trainer/my-interviews');
       if (res.data.success) {
         setInterviews(res.data.interviews || res.data.data || []);
       }

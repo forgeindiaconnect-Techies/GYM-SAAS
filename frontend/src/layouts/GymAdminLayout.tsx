@@ -574,7 +574,7 @@ const GymAdminLayout = () => {
           </div>
         </header>
 
-        <div className="flex-1 overflow-y-auto p-3.5 sm:p-5 md:p-6 lg:p-8 pb-24 sm:pb-20">
+        <div className="flex-1 overflow-y-auto p-3.5 sm:p-5 md:p-6 lg:p-8 pb-32 sm:pb-28">
           <Outlet context={{ selectedBranch }} />
         </div>
       </main>

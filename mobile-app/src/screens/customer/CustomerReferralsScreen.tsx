@@ -125,7 +125,7 @@ export const CustomerReferralsScreen: React.FC<{
 
   // Referral states
   const [referralCode, setReferralCode] = useState<string>(DEFAULT_REFERRAL_CODE);
-  const [shareLink, setShareLink] = useState<string>('http://localhost:5173/register/customer?ref=RENUG7557');
+  const [shareLink, setShareLink] = useState<string>('https://gym-saas-vmjm-theta.vercel.app/register/customer?ref=RENUG7557');
   const [gymName, setGymName] = useState<string>('Perfect Fitness Studio');
   const [stats, setStats] = useState(DEFAULT_STATS);
   const [referrals, setReferrals] = useState<any[]>(DEFAULT_INVITES);
@@ -202,12 +202,18 @@ export const CustomerReferralsScreen: React.FC<{
 
       if (codeRes.status === 'fulfilled' && codeRes.value?.data?.success) {
         if (codeRes.value.data.referralCode) setReferralCode(codeRes.value.data.referralCode);
-        if (codeRes.value.data.shareLink) setShareLink(codeRes.value.data.shareLink);
+        if (codeRes.value.data.shareLink) {
+          let cleanLink = codeRes.value.data.shareLink;
+          if (cleanLink.includes('localhost') || cleanLink.includes('127.0.0.1')) {
+            cleanLink = cleanLink.replace(/https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?/, 'https://gym-saas-vmjm-theta.vercel.app');
+          }
+          setShareLink(cleanLink);
+        }
         if (codeRes.value.data.gymName) setGymName(codeRes.value.data.gymName);
       } else {
         const genCode = `${(user?.firstName || user?.name || 'RENUG').slice(0, 5).toUpperCase()}7557`;
         setReferralCode(genCode);
-        setShareLink(`http://localhost:5173/register/customer?ref=${genCode}`);
+        setShareLink(`https://gym-saas-vmjm-theta.vercel.app/register/customer?ref=${genCode}`);
       }
 
       if (statsRes.status === 'fulfilled' && statsRes.value?.data?.success) {
@@ -1182,7 +1188,7 @@ export const CustomerReferralsScreen: React.FC<{
 
             <View style={{ alignItems: 'center', paddingVertical: 14 }}>
               <ScannableQRCode
-                value={shareLink || `http://localhost:5173/register/customer?ref=${referralCode}`}
+                value={shareLink || `https://gym-saas-vmjm-theta.vercel.app/register/customer?ref=${referralCode}`}
                 size={190}
                 showScannerCorners={true}
                 showScanBeam={true}
@@ -1721,32 +1727,37 @@ const styles = StyleSheet.create({
   linkInputRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    gap: 8,
   },
   linkInput: {
     flex: 1,
+    height: 42,
     backgroundColor: '#FFFFFF',
     borderWidth: 1,
-    borderColor: '#E2E8F0',
-    borderRadius: 10,
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    fontSize: 11,
+    borderColor: '#CBD5E1',
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    fontSize: 12,
     fontFamily: 'monospace',
     color: '#64748B',
   },
   copyLinkBtn: {
-    backgroundColor: '#F8FAFC',
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-    paddingHorizontal: 10,
-    paddingVertical: 7,
-    borderRadius: 10,
+    height: 42,
+    backgroundColor: '#C2410C',
+    paddingHorizontal: 14,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#C2410C',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 2,
   },
   copyLinkBtnText: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '700',
-    color: '#111827',
+    color: '#FFFFFF',
   },
   shareChannelsSec: {
     gap: 8,

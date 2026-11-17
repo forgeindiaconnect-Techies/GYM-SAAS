@@ -22,7 +22,7 @@ import {
   Building2,
   Clock
 } from 'lucide-react';
-import api from '../../../utils/api';
+import api, { getAssetUrl } from '../../../utils/api';
 
 interface CandidateTrainer {
   _id: string;
@@ -181,7 +181,7 @@ export default function GymAdminBrowseTrainers() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-28 sm:pb-24">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
@@ -346,7 +346,7 @@ export default function GymAdminBrowseTrainers() {
 
                 <div className="flex flex-wrap gap-1.5 mb-3 text-[10px]">
                   <span className="px-2 py-0.5 rounded-md bg-[#F8FAFC] text-slate-700 font-semibold border border-[#E2E8F0] flex items-center gap-1">
-                    <Briefcase size={10} className="text-[#EA580C]" /> {trainer.experience || 3}+ Yrs
+                    <Briefcase size={10} className="text-[#EA580C]" /> <strong className="font-bold text-[#111827]">{trainer.experience || 3}+ Yrs</strong>
                   </span>
                   <span className="px-2 py-0.5 rounded-md bg-[#F8FAFC] text-slate-700 font-semibold border border-[#E2E8F0] flex items-center gap-1">
                     <MapPin size={10} className="text-[#EA580C]" /> {trainer.preferredLocation || 'India'}
@@ -369,7 +369,7 @@ export default function GymAdminBrowseTrainers() {
                   </div>
                   <div className="bg-[#F8FAFC] p-2 rounded-xl border border-[#E2E8F0]">
                     <span className="text-[10px] text-slate-500 uppercase block font-bold">PT Fee / Session</span>
-                    <span className="font-mono font-bold text-slate-900">
+                    <span className="font-mono font-bold text-[#111827]">
                       {trainer.personalTrainingFee ? `₹${trainer.personalTrainingFee.toLocaleString()}` : 'Custom'}
                     </span>
                   </div>
@@ -378,14 +378,16 @@ export default function GymAdminBrowseTrainers() {
 
               <div className="flex items-center gap-2 pt-2">
                 <button
+                  type="button"
                   onClick={() => setSelectedTrainer(trainer)}
-                  className="flex-1 py-2.5 bg-white hover:bg-orange-50 text-slate-900 hover:text-[#C2410C] border border-slate-300 hover:border-orange-300 font-bold text-xs rounded-xl transition-all shadow-xs text-center"
+                  className="flex-1 py-2.5 bg-[#FFFFFF] hover:bg-[#FFF7ED] text-[#111827] hover:text-[#C2410C] border border-[#CBD5E1] hover:border-[#FDBA74] font-bold text-xs rounded-xl transition-all shadow-xs text-center cursor-pointer"
                 >
                   View Profile
                 </button>
                 <button
+                  type="button"
                   onClick={() => openHiringModal(trainer)}
-                  className="flex-1 py-2.5 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold text-xs rounded-xl transition-all shadow-md shadow-orange-500/15 flex items-center justify-center gap-1.5"
+                  className="flex-1 py-2.5 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold text-xs rounded-xl transition-all shadow-md shadow-orange-500/15 flex items-center justify-center gap-1.5 cursor-pointer"
                 >
                   <Send size={13} />
                   <span>Send Request</span>
@@ -406,11 +408,7 @@ export default function GymAdminBrowseTrainers() {
                 <div className="w-16 h-16 rounded-2xl overflow-hidden bg-[#FFFFFF] border-2 border-[#FFEDD5] shrink-0">
                   {selectedTrainer.profilePhoto ? (
                     <img
-                      src={
-                        selectedTrainer.profilePhoto.startsWith('http')
-                          ? selectedTrainer.profilePhoto
-                          : `http://localhost:5600${selectedTrainer.profilePhoto}`
-                      }
+                      src={getAssetUrl(selectedTrainer.profilePhoto)}
                       alt={selectedTrainer.name}
                       className="w-full h-full object-cover"
                     />
@@ -561,11 +559,7 @@ export default function GymAdminBrowseTrainers() {
                   {/* Resume Document Link */}
                   {selectedTrainer.resumeUrl ? (
                     <a
-                      href={
-                        selectedTrainer.resumeUrl.startsWith('http')
-                          ? selectedTrainer.resumeUrl
-                          : `http://localhost:5600${selectedTrainer.resumeUrl}`
-                      }
+                      href={getAssetUrl(selectedTrainer.resumeUrl)}
                       target="_blank"
                       rel="noreferrer"
                       className="p-3 rounded-2xl bg-[#FFFFFF] hover:bg-[#FFF7ED] border border-[#FFEDD5] hover:border-[#FDBA74] flex items-center justify-between transition-all group shadow-sm"
@@ -593,11 +587,7 @@ export default function GymAdminBrowseTrainers() {
                   {/* Certification Document Link */}
                   {selectedTrainer.certificationUrl ? (
                     <a
-                      href={
-                        selectedTrainer.certificationUrl.startsWith('http')
-                          ? selectedTrainer.certificationUrl
-                          : `http://localhost:5600${selectedTrainer.certificationUrl}`
-                      }
+                      href={getAssetUrl(selectedTrainer.certificationUrl)}
                       target="_blank"
                       rel="noreferrer"
                       className="p-3 rounded-2xl bg-[#FFFFFF] hover:bg-[#FFF7ED] border border-[#FFEDD5] hover:border-[#FDBA74] flex items-center justify-between transition-all group shadow-sm"

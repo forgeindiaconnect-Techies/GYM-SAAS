@@ -142,6 +142,7 @@ export const GymSmartAssistant: React.FC<GymSmartAssistantProps> = ({
   const { user, activeRole } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
+  const [isTucked, setIsTucked] = useState(false);
   const [inputMessage, setInputMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -274,28 +275,58 @@ export const GymSmartAssistant: React.FC<GymSmartAssistantProps> = ({
   return (
     <>
       {/* ── Floating Smart Assistant Pill Trigger Button ── */}
-      {!isOpen && (
+      {!isOpen && isTucked && (
+        <View
+          pointerEvents="box-none"
+          style={[styles.fabOuterAnchor, { bottom: bottomOffset + 60, right: 0 }]}
+        >
+          <TouchableOpacity
+            style={styles.tuckedTab}
+            onPress={() => setIsTucked(false)}
+            activeOpacity={0.85}
+            accessibilityLabel="Restore Gym Smart Assistant"
+          >
+            <MaterialCommunityIcons
+              name="robot-outline"
+              size={18}
+              color={COLORS.white}
+            />
+          </TouchableOpacity>
+        </View>
+      )}
+
+      {!isOpen && !isTucked && (
         <View
           pointerEvents="box-none"
           style={[styles.fabOuterAnchor, { bottom: bottomOffset }]}
         >
-          <View style={styles.fabHalo}>
+          <View style={styles.fabRow}>
+            <View style={styles.fabHalo}>
+              <TouchableOpacity
+                style={styles.fabButton}
+                onPress={() => {
+                  setIsOpen(true);
+                  setIsMinimized(false);
+                }}
+                activeOpacity={0.85}
+                accessibilityLabel="Open Gym Smart Assistant"
+                accessibilityRole="button"
+              >
+                <MaterialCommunityIcons
+                  name="robot-outline"
+                  size={20}
+                  color={COLORS.white}
+                />
+                <Text style={styles.fabText}>Smart Assistant</Text>
+              </TouchableOpacity>
+            </View>
             <TouchableOpacity
-              style={styles.fabButton}
-              onPress={() => {
-                setIsOpen(true);
-                setIsMinimized(false);
-              }}
-              activeOpacity={0.85}
-              accessibilityLabel="Open Gym Smart Assistant"
-              accessibilityRole="button"
+              style={styles.tuckBtn}
+              onPress={() => setIsTucked(true)}
+              activeOpacity={0.7}
+              accessibilityLabel="Tuck assistant to side"
             >
-              <MaterialCommunityIcons
-                name="robot-outline"
-                size={20}
-                color={COLORS.white}
-              />
-              <Text style={styles.fabText}>Smart Assistant</Text>
+              <MaterialCommunityIcons name="close" size={14} color="#64748B" />
             </TouchableOpacity>
           </View>
         </View>
@@ -818,6 +849,41 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 14,
     zIndex: 90,
+  },
+  fabRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  tuckBtn: {
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#CBD5E1',
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.15,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  tuckedTab: {
+    backgroundColor: '#C2410C',
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderTopLeftRadius: 16,
+    borderBottomLeftRadius: 16,
+    borderWidth: 1,
+    borderRightWidth: 0,
+    borderColor: '#FFEDD5',
+    shadowColor: '#C2410C',
+    shadowOffset: { width: -2, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 4,
   },
   fabHalo: {
     padding: 4,

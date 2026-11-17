@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import axios from 'axios';
+import api, { getAssetUrl } from '../../../utils/api';
 import {
   Users,
   Search,
@@ -127,10 +127,7 @@ export default function GymAdminApplications() {
 
   const fetchJobsList = async () => {
     try {
-      const token = localStorage.getItem('token') || localStorage.getItem('aigym_token');
-      const res = await axios.get('http://localhost:5600/api/hiring/admin/jobs', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await api.get('/hiring/admin/jobs');
       if (res.data.success) {
         const jobs = res.data.jobs || res.data.data || [];
         setJobsList(jobs.map((j: any) => ({ _id: j._id, title: j.title })));
@@ -143,15 +140,11 @@ export default function GymAdminApplications() {
   const fetchApplications = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem('token') || localStorage.getItem('aigym_token');
       const params: any = {};
       if (statusFilter) params.status = statusFilter;
       if (jobFilter) params.jobId = jobFilter;
 
-      const res = await axios.get('http://localhost:5600/api/hiring/admin/applications', {
-        headers: { Authorization: `Bearer ${token}` },
-        params
-      });
+      const res = await api.get('/hiring/admin/applications', { params });
       if (res.data.success) {
         setApplications(res.data.applications || res.data.data || []);
       }
@@ -165,12 +158,7 @@ export default function GymAdminApplications() {
   const handleStatusChange = async (appId: string, newStatus: string, notes?: string) => {
     setActionLoading(true);
     try {
-      const token = localStorage.getItem('token') || localStorage.getItem('aigym_token');
-      const res = await axios.patch(
-        `http://localhost:5600/api/hiring/admin/applications/${appId}/status`,
-        { status: newStatus, notes },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const res = await api.patch(`/hiring/admin/applications/${appId}/status`, { status: newStatus, notes });
       if (res.data.success) {
         setApplications((prev) =>
           prev.map((a) => (a._id === appId ? { ...a, status: newStatus } : a))
@@ -197,15 +185,10 @@ export default function GymAdminApplications() {
     if (!selectedApp) return;
     setActionLoading(true);
     try {
-      const token = localStorage.getItem('token') || localStorage.getItem('aigym_token');
-      const res = await axios.post(
-        'http://localhost:5600/api/hiring/admin/interviews',
-        {
-          applicationId: selectedApp._id,
-          ...interviewForm
-        },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const res = await api.post('/hiring/admin/interviews', {
+        applicationId: selectedApp._id,
+        ...interviewForm
+      });
       if (res.data.success) {
         alert('Interview scheduled successfully & trainer notified!');
         setShowInterviewModal(false);
@@ -223,15 +206,10 @@ export default function GymAdminApplications() {
     if (!selectedApp) return;
     setActionLoading(true);
     try {
-      const token = localStorage.getItem('token') || localStorage.getItem('aigym_token');
-      const res = await axios.post(
-        'http://localhost:5600/api/hiring/admin/offers',
-        {
-          applicationId: selectedApp._id,
-          ...offerForm
-        },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const res = await api.post('/hiring/admin/offers', {
+        applicationId: selectedApp._id,
+        ...offerForm
+      });
       if (res.data.success) {
         alert('Formal job offer dispatched! Candidate notified.');
         setShowOfferModal(false);
@@ -381,7 +359,7 @@ export default function GymAdminApplications() {
                           {app.fullName || (app as any).name}
                           {app.resumeUrl && (
                             <a
-                              href={`http://localhost:5600${app.resumeUrl}`}
+                              href={getAssetUrl(app.resumeUrl)}
                               target="_blank"
                               rel="noreferrer"
                               title="Download / View Resume"
@@ -518,11 +496,7 @@ export default function GymAdminApplications() {
                 <div className="w-12 h-12 rounded-xl bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5] flex items-center justify-center font-bold text-lg overflow-hidden shrink-0">
                   {selectedApp.profilePhoto ? (
                     <img
-                      src={
-                        selectedApp.profilePhoto.startsWith('http')
-                          ? selectedApp.profilePhoto
-                          : `http://localhost:5600${selectedApp.profilePhoto}`
-                      }
+                      src={getAssetUrl(selectedApp.profilePhoto)}
                       alt={selectedApp.fullName || (selectedApp as any).name}
                       className="w-full h-full object-cover"
                     />
@@ -707,11 +681,7 @@ export default function GymAdminApplications() {
                       </div>
                     </div>
                     <a
-                      href={
-                        selectedApp.resumeUrl.startsWith('http')
-                          ? selectedApp.resumeUrl
-                          : `http://localhost:5600${selectedApp.resumeUrl}`
-                      }
+                      href={getAssetUrl(selectedApp.resumeUrl)}
                       target="_blank"
                       rel="noreferrer"
                       className="px-3 py-1.5 bg-[#C2410C] hover:bg-[#9A3412] text-white font-semibold text-xs rounded-lg transition-all flex items-center gap-1.5"
@@ -741,11 +711,7 @@ export default function GymAdminApplications() {
                       </div>
                     </div>
                     <a
-                      href={
-                        (selectedApp as any).certificationUrl.startsWith('http')
-                          ? (selectedApp as any).certificationUrl
-                          : `http://localhost:5600${(selectedApp as any).certificationUrl}`
-                      }
+                      href={getAssetUrl((selectedApp as any).certificationUrl)}
                       target="_blank"
                       rel="noreferrer"
                       className="px-3 py-1.5 bg-[#C2410C] hover:bg-[#9A3412] text-white font-semibold text-xs rounded-lg transition-all flex items-center gap-1.5"

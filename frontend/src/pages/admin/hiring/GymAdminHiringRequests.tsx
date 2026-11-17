@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../../utils/api';
 import {
   Briefcase,
   Search,
@@ -86,10 +86,7 @@ export default function GymAdminHiringRequests() {
     setLoading(true);
     setError('');
     try {
-      const token = localStorage.getItem('aigym_token') || localStorage.getItem('token');
-      const res = await axios.get('http://localhost:5600/api/hiring/owner/hiring-requests', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await api.get('/hiring/owner/hiring-requests');
       if (res.data.success) {
         setRequests(res.data.requests || res.data.data || []);
       }
@@ -105,12 +102,7 @@ export default function GymAdminHiringRequests() {
     setSubmittingAction(true);
     setActionSuccessMsg('');
     try {
-      const token = localStorage.getItem('aigym_token') || localStorage.getItem('token');
-      const res = await axios.post(
-        `http://localhost:5600/api/hiring/owner/hiring-requests/${requestId}/confirm`,
-        {},
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const res = await api.post(`/hiring/owner/hiring-requests/${requestId}/confirm`, {});
       if (res.data.success) {
         setActionSuccessMsg('🎉 Trainer successfully hired! Added to your gym trainer roster.');
         setTimeout(() => {
@@ -132,17 +124,12 @@ export default function GymAdminHiringRequests() {
     if (!selectedReq) return;
     setSubmittingAction(true);
     try {
-      const token = localStorage.getItem('aigym_token') || localStorage.getItem('token');
-      const res = await axios.post(
-        `http://localhost:5600/api/hiring/owner/hiring-requests/${selectedReq._id}/negotiate`,
-        {
-          proposedSalary: counterSalary ? Number(counterSalary) : undefined,
-          proposedPtFee: counterPtFee ? Number(counterPtFee) : undefined,
-          proposedTerms: counterTerms || undefined,
-          message: counterMessage || undefined
-        },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const res = await api.post(`/hiring/owner/hiring-requests/${selectedReq._id}/negotiate`, {
+        proposedSalary: counterSalary ? Number(counterSalary) : undefined,
+        proposedPtFee: counterPtFee ? Number(counterPtFee) : undefined,
+        proposedTerms: counterTerms || undefined,
+        message: counterMessage || undefined
+      });
       if (res.data.success) {
         setActionSuccessMsg('Counter proposal dispatched to candidate!');
         setTimeout(() => {

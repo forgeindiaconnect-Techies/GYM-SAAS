@@ -6,7 +6,7 @@ import {
   Clock, Ban, ShieldCheck, Edit, Phone, Calendar, Dumbbell, Award, Briefcase,
   GraduationCap, Sparkles, IndianRupee, Activity, Lock
 } from 'lucide-react';
-import api from '../../utils/api';
+import api, { getAssetUrl } from '../../utils/api';
 import TrainerNavigationTabs from '../../components/GymAdmin/TrainerNavigationTabs';
 
 const GymAdminTrainers = () => {
@@ -1032,7 +1032,7 @@ const GymAdminTrainers = () => {
                   <div className="flex flex-wrap gap-2.5">
                     {selectedTrainer.resumeUrl && (
                       <a
-                        href={selectedTrainer.resumeUrl.startsWith('http') ? selectedTrainer.resumeUrl : `http://localhost:5600${selectedTrainer.resumeUrl}`}
+                        href={getAssetUrl(selectedTrainer.resumeUrl)}
                         target="_blank"
                         rel="noreferrer"
                         className="inline-flex items-center gap-2 px-3.5 py-2 bg-[#FFFFFF] hover:bg-[#FFF7ED] border border-[#E2E8F0] hover:border-[#FDBA74] rounded-xl text-xs font-semibold text-[#EA580C] transition-all"
@@ -1043,7 +1043,7 @@ const GymAdminTrainers = () => {
                     )}
                     {selectedTrainer.certificationUrl && (
                       <a
-                        href={selectedTrainer.certificationUrl.startsWith('http') ? selectedTrainer.certificationUrl : `http://localhost:5600${selectedTrainer.certificationUrl}`}
+                        href={getAssetUrl(selectedTrainer.certificationUrl)}
                         target="_blank"
                         rel="noreferrer"
                         className="inline-flex items-center gap-2 px-3.5 py-2 bg-[#FFFFFF] hover:bg-[#FFF7ED] border border-[#E2E8F0] hover:border-[#FDBA74] rounded-xl text-xs font-semibold text-[#EA580C] transition-all"

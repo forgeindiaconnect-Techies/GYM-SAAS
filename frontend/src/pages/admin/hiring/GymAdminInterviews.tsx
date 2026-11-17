@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../../utils/api';
 import {
   Calendar,
   Clock,
@@ -31,13 +31,9 @@ export default function GymAdminInterviews() {
   const fetchInterviews = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem('aigym_token') || localStorage.getItem('token');
       const params: any = {};
       if (statusFilter) params.status = statusFilter;
-      const res = await axios.get('http://localhost:5600/api/hiring/admin/interviews', {
-        headers: { Authorization: `Bearer ${token}` },
-        params
-      });
+      const res = await api.get('/hiring/admin/interviews', { params });
       if (res.data.success) {
         setInterviews(res.data.interviews || res.data.data || []);
       }
@@ -51,12 +47,7 @@ export default function GymAdminInterviews() {
   const handleUpdateStatus = async (interviewId: string, newStatus: string) => {
     setActionLoading(true);
     try {
-      const token = localStorage.getItem('aigym_token') || localStorage.getItem('token');
-      const res = await axios.patch(
-        `http://localhost:5600/api/hiring/admin/interviews/${interviewId}/status`,
-        { status: newStatus },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const res = await api.patch(`/hiring/admin/interviews/${interviewId}/status`, { status: newStatus });
       if (res.data.success) {
         setInterviews((prev) =>
           prev.map((i) => (i._id === interviewId ? { ...i, status: newStatus } : i))

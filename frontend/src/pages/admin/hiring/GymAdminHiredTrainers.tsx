@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../../utils/api';
 import {
   UserCheck,
   Calendar,
@@ -53,13 +53,13 @@ export default function GymAdminHiredTrainers() {
       const headers = { Authorization: `Bearer ${token}` };
 
       // 1. Fetch Job Offers that are Accepted
-      const offersPromise = axios
-        .get('http://localhost:5600/api/hiring/owner/offers', { headers })
+      const offersPromise = api
+        .get('/hiring/owner/offers')
         .catch(() => ({ data: { success: false, data: [] } }));
 
       // 2. Fetch Direct Hiring Requests that are Confirmed
-      const directHiresPromise = axios
-        .get('http://localhost:5600/api/hiring/owner/hiring-requests', { headers })
+      const directHiresPromise = api
+        .get('/hiring/owner/hiring-requests')
         .catch(() => ({ data: { success: false, requests: [] } }));
 
       const [offersRes, directRes] = await Promise.all([offersPromise, directHiresPromise]);

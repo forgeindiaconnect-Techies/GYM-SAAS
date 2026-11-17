@@ -206,16 +206,23 @@ const MemberReferrals: React.FC = () => {
         user?.gymId ? api.get(`/gyms/${user.gymId}`).catch(() => ({ data: { gym: null } })) : Promise.resolve({ data: { gym: null } })
       ]);
 
+      const LIVE_PROD_URL = 'https://gym-saas-vmjm-theta.vercel.app';
       if (codeRes.data?.success) {
         setReferralCode(codeRes.data.referralCode || '');
-        setShareLink(codeRes.data.shareLink || '');
-        setNetworkShareLink(codeRes.data.networkShareLink || '');
+        let cleanLink = codeRes.data.shareLink || '';
+        // If link points to localhost, replace with live production deployment URL
+        if (cleanLink.includes('localhost') || cleanLink.includes('127.0.0.1')) {
+          cleanLink = cleanLink.replace(/https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?/, LIVE_PROD_URL);
+        }
+        setShareLink(cleanLink);
+        setNetworkShareLink(codeRes.data.networkShareLink || cleanLink);
         setGymName(codeRes.data.gymName || user?.gymName || 'Our Gym');
         setActiveCampaign(codeRes.data.campaign);
       } else {
         const fallbackCode = `${(user?.firstName || 'MEMBER').toUpperCase().slice(0, 5)}${Math.floor(1000 + Math.random() * 9000)}`;
         setReferralCode(fallbackCode);
-        setShareLink(`${window.location.origin}/register/customer?ref=${fallbackCode}`);
+        const prodBase = window.location.hostname === 'localhost' ? LIVE_PROD_URL : window.location.origin;
+        setShareLink(`${prodBase}/register/customer?ref=${fallbackCode}`);
       }
 
       if (gymRes.data?.gym) {

@@ -276,7 +276,8 @@ export const inviteTrainer = async (req: AuthRequest, res: Response): Promise<vo
     await invitation.save();
 
     // In a real app, send email via SendGrid/Nodemailer here
-    const inviteLink = `http://localhost:5173/invite/trainer/${rawToken}`;
+    const frontendUrl = (process.env.FRONTEND_URL || 'https://gym-saas-vmjm-theta.vercel.app').replace(/\/$/, '');
+    const inviteLink = `${frontendUrl}/invite/trainer/${rawToken}`;
     console.log(`[MOCK EMAIL SENT] To: ${email} | Link: ${inviteLink} | Message: ${personalMessage}`);
 
     res.status(200).json({ success: true, message: 'Invitation sent successfully', inviteLink });

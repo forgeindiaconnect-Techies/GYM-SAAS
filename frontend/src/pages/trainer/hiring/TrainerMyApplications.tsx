@@ -20,7 +20,7 @@ import {
   DollarSign,
   UserCheck
 } from 'lucide-react';
-import api from '../../../utils/api';
+import api, { getAssetUrl } from '../../../utils/api';
 
 export default function TrainerMyApplications() {
   const [applications, setApplications] = useState<any[]>([]);
@@ -215,7 +215,7 @@ export default function TrainerMyApplications() {
                   <div className="flex flex-wrap items-center gap-3 pt-1">
                     {app.resumeUrl && (
                       <a
-                        href={`http://localhost:5600${app.resumeUrl}`}
+                        href={getAssetUrl(app.resumeUrl)}
                         target="_blank"
                         rel="noreferrer"
                         className="text-xs text-[#EA580C] hover:text-[#9A3412] flex items-center gap-1 font-medium"
@@ -391,7 +391,7 @@ export default function TrainerMyApplications() {
                 </div>
 
                 <a
-                  href={`http://localhost:5600${selectedApp.resumeUrl}`}
+                  href={getAssetUrl(selectedApp.resumeUrl)}
                   target="_blank"
                   rel="noreferrer"
                   className="px-4 py-2 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold rounded-xl text-xs flex items-center gap-1.5 transition-all shadow-md shadow-orange-500/15"

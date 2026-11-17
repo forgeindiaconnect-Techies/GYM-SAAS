@@ -1,0 +1,36 @@
+services:
+  - type: web
+    name: gymora-saas-backend
+    env: node
+    plan: starter
+    buildCommand: npm run build
+    startCommand: npm run start
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5600
+      - key: FRONTEND_URL
+        value: https://gym-saas-vmjm-theta.vercel.app
+      - key: BACKEND_URL
+        value: https://gym-saas-vu70.onrender.com
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: BREVO_API_KEY
+        sync: false
+      - key: BREVO_SENDER_EMAIL
+        sync: false
+      - key: BREVO_SENDER_NAME
+        value: AI GYM

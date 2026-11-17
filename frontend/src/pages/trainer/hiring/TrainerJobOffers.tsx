@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../../utils/api';
 import {
   Gift,
   Building2,
@@ -27,10 +27,7 @@ export default function TrainerJobOffers() {
   const fetchOffers = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem('aigym_token') || sessionStorage.getItem('aigym_token') || localStorage.getItem('token');
-      const res = await axios.get('http://localhost:5600/api/hiring/trainer/my-offers', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await api.get('/hiring/trainer/my-offers');
       if (res.data.success) {
         setOffers(res.data.offers || res.data.data || []);
       }
@@ -47,12 +44,7 @@ export default function TrainerJobOffers() {
 
     setActionLoading(true);
     try {
-      const token = localStorage.getItem('aigym_token') || sessionStorage.getItem('aigym_token') || localStorage.getItem('token');
-      const res = await axios.patch(
-        `http://localhost:5600/api/hiring/trainer/offers/${offerId}/respond`,
-        { status },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const res = await api.patch(`/hiring/trainer/offers/${offerId}/respond`, { status });
       if (res.data.success) {
         alert(
           status === 'Accepted'

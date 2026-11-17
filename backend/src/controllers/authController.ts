@@ -1198,7 +1198,8 @@ export const sendGymOwnerInvitation = async (req: Request, res: Response): Promi
     }
 
     const cleanEmail = ownerEmail.toLowerCase().trim();
-    const finalInviteLink = inviteLink || `http://localhost:5173/register/gym-owner?email=${encodeURIComponent(cleanEmail)}&name=${encodeURIComponent(ownerName || '')}&phone=${encodeURIComponent(ownerPhone || '')}`;
+    const frontendBase = (process.env.FRONTEND_URL || 'https://gym-saas-vmjm-theta.vercel.app').replace(/\/$/, '');
+    const finalInviteLink = inviteLink || `${frontendBase}/register/gym-owner?email=${encodeURIComponent(cleanEmail)}&name=${encodeURIComponent(ownerName || '')}&phone=${encodeURIComponent(ownerPhone || '')}`;
 
     const emailResult = await sendGymOwnerInvitationEmail(
       cleanEmail,
@@ -1232,7 +1233,8 @@ export const sendGymOwnerExpiryWarning = async (req: Request, res: Response): Pr
     }
 
     const cleanEmail = ownerEmail.toLowerCase().trim();
-    const finalInviteLink = inviteLink || `http://localhost:5173/register/gym-owner?email=${encodeURIComponent(cleanEmail)}`;
+    const frontendBase = (process.env.FRONTEND_URL || 'https://gym-saas-vmjm-theta.vercel.app').replace(/\/$/, '');
+    const finalInviteLink = inviteLink || `${frontendBase}/register/gym-owner?email=${encodeURIComponent(cleanEmail)}`;
 
     const emailResult = await sendGymOwnerExpiryWarningEmail(
       cleanEmail,

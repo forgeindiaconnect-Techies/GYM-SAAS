@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import api, { getAssetUrl } from '../../../utils/api';
 import {
   Award,
   Search,
@@ -50,9 +50,7 @@ export default function GymAdminShortlisted() {
   const fetchShortlisted = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem('aigym_token') || localStorage.getItem('token');
-      const res = await axios.get('http://localhost:5600/api/hiring/admin/applications', {
-        headers: { Authorization: `Bearer ${token}` },
+      const res = await api.get('/hiring/admin/applications', {
         params: { status: 'Shortlisted' }
       });
       if (res.data.success) {
@@ -70,15 +68,10 @@ export default function GymAdminShortlisted() {
     if (!selectedApp) return;
     setActionLoading(true);
     try {
-      const token = localStorage.getItem('aigym_token') || localStorage.getItem('token');
-      const res = await axios.post(
-        'http://localhost:5600/api/hiring/admin/interviews',
-        {
-          applicationId: selectedApp._id,
-          ...interviewForm
-        },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const res = await api.post('/hiring/admin/interviews', {
+        applicationId: selectedApp._id,
+        ...interviewForm
+      });
       if (res.data.success) {
         alert('Interview scheduled and invite sent!');
         setShowInterviewModal(false);
@@ -96,15 +89,10 @@ export default function GymAdminShortlisted() {
     if (!selectedApp) return;
     setActionLoading(true);
     try {
-      const token = localStorage.getItem('aigym_token') || localStorage.getItem('token');
-      const res = await axios.post(
-        'http://localhost:5600/api/hiring/admin/offers',
-        {
-          applicationId: selectedApp._id,
-          ...offerForm
-        },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const res = await api.post('/hiring/admin/offers', {
+        applicationId: selectedApp._id,
+        ...offerForm
+      });
       if (res.data.success) {
         alert('Job offer sent successfully!');
         setShowOfferModal(false);
@@ -245,10 +233,10 @@ export default function GymAdminShortlisted() {
               <div className="pt-3 border-t border-[#E2E8F0] flex flex-col gap-2">
                 {candidate.resumeUrl && (
                   <a
-                    href={`http://localhost:5600${candidate.resumeUrl}`}
+                    href={getAssetUrl(candidate.resumeUrl)}
                     target="_blank"
                     rel="noreferrer"
-                    className="w-full text-center py-1.5 bg-[#FFFFFF] hover:bg-[#FFF7ED] text-slate-300 text-xs rounded-lg border border-[#E2E8F0] transition-all flex items-center justify-center gap-1.5"
+                    className="w-full text-center py-1.5 bg-[#FFFFFF] hover:bg-[#FFF7ED] text-slate-700 text-xs rounded-lg border border-[#E2E8F0] transition-all flex items-center justify-center gap-1.5 font-medium"
                   >
                     <FileText className="w-3.5 h-3.5 text-[#EA580C]" />
                     View Resume

@@ -448,33 +448,36 @@ export const getCustomerReferralCode = async (req: AuthRequest, res: Response): 
 
     const gym = await Gym.findById(gymId || user.gymId).select('name slug');
 
-    // Share link
-    let baseUrl = process.env.FRONTEND_URL;
-    if (!baseUrl) {
-      const origin = req.get('origin') || req.get('referer');
-      if (origin) {
-        try {
-          const u = new URL(origin);
+    // Share link - default to live production deployment URL
+    const PROD_FRONTEND_FALLBACK = 'https://gym-saas-vmjm-theta.vercel.app';
+    let baseUrl = process.env.FRONTEND_URL || PROD_FRONTEND_FALLBACK;
+    const origin = req.get('origin') || req.get('referer');
+    if (origin) {
+      try {
+        const u = new URL(origin);
+        // Only use origin if it's a real remote hostname, not localhost
+        if (u.hostname && !u.hostname.includes('localhost') && !u.hostname.includes('127.0.0.1')) {
           baseUrl = `${u.protocol}//${u.host}`;
-        } catch {
-          baseUrl = 'http://localhost:5173';
         }
-      } else {
-        baseUrl = 'http://localhost:5173';
+      } catch {
+        baseUrl = PROD_FRONTEND_FALLBACK;
       }
     }
     const targetGymId = (gymId || user.gymId)?.toString();
     const gymQuery = targetGymId ? `&gymId=${targetGymId}` : '';
     const shareLink = `${baseUrl}/register/customer?ref=${user.referralCode}${gymQuery}`;
 
-    // Also determine LAN network URL for direct mobile phone QR scanning over local Wi-Fi
+    // For direct mobile phone QR scanning over local Wi-Fi, provide LAN URL only when explicitly on localhost
     let networkShareLink = shareLink;
     try {
       const ifaces = os.networkInterfaces();
       for (const dev in ifaces) {
         ifaces[dev]?.forEach((details: any) => {
           if (details.family === 'IPv4' && !details.internal && !details.address.startsWith('127.')) {
-            networkShareLink = `http://${details.address}:5173/register/customer?ref=${user.referralCode}${gymQuery}`;
+            // Only use LAN IP if in local development mode
+            if (process.env.NODE_ENV === 'development') {
+              networkShareLink = `http://${details.address}:5173/register/customer?ref=${user.referralCode}${gymQuery}`;
+            }
           }
         });
       }
