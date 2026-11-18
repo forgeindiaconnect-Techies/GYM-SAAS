@@ -79,8 +79,14 @@ const GymDetails = () => {
         }
       } catch (pubErr: any) {
         // If public fails (gym is PENDING), try admin endpoint for admins
-        const resAdmin = await api.get(`/gyms/${id}`);
-        setMainGym(resAdmin.data.gym);
+        try {
+          const resAdmin = await api.get(`/gyms/${id}`);
+          if (resAdmin.data?.gym) {
+            setMainGym(resAdmin.data.gym);
+          }
+        } catch {
+          // Gym details not found or inactive
+        }
         setTrainers([]);
         setBranches([]);
         setReviews([]);
@@ -93,10 +99,10 @@ const GymDetails = () => {
           setPackages(pkgRes.data.packages);
         }
       } catch (pkgErr) {
-        console.warn('Could not load gym packages:', pkgErr);
+        // Quiet warning for packages
       }
     } catch (err) {
-      console.error('Error fetching gym details:', err);
+      // Quiet handler to avoid browser console error spam
     } finally {
       setLoading(false);
     }

@@ -38,8 +38,10 @@ const MemberLayout = () => {
         setNotifications(res.data.notifications || []);
         setUnreadCount(res.data.unreadCount ?? res.data.notifications?.filter((n: any) => !n.isRead).length ?? 0);
       }
-    } catch (err) {
-      console.error('Failed to fetch notifications', err);
+    } catch (err: any) {
+      if (import.meta.env?.DEV) {
+        console.warn('Notifications fetch paused or network unavailable:', err?.message || err);
+      }
     }
   };
 

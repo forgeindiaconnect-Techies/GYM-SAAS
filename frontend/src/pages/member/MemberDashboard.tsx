@@ -65,7 +65,7 @@ const MemberDashboard = () => {
   const aiExercises: any[] = aiAnalysis?.recommendation?.workoutPlan?.exercises || [];
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-6 animate-fade-in pb-28 sm:pb-24">
       {/* Header */}
       <div className="bg-white border border-[#E2E8F0] rounded-3xl p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>

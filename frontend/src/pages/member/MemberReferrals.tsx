@@ -495,7 +495,7 @@ const MemberReferrals: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFFFFF] text-[#111827] p-4 sm:p-6 lg:p-8 space-y-6">
+    <div className="min-h-screen bg-[#FFFFFF] text-[#111827] p-4 sm:p-6 lg:p-8 space-y-6 pb-28 sm:pb-24">
       {/* Top Bar with Referral Sub-Tabs and Redeem Points Action */}
       <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#E2E8F0] pb-4">
         <div className="flex items-center gap-3">

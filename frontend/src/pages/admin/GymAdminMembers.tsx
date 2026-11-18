@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
-import { Search, Plus, ShieldCheck, Mail, Phone, Eye, Edit2, User, Trash2, Calendar, Activity, CheckCircle, Clock, XCircle, UserPlus, Users, Download, Check, History, Sparkles } from 'lucide-react';
+import { Search, Plus, ShieldCheck, Mail, Phone, Eye, Edit2, User, Trash2, Calendar, Activity, CheckCircle, Clock, XCircle, UserPlus, Users, Download, Check, History, Sparkles, X } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { AddMemberSelectorModal } from '../../components/GymAdmin/AddMemberSelectorModal';
 import { AddExistingMemberModal } from '../../components/GymAdmin/AddExistingMemberModal';
@@ -95,29 +95,59 @@ const GymAdminMembers = () => {
         for (const m of (membershipsRes.data.memberships || [])) {
           const uid = (m.userId?._id ?? m.userId)?.toString?.() ?? String(m.userId);
           if (uid) {
-            if (!membershipMap[uid]) membershipMap[uid] = m;
             if (!allMembershipsMap[uid]) allMembershipsMap[uid] = [];
             allMembershipsMap[uid].push(m);
+            // Prioritize active or completed membership
+            if (!membershipMap[uid] || m.status === 'ACTIVE' || m.status === 'Active' || m.status === 'Free Trial') {
+              membershipMap[uid] = m;
+            }
           }
         }
 
         const mapped = usersRes.data.users.map((u: any) => {
           const userId = u._id?.toString?.() ?? String(u._id);
           const membership = membershipMap[userId] || null;
-          let membershipHistory = allMembershipsMap[userId] || [];
+          const rawHistory = allMembershipsMap[userId] || [];
+
+          // Filter out unpaid/pending plan attempts to show only genuine records (Bug 5)
+          const genuineHistory = rawHistory.filter((m: any) => {
+            const isTrial = (m.planName || '').toLowerCase().includes('trial') || m.status === 'Free Trial' || m.paymentMethod === 'Trial' || m.paymentMethod === 'Free Trial';
+            const isCompleted = m.status === 'ACTIVE' || m.status === 'Active' || m.status === 'EXPIRED' || m.status === 'Expired' ||
+              m.paymentStatus === 'Completed' || m.paymentStatus === 'Approved' || m.paymentId?.status === 'Approved' ||
+              (m.finalAmount === 0 && !String(m.status).toLowerCase().includes('pending'));
+            
+            if (m.status === 'PENDING_APPROVAL' || m.status === 'Pending' || m.paymentStatus === 'Pending' || m.paymentStatus === 'Unpaid') {
+              return false;
+            }
+            return isTrial || isCompleted;
+          });
+
+          // Deduplicate records to avoid duplicate entries (Bug 5)
+          const seenPlans = new Set<string>();
+          const dedupedHistory: any[] = [];
+          for (const item of genuineHistory) {
+            const key = `${item.planName || ''}-${new Date(item.startDate || item.createdAt || 0).toDateString()}-${item.finalAmount || 0}`;
+            if (!seenPlans.has(key)) {
+              seenPlans.add(key);
+              dedupedHistory.push(item);
+            }
+          }
+          let membershipHistory = dedupedHistory;
 
           // Sort history newest first
           membershipHistory.sort((a, b) => new Date(b.createdAt || b.startDate || 0).getTime() - new Date(a.createdAt || a.startDate || 0).getTime());
 
           if (membershipHistory.length === 0) {
+            const isTrial = (u.subscriptionPlan || u.subscriptionStatus || '').toLowerCase().includes('trial');
             membershipHistory = [{
               _id: 'default-' + userId,
-              planName: u.subscriptionPlan || 'Starter',
-              status: u.subscriptionStatus || 'Active',
-              duration: '1 Month',
+              planName: u.subscriptionPlan || (isTrial ? 'Free Trial' : 'Starter'),
+              status: u.subscriptionStatus || (isTrial ? 'Free Trial' : 'Active'),
+              duration: isTrial ? '1 Day' : '1 Month',
               startDate: u.createdAt,
-              endDate: u.subscriptionExpiry,
-              paymentMethod: 'Membership',
+              endDate: u.subscriptionExpiry || (isTrial ? new Date(new Date(u.createdAt).getTime() + 24 * 60 * 60 * 1000).toISOString() : new Date(new Date(u.createdAt).getTime() + 30 * 24 * 60 * 60 * 1000).toISOString()),
+              paymentMethod: isTrial ? 'Free Trial' : 'Membership',
+              finalAmount: isTrial ? 0 : undefined,
             }];
           }
 
@@ -189,6 +219,51 @@ const GymAdminMembers = () => {
   } | null>(null);
   const [editMember, setEditMember] = useState<any>(null);
   const [editForm, setEditForm] = useState<any>(null);
+  const [membershipPopupMember, setMembershipPopupMember] = useState<any | null>(null);
+
+  const getMemberExpiryDateRaw = (member: any): string => {
+    let expiryRaw = member?.membership?.endDate || member?.originalUser?.subscriptionExpiry || member?.originalUser?.subscriptionExpiryDate;
+    if (!expiryRaw && (member?.membershipHistory || []).length > 0) {
+      const latest = member.membershipHistory.find((h: any) => h.endDate);
+      if (latest?.endDate) expiryRaw = latest.endDate;
+    }
+    if (!expiryRaw && member?.originalUser?.createdAt) {
+      const joinDate = new Date(member.originalUser.createdAt);
+      const isTrial = member.membership?.status === 'Free Trial' || member.plan === 'Free Trial' ||
+        member.originalUser?.subscriptionStatus === 'Free Trial' || member.originalUser?.subscriptionStatus === 'FREE_TRIAL';
+      const exp = new Date(joinDate);
+      if (isTrial) {
+        exp.setDate(exp.getDate() + 1);
+      } else {
+        exp.setMonth(exp.getMonth() + 1);
+      }
+      expiryRaw = exp.toISOString();
+    }
+    return expiryRaw || '';
+  };
+
+  const getMemberExpiryDisplay = (member: any): string => {
+    const raw = getMemberExpiryDateRaw(member);
+    if (!raw) return 'Up to: N/A';
+    const d = new Date(raw);
+    if (isNaN(d.getTime())) return 'Up to: N/A';
+    const day = String(d.getDate()).padStart(2, '0');
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const month = months[d.getMonth()];
+    const year = d.getFullYear();
+    return `Up to: ${day} ${month} ${year}`;
+  };
+
+  const formatDateDisplay = (dateVal: any): string => {
+    if (!dateVal) return 'N/A';
+    const d = new Date(dateVal);
+    if (isNaN(d.getTime())) return 'N/A';
+    const day = String(d.getDate()).padStart(2, '0');
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const month = months[d.getMonth()];
+    const year = d.getFullYear();
+    return `${day} ${month} ${year}`;
+  };
 
   // Close dropdown on window scroll or resize (ignoring scroll inside the dropdown)
   useEffect(() => {
@@ -557,107 +632,19 @@ const GymAdminMembers = () => {
                       <p className="flex items-center text-xs text-[#111827] font-medium"><Phone size={12} className="mr-1.5 text-[#64748B] shrink-0"/> {member.phone}</p>
                     </div>
                   </td>
-                  <td className="px-6 py-4 align-top">
-                    <div className="space-y-1.5">
-                      {/* Active/Current Plan Badge + History Tag */}
-                      <div className="flex items-center gap-2 flex-wrap">
-                        {getPlanBadge(member.plan)}
-                        {member.membershipHistory && member.membershipHistory.length > 1 && (
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setSelectedMember(member);
-                            }}
-                            className="text-[10px] font-bold bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5] px-2 py-0.5 rounded-md hover:bg-[#FFEDD5] transition-colors inline-flex items-center gap-1 cursor-pointer whitespace-nowrap"
-                            title="Click to view full plan history"
-                          >
-                            <History size={10} />
-                            <span>{member.membershipHistory.length} Plans</span>
-                          </button>
-                        )}
-                      </div>
-                      {/* Plan History — compact preview showing max 2 recent with link */}
-                      {member.membershipHistory && member.membershipHistory.length > 1 && (
-                        <div className="space-y-1 mt-1">
-                          {member.membershipHistory
-                            .slice()
-                            .reverse()
-                            .slice(0, 2)
-                            .map((hist: any, hIdx: number) => (
-                              <button
-                                key={hIdx}
-                                type="button"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setSelectedMember(member);
-                                }}
-                                className="flex items-center gap-1.5 text-[10px] bg-[#F8FAFC] px-2 py-0.5 rounded-lg border border-[#E2E8F0] w-full max-w-fit hover:border-[#FDBA74] hover:bg-[#FFF7ED] transition-colors cursor-pointer whitespace-nowrap"
-                                title={`${hist.planName || hist.status} (${hist.duration || 'N/A'})${hist.startDate ? ' — ' + new Date(hist.startDate).toLocaleDateString() : ''}`}
-                              >
-                                <span className="text-[10px] font-bold text-[#64748B] shrink-0">
-                                  {hIdx + 1}.
-                                </span>
-                                {getPlanBadge(hist.planName || hist.status || 'Free Trial', true)}
-                                {hist.startDate && (
-                                  <span className="text-[#64748B] font-medium ml-1">
-                                    {new Date(hist.startDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: '2-digit' })}
-                                  </span>
-                                )}
-                              </button>
-                            ))}
-                          {member.membershipHistory.length > 2 && (
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setSelectedMember(member);
-                              }}
-                              className="text-[10px] text-[#EA580C] font-semibold hover:underline block pt-0.5 cursor-pointer text-left"
-                            >
-                              + {member.membershipHistory.length - 2} more (view details)
-                            </button>
-                          )}
-                        </div>
-                      )}
-                      <p className="flex items-center text-[11px] text-[#64748B]">
-                        <Calendar size={10} className="mr-1 shrink-0"/> Joined: {member.originalUser?.createdAt ? new Date(member.originalUser.createdAt).toLocaleString([], { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit' }) : member.joined}
-                      </p>
-                      {(() => {
-                        let expiryRaw = member.membership?.endDate || member.originalUser?.subscriptionExpiry;
-                        const isTrial = member.membership?.status === 'Free Trial' || member.plan === 'Free Trial' || member.originalUser?.subscriptionStatus === 'Free Trial' || member.originalUser?.subscriptionStatus === 'FREE_TRIAL';
-                        // Fallback: If free trial member has no explicit expiry, calculate 1 day (24 hours) from joined date
-                        if (!expiryRaw && isTrial && member.originalUser?.createdAt) {
-                          const joinDate = new Date(member.originalUser.createdAt);
-                          expiryRaw = new Date(joinDate.getTime() + 24 * 60 * 60 * 1000).toISOString();
-                        } else if (!expiryRaw && member.originalUser?.createdAt) {
-                          // Paid plan default: 1 month from joined date
-                          const joinDate = new Date(member.originalUser.createdAt);
-                          const expiry = new Date(joinDate);
-                          expiry.setMonth(expiry.getMonth() + 1);
-                          expiryRaw = expiry.toISOString();
-                        }
-                        if (!expiryRaw) return (
-                          <p className="flex items-center text-[11px] text-[#64748B] font-medium mt-0.5">
-                            <Calendar size={10} className="mr-1 shrink-0"/> Expiry: N/A
-                          </p>
-                        );
-                        const expiryDate = new Date(expiryRaw);
-                        const now = new Date();
-                        const hoursLeft = (expiryDate.getTime() - now.getTime()) / (1000 * 60 * 60);
-                        const isExpired = expiryDate < now;
-                        const isSoon = !isExpired && hoursLeft <= 24;
-                        return (
-                          <p className={`flex items-center gap-1 text-[11px] font-medium mt-0.5 ${isExpired ? 'text-[#B91C1C]' : isSoon ? 'text-[#B45309] font-bold' : 'text-[#64748B]'}`}>
-                            <Calendar size={10} className="shrink-0"/>
-                            {isExpired ? 'Expired: ' : 'Expires: '}
-                            {expiryDate.toLocaleString([], { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
-                            {isSoon && !isExpired && <span className="text-[#B45309] font-bold">(Soon!)</span>}
-                            {isExpired && <span className="text-[#B91C1C] font-bold">(Expired)</span>}
-                          </p>
-                        );
-                      })()}
-                    </div>
+                  <td className="px-6 py-4 align-middle">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setMembershipPopupMember(member);
+                      }}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#FFF7ED] hover:bg-[#FFEDD5] text-[#C2410C] border border-[#FFEDD5] font-bold text-xs transition-all shadow-xs cursor-pointer hover:scale-105 active:scale-95 whitespace-nowrap"
+                      title="Click to view full membership details"
+                    >
+                      <Calendar size={13} className="text-[#EA580C]" />
+                      <span>{getMemberExpiryDisplay(member)}</span>
+                    </button>
                   </td>
                   <td className="px-6 py-4 align-top text-center">
                     <span className={`px-2.5 py-1 border rounded-lg text-xs font-bold transition-colors inline-block ${getStatusColor(member.status)}`}>
@@ -1204,6 +1191,81 @@ const GymAdminMembers = () => {
           </div>
         </>,
         document.body
+      )}
+      {/* MEMBERSHIP DETAILS POPUP MODAL (Bug 3) */}
+      {membershipPopupMember && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-5 animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-3">
+              <div className="flex items-center gap-2.5">
+                <div className="w-10 h-10 rounded-xl bg-[#FFF7ED] border border-[#FFEDD5] flex items-center justify-center text-[#EA580C]">
+                  <ShieldCheck size={20} />
+                </div>
+                <div>
+                  <h3 className="text-base font-extrabold text-[#111827]">Membership Details</h3>
+                  <p className="text-xs text-[#64748B] font-medium">{membershipPopupMember.name}</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setMembershipPopupMember(null)}
+                className="w-8 h-8 rounded-full bg-[#F8FAFC] hover:bg-[#FFF7ED] text-[#64748B] hover:text-[#C2410C] flex items-center justify-center transition-colors cursor-pointer border border-[#E2E8F0]"
+                title="Close"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            <div className="space-y-3">
+              <div className="p-3.5 rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-1">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#64748B] block">Membership Plan Name</span>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-extrabold text-[#111827]">
+                    {membershipPopupMember.plan || membershipPopupMember.membership?.planName || 'Standard Membership'}
+                  </span>
+                  {getPlanBadge(membershipPopupMember.plan || membershipPopupMember.membership?.planName)}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="p-3.5 rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-1">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#64748B] block">Start Date</span>
+                  <span className="text-xs font-bold text-[#111827] block">
+                    {formatDateDisplay(membershipPopupMember.membership?.startDate || membershipPopupMember.originalUser?.createdAt)}
+                  </span>
+                </div>
+                <div className="p-3.5 rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-1">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#64748B] block">Expiry Date</span>
+                  <span className="text-xs font-bold text-[#C2410C] block">
+                    {formatDateDisplay(membershipPopupMember.membership?.endDate || membershipPopupMember.originalUser?.subscriptionExpiry || getMemberExpiryDateRaw(membershipPopupMember))}
+                  </span>
+                </div>
+              </div>
+
+              <div className="p-3.5 rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] flex items-center justify-between">
+                <div>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#64748B] block">Membership Status</span>
+                  <span className="text-xs font-bold text-[#111827]">
+                    {membershipPopupMember.membership?.status || membershipPopupMember.status || 'Active'}
+                  </span>
+                </div>
+                <span className={`px-2.5 py-1 border rounded-lg text-xs font-bold ${getStatusColor(membershipPopupMember.status)}`}>
+                  {membershipPopupMember.status}
+                </span>
+              </div>
+            </div>
+
+            <div className="pt-2 flex justify-end">
+              <button
+                type="button"
+                onClick={() => setMembershipPopupMember(null)}
+                className="px-5 py-2.5 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold text-xs rounded-xl transition-all shadow-md shadow-orange-500/15 cursor-pointer"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

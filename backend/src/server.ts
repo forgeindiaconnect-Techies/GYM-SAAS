@@ -43,6 +43,7 @@ import awardRoutes from './routes/awardRoutes';
 import performanceRoutes from './routes/performanceRoutes';
 import referralRoutes from './routes/referralRoutes';
 import hiringRoutes from './routes/hiringRoutes';
+import attendanceRoutes from './routes/attendanceRoutes';
 
 dotenv.config();
 
@@ -53,6 +54,8 @@ const allowedOrigins = [
   'https://gym-saas-vmjm-theta.vercel.app',
   'https://gym-saas-jade.vercel.app',
   'http://localhost:5173',
+  'http://localhost:5174',
+  'http://localhost:5175',
   'http://localhost:3000',
   'http://localhost:5600',
   process.env.FRONTEND_URL,
@@ -62,6 +65,10 @@ const corsOptions: cors.CorsOptions = {
   origin: (origin, callback) => {
     // Allow non-browser requests or tools (curl, server-to-server)
     if (!origin) return callback(null, true);
+    // Allow any localhost / 127.0.0.1 port
+    if (/^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)) {
+      return callback(null, true);
+    }
     if (
       allowedOrigins.includes(origin) ||
       /\.vercel\.app$/.test(origin)
@@ -88,6 +95,7 @@ const corsOptions: cors.CorsOptions = {
 };
 
 app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 
 // Health check endpoints for uptime, Render wake-up and monitoring
 app.get('/health', (_req, res) => {
@@ -108,6 +116,31 @@ app.use('/uploads', express.static(uploadsDir));
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/subscriptions', subscriptionRoutes);
+
+// Super Admin backwards-compatible aliases
+app.get('/api/super-admin/stats', async (_req, res) => {
+  try {
+    const Gym = (await import('./models/Gym')).default;
+    const User = (await import('./models/User')).default;
+    const [totalGyms, totalUsers] = await Promise.all([
+      Gym.countDocuments({}),
+      User.countDocuments({})
+    ]);
+    res.json({ success: true, totalGyms, totalUsers });
+  } catch (err: any) {
+    res.json({ success: true, totalGyms: 0, totalUsers: 0 });
+  }
+});
+
+app.get('/api/super-admin/invitations', async (_req, res) => {
+  try {
+    const User = (await import('./models/User')).default;
+    const owners = await (User as any).find({ role: 'GYM_OWNER' }).limit(50);
+    res.json({ success: true, invitations: owners });
+  } catch (err: any) {
+    res.json({ success: true, invitations: [] });
+  }
+});
 app.use('/api/trainers', trainerRoutes);
 app.use('/api/gyms', gymRoutes);
 app.use('/api/users', userRoutes);
@@ -144,6 +177,7 @@ app.use('/api/awards', awardRoutes);
 app.use('/api/performance', performanceRoutes);
 app.use('/api/referrals', referralRoutes);
 app.use('/api/hiring', hiringRoutes);
+app.use('/api/attendance', attendanceRoutes);
 
 app.get('/', (req, res) => {
   res.status(200).json({

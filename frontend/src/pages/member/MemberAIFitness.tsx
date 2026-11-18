@@ -44,7 +44,7 @@ const MemberAIFitness: React.FC = () => {
     city: '',
     pinCode: '',
     dateOfBirth: '',
-    age: '28',
+    age: '',
     gender: 'Not specified',
     height: '170',
     weight: '70',
@@ -54,7 +54,7 @@ const MemberAIFitness: React.FC = () => {
     preferredWorkoutTime: 'Morning (7-9am)',
     availableWorkoutDays: '4 Days / Week',
     equipmentAvailability: 'Full Commercial Gym (Weights & Machines)',
-    dietaryPreferences: 'Vegetarian',
+    dietaryPreferences: '',
     emergencyContactName: '',
     emergencyContactRelation: '',
     emergencyContactMobile: '',
@@ -103,14 +103,16 @@ const MemberAIFitness: React.FC = () => {
         const meRes = await api.get('/auth/me');
         if (meRes.data?.user) {
           const u = meRes.data.user;
-          let calculatedAge = '28';
+          let calculatedAge = '';
           let formattedDob = '';
           if (u.dateOfBirth) {
             const dob = new Date(u.dateOfBirth);
-            const diff_ms = Date.now() - dob.getTime();
-            const age_dt = new Date(diff_ms);
-            calculatedAge = Math.abs(age_dt.getUTCFullYear() - 1970).toString();
-            formattedDob = dob.toISOString().split('T')[0];
+            if (!isNaN(dob.getTime())) {
+              const diff_ms = Date.now() - dob.getTime();
+              const age_dt = new Date(diff_ms);
+              calculatedAge = Math.abs(age_dt.getUTCFullYear() - 1970).toString();
+              formattedDob = dob.toISOString().split('T')[0];
+            }
           }
 
           const rawWeight = Number(u.weight) || 70;
@@ -123,7 +125,7 @@ const MemberAIFitness: React.FC = () => {
             city: u.city || prev.city,
             pinCode: u.pinCode || prev.pinCode,
             dateOfBirth: formattedDob || prev.dateOfBirth,
-            age: u.age ? u.age.toString() : calculatedAge,
+            age: u.age ? u.age.toString() : (calculatedAge || ''),
             gender: u.gender || prev.gender,
             height: u.height ? u.height.toString() : prev.height,
             weight: u.weight ? u.weight.toString() : prev.weight,
@@ -133,7 +135,7 @@ const MemberAIFitness: React.FC = () => {
             preferredTraining: u.preferredTraining ? mapTrainingOption(u.preferredTraining) : prev.preferredTraining,
             preferredWorkoutTime: u.preferredWorkoutTime || prev.preferredWorkoutTime,
             availableWorkoutDays: u.preferredWorkoutDays || prev.availableWorkoutDays,
-            dietaryPreferences: u.dietPreference || u.dietaryPreferences || prev.dietaryPreferences,
+            dietaryPreferences: u.dietPreference || u.dietaryPreferences || prev.dietaryPreferences || '',
             emergencyContactName: u.emergencyContact?.name || prev.emergencyContactName,
             emergencyContactRelation: u.emergencyContact?.relationship || prev.emergencyContactRelation,
             emergencyContactMobile: u.emergencyContact?.mobile || prev.emergencyContactMobile,
@@ -303,7 +305,7 @@ const MemberAIFitness: React.FC = () => {
 
           <div className="p-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl">
             <span className="text-[10px] text-[#64748B] uppercase font-bold block mb-1">Age / Gender</span>
-            <p className="text-sm font-extrabold text-[#111827]">{formData.age} yrs • {formData.gender}</p>
+            <p className="text-sm font-extrabold text-[#111827]">{formData.age ? `${formData.age} yrs` : 'Not specified'} • {formData.gender || 'Not specified'}</p>
           </div>
 
           <div className="p-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl">
@@ -341,7 +343,7 @@ const MemberAIFitness: React.FC = () => {
 
           <div className="p-3.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl">
             <span className="font-bold text-[#64748B] block text-[10px] uppercase mb-1">Dietary Preference</span>
-            <p className="font-semibold text-[#111827]">{formData.dietaryPreferences}</p>
+            <p className="font-semibold text-[#111827]">{formData.dietaryPreferences || 'Not specified'}</p>
           </div>
 
           <div className="p-3.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl">
@@ -800,6 +802,7 @@ const MemberAIFitness: React.FC = () => {
                 onChange={e => setFormData({ ...formData, dietaryPreferences: e.target.value })}
                 className="w-full px-3.5 py-2.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs font-bold text-[#111827] outline-none focus:border-[#FDBA74]"
               >
+                <option value="">Not specified</option>
                 <option value="Vegetarian">Vegetarian</option>
                 <option value="Non-Vegetarian">Non-Vegetarian</option>
                 <option value="Vegan">Vegan</option>

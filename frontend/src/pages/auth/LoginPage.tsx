@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { FormEvent } from 'react';
 import { Link, useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import { Eye, EyeOff, Activity, AlertCircle, Loader2, ShieldCheck, Building2, UserCheck } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { getDashboardRoute, isSubscriptionActive } from '../../utils/routeHelpers';
+import { markAuthorizedNavigation } from '../../components/NavigationGuard';
 import api from '../../utils/api';
 
 const LoginPage = () => {
@@ -22,7 +23,14 @@ const LoginPage = () => {
       ? 'super-admin'
       : null
   );
-  const { login } = useAuth();
+  const { login, user, isAuthenticated, isLoading: authLoading } = useAuth();
+
+  useEffect(() => {
+    if (!authLoading && isAuthenticated && user) {
+      markAuthorizedNavigation();
+      navigate(getDashboardRoute(user), { replace: true });
+    }
+  }, [isAuthenticated, user, authLoading, navigate]);
 
   const [form, setForm] = useState({ email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
@@ -58,7 +66,9 @@ const LoginPage = () => {
         localStorage.removeItem('rememberedEmail');
       }
 
+      markAuthorizedNavigation();
       login(user, token, rememberMe);
+      markAuthorizedNavigation();
       
       const intentStr = sessionStorage.getItem('checkout_intent');
       if (intentStr && user.role === 'MEMBER') {
@@ -96,6 +106,7 @@ const LoginPage = () => {
         }
       }
 
+      markAuthorizedNavigation();
       navigate(getDashboardRoute(user), { replace: true });
     } catch (err: any) {
       const msg = err.response?.data?.message || (err.message === 'Network Error' || !err.response ? 'Server connection error. Please make sure the backend is running.' : 'Something went wrong. Please try again.');

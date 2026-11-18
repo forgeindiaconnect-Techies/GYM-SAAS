@@ -70,6 +70,7 @@ router.patch('/custom-claims/:id/review', authenticate, reviewCustomRewardClaim)
 // ============================================================================
 // CUSTOMER (MEMBER) ROUTES
 // ============================================================================
+router.get('/my', authenticate, getCustomerReferralStats);
 router.get('/my-code', authenticate, getCustomerReferralCode);
 router.get('/my-stats', authenticate, getCustomerReferralStats);
 router.get('/my-history', authenticate, getCustomerReferralHistory);

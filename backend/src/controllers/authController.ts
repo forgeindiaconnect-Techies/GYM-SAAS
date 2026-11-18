@@ -34,12 +34,39 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
+    if (!/^[A-Za-z\s]+$/.test(String(firstName).trim()) || (lastName && !/^[A-Za-z\s]+$/.test(String(lastName).trim()))) {
+      res.status(400).json({
+        success: false,
+        message: 'Only letters are allowed in first and last name.',
+        errorCode: 'INVALID_NAME'
+      });
+      return;
+    }
+
     const cleanMobile = String(mobile).replace(/\D/g, '');
     if (!/^[6-9]\d{9}$/.test(cleanMobile)) {
       res.status(400).json({
         success: false,
         message: 'Mobile number must be exactly 10 digits and start with 6, 7, 8, or 9',
         errorCode: 'INVALID_MOBILE'
+      });
+      return;
+    }
+
+    if (emergencyContact?.name && !/^[A-Za-z\s]+$/.test(String(emergencyContact.name).trim())) {
+      res.status(400).json({
+        success: false,
+        message: 'Only letters are allowed in emergency contact name.',
+        errorCode: 'INVALID_EMERGENCY_NAME'
+      });
+      return;
+    }
+
+    if (emergencyContact?.relationship && !/^[A-Za-z\s]+$/.test(String(emergencyContact.relationship).trim())) {
+      res.status(400).json({
+        success: false,
+        message: 'Only letters are allowed in emergency contact relationship.',
+        errorCode: 'INVALID_EMERGENCY_RELATION'
       });
       return;
     }
@@ -66,8 +93,31 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(password, salt);
 
-    const trialEndDate = new Date();
-    trialEndDate.setDate(trialEndDate.getDate() + 1); // 1 Day Free Trial
+    // Calculate proper subscription duration and expiry date based on plan selection
+    const priceNum = Number(req.body.price) || 0;
+    const discountNum = Number(req.body.discount) || 0;
+    const finalAmount = Math.max(0, priceNum - discountNum);
+    const isTrialPlan = finalAmount === 0 && (!req.body.planName || String(req.body.planName).toLowerCase().includes('trial'));
+    const resolvedDuration = isTrialPlan ? '1 Day' : (req.body.billingPlan === 'annual' ? '1 Year' : '1 Month');
+
+    const startDate = new Date();
+    const calculatedExpiryDate = new Date(startDate);
+    if (isTrialPlan) {
+      calculatedExpiryDate.setDate(calculatedExpiryDate.getDate() + 1); // 1 Day Free Trial
+    } else {
+      const durLower = (resolvedDuration || '').toLowerCase();
+      if (durLower.includes('year') || req.body.billingPlan === 'annual') {
+        calculatedExpiryDate.setFullYear(calculatedExpiryDate.getFullYear() + (parseInt(durLower) || 1));
+      } else if (durLower.includes('month') || req.body.billingPlan === 'monthly') {
+        calculatedExpiryDate.setMonth(calculatedExpiryDate.getMonth() + (parseInt(durLower) || 1));
+      } else if (durLower.includes('week')) {
+        calculatedExpiryDate.setDate(calculatedExpiryDate.getDate() + ((parseInt(durLower) || 1) * 7));
+      } else if (durLower.includes('day')) {
+        calculatedExpiryDate.setDate(calculatedExpiryDate.getDate() + (parseInt(durLower) || 1));
+      } else {
+        calculatedExpiryDate.setMonth(calculatedExpiryDate.getMonth() + 1);
+      }
+    }
 
     // Generate unique referral code for this new customer
     const cleanFirstName = (firstName || 'MEMBER').replace(/[^a-zA-Z]/g, '').toUpperCase().slice(0, 5);
@@ -130,7 +180,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
         ? (Number(req.body.price) > 0 ? SubscriptionStatus.PENDING : SubscriptionStatus.FREE_TRIAL)
         : SubscriptionStatus.NONE,
       subscriptionPlan: effectiveGymId && hasSelectedPlan ? (req.body.planName || 'Free Trial') : undefined,
-      subscriptionExpiry: effectiveGymId && hasSelectedPlan ? trialEndDate : undefined,
+      subscriptionExpiry: effectiveGymId && hasSelectedPlan ? calculatedExpiryDate : undefined,
       customerType: 'PUBLIC_SIGNUP',
       gymId: effectiveGymId || undefined,
       branchId,
@@ -173,7 +223,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
           finalAmount,
           status: isTrialPlan ? CustomerMembershipStatus.FREE_TRIAL : CustomerMembershipStatus.ACTIVE,
           startDate: new Date(),
-          endDate: trialEndDate,
+          endDate: calculatedExpiryDate,
           paymentMethod: req.body.paymentMethod || (isTrialPlan ? 'Trial' : 'Online'),
           billingPlan: req.body.billingPlan === 'annual' ? 'annual' : 'monthly',
           packageId: req.body.packageId || undefined,

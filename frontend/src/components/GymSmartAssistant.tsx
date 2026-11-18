@@ -123,7 +123,12 @@ const GymSmartAssistant = () => {
 
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
-  const [isTucked, setIsTucked] = useState(false);
+  const [isTucked, setIsTucked] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth < 768;
+    }
+    return false;
+  });
   const [inputMessage, setInputMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -142,6 +147,17 @@ const GymSmartAssistant = () => {
       scrollToBottom();
     }
   }, [messages, isOpen, isMinimized, loading]);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      if (typeof window !== 'undefined' && window.innerWidth < 768) {
+        setIsTucked(true);
+      }
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const handleClearChat = () => {
     setMessages([]);
@@ -255,23 +271,26 @@ const GymSmartAssistant = () => {
       {/* ── Floating Action Trigger Button ── */}
       {!isOpen && isTucked && (
         <button
-          onClick={() => setIsTucked(false)}
-          className="fixed bottom-24 right-0 z-40 bg-[#EA580C] hover:bg-[#9A3412] text-white p-2.5 rounded-l-2xl shadow-xl border-y border-l border-[#FFEDD5] cursor-pointer flex items-center justify-center transition-transform hover:-translate-x-1"
-          title="Show Gym Smart Assistant"
-          aria-label="Show Gym Smart Assistant"
+          onClick={() => {
+            setIsOpen(true);
+            setIsMinimized(false);
+          }}
+          className="fixed bottom-36 md:bottom-6 right-0 z-40 bg-gradient-to-r from-[#EA580C] to-[#9A3412] text-white p-2.5 rounded-l-2xl shadow-xl border-y border-l border-[#FFEDD5] cursor-pointer flex items-center justify-center transition-transform hover:-translate-x-1"
+          title="Open Gym Smart Assistant"
+          aria-label="Open Gym Smart Assistant"
         >
           <Bot size={20} />
         </button>
       )}
 
       {!isOpen && !isTucked && (
-        <div className="fixed bottom-[calc(0.75rem+env(safe-area-inset-bottom,0px))] right-3.5 sm:bottom-4 sm:right-6 z-40 flex items-center gap-1.5 group">
+        <div className="fixed bottom-36 md:bottom-6 right-0 md:right-6 z-40 flex items-center gap-1.5 group">
           <button
             onClick={() => {
               setIsOpen(true);
               setIsMinimized(false);
             }}
-            className="bg-gradient-to-r from-[#EA580C] via-[#9A3412] to-[#EA580C] text-[#FFFFFF] font-bold py-2.5 px-3.5 sm:py-2.5 sm:px-4 rounded-full shadow-[0_4px_25px_rgba(183,110,121,0.45)] hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-2 border-2 border-[#FFEDD5] ring-4 ring-[#F97316]/25 cursor-pointer"
+            className="bg-gradient-to-r from-[#EA580C] via-[#9A3412] to-[#EA580C] text-[#FFFFFF] font-bold py-2.5 px-3 md:px-4 rounded-l-2xl md:rounded-full shadow-[0_4px_25px_rgba(183,110,121,0.45)] hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-2 border-y border-l md:border-2 border-[#FFEDD5] ring-2 md:ring-4 ring-[#F97316]/25 cursor-pointer"
             title="Open Gym Smart Assistant"
           >
             <div className="relative">
@@ -285,7 +304,7 @@ const GymSmartAssistant = () => {
               e.stopPropagation();
               setIsTucked(true);
             }}
-            className="w-6 h-6 rounded-full bg-white/95 hover:bg-white text-slate-600 hover:text-[#C2410C] border border-[#CBD5E1] shadow-md flex items-center justify-center text-xs cursor-pointer opacity-75 hover:opacity-100 transition-opacity"
+            className="w-6 h-6 rounded-full bg-white/95 hover:bg-white text-slate-600 hover:text-[#C2410C] border border-[#CBD5E1] shadow-md items-center justify-center text-xs cursor-pointer opacity-75 hover:opacity-100 transition-opacity hidden md:flex"
             title="Tuck assistant to side"
             aria-label="Tuck assistant to side"
           >

@@ -451,33 +451,42 @@ const GymCheckout = () => {
 
                 {/* Sub-form based on selected payment method */}
                 {paymentMethod === 'UPI' && (
-                  <div className="p-5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl space-y-4">
-                    <div className="flex flex-col sm:flex-row items-center gap-5">
-                      <div className="bg-[#FFFFFF] p-3 rounded-2xl border border-[#E2E8F0] shadow-sm shrink-0">
-                        <QRCode
-                          value={`upi://pay?pa=aigym@icici&pn=${encodeURIComponent(gym.name)}&am=${total}&cu=INR`}
-                          size={110}
-                        />
-                      </div>
-                      <div className="space-y-2 text-center sm:text-left flex-1">
-                        <p className="text-xs font-bold uppercase tracking-wider text-[#EA580C]">Scan QR Code</p>
-                        <p className="text-xs text-[#64748B]">Scan with Google Pay, PhonePe, Paytm, or BHIM to pay instantly.</p>
-                        <div className="text-xs font-mono bg-[#FFFFFF] px-3 py-1.5 rounded-lg border border-[#E2E8F0] inline-block font-bold text-[#334155]">
-                          UPI ID: <span className="text-[#EA580C]">aigym@icici</span>
+                  (() => {
+                    const merchantUpi = gym.paymentSettings?.upiId || 'aigym@icici';
+                    const merchantName = (gym.paymentSettings?.accountName || gym.name || 'Perfect Fitness Studio').trim();
+                    const encodedMerchantName = encodeURIComponent(merchantName).replace(/%20/g, '+');
+                    const upiUri = `upi://pay?pa=${merchantUpi}&pn=${encodedMerchantName}&am=${total}&cu=INR`;
+
+                    return (
+                      <div className="p-5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl space-y-4">
+                        <div className="flex flex-col sm:flex-row items-center gap-5">
+                          <div className="bg-[#FFFFFF] p-3 rounded-2xl border border-[#E2E8F0] shadow-sm shrink-0">
+                            <QRCode
+                              value={upiUri}
+                              size={120}
+                            />
+                          </div>
+                          <div className="space-y-2 text-center sm:text-left flex-1">
+                            <p className="text-xs font-bold uppercase tracking-wider text-[#EA580C]">Scan QR Code</p>
+                            <p className="text-xs text-[#64748B]">Scan with Google Pay, PhonePe, Paytm, or BHIM to pay instantly.</p>
+                            <div className="text-xs font-mono bg-[#FFFFFF] px-3 py-1.5 rounded-lg border border-[#E2E8F0] inline-block font-bold text-[#334155]">
+                              UPI ID: <span className="text-[#EA580C]">{merchantUpi}</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div>
+                          <label className="block text-xs font-semibold text-[#64748B] mb-1">Or Enter Your UPI ID</label>
+                          <input
+                            type="text"
+                            value={upiId}
+                            onChange={(e) => setUpiId(e.target.value)}
+                            placeholder="yourname@okhdfcbank"
+                            className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-3.5 py-2.5 text-sm text-[#111827] placeholder-[#94A3B8] outline-none focus:border-[#FDBA74]"
+                          />
                         </div>
                       </div>
-                    </div>
-                    <div>
-                      <label className="block text-xs font-semibold text-[#64748B] mb-1">Or Enter Your UPI ID</label>
-                      <input
-                        type="text"
-                        value={upiId}
-                        onChange={(e) => setUpiId(e.target.value)}
-                        placeholder="yourname@okhdfcbank"
-                        className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-3.5 py-2.5 text-sm text-[#111827] placeholder-[#94A3B8] outline-none focus:border-[#FDBA74]"
-                      />
-                    </div>
-                  </div>
+                    );
+                  })()
                 )}
 
                 {paymentMethod === 'Card' && (

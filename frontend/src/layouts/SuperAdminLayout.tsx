@@ -46,11 +46,10 @@ const SuperAdminLayout = () => {
   ];
 
   const routePrefetchMap: Record<string, string[]> = {
-    '/super-admin/dashboard': ['/super-admin/stats', '/gyms', '/subscriptions'],
+    '/super-admin/dashboard': ['/gyms', '/users?role=ADMIN'],
     '/super-admin/gym-owners': ['/gyms', '/users?role=ADMIN'],
-    '/super-admin/invitations': ['/super-admin/invitations'],
-    '/super-admin/revenue-analytics': ['/super-admin/revenue-analytics'],
-    '/super-admin/subscriptions': ['/subscriptions'],
+    '/super-admin/invitations': ['/users?role=GYM_OWNER'],
+    '/super-admin/subscriptions': ['/subscriptions/all'],
     '/super-admin/notifications': ['/notifications'],
     '/super-admin/profile': ['/auth/me'],
   };

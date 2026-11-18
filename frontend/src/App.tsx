@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import NavigationGuard from './components/NavigationGuard';
 import {
   resolveMemberRoute,
   resolveTrainerRoute,
@@ -286,6 +287,7 @@ function App() {
     <AuthProvider>
       <Router>
         <ScrollToTop />
+        <NavigationGuard />
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<LandingPage />} />
@@ -365,7 +367,7 @@ function App() {
 
           {/* Member Routes */}
           <Route path="/member" element={
-            <ProtectedRoute allowedRoles={['MEMBER', 'ADMIN', 'GYM_OWNER', 'SUPER_ADMIN', 'TRAINER']} requireSubscription>
+            <ProtectedRoute allowedRoles={['MEMBER']} requireSubscription>
               <MemberLayout />
             </ProtectedRoute>
           }>
@@ -418,7 +420,7 @@ function App() {
 
           {/* Trainer Routes */}
           <Route path="/trainer" element={
-            <ProtectedRoute allowedRoles={['TRAINER', 'MEMBER', 'ADMIN', 'GYM_OWNER', 'SUPER_ADMIN']}>
+            <ProtectedRoute allowedRoles={['TRAINER']}>
               <TrainerLayout />
             </ProtectedRoute>
           }>
@@ -478,7 +480,7 @@ function App() {
 
           {/* Gym Admin Routes */}
           <Route path="/admin" element={
-            <ProtectedRoute allowedRoles={['ADMIN', 'GYM_OWNER', 'GYM_MANAGER', 'SUPER_ADMIN']}>
+            <ProtectedRoute allowedRoles={['ADMIN', 'GYM_OWNER', 'GYM_MANAGER']}>
               <GymAdminLayout />
             </ProtectedRoute>
           }>
@@ -544,7 +546,7 @@ function App() {
 
 {/* Super Admin Routes */}
           <Route path="/super-admin" element={
-            <ProtectedRoute allowedRoles={['SUPER_ADMIN', 'ADMIN']}>
+            <ProtectedRoute allowedRoles={['SUPER_ADMIN']}>
               <SuperAdminLayout />
             </ProtectedRoute>
           }>

@@ -224,6 +224,52 @@ const CustomerRegisterPage = () => {
     setErrors((e: any) => { const n = { ...e }; delete n[field]; return n; });
   };
 
+  const handleLetterKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, fieldName: string) => {
+    if (
+      e.ctrlKey || e.metaKey || e.altKey ||
+      ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Tab', 'Enter', 'Home', 'End'].includes(e.key)
+    ) {
+      return;
+    }
+    if (!/^[A-Za-z\s]$/.test(e.key)) {
+      e.preventDefault();
+      setErrors(prev => ({ ...prev, [fieldName]: 'Only letters are allowed.' }));
+    }
+  };
+
+  const handleLetterChange = (e: React.ChangeEvent<HTMLInputElement>, fieldName: string) => {
+    const raw = e.target.value;
+    const sanitized = raw.replace(/[^A-Za-z\s]/g, '');
+    e.target.value = sanitized;
+    setForm((f: any) => ({ ...f, [fieldName]: sanitized }));
+    if (raw !== sanitized) {
+      setErrors(prev => ({ ...prev, [fieldName]: 'Only letters are allowed.' }));
+    } else {
+      setErrors(prev => {
+        if (!prev[fieldName]) return prev;
+        const n = { ...prev };
+        delete n[fieldName];
+        return n;
+      });
+    }
+  };
+
+  const handleLetterPaste = (e: React.ClipboardEvent<HTMLInputElement>, fieldName: string) => {
+    const pasted = e.clipboardData.getData('text');
+    if (/[^A-Za-z\s]/.test(pasted)) {
+      e.preventDefault();
+      const sanitized = pasted.replace(/[^A-Za-z\s]/g, '');
+      const input = e.currentTarget;
+      const start = input.selectionStart ?? input.value.length;
+      const end = input.selectionEnd ?? input.value.length;
+      const currentVal = input.value;
+      const newVal = currentVal.slice(0, start) + sanitized + currentVal.slice(end);
+      input.value = newVal;
+      setForm((f: any) => ({ ...f, [fieldName]: newVal }));
+      setErrors(prev => ({ ...prev, [fieldName]: 'Only letters are allowed.' }));
+    }
+  };
+
   // When fitness goal changes on step 2: single-selection only
   const selectFitnessGoal = (goal: string) => {
     setForm((f: any) => ({
@@ -240,11 +286,21 @@ const CustomerRegisterPage = () => {
     setErrors((e: any) => { const n = { ...e }; delete n['selectedPackageId']; delete n['selectedBillingPlan']; return n; });
   };
 
-  const validateStep = (): boolean => {
+  const getStepErrors = (): Record<string, string> => {
     const e: Record<string, string> = {};
     if (step === 0) {
-      if (!form.firstName.trim()) e.firstName = 'First name is required';
-      if (!form.lastName.trim()) e.lastName = 'Last name is required';
+      if (!form.firstName.trim()) {
+        e.firstName = 'First name is required';
+      } else if (!/^[A-Za-z\s]+$/.test(form.firstName)) {
+        e.firstName = 'Only letters are allowed.';
+      }
+
+      if (!form.lastName.trim()) {
+        e.lastName = 'Last name is required';
+      } else if (!/^[A-Za-z\s]+$/.test(form.lastName)) {
+        e.lastName = 'Only letters are allowed.';
+      }
+
       if (!form.email.trim()) e.email = 'Email is required';
       else if (!/\S+@\S+\.\S+/.test(form.email)) e.email = 'Enter a valid email';
       else if (!otpVerified) e.email = 'Please verify your email with OTP';
@@ -261,14 +317,36 @@ const CustomerRegisterPage = () => {
       if (form.password !== form.confirmPassword) e.confirmPassword = 'Passwords do not match';
     }
     if (step === 1) {
-      if (!form.gender) e.gender = 'Gender is required';
-      if (!form.city.trim()) e.city = 'City is required';
+      if (!form.city.trim()) {
+        e.city = 'City is required';
+      } else if (!/^[A-Za-z\s]+$/.test(form.city)) {
+        e.city = 'Only letters are allowed.';
+      }
       if (form.pinCode.trim() && !/^\d{6}$/.test(form.pinCode.trim())) e.pinCode = 'Enter a valid 6-digit PIN code';
+      if (!form.gender) e.gender = 'Gender is required';
       if (!form.height) e.height = 'Height is required';
+      else if (Number(form.height) <= 0 || Number(form.height) > 300) e.height = 'Enter a valid height (cm)';
       if (!form.weight) e.weight = 'Weight is required';
-      if (!form.emergencyContactName.trim()) e.emergencyContactName = 'Emergency contact name is required';
-      if (!form.emergencyContactMobile.trim()) e.emergencyContactMobile = 'Emergency contact mobile is required';
-      if (!form.emergencyContactRelation.trim()) e.emergencyContactRelation = 'Emergency contact relationship is required';
+      else if (Number(form.weight) <= 0 || Number(form.weight) > 500) e.weight = 'Enter a valid weight (kg)';
+      
+      if (!form.emergencyContactName.trim()) {
+        e.emergencyContactName = 'Emergency contact name is required';
+      } else if (!/^[A-Za-z\s]+$/.test(form.emergencyContactName)) {
+        e.emergencyContactName = 'Only letters are allowed.';
+      }
+
+      const cleanEmerg = form.emergencyContactMobile.replace(/\D/g, '');
+      if (!cleanEmerg) {
+        e.emergencyContactMobile = 'Emergency contact mobile is required';
+      } else if (!/^[6-9]\d{9}$/.test(cleanEmerg)) {
+        e.emergencyContactMobile = 'Mobile number must be 10 digits and start with 6, 7, 8, or 9';
+      }
+
+      if (!form.emergencyContactRelation.trim()) {
+        e.emergencyContactRelation = 'Emergency contact relationship is required';
+      } else if (!/^[A-Za-z\s]+$/.test(form.emergencyContactRelation)) {
+        e.emergencyContactRelation = 'Only letters are allowed.';
+      }
     }
     if (step === 2) {
       const hasGoal = form.fitnessGoal || (Array.isArray(form.fitnessGoals) && form.fitnessGoals.length > 0);
@@ -294,11 +372,34 @@ const CustomerRegisterPage = () => {
       if (!form.acceptTerms) e.acceptTerms = 'You must accept the Terms & Conditions';
       if (!form.acceptPrivacy) e.acceptPrivacy = 'You must accept the Privacy Policy';
     }
+    return e;
+  };
+
+  const validateStep = (): boolean => {
+    const e = getStepErrors();
     setErrors(e);
     return Object.keys(e).length === 0;
   };
 
-  const next = () => { if (validateStep()) setStep(s => s + 1); };
+  const next = () => {
+    const stepErrors = getStepErrors();
+    setErrors(stepErrors);
+    const isValid = Object.keys(stepErrors).length === 0;
+    if (isValid) {
+      setStep(s => s + 1);
+    } else {
+      setTimeout(() => {
+        const errorKey = Object.keys(stepErrors)[0];
+        if (errorKey) {
+          const el = document.getElementById(`reg-${errorKey}`);
+          if (el) {
+            el.focus();
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }
+      }, 50);
+    }
+  };
   const prev = () => setStep(s => s - 1);
 
   const handleSubmit = async (e: FormEvent) => {
@@ -429,18 +530,18 @@ const CustomerRegisterPage = () => {
         <span className="text-2xl font-bold tracking-tight text-[#EA580C]">Gymora</span>
       </Link>
 
-      <div className="w-full max-w-2xl bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl shadow-2xl overflow-hidden z-10">
+      <div className="w-full max-w-2xl lg:max-w-3xl bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl shadow-2xl overflow-hidden z-10">
         {/* Progress Header */}
-        <div className="bg-[#FFFFFF] border-b border-[#E2E8F0] px-8 py-5 flex items-center justify-between">
-          <h1 className="text-xl font-bold text-[#111827]">Customer Registration</h1>
-          <div className="flex items-center space-x-2">
+        <div className="bg-[#FFFFFF] border-b border-[#E2E8F0] px-5 sm:px-8 py-4 sm:py-5 flex flex-col md:flex-row md:items-center justify-between gap-3">
+          <h1 className="text-lg sm:text-xl font-bold text-[#111827] shrink-0">Customer Registration</h1>
+          <div className="flex items-center space-x-1 sm:space-x-1.5 overflow-x-auto min-w-0 py-1">
             {STEPS.map((s, i) => (
-              <div key={i} className="flex items-center space-x-2" title={s}>
-                <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all ${i < step ? 'bg-[#C2410C] text-white' : i === step ? 'bg-[#C2410C] text-white ring-2 ring-[#B91C1C]/30 ring-offset-1 ring-offset-[#FFFFFF]' : 'bg-[#F8FAFC] text-[#64748B]'}`}>
-                  {i < step ? <Check size={14} /> : i + 1}
+              <div key={i} className="flex items-center space-x-1 sm:space-x-1.5 shrink-0" title={s}>
+                <div className={`w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all shrink-0 ${i < step ? 'bg-[#C2410C] text-white' : i === step ? 'bg-[#C2410C] text-white ring-2 ring-[#B91C1C]/30 ring-offset-1 ring-offset-[#FFFFFF]' : 'bg-[#F8FAFC] text-[#64748B]'}`}>
+                  {i < step ? <Check size={13} /> : i + 1}
                 </div>
-                <span className={`text-xs hidden sm:block ${i === step ? 'text-[#111827] font-medium' : 'text-[#64748B]'}`}>{s}</span>
-                {i < STEPS.length - 1 && <div className={`h-px w-4 sm:w-6 ${i < step ? 'bg-[#C2410C]' : 'bg-[#F8FAFC]'}`} />}
+                <span className={`text-[11px] sm:text-xs whitespace-nowrap ${i === step ? 'text-[#111827] font-semibold' : 'text-[#64748B]'}`}>{s}</span>
+                {i < STEPS.length - 1 && <div className={`h-px w-2.5 sm:w-4 ${i < step ? 'bg-[#C2410C]' : 'bg-[#E2E8F0]'} shrink-0`} />}
               </div>
             ))}
           </div>
@@ -460,13 +561,29 @@ const CustomerRegisterPage = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm text-[#64748B] mb-2">First Name *</label>
-                  <input id="reg-firstName" value={form.firstName} onChange={e => set('firstName', e.target.value)} placeholder="John" className={inputCls('firstName')} />
-                  {errors.firstName && <p className="text-[#EA580C] text-xs mt-1">{errors.firstName}</p>}
+                  <input
+                    id="reg-firstName"
+                    value={form.firstName}
+                    onKeyDown={e => handleLetterKeyDown(e, 'firstName')}
+                    onChange={e => handleLetterChange(e, 'firstName')}
+                    onPaste={e => handleLetterPaste(e, 'firstName')}
+                    placeholder="John"
+                    className={inputCls('firstName')}
+                  />
+                  {errors.firstName && <p className="text-[#EF4444] text-xs mt-1">{errors.firstName}</p>}
                 </div>
                 <div>
                   <label className="block text-sm text-[#64748B] mb-2">Last Name *</label>
-                  <input id="reg-lastName" value={form.lastName} onChange={e => set('lastName', e.target.value)} placeholder="Doe" className={inputCls('lastName')} />
-                  {errors.lastName && <p className="text-[#EA580C] text-xs mt-1">{errors.lastName}</p>}
+                  <input
+                    id="reg-lastName"
+                    value={form.lastName}
+                    onKeyDown={e => handleLetterKeyDown(e, 'lastName')}
+                    onChange={e => handleLetterChange(e, 'lastName')}
+                    onPaste={e => handleLetterPaste(e, 'lastName')}
+                    placeholder="Doe"
+                    className={inputCls('lastName')}
+                  />
+                  {errors.lastName && <p className="text-[#EF4444] text-xs mt-1">{errors.lastName}</p>}
                 </div>
               </div>
               <div>
@@ -484,7 +601,7 @@ const CustomerRegisterPage = () => {
                     </button>
                   )}
                 </div>
-                {errors.email && <p className="text-[#F8FAFC] text-xs mt-1">{errors.email}</p>}
+                {errors.email && <p className="text-[#EF4444] text-xs mt-1">{errors.email}</p>}
                 {otpSent && !otpVerified && (
                   <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-xl">
                     <label className="block text-xs font-semibold text-[#EA580C] mb-2">Enter OTP sent to your email</label>
@@ -526,7 +643,7 @@ const CustomerRegisterPage = () => {
                     placeholder={otpVerified ? '10-digit number (starts with 6-9)' : 'Please verify email first'}
                     className={inputCls('mobile') + (!otpVerified ? ' bg-[#F8FAFC]/70 cursor-not-allowed select-none' : '')} />
                 </div>
-                {errors.mobile && <p className="text-[#EA580C] text-xs mt-1">{errors.mobile}</p>}
+                {errors.mobile && <p className="text-[#EF4444] text-xs mt-1">{errors.mobile}</p>}
               </div>
               <div>
                 <label className="block text-sm text-[#64748B] mb-2">Password *</label>
@@ -536,7 +653,7 @@ const CustomerRegisterPage = () => {
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
                 </div>
-                {errors.password && <p className="text-[#EA580C] text-xs mt-1">{errors.password}</p>}
+                {errors.password && <p className="text-[#EF4444] text-xs mt-1">{errors.password}</p>}
               </div>
               <div>
                 <label className="block text-sm text-[#64748B] mb-2">Confirm Password *</label>
@@ -546,7 +663,7 @@ const CustomerRegisterPage = () => {
                     {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
                 </div>
-                {errors.confirmPassword && <p className="text-[#EA580C] text-xs mt-1">{errors.confirmPassword}</p>}
+                {errors.confirmPassword && <p className="text-[#EF4444] text-xs mt-1">{errors.confirmPassword}</p>}
               </div>
 
               {/* Referral Code (Optional) */}
@@ -643,50 +760,90 @@ const CustomerRegisterPage = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm text-[#64748B] mb-2">City *</label>
-                  <input id="reg-city" value={form.city} onChange={e => set('city', e.target.value)} placeholder="Your city" className={inputCls('city')} />
-                  {errors.city && <p className="text-[#EA580C] text-xs mt-1">{errors.city}</p>}
+                  <input
+                    id="reg-city"
+                    value={form.city}
+                    onKeyDown={e => handleLetterKeyDown(e, 'city')}
+                    onChange={e => handleLetterChange(e, 'city')}
+                    onPaste={e => handleLetterPaste(e, 'city')}
+                    placeholder="Your city"
+                    className={inputCls('city')}
+                  />
+                  {errors.city && <p className="text-[#EF4444] text-xs mt-1">{errors.city}</p>}
                 </div>
                 <div>
                   <label className="block text-sm text-[#64748B] mb-2">PIN Code</label>
                   <input id="reg-pinCode" type="text" inputMode="numeric" maxLength={6} pattern="\d{6}" value={form.pinCode} onChange={e => set('pinCode', e.target.value.replace(/\D/g, '').slice(0, 6))} placeholder="6-digit PIN code" className={inputCls('pinCode')} />
-                  {errors.pinCode && <p className="text-red-500 text-xs mt-1">{errors.pinCode}</p>}
+                  {errors.pinCode && <p className="text-[#EF4444] text-xs mt-1">{errors.pinCode}</p>}
                 </div>
               </div>
               <div>
                 <label className="block text-sm text-[#64748B] mb-3">Gender *</label>
-                <div className="flex flex-wrap gap-2">
+                <div id="reg-gender" tabIndex={-1} className="flex flex-wrap gap-2 outline-none">
                   {GENDERS.map(g => (
-                    <button key={g} type="button" onClick={() => set('gender', g)} className={selBtnCls(form.gender === g)}>{g}</button>
+                    <button key={g} type="button" onClick={() => { set('gender', g); setErrors(prev => { const n = { ...prev }; delete n['gender']; return n; }); }} className={selBtnCls(form.gender === g)}>{g}</button>
                   ))}
                 </div>
-                {errors.gender && <p className="text-[#EA580C] text-xs mt-2">{errors.gender}</p>}
+                {errors.gender && <p className="text-[#EF4444] text-xs mt-2">{errors.gender}</p>}
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm text-[#64748B] mb-2">Height (cm) *</label>
                   <input id="reg-height" type="number" value={form.height} onChange={e => set('height', e.target.value)} placeholder="e.g. 175" className={inputCls('height')} />
-                  {errors.height && <p className="text-[#EA580C] text-xs mt-1">{errors.height}</p>}
+                  {errors.height && <p className="text-[#EF4444] text-xs mt-1">{errors.height}</p>}
                 </div>
                 <div>
                   <label className="block text-sm text-[#64748B] mb-2">Weight (kg) *</label>
                   <input id="reg-weight" type="number" value={form.weight} onChange={e => set('weight', e.target.value)} placeholder="e.g. 70" className={inputCls('weight')} />
-                  {errors.weight && <p className="text-[#EA580C] text-xs mt-1">{errors.weight}</p>}
+                  {errors.weight && <p className="text-[#EF4444] text-xs mt-1">{errors.weight}</p>}
                 </div>
               </div>
               <div className="pt-4 border-t border-[#E2E8F0]">
-                <h3 className="text-[#111827] font-bold mb-4">Emergency Contact</h3>
+                <h3 className="text-[#111827] font-bold mb-4">Emergency Contact *</h3>
                 <div className="space-y-4">
                   <div>
-                    <input type="text" placeholder="Contact Name" value={form.emergencyContactName} onChange={e => set('emergencyContactName', e.target.value)} className={inputCls('emergencyContactName')} />
-                    {errors.emergencyContactName && <p className="text-[#F8FAFC] text-xs mt-1">{errors.emergencyContactName}</p>}
+                    <label className="block text-sm text-[#64748B] mb-1.5">Contact Name *</label>
+                    <input
+                      id="reg-emergencyContactName"
+                      type="text"
+                      placeholder="Contact Name"
+                      value={form.emergencyContactName}
+                      onKeyDown={e => handleLetterKeyDown(e, 'emergencyContactName')}
+                      onChange={e => handleLetterChange(e, 'emergencyContactName')}
+                      onPaste={e => handleLetterPaste(e, 'emergencyContactName')}
+                      className={inputCls('emergencyContactName')}
+                    />
+                    {errors.emergencyContactName && <p className="text-[#EF4444] text-xs mt-1">{errors.emergencyContactName}</p>}
                   </div>
                   <div>
-                    <input type="tel" maxLength={10} placeholder="Contact Number" value={form.emergencyContactMobile} onChange={e => { const v = e.target.value.replace(/\D/g, ''); if (v.length <= 10) set('emergencyContactMobile', v); }} className={inputCls('emergencyContactMobile')} />
-                    {errors.emergencyContactMobile && <p className="text-[#F8FAFC] text-xs mt-1">{errors.emergencyContactMobile}</p>}
+                    <label className="block text-sm text-[#64748B] mb-1.5">Contact Number *</label>
+                    <input
+                      id="reg-emergencyContactMobile"
+                      type="tel"
+                      maxLength={10}
+                      placeholder="10-digit number (starts with 6-9)"
+                      value={form.emergencyContactMobile}
+                      onChange={e => {
+                        const v = e.target.value.replace(/\D/g, '');
+                        if (v.length <= 10) set('emergencyContactMobile', v);
+                      }}
+                      className={inputCls('emergencyContactMobile')}
+                    />
+                    {errors.emergencyContactMobile && <p className="text-[#EF4444] text-xs mt-1">{errors.emergencyContactMobile}</p>}
                   </div>
                   <div>
-                    <input type="text" placeholder="Relationship (e.g., Parent, Spouse)" value={form.emergencyContactRelation} onChange={e => set('emergencyContactRelation', e.target.value)} className={inputCls('emergencyContactRelation')} />
-                    {errors.emergencyContactRelation && <p className="text-[#F8FAFC] text-xs mt-1">{errors.emergencyContactRelation}</p>}
+                    <label className="block text-sm text-[#64748B] mb-1.5">Relationship *</label>
+                    <input
+                      id="reg-emergencyContactRelation"
+                      type="text"
+                      placeholder="Relationship (e.g., Parent, Spouse)"
+                      value={form.emergencyContactRelation}
+                      onKeyDown={e => handleLetterKeyDown(e, 'emergencyContactRelation')}
+                      onChange={e => handleLetterChange(e, 'emergencyContactRelation')}
+                      onPaste={e => handleLetterPaste(e, 'emergencyContactRelation')}
+                      className={inputCls('emergencyContactRelation')}
+                    />
+                    {errors.emergencyContactRelation && <p className="text-[#EF4444] text-xs mt-1">{errors.emergencyContactRelation}</p>}
                   </div>
                 </div>
               </div>
@@ -724,7 +881,7 @@ const CustomerRegisterPage = () => {
                     );
                   })}
                 </div>
-                {errors.fitnessGoal && <p className="text-[#EA580C] text-xs mt-2">{errors.fitnessGoal}</p>}
+                {errors.fitnessGoal && <p className="text-[#EF4444] text-xs mt-2">{errors.fitnessGoal}</p>}
               </div>
               <div>
                 <label className="block text-sm text-[#64748B] mb-3">Experience Level *</label>
@@ -733,7 +890,7 @@ const CustomerRegisterPage = () => {
                     <button key={l} type="button" onClick={() => set('experienceLevel', l)} className={selBtnCls(form.experienceLevel === l)}>{l}</button>
                   ))}
                 </div>
-                {errors.experienceLevel && <p className="text-[#EA580C] text-xs mt-2">{errors.experienceLevel}</p>}
+                {errors.experienceLevel && <p className="text-[#EF4444] text-xs mt-2">{errors.experienceLevel}</p>}
               </div>
               <div>
                 <label className="block text-sm text-[#64748B] mb-3">Preferred Workout Type *</label>
@@ -742,7 +899,7 @@ const CustomerRegisterPage = () => {
                     <button key={t} type="button" onClick={() => set('preferredTraining', t)} className={selBtnCls(form.preferredTraining === t)}>{t}</button>
                   ))}
                 </div>
-                {errors.preferredTraining && <p className="text-[#EA580C] text-xs mt-2">{errors.preferredTraining}</p>}
+                {errors.preferredTraining && <p className="text-[#EF4444] text-xs mt-2">{errors.preferredTraining}</p>}
               </div>
               <div>
                 <label className="block text-sm text-[#64748B] mb-3">Preferred Workout Days *</label>
@@ -751,7 +908,7 @@ const CustomerRegisterPage = () => {
                     <button key={d} type="button" onClick={() => set('preferredWorkoutDays', d)} className={selBtnCls(form.preferredWorkoutDays === d)}>{d}</button>
                   ))}
                 </div>
-                {errors.preferredWorkoutDays && <p className="text-[#EA580C] text-xs mt-2">{errors.preferredWorkoutDays}</p>}
+                {errors.preferredWorkoutDays && <p className="text-[#EF4444] text-xs mt-2">{errors.preferredWorkoutDays}</p>}
               </div>
               <div>
                 <label className="block text-sm text-[#64748B] mb-3">Preferred Workout Time *</label>
@@ -760,7 +917,7 @@ const CustomerRegisterPage = () => {
                     <button key={t} type="button" onClick={() => set('preferredWorkoutTime', t)} className={selBtnCls(form.preferredWorkoutTime === t)}>{t}</button>
                   ))}
                 </div>
-                {errors.preferredWorkoutTime && <p className="text-[#EA580C] text-xs mt-2">{errors.preferredWorkoutTime}</p>}
+                {errors.preferredWorkoutTime && <p className="text-[#EF4444] text-xs mt-2">{errors.preferredWorkoutTime}</p>}
               </div>
             </div>
           )}
@@ -925,7 +1082,7 @@ const CustomerRegisterPage = () => {
                                 )}
                               </div>
                               {errors.selectedBillingPlan && (
-                                <p className="text-[#EA580C] text-xs mt-1">{errors.selectedBillingPlan}</p>
+                                <p className="text-[#EF4444] text-xs mt-1">{errors.selectedBillingPlan}</p>
                               )}
                             </div>
                           )}
@@ -936,7 +1093,7 @@ const CustomerRegisterPage = () => {
               )}
 
               {errors.selectedPackageId && (
-                <p className="text-[#EA580C] text-xs">{errors.selectedPackageId}</p>
+                <p className="text-[#EF4444] text-xs">{errors.selectedPackageId}</p>
               )}
 
               {/* Summary of selected */}
@@ -1007,14 +1164,14 @@ const CustomerRegisterPage = () => {
                   </button>
                   <span className="text-sm text-[#64748B]">I accept the <Link to="/terms-of-service" className="text-[#EA580C] hover:underline">Terms &amp; Conditions</Link></span>
                 </label>
-                {errors.acceptTerms && <p className="text-[#EA580C] text-xs ml-8">{errors.acceptTerms}</p>}
+                {errors.acceptTerms && <p className="text-[#EF4444] text-xs ml-8">{errors.acceptTerms}</p>}
                 <label className="flex items-start space-x-3 cursor-pointer">
                   <button type="button" onClick={() => set('acceptPrivacy', !form.acceptPrivacy)} className={`w-5 h-5 mt-0.5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-colors ${form.acceptPrivacy ? 'bg-[#C2410C] border-[#FDBA74]' : 'border-[#E2E8F0]'}`}>
                     {form.acceptPrivacy && <Check size={12} className="text-black" />}
                   </button>
                   <span className="text-sm text-[#64748B]">I accept the <Link to="/privacy-policy" className="text-[#EA580C] hover:underline">Privacy Policy</Link></span>
                 </label>
-                {errors.acceptPrivacy && <p className="text-[#EA580C] text-xs ml-8">{errors.acceptPrivacy}</p>}
+                {errors.acceptPrivacy && <p className="text-[#EF4444] text-xs ml-8">{errors.acceptPrivacy}</p>}
               </div>
             </div>
           )}
