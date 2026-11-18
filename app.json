@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "97496047-2d76-4fdc-8fbe-da136790eaf3"
+      }
+    },
+    "android": {
+      "package": "com.renugopal.gymoraplatform"
+    }
+  }
+}
