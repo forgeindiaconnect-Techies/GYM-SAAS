@@ -95,7 +95,6 @@ const corsOptions: cors.CorsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
 
 // Health check endpoints for uptime, Render wake-up and monitoring
 app.get('/health', (_req, res) => {
