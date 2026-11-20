@@ -9,12 +9,13 @@ export const isSubscriptionActive = (status?: string): boolean => {
 export const getDashboardRoute = (user: AuthUser): string => {
   const { role, approvalStatus, subscriptionStatus } = user;
   const statusUpper = (approvalStatus || '').toUpperCase().trim();
+  const detailUpper = ((user.statusDetail || '') as string).toUpperCase().trim();
 
   if (role === 'SUPER_ADMIN') return '/super-admin/dashboard';
   
   if (role === 'ADMIN' || role === 'GYM_OWNER') {
-    if (statusUpper === 'REJECTED') return '/status?type=rejected';
-    if (statusUpper === 'SUSPENDED') return '/status?type=suspended';
+    if (detailUpper === 'REJECTED' || statusUpper === 'REJECTED') return '/status?type=rejected';
+    if (detailUpper === 'INACTIVE' || statusUpper === 'INACTIVE' || statusUpper === 'SUSPENDED') return '/status?type=inactive';
     if (statusUpper === 'DELETED') return '/status?type=inactive';
     
     if (!isSubscriptionActive(subscriptionStatus)) {
@@ -30,9 +31,11 @@ export const getDashboardRoute = (user: AuthUser): string => {
   if (role === 'NUTRITIONIST') return '/nutritionist/dashboard';
 
   // MEMBER flow
-  if (statusUpper === 'PENDING') return '/status?type=pending';
-  if (statusUpper === 'REJECTED') return '/status?type=rejected';
-  if (statusUpper === 'SUSPENDED') return '/status?type=suspended';
+  if (detailUpper === 'INACTIVE' || statusUpper === 'INACTIVE' || statusUpper === 'SUSPENDED' || user.isActive === false) {
+    return '/status?type=inactive';
+  }
+  if (detailUpper === 'REJECTED' || statusUpper === 'REJECTED') return '/status?type=rejected';
+  if (detailUpper === 'PENDING' || detailUpper === 'NEW' || statusUpper === 'PENDING') return '/status?type=pending';
   if (statusUpper === 'DELETED') return '/status?type=inactive';
 
   if (!isSubscriptionActive(subscriptionStatus)) {

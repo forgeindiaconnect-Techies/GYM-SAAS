@@ -318,7 +318,7 @@ const GymAdminMembershipPlans = () => {
       ) : displayed.length === 0 ? (
         <div className="text-center py-20 space-y-4">
           <div className="w-20 h-20 mx-auto bg-[#FFF7ED] border border-[#FFEDD5] rounded-3xl flex items-center justify-center">
-            <Sparkles size={36} className="text-[#EA580C]" />
+            <Dumbbell size={36} className="text-[#EA580C]" />
           </div>
           <h3 className="text-xl font-bold text-[#111827]">No packages yet</h3>
           <p className="text-[#64748B] text-sm">Create your first fitness package for members to discover.</p>

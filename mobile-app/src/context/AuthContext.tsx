@@ -19,6 +19,7 @@ export interface MobileUser {
   branchId?: string;
   branchName?: string;
   avatarLetter: string;
+  profilePhoto?: string;
   subscriptionPlan?: string;
   subscriptionStatus?: string;
   weight?: number;
@@ -40,6 +41,7 @@ interface AuthContextType {
   confirmPasswordReset: (email: string, otp: string, newPassword: string) => Promise<{ success: boolean; message: string }>;
   logout: () => Promise<void>;
   refreshProfile: () => Promise<void>;
+  updateUser: (fields: Partial<MobileUser>) => Promise<void>;
 }
 
 const STORAGE_KEYS = {
@@ -87,6 +89,7 @@ const formatMobileUser = (rawUser: any): MobileUser => {
     branchId: rawUser.branchId,
     branchName: rawUser.branchName,
     avatarLetter,
+    profilePhoto: rawUser.profilePhoto || rawUser.profileImage || undefined,
     subscriptionPlan: rawUser.subscriptionPlan || (role === 'CUSTOMER' ? 'Gold Annual Pass' : undefined),
     subscriptionStatus: rawUser.subscriptionStatus || 'Active',
     weight: rawUser.weight,
@@ -334,6 +337,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const updateUser = async (fields: Partial<MobileUser>) => {
+    if (!user) return;
+    const updated = { ...user, ...fields };
+    setUser(updated);
+    await AsyncStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(updated)).catch(() => {});
+  };
+
   const isAuthenticated = Boolean(token && user);
   const activeRole = user ? user.role : null;
 
@@ -353,6 +363,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         confirmPasswordReset,
         logout,
         refreshProfile,
+        updateUser,
       }}
     >
       {children}

@@ -5,6 +5,8 @@ import { useAuth } from '../contexts/AuthContext';
 import api from '../utils/api';
 import { ExpiryPopup } from '../components/ExpiryPopup';
 import GymSmartAssistant from '../components/GymSmartAssistant';
+import GymoraConfirmModal from '../components/GymoraConfirmModal';
+import { markAuthorizedNavigation } from '../components/NavigationGuard';
 import {
   LayoutDashboard, Users, Dumbbell, CreditCard,
   Calendar, CalendarCheck, IndianRupee, UserPlus,
@@ -33,6 +35,7 @@ const GymAdminLayout = () => {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
   const [trainerFeesOpen, setTrainerFeesOpen] = useState(() => location.pathname.startsWith('/admin/trainer-fees'));
 
   useEffect(() => {
@@ -128,23 +131,23 @@ const GymAdminLayout = () => {
 
   const routePrefetchMap: Record<string, string[]> = {
     '/admin/dashboard': ['/memberships/gym', '/users?role=MEMBER', '/trainers', '/trainer-sessions/gym', '/store/admin/sales', '/notifications'],
-    '/admin/trainers': ['/trainers', '/trainers/invitations/list'],
+    '/admin/trainers': ['/trainers'],
     '/admin/members': ['/users?role=MEMBER', '/memberships/gym', '/trainers'],
     '/admin/hiring/jobs': ['/hiring/jobs'],
     '/admin/hiring/applications': ['/hiring/applications'],
     '/admin/enquiries': ['/enquiries'],
     '/admin/exercises': ['/exercises'],
     '/admin/equipment': ['/branches', '/gyms'],
-    '/admin/membership-plans': ['/gym-packages', '/subscriptions'],
+    '/admin/membership-plans': ['/gym-packages'],
     '/admin/payments': ['/payments/gym'],
-    '/admin/store': ['/store/admin/sales', '/store/products'],
-    '/admin/store/products': ['/store/products'],
-    '/admin/store/inventory': ['/store/products', '/store/inventory'],
-    '/admin/store/orders': ['/store/orders'],
+    '/admin/store': ['/store/admin/sales', '/store/admin/products'],
+    '/admin/store/products': ['/store/admin/products'],
+    '/admin/store/inventory': ['/store/admin/products', '/store/admin/inventory'],
+    '/admin/store/orders': ['/store/admin/orders'],
     '/admin/revenue-analytics': ['/analytics/revenue'],
-    '/admin/reports': ['/reports/summary'],
+    '/admin/reports': ['/payments/gym', '/memberships/gym'],
     '/admin/notifications': ['/notifications'],
-    '/admin/reviews': ['/reviews/gym'],
+    '/admin/reviews': ['/gyms/owner/reviews'],
     '/admin/branches': ['/branches'],
   };
 
@@ -327,7 +330,15 @@ const GymAdminLayout = () => {
       >
         {/* Logo Header aligned with main header h-16 */}
         <div className="h-16 px-5 border-b border-[#E2E8F0] flex items-center justify-between shrink-0">
-          <Link to="/" className="flex items-center space-x-2.5" onClick={() => setSidebarOpen(false)}>
+          <Link
+            to="/"
+            className="flex items-center space-x-2.5 cursor-pointer"
+            onClick={(e) => {
+              e.preventDefault();
+              setSidebarOpen(false);
+              setShowLeaveConfirm(true);
+            }}
+          >
             <div className="w-9 h-9 bg-[#C2410C] text-white font-bold rounded-xl flex items-center justify-center shadow-md shadow-orange-500/20 shrink-0">
               <Activity className="text-white" size={20} />
             </div>
@@ -378,7 +389,10 @@ const GymAdminLayout = () => {
                       key={item.path}
                       to={item.path}
                       onMouseEnter={() => handlePrefetch(item.path)}
-                      onClick={() => setSidebarOpen(false)}
+                      onClick={() => {
+                        markAuthorizedNavigation();
+                        setSidebarOpen(false);
+                      }}
                       className={clsx(
                         'flex items-center space-x-3 px-3 py-2 rounded-xl transition-all duration-150 text-sm font-medium group',
                         isActive
@@ -417,7 +431,7 @@ const GymAdminLayout = () => {
       {/* Main Content */}
       <main className="flex-1 flex flex-col h-full overflow-hidden relative min-w-0 bg-[#FFFFFF]">
         {/* Header */}
-        <header className="h-16 pt-safe border-b border-[#E2E8F0] flex items-center px-3 sm:px-6 md:px-8 justify-between bg-[#FFFFFF] z-10 sticky top-0 shrink-0 text-[#111827]">
+        <header className={`h-16 pt-safe border-b border-[#E2E8F0] flex items-center px-3 sm:px-6 md:px-8 justify-between bg-[#FFFFFF] sticky top-0 shrink-0 text-[#111827] ${notifOpen ? 'z-50' : 'z-20'}`}>
           <div className="flex items-center space-x-2 sm:space-x-3">
             {/* Hamburger — mobile only */}
             <button
@@ -471,95 +485,103 @@ const GymAdminLayout = () => {
               </button>
 
               {notifOpen && (
-                <div className="absolute right-0 top-10 w-[calc(100vw-2rem)] sm:w-80 max-w-sm bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl shadow-xl z-50 overflow-hidden text-[#1F2937]">
-                  {/* Header */}
-                  <div className="flex items-center justify-between px-4 py-3 border-b border-[#E2E8F0] bg-[#F8FAFC]">
-                    <div className="flex items-center gap-2">
-                      <h3 className="font-bold text-[#111827] text-sm">Notifications</h3>
-                      {unreadCount > 0 && (
-                        <span className="bg-[#FFF7ED] text-[#C2410C] border border-[#FFEDD5] text-xs font-bold px-2 py-0.5 rounded-full">{unreadCount} new</span>
+                <>
+                  {/* Mobile Backdrop for clean tap-outside dismissal and background dimming */}
+                  <div 
+                    className="fixed inset-0 z-40 bg-black/20 sm:hidden animate-fade-in"
+                    onClick={() => setNotifOpen(false)}
+                    aria-hidden="true"
+                  />
+                  <div className="fixed sm:absolute inset-x-3 sm:inset-x-auto sm:right-0 top-16 sm:top-12 sm:w-96 max-w-sm sm:max-w-md bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl shadow-2xl z-50 overflow-hidden text-[#1F2937] animate-in fade-in slide-in-from-top-2 duration-150">
+                    {/* Header */}
+                    <div className="flex items-center justify-between px-4 py-3 border-b border-[#E2E8F0] bg-[#F8FAFC]">
+                      <div className="flex items-center gap-2">
+                        <h3 className="font-bold text-[#111827] text-sm">Notifications</h3>
+                        {unreadCount > 0 && (
+                          <span className="bg-[#FFF7ED] text-[#C2410C] border border-[#FFEDD5] text-xs font-bold px-2 py-0.5 rounded-full">{unreadCount} new</span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {unreadCount > 0 && (
+                          <button
+                            onClick={async (e) => {
+                              e.stopPropagation();
+                              try {
+                                const api = (await import('../utils/api')).default;
+                                await api.put('/notifications/mark-all-read');
+                                setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
+                              } catch (err) {
+                                console.error(err);
+                              }
+                            }}
+                            className="text-[11px] font-semibold text-[#EA580C] hover:underline cursor-pointer"
+                          >
+                            Mark all read
+                          </button>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => setNotifOpen(false)}
+                          className="w-7 h-7 rounded-full bg-[#FFFFFF] border border-[#E2E8F0] text-[#64748B] hover:text-[#EA580C] hover:bg-[#FFF7ED] active:bg-[#FFEDD5] flex items-center justify-center cursor-pointer transition-colors shrink-0"
+                          title="Close notifications"
+                          aria-label="Close notifications"
+                        >
+                          <X size={14} />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Notification list */}
+                    <div className="divide-y divide-[#E2E8F0] max-h-[60vh] sm:max-h-80 overflow-y-auto">
+                      {notifications.length === 0 ? (
+                        <div className="p-4 text-center text-sm text-[#64748B]">No notifications</div>
+                      ) : (
+                        notifications.slice(0, 5).map(notif => (
+                          <div
+                            key={notif._id}
+                            onClick={() => {
+                              if (!notif.isRead) markAsRead(notif._id);
+                              setNotifOpen(false);
+                              const targetLink = getNotificationLink(notif);
+                              if (targetLink) navigate(targetLink);
+                            }}
+                            className={`flex items-start gap-3 px-4 py-3 hover:bg-[#FFF7ED] transition-colors cursor-pointer ${!notif.isRead ? 'bg-[#FFF7ED]/50' : ''}`}
+                          >
+                            <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
+                              notif.type === 'alert' ? 'bg-amber-100 text-amber-700' :
+                              notif.type === 'success' ? 'bg-emerald-100 text-emerald-700' :
+                              notif.type === 'message' ? 'bg-orange-100 text-orange-700' :
+                              'bg-slate-100 text-slate-700'
+                            }`}>
+                              {notif.type === 'alert' ? '⚠️' :
+                               notif.type === 'success' ? '✅' :
+                               notif.type === 'message' ? '💬' : 'ℹ️'}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className={`text-sm font-semibold text-[#111827] ${!notif.isRead ? 'font-bold' : ''}`}>{notif.title}</p>
+                              <p className="text-xs text-[#64748B] mt-0.5 leading-snug break-words">{notif.message}</p>
+                              <p className="text-[10px] text-[#94A3B8] mt-1">{new Date(notif.createdAt).toLocaleDateString()}</p>
+                            </div>
+                            {!notif.isRead && <div className="w-2 h-2 bg-[#F97316] rounded-full mt-2 shrink-0" />}
+                          </div>
+                        ))
                       )}
                     </div>
-                    <div className="flex items-center gap-2">
-                      {unreadCount > 0 && (
-                        <button
-                          onClick={async (e) => {
-                            e.stopPropagation();
-                            try {
-                              const api = (await import('../utils/api')).default;
-                              await api.put('/notifications/mark-all-read');
-                              setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
-                            } catch (err) {
-                              console.error(err);
-                            }
-                          }}
-                          className="text-[11px] font-semibold text-[#EA580C] hover:underline cursor-pointer"
-                        >
-                          Mark all read
-                        </button>
-                      )}
+
+                    {/* View All button */}
+                    <div className="p-2.5 border-t border-[#E2E8F0] bg-[#F8FAFC] text-center">
                       <button
-                        type="button"
-                        onClick={() => setNotifOpen(false)}
-                        className="w-7 h-7 rounded-full bg-[#FFFFFF] border border-[#E2E8F0] text-[#64748B] hover:text-[#EA580C] hover:bg-[#FFF7ED] active:bg-[#FFEDD5] flex items-center justify-center cursor-pointer transition-colors shrink-0"
-                        title="Close notifications"
-                        aria-label="Close notifications"
+                        onClick={() => {
+                          setNotifOpen(false);
+                          navigate('/admin/notifications');
+                        }}
+                        className="text-xs font-semibold text-[#C2410C] hover:underline cursor-pointer"
                       >
-                        <X size={14} />
+                        View All Notifications →
                       </button>
                     </div>
                   </div>
-
-                  {/* Notification list */}
-                  <div className="divide-y divide-[#E2E8F0] max-h-72 overflow-y-auto">
-                    {notifications.length === 0 ? (
-                      <div className="p-4 text-center text-sm text-[#64748B]">No notifications</div>
-                    ) : (
-                      notifications.slice(0, 5).map(notif => (
-                        <div
-                          key={notif._id}
-                          onClick={() => {
-                            if (!notif.isRead) markAsRead(notif._id);
-                            setNotifOpen(false);
-                            const targetLink = getNotificationLink(notif);
-                            if (targetLink) navigate(targetLink);
-                          }}
-                          className={`flex items-start gap-3 px-4 py-3 hover:bg-[#FFF7ED] transition-colors cursor-pointer ${!notif.isRead ? 'bg-[#FFF7ED]/50' : ''}`}
-                        >
-                          <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
-                            notif.type === 'alert' ? 'bg-amber-100 text-amber-700' :
-                            notif.type === 'success' ? 'bg-emerald-100 text-emerald-700' :
-                            notif.type === 'message' ? 'bg-orange-100 text-orange-700' :
-                            'bg-slate-100 text-slate-700'
-                          }`}>
-                            {notif.type === 'alert' ? '⚠️' :
-                             notif.type === 'success' ? '✅' :
-                             notif.type === 'message' ? '💬' : 'ℹ️'}
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <p className={`text-sm font-semibold text-[#111827] ${!notif.isRead ? 'font-bold' : ''}`}>{notif.title}</p>
-                            <p className="text-xs text-[#64748B] mt-0.5 leading-snug">{notif.message}</p>
-                            <p className="text-[10px] text-[#94A3B8] mt-1">{new Date(notif.createdAt).toLocaleDateString()}</p>
-                          </div>
-                          {!notif.isRead && <div className="w-2 h-2 bg-[#F97316] rounded-full mt-2 shrink-0" />}
-                        </div>
-                      ))
-                    )}
-                  </div>
-
-                  {/* View All button */}
-                  <div className="p-2.5 border-t border-[#E2E8F0] bg-[#F8FAFC] text-center">
-                    <button
-                      onClick={() => {
-                        setNotifOpen(false);
-                        navigate('/admin/notifications');
-                      }}
-                      className="text-xs font-semibold text-[#C2410C] hover:underline cursor-pointer"
-                    >
-                      View All Notifications →
-                    </button>
-                  </div>
-                </div>
+                </>
               )}
             </div>
             <Link to={isBranchUser && user?.branchId ? `/admin/branches/${user.branchId}` : "/admin/gym-profile"} className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
@@ -579,6 +601,20 @@ const GymAdminLayout = () => {
         </div>
       </main>
       <GymSmartAssistant />
+
+      <GymoraConfirmModal
+        isOpen={showLeaveConfirm}
+        title="Leave Dashboard?"
+        message="Do you want to leave the dashboard and go to the home page?"
+        confirmText="Continue"
+        cancelText="Cancel"
+        onConfirm={() => {
+          setShowLeaveConfirm(false);
+          markAuthorizedNavigation();
+          navigate('/');
+        }}
+        onCancel={() => setShowLeaveConfirm(false)}
+      />
     </div>
   );
 };

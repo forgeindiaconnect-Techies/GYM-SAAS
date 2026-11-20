@@ -1,14 +1,16 @@
 import { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import {
   ArrowLeft, Loader2, ShieldCheck, FileText, CreditCard,
   QrCode, Landmark, Banknote, CheckCircle2, Sparkles, Building2,
   Gift, Tag, AlertCircle, Mail, Receipt, ExternalLink, Coins, Clock
 } from 'lucide-react';
 import QRCode from 'react-qr-code';
+import scannerQrImage from '../../assets/scanner-qr.jpg';
 import api from '../../utils/api';
 import { useAuth } from '../../contexts/AuthContext';
 import { isSubscriptionActive } from '../../utils/routeHelpers';
+import { markAuthorizedNavigation } from '../../components/NavigationGuard';
 
 const PAYMENT_METHODS = [
   { id: 'UPI', label: 'UPI / QR Code', icon: QrCode, desc: 'Instant activation via GPay, PhonePe, Paytm' },
@@ -17,9 +19,70 @@ const PAYMENT_METHODS = [
   { id: 'Cash at Gym', label: 'Pay at Gym Counter', icon: Banknote, desc: 'Pay directly when you visit the gym' },
 ];
 
+const safeSetCheckoutIntent = (gymData: any, planData: any, branchData?: any) => {
+  try {
+    const minimalGym = gymData ? {
+      _id: gymData._id,
+      name: gymData.name,
+      location: gymData.location,
+      paymentSettings: gymData.paymentSettings ? {
+        upiId: gymData.paymentSettings.upiId,
+        accountName: gymData.paymentSettings.accountName,
+      } : undefined,
+    } : null;
+
+    const minimalPlan = planData ? {
+      _id: planData._id,
+      name: planData.name,
+      price: planData.price,
+      duration: planData.duration,
+      billingCycle: planData.billingCycle,
+      features: Array.isArray(planData.features) ? planData.features.slice(0, 10) : [],
+    } : null;
+
+    const minimalBranch = branchData ? {
+      _id: branchData._id,
+      branchName: branchData.branchName || branchData.name,
+    } : null;
+
+    const payload = JSON.stringify({
+      gymId: gymData?._id,
+      plan: minimalPlan,
+      gym: minimalGym,
+      branch: minimalBranch,
+    });
+
+    try {
+      sessionStorage.setItem('checkout_intent', payload);
+    } catch {
+      // If quota exceeded, clean up any @gym_cache_ items to free up space
+      try {
+        const keysToRemove: string[] = [];
+        for (let i = 0; i < sessionStorage.length; i++) {
+          const k = sessionStorage.key(i);
+          if (k && k.startsWith('@gym_cache_')) keysToRemove.push(k);
+        }
+        keysToRemove.forEach(k => sessionStorage.removeItem(k));
+        sessionStorage.setItem('checkout_intent', payload);
+      } catch {
+        // Safe fallback - quota still exceeded, do not throw
+      }
+    }
+  } catch {
+    // Fail silently without crashing the app
+  }
+};
+
+const safeRemoveCheckoutIntent = () => {
+  try {
+    sessionStorage.removeItem('checkout_intent');
+  } catch {}
+};
+
 const GymCheckout = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { id: routeGymId } = useParams<{ id: string }>();
   const { user, isAuthenticated, refreshUser, updateUser } = useAuth();
 
   const [gym, setGym] = useState<any>(null);
@@ -50,10 +113,54 @@ const GymCheckout = () => {
       const planName = location.state?.plan?.name?.toLowerCase() || '';
       const isTrial = planName.includes('trial') || Number(location.state?.plan?.price || 0) === 0;
       if (isTrial && isSubscriptionActive(user.subscriptionStatus)) {
-        sessionStorage.removeItem('checkout_intent');
+        safeRemoveCheckoutIntent();
+        markAuthorizedNavigation();
         navigate('/member/dashboard', { replace: true });
         return;
       }
+
+      api.get('/memberships/my').then(memRes => {
+        const mems: any[] = memRes.data?.memberships || [];
+        const now = new Date();
+        const active = mems.find(m => {
+          const isAct = m.status === 'Active' || m.status === 'Free Trial';
+          const end = m.endDate ? new Date(m.endDate) : null;
+          return isAct && (!end || end >= now);
+        });
+
+        // BUG 1 Fix: Check if member already has an active, paid non-expired subscription
+        const isPaidActive = Boolean(
+          active &&
+          active.status === 'Active' &&
+          !active.planName?.toLowerCase().includes('trial') &&
+          active.paymentMethod !== 'Trial' &&
+          Number(active.finalAmount || active.price || 0) > 0
+        );
+        const isUserPaidActive = Boolean(
+          user &&
+          (user.subscriptionStatus === 'Active' || user.subscriptionStatus === 'ACTIVE') &&
+          user.subscriptionPlan &&
+          !user.subscriptionPlan.toLowerCase().includes('trial') &&
+          user.subscriptionExpiry &&
+          new Date(user.subscriptionExpiry) >= now
+        );
+
+        if (isPaidActive || isUserPaidActive) {
+          alert("You have already paid for a subscription this month. You cannot purchase another plan until your current subscription expires.");
+          safeRemoveCheckoutIntent();
+          markAuthorizedNavigation();
+          navigate('/member/subscription', { replace: true });
+          return;
+        }
+
+        const currentPlanName = location.state?.plan?.name?.trim().toLowerCase();
+        if (active && currentPlanName && active.planName?.trim().toLowerCase() === currentPlanName) {
+          alert("You have already paid for a subscription this month. You cannot purchase another plan until your current subscription expires.");
+          safeRemoveCheckoutIntent();
+          markAuthorizedNavigation();
+          navigate('/member/subscription', { replace: true });
+        }
+      }).catch(() => {});
 
       api.get('/referrals/my-rewards-ledger').then(res => {
         const pts = res.data?.pointsBalance || 0;
@@ -69,12 +176,34 @@ const GymCheckout = () => {
       }).catch(() => { });
     }
 
-    // Expect state to be passed from GymDetails
-    if (!location.state?.plan || !location.state?.gym) {
-      const savedIntent = sessionStorage.getItem('checkout_intent');
-      if (savedIntent) {
-        try {
-          const parsed = JSON.parse(savedIntent);
+    // 1. If state was passed via React Router navigation
+    if (location.state?.plan && location.state?.gym) {
+      const gymData = location.state.gym;
+      const planData = location.state.plan;
+      const branchData = location.state.branch;
+      setGym(gymData);
+      setPlan(planData);
+      setBranch(branchData);
+
+      if (gymData?._id) {
+        api.get(`/referrals/settings/public?gymId=${gymData._id}`).then(res => setRewardSettings(res.data?.settings)).catch(() => { });
+      }
+
+      const isPaid = Number(planData.price || 0) > 0 && !planData.name?.toLowerCase().includes('trial');
+      if (isPaid) {
+        safeSetCheckoutIntent(gymData, planData, branchData);
+      } else {
+        safeRemoveCheckoutIntent();
+      }
+      return;
+    }
+
+    // 2. Check saved checkout_intent in sessionStorage
+    const savedIntent = sessionStorage.getItem('checkout_intent');
+    if (savedIntent) {
+      try {
+        const parsed = JSON.parse(savedIntent);
+        if (parsed.gym && parsed.plan) {
           setGym(parsed.gym);
           setPlan(parsed.plan);
           setBranch(parsed.branch);
@@ -82,37 +211,53 @@ const GymCheckout = () => {
             api.get(`/referrals/settings/public?gymId=${parsed.gym._id}`).then(res => setRewardSettings(res.data?.settings)).catch(() => { });
           }
           return;
-        } catch {
-          // silent
         }
+      } catch {
+        // silent
       }
-      navigate('/gyms');
-      return;
     }
 
-    const gymData = location.state.gym;
-    const planData = location.state.plan;
-    const branchData = location.state.branch;
-    setGym(gymData);
-    setPlan(planData);
-    setBranch(branchData);
-
-    if (gymData?._id) {
-      api.get(`/referrals/settings/public?gymId=${gymData._id}`).then(res => setRewardSettings(res.data?.settings)).catch(() => { });
-    }
-
-    const isPaid = Number(planData.price || 0) > 0 && !planData.name?.toLowerCase().includes('trial');
-    if (isPaid) {
-      sessionStorage.setItem('checkout_intent', JSON.stringify({
-        gymId: gymData._id,
-        plan: planData,
-        gym: gymData,
-        branch: branchData,
-      }));
+    // 3. Fallback: Fetch gym and packages dynamically using URL route gym ID
+    const targetId = routeGymId || (typeof user?.gymId === 'object' ? (user?.gymId as any)?._id : user?.gymId);
+    if (targetId) {
+      api.get(`/gyms/public/${targetId}`)
+        .catch(() => api.get(`/gyms/${targetId}`))
+        .then(async (res) => {
+          const fetchedGym = res.data?.gym;
+          if (fetchedGym) {
+            setGym(fetchedGym);
+            if (fetchedGym._id) {
+              api.get(`/referrals/settings/public?gymId=${fetchedGym._id}`).then(r => setRewardSettings(r.data?.settings)).catch(() => { });
+            }
+            // Fetch packages
+            try {
+              const pkgRes = await api.get('/gym-packages/public', { params: { gymId: fetchedGym._id } });
+              const pkgs = pkgRes.data?.packages;
+              if (Array.isArray(pkgs) && pkgs.length > 0) {
+                setPlan({
+                  ...pkgs[0],
+                  price: pkgs[0].monthlyPrice ?? pkgs[0].price,
+                  name: pkgs[0].name
+                });
+              } else if (fetchedGym.subscriptionPlans && fetchedGym.subscriptionPlans.length > 0) {
+                setPlan(fetchedGym.subscriptionPlans[0]);
+              }
+            } catch {
+              if (fetchedGym.subscriptionPlans && fetchedGym.subscriptionPlans.length > 0) {
+                setPlan(fetchedGym.subscriptionPlans[0]);
+              }
+            }
+          }
+        })
+        .catch(() => {
+          markAuthorizedNavigation();
+          navigate('/gyms');
+        });
     } else {
-      sessionStorage.removeItem('checkout_intent');
+      markAuthorizedNavigation();
+      navigate('/gyms');
     }
-  }, [location, navigate, isAuthenticated, user]);
+  }, [location, navigate, isAuthenticated, user, routeGymId]);
 
   // Refresh auth when returning from bfcache (back/forward navigation)
   useEffect(() => {
@@ -164,10 +309,8 @@ const GymCheckout = () => {
     }
   }, [gym?._id]);
 
-  if (!plan || !gym) return null;
-
-  const numPrice = Number(plan.price) || 0;
-  const isFreeTrial = numPrice === 0 || plan.name?.toLowerCase().includes('trial');
+  const numPrice = Number(plan?.price ?? plan?.monthlyPrice ?? 0);
+  const isFreeTrial = numPrice === 0 || Boolean(plan?.name?.toLowerCase().includes('trial'));
 
   // Calculate Referral Discount
   const rawDiscount = appliedReferral
@@ -194,15 +337,30 @@ const GymCheckout = () => {
   const total = isFreeTrial ? 0 : Math.round(discountedPrice + tax);
 
   const handleCheckout = async () => {
+    if (!gym || !plan) return;
     if (!isAuthenticated || !user) {
-      // Save intent and redirect to login/register
-      sessionStorage.setItem('checkout_intent', JSON.stringify({
-        gymId: gym._id,
-        plan,
-        gym,
-        branch,
-      }));
+      // Save intent safely and redirect to login/register
+      safeSetCheckoutIntent(gym, plan, branch);
       navigate('/login', { state: { returnTo: location.pathname, ...location.state } });
+      return;
+    }
+
+    // BUG 1 Fix: Re-verify active paid subscription before initiating checkout
+    const now = new Date();
+    const isUserPaidActive = Boolean(
+      user &&
+      (user.subscriptionStatus === 'Active' || user.subscriptionStatus === 'ACTIVE') &&
+      user.subscriptionPlan &&
+      !user.subscriptionPlan.toLowerCase().includes('trial') &&
+      user.subscriptionExpiry &&
+      new Date(user.subscriptionExpiry) >= now
+    );
+
+    if (isUserPaidActive) {
+      alert("You have already paid for a subscription this month. You cannot purchase another plan until your current subscription expires.");
+      safeRemoveCheckoutIntent();
+      markAuthorizedNavigation();
+      navigate('/member/subscription', { replace: true });
       return;
     }
 
@@ -236,7 +394,7 @@ const GymCheckout = () => {
 
       const res = await api.post('/memberships/join', payload);
 
-      sessionStorage.removeItem('checkout_intent');
+      safeRemoveCheckoutIntent();
       if (updateUser) {
         updateUser({
           approvalStatus: 'PENDING',
@@ -260,21 +418,61 @@ const GymCheckout = () => {
     } catch (error: any) {
       console.error('Checkout error:', error);
       if (error.response?.status === 401) {
-        sessionStorage.setItem('checkout_intent', JSON.stringify({
-          gymId: gym._id,
-          plan,
-          gym,
-          branch,
-        }));
+        safeSetCheckoutIntent(gym, plan, branch);
         alert('Your session has expired. Please log in again to continue.');
         navigate('/login');
       } else {
         alert(error.response?.data?.message || 'Checkout failed. Please try again.');
+        if (error.response?.data?.errorCode === 'ACTIVE_SUBSCRIPTION_EXISTS') {
+          safeRemoveCheckoutIntent();
+          markAuthorizedNavigation();
+          navigate('/member/subscription', { replace: true });
+        }
       }
     } finally {
       setIsProcessing(false);
     }
   };
+
+  // Cross-device / cross-tab sync: when user scans QR code on their mobile and clicks OK, automatically complete checkout on laptop
+  useEffect(() => {
+    if (!gym || !plan) return;
+    let channel: BroadcastChannel | null = null;
+    try {
+      channel = new BroadcastChannel('gymora_payment_sync');
+      channel.onmessage = (event) => {
+        if (event.data?.status === 'SUCCESS') {
+          handleCheckout();
+        }
+      };
+    } catch {}
+
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === 'gymora_last_payment' && e.newValue) {
+        try {
+          const parsed = JSON.parse(e.newValue);
+          if (parsed.status === 'SUCCESS' && Date.now() - parsed.timestamp < 120000) {
+            handleCheckout();
+          }
+        } catch {}
+      }
+    };
+    window.addEventListener('storage', handleStorage);
+
+    return () => {
+      try { channel?.close(); } catch {}
+      window.removeEventListener('storage', handleStorage);
+    };
+  }, [gym, plan, total]);
+
+  if (!plan || !gym) {
+    return (
+      <div className="min-h-screen bg-[#FFFFFF] flex flex-col items-center justify-center gap-3">
+        <Loader2 className="animate-spin text-[#EA580C]" size={40} />
+        <p className="text-sm font-semibold text-[#64748B]">Loading checkout details...</p>
+      </div>
+    );
+  }
 
   // Success Confirmation Screen
   if (paymentSuccess) {
@@ -363,7 +561,7 @@ const GymCheckout = () => {
               onClick={() => navigate('/member/subscription')}
               className="w-full py-3.5 bg-[#C2410C] hover:bg-[#9A3412] text-[#FFFFFF] font-bold rounded-xl transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer"
             >
-              <span>View My Membership</span>
+              <span>OK — View My Membership</span>
               <ExternalLink size={16} />
             </button>
           </div>
@@ -452,36 +650,50 @@ const GymCheckout = () => {
                 {/* Sub-form based on selected payment method */}
                 {paymentMethod === 'UPI' && (
                   (() => {
-                    const merchantUpi = gym.paymentSettings?.upiId || 'aigym@icici';
-                    const merchantName = (gym.paymentSettings?.accountName || gym.name || 'Perfect Fitness Studio').trim();
-                    const encodedMerchantName = encodeURIComponent(merchantName).replace(/%20/g, '+');
-                    const upiUri = `upi://pay?pa=${merchantUpi}&pn=${encodedMerchantName}&am=${total}&cu=INR`;
+                    const merchantUpi = (gym.paymentSettings?.upiId || 'aigym@icici').trim();
+                    const rawMerchantName = (gym.paymentSettings?.accountName || gym.name || 'Gymora').trim();
+                    const cleanMerchantName = rawMerchantName.replace(/[^a-zA-Z0-9 ]/g, '') || 'Gymora';
+                    const formattedAmount = Number(total).toFixed(2);
+                    const upiUri = `upi://pay?pa=${merchantUpi}&pn=${encodeURIComponent(cleanMerchantName)}&am=${formattedAmount}&cu=INR`;
 
                     return (
-                      <div className="p-5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl space-y-4">
-                        <div className="flex flex-col sm:flex-row items-center gap-5">
-                          <div className="bg-[#FFFFFF] p-3 rounded-2xl border border-[#E2E8F0] shadow-sm shrink-0">
-                            <QRCode
-                              value={upiUri}
-                              size={120}
+                      <div className="p-5 sm:p-6 bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl shadow-xs">
+                        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5 sm:gap-6">
+                          {/* QR Code */}
+                          <div className="w-44 h-44 sm:w-48 sm:h-48 bg-[#FFFFFF] rounded-2xl border border-[#E2E8F0] shadow-xs shrink-0 flex items-center justify-center p-2 overflow-hidden">
+                            <img
+                              src={scannerQrImage}
+                              alt="Scan QR Code"
+                              className="w-full h-full object-contain rounded-xl select-none"
                             />
                           </div>
-                          <div className="space-y-2 text-center sm:text-left flex-1">
-                            <p className="text-xs font-bold uppercase tracking-wider text-[#EA580C]">Scan QR Code</p>
-                            <p className="text-xs text-[#64748B]">Scan with Google Pay, PhonePe, Paytm, or BHIM to pay instantly.</p>
-                            <div className="text-xs font-mono bg-[#FFFFFF] px-3 py-1.5 rounded-lg border border-[#E2E8F0] inline-block font-bold text-[#334155]">
-                              UPI ID: <span className="text-[#EA580C]">{merchantUpi}</span>
+
+                          {/* Scan QR Code Details */}
+                          <div className="flex-1 text-center sm:text-left space-y-2.5 pt-1">
+                            <p className="text-xs font-bold text-[#EA580C] uppercase tracking-wider">
+                              SCAN QR CODE
+                            </p>
+                            <p className="text-xs text-[#64748B] leading-relaxed">
+                              Scan with Google Pay, PhonePe, Paytm, or BHIM to pay instantly.
+                            </p>
+                            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-xs">
+                              <span className="text-[#64748B] font-medium">UPI ID:</span>
+                              <span className="font-mono font-bold text-[#EA580C]">{merchantUpi}</span>
                             </div>
                           </div>
                         </div>
-                        <div>
-                          <label className="block text-xs font-semibold text-[#64748B] mb-1">Or Enter Your UPI ID</label>
+
+                        {/* Or Enter Your UPI ID */}
+                        <div className="mt-5 pt-1">
+                          <label className="block text-xs font-medium text-[#64748B] mb-2">
+                            Or Enter Your UPI ID
+                          </label>
                           <input
                             type="text"
                             value={upiId}
                             onChange={(e) => setUpiId(e.target.value)}
                             placeholder="yourname@okhdfcbank"
-                            className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-3.5 py-2.5 text-sm text-[#111827] placeholder-[#94A3B8] outline-none focus:border-[#FDBA74]"
+                            className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-4 py-2.5 text-sm text-[#111827] placeholder-[#94A3B8] outline-none focus:border-[#FDBA74] focus:ring-1 focus:ring-[#F97316] transition-all"
                           />
                         </div>
                       </div>

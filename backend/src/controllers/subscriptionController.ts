@@ -79,14 +79,54 @@ export const selectPlan = async (req: AuthRequest, res: Response): Promise<void>
     let amount = 0;
     let actionType: 'NEW' | 'RENEWAL' | 'UPGRADE' | 'SWITCH' = 'NEW';
 
-    const currentPlanKey = (user.subscriptionPlan || currentActiveSub?.plan || 'NONE').toUpperCase();
+    const currentPlanKey = (currentActiveSub?.plan || user.subscriptionPlan || 'NONE').toUpperCase();
     const isSamePlan = planKey === currentPlanKey;
+    const currentRank = PLAN_TIER_RANK[currentPlanKey] ?? 0;
+    const targetRank = PLAN_TIER_RANK[planKey] ?? 0;
+
+    // Check active validity based on database endDate
+    const activeEndDate = currentActiveSub?.endDate || (user.subscriptionExpiryDate ? new Date(user.subscriptionExpiryDate) : (user.subscriptionExpiry ? new Date(user.subscriptionExpiry) : null));
+    const isSubscriptionValid = Boolean(
+      (user.subscriptionStatus === SubscriptionStatus.ACTIVE || currentActiveSub?.status === SubscriptionPaymentStatus.ACTIVE) &&
+      activeEndDate &&
+      new Date(activeEndDate) > now
+    );
+    const remainingDays = isSubscriptionValid && activeEndDate
+      ? Math.max(0, Math.ceil((new Date(activeEndDate).getTime() - now.getTime()) / (1000 * 60 * 60 * 24)))
+      : 0;
+
+    // 1. Restrict Lower-Tier Plans (Downgrade Prevention while subscription is active with remaining validity)
+    if (isSubscriptionValid && targetRank < currentRank) {
+      res.status(400).json({
+        success: false,
+        message: `Downgrading to a lower-tier plan while your ${currentPlanKey} subscription is active is not permitted.`
+      });
+      return;
+    }
+
+    // 2. Prevent Free Trial on Active Subscription
+    if (planKey === 'FREE_TRIAL' && isSubscriptionValid) {
+      res.status(400).json({
+        success: false,
+        message: `Cannot activate Free Trial while your ${currentPlanKey} subscription is active.`
+      });
+      return;
+    }
+
+    // 3. Strict 15-Day Renewal Restriction
+    if (isSubscriptionValid && (isRenewal || isSamePlan)) {
+      if (remainingDays > 15) {
+        res.status(400).json({
+          success: false,
+          message: `Subscription renewal is only available when 15 days or fewer remain on your current plan (${remainingDays} days remaining).`
+        });
+        return;
+      }
+    }
 
     if (isRenewal || isSamePlan) {
       actionType = 'RENEWAL';
     } else if (currentActiveSub) {
-      const currentRank = PLAN_TIER_RANK[currentPlanKey] ?? 0;
-      const targetRank = PLAN_TIER_RANK[planKey] ?? 0;
       actionType = targetRank > currentRank ? 'UPGRADE' : 'SWITCH';
     }
 
@@ -362,12 +402,31 @@ export const renewSubscription = async (req: AuthRequest, res: Response): Promis
       status: SubscriptionPaymentStatus.ACTIVE
     }).sort({ endDate: -1 });
 
+    const now = new Date();
+    const activeEndDate = currentActiveSub?.endDate || (user.subscriptionExpiryDate ? new Date(user.subscriptionExpiryDate) : (user.subscriptionExpiry ? new Date(user.subscriptionExpiry) : null));
+    const isSubscriptionValid = Boolean(
+      (user.subscriptionStatus === SubscriptionStatus.ACTIVE || currentActiveSub?.status === SubscriptionPaymentStatus.ACTIVE) &&
+      activeEndDate &&
+      new Date(activeEndDate) > now
+    );
+    const remainingDays = isSubscriptionValid && activeEndDate
+      ? Math.max(0, Math.ceil((new Date(activeEndDate).getTime() - now.getTime()) / (1000 * 60 * 60 * 24)))
+      : 0;
+
+    // Strict 15-Day Renewal Restriction
+    if (isSubscriptionValid && remainingDays > 15) {
+      res.status(400).json({
+        success: false,
+        message: `Subscription renewal is only available when 15 days or fewer remain on your current plan (${remainingDays} days remaining).`
+      });
+      return;
+    }
+
     const planToRenew = (user.subscriptionPlan || currentActiveSub?.plan || 'SILVER').toUpperCase();
     const pricing = PLAN_PRICING[planToRenew] || PLAN_PRICING.SILVER;
     const isAnnual = billingCycle.toLowerCase() === 'annual';
     const amount = isAnnual ? pricing.annual : pricing.monthly;
 
-    const now = new Date();
     let startDate = new Date(now);
     let endDate = new Date(now);
 
@@ -479,9 +538,34 @@ export const upgradeSubscription = async (req: AuthRequest, res: Response): Prom
       return;
     }
 
+    const currentActiveSub = await Subscription.findOne({
+      userId,
+      status: SubscriptionPaymentStatus.ACTIVE
+    }).sort({ endDate: -1 });
+
+    const currentPlanKey = (currentActiveSub?.plan || user.subscriptionPlan || 'STARTER').toUpperCase();
+    const currentRank = PLAN_TIER_RANK[currentPlanKey] ?? 0;
+    const targetRank = PLAN_TIER_RANK[cleanTargetPlan] ?? 0;
+
+    const now = new Date();
+    const activeEndDate = currentActiveSub?.endDate || (user.subscriptionExpiryDate ? new Date(user.subscriptionExpiryDate) : (user.subscriptionExpiry ? new Date(user.subscriptionExpiry) : null));
+    const isSubscriptionValid = Boolean(
+      (user.subscriptionStatus === SubscriptionStatus.ACTIVE || currentActiveSub?.status === SubscriptionPaymentStatus.ACTIVE) &&
+      activeEndDate &&
+      new Date(activeEndDate) > now
+    );
+
+    // Downgrade Prevention
+    if (isSubscriptionValid && targetRank < currentRank) {
+      res.status(400).json({
+        success: false,
+        message: `Cannot downgrade to a lower-tier plan while your ${currentPlanKey} subscription is active.`
+      });
+      return;
+    }
+
     const isAnnual = billingCycle.toLowerCase() === 'annual';
     const amount = isAnnual ? pricing.annual : pricing.monthly;
-    const now = new Date();
     const startDate = new Date(now);
     const endDate = new Date(now);
 
@@ -588,7 +672,8 @@ export const getMySubscription = async (req: AuthRequest, res: Response): Promis
     const expiryDate = subscription?.endDate || user.subscriptionExpiryDate || user.subscriptionExpiry || now;
     const isExpired = new Date(expiryDate) < now;
     const remainingDays = isExpired ? 0 : Math.max(0, Math.ceil((new Date(expiryDate).getTime() - now.getTime()) / (1000 * 60 * 60 * 24)));
-    const isExpiringSoon = remainingDays <= 7 && remainingDays > 0;
+    const isExpiringSoon = !isExpired && remainingDays <= 15;
+    const canRenew = isExpired || remainingDays <= 15;
 
     const currentPlanKey = (subscription?.plan || user.subscriptionPlan || 'STARTER').toUpperCase();
     const limits = PLAN_LIMITS[currentPlanKey] || PLAN_LIMITS.SILVER;
@@ -615,6 +700,7 @@ export const getMySubscription = async (req: AuthRequest, res: Response): Promis
         remainingDays,
         isExpiringSoon,
         isExpired,
+        canRenew,
         billingCycle: subscription?.billingCycle || 'monthly',
         amount: subscription?.amount ?? pricing.monthly,
         limits,

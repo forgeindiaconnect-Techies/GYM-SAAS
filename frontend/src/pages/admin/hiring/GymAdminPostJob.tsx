@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import api from '../../../utils/api';
 import { useAuth } from '../../../contexts/AuthContext';
+import WorkingHoursPicker from '../../../components/common/WorkingHoursPicker';
 import { 
   Briefcase, 
   ArrowLeft, 
@@ -45,6 +46,57 @@ const GymAdminPostJob: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [gymData, setGymData] = useState<any>(null);
+  const [salaryMinError, setSalaryMinError] = useState<string | null>(null);
+  const [salaryMaxError, setSalaryMaxError] = useState<string | null>(null);
+
+  const validateSalaryInput = (val: string): string | null => {
+    if (!val || val.trim() === '') return null;
+    const trimmed = val.trim();
+    if (!/^\d+$/.test(trimmed) || Number(trimmed) <= 0) {
+      return 'Please enter a valid salary amount using numbers only.';
+    }
+    return null;
+  };
+
+  const handleMinSalaryChange = (val: string) => {
+    setFormData(prev => ({ ...prev, salaryMin: val }));
+    const minErr = validateSalaryInput(val);
+    setSalaryMinError(minErr);
+
+    const maxVal = formData.salaryMax;
+    const maxErr = validateSalaryInput(maxVal);
+
+    if (!minErr && !maxErr && val && maxVal) {
+      if (Number(maxVal) < Number(val)) {
+        setSalaryMaxError('Max Salary must be greater than or equal to Min Salary.');
+      } else {
+        setSalaryMaxError(null);
+      }
+    } else if (salaryMaxError === 'Max Salary must be greater than or equal to Min Salary.') {
+      setSalaryMaxError(maxErr);
+    }
+  };
+
+  const handleMaxSalaryChange = (val: string) => {
+    setFormData(prev => ({ ...prev, salaryMax: val }));
+    const maxErr = validateSalaryInput(val);
+    if (maxErr) {
+      setSalaryMaxError(maxErr);
+    } else if (val && formData.salaryMin) {
+      const minErr = validateSalaryInput(formData.salaryMin);
+      if (!minErr) {
+        if (Number(val) < Number(formData.salaryMin)) {
+          setSalaryMaxError('Max Salary must be greater than or equal to Min Salary.');
+        } else {
+          setSalaryMaxError(null);
+        }
+      } else {
+        setSalaryMaxError(null);
+      }
+    } else {
+      setSalaryMaxError(null);
+    }
+  };
 
   const [formData, setFormData] = useState({
     title: '',
@@ -62,7 +114,10 @@ const GymAdminPostJob: React.FC = () => {
     employmentType: 'Full-time',
     trainingMode: 'Offline' as 'Online' | 'Offline' | 'Hybrid',
     location: '',
-    workingHours: '',
+    workingHours: 'Morning (06:00 AM - 02:00 PM)',
+    shiftType: 'Morning',
+    shiftStartTime: '06:00 AM',
+    shiftEndTime: '02:00 PM',
     vacanciesCount: 1,
     deadline: '',
     status: 'Published'
@@ -110,6 +165,9 @@ const GymAdminPostJob: React.FC = () => {
               trainingMode: j.trainingMode || 'Offline',
               location: j.location || '',
               workingHours: j.workingHours || '',
+              shiftType: j.shiftType || '',
+              shiftStartTime: j.shiftStartTime || '',
+              shiftEndTime: j.shiftEndTime || '',
               vacanciesCount: j.vacanciesCount || 1,
               deadline: j.deadline ? new Date(j.deadline).toISOString().split('T')[0] : '',
               status: j.status || 'Published'
@@ -166,6 +224,33 @@ const GymAdminPostJob: React.FC = () => {
       if (!formData.location.trim()) {
         setError('Please enter a work location');
         return;
+      }
+
+      // Salary validation
+      const minErr = validateSalaryInput(formData.salaryMin);
+      const maxErr = validateSalaryInput(formData.salaryMax);
+      if (minErr) {
+        setSalaryMinError(minErr);
+        setError(minErr);
+        return;
+      }
+      if (maxErr) {
+        setSalaryMaxError(maxErr);
+        setError(maxErr);
+        return;
+      }
+      if (formData.salaryMin && formData.salaryMax && Number(formData.salaryMax) < Number(formData.salaryMin)) {
+        const rangeErr = 'Max Salary must be greater than or equal to Min Salary.';
+        setSalaryMaxError(rangeErr);
+        setError(rangeErr);
+        return;
+      }
+
+      if (formData.shiftType !== 'Flexible' && formData.shiftStartTime && formData.shiftEndTime) {
+        if (formData.shiftStartTime.trim().toLowerCase() === formData.shiftEndTime.trim().toLowerCase()) {
+          setError('Shift start time and end time cannot be identical.');
+          return;
+        }
       }
 
       setLoading(true);
@@ -442,23 +527,41 @@ const GymAdminPostJob: React.FC = () => {
               <div>
                 <label className="block text-[11px] text-[#64748B] mb-1">Min Salary (₹)</label>
                 <input
-                  type="number"
+                  type="text"
+                  inputMode="numeric"
                   placeholder="e.g. 25000"
                   value={formData.salaryMin}
-                  onChange={e => setFormData({ ...formData, salaryMin: e.target.value })}
-                  className="w-full px-3.5 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-xs text-[#111827] focus:outline-none focus:border-[#FDBA74]"
+                  onChange={e => handleMinSalaryChange(e.target.value)}
+                  onKeyDown={e => {
+                    if (['+', '-', 'e', 'E', '.'].includes(e.key)) {
+                      e.preventDefault();
+                    }
+                  }}
+                  className={`w-full px-3.5 py-2 bg-[#FFFFFF] border rounded-xl text-xs text-[#111827] focus:outline-none ${salaryMinError ? 'border-red-400 focus:border-red-500' : 'border-[#E2E8F0] focus:border-[#FDBA74]'}`}
                 />
+                {salaryMinError && (
+                  <p className="text-[11px] text-red-500 mt-1">{salaryMinError}</p>
+                )}
               </div>
 
               <div>
                 <label className="block text-[11px] text-[#64748B] mb-1">Max Salary (₹)</label>
                 <input
-                  type="number"
+                  type="text"
+                  inputMode="numeric"
                   placeholder="e.g. 45000"
                   value={formData.salaryMax}
-                  onChange={e => setFormData({ ...formData, salaryMax: e.target.value })}
-                  className="w-full px-3.5 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-xs text-[#111827] focus:outline-none focus:border-[#FDBA74]"
+                  onChange={e => handleMaxSalaryChange(e.target.value)}
+                  onKeyDown={e => {
+                    if (['+', '-', 'e', 'E', '.'].includes(e.key)) {
+                      e.preventDefault();
+                    }
+                  }}
+                  className={`w-full px-3.5 py-2 bg-[#FFFFFF] border rounded-xl text-xs text-[#111827] focus:outline-none ${salaryMaxError ? 'border-red-400 focus:border-red-500' : 'border-[#E2E8F0] focus:border-[#FDBA74]'}`}
                 />
+                {salaryMaxError && (
+                  <p className="text-[11px] text-red-500 mt-1">{salaryMaxError}</p>
+                )}
               </div>
 
               <div>
@@ -478,7 +581,7 @@ const GymAdminPostJob: React.FC = () => {
           </div>
 
           {/* 5. Location, Working Hours & Application Deadline */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-start">
             <div>
               <label className="block text-xs font-bold text-[#111827] mb-1.5 flex items-center gap-1.5">
                 <MapPin size={13} className="text-[#EA580C]" /> Location <span className="text-[#B91C1C]">*</span>
@@ -497,12 +600,17 @@ const GymAdminPostJob: React.FC = () => {
               <label className="block text-xs font-bold text-[#111827] mb-1.5 flex items-center gap-1.5">
                 <Clock size={13} className="text-[#EA580C]" /> Working Hours / Shift
               </label>
-              <input
-                type="text"
+              <WorkingHoursPicker
                 value={formData.workingHours}
-                onChange={e => setFormData({ ...formData, workingHours: e.target.value })}
-                placeholder="e.g. 6:00 AM - 2:00 PM or Flexible"
-                className="w-full px-4 py-2.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs text-[#111827] focus:outline-none focus:border-[#FDBA74]"
+                onChange={(formatted, structured) => {
+                  setFormData(prev => ({
+                    ...prev,
+                    workingHours: formatted,
+                    shiftType: structured?.shift || '',
+                    shiftStartTime: structured?.startTime || '',
+                    shiftEndTime: structured?.endTime || ''
+                  }));
+                }}
               />
             </div>
 
@@ -601,8 +709,8 @@ const GymAdminPostJob: React.FC = () => {
             <button
               type="button"
               onClick={() => handleSubmit('Draft')}
-              disabled={loading}
-              className="w-full sm:w-auto px-5 py-2.5 bg-[#FFFFFF] hover:bg-[#FFF7ED] border border-[#E2E8F0] hover:border-[#FFEDD5] text-xs font-bold text-[#111827] rounded-xl transition-all flex items-center justify-center gap-2"
+              disabled={loading || Boolean(salaryMinError || salaryMaxError)}
+              className="w-full sm:w-auto px-5 py-2.5 bg-[#FFFFFF] hover:bg-[#FFF7ED] border border-[#E2E8F0] hover:border-[#FFEDD5] text-xs font-bold text-[#111827] rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Save size={15} className="text-[#EA580C]" />
               <span>Save as Draft</span>
@@ -611,8 +719,8 @@ const GymAdminPostJob: React.FC = () => {
             <button
               type="button"
               onClick={() => handleSubmit('Published')}
-              disabled={loading}
-              className="w-full sm:w-auto px-7 py-2.5 bg-[#C2410C] hover:bg-[#9A3412] text-white text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-orange-500/15"
+              disabled={loading || Boolean(salaryMinError || salaryMaxError)}
+              className="w-full sm:w-auto px-7 py-2.5 bg-[#C2410C] hover:bg-[#9A3412] text-white text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-orange-500/15 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <div className="w-4 h-4 border-2 border-[#FFFFFF] border-t-transparent rounded-full animate-spin" />

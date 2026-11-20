@@ -161,7 +161,47 @@ const GymOwnerRegisterPage = () => {
 
   const set = (field: string, value: any) => {
     setForm(f => ({ ...f, [field]: value }));
-    setErrors(e => { const n = { ...e }; delete n[field]; return n; });
+    setErrors(e => {
+      const n = { ...e };
+      if (field === 'mobile') {
+        if (value && !/^[6-9]/.test(value)) {
+          n.mobile = 'Mobile number must be 10 digits and start with 6, 7, 8, or 9';
+        } else if (value && value.length < 10) {
+          n.mobile = 'Mobile number must be 10 digits and start with 6, 7, 8, or 9';
+        } else if (/^[6-9]\d{9}$/.test(value)) {
+          delete n.mobile;
+        }
+      } else if (field === 'gymContactNumber') {
+        if (value && !/^[6-9]/.test(value)) {
+          n.gymContactNumber = 'Gym contact number must be 10 digits and start with 6, 7, 8, or 9';
+        } else if (value && value.length < 10) {
+          n.gymContactNumber = 'Gym contact number must be 10 digits and start with 6, 7, 8, or 9';
+        } else if (/^[6-9]\d{9}$/.test(value)) {
+          delete n.gymContactNumber;
+        }
+      } else if (field === 'approxMembers') {
+        const num = Number(value);
+        if (value && (isNaN(num) || num < 1 || !Number.isInteger(num))) {
+          n.approxMembers = 'Please enter a valid positive whole number (minimum 1)';
+        } else if (num > 100000) {
+          n.approxMembers = 'Approximate members cannot exceed 100,000';
+        } else {
+          delete n.approxMembers;
+        }
+      } else if (field === 'numTrainers') {
+        const num = Number(value);
+        if (value && (isNaN(num) || num < 1 || !Number.isInteger(num))) {
+          n.numTrainers = 'Please enter a valid positive whole number (minimum 1)';
+        } else if (num > 1000) {
+          n.numTrainers = 'Number of trainers cannot exceed 1,000';
+        } else {
+          delete n.numTrainers;
+        }
+      } else {
+        delete n[field];
+      }
+      return n;
+    });
   };
 
   const validateStep = (): boolean => {
@@ -186,8 +226,28 @@ const GymOwnerRegisterPage = () => {
       if (!form.state.trim()) e.state = 'State is required';
 
       if (!form.gymType) e.gymType = 'Gym type is required';
-      if (!form.approxMembers) e.approxMembers = 'Approximate members is required';
-      if (!form.numTrainers) e.numTrainers = 'Number of trainers is required';
+      if (!form.approxMembers) {
+        e.approxMembers = 'Approximate members is required';
+      } else {
+        const num = Number(form.approxMembers);
+        if (isNaN(num) || num < 1 || !Number.isInteger(num)) {
+          e.approxMembers = 'Please enter a valid positive whole number (minimum 1)';
+        } else if (num > 100000) {
+          e.approxMembers = 'Approximate members cannot exceed 100,000';
+        }
+      }
+
+      if (!form.numTrainers) {
+        e.numTrainers = 'Number of trainers is required';
+      } else {
+        const num = Number(form.numTrainers);
+        if (isNaN(num) || num < 1 || !Number.isInteger(num)) {
+          e.numTrainers = 'Please enter a valid positive whole number (minimum 1)';
+        } else if (num > 1000) {
+          e.numTrainers = 'Number of trainers cannot exceed 1,000';
+        }
+      }
+
       if (!form.operatingHours) e.operatingHours = 'Operating hours is required';
       if (!form.trainingMode) e.trainingMode = 'Training mode is required';
       if (!form.services || form.services.length === 0) e.services = 'Please select at least one service';

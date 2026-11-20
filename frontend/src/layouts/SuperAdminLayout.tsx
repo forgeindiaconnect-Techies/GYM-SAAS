@@ -1,18 +1,23 @@
 import { useState, useEffect } from 'react';
-import { Outlet, Link, useLocation } from 'react-router-dom';
+import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { clsx } from 'clsx';
 import { useAuth } from '../contexts/AuthContext';
 import api from '../utils/api';
 import GymSmartAssistant from '../components/GymSmartAssistant';
+import GymoraConfirmModal from '../components/GymoraConfirmModal';
+import { markAuthorizedNavigation } from '../components/NavigationGuard';
 import {
-  LayoutDashboard, Building2, Send, User, LogOut,
-  CreditCard, ShieldCheck, Menu, PlusCircle, TrendingUp, Bell, X
+  LayoutDashboard, Building2, Building, Send, User, LogOut,
+  CreditCard, ShieldCheck, Menu, PlusCircle, TrendingUp, Bell, X,
+  CheckSquare, Users, MessageSquare, IndianRupee, ShoppingBag, Trash2, Settings
 } from 'lucide-react';
 
 const SuperAdminLayout = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { user, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
 
   const navGroups = [
     {
@@ -25,22 +30,35 @@ const SuperAdminLayout = () => {
       title: 'Gym Management',
       items: [
         { label: 'Gym Owner Details', path: '/super-admin/gym-owners', icon: Building2 },
+        { label: 'All Registered Gyms', path: '/super-admin/gyms/details', icon: Building },
+        { label: 'Pending Approvals', path: '/super-admin/gym-approvals', icon: CheckSquare },
         { label: 'Add Gym Manually', path: '/super-admin/gyms/add', icon: PlusCircle },
         { label: 'Gym Invitations', path: '/super-admin/invitations', icon: Send },
+      ],
+    },
+    {
+      title: 'User Management',
+      items: [
+        { label: 'Platform Customers', path: '/super-admin/customers', icon: Users },
+        { label: 'Customer Enquiries', path: '/super-admin/enquiries', icon: MessageSquare },
       ],
     },
     {
       title: 'Finance & Store',
       items: [
         { label: 'Revenue & Analytics', path: '/super-admin/revenue-analytics', icon: TrendingUp },
-        { label: 'Subscription Plans', path: '/super-admin/subscriptions', icon: CreditCard },
+        { label: 'SaaS Subscriptions', path: '/super-admin/subscriptions', icon: CreditCard },
+        { label: 'Commission Payouts', path: '/super-admin/payouts', icon: IndianRupee },
+        { label: 'Gym Store', path: '/super-admin/store', icon: ShoppingBag },
       ],
     },
     {
       title: 'System & Settings',
       items: [
         { label: 'Notifications', path: '/super-admin/notifications', icon: Bell },
+        { label: 'Deleted Records', path: '/super-admin/deleted', icon: Trash2 },
         { label: 'Profile', path: '/super-admin/profile', icon: User },
+        { label: 'Settings', path: '/super-admin/settings', icon: Settings },
       ],
     },
   ];
@@ -48,10 +66,18 @@ const SuperAdminLayout = () => {
   const routePrefetchMap: Record<string, string[]> = {
     '/super-admin/dashboard': ['/gyms', '/users?role=ADMIN'],
     '/super-admin/gym-owners': ['/gyms', '/users?role=ADMIN'],
+    '/super-admin/gyms/details': ['/gyms'],
+    '/super-admin/gym-approvals': ['/gyms?status=PENDING'],
     '/super-admin/invitations': ['/users?role=GYM_OWNER'],
+    '/super-admin/customers': ['/users?role=MEMBER'],
     '/super-admin/subscriptions': ['/subscriptions/all'],
+    '/super-admin/revenue-analytics': ['/analytics/revenue'],
+    '/super-admin/payouts': ['/payouts'],
+    '/super-admin/store': ['/store/admin/products'],
+    '/super-admin/enquiries': ['/enquiries'],
     '/super-admin/notifications': ['/notifications'],
     '/super-admin/profile': ['/auth/me'],
+    '/super-admin/settings': ['/auth/me'],
   };
 
   const handlePrefetch = (path: string) => {
@@ -79,7 +105,15 @@ const SuperAdminLayout = () => {
     <>
       {/* Logo Header aligned with main header h-16 */}
       <div className="h-16 px-5 border-b border-[#E2E8F0] flex items-center justify-between shrink-0">
-        <Link to="/" className="flex items-center space-x-2.5" onClick={() => setSidebarOpen(false)}>
+        <Link
+          to="/"
+          className="flex items-center space-x-2.5 cursor-pointer"
+          onClick={(e) => {
+            e.preventDefault();
+            setSidebarOpen(false);
+            setShowLeaveConfirm(true);
+          }}
+        >
           <div className="w-9 h-9 bg-[#C2410C] text-white font-bold rounded-xl flex items-center justify-center shadow-md shadow-orange-500/20 shrink-0">
             <ShieldCheck className="text-white" size={20} />
           </div>
@@ -128,7 +162,10 @@ const SuperAdminLayout = () => {
                     key={item.path}
                     to={item.path}
                     onMouseEnter={() => handlePrefetch(item.path)}
-                    onClick={() => setSidebarOpen(false)}
+                    onClick={() => {
+                      markAuthorizedNavigation();
+                      setSidebarOpen(false);
+                    }}
                     className={clsx(
                       'flex items-center space-x-3 px-3 py-2 rounded-xl transition-all duration-150 text-sm font-medium group',
                       isActive
@@ -229,6 +266,20 @@ const SuperAdminLayout = () => {
         </div>
       </main>
       <GymSmartAssistant />
+
+      <GymoraConfirmModal
+        isOpen={showLeaveConfirm}
+        title="Leave Dashboard?"
+        message="Do you want to leave the dashboard and go to the home page?"
+        confirmText="Continue"
+        cancelText="Cancel"
+        onConfirm={() => {
+          setShowLeaveConfirm(false);
+          markAuthorizedNavigation();
+          navigate('/');
+        }}
+        onCancel={() => setShowLeaveConfirm(false)}
+      />
     </div>
   );
 };

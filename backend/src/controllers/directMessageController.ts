@@ -18,14 +18,14 @@ export const messageUploadMiddleware = multer({
 
 export const getAttachmentCategory = (mimeType: string, filename: string): AttachmentCategory => {
   const ext = filename.split('.').pop()?.toLowerCase() || '';
+  if (mimeType.startsWith('audio/') || ['mp3', 'wav', 'ogg', 'm4a', 'aac', 'weba'].includes(ext) || (ext === 'webm' && filename.startsWith('voice_'))) {
+    return 'audio';
+  }
   if (mimeType.startsWith('image/') || ['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg'].includes(ext)) {
     return 'image';
   }
   if (mimeType.startsWith('video/') || ['mp4', 'webm', 'mov', 'avi', 'mkv'].includes(ext)) {
     return 'video';
-  }
-  if (mimeType.startsWith('audio/') || ['mp3', 'wav', 'ogg', 'm4a', 'aac', 'weba'].includes(ext)) {
-    return 'audio';
   }
   if (
     mimeType.includes('pdf') ||
@@ -335,13 +335,22 @@ export const uploadAttachment = async (req: AuthRequest, res: Response): Promise
     const isVoice = req.body.isVoice === 'true' || req.body.isVoice === true;
     const fileCategory = isVoice ? 'audio' : getAttachmentCategory(mimeType, fileName);
 
-    // Upload buffer to Cloudinary with automatic fallback
-    const uploadResult = await uploadBufferToCloudinary(
-      file.buffer,
-      fileName,
-      mimeType,
-      'gym_saas/messages'
-    );
+    // Upload buffer to Cloudinary with automatic data URI fallback
+    let uploadResult: any;
+    try {
+      uploadResult = await uploadBufferToCloudinary(
+        file.buffer,
+        fileName,
+        mimeType,
+        'gym_saas/messages'
+      );
+    } catch (uploadErr) {
+      console.warn('Cloudinary upload warning, using persistent data URI fallback:', uploadErr);
+      uploadResult = {
+        secure_url: `data:${mimeType};base64,${file.buffer.toString('base64')}`,
+        public_id: `local-${Date.now()}`
+      };
+    }
 
     const duration = req.body.duration ? parseFloat(req.body.duration) : uploadResult.duration;
 

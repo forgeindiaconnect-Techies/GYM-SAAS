@@ -21,6 +21,7 @@ import { COLORS, SHADOWS } from '../constants/theme';
 import {
   searchGymFeatures,
   getRoleSuggestedQuestions,
+  resolveRouteForRole,
   type AssistantRouteItem,
 } from '../utils/smartAssistantEngine';
 
@@ -192,9 +193,12 @@ export const GymSmartAssistant: React.FC<GymSmartAssistantProps> = ({
       return;
     }
 
+    const resolved = resolveRouteForRole(route, userRole);
+    const targetRoute = resolved ? resolved.route : route;
+
     setIsMinimized(true);
     if (onNavigateRoute) {
-      onNavigateRoute(route);
+      onNavigateRoute(targetRoute);
     }
   };
 
@@ -237,10 +241,16 @@ export const GymSmartAssistant: React.FC<GymSmartAssistantProps> = ({
           liveItems = res.data.items;
         }
         if (Array.isArray(res.data.actions) && res.data.actions.length > 0) {
-          const existingLabels = new Set(combinedActions.map((a) => a.label));
+          const existingRoutes = new Set(combinedActions.map((a) => a.route));
           for (const act of res.data.actions) {
-            if (!existingLabels.has(act.label)) {
-              combinedActions.push(act);
+            const resolved = resolveRouteForRole(act.route, userRole, act.label);
+            if (resolved && !existingRoutes.has(resolved.route)) {
+              existingRoutes.add(resolved.route);
+              combinedActions.push({
+                label: resolved.label || act.label,
+                route: resolved.route,
+                variant: act.variant
+              });
             }
           }
         }

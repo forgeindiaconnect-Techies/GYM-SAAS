@@ -110,7 +110,7 @@ const SAAS_PLANS = [
     name: 'Premium',
     tagline: 'Enterprise-grade multi-branch scale',
     badge: 'ADVANCED',
-    icon: Sparkles,
+    icon: Crown,
     iconColor: 'text-[#EA580C]',
     iconBg: 'bg-[#F8FAFC]',
     priceMonthly: 2499,

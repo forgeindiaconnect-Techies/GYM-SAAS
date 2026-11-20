@@ -8,6 +8,11 @@ const TrainerMembers = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [clients, setClients] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [openDetailsModal, setOpenDetailsModal] = useState<any>(null);
+
+  const handleOpenModal = (client: any) => {
+    setOpenDetailsModal(client);
+  };
 
   useEffect(() => {
     const fetchClients = async () => {
@@ -33,6 +38,16 @@ const TrainerMembers = () => {
               email: c.email || '',
               phone: c.mobile || c.phone || '—',
               profilePhoto: c.profilePhoto,
+              height: c.height,
+              weight: c.weight,
+              gender: c.gender,
+              dateOfBirth: c.dateOfBirth,
+              experienceLevel: c.experienceLevel,
+              preferredTraining: c.preferredTraining,
+              preferredWorkoutTime: c.preferredWorkoutTime,
+              subscriptionPlan: c.subscriptionPlan,
+              subscriptionExpiry: c.subscriptionExpiry,
+              createdAt: c.createdAt,
               originalUser: c,
               sessions: [],
             });
@@ -55,9 +70,31 @@ const TrainerMembers = () => {
                 email: s.customerId.email || '',
                 phone: s.customerId.mobile || s.customerId.phone || '—',
                 profilePhoto: s.customerId.profilePhoto,
+                height: s.customerId.height,
+                weight: s.customerId.weight,
+                gender: s.customerId.gender,
+                dateOfBirth: s.customerId.dateOfBirth,
+                experienceLevel: s.customerId.experienceLevel,
+                preferredTraining: s.customerId.preferredTraining,
+                preferredWorkoutTime: s.customerId.preferredWorkoutTime,
+                subscriptionPlan: s.customerId.subscriptionPlan,
+                subscriptionExpiry: s.customerId.subscriptionExpiry,
+                createdAt: s.customerId.createdAt,
                 originalUser: s.customerId,
                 sessions: [],
               });
+            } else {
+              const existing = customerMap.get(cid);
+              if (existing) {
+                if (!existing.height && s.customerId.height) existing.height = s.customerId.height;
+                if (!existing.weight && s.customerId.weight) existing.weight = s.customerId.weight;
+                if (!existing.gender && s.customerId.gender) existing.gender = s.customerId.gender;
+                if (existing.originalUser) {
+                  if (!existing.originalUser.height && s.customerId.height) existing.originalUser.height = s.customerId.height;
+                  if (!existing.originalUser.weight && s.customerId.weight) existing.originalUser.weight = s.customerId.weight;
+                  if (!existing.originalUser.gender && s.customerId.gender) existing.originalUser.gender = s.customerId.gender;
+                }
+              }
             }
             customerMap.get(cid).sessions.push(s);
           });
@@ -89,8 +126,6 @@ const TrainerMembers = () => {
     
     fetchClients();
   }, []);
-
-  const [openDetailsModal, setOpenDetailsModal] = useState<any>(null);
 
   const filteredClients = clients.filter((client) => {
     const term = searchTerm.trim().toLowerCase();
@@ -126,7 +161,7 @@ const TrainerMembers = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
+    <div className="w-full space-y-6">
       <TrainerClientsTabs />
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
@@ -240,7 +275,7 @@ const TrainerMembers = () => {
 
               <div className="mt-auto pt-4 border-t border-[#E2E8F0]">
                 <button
-                  onClick={() => setOpenDetailsModal(client)}
+                  onClick={() => handleOpenModal(client)}
                   className="w-full flex items-center justify-center gap-2 py-2.5 bg-[#FFFFFF] text-[#EA580C] text-sm font-semibold rounded-xl border border-[#FDBA74] hover:bg-[#C2410C] hover:text-[#FFFFFF] font-bold transition-all shadow-sm"
                 >
                   <User size={16} /> View Details
@@ -314,24 +349,24 @@ const TrainerMembers = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E2E8F0]">
                     <div className="p-3.5 bg-[#FFFFFF]">
                       <p className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1">Membership Plan</p>
-                      <p className="font-semibold text-sm text-[#EA580C]">{openDetailsModal.originalUser?.subscriptionPlan || 'Standard Plan'}</p>
+                      <p className="font-semibold text-sm text-[#EA580C]">{openDetailsModal.originalUser?.subscriptionPlan || openDetailsModal.subscriptionPlan || 'Standard Plan'}</p>
                     </div>
                     <div className="p-3.5 bg-[#FFFFFF]">
                       <p className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1">Join Date</p>
                       <p className="font-semibold text-sm text-[#111827]">
-                        {openDetailsModal.originalUser?.createdAt ? new Date(openDetailsModal.originalUser.createdAt).toLocaleDateString() : 'Not specified'}
+                        {openDetailsModal.originalUser?.createdAt ? new Date(openDetailsModal.originalUser.createdAt).toLocaleDateString() : (openDetailsModal.createdAt ? new Date(openDetailsModal.createdAt).toLocaleDateString() : 'Not specified')}
                       </p>
                     </div>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E2E8F0]">
                     <div className="p-3.5 bg-[#FFFFFF]">
                       <p className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1">Gender</p>
-                      <p className="font-semibold text-sm text-[#111827] capitalize">{openDetailsModal.originalUser?.gender || 'Not specified'}</p>
+                      <p className="font-semibold text-sm text-[#111827] capitalize">{openDetailsModal.originalUser?.gender || openDetailsModal.gender || 'Not specified'}</p>
                     </div>
                     <div className="p-3.5 bg-[#FFFFFF]">
                       <p className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1">Renewal Date</p>
                       <p className="font-semibold text-sm text-[#111827]">
-                        {openDetailsModal.originalUser?.subscriptionExpiry ? new Date(openDetailsModal.originalUser.subscriptionExpiry).toLocaleDateString() : 'Not Set'}
+                        {openDetailsModal.originalUser?.subscriptionExpiry ? new Date(openDetailsModal.originalUser.subscriptionExpiry).toLocaleDateString() : (openDetailsModal.subscriptionExpiry ? new Date(openDetailsModal.subscriptionExpiry).toLocaleDateString() : 'Not Set')}
                       </p>
                     </div>
                   </div>
@@ -339,22 +374,22 @@ const TrainerMembers = () => {
                     <div className="p-3.5 bg-[#FFFFFF]">
                       <p className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1">Height / Weight</p>
                       <p className="font-semibold text-sm text-[#111827]">
-                        {openDetailsModal.originalUser?.height ? `${openDetailsModal.originalUser.height} cm` : '--'} / {openDetailsModal.originalUser?.weight ? `${openDetailsModal.originalUser.weight} kg` : '--'}
+                        {(openDetailsModal.originalUser?.height || openDetailsModal.height) ? `${openDetailsModal.originalUser?.height || openDetailsModal.height} cm` : '--'} / {(openDetailsModal.originalUser?.weight || openDetailsModal.weight) ? `${openDetailsModal.originalUser?.weight || openDetailsModal.weight} kg` : '--'}
                       </p>
                     </div>
                     <div className="p-3.5 bg-[#FFFFFF]">
                       <p className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1">Experience Level</p>
-                      <p className="font-semibold text-sm text-[#111827] capitalize">{openDetailsModal.originalUser?.experienceLevel || 'Intermediate'}</p>
+                      <p className="font-semibold text-sm text-[#111827] capitalize">{openDetailsModal.originalUser?.experienceLevel || openDetailsModal.experienceLevel || 'Intermediate'}</p>
                     </div>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E2E8F0]">
                     <div className="p-3.5 bg-[#FFFFFF]">
                       <p className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1">Pref. Training</p>
-                      <p className="font-semibold text-sm text-[#111827]">{openDetailsModal.originalUser?.preferredTraining || 'General Fitness'}</p>
+                      <p className="font-semibold text-sm text-[#111827]">{openDetailsModal.originalUser?.preferredTraining || openDetailsModal.preferredTraining || 'General Fitness'}</p>
                     </div>
                     <div className="p-3.5 bg-[#FFFFFF]">
                       <p className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1">Pref. Workout Time</p>
-                      <p className="font-semibold text-sm text-[#111827]">{openDetailsModal.originalUser?.preferredWorkoutTime || 'Morning'}</p>
+                      <p className="font-semibold text-sm text-[#111827]">{openDetailsModal.originalUser?.preferredWorkoutTime || openDetailsModal.preferredWorkoutTime || 'Morning'}</p>
                     </div>
                   </div>
                 </div>

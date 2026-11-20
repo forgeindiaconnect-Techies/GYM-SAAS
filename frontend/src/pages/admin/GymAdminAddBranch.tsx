@@ -124,8 +124,8 @@ const GymAdminAddBranch = () => {
     setError('');
 
     // Validations
-    if (!/^\d{10}$/.test(form.phone)) {
-      setError('Phone number must be exactly 10 digits.');
+    if (!/^[6-9]\d{9}$/.test(form.phone)) {
+      setError('Phone number must be exactly 10 digits and start with 6, 7, 8, or 9.');
       setLoading(false);
       return;
     }
@@ -186,7 +186,7 @@ const GymAdminAddBranch = () => {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-8">
-        
+
         {/* Section 1 - Basic Information */}
         <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-8">
           <h2 className="text-xl font-bold text-[#111827] mb-6 flex items-center gap-2 border-b border-[#E2E8F0] pb-4">
@@ -195,19 +195,43 @@ const GymAdminAddBranch = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-bold text-[#64748B] mb-2">Branch Name *</label>
-              <input required type="text" value={form.branchName} onChange={e => setForm({...form, branchName: e.target.value})} placeholder="e.g. Main Branch" className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-3 text-[#111827] outline-none focus:border-[#FDBA74]" />
+              <input required type="text" value={form.branchName} onChange={e => setForm({ ...form, branchName: e.target.value })} placeholder="e.g. Main Branch" className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-3 text-[#111827] outline-none focus:border-[#FDBA74]" />
             </div>
             <div>
               <label className="block text-sm font-bold text-[#64748B] mb-2">Branch Code *</label>
-              <input required type="text" value={form.branchCode} onChange={e => setForm({...form, branchCode: e.target.value.toUpperCase()})} placeholder="e.g. GYM-001" className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-3 text-[#111827] outline-none focus:border-[#FDBA74]" />
+              <input required type="text" value={form.branchCode} onChange={e => setForm({ ...form, branchCode: e.target.value.toUpperCase() })} placeholder="e.g. GYM-001" className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-3 text-[#111827] outline-none focus:border-[#FDBA74]" />
             </div>
             <div>
               <label className="block text-sm font-bold text-[#64748B] mb-2">Branch Phone Number *</label>
-              <input required type="tel" maxLength={10} value={form.phone} onChange={e => setForm({...form, phone: e.target.value.replace(/\D/g, '')})} placeholder="e.g. 9876543210" className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-3 text-[#111827] outline-none focus:border-[#FDBA74]" />
+              <input
+                required
+                type="tel"
+                minLength={10}
+                maxLength={10}
+                pattern="[6-9]\d{9}"
+                title="Phone number must be 10 digits and start with 6, 7, 8, or 9"
+                value={form.phone}
+                onChange={e => {
+                  const val = e.target.value.replace(/\D/g, '').slice(0, 10);
+                  if (val.length > 0 && !/^[6-9]/.test(val)) {
+                    setError('Phone number must start with 6, 7, 8, or 9 (cannot start with 1, 2, 3, 4, or 5).');
+                    return;
+                  }
+                  if (error.includes('Phone number')) setError('');
+                  setForm({...form, phone: val});
+                }}
+                placeholder="e.g. 9876543210"
+                className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-3 text-[#111827] outline-none focus:border-[#FDBA74]"
+              />
+              {form.phone && !/^[6-9]\d{9}$/.test(form.phone) && (
+                <p className="text-xs text-red-500 mt-1">
+                  {form.phone.length < 10 ? `Enter 10 digits (${form.phone.length}/10)` : 'Must start with 6, 7, 8, or 9'}
+                </p>
+              )}
             </div>
             <div>
               <label className="block text-sm font-bold text-[#64748B] mb-2">Branch Email</label>
-              <input type="email" value={form.email} onChange={e => setForm({...form, email: e.target.value})} placeholder="e.g. branch@gym.com" className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-3 text-[#111827] outline-none focus:border-[#FDBA74]" />
+              <input type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} placeholder="e.g. branch@gym.com" className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-3 text-[#111827] outline-none focus:border-[#FDBA74]" />
             </div>
           </div>
         </div>
@@ -220,23 +244,23 @@ const GymAdminAddBranch = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="md:col-span-2">
               <label className="block text-sm font-bold text-[#64748B] mb-2">Street Address *</label>
-              <input required type="text" value={form.address} onChange={e => setForm({...form, address: e.target.value})} placeholder="Enter full address" className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-3 text-[#111827] outline-none focus:border-[#FDBA74]" />
+              <input required type="text" value={form.address} onChange={e => setForm({ ...form, address: e.target.value })} placeholder="Enter full address" className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-3 text-[#111827] outline-none focus:border-[#FDBA74]" />
             </div>
             <div>
               <label className="block text-sm font-bold text-[#64748B] mb-2">Area / Locality *</label>
-              <input required type="text" value={form.locality} onChange={e => setForm({...form, locality: e.target.value})} placeholder="Locality" className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-3 text-[#111827] outline-none focus:border-[#FDBA74]" />
+              <input required type="text" value={form.locality} onChange={e => setForm({ ...form, locality: e.target.value })} placeholder="Locality" className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-3 text-[#111827] outline-none focus:border-[#FDBA74]" />
             </div>
             <div>
               <label className="block text-sm font-bold text-[#64748B] mb-2">City *</label>
-              <input required type="text" value={form.city} onChange={e => setForm({...form, city: e.target.value})} placeholder="City" className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-3 text-[#111827] outline-none focus:border-[#FDBA74]" />
+              <input required type="text" value={form.city} onChange={e => setForm({ ...form, city: e.target.value })} placeholder="City" className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-3 text-[#111827] outline-none focus:border-[#FDBA74]" />
             </div>
             <div>
               <label className="block text-sm font-bold text-[#64748B] mb-2">State *</label>
-              <input required type="text" value={form.state} onChange={e => setForm({...form, state: e.target.value})} placeholder="State" className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-3 text-[#111827] outline-none focus:border-[#FDBA74]" />
+              <input required type="text" value={form.state} onChange={e => setForm({ ...form, state: e.target.value })} placeholder="State" className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-3 text-[#111827] outline-none focus:border-[#FDBA74]" />
             </div>
             <div>
               <label className="block text-sm font-bold text-[#64748B] mb-2">Pincode *</label>
-              <input required type="text" inputMode="numeric" maxLength={6} pattern="\d{6}" title="Enter a valid 6-digit pincode" value={form.pinCode} onChange={e => setForm({...form, pinCode: e.target.value.replace(/\D/g, '').slice(0, 6)})} placeholder="6-digit pincode" className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-3 text-[#111827] outline-none focus:border-[#FDBA74]" />
+              <input required type="text" inputMode="numeric" maxLength={6} pattern="\d{6}" title="Enter a valid 6-digit pincode" value={form.pinCode} onChange={e => setForm({ ...form, pinCode: e.target.value.replace(/\D/g, '').slice(0, 6) })} placeholder="6-digit pincode" className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-3 text-[#111827] outline-none focus:border-[#FDBA74]" />
             </div>
           </div>
         </div>
@@ -250,22 +274,22 @@ const GymAdminAddBranch = () => {
             <div>
               <label className="block text-sm font-bold text-[#64748B] mb-2">Opening Time *</label>
               <div className="flex gap-2">
-                <input 
-                  required 
-                  type="text" 
+                <input
+                  required
+                  type="text"
                   maxLength={5}
                   placeholder="HH:MM"
-                  value={form.openingTime.split(' ')[0]} 
+                  value={form.openingTime.split(' ')[0]}
                   onChange={e => {
                     let val = e.target.value.replace(/[^\d:]/g, '');
                     if (val.length === 2 && !val.includes(':') && e.target.value.length === 2) val += ':';
-                    setForm({...form, openingTime: `${val} ${form.openingTime.split(' ')[1] || 'AM'}`})
-                  }} 
-                  className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-3 text-[#111827] outline-none focus:border-[#FDBA74]" 
+                    setForm({ ...form, openingTime: `${val} ${form.openingTime.split(' ')[1] || 'AM'}` })
+                  }}
+                  className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-3 text-[#111827] outline-none focus:border-[#FDBA74]"
                 />
-                <select 
+                <select
                   value={form.openingTime.split(' ')[1] || 'AM'}
-                  onChange={e => setForm({...form, openingTime: `${form.openingTime.split(' ')[0] || '06:00'} ${e.target.value}`})}
+                  onChange={e => setForm({ ...form, openingTime: `${form.openingTime.split(' ')[0] || '06:00'} ${e.target.value}` })}
                   className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-3 text-[#111827] outline-none focus:border-[#FDBA74] font-bold"
                 >
                   <option value="AM">AM</option>
@@ -276,22 +300,22 @@ const GymAdminAddBranch = () => {
             <div>
               <label className="block text-sm font-bold text-[#64748B] mb-2">Closing Time *</label>
               <div className="flex gap-2">
-                <input 
-                  required 
-                  type="text" 
+                <input
+                  required
+                  type="text"
                   maxLength={5}
                   placeholder="HH:MM"
-                  value={form.closingTime.split(' ')[0]} 
+                  value={form.closingTime.split(' ')[0]}
                   onChange={e => {
                     let val = e.target.value.replace(/[^\d:]/g, '');
                     if (val.length === 2 && !val.includes(':') && e.target.value.length === 2) val += ':';
-                    setForm({...form, closingTime: `${val} ${form.closingTime.split(' ')[1] || 'PM'}`})
-                  }} 
-                  className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-3 text-[#111827] outline-none focus:border-[#FDBA74]" 
+                    setForm({ ...form, closingTime: `${val} ${form.closingTime.split(' ')[1] || 'PM'}` })
+                  }}
+                  className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-3 text-[#111827] outline-none focus:border-[#FDBA74]"
                 />
-                <select 
+                <select
                   value={form.closingTime.split(' ')[1] || 'PM'}
-                  onChange={e => setForm({...form, closingTime: `${form.closingTime.split(' ')[0] || '10:00'} ${e.target.value}`})}
+                  onChange={e => setForm({ ...form, closingTime: `${form.closingTime.split(' ')[0] || '10:00'} ${e.target.value}` })}
                   className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-3 text-[#111827] outline-none focus:border-[#FDBA74] font-bold"
                 >
                   <option value="AM">AM</option>
@@ -308,11 +332,10 @@ const GymAdminAddBranch = () => {
                   key={day}
                   type="button"
                   onClick={() => handleDayToggle(day)}
-                  className={`px-4 py-2 rounded-lg text-sm font-bold transition-colors border ${
-                    form.workingDays.includes(day)
-                      ? 'bg-[#C2410C] text-white border-[#FDBA74]'
-                      : 'bg-[#F8FAFC] text-[#64748B] border-[#E2E8F0] hover:border-[#FDBA74]'
-                  }`}
+                  className={`px-4 py-2 rounded-lg text-sm font-bold transition-colors border ${form.workingDays.includes(day)
+                    ? 'bg-[#C2410C] text-white border-[#FDBA74]'
+                    : 'bg-[#F8FAFC] text-[#64748B] border-[#E2E8F0] hover:border-[#FDBA74]'
+                    }`}
                 >
                   {day}
                 </button>
@@ -333,12 +356,11 @@ const GymAdminAddBranch = () => {
                 <button
                   key={mode}
                   type="button"
-                  onClick={() => setForm({...form, trainingMode: mode})}
-                  className={`flex-1 py-3 rounded-xl border text-sm font-bold capitalize transition-colors ${
-                    form.trainingMode === mode 
-                      ? 'bg-green-50 border-[#FDBA74] text-[#EA580C]' 
-                      : 'bg-[#FFFFFF] border-[#E2E8F0] text-[#64748B] hover:border-[#FDBA74]'
-                  }`}
+                  onClick={() => setForm({ ...form, trainingMode: mode })}
+                  className={`flex-1 py-3 rounded-xl border text-sm font-bold capitalize transition-colors ${form.trainingMode === mode
+                    ? 'bg-green-50 border-[#FDBA74] text-[#EA580C]'
+                    : 'bg-[#FFFFFF] border-[#E2E8F0] text-[#64748B] hover:border-[#FDBA74]'
+                    }`}
                 >
                   {mode}
                 </button>
@@ -353,11 +375,10 @@ const GymAdminAddBranch = () => {
                   key={service}
                   type="button"
                   onClick={() => handleServiceToggle(service)}
-                  className={`px-4 py-3 rounded-xl text-sm font-semibold transition-colors border text-left flex items-center gap-2 ${
-                    form.services.includes(service)
-                      ? 'bg-[#C2410C] text-white border-[#FDBA74]'
-                      : 'bg-[#F8FAFC] text-[#64748B] border-[#E2E8F0] hover:border-[#FDBA74]'
-                  }`}
+                  className={`px-4 py-3 rounded-xl text-sm font-semibold transition-colors border text-left flex items-center gap-2 ${form.services.includes(service)
+                    ? 'bg-[#C2410C] text-white border-[#FDBA74]'
+                    : 'bg-[#F8FAFC] text-[#64748B] border-[#E2E8F0] hover:border-[#FDBA74]'
+                    }`}
                 >
                   <div className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 ${form.services.includes(service) ? 'border-white bg-[#FFFFFF]/20' : 'border-[#E2E8F0]'}`}>
                     {form.services.includes(service) && <CheckCircle size={12} />}
@@ -382,11 +403,10 @@ const GymAdminAddBranch = () => {
                   key={fac.id}
                   type="button"
                   onClick={() => handleFacilityToggle(fac.label)}
-                  className={`px-4 py-3 rounded-xl text-sm font-semibold transition-colors border text-left flex items-center gap-3 ${
-                    form.facilities.includes(fac.label)
-                      ? 'bg-[#C2410C] text-white border-[#FDBA74]'
-                      : 'bg-[#F8FAFC] text-[#64748B] border-[#E2E8F0] hover:border-[#FDBA74]'
-                  }`}
+                  className={`px-4 py-3 rounded-xl text-sm font-semibold transition-colors border text-left flex items-center gap-3 ${form.facilities.includes(fac.label)
+                    ? 'bg-[#C2410C] text-white border-[#FDBA74]'
+                    : 'bg-[#F8FAFC] text-[#64748B] border-[#E2E8F0] hover:border-[#FDBA74]'
+                    }`}
                 >
                   <Icon size={18} className={form.facilities.includes(fac.label) ? 'text-white' : 'text-[#EA580C]'} />
                   {fac.label}
@@ -406,7 +426,7 @@ const GymAdminAddBranch = () => {
               <Plus size={16} /> Add Plan
             </button>
           </div>
-          
+
           {form.subscriptionPlans.length === 0 ? (
             <p className="text-sm text-[#64748B] italic text-center py-4">No plans added yet. Click "Add Plan" to create one.</p>
           ) : (
@@ -477,16 +497,16 @@ const GymAdminAddBranch = () => {
             <form onSubmit={handleSavePlan} className="space-y-4">
               <div>
                 <label className="block text-sm font-bold text-[#64748B] mb-1">Plan Name</label>
-                <input required value={planForm.name} onChange={e => setPlanForm({...planForm, name: e.target.value})} className="w-full border border-[#E2E8F0] rounded-lg px-4 py-2 outline-none focus:border-[#FDBA74]" placeholder="e.g. Pro Tier" />
+                <input required value={planForm.name} onChange={e => setPlanForm({ ...planForm, name: e.target.value })} className="w-full border border-[#E2E8F0] rounded-lg px-4 py-2 outline-none focus:border-[#FDBA74]" placeholder="e.g. Pro Tier" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-bold text-[#64748B] mb-1">Price (₹)</label>
-                  <input required type="text" value={planForm.price} onChange={e => setPlanForm({...planForm, price: e.target.value.replace(/[^0-9.]/g, '')})} className="w-full border border-[#E2E8F0] rounded-lg px-4 py-2 outline-none focus:border-[#FDBA74]" placeholder="499" />
+                  <input required type="text" value={planForm.price} onChange={e => setPlanForm({ ...planForm, price: e.target.value.replace(/[^0-9.]/g, '') })} className="w-full border border-[#E2E8F0] rounded-lg px-4 py-2 outline-none focus:border-[#FDBA74]" placeholder="499" />
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-[#64748B] mb-1">Duration</label>
-                  <select value={planForm.duration} onChange={e => setPlanForm({...planForm, duration: e.target.value})} className="w-full border border-[#E2E8F0] rounded-lg px-4 py-2 outline-none focus:border-[#FDBA74]">
+                  <select value={planForm.duration} onChange={e => setPlanForm({ ...planForm, duration: e.target.value })} className="w-full border border-[#E2E8F0] rounded-lg px-4 py-2 outline-none focus:border-[#FDBA74]">
                     <option value="Monthly">Monthly</option>
                     <option value="Quarterly">Quarterly</option>
                     <option value="Half-Yearly">Half-Yearly</option>
@@ -496,7 +516,7 @@ const GymAdminAddBranch = () => {
               </div>
               <div>
                 <label className="block text-sm font-bold text-[#64748B] mb-1">Features (Description & Inclusions)</label>
-                <textarea required rows={5} value={planForm.features} onChange={e => setPlanForm({...planForm, features: e.target.value})} className="w-full border border-[#E2E8F0] rounded-lg px-4 py-2 outline-none focus:border-[#FDBA74]" placeholder="Enter features (e.g. Access to gym, 1 PT session, Locker access)" />
+                <textarea required rows={5} value={planForm.features} onChange={e => setPlanForm({ ...planForm, features: e.target.value })} className="w-full border border-[#E2E8F0] rounded-lg px-4 py-2 outline-none focus:border-[#FDBA74]" placeholder="Enter features (e.g. Access to gym, 1 PT session, Locker access)" />
               </div>
               <div className="pt-4 flex justify-end gap-3">
                 <button

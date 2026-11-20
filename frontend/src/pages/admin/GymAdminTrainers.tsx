@@ -4,7 +4,7 @@ import { useNavigate, useOutletContext } from 'react-router-dom';
 import {
   Plus, Trash2, CheckCircle, Eye, EyeOff, X, Mail, UserPlus, Check, PauseCircle,
   Clock, Ban, ShieldCheck, Edit, Phone, Calendar, Dumbbell, Award, Briefcase,
-  GraduationCap, Sparkles, IndianRupee, Activity, Lock
+  GraduationCap, Sparkles, IndianRupee, Activity, Lock, ChevronDown
 } from 'lucide-react';
 import api, { getAssetUrl } from '../../utils/api';
 import TrainerNavigationTabs from '../../components/GymAdmin/TrainerNavigationTabs';
@@ -32,6 +32,78 @@ const GymAdminTrainers = () => {
   
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const [manualNameError, setManualNameError] = useState('');
+  const [inviteNameError, setInviteNameError] = useState('');
+  const [editNameError, setEditNameError] = useState('');
+
+  const handleLetterKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    setErrorFn: (err: string) => void
+  ) => {
+    if (
+      e.ctrlKey || e.metaKey || e.altKey ||
+      ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Tab', 'Enter', 'Home', 'End'].includes(e.key)
+    ) {
+      return;
+    }
+    if (!/^[A-Za-z\s]$/.test(e.key)) {
+      e.preventDefault();
+      setErrorFn('Only letters are allowed.');
+    }
+  };
+
+  const handleLetterPaste = (
+    e: React.ClipboardEvent<HTMLInputElement>,
+    currentVal: string,
+    onUpdate: (val: string) => void,
+    setErrorFn: (err: string) => void
+  ) => {
+    const pasted = e.clipboardData.getData('text');
+    if (/[^A-Za-z\s]/.test(pasted)) {
+      e.preventDefault();
+      const sanitized = pasted.replace(/[^A-Za-z\s]/g, '');
+      const input = e.currentTarget;
+      const start = input.selectionStart ?? input.value.length;
+      const end = input.selectionEnd ?? input.value.length;
+      const newVal = currentVal.slice(0, start) + sanitized + currentVal.slice(end);
+      onUpdate(newVal);
+      setErrorFn('Only letters are allowed.');
+    }
+  };
+
+  const handleManualNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value;
+    const sanitized = raw.replace(/[^A-Za-z\s]/g, '');
+    setManualForm(prev => ({ ...prev, name: sanitized }));
+    if (raw !== sanitized) {
+      setManualNameError('Only letters are allowed.');
+    } else {
+      setManualNameError('');
+    }
+  };
+
+  const handleInviteNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value;
+    const sanitized = raw.replace(/[^A-Za-z\s]/g, '');
+    setInviteForm(prev => ({ ...prev, trainerName: sanitized }));
+    if (raw !== sanitized) {
+      setInviteNameError('Only letters are allowed.');
+    } else {
+      setInviteNameError('');
+    }
+  };
+
+  const handleEditNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value;
+    const sanitized = raw.replace(/[^A-Za-z\s]/g, '');
+    setEditForm(prev => ({ ...prev, name: sanitized }));
+    if (raw !== sanitized) {
+      setEditNameError('Only letters are allowed.');
+    } else {
+      setEditNameError('');
+    }
+  };
 
   const getExpertiseList = (val: any): string[] => {
     if (!val) return [];
@@ -83,6 +155,11 @@ const GymAdminTrainers = () => {
   const handleManualAdd = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    if (!manualForm.name.trim() || !/^[a-zA-Z\s]+$/.test(manualForm.name.trim())) {
+      setManualNameError('Only letters are allowed in the Full Name field.');
+      alert('Only letters are allowed in the Full Name field.');
+      return;
+    }
     if (!validateEmail(manualForm.email)) {
       alert('Invalid email address format.');
       return;
@@ -106,6 +183,7 @@ const GymAdminTrainers = () => {
       setShowHireModal(false);
       setHireMethod(null);
       setManualForm({ name: '', email: '', phone: '', profilePhoto: '', specialization: '', experience: '', trainingMode: 'offline', qualifications: '', certifications: '', expertise: '', bio: '', fee: '', paymentType: 'Per Month', status: 'Active', availableDays: 'Monday to Friday', availableStartTime: '06:00 AM', availableEndTime: '08:00 PM', availableSlot: '', password: '', confirmPassword: '' });
+      setManualNameError('');
       setOtpSent(false);
       setOtpVerified(false);
       setOtpInput('');
@@ -117,6 +195,11 @@ const GymAdminTrainers = () => {
 
   const handleSendInvite = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!inviteForm.trainerName.trim() || !/^[a-zA-Z\s]+$/.test(inviteForm.trainerName.trim())) {
+      setInviteNameError('Only letters are allowed in the Trainer Name field.');
+      alert('Only letters are allowed in the Trainer Name field.');
+      return;
+    }
     if (!validateEmail(inviteForm.email)) {
       alert('Invalid email address format.');
       return;
@@ -132,6 +215,7 @@ const GymAdminTrainers = () => {
       setShowHireModal(false);
       setHireMethod(null);
       setInviteForm({ trainerName: '', email: '', phone: '', specialization: '', trainingMode: 'offline', personalMessage: '' });
+      setInviteNameError('');
       fetchTrainers();
     } catch (err: any) {
       alert(err.response?.data?.message || 'Failed to send invitation');
@@ -157,17 +241,34 @@ const GymAdminTrainers = () => {
 
   const handleDelete = async (id: string) => {
     if(!window.confirm("Are you sure you want to completely remove this trainer?")) return;
+    const targetTrainer = trainers.find(t => t._id === id || t.userId === id);
     try {
-      await api.delete(`/trainers/${id}`);
-      alert('Trainer removed');
+      const res = await api.delete(`/trainers/${id}`);
+      if (res.data?.success) {
+        setTrainers(prev => prev.filter(t => t._id !== id && t.userId !== id));
+        alert('Deleted Successfully');
+      } else {
+        alert(res.data?.message || 'Failed to remove trainer');
+      }
       fetchTrainers();
     } catch (err: any) {
-      alert('Failed to remove trainer');
+      alert(err.response?.data?.message || 'Failed to remove trainer');
+    }
+    if (targetTrainer) {
+      try {
+        const { addItem } = await import('../../utils/mockDb');
+        addItem('deletedTrainers', {
+          ...targetTrainer,
+          deletedAt: new Date().toISOString(),
+          reason: 'Trainer removed by gym owner'
+        });
+      } catch (e) {}
     }
   };
 
   const openEditModal = (trainer: any) => {
     setEditTrainer(trainer);
+    setEditNameError('');
     setEditForm({
       name: trainer.name || '',
       email: trainer.email || '',
@@ -191,6 +292,11 @@ const GymAdminTrainers = () => {
 
   const handleEditSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!editForm.name.trim() || !/^[a-zA-Z\s]+$/.test(editForm.name.trim())) {
+      setEditNameError('Only letters are allowed in the Full Name field.');
+      alert('Only letters are allowed in the Full Name field.');
+      return;
+    }
     if (!validateEmail(editForm.email)) {
       alert('Invalid email address format.');
       return;
@@ -273,6 +379,7 @@ const GymAdminTrainers = () => {
         <table className="w-full min-w-[700px] text-left text-sm text-[#64748B]">
           <thead className="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[#111827]">
             <tr>
+              <th className="px-4 py-4 font-bold whitespace-nowrap text-center w-14">S.No</th>
               <th className="px-6 py-4 font-bold whitespace-nowrap">Trainer Info</th>
               <th className="px-6 py-4 font-bold whitespace-nowrap">Specialization</th>
               <th className="px-6 py-4 font-bold whitespace-nowrap">Mode</th>
@@ -283,14 +390,17 @@ const GymAdminTrainers = () => {
           </thead>
           <tbody className="divide-y divide-[#E2E8F0]">
             {isLoading ? (
-              <tr><td colSpan={6} className="px-6 py-8 text-center">Loading trainers...</td></tr>
+              <tr><td colSpan={7} className="px-6 py-8 text-center">Loading trainers...</td></tr>
             ) : trainers.length === 0 && invitations.length === 0 ? (
-              <tr><td colSpan={6} className="px-6 py-8 text-center">No trainers found. Hire a trainer to get started.</td></tr>
+              <tr><td colSpan={7} className="px-6 py-8 text-center">No trainers found. Hire a trainer to get started.</td></tr>
             ) : (
               <>
                 {/* Active/Suspended/Pending Profiles */}
-                {trainers.map(trainer => (
+                {trainers.map((trainer, idx) => (
                   <tr key={trainer._id} className="hover:bg-[#FFF7ED] transition-colors">
+                    <td className="px-4 py-4 text-center font-medium text-[#64748B] w-14">
+                      {idx + 1}
+                    </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2">
                         <span className="font-bold text-[#111827]">{trainer.name}</span>
@@ -338,29 +448,30 @@ const GymAdminTrainers = () => {
                       </span>
                     </td>
                     <td className="px-6 py-4 flex space-x-3 items-center">
-                      <button onClick={() => setSelectedTrainer(trainer)} className="text-[#64748B] hover:text-[#EA580C] transition-colors" title="View Profile">
+                      <button onClick={() => setSelectedTrainer(trainer)} className="text-[#64748B] hover:text-[#EA580C] transition-colors cursor-pointer" title="View Profile">
                         <Eye size={18} />
                       </button>
-                      <button onClick={() => openEditModal(trainer)} className="text-[#64748B] hover:text-[#EA580C] transition-colors" title="Edit Trainer">
+                      <button onClick={() => openEditModal(trainer)} className="text-[#64748B] hover:text-[#EA580C] transition-colors cursor-pointer" title="Edit Trainer">
                         <Edit size={18} />
                       </button>
                       
-                      <div className="flex space-x-2 border-l border-r border-[#E2E8F0] px-3">
-                        <button onClick={() => handleSetStatus(trainer._id, 'Active')} className={`transition-colors ${trainer.status === 'Active' ? 'text-[#EA580C]' : 'text-[#64748B] hover:text-[#EA580C]'}`} title="Set Active">
-                          <CheckCircle size={18} />
-                        </button>
-                        <button onClick={() => handleSetStatus(trainer._id, 'Inactive')} className={`transition-colors ${trainer.status === 'Inactive' || trainer.status === 'Suspended' ? 'text-[#EA580C]' : 'text-[#64748B] hover:text-[#EA580C]'}`} title="Set Inactive">
-                          <PauseCircle size={18} />
-                        </button>
-                        <button onClick={() => handleSetStatus(trainer._id, 'Pending')} className={`transition-colors ${trainer.status === 'Pending' ? 'text-[#EA580C]' : 'text-[#64748B] hover:text-[#EA580C]'}`} title="Set Pending">
-                          <Clock size={18} />
-                        </button>
-                        <button onClick={() => handleSetStatus(trainer._id, 'Rejected')} className={`transition-colors ${trainer.status === 'Rejected' ? 'text-[#EA580C]' : 'text-[#64748B] hover:text-[#EA580C]'}`} title="Set Rejected">
-                          <Ban size={18} />
-                        </button>
+                      {/* Status Dropdown Option: Active, Inactive, Pending, Rejected */}
+                      <div className="relative inline-flex items-center">
+                        <select
+                          value={trainer.status === 'Suspended' ? 'Inactive' : (trainer.status || 'Active')}
+                          onChange={(e) => handleSetStatus(trainer._id, e.target.value)}
+                          className="text-xs font-bold pl-2.5 pr-6 py-1 bg-[#FFFFFF] hover:bg-[#FFF7ED] border border-[#CBD5E1] hover:border-[#FDBA74] rounded-lg text-[#111827] focus:outline-none focus:ring-1 focus:ring-[#EA580C] cursor-pointer appearance-none transition-colors shadow-xs"
+                          title="Change Trainer Status"
+                        >
+                          <option value="Active">Active</option>
+                          <option value="Inactive">Inactive</option>
+                          <option value="Pending">Pending</option>
+                          <option value="Rejected">Rejected</option>
+                        </select>
+                        <ChevronDown size={12} className="absolute right-1.5 pointer-events-none text-[#64748B]" />
                       </div>
                       
-                      <button onClick={() => handleDelete(trainer._id)} className="text-[#64748B] hover:text-red-500 transition-colors" title="Remove">
+                      <button onClick={() => handleDelete(trainer._id)} className="text-[#64748B] hover:text-red-500 transition-colors cursor-pointer" title="Remove">
                         <Trash2 size={18} />
                       </button>
                     </td>
@@ -368,8 +479,11 @@ const GymAdminTrainers = () => {
                 ))}
                 
                 {/* Pending Invitations */}
-                {invitations.map(invite => (
+                {invitations.map((invite, i) => (
                   <tr key={invite._id} className="bg-[#FFF7ED] hover:bg-[#FFF7ED] transition-colors opacity-70">
+                    <td className="px-4 py-4 text-center font-medium text-[#64748B] w-14">
+                      {trainers.length + i + 1}
+                    </td>
                     <td className="px-6 py-4">
                       <div className="font-bold text-[#111827]">{invite.trainerName} <span className="text-xs font-normal ml-2 bg-[#F8FAFC] text-[#EA580C] px-2 py-0.5 rounded-full">Invited</span></div>
                       <div className="text-xs">{invite.email}</div>
@@ -441,7 +555,7 @@ const GymAdminTrainers = () => {
                 </p>
               </div>
               <button 
-                onClick={() => { setShowHireModal(false); setHireMethod(null); setOtpVerified(false); setOtpSent(false); setOtpInput(''); }} 
+                onClick={() => { setShowHireModal(false); setHireMethod(null); setOtpVerified(false); setOtpSent(false); setOtpInput(''); setManualNameError(''); setInviteNameError(''); }} 
                 className="text-[#64748B] hover:text-[#C2410C]"
               >
                 <X size={24} />
@@ -493,10 +607,13 @@ const GymAdminTrainers = () => {
                     <input 
                       required 
                       value={manualForm.name} 
-                      onChange={e => setManualForm({...manualForm, name: e.target.value})} 
+                      onKeyDown={e => handleLetterKeyDown(e, setManualNameError)}
+                      onChange={handleManualNameChange}
+                      onPaste={e => handleLetterPaste(e, manualForm.name, val => setManualForm(prev => ({ ...prev, name: val })), setManualNameError)}
                       placeholder="e.g. John Doe"
-                      className="w-full border border-[#E2E8F0] rounded-lg px-4 py-2 outline-none focus:border-[#FDBA74]" 
+                      className={`w-full border rounded-lg px-4 py-2 outline-none transition-colors ${manualNameError ? 'border-red-500 focus:border-red-500 ring-1 ring-red-500' : 'border-[#E2E8F0] focus:border-[#FDBA74]'}`} 
                     />
+                    {manualNameError && <p className="text-red-500 text-xs mt-1 font-medium">{manualNameError}</p>}
                   </div>
                   <div className="flex flex-col">
                     <label className="block text-sm font-bold text-[#64748B] mb-1">Email *</label>
@@ -798,7 +915,16 @@ const GymAdminTrainers = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-bold text-[#64748B] mb-1">Trainer Name *</label>
-                  <input required value={inviteForm.trainerName} onChange={e => setInviteForm({...inviteForm, trainerName: e.target.value})} className="w-full border border-[#E2E8F0] rounded-lg px-4 py-2 outline-none focus:border-[#FDBA74]" />
+                  <input 
+                    required 
+                    value={inviteForm.trainerName} 
+                    onKeyDown={e => handleLetterKeyDown(e, setInviteNameError)}
+                    onChange={handleInviteNameChange}
+                    onPaste={e => handleLetterPaste(e, inviteForm.trainerName, val => setInviteForm(prev => ({ ...prev, trainerName: val })), setInviteNameError)}
+                    placeholder="e.g. John Doe"
+                    className={`w-full border rounded-lg px-4 py-2 outline-none transition-colors ${inviteNameError ? 'border-red-500 focus:border-red-500 ring-1 ring-red-500' : 'border-[#E2E8F0] focus:border-[#FDBA74]'}`} 
+                  />
+                  {inviteNameError && <p className="text-red-500 text-xs mt-1 font-medium">{inviteNameError}</p>}
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-[#64748B] mb-1">Email Address *</label>
@@ -1084,7 +1210,16 @@ const GymAdminTrainers = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-bold text-[#64748B] mb-1">Full Name *</label>
-                    <input required value={editForm.name} onChange={e => setEditForm({...editForm, name: e.target.value})} className="w-full border border-[#E2E8F0] rounded-lg px-4 py-2 outline-none focus:border-[#FDBA74]" />
+                    <input 
+                      required 
+                      value={editForm.name} 
+                      onKeyDown={e => handleLetterKeyDown(e, setEditNameError)}
+                      onChange={handleEditNameChange}
+                      onPaste={e => handleLetterPaste(e, editForm.name, val => setEditForm(prev => ({ ...prev, name: val })), setEditNameError)}
+                      placeholder="e.g. John Doe"
+                      className={`w-full border rounded-lg px-4 py-2 outline-none transition-colors ${editNameError ? 'border-red-500 focus:border-red-500 ring-1 ring-red-500' : 'border-[#E2E8F0] focus:border-[#FDBA74]'}`} 
+                    />
+                    {editNameError && <p className="text-red-500 text-xs mt-1 font-medium">{editNameError}</p>}
                   </div>
                   <div>
                     <label className="block text-sm font-bold text-[#64748B] mb-1">Email *</label>

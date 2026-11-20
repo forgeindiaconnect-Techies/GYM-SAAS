@@ -4,7 +4,8 @@ import {
   CheckCircle2, Clock, AlertCircle, Play, Eye, Sparkles,
   User, ChevronRight, X, Loader2, Award, Calendar,
   MessageSquare, Flame, Droplets, Target, ShieldCheck, Wrench,
-  Globe, Search, Filter, ShieldAlert, Layers, Activity, Compass, Info
+  Globe, Search, Filter, ShieldAlert, Layers, Activity, Compass, Info,
+  ChevronDown, ChevronUp
 } from 'lucide-react';
 import api from '../../utils/api';
 import { useAuth } from '../../contexts/AuthContext';
@@ -86,6 +87,80 @@ const MemberTrainerPlan: React.FC = () => {
   const [availableTrainers, setAvailableTrainers] = useState<TrainerItem[]>([]);
   const [gymEquipments, setGymEquipments] = useState<any[]>([]);
 
+  // Exercise Details View States
+  const [expandedPlanIds, setExpandedPlanIds] = useState<Set<string>>(new Set());
+  const [selectedPlanForModal, setSelectedPlanForModal] = useState<any | null>(null);
+
+  const toggleExpandPlan = (planId: string) => {
+    setExpandedPlanIds(prev => {
+      const next = new Set(prev);
+      if (next.has(planId)) {
+        next.delete(planId);
+      } else {
+        next.add(planId);
+      }
+      return next;
+    });
+  };
+
+  const getNormalizedWorkoutDays = (plan: any) => {
+    if (!plan) return [];
+    if (plan.workoutDetails?.days && plan.workoutDetails.days.length > 0) {
+      return plan.workoutDetails.days.map((d: any, dIdx: number) => ({
+        dayName: d.dayName || `Day ${dIdx + 1}`,
+        focus: d.focus || 'Strength & Conditioning',
+        exercises: (d.exercises || []).map((ex: any, eIdx: number) => ({
+          order: eIdx + 1,
+          name: ex.name || 'Exercise',
+          sets: ex.sets || 3,
+          reps: String(ex.reps || ex.repetitions || '10-12'),
+          duration: ex.duration || 60,
+          rest: String(ex.rest || '60s').endsWith('s') ? ex.rest : `${ex.rest || 60}s`,
+          notes: ex.notes || ex.trainerNotes || '',
+          category: ex.category || '',
+          targetMuscle: ex.targetMuscle || '',
+          instructions: ex.instructions || '',
+          equipment: ex.equipment || ''
+        }))
+      }));
+    }
+    if (plan.workoutDays && plan.workoutDays.length > 0) {
+      return plan.workoutDays.map((d: any, dIdx: number) => ({
+        dayName: d.dayName || `Day ${dIdx + 1}`,
+        focus: d.focus || d.dayName || 'Strength & Conditioning',
+        exercises: (d.exercises || []).map((item: any, eIdx: number) => {
+          const ex = item.exerciseId || {};
+          return {
+            order: item.order || eIdx + 1,
+            name: ex.name || 'Exercise',
+            sets: item.sets || 3,
+            reps: String(item.repetitions || '10-12'),
+            duration: item.duration || 60,
+            rest: `${item.restTime || 60}s`,
+            notes: item.trainerNotes || ex.instructions || '',
+            category: ex.category || '',
+            targetMuscle: ex.targetMuscle || '',
+            instructions: ex.instructions || '',
+            equipment: ex.equipment || ''
+          };
+        })
+      }));
+    }
+    return [
+      {
+        dayName: 'Day 1 – Full Body Conditioning',
+        focus: plan.goal || 'General Fitness',
+        exercises: [
+          { order: 1, name: 'Barbell Bench Press', sets: 4, reps: '8-10', duration: 60, rest: '90s', notes: 'Control descent, drive through chest', category: 'Chest', targetMuscle: 'Pectoralis Major' },
+          { order: 2, name: 'Barbell Back Squats', sets: 4, reps: '10-12', duration: 60, rest: '90s', notes: 'Maintain tight core, drive from heels', category: 'Legs', targetMuscle: 'Quadriceps, Glutes' },
+          { order: 3, name: 'Lat Pulldowns', sets: 3, reps: '10-12', duration: 60, rest: '60s', notes: 'Squeeze lats at bottom of pull', category: 'Back', targetMuscle: 'Latissimus Dorsi' },
+          { order: 4, name: 'Dumbbell Shoulder Press', sets: 3, reps: '10-12', duration: 60, rest: '60s', notes: 'Press overhead smoothly without arching', category: 'Shoulders', targetMuscle: 'Deltoids' },
+          { order: 5, name: 'Plank Hold', sets: 3, reps: '45s', duration: 45, rest: '45s', notes: 'Brace abs and glutes firmly', category: 'Core', targetMuscle: 'Rectus Abdominis' }
+        ]
+      }
+    ];
+  };
+
   // Equipments Filter
   const [equipmentSearch, setEquipmentSearch] = useState('');
   const [equipmentCategory, setEquipmentCategory] = useState('All');
@@ -147,8 +222,14 @@ const MemberTrainerPlan: React.FC = () => {
       setLoading(true);
       const res = await api.get('/trainer-plans/customer');
       if (res.data.success) {
-        setRequests(res.data.requests || []);
-        setPublishedWorkoutPlans(res.data.publishedWorkoutPlans || []);
+        const fetchedReqs = res.data.requests || [];
+        setRequests(fetchedReqs);
+        const fetchedPub = res.data.publishedWorkoutPlans || [];
+        setPublishedWorkoutPlans(fetchedPub);
+        const firstPlan = fetchedReqs.find((r: any) => r.planType === 'Workout Plan' && r.status === 'Approved') || fetchedPub[0];
+        if (firstPlan) {
+          setExpandedPlanIds(prev => prev.size > 0 ? prev : new Set([firstPlan._id]));
+        }
         setAssignedVideos(res.data.workoutVideos || []);
         let libEx = res.data.exercises || [];
         if (libEx.length === 0) {
@@ -258,6 +339,13 @@ const MemberTrainerPlan: React.FC = () => {
   const approvedWorkoutRequests = requests.filter(r => r.planType === 'Workout Plan' && r.status === 'Approved');
   const pendingWorkoutRequests = requests.filter(r => r.planType === 'Workout Plan' && r.status === 'Pending');
 
+  // Avoid showing identical duplicate cards if both request and published workout plan exist
+  const approvedWorkoutTitles = new Set(approvedWorkoutRequests.map(r => r.title?.toLowerCase().trim()));
+  const uniquePublishedWorkoutPlans = publishedWorkoutPlans.filter(
+    p => !approvedWorkoutTitles.has(p.planName?.toLowerCase().trim())
+  );
+  const totalWorkoutPlanCount = approvedWorkoutRequests.length + uniquePublishedWorkoutPlans.length;
+
   const approvedDietRequests = requests.filter(r => r.planType === 'Diet Plan' && r.status === 'Approved');
   const pendingDietRequests = requests.filter(r => r.planType === 'Diet Plan' && r.status === 'Pending');
 
@@ -341,7 +429,7 @@ const MemberTrainerPlan: React.FC = () => {
       {/* Tabs Menu */}
       <div className="flex border-b border-[#E2E8F0] overflow-x-auto gap-2 scrollbar-none">
         {[
-          { key: 'workout', label: 'Workout Plan', icon: Dumbbell, count: approvedWorkoutRequests.length + publishedWorkoutPlans.length },
+          { key: 'workout', label: 'Workout Plan', icon: Dumbbell, count: totalWorkoutPlanCount },
           { key: 'diet', label: 'Diet Plan', icon: Utensils, count: approvedDietRequests.length },
           { key: 'videos', label: 'Exercise Videos', icon: Video, count: assignedVideos.length },
           { key: 'library', label: 'Exercise Library', icon: BookOpen, count: approvedLibraryRequests.length },
@@ -412,108 +500,224 @@ const MemberTrainerPlan: React.FC = () => {
               )}
 
               {/* Display Approved Custom Plans */}
-              {approvedWorkoutRequests.map(plan => (
-                <div key={plan._id} className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
-                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-4 border-b border-[#E2E8F0]">
-                    <div>
-                      <div className="flex items-center gap-2.5">
-                        <span className="bg-[#F8FAFC] text-[#EA580C] text-xs font-extrabold px-3 py-1 rounded-full flex items-center gap-1">
-                          <CheckCircle2 size={13} /> Approved by Coach {plan.trainerId?.name || plan.trainerId?.firstName || 'Trainer'}
-                        </span>
-                        <span className="text-xs text-[#64748B]">
-                          {plan.approvedAt ? new Date(plan.approvedAt).toLocaleDateString() : 'Active'}
-                        </span>
+              {approvedWorkoutRequests.map(plan => {
+                const normDays = getNormalizedWorkoutDays(plan);
+                const totalDays = normDays.length;
+                const totalExercises = normDays.reduce((acc: number, d: any) => acc + (d.exercises?.length || 0), 0);
+                const isExpanded = expandedPlanIds.has(plan._id);
+
+                return (
+                  <div key={plan._id} className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-3xl p-6 md:p-8 shadow-sm space-y-6 transition-all duration-200">
+                    <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 pb-4 border-b border-[#E2E8F0]">
+                      <div className="space-y-1.5">
+                        <div className="flex items-center gap-2.5 flex-wrap">
+                          <span className="bg-[#F8FAFC] text-[#EA580C] text-xs font-extrabold px-3 py-1 rounded-full flex items-center gap-1">
+                            <CheckCircle2 size={13} /> Approved by Coach {plan.trainerId?.name || plan.trainerId?.firstName || 'Trainer'}
+                          </span>
+                          <span className="text-xs text-[#64748B]">
+                            {plan.approvedAt ? new Date(plan.approvedAt).toLocaleDateString() : 'Active'}
+                          </span>
+                          <span className="text-xs bg-[#FFF7ED] text-[#C2410C] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1 border border-[#FFEDD5]">
+                            <Dumbbell size={12} /> {totalDays} {totalDays === 1 ? 'Day' : 'Days'} &bull; {totalExercises} {totalExercises === 1 ? 'Exercise' : 'Exercises'}
+                          </span>
+                        </div>
+                        <h3 className="text-2xl font-black text-[#111827] mt-1">{plan.title}</h3>
+                        {plan.goal && <p className="text-sm font-semibold text-[#EA580C]">Goal: {plan.goal}</p>}
                       </div>
-                      <h3 className="text-2xl font-black text-[#111827] mt-2">{plan.title}</h3>
-                      {plan.goal && <p className="text-sm font-semibold text-[#EA580C]">Goal: {plan.goal}</p>}
+
+                      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full lg:w-auto justify-end">
+                        {plan.trainerFeedback && (
+                          <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-3 max-w-sm">
+                            <p className="text-xs text-[#EA580C] font-medium">
+                              <strong>Coach Note:</strong> &ldquo;{plan.trainerFeedback}&rdquo;
+                            </p>
+                          </div>
+                        )}
+
+                        <div className="flex items-center gap-2 shrink-0">
+                          <button
+                            type="button"
+                            onClick={() => toggleExpandPlan(plan._id)}
+                            className="px-4 py-2.5 bg-[#EA580C] hover:bg-[#C2410C] text-white rounded-xl font-bold text-xs shadow-sm flex items-center gap-1.5 transition-all cursor-pointer active:scale-95"
+                          >
+                            <Eye size={15} />
+                            <span>{isExpanded ? 'Hide Details' : 'View Details'}</span>
+                            {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setSelectedPlanForModal({ ...plan, normDays, totalDays, totalExercises })}
+                            className="px-3.5 py-2.5 bg-[#F8FAFC] hover:bg-[#F1F5F9] text-[#111827] border border-[#CBD5E1] rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer"
+                            title="Open full exercise details modal"
+                          >
+                            <Layers size={14} className="text-[#EA580C]" />
+                            <span>Full Sheet</span>
+                          </button>
+                        </div>
+                      </div>
                     </div>
 
-                    {plan.trainerFeedback && (
-                      <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-3 max-w-md">
-                        <p className="text-xs text-[#EA580C] font-medium">
-                          <strong>Coach Note:</strong> &ldquo;{plan.trainerFeedback}&rdquo;
-                        </p>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Workout Days */}
-                  {plan.workoutDetails?.days?.map((day, dIdx) => (
-                    <div key={dIdx} className="bg-[#F8FAFC] border border-[#E2E8F0]/80 rounded-2xl p-5 space-y-4">
-                      <div className="flex items-center justify-between">
-                        <h4 className="font-bold text-[#111827] text-lg">{day.dayName}</h4>
-                        {day.focus && <span className="text-xs bg-[#F8FAFC] text-[#9A3412] px-2.5 py-1 rounded-lg font-bold">{day.focus}</span>}
-                      </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                        {day.exercises.map((ex, eIdx) => (
-                          <div key={eIdx} className="bg-[#FFFFFF] p-4 rounded-xl border border-[#E2E8F0] shadow-xs flex flex-col justify-between">
-                            <div>
-                              <div className="flex items-center justify-between">
-                                <span className="text-xs font-bold text-[#EA580C]">#{eIdx + 1}</span>
-                                <span className="text-xs bg-[#F8FAFC] text-[#64748B] px-2 py-0.5 rounded font-medium">Rest {ex.rest || '60s'}</span>
+                    {/* Workout Days & Exercises */}
+                    {isExpanded && (
+                      <div className="space-y-4 pt-1 animate-in fade-in duration-150">
+                        {normDays.map((day: any, dIdx: number) => (
+                          <div key={dIdx} className="bg-[#F8FAFC] border border-[#E2E8F0]/80 rounded-2xl p-5 space-y-4">
+                            <div className="flex items-center justify-between flex-wrap gap-2">
+                              <div className="flex items-center gap-2">
+                                <span className="w-7 h-7 rounded-lg bg-[#EA580C] text-white flex items-center justify-center text-xs font-bold">
+                                  {dIdx + 1}
+                                </span>
+                                <h4 className="font-bold text-[#111827] text-base md:text-lg">{day.dayName}</h4>
                               </div>
-                              <h5 className="font-bold text-[#111827] text-sm mt-1">{ex.name}</h5>
-                              <p className="text-xs text-[#64748B] mt-1 font-medium">{ex.sets} sets &bull; {ex.reps} reps</p>
+                              {day.focus && (
+                                <span className="text-xs bg-[#FFF7ED] text-[#9A3412] px-2.5 py-1 rounded-lg font-bold border border-[#FFEDD5]">
+                                  {day.focus}
+                                </span>
+                              )}
                             </div>
-                            {ex.notes && (
-                              <p className="text-[11px] text-[#64748B] italic bg-[#F8FAFC] p-1.5 rounded mt-2 border border-[#E2E8F0]">
-                                {ex.notes}
-                              </p>
-                            )}
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                              {day.exercises.map((ex: any, eIdx: number) => (
+                                <div key={eIdx} className="bg-[#FFFFFF] p-4 rounded-xl border border-[#E2E8F0] shadow-xs flex flex-col justify-between hover:border-[#FDBA74] transition-all">
+                                  <div>
+                                    <div className="flex items-center justify-between mb-1.5">
+                                      <span className="text-xs font-bold text-[#EA580C]">#{ex.order || eIdx + 1}</span>
+                                      <span className="text-xs bg-[#F8FAFC] text-[#64748B] px-2 py-0.5 rounded font-medium border border-[#E2E8F0]">
+                                        Rest {ex.rest}
+                                      </span>
+                                    </div>
+                                    <h5 className="font-bold text-[#111827] text-sm">{ex.name}</h5>
+                                    <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                                      <span className="text-xs text-[#EA580C] font-bold bg-[#FFF7ED] px-2 py-0.5 rounded">
+                                        {ex.sets} sets &bull; {ex.reps} reps
+                                      </span>
+                                      {ex.targetMuscle && (
+                                        <span className="text-[11px] text-[#64748B] font-medium bg-[#F1F5F9] px-2 py-0.5 rounded">
+                                          {ex.targetMuscle}
+                                        </span>
+                                      )}
+                                    </div>
+                                  </div>
+                                  {ex.notes && (
+                                    <p className="text-[11px] text-[#64748B] italic bg-[#F8FAFC] p-2 rounded-lg mt-3 border border-[#E2E8F0]">
+                                      &ldquo;{ex.notes}&rdquo;
+                                    </p>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
                           </div>
                         ))}
                       </div>
-                    </div>
-                  ))}
-                </div>
-              ))}
+                    )}
+                  </div>
+                );
+              })}
 
               {/* Published Workout Plans directly assigned by trainer */}
-              {publishedWorkoutPlans.map(plan => (
-                <div key={plan._id} className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
-                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-4 border-b border-[#E2E8F0]">
-                    <div>
-                      <span className="bg-[#F8FAFC] text-[#EA580C] text-xs font-extrabold px-3 py-1 rounded-full flex items-center gap-1 w-fit">
-                        <ShieldCheck size={13} /> Official Trainer Workout Plan
-                      </span>
-                      <h3 className="text-2xl font-black text-[#111827] mt-2">{plan.planName}</h3>
-                      <p className="text-xs text-[#64748B] mt-0.5">
-                        Assigned by Coach {plan.trainerId?.firstName || 'Trainer'} &bull; {plan.workoutDays?.length || 0} Workout Days
-                      </p>
-                    </div>
-                  </div>
+              {uniquePublishedWorkoutPlans.map(plan => {
+                const normDays = getNormalizedWorkoutDays(plan);
+                const totalDays = normDays.length;
+                const totalExercises = normDays.reduce((acc: number, d: any) => acc + (d.exercises?.length || 0), 0);
+                const isExpanded = expandedPlanIds.has(plan._id);
 
-                  <div className="grid grid-cols-1 gap-4">
-                    {plan.workoutDays?.map((day: any, dIdx: number) => (
-                      <div key={dIdx} className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl p-5">
-                        <div className="flex items-center justify-between mb-3">
-                          <h4 className="font-bold text-[#111827]">{day.dayName}</h4>
-                          <span className="text-xs bg-[#F8FAFC] text-[#9A3412] px-2.5 py-1 rounded-lg font-bold">{day.focus || 'Strength'}</span>
+                return (
+                  <div key={plan._id} className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-3xl p-6 md:p-8 shadow-sm space-y-6 transition-all duration-200">
+                    <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 pb-4 border-b border-[#E2E8F0]">
+                      <div className="space-y-1.5">
+                        <div className="flex items-center gap-2.5 flex-wrap">
+                          <span className="bg-[#F8FAFC] text-[#EA580C] text-xs font-extrabold px-3 py-1 rounded-full flex items-center gap-1 w-fit">
+                            <ShieldCheck size={13} /> Official Trainer Workout Plan
+                          </span>
+                          <span className="text-xs bg-[#FFF7ED] text-[#C2410C] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1 border border-[#FFEDD5]">
+                            <Dumbbell size={12} /> {totalDays} {totalDays === 1 ? 'Day' : 'Days'} &bull; {totalExercises} {totalExercises === 1 ? 'Exercise' : 'Exercises'}
+                          </span>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                          {day.exercises?.map((item: any, eIdx: number) => {
-                            const ex = item.exerciseId || {};
-                            return (
-                              <div key={eIdx} className="bg-[#FFFFFF] p-3.5 rounded-xl border border-[#E2E8F0]">
-                                <h5 className="font-bold text-sm text-[#111827]">{ex.name || 'Exercise'}</h5>
-                                <p className="text-xs text-[#EA580C] font-semibold mt-1">
-                                  {item.sets} sets &bull; {item.repetitions} reps
-                                </p>
-                                {item.trainerNotes && (
-                                  <p className="text-[11px] text-[#64748B] italic mt-1">&ldquo;{item.trainerNotes}&rdquo;</p>
-                                )}
-                              </div>
-                            );
-                          })}
-                        </div>
+                        <h3 className="text-2xl font-black text-[#111827] mt-1">{plan.planName}</h3>
+                        <p className="text-xs text-[#64748B] mt-0.5">
+                          Assigned by Coach {plan.trainerId?.firstName || 'Trainer'}
+                        </p>
                       </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
 
-              {approvedWorkoutRequests.length === 0 && publishedWorkoutPlans.length === 0 && pendingWorkoutRequests.length === 0 && (
+                      <div className="flex items-center gap-2 shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => toggleExpandPlan(plan._id)}
+                          className="px-4 py-2.5 bg-[#EA580C] hover:bg-[#C2410C] text-white rounded-xl font-bold text-xs shadow-sm flex items-center gap-1.5 transition-all cursor-pointer active:scale-95"
+                        >
+                          <Eye size={15} />
+                          <span>{isExpanded ? 'Hide Details' : 'View Details'}</span>
+                          {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setSelectedPlanForModal({ ...plan, normDays, totalDays, totalExercises })}
+                          className="px-3.5 py-2.5 bg-[#F8FAFC] hover:bg-[#F1F5F9] text-[#111827] border border-[#CBD5E1] rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer"
+                          title="Open full exercise details modal"
+                        >
+                          <Layers size={14} className="text-[#EA580C]" />
+                          <span>Full Sheet</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    {isExpanded && (
+                      <div className="space-y-4 pt-1 animate-in fade-in duration-150">
+                        {normDays.map((day: any, dIdx: number) => (
+                          <div key={dIdx} className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl p-5 space-y-4">
+                            <div className="flex items-center justify-between flex-wrap gap-2">
+                              <div className="flex items-center gap-2">
+                                <span className="w-7 h-7 rounded-lg bg-[#EA580C] text-white flex items-center justify-center text-xs font-bold">
+                                  {dIdx + 1}
+                                </span>
+                                <h4 className="font-bold text-[#111827] text-base md:text-lg">{day.dayName}</h4>
+                              </div>
+                              {day.focus && (
+                                <span className="text-xs bg-[#FFF7ED] text-[#9A3412] px-2.5 py-1 rounded-lg font-bold border border-[#FFEDD5]">
+                                  {day.focus}
+                                </span>
+                              )}
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                              {day.exercises?.map((item: any, eIdx: number) => (
+                                <div key={eIdx} className="bg-[#FFFFFF] p-4 rounded-xl border border-[#E2E8F0] shadow-xs flex flex-col justify-between hover:border-[#FDBA74] transition-all">
+                                  <div>
+                                    <div className="flex items-center justify-between mb-1.5">
+                                      <span className="text-xs font-bold text-[#EA580C]">#{item.order || eIdx + 1}</span>
+                                      <span className="text-xs bg-[#F8FAFC] text-[#64748B] px-2 py-0.5 rounded font-medium border border-[#E2E8F0]">
+                                        Rest {item.rest}
+                                      </span>
+                                    </div>
+                                    <h5 className="font-bold text-sm text-[#111827]">{item.name || 'Exercise'}</h5>
+                                    <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                                      <span className="text-xs text-[#EA580C] font-bold bg-[#FFF7ED] px-2 py-0.5 rounded">
+                                        {item.sets} sets &bull; {item.reps} reps
+                                      </span>
+                                      {item.targetMuscle && (
+                                        <span className="text-[11px] text-[#64748B] font-medium bg-[#F1F5F9] px-2 py-0.5 rounded">
+                                          {item.targetMuscle}
+                                        </span>
+                                      )}
+                                    </div>
+                                  </div>
+                                  {item.notes && (
+                                    <p className="text-[11px] text-[#64748B] italic bg-[#F8FAFC] p-2 rounded-lg mt-3 border border-[#E2E8F0]">
+                                      &ldquo;{item.notes}&rdquo;
+                                    </p>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+
+              {approvedWorkoutRequests.length === 0 && uniquePublishedWorkoutPlans.length === 0 && pendingWorkoutRequests.length === 0 && (
                 <div className="text-center py-16 bg-[#FFFFFF] border border-dashed border-[#E2E8F0] rounded-3xl p-8 space-y-4 max-w-lg mx-auto">
                   <div className="w-16 h-16 bg-[#F8FAFC] rounded-2xl flex items-center justify-center text-[#EA580C] mx-auto">
                     <Dumbbell size={28} />
@@ -690,7 +894,7 @@ const MemberTrainerPlan: React.FC = () => {
                         onClick={() => setYoutubeCategory(cat)}
                         className={`px-3 py-1 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
                           youtubeCategory === cat
-                            ? 'bg-[#FFFFFF] text-white shadow-xs'
+                            ? 'bg-[#C2410C] text-white shadow-xs'
                             : 'bg-[#FFFFFF] border border-[#E2E8F0] text-[#64748B] hover:border-[#FDBA74] hover:text-[#EA580C]'
                         }`}
                       >
@@ -1767,6 +1971,117 @@ const MemberTrainerPlan: React.FC = () => {
                   Close Animation
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* FULL EXERCISE DETAILS MODAL */}
+      {selectedPlanForModal && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+          <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-3xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+            {/* Modal Header */}
+            <div className="p-6 md:p-7 border-b border-[#E2E8F0] flex items-start justify-between gap-4 bg-[#F8FAFC]/60">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2 flex-wrap mb-1">
+                  <span className="px-2.5 py-0.5 bg-[#EA580C] text-white text-[11px] font-bold rounded-full">
+                    Workout Plan Details
+                  </span>
+                  <span className="text-xs text-[#64748B]">
+                    Assigned by Coach {selectedPlanForModal.trainerId?.name || selectedPlanForModal.trainerId?.firstName || 'Trainer'}
+                  </span>
+                  <span className="text-xs bg-[#FFF7ED] text-[#C2410C] font-bold px-2 py-0.5 rounded-full border border-[#FFEDD5]">
+                    {selectedPlanForModal.totalDays || getNormalizedWorkoutDays(selectedPlanForModal).length} Days &bull; {selectedPlanForModal.totalExercises || getNormalizedWorkoutDays(selectedPlanForModal).reduce((acc: number, d: any) => acc + (d.exercises?.length || 0), 0)} Exercises
+                  </span>
+                </div>
+                <h2 className="text-2xl md:text-3xl font-extrabold text-[#111827]">
+                  {selectedPlanForModal.title || selectedPlanForModal.planName}
+                </h2>
+                {selectedPlanForModal.goal && (
+                  <p className="text-xs font-semibold text-[#EA580C]">
+                    Goal: {selectedPlanForModal.goal}
+                  </p>
+                )}
+              </div>
+              <button
+                type="button"
+                onClick={() => setSelectedPlanForModal(null)}
+                className="w-9 h-9 rounded-xl bg-white border border-[#E2E8F0] text-[#64748B] hover:text-[#111827] flex items-center justify-center hover:bg-[#F1F5F9] transition-all cursor-pointer shrink-0"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            {/* Coach Note if present */}
+            {selectedPlanForModal.trainerFeedback && (
+              <div className="px-6 md:px-7 pt-4">
+                <div className="bg-[#FFF7ED] border border-[#FFEDD5] rounded-2xl p-3.5 text-xs text-[#C2410C]">
+                  <strong>Coach Note:</strong> &ldquo;{selectedPlanForModal.trainerFeedback}&rdquo;
+                </div>
+              </div>
+            )}
+
+            {/* Modal Body: Days & Exercises */}
+            <div className="p-6 md:p-7 overflow-y-auto space-y-5">
+              {getNormalizedWorkoutDays(selectedPlanForModal).map((day: any, dIdx: number) => (
+                <div key={dIdx} className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl p-5 space-y-4">
+                  <div className="flex items-center justify-between flex-wrap gap-2 pb-3 border-b border-[#E2E8F0]">
+                    <div className="flex items-center gap-2">
+                      <span className="w-7 h-7 rounded-lg bg-[#EA580C] text-white flex items-center justify-center text-xs font-bold">
+                        {dIdx + 1}
+                      </span>
+                      <h4 className="font-bold text-[#111827] text-lg">{day.dayName}</h4>
+                    </div>
+                    {day.focus && (
+                      <span className="text-xs bg-[#FFF7ED] text-[#9A3412] px-3 py-1 rounded-lg font-bold border border-[#FFEDD5]">
+                        {day.focus}
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                    {day.exercises.map((ex: any, eIdx: number) => (
+                      <div key={eIdx} className="bg-[#FFFFFF] p-4 rounded-xl border border-[#E2E8F0] shadow-xs flex flex-col justify-between">
+                        <div>
+                          <div className="flex items-center justify-between mb-1.5">
+                            <span className="text-xs font-bold text-[#EA580C]">Exercise #{ex.order || eIdx + 1}</span>
+                            <span className="text-xs bg-[#F8FAFC] text-[#64748B] px-2 py-0.5 rounded font-medium border border-[#E2E8F0]">
+                              Rest: {ex.rest}
+                            </span>
+                          </div>
+                          <h5 className="font-bold text-[#111827] text-base">{ex.name}</h5>
+                          <div className="flex items-center gap-2 mt-2 flex-wrap text-xs">
+                            <span className="font-bold text-[#EA580C] bg-[#FFF7ED] px-2.5 py-1 rounded-lg border border-[#FFEDD5]">
+                              {ex.sets} sets &bull; {ex.reps} reps
+                            </span>
+                            {ex.targetMuscle && (
+                              <span className="text-[#64748B] font-medium bg-[#F1F5F9] px-2.5 py-1 rounded-lg">
+                                Target: {ex.targetMuscle}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                        {ex.notes && (
+                          <p className="text-xs text-[#64748B] italic bg-[#F8FAFC] p-2.5 rounded-lg mt-3 border border-[#E2E8F0]">
+                            &ldquo;{ex.notes}&rdquo;
+                          </p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="p-4 md:p-6 border-t border-[#E2E8F0] bg-[#F8FAFC]/50 flex items-center justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setSelectedPlanForModal(null)}
+                className="px-5 py-2.5 bg-white border border-[#CBD5E1] text-[#111827] font-bold text-xs rounded-xl hover:bg-[#F1F5F9] transition-all cursor-pointer"
+              >
+                Close
+              </button>
             </div>
           </div>
         </div>

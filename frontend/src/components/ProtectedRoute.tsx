@@ -8,6 +8,22 @@ interface ProtectedRouteProps {
   requireSubscription?: boolean;
 }
 
+const getLoginRedirect = (path: string): string => {
+  if (path.startsWith('/super-admin')) {
+    return '/login?portal=super-admin';
+  }
+  if (path.startsWith('/member')) {
+    return '/login?portal=customer';
+  }
+  if (path.startsWith('/admin')) {
+    return '/login?portal=gym-owner';
+  }
+  if (path.startsWith('/trainer')) {
+    return '/login?portal=trainer';
+  }
+  return '/login';
+};
+
 const ProtectedRoute = ({ children, allowedRoles, requireSubscription }: ProtectedRouteProps) => {
   const { user, isAuthenticated, isLoading } = useAuth();
   const location = useLocation();
@@ -21,20 +37,25 @@ const ProtectedRoute = ({ children, allowedRoles, requireSubscription }: Protect
   }
 
   if (!isAuthenticated || !user) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to={getLoginRedirect(location.pathname)} state={{ from: location.pathname }} replace />;
   }
 
-  // Role check
+  // Strict Role check
   if (allowedRoles && !allowedRoles.includes(user.role)) {
+    // Customers must never access superadmin or gym admin routes; redirect to authorized dashboard
     return <Navigate to={getDashboardRoute(user)} replace />;
   }
 
   // Subscription & Approval gate for member dashboard
   if (requireSubscription && user.role === 'MEMBER') {
-    if (user.approvalStatus === 'REJECTED') return <Navigate to="/status?type=rejected" replace />;
-    if (user.approvalStatus === 'SUSPENDED') return <Navigate to="/status?type=suspended" replace />;
-    if (user.isActive === false) return <Navigate to="/status?type=inactive" replace />;
-    if (user.approvalStatus === 'PENDING') {
+    const statusUpper = (user.approvalStatus || '').toUpperCase().trim();
+    const detailUpper = ((user.statusDetail || '') as string).toUpperCase().trim();
+
+    if (detailUpper === 'INACTIVE' || statusUpper === 'INACTIVE' || statusUpper === 'SUSPENDED' || user.isActive === false) {
+      return <Navigate to="/status?type=inactive" replace />;
+    }
+    if (detailUpper === 'REJECTED' || statusUpper === 'REJECTED') return <Navigate to="/status?type=rejected" replace />;
+    if (detailUpper === 'PENDING' || detailUpper === 'NEW' || statusUpper === 'PENDING') {
       // Allow viewing their actual membership details page even while pending approval
       if (location.pathname === '/member/subscription') {
         return <>{children}</>;
@@ -45,14 +66,18 @@ const ProtectedRoute = ({ children, allowedRoles, requireSubscription }: Protect
 
   // Subscription & Approval gate for gym owner dashboard
   if (requireSubscription && (user.role === 'ADMIN' || user.role === 'GYM_OWNER')) {
-    if (user.approvalStatus === 'REJECTED') return <Navigate to="/status?type=rejected" replace />;
-    if (user.approvalStatus === 'SUSPENDED') return <Navigate to="/status?type=suspended" replace />;
-    if (user.isActive === false) return <Navigate to="/status?type=inactive" replace />;
+    const statusUpper = (user.approvalStatus || '').toUpperCase().trim();
+    const detailUpper = ((user.statusDetail || '') as string).toUpperCase().trim();
+
+    if (detailUpper === 'REJECTED' || statusUpper === 'REJECTED') return <Navigate to="/status?type=rejected" replace />;
+    if (detailUpper === 'INACTIVE' || statusUpper === 'INACTIVE' || statusUpper === 'SUSPENDED' || user.isActive === false) {
+      return <Navigate to="/status?type=inactive" replace />;
+    }
     
     if (!isSubscriptionActive(user.subscriptionStatus)) {
       return <Navigate to="/subscription-plans" replace />;
     }
-    if (user.approvalStatus === 'PENDING') return <Navigate to="/status?type=pending" replace />;
+    if (detailUpper === 'PENDING' || statusUpper === 'PENDING') return <Navigate to="/status?type=pending" replace />;
   }
 
   return <>{children}</>;

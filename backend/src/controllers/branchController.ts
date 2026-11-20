@@ -46,6 +46,11 @@ export const createBranch = async (req: AuthRequest, res: Response): Promise<voi
 
     const { branchName, branchCode, phone, email, managerId, location, operatingHours, trainingMode, services, facilities, images, memberCapacity, trainerCapacity, subscriptionPlans } = req.body;
 
+    if (phone && !/^[6-9]\d{9}$/.test(String(phone).replace(/\D/g, ''))) {
+      res.status(400).json({ success: false, message: 'Branch phone number must be exactly 10 digits and start with 6, 7, 8, or 9.' });
+      return;
+    }
+
     // Validate Branch Code Uniqueness
     const existingBranch = await Branch.findOne({ gymId, branchCode });
     if (existingBranch) {

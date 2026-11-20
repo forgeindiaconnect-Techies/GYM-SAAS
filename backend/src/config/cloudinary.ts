@@ -100,9 +100,14 @@ export const uploadBufferToCloudinary = (
       if (rType === 'raw') {
         uploadOptions.use_filename = true;
       }
+      const timeoutTimer = setTimeout(() => {
+        reject(new Error('Cloudinary upload timed out'));
+      }, 5000);
+
       const stream = cloudinary.uploader.upload_stream(
         uploadOptions,
         (err, res) => {
+          clearTimeout(timeoutTimer);
           if (err) return reject(err);
           resolve(res);
         }

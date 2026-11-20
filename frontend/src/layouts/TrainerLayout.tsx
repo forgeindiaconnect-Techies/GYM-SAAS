@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Outlet, Link, useLocation } from 'react-router-dom';
+import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { clsx } from 'clsx';
 import { useAuth } from '../contexts/AuthContext';
 import api from '../utils/api';
 import GymSmartAssistant from '../components/GymSmartAssistant';
+import GymoraConfirmModal from '../components/GymoraConfirmModal';
+import { markAuthorizedNavigation } from '../components/NavigationGuard';
 import {
   LayoutDashboard, User, Users, FileText,
   Utensils, Calendar,
@@ -15,8 +17,10 @@ import {
 
 const TrainerLayout = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { user, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
 
   const [unreadCount, setUnreadCount] = useState(0);
   const [gym, setGym] = useState<any>(null);
@@ -40,12 +44,12 @@ const TrainerLayout = () => {
   }, [user]);
 
   const routePrefetchMap: Record<string, string[]> = {
-    '/trainer/dashboard': ['/trainer-sessions/trainer', '/workout-plans', '/trainers/my-clients'],
+    '/trainer/dashboard': ['/trainer-sessions/trainer', '/trainers/my-clients'],
     '/trainer/profile': ['/auth/me'],
     '/trainer/ai-assistant': ['/ai/recommendations'],
     '/trainer/members': ['/trainers/my-clients'],
     '/trainer/schedule': ['/trainer-sessions/trainer'],
-    '/trainer/workout-plans': ['/workout-plans'],
+    '/trainer/workout-plans': ['/workout-plans/trainer'],
     '/trainer/diet-plans': ['/diet-progress'],
     '/trainer/equipments': ['/equipment'],
     '/trainer/earnings': ['/trainer-payments/my'],
@@ -151,7 +155,15 @@ const TrainerLayout = () => {
     <>
       {/* Logo Header aligned with main header h-16 */}
       <div className="h-16 px-5 border-b border-[#E2E8F0] flex items-center justify-between shrink-0">
-        <Link to="/" className="flex items-center space-x-2.5" onClick={() => setSidebarOpen(false)}>
+        <Link
+          to="/"
+          className="flex items-center space-x-2.5 cursor-pointer"
+          onClick={(e) => {
+            e.preventDefault();
+            setSidebarOpen(false);
+            setShowLeaveConfirm(true);
+          }}
+        >
           <div className="w-9 h-9 bg-[#C2410C] text-white font-bold rounded-xl flex items-center justify-center shadow-md shadow-orange-500/20 shrink-0">
             <Activity className="text-white" size={20} />
           </div>
@@ -203,7 +215,10 @@ const TrainerLayout = () => {
                     key={item.path}
                     to={item.path}
                     onMouseEnter={() => handlePrefetch(item.path)}
-                    onClick={() => setSidebarOpen(false)}
+                    onClick={() => {
+                      markAuthorizedNavigation();
+                      setSidebarOpen(false);
+                    }}
                     className={clsx(
                       'flex items-center space-x-3 px-3 py-2 rounded-xl transition-all duration-150 text-sm font-medium group',
                       isActive
@@ -301,11 +316,28 @@ const TrainerLayout = () => {
           </div>
         </header>
 
-        <div className="flex-1 overflow-y-auto p-3.5 sm:p-5 md:p-6 lg:p-8 pb-32 sm:pb-28">
+        <div className={clsx(
+          'flex-1 overflow-y-auto p-3.5 sm:p-5 md:p-6 lg:p-8',
+          location.pathname.includes('/messages') ? 'pb-3 sm:pb-4 md:pb-6' : 'pb-32 sm:pb-28'
+        )}>
           <Outlet />
         </div>
       </main>
       <GymSmartAssistant />
+
+      <GymoraConfirmModal
+        isOpen={showLeaveConfirm}
+        title="Leave Dashboard?"
+        message="Do you want to leave the dashboard and go to the home page?"
+        confirmText="Continue"
+        cancelText="Cancel"
+        onConfirm={() => {
+          setShowLeaveConfirm(false);
+          markAuthorizedNavigation();
+          navigate('/');
+        }}
+        onCancel={() => setShowLeaveConfirm(false)}
+      />
     </div>
   );
 };

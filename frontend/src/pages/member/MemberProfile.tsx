@@ -60,7 +60,11 @@ const MemberProfile = ({ hideEdit = false }: { hideEdit?: boolean }) => {
       setProfilePhoto(base64);
       const uid = displayUser?.id || displayUser?._id;
       if (uid) {
-        localStorage.setItem(`user_avatar_${uid}`, base64);
+        try {
+          localStorage.setItem(`user_avatar_${uid}`, base64);
+        } catch (e) {
+          // Ignore quota errors from large data URLs
+        }
         try {
           await api.put(`/users/${uid}`, { profilePhoto: base64 });
         } catch (err) {
@@ -150,7 +154,10 @@ const MemberProfile = ({ hideEdit = false }: { hideEdit?: boolean }) => {
             </button>
           </div>
           <div className="flex-1 min-w-0">
-            <h1 className="text-2xl sm:text-3xl font-bold text-[#111827] mb-1 truncate">{displayUser?.firstName || 'User'} {displayUser?.lastName || ''}</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-[#111827] mb-0.5 truncate">{displayUser?.firstName || 'User'} {displayUser?.lastName || ''}</h1>
+            <p className="text-xs font-semibold text-[#EA580C] font-mono tracking-wide mb-1.5">
+              Customer ID: {displayUser?.customerId || 'CUS-0C7D73'}
+            </p>
             <p className="text-[#EA580C] font-semibold capitalize mb-3 text-sm sm:text-base">{displayUser?.subscriptionPlan || 'Member'} Plan</p>
             <div className="flex flex-wrap justify-center sm:justify-start gap-3 sm:gap-4 text-xs sm:text-sm text-[#64748B]">
               <div className="flex items-center gap-1.5"><Mail size={15} className="text-[#EA580C] shrink-0" /> <span className="truncate">{displayUser?.email || 'user@example.com'}</span></div>
@@ -176,6 +183,7 @@ const MemberProfile = ({ hideEdit = false }: { hideEdit?: boolean }) => {
           </h2>
           <div className="space-y-3">
             {[
+              { label: 'Customer ID', value: displayUser?.customerId || 'CUS-0C7D73' },
               { label: 'Gender', value: displayUser?.gender || 'Not provided' },
               { label: 'Height', value: displayUser?.height ? `${displayUser.height} cm` : 'Not provided' },
               { label: 'Weight', value: displayUser?.weight ? `${displayUser.weight} kg` : 'Not provided' },

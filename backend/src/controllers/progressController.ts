@@ -65,8 +65,11 @@ export const logProgressMetric = async (req: AuthRequest, res: Response): Promis
     await progressLog.save();
 
     // Also update User profile height/weight
-    if (weight) {
-      await User.findByIdAndUpdate(customerId, { weight: Number(weight) });
+    const userUpdates: any = {};
+    if (weight) userUpdates.weight = Number(weight);
+    if (height) userUpdates.height = Number(height);
+    if (Object.keys(userUpdates).length > 0) {
+      await User.findByIdAndUpdate(customerId, { $set: userUpdates });
     }
 
     res.status(201).json({ success: true, message: 'Progress logged successfully', progressLog });

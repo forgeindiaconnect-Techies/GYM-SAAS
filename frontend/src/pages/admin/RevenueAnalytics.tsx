@@ -1264,13 +1264,13 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
               {/* ── Gym Revenue Inflow Flowchart Trajectory (12-Month Plan) ── */}
               <div className="bg-[#FFFFFF] p-5 sm:p-6 rounded-2xl border border-[#E2E8F0] shadow-xs">
                 {/* Header with Title and Run-rate Badges */}
-                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-4 pb-4 border-b border-[#E2E8F0]">
-                  <div>
-                    <div className="flex items-center gap-2">
+                <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4 mb-4 pb-4 border-b border-[#E2E8F0]">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
                       <h3 className="text-base font-extrabold text-[#111827] tracking-tight">
                         Gym Inflow Flowchart Trajectory (12-Month Plan)
                       </h3>
-                      <span className="bg-[#F8FAFC] text-[#EA580C] text-[10px] font-black px-2.5 py-0.5 rounded-full border border-[#E2E8F0] uppercase tracking-wider">
+                      <span className="bg-[#F8FAFC] text-[#EA580C] text-[10px] font-black px-2.5 py-0.5 rounded-full border border-[#E2E8F0] uppercase tracking-wider whitespace-nowrap shrink-0">
                         12-MONTH PLAN
                       </span>
                     </div>
@@ -1279,28 +1279,28 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
                     </p>
                   </div>
 
-                  <div className="flex items-center gap-3 self-start lg:self-auto">
-                    <div className="bg-[#F8FAFC]/70 border border-[#E2E8F0] rounded-xl px-3.5 py-1.5 text-right">
+                  <div className="flex flex-wrap items-stretch gap-2.5 shrink-0 self-start xl:self-auto">
+                    <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-3.5 py-2 text-right flex flex-col justify-center min-w-[130px] whitespace-nowrap">
                       <span className="text-[10px] font-bold text-[#9A3412] block uppercase tracking-wider">
                         Current Month Inflow
                       </span>
-                      <strong className="text-sm font-black text-[#9A3412]">
+                      <strong className="text-sm font-black text-[#9A3412] mt-0.5">
                         ₹{summary.totalGrossRevenue.toLocaleString('en-IN')}
                       </strong>
                     </div>
-                    <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-3.5 py-1.5 text-right">
+                    <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-3.5 py-2 text-right flex flex-col justify-center min-w-[155px] whitespace-nowrap">
                       <span className="text-[10px] font-bold text-[#64748B] block uppercase tracking-wider">
                         Projected Annualized
                       </span>
-                      <strong className="text-sm font-extrabold text-[#111827]">
-                        ₹{Math.round(summary.totalGrossRevenue * 12 * 1.16).toLocaleString('en-IN')} / yr
+                      <strong className="text-sm font-extrabold text-[#111827] mt-0.5">
+                        ₹{Math.round(summary.totalGrossRevenue * 12 * 1.16).toLocaleString('en-IN')} <span className="text-xs font-semibold text-[#64748B]">/ yr</span>
                       </strong>
                     </div>
-                    <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-3.5 py-1.5 text-right">
+                    <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-3.5 py-2 text-right flex flex-col justify-center min-w-[130px] whitespace-nowrap">
                       <span className="text-[10px] font-bold text-[#EA580C] block uppercase tracking-wider">
                         Growth Pace
                       </span>
-                      <strong className="text-sm font-extrabold text-[#EA580C]">
+                      <strong className="text-sm font-extrabold text-[#EA580C] mt-0.5">
                         +82% Trajectory
                       </strong>
                     </div>
@@ -1313,21 +1313,21 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ role = 'GYM_
                     Revenue Streams:
                   </span>
                   <div className="flex items-center gap-1.5 bg-[#FFFFFF] px-2.5 py-1 rounded-lg border border-[#E2E8F0] shadow-xs">
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#C2410C]" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#EA580C]" />
                     <span className="text-[#64748B] font-semibold text-[11px]">Members Revenue:</span>
                     <strong className="text-[#111827] font-bold text-[11px]">
                       ₹{summary.membersRevenue.toLocaleString('en-IN')} ({membersPct}%)
                     </strong>
                   </div>
-                  <div className="flex items-center gap-1.5 bg-[#FFFFFF] px-2.5 py-1 rounded-lg border border-[#E2E8F0] shadow-xs">
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#C2410C]" />
+                  <div className="flex items-center gap-1.5 bg-[#FFFFFF] px-2.5 py-1 rounded-lg border border-blue-200 shadow-xs">
+                    <span className="w-2.5 h-2.5 rounded-full bg-blue-600" />
                     <span className="text-[#64748B] font-semibold text-[11px]">Trainers Revenue:</span>
                     <strong className="text-[#111827] font-bold text-[11px]">
                       ₹{summary.trainersRevenue.toLocaleString('en-IN')} ({trainersPct}%)
                     </strong>
                   </div>
-                  <div className="flex items-center gap-1.5 bg-[#FFFFFF] px-2.5 py-1 rounded-lg border border-[#E2E8F0] shadow-xs">
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#C2410C]" />
+                  <div className="flex items-center gap-1.5 bg-[#FFFFFF] px-2.5 py-1 rounded-lg border border-emerald-200 shadow-xs">
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-600" />
                     <span className="text-[#64748B] font-semibold text-[11px]">Online Store (App):</span>
                     <strong className="text-[#111827] font-bold text-[11px]">
                       ₹{summary.ordersOnlineRevenue.toLocaleString('en-IN')} ({onlineOrdersPct}%)

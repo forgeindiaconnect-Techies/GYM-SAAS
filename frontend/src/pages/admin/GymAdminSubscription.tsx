@@ -33,12 +33,12 @@ const PLAN_DETAILS: Record<string, any> = {
   },
   ENTERPRISE: {
     name: 'Enterprise', color: 'text-purple-400', bg: 'bg-purple-500/10', border: 'border-[#E2E8F0]',
-    icon: Sparkles, limits: { members: 1000, trainers: 50, staff: 10, branches: 5 },
+    icon: Building2, limits: { members: 1000, trainers: 50, staff: 10, branches: 5 },
     priceMonthly: 2499, priceAnnual: 22490,
   },
   PREMIUM: {
     name: 'Premium', color: 'text-[#EA580C]', bg: 'bg-[#FFF7ED]', border: 'border-[#FFEDD5]',
-    icon: Sparkles, limits: { members: -1, trainers: -1, staff: -1, branches: 5 },
+    icon: Crown, limits: { members: -1, trainers: -1, staff: -1, branches: 5 },
     priceMonthly: 2499, priceAnnual: 22490,
   },
   FREE_TRIAL: {
@@ -193,11 +193,13 @@ const GymAdminSubscription = () => {
   const expiryDate = activeSubData?.endDate || user?.subscriptionExpiryDate || user?.subscriptionExpiry;
   const hasExpiryDate = Boolean(expiryDate);
   const parsedExpiry = hasExpiryDate ? new Date(expiryDate) : new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
-  const isExpired = parsedExpiry < now || rawStatus === 'EXPIRED';
+  const isExpired = parsedExpiry.getTime() <= now.getTime() || rawStatus === 'EXPIRED';
   const remainingDays = isExpired ? 0 : Math.max(0, Math.ceil((parsedExpiry.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)));
-  const isExpiringSoon = !isExpired && remainingDays <= 7;
+  const isExpiringSoon = !isExpired && remainingDays <= 15;
   const isTrial = rawStatus === 'TRIAL' || rawStatus === 'FREE TRIAL' || rawStatus === 'FREE_TRIAL' || currentPlanKey === 'FREE_TRIAL';
-  const isActive = !isExpired && !isTrial && (rawStatus === 'ACTIVE' || rawStatus === 'APPROVED' || rawStatus === 'PAID');
+  const isActive = !isExpired && (rawStatus === 'ACTIVE' || rawStatus === 'APPROVED' || rawStatus === 'PAID');
+  const isSubscriptionValid = isActive && !isExpired && remainingDays > 0;
+  const canRenew = isExpired || remainingDays <= 15;
 
   const startDateFormatted = formatPaymentDate(activeSubData?.startDate || user?.subscriptionStartDate || now);
   const renewalDateFormatted = formatPaymentDate(parsedExpiry);
@@ -205,6 +207,21 @@ const GymAdminSubscription = () => {
 
   // Trigger Plan Action (Renew, Upgrade, Switch)
   const handlePlanAction = (targetKey: string, type: 'RENEWAL' | 'UPGRADE' | 'SWITCH') => {
+    const currentRank = PLAN_TIER_RANK[currentPlanKey] ?? 1;
+    const targetRank = PLAN_TIER_RANK[targetKey] ?? 1;
+
+    // Guard against unauthorized downgrade while subscription is active with remaining validity
+    if (isSubscriptionValid && targetRank < currentRank) {
+      setPaymentError(`Downgrading to a lower-tier plan (${targetKey}) while your ${currentPlan.name} plan is active is not permitted.`);
+      return;
+    }
+
+    // Guard against renewal when more than 15 days remain
+    if (type === 'RENEWAL' && isSubscriptionValid && remainingDays > 15) {
+      setPaymentError(`Subscription renewal is only available when 15 days or fewer remain on your current plan (${remainingDays} days remaining).`);
+      return;
+    }
+
     setPaymentStep(targetKey);
     setActionType(type);
     setPaymentSuccess(null);
@@ -213,6 +230,10 @@ const GymAdminSubscription = () => {
 
   // Activate Free Trial (1-day)
   const handleTrialActivation = async () => {
+    if (isSubscriptionValid) {
+      setPaymentError(`Cannot activate Free Trial while your ${currentPlan.name} subscription is active.`);
+      return;
+    }
     if (currentPlanKey === 'FREE_TRIAL') {
       setPaymentSuccess('Your 1-day Free Trial is already active.');
       return;
@@ -400,14 +421,6 @@ const GymAdminSubscription = () => {
             Manage your AI Gym Management SaaS platform license, renewals, and features for <strong className="text-[#111827]">{user?.gymName || 'Your Gym'}</strong>.
           </p>
         </div>
-
-        <button
-          onClick={loadSubscriptionInfo}
-          className="self-start sm:self-auto px-4 py-2.5 bg-[#FFFFFF] hover:bg-[#FFF7ED] border border-[#E2E8F0] hover:border-[#FDBA74] text-[#111827] hover:text-[#C2410C] text-xs font-bold rounded-xl flex items-center gap-2 transition-colors cursor-pointer"
-        >
-          <RefreshCw size={14} className="text-[#EA580C]" />
-          Sync License
-        </button>
       </div>
 
       {/* Success Notification Alert */}
@@ -434,7 +447,7 @@ const GymAdminSubscription = () => {
       )}
 
       {/* Expiry Warning / Reminder Alert */}
-      {(isExpired || isExpiringSoon || isTrial) && (
+      {(isExpired || isExpiringSoon) && (
         <div
           className={`border rounded-2xl p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xl ${
             isExpired
@@ -517,21 +530,25 @@ const GymAdminSubscription = () => {
 
           {/* Action Buttons for Current Plan */}
           <div className="flex items-center gap-3 flex-wrap">
-            <button
-              onClick={() => handlePlanAction(currentPlanKey, 'RENEWAL')}
-              className="px-5 py-3 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold rounded-xl text-xs font-extrabold flex items-center gap-2 transition-all shadow-md shadow-orange-500/15 cursor-pointer"
-            >
-              <RefreshCw size={15} />
-              Renew Plan
-            </button>
+            {canRenew && (
+              <button
+                onClick={() => handlePlanAction(currentPlanKey, 'RENEWAL')}
+                className="px-5 py-3 bg-[#C2410C] hover:bg-[#9A3412] text-white font-bold rounded-xl text-xs font-extrabold flex items-center gap-2 transition-all shadow-md shadow-orange-500/15 cursor-pointer"
+              >
+                <RefreshCw size={15} />
+                Renew Plan
+              </button>
+            )}
 
-            <button
-              onClick={() => document.getElementById('available-plans-section')?.scrollIntoView({ behavior: 'smooth' })}
-              className="px-4 py-3 bg-[#FFF7ED] hover:bg-[#FFEDD5] border-2 border-[#FFEDD5] hover:border-[#FDBA74] text-[#C2410C] font-extrabold rounded-xl text-xs flex items-center gap-1.5 transition-all cursor-pointer shadow-xs"
-            >
-              <ArrowUpCircle size={15} className="text-[#EA580C]" />
-              <span>Upgrade Plan</span>
-            </button>
+            {isExpired && (
+              <button
+                onClick={() => document.getElementById('available-plans-section')?.scrollIntoView({ behavior: 'smooth' })}
+                className="px-4 py-3 bg-[#FFF7ED] hover:bg-[#FFEDD5] border-2 border-[#FFEDD5] hover:border-[#FDBA74] text-[#C2410C] font-extrabold rounded-xl text-xs flex items-center gap-1.5 transition-all cursor-pointer shadow-xs"
+              >
+                <ArrowUpCircle size={15} className="text-[#EA580C]" />
+                <span>Upgrade Plan</span>
+              </button>
+            )}
 
             {paymentHistory.length > 0 && (
               <button
@@ -636,6 +653,7 @@ const GymAdminSubscription = () => {
             const currentRank = PLAN_TIER_RANK[currentPlanKey] ?? 1;
             const targetRank = PLAN_TIER_RANK[plan.key] ?? 1;
             const isHigherTier = targetRank > currentRank;
+            const isLowerTier = targetRank < currentRank;
 
             const displayPrice = plan.trial ? '₹0' : (isAnnual ? `₹${(plan.priceAnnual || 0).toLocaleString('en-IN')}` : `₹${(plan.priceMonthly || 0).toLocaleString('en-IN')}`);
             const displayPeriod = plan.trial ? '/ 1 day' : (isAnnual ? '/year' : '/mo');
@@ -720,24 +738,47 @@ const GymAdminSubscription = () => {
                     <button
                       type="button"
                       onClick={() => handleTrialActivation()}
-                      disabled={isCurrent || loading !== null}
-                      className={`w-full py-3 rounded-xl text-center font-bold transition-all text-sm block cursor-pointer ${
+                      disabled={isCurrent || isSubscriptionValid || loading !== null}
+                      title={isSubscriptionValid ? 'Free Trial is unavailable while an active subscription is running' : undefined}
+                      className={`w-full py-3 rounded-xl text-center font-bold transition-all text-sm block ${
                         isCurrent
                           ? 'bg-[#F8FAFC] text-[#64748B] cursor-default'
-                          : 'bg-[#C2410C] text-white hover:bg-[#9A3412] shadow-md shadow-orange-500/15'
+                          : isSubscriptionValid
+                          ? 'bg-[#F1F5F9] text-[#94A3B8] border border-[#E2E8F0] cursor-not-allowed'
+                          : 'bg-[#C2410C] text-white hover:bg-[#9A3412] shadow-md shadow-orange-500/15 cursor-pointer'
                       }`}
                     >
                       {isCurrent ? 'Current Free Trial' : 'Start Free Trial'}
                     </button>
                   ) : isCurrent ? (
+                    canRenew ? (
+                      <button
+                        type="button"
+                        onClick={() => handlePlanAction(plan.key, 'RENEWAL')}
+                        disabled={loading !== null}
+                        className="w-full py-3 rounded-xl text-center font-bold transition-all text-sm block cursor-pointer bg-[#C2410C] text-white hover:bg-[#9A3412] shadow-md shadow-orange-500/15 flex items-center justify-center gap-1.5"
+                      >
+                        <RefreshCw size={14} />
+                        <span>Renew {plan.name}</span>
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        disabled
+                        className="w-full py-3 rounded-xl text-center font-bold text-sm block cursor-default bg-[#F8FAFC] text-[#15803D] border border-[#E2E8F0] flex items-center justify-center gap-1.5"
+                      >
+                        <CheckCircle2 size={14} className="text-[#15803D]" />
+                        <span>Active Plan ({remainingDays} Days Left)</span>
+                      </button>
+                    )
+                  ) : isSubscriptionValid && isLowerTier ? (
                     <button
                       type="button"
-                      onClick={() => handlePlanAction(plan.key, 'RENEWAL')}
-                      disabled={loading !== null}
-                      className="w-full py-3 rounded-xl text-center font-bold transition-all text-sm block cursor-pointer bg-[#C2410C] text-white hover:bg-[#9A3412] shadow-md shadow-orange-500/15 flex items-center justify-center gap-1.5"
+                      disabled
+                      title={`Cannot switch to ${plan.name} while your ${currentPlan.name} plan is active`}
+                      className="w-full py-3 rounded-xl text-center font-bold text-sm block cursor-not-allowed bg-[#F1F5F9] text-[#94A3B8] border border-[#E2E8F0]"
                     >
-                      <RefreshCw size={14} />
-                      <span>Renew {plan.name}</span>
+                      Choose {plan.name}
                     </button>
                   ) : (
                     <button

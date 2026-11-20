@@ -190,6 +190,9 @@ export const createOwnerJob = async (req: AuthRequest, res: Response): Promise<v
       employmentType,
       location,
       workingHours,
+      shiftType,
+      shiftStartTime,
+      shiftEndTime,
       vacanciesCount,
       deadline,
       status = 'Published'
@@ -198,6 +201,59 @@ export const createOwnerJob = async (req: AuthRequest, res: Response): Promise<v
     if (!title || !description || !experience) {
       res.status(400).json({ success: false, message: 'Title, description, and required experience are required' });
       return;
+    }
+
+    // Validate shift and time range if provided
+    if (shiftStartTime && shiftEndTime && shiftType !== 'Flexible') {
+      const timeRegex = /^\d{1,2}:\d{2}\s*(?:AM|PM)$/i;
+      if (!timeRegex.test(shiftStartTime) || !timeRegex.test(shiftEndTime)) {
+        res.status(400).json({ success: false, message: 'Invalid shift time format. Please select valid AM/PM times.' });
+        return;
+      }
+      if (shiftStartTime.trim().toLowerCase() === shiftEndTime.trim().toLowerCase()) {
+        res.status(400).json({ success: false, message: 'Shift start time and end time cannot be identical.' });
+        return;
+      }
+    }
+
+    // Strict Salary Validation on Backend
+    if (salaryMin !== undefined && salaryMin !== null && String(salaryMin).trim() !== '') {
+      const minStr = String(salaryMin).trim();
+      const minNum = Number(minStr);
+      if (!/^\d+$/.test(minStr) || isNaN(minNum) || minNum <= 0) {
+        res.status(400).json({
+          success: false,
+          message: 'Please enter a valid salary amount using numbers only.'
+        });
+        return;
+      }
+    }
+
+    if (salaryMax !== undefined && salaryMax !== null && String(salaryMax).trim() !== '') {
+      const maxStr = String(salaryMax).trim();
+      const maxNum = Number(maxStr);
+      if (!/^\d+$/.test(maxStr) || isNaN(maxNum) || maxNum <= 0) {
+        res.status(400).json({
+          success: false,
+          message: 'Please enter a valid salary amount using numbers only.'
+        });
+        return;
+      }
+    }
+
+    if (
+      salaryMin !== undefined && salaryMin !== null && String(salaryMin).trim() !== '' &&
+      salaryMax !== undefined && salaryMax !== null && String(salaryMax).trim() !== ''
+    ) {
+      const minNum = Number(salaryMin);
+      const maxNum = Number(salaryMax);
+      if (maxNum < minNum) {
+        res.status(400).json({
+          success: false,
+          message: 'Max Salary must be greater than or equal to Min Salary.'
+        });
+        return;
+      }
     }
 
     const expertiseList = Array.isArray(expertise) 
@@ -224,6 +280,9 @@ export const createOwnerJob = async (req: AuthRequest, res: Response): Promise<v
       employmentType: employmentType || 'Full-time',
       location: location || gymLoc,
       workingHours: workingHours || '',
+      shiftType: shiftType || '',
+      shiftStartTime: shiftStartTime || '',
+      shiftEndTime: shiftEndTime || '',
       vacanciesCount: vacanciesCount ? Number(vacanciesCount) : 1,
       deadline: deadline ? new Date(deadline) : undefined,
       status: ['Draft', 'Published', 'Closed'].includes(status) ? status : 'Published'
@@ -289,6 +348,43 @@ export const getOwnerJobById = async (req: AuthRequest, res: Response): Promise<
       return;
     }
 
+    // Strict Salary Validation on Update
+    const { salaryMin, salaryMax } = req.body;
+    if (salaryMin !== undefined && salaryMin !== null && String(salaryMin).trim() !== '') {
+      const minStr = String(salaryMin).trim();
+      const minNum = Number(minStr);
+      if (!/^\d+$/.test(minStr) || isNaN(minNum) || minNum <= 0) {
+        res.status(400).json({
+          success: false,
+          message: 'Please enter a valid salary amount using numbers only.'
+        });
+        return;
+      }
+    }
+
+    if (salaryMax !== undefined && salaryMax !== null && String(salaryMax).trim() !== '') {
+      const maxStr = String(salaryMax).trim();
+      const maxNum = Number(maxStr);
+      if (!/^\d+$/.test(maxStr) || isNaN(maxNum) || maxNum <= 0) {
+        res.status(400).json({
+          success: false,
+          message: 'Please enter a valid salary amount using numbers only.'
+        });
+        return;
+      }
+    }
+
+    const effectiveMin = salaryMin !== undefined ? (String(salaryMin).trim() ? Number(salaryMin) : undefined) : job.salaryMin;
+    const effectiveMax = salaryMax !== undefined ? (String(salaryMax).trim() ? Number(salaryMax) : undefined) : job.salaryMax;
+
+    if (effectiveMin !== undefined && effectiveMax !== undefined && effectiveMax < effectiveMin) {
+      res.status(400).json({
+        success: false,
+        message: 'Max Salary must be greater than or equal to Min Salary.'
+      });
+      return;
+    }
+
     res.status(200).json({ success: true, job });
   } catch (error: any) {
     console.error('Error fetching owner job details:', error);
@@ -311,11 +407,61 @@ export const updateOwnerJob = async (req: AuthRequest, res: Response): Promise<v
       return;
     }
 
+    // Strict Salary Validation on Update
+    const { salaryMin, salaryMax } = req.body;
+    if (salaryMin !== undefined && salaryMin !== null && String(salaryMin).trim() !== '') {
+      const minStr = String(salaryMin).trim();
+      const minNum = Number(minStr);
+      if (!/^\d+$/.test(minStr) || isNaN(minNum) || minNum <= 0) {
+        res.status(400).json({
+          success: false,
+          message: 'Please enter a valid salary amount using numbers only.'
+        });
+        return;
+      }
+    }
+
+    if (salaryMax !== undefined && salaryMax !== null && String(salaryMax).trim() !== '') {
+      const maxStr = String(salaryMax).trim();
+      const maxNum = Number(maxStr);
+      if (!/^\d+$/.test(maxStr) || isNaN(maxNum) || maxNum <= 0) {
+        res.status(400).json({
+          success: false,
+          message: 'Please enter a valid salary amount using numbers only.'
+        });
+        return;
+      }
+    }
+
+    const effectiveMin = salaryMin !== undefined ? (String(salaryMin).trim() ? Number(salaryMin) : undefined) : job.salaryMin;
+    const effectiveMax = salaryMax !== undefined ? (String(salaryMax).trim() ? Number(salaryMax) : undefined) : job.salaryMax;
+
+    if (effectiveMin !== undefined && effectiveMax !== undefined && effectiveMax < effectiveMin) {
+      res.status(400).json({
+        success: false,
+        message: 'Max Salary must be greater than or equal to Min Salary.'
+      });
+      return;
+    }
+
+    const { shiftType, shiftStartTime, shiftEndTime } = req.body;
+    if (shiftStartTime && shiftEndTime && shiftType !== 'Flexible') {
+      const timeRegex = /^\d{1,2}:\d{2}\s*(?:AM|PM)$/i;
+      if (!timeRegex.test(shiftStartTime) || !timeRegex.test(shiftEndTime)) {
+        res.status(400).json({ success: false, message: 'Invalid shift time format. Please select valid AM/PM times.' });
+        return;
+      }
+      if (shiftStartTime.trim().toLowerCase() === shiftEndTime.trim().toLowerCase()) {
+        res.status(400).json({ success: false, message: 'Shift start time and end time cannot be identical.' });
+        return;
+      }
+    }
+
     const fields = [
       'title', 'description', 'responsibilities', 'experience',
       'qualifications', 'certifications', 'salaryMin', 'salaryMax',
       'salaryType', 'isSalaryNegotiable', 'employmentType', 'location',
-      'workingHours', 'vacanciesCount', 'deadline', 'status'
+      'workingHours', 'shiftType', 'shiftStartTime', 'shiftEndTime', 'vacanciesCount', 'deadline', 'status'
     ];
 
     fields.forEach(field => {

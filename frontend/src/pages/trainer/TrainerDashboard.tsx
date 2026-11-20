@@ -194,14 +194,13 @@ const TrainerDashboard = () => {
       ) : (
         <>
           {/* Key Stat Cards */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-3.5 sm:gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-3.5 sm:gap-4">
             {[
               { label: 'Total Clients', value: totalClientsCount.toString(), icon: Users, color: 'text-blue-600', bg: 'bg-blue-50 border border-blue-100', link: '/trainer/members' },
-              { label: 'Active Clients', value: activeClientsCount.toString(), icon: Dumbbell, color: 'text-emerald-600', bg: 'bg-emerald-50 border border-emerald-100', link: '/trainer/assigned-users' },
-              { label: 'Upcoming Sessions', value: upcomingSessionsCount.toString(), icon: Calendar, color: 'text-indigo-600', bg: 'bg-indigo-50 border border-indigo-100', link: '/trainer/sessions' },
-              { label: 'Completed Sessions', value: completedSessionsCount.toString(), icon: CheckCircle2, color: 'text-teal-600', bg: 'bg-teal-50 border border-teal-100', link: '/trainer/sessions' },
+              { label: 'Active Clients', value: activeClientsCount.toString(), icon: Dumbbell, color: 'text-emerald-600', bg: 'bg-emerald-50 border border-emerald-100', link: '/trainer/members' },
+              { label: 'Completed Sessions', value: completedSessionsCount.toString(), icon: CheckCircle2, color: 'text-teal-600', bg: 'bg-teal-50 border border-teal-100', link: '/trainer/session-bookings?filter=Completed' },
               { label: 'Earnings', value: `₹${totalEarningsAmount.toLocaleString('en-IN')}`, icon: IndianRupee, color: 'text-[#C2410C]', bg: 'bg-[#FFF7ED] border border-[#FFEDD5]', link: '/trainer/earnings' },
-              { label: 'Pending AI Reviews', value: pendingAiReviews.length.toString(), icon: Bot, color: 'text-amber-600', bg: 'bg-amber-50 border border-amber-100', link: '/trainer/ai-recommendations' },
+              { label: 'Pending AI Reviews', value: pendingAiReviews.length.toString(), icon: Bot, color: 'text-amber-600', bg: 'bg-amber-50 border border-amber-100', link: '/trainer/ai-feedback' },
             ].map((stat, i) => (
               <Link
                 key={i}

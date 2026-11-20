@@ -1,4 +1,4 @@
-﻿import React, { useState, useRef, useCallback, useEffect } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as XLSX from 'xlsx';
 import {
@@ -494,7 +494,7 @@ const GymAdminImportCustomers: React.FC = () => {
                   onClick={() => setFilterStatus('all')}
                   className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all ${
                     filterStatus === 'all'
-                      ? 'bg-[#FFFFFF] text-white shadow-sm'
+                      ? 'bg-[#C2410C] text-white shadow-sm'
                       : 'bg-[#F8FAFC] text-[#64748B] hover:bg-[#FFF7ED]'
                   }`}
                 >

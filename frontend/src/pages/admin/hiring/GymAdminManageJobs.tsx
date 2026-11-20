@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../../../utils/api';
+import WorkingHoursPicker from '../../../components/common/WorkingHoursPicker';
 import { 
   Briefcase, 
   Plus, 
@@ -59,6 +60,57 @@ const GymAdminManageJobs: React.FC = () => {
   const [editError, setEditError] = useState<string | null>(null);
   const [editSuccess, setEditSuccess] = useState<string | null>(null);
   const [customExpertiseInput, setCustomExpertiseInput] = useState('');
+  const [editSalaryMinError, setEditSalaryMinError] = useState<string | null>(null);
+  const [editSalaryMaxError, setEditSalaryMaxError] = useState<string | null>(null);
+
+  const validateSalaryInput = (val: string): string | null => {
+    if (!val || String(val).trim() === '') return null;
+    const trimmed = String(val).trim();
+    if (!/^\d+$/.test(trimmed) || Number(trimmed) <= 0) {
+      return 'Please enter a valid salary amount using numbers only.';
+    }
+    return null;
+  };
+
+  const handleEditMinSalaryChange = (val: string) => {
+    setEditFormData((prev: any) => ({ ...prev, salaryMin: val }));
+    const minErr = validateSalaryInput(val);
+    setEditSalaryMinError(minErr);
+
+    const maxVal = editFormData?.salaryMax;
+    const maxErr = validateSalaryInput(maxVal);
+
+    if (!minErr && !maxErr && val && maxVal) {
+      if (Number(maxVal) < Number(val)) {
+        setEditSalaryMaxError('Max Salary must be greater than or equal to Min Salary.');
+      } else {
+        setEditSalaryMaxError(null);
+      }
+    } else if (editSalaryMaxError === 'Max Salary must be greater than or equal to Min Salary.') {
+      setEditSalaryMaxError(maxErr);
+    }
+  };
+
+  const handleEditMaxSalaryChange = (val: string) => {
+    setEditFormData((prev: any) => ({ ...prev, salaryMax: val }));
+    const maxErr = validateSalaryInput(val);
+    if (maxErr) {
+      setEditSalaryMaxError(maxErr);
+    } else if (val && editFormData?.salaryMin) {
+      const minErr = validateSalaryInput(editFormData.salaryMin);
+      if (!minErr) {
+        if (Number(val) < Number(editFormData.salaryMin)) {
+          setEditSalaryMaxError('Max Salary must be greater than or equal to Min Salary.');
+        } else {
+          setEditSalaryMaxError(null);
+        }
+      } else {
+        setEditSalaryMaxError(null);
+      }
+    } else {
+      setEditSalaryMaxError(null);
+    }
+  };
 
   const fetchJobs = async () => {
     try {
@@ -128,6 +180,8 @@ const GymAdminManageJobs: React.FC = () => {
     setEditError(null);
     setEditSuccess(null);
     setCustomExpertiseInput('');
+    setEditSalaryMinError(null);
+    setEditSalaryMaxError(null);
     setEditFormData({
       title: job.title || '',
       expertise: Array.isArray(job.expertise) ? [...job.expertise] : [],
@@ -144,6 +198,9 @@ const GymAdminManageJobs: React.FC = () => {
       trainingMode: (job.trainingMode as 'Online' | 'Offline' | 'Hybrid') || 'Offline',
       location: job.location || '',
       workingHours: job.workingHours || '',
+      shiftType: job.shiftType || '',
+      shiftStartTime: job.shiftStartTime || '',
+      shiftEndTime: job.shiftEndTime || '',
       vacanciesCount: job.vacanciesCount || 1,
       deadline: job.deadline ? new Date(job.deadline).toISOString().split('T')[0] : '',
       status: job.status || 'Published'
@@ -200,6 +257,37 @@ const GymAdminManageJobs: React.FC = () => {
     if (!editFormData.location.trim()) {
       setEditError('Please enter a work location');
       return;
+    }
+
+    // Salary validation
+    const minErr = validateSalaryInput(editFormData.salaryMin);
+    const maxErr = validateSalaryInput(editFormData.salaryMax);
+    if (minErr) {
+      setEditSalaryMinError(minErr);
+      setEditError(minErr);
+      return;
+    }
+    if (maxErr) {
+      setEditSalaryMaxError(maxErr);
+      setEditError(maxErr);
+      return;
+    }
+    if (editFormData.salaryMin && editFormData.salaryMax && Number(editFormData.salaryMax) < Number(editFormData.salaryMin)) {
+      const rangeErr = 'Max Salary must be greater than or equal to Min Salary.';
+      setEditSalaryMaxError(rangeErr);
+      setEditError(rangeErr);
+      return;
+    }
+    if (editSalaryMinError || editSalaryMaxError) {
+      setEditError(editSalaryMinError || editSalaryMaxError);
+      return;
+    }
+
+    if (editFormData.shiftType !== 'Flexible' && editFormData.shiftStartTime && editFormData.shiftEndTime) {
+      if (editFormData.shiftStartTime.trim().toLowerCase() === editFormData.shiftEndTime.trim().toLowerCase()) {
+        setEditError('Shift start time and end time cannot be identical.');
+        return;
+      }
     }
 
     try {
@@ -757,23 +845,41 @@ const GymAdminManageJobs: React.FC = () => {
                   <div>
                     <label className="block text-[11px] text-[#64748B] mb-1">Min Salary (₹)</label>
                     <input
-                      type="number"
+                      type="text"
+                      inputMode="numeric"
                       placeholder="e.g. 25000"
-                      value={editFormData.salaryMin}
-                      onChange={(e) => setEditFormData({ ...editFormData, salaryMin: e.target.value })}
-                      className="w-full px-3.5 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-xs text-[#111827] focus:outline-none focus:border-[#FDBA74]"
+                      value={editFormData.salaryMin || ''}
+                      onChange={(e) => handleEditMinSalaryChange(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (['+', '-', 'e', 'E', '.'].includes(e.key)) {
+                          e.preventDefault();
+                        }
+                      }}
+                      className={`w-full px-3.5 py-2 bg-[#FFFFFF] border rounded-xl text-xs text-[#111827] focus:outline-none ${editSalaryMinError ? 'border-red-400 focus:border-red-500' : 'border-[#E2E8F0] focus:border-[#FDBA74]'}`}
                     />
+                    {editSalaryMinError && (
+                      <p className="text-[11px] text-red-500 mt-1">{editSalaryMinError}</p>
+                    )}
                   </div>
 
                   <div>
                     <label className="block text-[11px] text-[#64748B] mb-1">Max Salary (₹)</label>
                     <input
-                      type="number"
+                      type="text"
+                      inputMode="numeric"
                       placeholder="e.g. 45000"
-                      value={editFormData.salaryMax}
-                      onChange={(e) => setEditFormData({ ...editFormData, salaryMax: e.target.value })}
-                      className="w-full px-3.5 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl text-xs text-[#111827] focus:outline-none focus:border-[#FDBA74]"
+                      value={editFormData.salaryMax || ''}
+                      onChange={(e) => handleEditMaxSalaryChange(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (['+', '-', 'e', 'E', '.'].includes(e.key)) {
+                          e.preventDefault();
+                        }
+                      }}
+                      className={`w-full px-3.5 py-2 bg-[#FFFFFF] border rounded-xl text-xs text-[#111827] focus:outline-none ${editSalaryMaxError ? 'border-red-400 focus:border-red-500' : 'border-[#E2E8F0] focus:border-[#FDBA74]'}`}
                     />
+                    {editSalaryMaxError && (
+                      <p className="text-[11px] text-red-500 mt-1">{editSalaryMaxError}</p>
+                    )}
                   </div>
 
                   <div>
@@ -793,7 +899,7 @@ const GymAdminManageJobs: React.FC = () => {
               </div>
 
               {/* 6. Location, Working Hours & Application Deadline */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-start">
                 <div>
                   <label className="block text-xs font-bold text-[#111827] mb-1.5 flex items-center gap-1.5">
                     <MapPin size={13} className="text-[#EA580C]" /> Location <span className="text-[#B91C1C]">*</span>
@@ -812,12 +918,17 @@ const GymAdminManageJobs: React.FC = () => {
                   <label className="block text-xs font-bold text-[#111827] mb-1.5 flex items-center gap-1.5">
                     <Clock size={13} className="text-[#EA580C]" /> Working Hours / Shift
                   </label>
-                  <input
-                    type="text"
+                  <WorkingHoursPicker
                     value={editFormData.workingHours}
-                    onChange={(e) => setEditFormData({ ...editFormData, workingHours: e.target.value })}
-                    placeholder="e.g. 6:00 AM - 2:00 PM"
-                    className="w-full px-4 py-2.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs text-[#111827] focus:outline-none focus:border-[#FDBA74]"
+                    onChange={(formatted, structured) => {
+                      setEditFormData((prev: any) => ({
+                        ...prev,
+                        workingHours: formatted,
+                        shiftType: structured?.shift || '',
+                        shiftStartTime: structured?.startTime || '',
+                        shiftEndTime: structured?.endTime || ''
+                      }));
+                    }}
                   />
                 </div>
 
@@ -911,8 +1022,8 @@ const GymAdminManageJobs: React.FC = () => {
               <button
                 type="button"
                 onClick={handleSaveEdit}
-                disabled={editLoading}
-                className="px-5 py-2.5 bg-[#C2410C] hover:bg-[#9A3412] text-white text-xs font-bold rounded-xl flex items-center gap-2 transition-all cursor-pointer shadow-md shadow-orange-500/15 disabled:opacity-60"
+                disabled={editLoading || Boolean(editSalaryMinError || editSalaryMaxError)}
+                className="px-5 py-2.5 bg-[#C2410C] hover:bg-[#9A3412] text-white text-xs font-bold rounded-xl flex items-center gap-2 transition-all cursor-pointer shadow-md shadow-orange-500/15 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {editLoading ? (
                   <>

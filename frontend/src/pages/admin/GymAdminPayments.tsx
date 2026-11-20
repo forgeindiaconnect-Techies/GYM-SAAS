@@ -253,6 +253,7 @@ const GymAdminPayments = () => {
               <table className="w-full text-left text-xs whitespace-nowrap">
                 <thead className="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[#64748B] uppercase tracking-wider font-extrabold text-[11px]">
                   <tr>
+                    <th className="px-4 py-3.5 text-center w-14">S.No</th>
                     <th className="px-5 py-3.5">Payment Date</th>
                     <th className="px-5 py-3.5">Customer &amp; Email</th>
                     <th className="px-5 py-3.5">Membership &amp; Plan</th>
@@ -265,9 +266,9 @@ const GymAdminPayments = () => {
                 <tbody className="divide-y divide-[#F8FAFC]">
                   {filtered.length === 0 ? (
                     <tr>
-                      <td colSpan={7} className="px-6 py-12 text-center text-[#64748B]">No transactions match your search filter.</td>
+                      <td colSpan={8} className="px-6 py-12 text-center text-[#64748B]">No transactions match your search filter.</td>
                     </tr>
-                  ) : filtered.map((trx) => {
+                  ) : filtered.map((trx, idx) => {
                     const isTrial = (trx.planName || '').toLowerCase().includes('trial') || trx.paymentMethod === 'Trial' || trx.amount === 0;
                     const linkedMem = trx.membershipId;
                     const emailStatus = linkedMem?.confirmationEmailStatus || (trx.status === 'Approved' ? 'Sent' : 'Pending');
@@ -275,6 +276,9 @@ const GymAdminPayments = () => {
 
                     return (
                       <tr key={trx._id} className="hover:bg-[#FFFFFF] transition-colors">
+                        <td className="px-4 py-4 text-center font-medium text-[#64748B] w-14">
+                          {idx + 1}
+                        </td>
                         <td className="px-5 py-4 text-[#64748B]">
                           {new Date(trx.paymentDate || trx.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
                         </td>

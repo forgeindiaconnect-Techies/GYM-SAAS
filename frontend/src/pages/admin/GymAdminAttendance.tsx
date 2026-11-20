@@ -107,6 +107,23 @@ const GymAdminAttendance = () => {
     return dateStr;
   };
 
+  const getDutyBadgeStyle = (duty: string) => {
+    const d = (duty || '').toLowerCase();
+    if (d.includes('personal') || d.includes('pt')) {
+      return 'bg-[#FFF7ED] text-[#C2410C] border-[#FFEDD5]';
+    }
+    if (d.includes('online') || d.includes('virtual')) {
+      return 'bg-blue-50 text-blue-700 border-blue-200';
+    }
+    if (d.includes('floor') || d.includes('shift')) {
+      return 'bg-emerald-50 text-emerald-700 border-emerald-200';
+    }
+    if (d.includes('group') || d.includes('class') || d.includes('hiit')) {
+      return 'bg-purple-50 text-purple-700 border-purple-200';
+    }
+    return 'bg-[#F8FAFC] text-[#334155] border-[#E2E8F0]';
+  };
+
   // Load real sessions and populate records
   const loadAttendanceData = async () => {
     try {
@@ -861,63 +878,63 @@ const GymAdminAttendance = () => {
             </div>
 
             <div className="overflow-x-auto custom-scrollbar">
-              <table className="w-full text-left text-sm">
+              <table className="w-full text-left text-sm min-w-[760px]">
                 <thead>
                   <tr className="border-b border-[#E2E8F0] text-[#64748B] text-xs font-bold uppercase tracking-wider bg-[#F8FAFC]">
-                    <th className="py-3 px-4">Member Name</th>
-                    <th className="py-3 px-4">Type</th>
-                    <th className="py-3 px-4">Date</th>
-                    <th className="py-3 px-4">Check-in Time</th>
-                    <th className="py-3 px-4">Checkout Time</th>
-                    <th className="py-3 px-4 text-right">Action</th>
+                    <th className="py-3.5 px-4 min-w-[200px] whitespace-nowrap">Member Name</th>
+                    <th className="py-3.5 px-4 min-w-[140px] whitespace-nowrap">Type</th>
+                    <th className="py-3.5 px-4 min-w-[130px] whitespace-nowrap">Date</th>
+                    <th className="py-3.5 px-4 min-w-[130px] whitespace-nowrap">Check-in Time</th>
+                    <th className="py-3.5 px-4 min-w-[130px] whitespace-nowrap">Checkout Time</th>
+                    <th className="py-3.5 px-4 min-w-[110px] text-right whitespace-nowrap">Action</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#E2E8F0]">
                   {filteredCustomerCheckins.map((item) => (
                     <tr key={item.id} className="hover:bg-[#FFF7ED]/70 transition-colors">
                       {/* 1. Member Name */}
-                      <td className="py-3.5 px-4 font-semibold text-[#111827]">
+                      <td className="py-3.5 px-4 font-semibold text-[#111827] align-middle whitespace-nowrap">
                         <div className="flex items-center space-x-2.5">
-                          <div className="w-8 h-8 rounded-full bg-[#FFF7ED] text-[#EA580C] flex items-center justify-center font-bold text-xs">
+                          <div className="w-8 h-8 rounded-full bg-[#FFF7ED] text-[#EA580C] flex items-center justify-center font-bold text-xs shrink-0">
                             {item.name.charAt(0)}
                           </div>
                           <div>
-                            <p className="font-bold">{item.name}</p>
-                            {item.email && <p className="text-[11px] text-[#64748B] font-normal">{item.email}</p>}
+                            <p className="font-bold text-sm text-[#111827] leading-tight">{item.name}</p>
+                            {item.email && <p className="text-[11px] text-[#64748B] font-normal mt-0.5">{item.email}</p>}
                           </div>
                         </div>
                       </td>
 
                       {/* 2. Type */}
-                      <td className="py-3.5 px-4 text-xs font-semibold text-[#64748B]">
-                        <span className="px-2.5 py-1 rounded-md bg-[#F8FAFC] border border-[#E2E8F0]">
+                      <td className="py-3.5 px-4 text-xs font-semibold text-[#64748B] align-middle whitespace-nowrap">
+                        <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-[#F8FAFC] border border-[#E2E8F0] whitespace-nowrap">
                           {item.type}
                         </span>
                       </td>
 
                       {/* 3. Date */}
-                      <td className="py-3.5 px-4 text-xs font-medium text-[#111827]">
-                        <span className="inline-flex items-center gap-1.5">
-                          <Calendar size={13} className="text-[#EA580C]" />
+                      <td className="py-3.5 px-4 text-xs font-medium text-[#111827] align-middle whitespace-nowrap">
+                        <span className="inline-flex items-center gap-1.5 whitespace-nowrap font-medium">
+                          <Calendar size={13} className="text-[#EA580C] shrink-0" />
                           {formatDateDisplay(item.date)}
                         </span>
                       </td>
 
                       {/* 4. Check-in Time */}
-                      <td className="py-3.5 px-4 text-xs font-bold text-[#EA580C]">
-                        <span className="inline-flex items-center gap-1.5">
-                          <Clock size={13} className="text-[#EA580C]" />
+                      <td className="py-3.5 px-4 text-xs font-bold text-[#EA580C] align-middle whitespace-nowrap">
+                        <span className="inline-flex items-center gap-1.5 whitespace-nowrap font-bold">
+                          <Clock size={13} className="text-[#EA580C] shrink-0" />
                           {item.checkInTime}
                         </span>
                       </td>
 
                       {/* 5. Checkout Time */}
-                      <td className="py-3.5 px-4 text-xs font-bold">
+                      <td className="py-3.5 px-4 text-xs font-bold align-middle whitespace-nowrap">
                         <span
                           className={
                             item.checkOutTime === 'In Gym'
-                              ? 'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-[#F8FAFC] text-[#EA580C] animate-pulse'
-                              : 'text-[#111827]'
+                              ? 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5] animate-pulse whitespace-nowrap'
+                              : 'text-[#111827] whitespace-nowrap'
                           }
                         >
                           {item.checkOutTime}
@@ -925,10 +942,10 @@ const GymAdminAttendance = () => {
                       </td>
 
                       {/* 6. Action */}
-                      <td className="py-3.5 px-4 text-right">
+                      <td className="py-3.5 px-4 text-right align-middle whitespace-nowrap">
                         <button
                           onClick={() => setSelectedRecord({ ...item, recordType: 'customer' })}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#F8FAFC] hover:bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5] hover:border-[#FDBA74] text-xs font-semibold shadow-sm transition-all cursor-pointer"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#F8FAFC] hover:bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5] hover:border-[#FDBA74] text-xs font-semibold shadow-xs transition-all cursor-pointer"
                         >
                           <Eye size={13} />
                           <span>View Details</span>
@@ -1115,80 +1132,94 @@ const GymAdminAttendance = () => {
             </div>
 
             <div className="overflow-x-auto custom-scrollbar">
-              <table className="w-full text-left text-sm">
+              <table className="w-full text-left text-sm min-w-[1040px]">
                 <thead>
                   <tr className="border-b border-[#E2E8F0] text-[#64748B] text-xs font-bold uppercase tracking-wider bg-[#F8FAFC]">
-                    <th className="py-3 px-4">Trainer</th>
-                    <th className="py-3 px-4">Date</th>
-                    <th className="py-3 px-4">Assigned Duty / Mode</th>
-                    <th className="py-3 px-4">Client / Area</th>
-                    <th className="py-3 px-4">Scheduled Slot</th>
-                    <th className="py-3 px-4">Check-In</th>
-                    <th className="py-3 px-4">Check-Out</th>
-                    <th className="py-3 px-4 text-right">Action</th>
+                    <th className="py-3.5 px-4 min-w-[180px] whitespace-nowrap">Trainer</th>
+                    <th className="py-3.5 px-4 min-w-[125px] whitespace-nowrap">Date</th>
+                    <th className="py-3.5 px-4 min-w-[215px] whitespace-nowrap">Assigned Duty / Mode</th>
+                    <th className="py-3.5 px-4 min-w-[185px] whitespace-nowrap">Client / Area</th>
+                    <th className="py-3.5 px-4 min-w-[165px] whitespace-nowrap">Scheduled Slot</th>
+                    <th className="py-3.5 px-4 min-w-[115px] whitespace-nowrap">Check-In</th>
+                    <th className="py-3.5 px-4 min-w-[115px] whitespace-nowrap">Check-Out</th>
+                    <th className="py-3.5 px-4 min-w-[120px] text-right whitespace-nowrap">Action</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#E2E8F0]">
                   {filteredTrainerRecords.map((t) => (
                     <tr key={t.id} className="hover:bg-[#FFF7ED]/70 transition-colors">
                       {/* 1. Trainer */}
-                      <td className="py-3.5 px-4 font-semibold text-[#111827]">
+                      <td className="py-3.5 px-4 font-semibold text-[#111827] align-middle whitespace-nowrap">
                         <div className="flex items-center space-x-2.5">
-                          <div className="w-9 h-9 rounded-full bg-[#C2410C] text-white font-bold flex items-center justify-center text-xs shadow-sm">
+                          <div className="w-9 h-9 rounded-full bg-[#C2410C] text-white font-bold flex items-center justify-center text-xs shadow-xs shrink-0">
                             {t.trainerName.charAt(0)}
                           </div>
                           <div>
-                            <p className="font-bold">{t.trainerName}</p>
-                            <p className="text-[11px] text-[#64748B] font-normal">{t.specialization}</p>
+                            <p className="font-bold text-sm text-[#111827] leading-tight">{t.trainerName}</p>
+                            <p className="text-[11px] text-[#64748B] font-normal mt-0.5">{t.specialization}</p>
                           </div>
                         </div>
                       </td>
 
                       {/* 2. Date */}
-                      <td className="py-3.5 px-4 text-xs font-medium text-[#111827]">
-                        <span className="inline-flex items-center gap-1.5 font-semibold">
-                          <Calendar size={13} className="text-[#EA580C]" />
+                      <td className="py-3.5 px-4 text-xs font-medium text-[#111827] align-middle whitespace-nowrap">
+                        <span className="inline-flex items-center gap-1.5 font-semibold text-xs">
+                          <Calendar size={13} className="text-[#EA580C] shrink-0" />
                           {formatDateDisplay(t.date)}
                         </span>
                       </td>
 
                       {/* 3. Assigned Duty / Mode */}
-                      <td className="py-3.5 px-4 text-xs font-semibold text-[#111827]">
-                        <span className="px-2.5 py-1 rounded-md bg-[#F8FAFC] border border-[#E2E8F0]">
+                      <td className="py-3.5 px-4 align-middle whitespace-nowrap">
+                        <span className={`inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap border ${getDutyBadgeStyle(t.dutyType)}`}>
                           {t.dutyType}
                         </span>
                       </td>
 
                       {/* 4. Client / Area */}
-                      <td className="py-3.5 px-4 text-xs font-bold text-[#EA580C]">
-                        {t.assignedCustomer ? `Client: ${t.assignedCustomer}` : 'Main Floor'}
+                      <td className="py-3.5 px-4 align-middle whitespace-nowrap">
+                        <div className="flex items-center gap-1.5 whitespace-nowrap text-xs">
+                          <span className="text-[#64748B] font-medium">
+                            {t.assignedCustomer && (t.assignedCustomer.toLowerCase().includes('floor') || t.assignedCustomer.toLowerCase().includes('studio') || t.assignedCustomer.toLowerCase().includes('area'))
+                              ? 'Area:'
+                              : 'Client:'}
+                          </span>
+                          <span className={`font-bold ${
+                            t.assignedCustomer && (t.assignedCustomer.toLowerCase().includes('floor') || t.assignedCustomer.toLowerCase().includes('studio'))
+                              ? 'text-[#0F766E]'
+                              : 'text-[#EA580C]'
+                          }`}>
+                            {t.assignedCustomer || 'Main Floor'}
+                          </span>
+                        </div>
                       </td>
 
                       {/* 5. Scheduled Slot */}
-                      <td className="py-3.5 px-4 text-xs font-medium text-[#64748B]">
-                        <span className="flex items-center gap-1">
-                          <Clock size={12} className="text-[#EA580C]" /> {t.scheduledTime}
+                      <td className="py-3.5 px-4 text-xs font-medium text-[#64748B] align-middle whitespace-nowrap">
+                        <span className="inline-flex items-center gap-1.5 whitespace-nowrap">
+                          <Clock size={12} className="text-[#EA580C] shrink-0" />
+                          <span>{t.scheduledTime}</span>
                         </span>
                       </td>
 
                       {/* 6. Check-In */}
-                      <td className="py-3.5 px-4 text-xs font-bold text-[#111827]">
-                        <div className="flex items-center gap-1">
-                          <Clock size={12} className="text-[#EA580C]" />
+                      <td className="py-3.5 px-4 text-xs font-bold text-[#111827] align-middle whitespace-nowrap">
+                        <div className="flex items-center gap-1.5">
+                          <Clock size={12} className="text-[#EA580C] shrink-0" />
                           <span>{t.checkInTime}</span>
                         </div>
                         {t.punctuality && (
-                          <span className="text-[10px] text-[#64748B] font-normal block">{t.punctuality}</span>
+                          <span className="text-[10px] text-[#64748B] font-normal block mt-0.5">{t.punctuality}</span>
                         )}
                       </td>
 
                       {/* 7. Check-Out */}
-                      <td className="py-3.5 px-4 text-xs font-bold">
+                      <td className="py-3.5 px-4 text-xs font-bold align-middle whitespace-nowrap">
                         <span
                           className={
                             t.checkOutTime === 'In Progress'
-                              ? 'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-[#F8FAFC] text-[#EA580C] animate-pulse'
-                              : 'text-[#111827]'
+                              ? 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5] animate-pulse whitespace-nowrap'
+                              : 'text-[#111827] whitespace-nowrap'
                           }
                         >
                           {t.checkOutTime}
@@ -1196,10 +1227,10 @@ const GymAdminAttendance = () => {
                       </td>
 
                       {/* 8. Action */}
-                      <td className="py-3.5 px-4 text-right">
+                      <td className="py-3.5 px-4 text-right align-middle whitespace-nowrap">
                         <button
                           onClick={() => setSelectedRecord({ ...t, recordType: 'trainer' })}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#F8FAFC] hover:bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5] hover:border-[#FDBA74] text-xs font-semibold shadow-sm transition-all cursor-pointer"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#F8FAFC] hover:bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5] hover:border-[#FDBA74] text-xs font-semibold shadow-xs transition-all cursor-pointer"
                         >
                           <Eye size={13} />
                           <span>View Details</span>

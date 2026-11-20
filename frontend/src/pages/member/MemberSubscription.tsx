@@ -6,6 +6,7 @@ import {
   Printer, Send, RefreshCw, Download
 } from 'lucide-react';
 import api from '../../utils/api';
+import { markAuthorizedNavigation } from '../../components/NavigationGuard';
 
 const MemberSubscription = () => {
   const navigate = useNavigate();
@@ -54,9 +55,49 @@ const MemberSubscription = () => {
     }
   };
 
-  const activeMembership = memberships.find(m => (m.status === 'Active' || m.status === 'Free Trial') && (!m.endDate || new Date(m.endDate) >= new Date()));
+  const getEffectiveEndDate = (m: any): Date | null => {
+    if (!m) return null;
+    const start = m.startDate ? new Date(m.startDate) : new Date();
+    const dur = (m.duration || '').toLowerCase();
+    if (m.endDate) {
+      const storedEnd = new Date(m.endDate);
+      const storedDiffDays = (storedEnd.getTime() - start.getTime()) / (1000 * 60 * 60 * 24);
+      if (dur.includes('month') && !dur.includes('12 month')) {
+        const months = parseInt(dur) || 1;
+        if (storedDiffDays > (months * 31) + 10) {
+          const calcEnd = new Date(start);
+          calcEnd.setMonth(calcEnd.getMonth() + months);
+          return calcEnd;
+        }
+      } else if (dur.includes('day')) {
+        const days = parseInt(dur) || 1;
+        if (storedDiffDays > days + 2) {
+          const calcEnd = new Date(start);
+          calcEnd.setDate(calcEnd.getDate() + days);
+          return calcEnd;
+        }
+      } else if (dur.includes('week')) {
+        const weeks = parseInt(dur) || 1;
+        if (storedDiffDays > (weeks * 7) + 3) {
+          const calcEnd = new Date(start);
+          calcEnd.setDate(calcEnd.getDate() + (weeks * 7));
+          return calcEnd;
+        }
+      }
+      return storedEnd;
+    }
+    const calcEnd = new Date(start);
+    calcEnd.setMonth(calcEnd.getMonth() + 1);
+    return calcEnd;
+  };
+
+  const activeMembership = memberships.find(m => {
+    const end = getEffectiveEndDate(m);
+    return (m.status === 'Active' || m.status === 'Free Trial') && (!end || end >= new Date());
+  });
   const pendingMembership = memberships.find(m => m.status === 'Payment Verification Pending');
   const currentMembership = activeMembership || pendingMembership || memberships[0];
+  const currentEndDate = getEffectiveEndDate(currentMembership);
 
   const now = new Date();
   const isCurrentExpired = Boolean(
@@ -64,7 +105,7 @@ const MemberSubscription = () => {
       currentMembership.status === 'Expired' ||
       user?.subscriptionStatus === 'Expired' ||
       user?.subscriptionStatus === 'EXPIRED' ||
-      (currentMembership.endDate && new Date(currentMembership.endDate) < now)
+      (currentEndDate && currentEndDate < now)
     )
   );
 
@@ -104,11 +145,41 @@ const MemberSubscription = () => {
   const availablePlans = rawPlans;
 
   const handleSelectPlan = (plan: any) => {
-    const gymId = gym?._id || user?.gymId?._id || user?.gymId;
-    navigate(`/gyms/${gymId}/checkout`, {
+    // BUG 1 Fix: Check if member already has an active, successfully paid subscription
+    const hasActivePaidSubscription = Boolean(
+      !isCurrentExpired &&
+      !isTrial &&
+      (
+        (activeMembership &&
+          activeMembership.status === 'Active' &&
+          (!currentEndDate || currentEndDate >= now) &&
+          (Number(activeMembership.finalAmount || activeMembership.price || 0) > 0 || !activeMembership.planName?.toLowerCase().includes('trial'))) ||
+        (user &&
+          (user.subscriptionStatus === 'Active' || user.subscriptionStatus === 'ACTIVE') &&
+          user.subscriptionPlan &&
+          !user.subscriptionPlan.toLowerCase().includes('trial') &&
+          user.subscriptionExpiry &&
+          new Date(user.subscriptionExpiry) >= now)
+      )
+    );
+
+    if (hasActivePaidSubscription) {
+      alert("You have already paid for a subscription this month. You cannot purchase another plan until your current subscription expires.");
+      return;
+    }
+
+    if (pendingMembership) {
+      alert("You have a payment verification pending. Please wait for the gym administrator to verify your payment.");
+      return;
+    }
+
+    const rawGymId = gym?._id || user?.gymId?._id || user?.gymId;
+    const cleanGymId = typeof rawGymId === 'object' ? rawGymId?._id : rawGymId;
+    markAuthorizedNavigation();
+    navigate(`/gyms/${cleanGymId}/checkout`, {
       state: {
         plan,
-        gym: gym || { _id: gymId, name: 'Gym' }
+        gym: gym || { _id: cleanGymId, name: user?.gymName || 'Gym' }
       }
     });
   };
@@ -321,11 +392,11 @@ const MemberSubscription = () => {
               </div>
               
               <div className="flex items-center gap-2 flex-wrap">
-                {currentMembership.endDate && (
+                {currentEndDate && (
                   <span className="px-3.5 py-1.5 rounded-full text-xs font-extrabold bg-[#F8FAFC] border border-[#E2E8F0] text-[#EA580C] flex items-center gap-1.5 shadow-xs">
                     <Clock size={13} />
                     {(() => {
-                      const daysLeft = Math.max(0, Math.ceil((new Date(currentMembership.endDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24)));
+                      const daysLeft = Math.max(0, Math.ceil((currentEndDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24)));
                       return daysLeft === 0 ? 'Expiring Today' : `${daysLeft} Day${daysLeft === 1 ? '' : 's'} Remaining`;
                     })()}
                   </span>
@@ -457,7 +528,7 @@ const MemberSubscription = () => {
                   <div className="ml-auto text-right">
                     <p className="font-medium text-[#64748B] text-xs">Expiry Date</p>
                     <p className="text-[#EA580C] font-bold text-xs sm:text-sm">
-                      {currentMembership.endDate ? new Date(currentMembership.endDate).toLocaleDateString('en-IN', { dateStyle: 'medium' }) : 'Pending'}
+                      {currentEndDate ? currentEndDate.toLocaleDateString('en-IN', { dateStyle: 'medium' }) : 'Pending'}
                     </p>
                   </div>
                 </div>
@@ -530,6 +601,14 @@ const MemberSubscription = () => {
           {availablePlans.map((p: any, idx: number) => {
             const isTrialPlan = p.name?.toLowerCase().includes('trial') || Number(p.price) === 0;
             const isPopular = !isTrialPlan && (p.name?.toLowerCase().includes('pro') || idx === 2);
+            const isCurrentActivePlan = Boolean(
+              isActive &&
+              activeMembership &&
+              (
+                (p._id && (activeMembership.packageId === p._id || activeMembership.packageId?._id === p._id)) ||
+                (p.name && activeMembership.planName && p.name.trim().toLowerCase() === activeMembership.planName.trim().toLowerCase())
+              )
+            );
             const featuresList = (typeof p.features === 'string')
               ? p.features.split(/[\n,]/).map((f: string) => f.trim()).filter(Boolean)
               : (Array.isArray(p.features) ? p.features : ['Full Gym Access', 'Trainer Guidance', 'AI Workout Planner']);
@@ -538,12 +617,20 @@ const MemberSubscription = () => {
               <div 
                 key={p._id || idx}
                 className={`relative rounded-2xl p-6 flex flex-col justify-between transition-all duration-200 hover:shadow-2xl border-2 ${
-                  isTrialPlan
-                    ? (isTrialCompleted ? 'bg-[#F8FAFC] border-[#E2E8F0]' : 'bg-[#FFFFFF] border-[#E2E8F0] hover:border-[#FDBA74]')
-                    : (isPopular ? 'bg-[#F8FAFC] border-[#FDBA74] shadow-lg shadow-orange-500/15' : 'bg-[#F8FAFC] border-[#E2E8F0] hover:border-[#FFEDD5]')
+                  isCurrentActivePlan
+                    ? 'bg-[#F8FAFC] border-emerald-500/60 shadow-lg shadow-emerald-500/10'
+                    : isTrialPlan
+                      ? (isTrialCompleted ? 'bg-[#F8FAFC] border-[#E2E8F0]' : 'bg-[#FFFFFF] border-[#E2E8F0] hover:border-[#FDBA74]')
+                      : (isPopular ? 'bg-[#F8FAFC] border-[#FDBA74] shadow-lg shadow-orange-500/15' : 'bg-[#F8FAFC] border-[#E2E8F0] hover:border-[#FFEDD5]')
                 }`}
               >
-                {isTrialPlan && (
+                {isCurrentActivePlan && (
+                  <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-emerald-600 text-white text-[10px] font-black px-3.5 py-0.5 rounded-full shadow-md uppercase tracking-wider flex items-center gap-1">
+                    <Check size={12} />
+                    Current Plan
+                  </span>
+                )}
+                {!isCurrentActivePlan && isTrialPlan && (
                   <span className={`absolute -top-3.5 left-1/2 -translate-x-1/2 text-[10px] font-bold px-3 py-0.5 rounded-full shadow-sm uppercase tracking-wide ${
                     isTrialCompleted ? 'bg-[#FFFFFF] text-[#64748B] border border-[#E2E8F0]' : 'bg-[#C2410C] text-white'
                   }`}>
@@ -551,14 +638,14 @@ const MemberSubscription = () => {
                   </span>
                 )}
 
-                {isPopular && (
+                {!isCurrentActivePlan && !isTrialPlan && isPopular && (
                   <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-[#C2410C] text-[#F8FAFC] text-[10px] font-black px-3.5 py-0.5 rounded-full shadow-md uppercase tracking-wider">
                     Recommended Plan
                   </span>
                 )}
 
                 <div>
-                  <h3 className={`text-xl font-bold capitalize mb-1 ${isPopular ? 'text-[#EA580C]' : 'text-[#111827]'}`}>{p.name}</h3>
+                  <h3 className={`text-xl font-bold capitalize mb-1 ${isCurrentActivePlan ? 'text-emerald-700' : isPopular ? 'text-[#EA580C]' : 'text-[#111827]'}`}>{p.name}</h3>
                   <p className="text-xs text-[#64748B] mb-4">Duration: <strong className="text-[#111827]">{p.duration || '1 Day'}</strong></p>
 
                   <div className="mb-6">
@@ -569,7 +656,7 @@ const MemberSubscription = () => {
                       </div>
                     ) : (
                       <div>
-                        <span className={`text-3xl font-black ${isPopular ? 'text-[#EA580C]' : 'text-[#111827]'}`}>₹{Number(p.price).toLocaleString('en-IN')}</span>
+                        <span className={`text-3xl font-black ${isCurrentActivePlan ? 'text-emerald-700' : isPopular ? 'text-[#EA580C]' : 'text-[#111827]'}`}>₹{Number(p.price).toLocaleString('en-IN')}</span>
                         <span className="text-xs text-[#64748B] font-semibold ml-1">/{p.duration}</span>
                       </div>
                     )}
@@ -578,14 +665,23 @@ const MemberSubscription = () => {
                   <div className="space-y-2.5 mb-6 text-sm text-[#64748B]">
                     {featuresList.slice(0, 6).map((feat: string, fIdx: number) => (
                       <div key={fIdx} className="flex items-start gap-2">
-                        <Check size={16} className={`${isPopular ? 'text-[#EA580C]' : 'text-[#15803D]'} shrink-0 mt-0.5`} />
+                        <Check size={16} className={`${isCurrentActivePlan ? 'text-emerald-600' : isPopular ? 'text-[#EA580C]' : 'text-[#15803D]'} shrink-0 mt-0.5`} />
                         <span className="text-xs leading-relaxed text-[#111827]">{feat}</span>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                {isTrialPlan ? (
+                {isCurrentActivePlan ? (
+                  <button
+                    type="button"
+                    onClick={() => handleSelectPlan(p)}
+                    className="w-full py-3 rounded-xl font-bold text-xs bg-[#FFFFFF] border-2 border-emerald-500/40 text-emerald-600 flex items-center justify-center gap-1.5 shadow-xs cursor-pointer hover:bg-emerald-50/40 transition-colors"
+                  >
+                    <CheckCircle2 size={16} className="text-emerald-500" />
+                    <span>Current Plan</span>
+                  </button>
+                ) : isTrialPlan ? (
                   isTrialCompleted ? (
                     <button
                       disabled
@@ -614,9 +710,8 @@ const MemberSubscription = () => {
                 ) : (
                   <button
                     onClick={() => handleSelectPlan(p)}
-                    className="w-full py-3 rounded-xl font-bold text-xs bg-[#C2410C] text-white hover:bg-[#9A3412] shadow-md shadow-orange-500/15 transition-all duration-150 flex items-center justify-center gap-1.5 cursor-pointer"
+                    className="w-full py-3 rounded-xl font-bold text-xs bg-[#C2410C] text-white hover:bg-[#9A3412] shadow-md shadow-orange-500/15 transition-all duration-150 flex items-center justify-center cursor-pointer"
                   >
-                    <Sparkles size={16} />
                     <span>Select &amp; Subscribe</span>
                   </button>
                 )}
@@ -691,8 +786,8 @@ const MemberSubscription = () => {
                         {statusText}
                       </span>
                       {itemIsTrial && (
-                        <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#EA580C] bg-[#FFF7ED] px-2 py-0.5 rounded-md border border-[#FFEDD5]">
-                          <Sparkles size={12} /> 1 Day Free Trial
+                        <span className="inline-flex items-center text-[11px] font-semibold text-[#EA580C] bg-[#FFF7ED] px-2 py-0.5 rounded-md border border-[#FFEDD5]">
+                          1 Day Free Trial
                         </span>
                       )}
                     </div>
@@ -779,8 +874,8 @@ const MemberSubscription = () => {
                       {selectedHistoryItem.statusText}
                     </span>
                     {selectedHistoryItem.itemIsTrial && (
-                      <span className="text-[11px] font-semibold text-[#EA580C] bg-[#FFF7ED] px-2 py-0.5 rounded-md border border-[#FFEDD5] flex items-center gap-1">
-                        <Sparkles size={11} /> 1 Day Free Trial
+                      <span className="text-[11px] font-semibold text-[#EA580C] bg-[#FFF7ED] px-2 py-0.5 rounded-md border border-[#FFEDD5] inline-flex items-center">
+                        1 Day Free Trial
                       </span>
                     )}
                   </div>

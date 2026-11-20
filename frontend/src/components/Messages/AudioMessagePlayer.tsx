@@ -11,21 +11,38 @@ export const AudioMessagePlayer: React.FC<AudioMessagePlayerProps> = ({ src, dur
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(initialDuration || 0);
+  const [duration, setDuration] = useState(initialDuration && initialDuration > 0 ? initialDuration : 0);
   const [hasError, setHasError] = useState(false);
+
+  useEffect(() => {
+    if (initialDuration && initialDuration > 0) {
+      setDuration(initialDuration);
+    }
+  }, [initialDuration]);
 
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
 
-    const handleLoadedMetadata = () => {
-      if (audio.duration && !isNaN(audio.duration) && isFinite(audio.duration)) {
+    setHasError(false);
+
+    const updateAudioDuration = () => {
+      if (audio.duration && !isNaN(audio.duration) && isFinite(audio.duration) && audio.duration > 0) {
         setDuration(Math.round(audio.duration));
+      } else if (initialDuration && initialDuration > 0) {
+        setDuration(initialDuration);
       }
+    };
+
+    const handleLoadedMetadata = () => {
+      updateAudioDuration();
     };
 
     const handleTimeUpdate = () => {
       setCurrentTime(audio.currentTime);
+      if (audio.currentTime > duration) {
+        setDuration(Math.ceil(audio.currentTime));
+      }
     };
 
     const handleEnded = () => {
@@ -33,32 +50,39 @@ export const AudioMessagePlayer: React.FC<AudioMessagePlayerProps> = ({ src, dur
       setCurrentTime(0);
     };
 
-    const handleError = () => {
+    const handleError = (e: any) => {
+      console.warn('Audio playback error on src:', src, e);
       setHasError(true);
       setIsPlaying(false);
     };
 
     audio.addEventListener('loadedmetadata', handleLoadedMetadata);
+    audio.addEventListener('durationchange', updateAudioDuration);
     audio.addEventListener('timeupdate', handleTimeUpdate);
     audio.addEventListener('ended', handleEnded);
     audio.addEventListener('error', handleError);
 
     return () => {
       audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
+      audio.removeEventListener('durationchange', updateAudioDuration);
       audio.removeEventListener('timeupdate', handleTimeUpdate);
       audio.removeEventListener('ended', handleEnded);
       audio.removeEventListener('error', handleError);
     };
-  }, [src]);
+  }, [src, initialDuration, duration]);
 
   const togglePlay = () => {
-    if (!audioRef.current || hasError) return;
+    const audio = audioRef.current;
+    if (!audio || hasError) return;
 
     if (isPlaying) {
-      audioRef.current.pause();
+      audio.pause();
       setIsPlaying(false);
     } else {
-      audioRef.current.play().then(() => {
+      if (audio.ended || (duration > 0 && audio.currentTime >= duration)) {
+        audio.currentTime = 0;
+      }
+      audio.play().then(() => {
         setIsPlaying(true);
       }).catch((e) => {
         console.error('Audio play error:', e);
@@ -82,7 +106,8 @@ export const AudioMessagePlayer: React.FC<AudioMessagePlayerProps> = ({ src, dur
     return `${m}:${s < 10 ? '0' : ''}${s}`;
   };
 
-  const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0;
+  const effectiveDuration = duration > 0 ? duration : (initialDuration || Math.max(1, Math.ceil(currentTime)));
+  const progressPercent = effectiveDuration > 0 ? Math.min(100, (currentTime / effectiveDuration) * 100) : 0;
 
   if (hasError) {
     return (
@@ -117,33 +142,44 @@ export const AudioMessagePlayer: React.FC<AudioMessagePlayerProps> = ({ src, dur
       </button>
 
       {/* Progress & Waveform bars */}
-      <div className="flex-1 flex flex-col justify-center">
-        <div className="relative flex items-center h-5">
-          {/* Custom Track */}
-          <div className="absolute inset-x-0 h-1.5 rounded-full overflow-hidden bg-black/15">
-            <div 
-              className={`h-full transition-all duration-100 ${isMine ? 'bg-[#FFFFFF]' : 'bg-[#C2410C]'}`}
-              style={{ width: `${progressPercent}%` }}
-            />
+      <div className="flex-1 flex flex-col gap-1 min-w-0">
+        <div className="relative flex items-center h-4 group">
+          {/* Waveform-like background bars */}
+          <div className="absolute inset-0 flex items-center justify-between gap-0.5 opacity-60 pointer-events-none">
+            {[4, 8, 14, 10, 16, 20, 12, 8, 14, 18, 10, 6, 12, 16, 8, 4].map((h, i) => (
+              <div
+                key={i}
+                className={`w-1 rounded-full transition-colors ${
+                  (i / 16) * 100 <= progressPercent
+                    ? (isMine ? 'bg-[#FFFFFF]' : 'bg-[#EA580C]')
+                    : (isMine ? 'bg-[#FFFFFF]/30' : 'bg-[#CBD5E1]')
+                }`}
+                style={{ height: `${h}px` }}
+              />
+            ))}
           </div>
-          {/* Range Slider for scrubbing */}
+
+          {/* Seek Input Slider */}
           <input
             type="range"
-            min="0"
-            max={duration || 1}
-            step="0.1"
+            min={0}
+            max={effectiveDuration || 1}
+            step={0.1}
             value={currentTime}
             onChange={handleSeek}
-            className="absolute inset-x-0 w-full opacity-0 cursor-pointer h-5 z-10"
+            className="w-full h-4 opacity-0 cursor-pointer z-10"
+            title="Seek audio position"
           />
         </div>
 
         {/* Timestamps */}
-        <div className="flex justify-between items-center text-[10px] font-semibold mt-0.5 opacity-80">
+        <div className={`flex items-center justify-between text-[10px] font-semibold tabular-nums ${
+          isMine ? 'text-white/80' : 'text-[#64748B]'
+        }`}>
           <span>{formatTime(currentTime)}</span>
           <span className="flex items-center gap-1">
-            <Volume2 size={10} />
-            {formatTime(duration)}
+            <Volume2 size={11} className="opacity-70" />
+            {formatTime(effectiveDuration)}
           </span>
         </div>
       </div>

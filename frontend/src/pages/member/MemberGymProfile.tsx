@@ -27,6 +27,7 @@ const MemberGymProfile = () => {
   const [gym, setGym] = useState<any>(null);
   const [packages, setPackages] = useState<any[]>([]);
   const [trainers, setTrainers] = useState<any[]>([]);
+  const [activeMembership, setActiveMembership] = useState<any>(null);
   const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
@@ -36,10 +37,22 @@ const MemberGymProfile = () => {
     try {
       setIsLoading(true);
       setError('');
-      const res = await api.get('/gyms/my-gym');
+      const [res, memRes] = await Promise.all([
+        api.get('/gyms/my-gym'),
+        api.get('/memberships/my').catch(() => ({ data: { memberships: [] } }))
+      ]);
       const gymData = res.data?.gym || null;
       setGym(gymData);
       setTrainers(Array.isArray(res.data?.trainers) ? res.data.trainers : []);
+
+      const userMemberships: any[] = memRes.data?.memberships || [];
+      const now = new Date();
+      const active = userMemberships.find((m: any) => {
+        const isStatusActive = m.status === 'Active' || m.status === 'Free Trial';
+        const end = m.endDate ? new Date(m.endDate) : null;
+        return isStatusActive && (!end || end >= now);
+      });
+      setActiveMembership(active || null);
 
       if (gymData?._id) {
         const inlinePackages = Array.isArray(res.data?.packages) ? res.data.packages : null;
@@ -366,22 +379,38 @@ const MemberGymProfile = () => {
                   ? pkg.features
                   : (typeof pkg.features === 'string' ? pkg.features.split(',').map((f: string) => f.trim()).filter(Boolean) : []);
                 const isSelected = selectedPlanId === pkg._id;
+                const isCurrentActivePlan = Boolean(
+                  activeMembership &&
+                  (
+                    (pkg._id && (activeMembership.packageId === pkg._id || activeMembership.packageId?._id === pkg._id)) ||
+                    (pkg.name && activeMembership.planName && pkg.name.trim().toLowerCase() === activeMembership.planName.trim().toLowerCase())
+                  )
+                );
 
                 return (
                   <div
                     key={pkg._id}
-                    onClick={() => setSelectedPlanId(pkg._id)}
+                    onClick={() => {
+                      if (!isCurrentActivePlan) setSelectedPlanId(pkg._id);
+                    }}
                     className={`bg-[#FFFFFF] rounded-2xl p-6 relative flex flex-col justify-between transition-all duration-200 cursor-pointer border-2 ${
-                      isSelected
-                        ? 'border-[#FDBA74] shadow-md shadow-orange-500/15'
-                        : 'border-[#E2E8F0] hover:border-[#FFEDD5] shadow-2xs'
+                      isCurrentActivePlan
+                        ? 'border-emerald-500/60 shadow-md shadow-emerald-500/10'
+                        : isSelected
+                          ? 'border-[#FDBA74] shadow-md shadow-orange-500/15'
+                          : 'border-[#E2E8F0] hover:border-[#FFEDD5] shadow-2xs'
                     }`}
                   >
-                    {pkg.isPopular && (
+                    {isCurrentActivePlan ? (
+                      <div className="absolute top-0 right-6 -translate-y-1/2 bg-emerald-600 text-white font-bold px-3 py-1 rounded-full text-[10px] font-black shadow-lg uppercase tracking-wider flex items-center gap-1">
+                        <CheckCircle2 size={12} />
+                        CURRENT PLAN
+                      </div>
+                    ) : pkg.isPopular ? (
                       <div className="absolute top-0 right-6 -translate-y-1/2 bg-[#C2410C] text-white font-bold px-3 py-1 rounded-full text-[10px] font-black shadow-lg uppercase tracking-wider">
                         POPULAR
                       </div>
-                    )}
+                    ) : null}
 
                     <div>
                       {/* Fitness Goal Badge & Icon */}
@@ -434,30 +463,41 @@ const MemberGymProfile = () => {
                       </div>
                     </div>
 
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if (gym?._id) {
-                          navigate(`/gyms/${gym._id}/checkout`, {
-                            state: {
-                              plan: {
-                                ...pkg,
-                                price: pkg.monthlyPrice ?? pkg.price,
-                                name: pkg.name
-                              },
-                              gym
-                            }
-                          });
-                        }
-                      }}
-                      className="w-full py-3 rounded-xl font-bold transition-all text-white shadow-sm hover:opacity-95 active:scale-95 cursor-pointer text-sm"
-                      style={{ backgroundColor: badge.accent }}
-                    >
-                      {Number(price) === 0 || pkg.name?.toLowerCase().includes('trial')
-                        ? 'Start Free Trial'
-                        : `Choose ${pkg.name} • Pay Now`}
-                    </button>
+                    {isCurrentActivePlan ? (
+                      <button
+                        type="button"
+                        disabled
+                        className="w-full py-3 rounded-xl font-bold transition-all bg-[#FFFFFF] border-2 border-emerald-500/40 text-emerald-600 shadow-xs cursor-not-allowed text-sm flex items-center justify-center gap-1.5"
+                      >
+                        <CheckCircle2 size={16} className="text-emerald-500" />
+                        <span>Current Plan</span>
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (gym?._id) {
+                            navigate(`/gyms/${gym._id}/checkout`, {
+                              state: {
+                                plan: {
+                                  ...pkg,
+                                  price: pkg.monthlyPrice ?? pkg.price,
+                                  name: pkg.name
+                                },
+                                gym
+                              }
+                            });
+                          }
+                        }}
+                        className="w-full py-3 rounded-xl font-bold transition-all text-white shadow-sm hover:opacity-95 active:scale-95 cursor-pointer text-sm"
+                        style={{ backgroundColor: badge.accent }}
+                      >
+                        {Number(price) === 0 || pkg.name?.toLowerCase().includes('trial')
+                          ? 'Start Free Trial'
+                          : `Choose ${pkg.name} • Pay Now`}
+                      </button>
+                    )}
                   </div>
                 );
               })}

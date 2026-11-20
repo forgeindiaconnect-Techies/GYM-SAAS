@@ -1,5 +1,5 @@
-﻿import { useState, useEffect } from 'react';
-import { Search, Loader2, Download, IndianRupee, ShoppingBag, Store, Eye, X, FileText, Printer } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Search, Loader2, Download, IndianRupee, ShoppingBag, Store, Eye, X, FileText } from 'lucide-react';
 import api from '../../../utils/api';
 import DownSelect from '../../../components/common/DownSelect';
 
@@ -420,14 +420,8 @@ const GymStoreSalesHistory = () => {
               </div>
             </div>
 
-            <div className="px-6 py-3 border-t border-[#E2E8F0] bg-[#F8FAFC] flex items-center justify-between gap-3">
-              <button
-                onClick={() => downloadInvoice(selectedSale)}
-                className="px-4 py-2 bg-[#FFFFFF] border border-[#E2E8F0] text-[#111827] rounded-xl font-bold hover:bg-[#FFF7ED] transition-colors flex items-center gap-2 text-xs cursor-pointer shadow-xs"
-              >
-                <Printer size={15} className="text-[#EA580C]" /> Download Invoice
-              </button>
-              <button onClick={() => setSelectedSale(null)} className="px-5 py-2 bg-[#C2410C] text-white font-bold rounded-xl font-bold hover:bg-[#9A3412] transition-colors cursor-pointer text-xs">
+            <div className="px-6 py-3 border-t border-[#E2E8F0] bg-[#F8FAFC] flex items-center justify-end gap-3">
+              <button onClick={() => setSelectedSale(null)} className="px-5 py-2 bg-[#C2410C] text-white font-bold rounded-xl hover:bg-[#9A3412] transition-colors cursor-pointer text-xs">
                 Close
               </button>
             </div>

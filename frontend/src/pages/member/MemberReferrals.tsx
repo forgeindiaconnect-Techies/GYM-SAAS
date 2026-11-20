@@ -1359,14 +1359,14 @@ const MemberReferrals: React.FC = () => {
                   <table className="w-full text-left text-xs">
                     <thead className="bg-[#F8FAFC] text-[#64748B] uppercase text-[10px] tracking-wider border-b border-[#E2E8F0]">
                       <tr>
-                        <th className="py-3 px-4">Date</th>
-                        <th className="py-3 px-4">Transaction Type</th>
-                        <th className="py-3 px-4">Points</th>
-                        <th className="py-3 px-4">Discount Value</th>
-                        <th className="py-3 px-4">Reason / Notes</th>
-                        <th className="py-3 px-4">Balance After</th>
-                        <th className="py-3 px-4">Status</th>
-                        <th className="py-3 px-4 text-center">Action</th>
+                        <th className="py-3 px-4 whitespace-nowrap">Date</th>
+                        <th className="py-3 px-4 whitespace-nowrap">Transaction Type</th>
+                        <th className="py-3 px-4 whitespace-nowrap">Points</th>
+                        <th className="py-3 px-4 whitespace-nowrap">Discount Value</th>
+                        <th className="py-3 px-4 whitespace-nowrap">Reason / Notes</th>
+                        <th className="py-3 px-4 whitespace-nowrap">Balance After</th>
+                        <th className="py-3 px-4 whitespace-nowrap">Status</th>
+                        <th className="py-3 px-4 text-center whitespace-nowrap">Action</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y border-[#E2E8F0]">
@@ -1379,11 +1379,11 @@ const MemberReferrals: React.FC = () => {
 
                         return (
                           <tr key={tx._id} className="hover:bg-[#FFF7ED]/50 transition">
-                            <td className="py-3 px-4 text-[#64748B] whitespace-nowrap">
+                            <td className="py-3.5 px-4 text-[#64748B] whitespace-nowrap align-middle">
                               {tx.createdAt ? new Date(tx.createdAt).toLocaleDateString() : 'Today'} {tx.createdAt ? new Date(tx.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
                             </td>
-                            <td className="py-3 px-4 font-bold text-[#111827]">
-                              <span className="px-2 py-0.5 rounded-full text-[10px] bg-[#FFFFFF] border border-[#E2E8F0]">
+                            <td className="py-3.5 px-4 whitespace-nowrap align-middle">
+                              <span className="inline-flex items-center justify-center px-3 py-1 rounded-full text-[10px] font-bold tracking-wide whitespace-nowrap bg-[#F8FAFC] text-[#1E293B] border border-[#CBD5E1] shadow-2xs">
                                 {String(txType).replace(/_/g, ' ')}
                               </span>
                             </td>
@@ -1450,7 +1450,7 @@ const MemberReferrals: React.FC = () => {
 
                         <div className="flex items-center justify-between gap-2">
                           <div className="space-y-1 min-w-0">
-                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#FFFFFF] text-[#EA580C] border border-[#E2E8F0] inline-block">
+                            <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-[#FFFFFF] text-[#EA580C] border border-[#E2E8F0] inline-flex items-center whitespace-nowrap">
                               {String(txType).replace(/_/g, ' ')}
                             </span>
                             <p className="text-xs text-[#111827] font-medium line-clamp-1">
@@ -2082,7 +2082,7 @@ const MemberReferrals: React.FC = () => {
               <div className="p-4 rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] flex items-center justify-between">
                 <div>
                   <span className="text-xs text-[#64748B] block mb-1 font-medium">Transaction Type</span>
-                  <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-[#FFFFFF] text-[#EA580C] border border-[#FFEDD5] inline-block">
+                  <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-[#FFFFFF] text-[#EA580C] border border-[#FFEDD5] inline-flex items-center whitespace-nowrap">
                     {String(selectedTxForDetails.transactionType || selectedTxForDetails.type || 'EARN_BONUS').replace(/_/g, ' ')}
                   </span>
                 </div>

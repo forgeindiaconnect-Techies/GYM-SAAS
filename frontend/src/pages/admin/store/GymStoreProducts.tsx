@@ -653,9 +653,25 @@ const GymStoreProducts = () => {
                                      <input value={v.attributes[f.name] || ''} onChange={(e) => updateVariant(idx, 'attributes', { ...v.attributes, [f.name]: e.target.value })} className="w-full border border-[#E2E8F0] rounded px-2 py-1.5 text-xs outline-none focus:border-[#FDBA74] min-w-[100px]" placeholder={f.placeholder} />
                                    </td>
                                 ))}
-                                <td className="p-2"><input type="number" value={v.price} onChange={(e) => updateVariant(idx, 'price', e.target.value)} className="w-full border border-[#E2E8F0] rounded px-2 py-1.5 text-xs w-20" placeholder="0" /></td>
-                                <td className="p-2"><input type="number" value={v.discountPrice} onChange={(e) => updateVariant(idx, 'discountPrice', e.target.value)} className="w-full border border-[#E2E8F0] rounded px-2 py-1.5 text-xs w-20" placeholder="Optional" /></td>
-                                <td className="p-2"><input type="number" value={v.stock} onChange={(e) => updateVariant(idx, 'stock', e.target.value)} className="w-full border border-[#E2E8F0] rounded px-2 py-1.5 text-xs w-20" placeholder="0" /></td>
+                                <td className="p-2"><input type="number" min={0} value={v.price} onKeyDown={(e) => { if (['e', 'E', '+', '-'].includes(e.key)) e.preventDefault(); }} onChange={(e) => updateVariant(idx, 'price', e.target.value)} className="w-full border border-[#E2E8F0] rounded px-2 py-1.5 text-xs w-20" placeholder="0" /></td>
+                                <td className="p-2">
+                                  <input 
+                                    type="number" 
+                                    min={0}
+                                    step={1}
+                                    value={v.discountPrice} 
+                                    onKeyDown={(e) => {
+                                      if (e.key !== 'ArrowUp' && e.key !== 'ArrowDown' && e.key !== 'Tab') {
+                                        e.preventDefault();
+                                      }
+                                    }}
+                                    onPaste={(e) => e.preventDefault()}
+                                    onChange={(e) => updateVariant(idx, 'discountPrice', e.target.value)} 
+                                    className="w-full border border-[#E2E8F0] rounded px-2 py-1.5 text-xs w-20 cursor-default select-none" 
+                                    placeholder="0" 
+                                  />
+                                </td>
+                                <td className="p-2"><input type="number" min={0} value={v.stock} onKeyDown={(e) => { if (['e', 'E', '+', '-'].includes(e.key)) e.preventDefault(); }} onChange={(e) => updateVariant(idx, 'stock', e.target.value)} className="w-full border border-[#E2E8F0] rounded px-2 py-1.5 text-xs w-20" placeholder="0" /></td>
                                 <td className="p-2 text-center"><button type="button" onClick={() => removeVariant(idx)} className="text-[#9A3412] hover:text-red-700 bg-red-50 p-1.5 rounded"><Trash2 size={14}/></button></td>
                              </tr>
                           ))
@@ -670,19 +686,80 @@ const GymStoreProducts = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider mb-1 block">Selling Price (₹) *</label>
-                      <input type="number" min={0} value={form.sellingPrice} onChange={(e) => setForm({ ...form, sellingPrice: e.target.value })} className={inputCls} placeholder="0" />
+                      <input 
+                        type="number" 
+                        min={0} 
+                        value={form.sellingPrice} 
+                        onKeyDown={(e) => { if (['e', 'E', '+', '-'].includes(e.key)) e.preventDefault(); }}
+                        onChange={(e) => {
+                          const val = e.target.value.replace(/[^0-9]/g, '');
+                          if (val.length > 8) return;
+                          setForm({ ...form, sellingPrice: val });
+                        }} 
+                        className={inputCls} 
+                        placeholder="0" 
+                      />
                     </div>
                     <div>
                       <label className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider mb-1 block">Discount Amount (₹)</label>
-                      <input type="number" min={0} value={form.discountPrice} onChange={(e) => setForm({ ...form, discountPrice: e.target.value })} className={inputCls} placeholder="Optional" />
+                      <input 
+                        type="number" 
+                        min={0} 
+                        step={1}
+                        value={form.discountPrice} 
+                        onKeyDown={(e) => {
+                          // Disable manual typing: only allow arrow navigation keys
+                          if (e.key !== 'ArrowUp' && e.key !== 'ArrowDown' && e.key !== 'Tab') {
+                            e.preventDefault();
+                          }
+                        }}
+                        onPaste={(e) => e.preventDefault()}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          if (val === '') {
+                            setForm({ ...form, discountPrice: '' });
+                            return;
+                          }
+                          const num = Math.max(0, Math.floor(Number(val)));
+                          if (form.sellingPrice && num >= Number(form.sellingPrice)) {
+                            setForm({ ...form, discountPrice: String(Math.max(0, Number(form.sellingPrice) - 1)) });
+                          } else {
+                            setForm({ ...form, discountPrice: String(num) });
+                          }
+                        }} 
+                        className={`${inputCls} cursor-default select-none`} 
+                        placeholder="0 (Use arrow buttons)" 
+                      />
                     </div>
                     <div>
                       <label className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider mb-1 block">Stock Quantity *</label>
-                      <input type="number" min={0} value={form.stock} onChange={(e) => setForm({ ...form, stock: Number(e.target.value) })} className={inputCls} />
+                      <input 
+                        type="number" 
+                        min={0} 
+                        value={form.stock} 
+                        onKeyDown={(e) => { if (['e', 'E', '+', '-'].includes(e.key)) e.preventDefault(); }}
+                        onChange={(e) => {
+                          const val = e.target.value.replace(/[^0-9]/g, '');
+                          if (val.length > 7) return;
+                          setForm({ ...form, stock: val === '' ? 0 : Number(val) });
+                        }} 
+                        className={inputCls} 
+                      />
                     </div>
                     <div>
                       <label className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider mb-1 block">Low Stock Alert At</label>
-                      <input type="number" min={0} value={form.lowStockThreshold} onChange={(e) => setForm({ ...form, lowStockThreshold: Number(e.target.value) })} className={inputCls} />
+                      <input 
+                        type="number" 
+                        min={0} 
+                        value={form.lowStockThreshold} 
+                        onKeyDown={(e) => { if (['e', 'E', '+', '-'].includes(e.key)) e.preventDefault(); }}
+                        onChange={(e) => {
+                          const val = e.target.value.replace(/[^0-9]/g, '');
+                          if (val.length > 7) return;
+                          setForm({ ...form, lowStockThreshold: val === '' ? 0 : Number(val) });
+                        }} 
+                        className={inputCls} 
+                      />
                     </div>
                   </div>
                 </div>

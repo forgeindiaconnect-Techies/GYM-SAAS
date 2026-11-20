@@ -321,7 +321,7 @@ const TrainerAIReview = () => {
   };
 
   return (
-    <div className="max-w-5xl mx-auto space-y-8 pb-24">
+    <div className="w-full space-y-8 pb-24">
       {/* Top Bar Navigation & Actions */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#F8FAFC] pb-4">
         <button
@@ -400,30 +400,32 @@ const TrainerAIReview = () => {
         </div>
 
         {/* Grid of Demographics */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-3 text-center text-xs">
-          <div className="p-3 bg-[#F8FAFC] border border-[#F8FAFC] rounded-xl">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 text-center text-xs">
+          <div className="p-3 bg-[#F8FAFC] border border-[#F8FAFC] rounded-xl flex flex-col justify-center">
             <span className="text-[#64748B] uppercase font-bold block text-[10px]">Age</span>
             <strong className="text-[#111827] text-sm">{profile.age || '28'} yrs</strong>
           </div>
-          <div className="p-3 bg-[#F8FAFC] border border-[#F8FAFC] rounded-xl">
+          <div className="p-3 bg-[#F8FAFC] border border-[#F8FAFC] rounded-xl flex flex-col justify-center">
             <span className="text-[#64748B] uppercase font-bold block text-[10px]">Gender</span>
             <strong className="text-[#111827] text-sm">{profile.gender || 'Male'}</strong>
           </div>
-          <div className="p-3 bg-[#F8FAFC] border border-[#F8FAFC] rounded-xl">
+          <div className="p-3 bg-[#F8FAFC] border border-[#F8FAFC] rounded-xl flex flex-col justify-center">
             <span className="text-[#64748B] uppercase font-bold block text-[10px]">Height / Weight</span>
             <strong className="text-[#111827] text-sm">{profile.height || '180'} cm / {profile.weight || '85'} kg</strong>
           </div>
-          <div className="p-3 bg-[#F8FAFC] border border-[#F8FAFC] rounded-xl">
+          <div className="p-3 bg-[#F8FAFC] border border-[#F8FAFC] rounded-xl flex flex-col justify-center">
             <span className="text-[#64748B] uppercase font-bold block text-[10px]">Level</span>
             <strong className="text-[#111827] text-sm">{profile.currentFitnessLevel || profile.experienceLevel || 'Beginner'}</strong>
           </div>
-          <div className="p-3 bg-[#F8FAFC] border border-[#F8FAFC] rounded-xl">
+          <div className="p-3 bg-[#F8FAFC] border border-[#F8FAFC] rounded-xl flex flex-col justify-center">
             <span className="text-[#64748B] uppercase font-bold block text-[10px]">Target Days</span>
             <strong className="text-[#111827] text-sm">{profile.availableWorkoutDays || '4 Days'}</strong>
           </div>
-          <div className="p-3 bg-[#F8FAFC] border border-[#F8FAFC] rounded-xl">
+          <div className="p-3 bg-[#F8FAFC] border border-[#F8FAFC] rounded-xl flex flex-col justify-center min-w-0">
             <span className="text-[#64748B] uppercase font-bold block text-[10px]">Equipment</span>
-            <strong className="text-[#111827] text-sm truncate">{profile.equipmentAvailability || 'Full Commercial Gym'}</strong>
+            <strong className="text-[#111827] text-xs font-bold break-words leading-tight" title={profile.equipmentAvailability || 'Full Commercial Gym'}>
+              {profile.equipmentAvailability || 'Full Commercial Gym'}
+            </strong>
           </div>
         </div>
 

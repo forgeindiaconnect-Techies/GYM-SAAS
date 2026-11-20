@@ -52,6 +52,17 @@ router.get('/products', authenticate, (req: any, res: any) => {
   return getProducts(req, res);
 });
 
+// Generic orders endpoint
+router.get('/orders', authenticate, (req: any, res: any) => {
+  if (req.user?.role === 'MEMBER') {
+    return getMyOrders(req, res);
+  }
+  return getGymOrders(req, res);
+});
+
+// Generic inventory endpoint
+router.get('/inventory', authenticate, getInventory);
+
 // Image upload
 router.post('/upload', authenticate, upload.single('image'), uploadImage);
 

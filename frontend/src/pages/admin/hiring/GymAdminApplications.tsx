@@ -19,7 +19,6 @@ import {
   Mail,
   Award,
   ChevronRight,
-  ChevronDown,
   ExternalLink,
   X
 } from 'lucide-react';
@@ -447,11 +446,11 @@ export default function GymAdminApplications() {
                                 handleStatusChange(app._id, e.target.value);
                               }
                             }}
-                            className="appearance-none pl-2.5 pr-7 py-1.5 bg-[#FFFFFF] hover:bg-[#FFF7ED] border border-[#E2E8F0] hover:border-[#FFEDD5] rounded-lg text-[#111827] hover:text-[#C2410C] text-xs font-semibold cursor-pointer transition-all focus:outline-none focus:border-[#FDBA74] shadow-xs"
+                            className="appearance-none px-3 py-1.5 bg-[#FFFFFF] hover:bg-[#FFF7ED] border border-[#E2E8F0] hover:border-[#FFEDD5] rounded-lg text-[#111827] hover:text-[#C2410C] text-xs font-semibold cursor-pointer transition-all focus:outline-none focus:border-[#FDBA74] shadow-xs text-center"
                             title="Update candidate status"
                           >
                             <option value="" disabled className="bg-[#F8FAFC] text-slate-400">
-                              Action ▾
+                              Action
                             </option>
                             <option
                               value="Shortlisted"
@@ -475,7 +474,6 @@ export default function GymAdminApplications() {
                               Reject {app.status === 'Rejected' ? '(Current)' : ''}
                             </option>
                           </select>
-                          <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
                         </div>
                       </div>
                     </td>

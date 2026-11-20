@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
-import NavigationGuard from './components/NavigationGuard';
+import NavigationGuard, { markAuthorizedNavigation } from './components/NavigationGuard';
 import {
   resolveMemberRoute,
   resolveTrainerRoute,
@@ -16,6 +16,7 @@ import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/auth/LoginPage';
 import CustomerRegisterPage from './pages/auth/CustomerRegisterPage';
 import GymOwnerRegisterPage from './pages/auth/GymOwnerRegisterPage';
+import RegisterChoicePage from './pages/auth/RegisterChoicePage';
 import GymOwnerIntroduction from './pages/auth/GymOwnerIntroduction';
 import ForgotPassword from './pages/auth/ForgotPassword';
 import StatusPage from './pages/auth/StatusPage';
@@ -49,6 +50,7 @@ import { TrainerRefundPolicyPage } from './pages/trainer-landing/TrainerRefundPo
 import GymMarketplace from './pages/marketplace/GymMarketplace';
 import GymDetails from './pages/marketplace/GymDetails';
 import GymCheckout from './pages/marketplace/GymCheckout';
+import MobileDummyPaymentPage from './pages/marketplace/MobileDummyPaymentPage';
 
 // Subscription
 import SubscriptionPlansPage from './pages/subscription/SubscriptionPlansPage';
@@ -254,24 +256,28 @@ function SmartTrainersRoute() {
 function SmartMemberCatchAll() {
   const location = useLocation();
   const target = resolveMemberRoute(location.pathname);
+  markAuthorizedNavigation();
   return <Navigate to={target} replace />;
 }
 
 function SmartTrainerCatchAll() {
   const location = useLocation();
   const target = resolveTrainerRoute(location.pathname);
+  markAuthorizedNavigation();
   return <Navigate to={target} replace />;
 }
 
 function SmartAdminCatchAll() {
   const location = useLocation();
   const target = resolveAdminRoute(location.pathname);
+  markAuthorizedNavigation();
   return <Navigate to={target} replace />;
 }
 
 function SmartSuperAdminCatchAll() {
   const location = useLocation();
   const target = resolveSuperAdminRoute(location.pathname);
+  markAuthorizedNavigation();
   return <Navigate to={target} replace />;
 }
 
@@ -279,6 +285,7 @@ function GlobalCatchAll() {
   const location = useLocation();
   const { user, isAuthenticated } = useAuth();
   const target = resolveGlobalRoute(location.pathname, user, isAuthenticated);
+  markAuthorizedNavigation();
   return <Navigate to={target} replace />;
 }
 
@@ -292,7 +299,7 @@ function App() {
           {/* Public Routes */}
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<Navigate to="/register/customer" replace />} />
+          <Route path="/register" element={<RegisterChoicePage />} />
           <Route path="/register/customer" element={<CustomerRegisterPage />} />
           <Route path="/register/trainer" element={<TrainerRegisterPage />} />
           <Route path="/register/trainers" element={<Navigate to="/register/trainer" replace />} />
@@ -318,6 +325,9 @@ function App() {
           <Route path="/gyms/:id/checkout" element={
             <ProtectedRoute><GymCheckout /></ProtectedRoute>
           } />
+          {/* Mobile QR Dummy Payment Pages */}
+          <Route path="/pay" element={<MobileDummyPaymentPage />} />
+          <Route path="/qr-pay" element={<MobileDummyPaymentPage />} />
 
           {/* Company Routes */}
           <Route path="/about" element={<AboutUs />} />
@@ -371,6 +381,7 @@ function App() {
               <MemberLayout />
             </ProtectedRoute>
           }>
+            <Route index element={<Navigate to="/member/dashboard" replace />} />
             <Route path="dashboard" element={<MemberDashboard />} />
             <Route path="dashboard/training" element={<Navigate to="/member/find-trainers" replace />} />
             <Route path="dashboard/trainers" element={<Navigate to="/member/find-trainers" replace />} />
@@ -385,6 +396,9 @@ function App() {
             <Route path="bookings" element={<MemberMyBookings />} />
             <Route path="online-sessions" element={<MemberOnlineSessions />} />
             <Route path="workout" element={<MemberWorkoutPlan />} />
+            <Route path="workout-plan" element={<MemberWorkoutPlan />} />
+            <Route path="workouts" element={<MemberWorkoutPlan />} />
+            <Route path="workout-plans" element={<MemberWorkoutPlan />} />
             <Route path="trainer-plan" element={<MemberTrainerPlan />} />
             <Route path="trainers-plan" element={<MemberTrainerPlan />} />
             <Route path="workout-videos" element={<MemberWorkoutVideos />} />
@@ -455,6 +469,11 @@ function App() {
             <Route path="challenges" element={<TrainerCustomerChallenges />} />
             <Route path="rewards" element={<TrainerRewards />} />
 
+            {/* Route aliases for KPI cards and shortcuts */}
+            <Route path="sessions" element={<Navigate to="/trainer/session-bookings" replace />} />
+            <Route path="assigned-users" element={<Navigate to="/trainer/members" replace />} />
+            <Route path="ai-recommendations" element={<Navigate to="/trainer/ai-feedback" replace />} />
+
             {/* Trainer Hiring & Job Opportunities */}
             <Route path="jobs" element={<TrainerFindJobs />} />
             <Route path="applications" element={<TrainerMyApplications />} />
@@ -484,6 +503,7 @@ function App() {
               <GymAdminLayout />
             </ProtectedRoute>
           }>
+            <Route index element={<Navigate to="/admin/dashboard" replace />} />
             <Route path="dashboard" element={<GymAdminDashboard />} />
             <Route path="gym-profile" element={<GymAdminProfile />} />
             <Route path="location" element={<GymAdminLocationSettings />} />
@@ -502,6 +522,16 @@ function App() {
             <Route path="hiring/shortlisted" element={<GymAdminShortlisted />} />
             <Route path="hiring/interviews" element={<GymAdminInterviews />} />
             <Route path="hiring/hired" element={<GymAdminHiredTrainers />} />
+
+            {/* Direct route aliases for Post a Job & Hiring shortcuts */}
+            <Route path="post-a-job" element={<Navigate to="/admin/hiring/jobs/new" replace />} />
+            <Route path="post-job" element={<Navigate to="/admin/hiring/jobs/new" replace />} />
+            <Route path="post" element={<Navigate to="/admin/hiring/jobs/new" replace />} />
+            <Route path="pos" element={<Navigate to="/admin/hiring/jobs/new" replace />} />
+            <Route path="jobs/new" element={<Navigate to="/admin/hiring/jobs/new" replace />} />
+            <Route path="jobs" element={<Navigate to="/admin/hiring/jobs" replace />} />
+            <Route path="manage-jobs" element={<Navigate to="/admin/hiring/jobs" replace />} />
+            <Route path="applications" element={<Navigate to="/admin/hiring/applications" replace />} />
 
             <Route path="members" element={<GymAdminMembers />} />
             <Route path="exercises" element={<GymAdminExerciseLibrary />} />
@@ -550,6 +580,7 @@ function App() {
               <SuperAdminLayout />
             </ProtectedRoute>
           }>
+            <Route index element={<Navigate to="/super-admin/dashboard" replace />} />
             <Route path="dashboard" element={<SuperAdminDashboard />} />
             <Route path="revenue-analytics" element={<RevenueAnalytics role="SUPER_ADMIN" />} />
             <Route path="leads" element={<SuperAdminLeads />} />

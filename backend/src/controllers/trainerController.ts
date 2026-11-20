@@ -15,6 +15,8 @@ import TrainerPlanRequest from '../models/TrainerPlanRequest';
 import TrainerPayment from '../models/TrainerPayment';
 import DirectMessage from '../models/DirectMessage';
 import Notification from '../models/Notification';
+import AIRecommendation from '../models/AIRecommendation';
+import ProgressLog from '../models/ProgressLog';
 import {
   generateUniqueTrainerId,
   normalizeTrainerStatus,
@@ -64,6 +66,11 @@ export const manualAddTrainer = async (req: AuthRequest, res: Response): Promise
 
     if (!effectiveName || !effectiveEmail || !effectivePhone) {
       res.status(400).json({ success: false, message: 'Trainer Name, Email, and Phone are required' });
+      return;
+    }
+
+    if (!/^[A-Za-z\s]+$/.test(effectiveName)) {
+      res.status(400).json({ success: false, message: 'Only letters are allowed in the Trainer Name' });
       return;
     }
 
@@ -236,6 +243,11 @@ export const inviteTrainer = async (req: AuthRequest, res: Response): Promise<vo
 
     if (!trainerName || !email || !trainingMode) {
       res.status(400).json({ success: false, message: 'Required fields missing' });
+      return;
+    }
+
+    if (!/^[A-Za-z\s]+$/.test(String(trainerName).trim())) {
+      res.status(400).json({ success: false, message: 'Only letters are allowed in the Trainer Name' });
       return;
     }
 
@@ -674,17 +686,40 @@ export const deleteTrainer = async (req: AuthRequest, res: Response): Promise<vo
     }
 
     const { id } = req.params;
+    const trainerIdStr = String(Array.isArray(id) ? id[0] : id);
     const resolvedGymId = (await resolveGymId(req)) || gymOwner.gymId;
-    const trainerQuery: any = { _id: id };
-    if (resolvedGymId) trainerQuery.gymId = resolvedGymId;
-    const trainer = await Trainer.findOne(trainerQuery);
+
+    let trainer = mongoose.Types.ObjectId.isValid(trainerIdStr) ? await Trainer.findById(trainerIdStr) : null;
+    if (!trainer && mongoose.Types.ObjectId.isValid(trainerIdStr)) {
+      trainer = await Trainer.findOne({ userId: trainerIdStr });
+    }
     if (!trainer) {
       res.status(404).json({ success: false, message: 'Trainer not found' });
       return;
     }
 
-    await Trainer.findByIdAndDelete(id);
-    await User.findByIdAndDelete(trainer.userId);
+    if (trainer.gymId && resolvedGymId && String(trainer.gymId) !== String(resolvedGymId)) {
+      res.status(403).json({ success: false, message: 'Unauthorized to delete this trainer' });
+      return;
+    }
+
+    const trainerEmail = trainer.email ? trainer.email.toLowerCase() : '';
+    const trainerUserId = trainer.userId;
+
+    // Soft-delete: Mark trainer as Inactive and user as DELETED for audit & Deleted Details history
+    trainer.status = 'Inactive';
+    await trainer.save();
+
+    // Mark associated User account as DELETED
+    if (trainerUserId) {
+      await User.findByIdAndUpdate(trainerUserId, { approvalStatus: 'DELETED' });
+    }
+
+    // Clean up any job applications or invitations so getTrainers does not re-sync them
+    if (trainerEmail) {
+      await JobApplication.deleteMany({ email: trainerEmail });
+      await TrainerInvitation.deleteMany({ email: trainerEmail });
+    }
 
     res.status(200).json({ success: true, message: 'Trainer deleted successfully' });
   } catch (error: any) {
@@ -721,6 +756,13 @@ export const updateMyProfile = async (req: AuthRequest, res: Response): Promise<
     allowedUpdates.forEach(field => {
       if (req.body[field] !== undefined) updateData[field] = req.body[field];
     });
+
+    if (updateData.name !== undefined) {
+      if (!updateData.name.trim() || !/^[A-Za-z\s]+$/.test(String(updateData.name).trim())) {
+        res.status(400).json({ success: false, message: 'Only letters are allowed in the Trainer Name' });
+        return;
+      }
+    }
 
     if (updateData.phone && updateData.phone.trim().length > 0) {
       const cleanPhone = updateData.phone.trim().replace(/^\+91/, '');
@@ -774,6 +816,13 @@ export const updateTrainer = async (req: AuthRequest, res: Response): Promise<vo
     allowedUpdates.forEach(field => {
       if (req.body[field] !== undefined) updateData[field] = req.body[field];
     });
+
+    if (updateData.name !== undefined) {
+      if (!updateData.name.trim() || !/^[A-Za-z\s]+$/.test(String(updateData.name).trim())) {
+        res.status(400).json({ success: false, message: 'Only letters are allowed in the Trainer Name' });
+        return;
+      }
+    }
 
     if (updateData.phone && updateData.phone.trim().length > 0) {
       const cleanPhone = updateData.phone.trim().replace(/^\+91/, '');
@@ -1102,14 +1151,14 @@ export const getMyAssignedClients = async (req: AuthRequest, res: Response): Pro
     }
 
     const gymObjectId = new mongoose.Types.ObjectId(ctx.gymId);
-    const [members, sessions] = await Promise.all([
+    const [members, sessions, progressLogs, aiRecs] = await Promise.all([
       User.find({
         _id: { $in: assignedIds },
         gymId: gymObjectId,
         role: Role.MEMBER,
         approvalStatus: { $ne: ApprovalStatus.DELETED },
       } as any)
-        .select('firstName lastName email mobile profilePhoto fitnessGoal subscriptionStatus subscriptionPlan isActive assignedTrainer createdAt')
+        .select('firstName lastName email mobile profilePhoto fitnessGoal subscriptionStatus subscriptionPlan isActive assignedTrainer createdAt height weight gender dateOfBirth experienceLevel preferredTraining preferredWorkoutTime subscriptionExpiry customerType city pinCode')
         .sort({ firstName: 1 })
         .lean(),
       TrainerSession.find({
@@ -1120,6 +1169,20 @@ export const getMyAssignedClients = async (req: AuthRequest, res: Response): Pro
         .select('customerId sessionDate status createdAt')
         .sort({ createdAt: -1 })
         .lean(),
+      ProgressLog.find({
+        customerId: { $in: assignedIds },
+      })
+        .select('customerId height weight loggedDate createdAt')
+        .sort({ loggedDate: -1, createdAt: -1 })
+        .lean()
+        .catch(() => []),
+      AIRecommendation.find({
+        customerId: { $in: assignedIds },
+      })
+        .select('customerId fitnessProfile createdAt')
+        .sort({ createdAt: -1 })
+        .lean()
+        .catch(() => []),
     ]);
 
     const sessionStatsMap = new Map<string, { total: number; completed: number; upcoming: number; lastDate?: string }>();
@@ -1133,8 +1196,42 @@ export const getMyAssignedClients = async (req: AuthRequest, res: Response): Pro
       sessionStatsMap.set(cid, curr);
     });
 
+    const extraDetailsMap = new Map<string, { height?: number; weight?: number; gender?: string; experienceLevel?: string; preferredTraining?: string; preferredWorkoutTime?: string }>();
+
+    (aiRecs as any[]).forEach((rec: any) => {
+      const cid = String(rec.customerId);
+      if (!extraDetailsMap.has(cid)) {
+        const fp = rec.fitnessProfile || {};
+        extraDetailsMap.set(cid, {
+          height: fp.height && !isNaN(Number(fp.height)) ? Number(fp.height) : undefined,
+          weight: fp.weight && !isNaN(Number(fp.weight)) ? Number(fp.weight) : undefined,
+          gender: fp.gender,
+          experienceLevel: fp.currentFitnessLevel || fp.experienceLevel,
+          preferredTraining: fp.preferredTraining,
+          preferredWorkoutTime: fp.preferredWorkoutTime,
+        });
+      }
+    });
+
+    (progressLogs as any[]).forEach((p: any) => {
+      const cid = String(p.customerId);
+      const curr = extraDetailsMap.get(cid) || {};
+      if (!curr.height && p.height && !isNaN(Number(p.height))) curr.height = Number(p.height);
+      if (!curr.weight && p.weight && !isNaN(Number(p.weight))) curr.weight = Number(p.weight);
+      extraDetailsMap.set(cid, curr);
+    });
+
     const clients = members.map((m: any) => {
       const sStats = sessionStatsMap.get(String(m._id)) || { total: 0, completed: 0, upcoming: 0 };
+      const extra = extraDetailsMap.get(String(m._id)) || {};
+
+      const resolvedHeight = (m.height && !isNaN(Number(m.height))) ? Number(m.height) : (extra.height || null);
+      const resolvedWeight = (m.weight && !isNaN(Number(m.weight))) ? Number(m.weight) : (extra.weight || null);
+      const resolvedGender = m.gender || extra.gender || null;
+      const resolvedExp = m.experienceLevel || extra.experienceLevel || null;
+      const resolvedTraining = m.preferredTraining || extra.preferredTraining || null;
+      const resolvedWorkoutTime = m.preferredWorkoutTime || extra.preferredWorkoutTime || null;
+
       return {
         id: String(m._id),
         _id: m._id,
@@ -1146,6 +1243,7 @@ export const getMyAssignedClients = async (req: AuthRequest, res: Response): Pro
         mobile: m.mobile || '',
         profilePhoto: m.profilePhoto || '',
         goal: m.fitnessGoal || 'General Fitness',
+        fitnessGoal: m.fitnessGoal || 'General Fitness',
         subscriptionPlan: m.subscriptionPlan || 'Member',
         subscriptionStatus: m.subscriptionStatus || 'Active',
         isActive: m.isActive !== false,
@@ -1155,12 +1253,76 @@ export const getMyAssignedClients = async (req: AuthRequest, res: Response): Pro
         upcomingSessions: sStats.upcoming,
         lastSession: sStats.lastDate || null,
         createdAt: m.createdAt,
+        height: resolvedHeight,
+        weight: resolvedWeight,
+        gender: resolvedGender,
+        dateOfBirth: m.dateOfBirth || null,
+        experienceLevel: resolvedExp,
+        preferredTraining: resolvedTraining,
+        preferredWorkoutTime: resolvedWorkoutTime,
+        subscriptionExpiry: m.subscriptionExpiry || null,
+        customerType: m.customerType || null,
+        city: m.city || null,
+        pinCode: m.pinCode || null,
       };
     });
 
     res.status(200).json({ success: true, clients, members: clients });
   } catch (error: any) {
     console.error('Error in getMyAssignedClients:', error);
+    res.status(500).json({ success: false, message: 'Server error', error: error.message });
+  }
+};
+
+// Update client fitness metrics (height, weight, gender, experienceLevel, preferredTraining, preferredWorkoutTime)
+export const updateClientMetrics = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const { customerId } = req.params;
+    const { height, weight, gender, experienceLevel, preferredTraining, preferredWorkoutTime, fitnessGoal } = req.body;
+
+    const user = await User.findById(customerId);
+    if (!user) {
+      res.status(404).json({ success: false, message: 'Customer not found' });
+      return;
+    }
+
+    const updates: any = {};
+    if (height !== undefined && height !== '' && height !== null) updates.height = Number(height);
+    if (weight !== undefined && weight !== '' && weight !== null) updates.weight = Number(weight);
+    if (gender) updates.gender = gender;
+    if (experienceLevel) updates.experienceLevel = experienceLevel;
+    if (preferredTraining) updates.preferredTraining = preferredTraining;
+    if (preferredWorkoutTime) updates.preferredWorkoutTime = preferredWorkoutTime;
+    if (fitnessGoal) updates.fitnessGoal = fitnessGoal;
+
+    const updatedUser = await User.findByIdAndUpdate(customerId, { $set: updates }, { new: true }).select(
+      'firstName lastName email mobile profilePhoto fitnessGoal subscriptionStatus subscriptionPlan isActive assignedTrainer createdAt height weight gender dateOfBirth experienceLevel preferredTraining preferredWorkoutTime subscriptionExpiry'
+    );
+
+    // Also record progress log if height or weight was updated
+    if (updates.height || updates.weight) {
+      try {
+        await ProgressLog.create({
+          gymId: user.gymId,
+          customerId: user._id,
+          height: updates.height || user.height,
+          weight: updates.weight || user.weight,
+          loggedDate: new Date(),
+          notes: 'Fitness metrics updated by Trainer',
+        });
+      } catch (logErr) {
+        // Non-fatal
+      }
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Client metrics updated successfully',
+      client: updatedUser,
+      user: updatedUser,
+    });
+  } catch (error: any) {
+    console.error('Error in updateClientMetrics:', error);
     res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }
 };

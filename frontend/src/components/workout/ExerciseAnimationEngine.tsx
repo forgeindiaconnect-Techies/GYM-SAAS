@@ -11,6 +11,7 @@ interface ExerciseAnimationEngineProps {
   className?: string;
   isPlayingExternal?: boolean;
   resetTrigger?: number;
+  headerActions?: React.ReactNode;
 }
 
 export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = ({
@@ -22,7 +23,8 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
   compact = false,
   className = '',
   isPlayingExternal,
-  resetTrigger
+  resetTrigger,
+  headerActions
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
@@ -43,6 +45,7 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
 
   // Default natural perspective: Side profile for Squat/Deadlift/Plank/Pushup/Bench/Lunge, Front for Curls/Press/Pullup/Twist
   const initialAngle: 'front' | 'side' = (isSquat || isDeadlift || isPushUp || isBenchPress || isPlank || isLunge) ? 'side' : 'front';
+  const hasMultipleViews = isSquat || isCurl;
 
   const [isPlaying, setIsPlaying] = useState(isPlayingExternal !== undefined ? isPlayingExternal : autoPlay);
   const [speed, setSpeed] = useState<number>(1.0);
@@ -807,25 +810,6 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
         drawDumbbell(centerX + 34, shoulderY + 40, 0);
       }
 
-      // Top HUD overlay inside canvas (full preview mode only, hidden in compact cards)
-      if (!compact) {
-        ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.roundRect(12, 12, 220, 50, 10);
-        ctx.fill();
-        ctx.stroke();
-
-        ctx.fillStyle = '#38BDF8';
-        ctx.font = 'bold 9px monospace';
-        ctx.fillText(`1-MIN AI FORM VIDEO • ${formatTime(currentVideoTime)} / ${formatTime(totalDuration)}`, 22, 28);
-
-        ctx.fillStyle = '#F8FAFC';
-        ctx.font = 'bold 12px sans-serif';
-        ctx.fillText(phaseLabel, 22, 48);
-      }
-
       if (running) {
         animFrameRef.current = requestAnimationFrame(render);
       }
@@ -891,51 +875,72 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
 
         {/* Compact Mode Badge */}
         {compact && (
-          <div className="absolute bottom-2 left-2 z-10 flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-black/70 backdrop-blur-sm border border-[#E2E8F0]/40 text-[9px] font-extrabold text-[#15803D] uppercase tracking-wider">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#C2410C] animate-pulse" />
+          <div className="absolute bottom-2 left-2 z-10 flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-slate-900/80 backdrop-blur-sm border border-slate-700 text-[9px] font-extrabold text-emerald-400 uppercase tracking-wider">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#EA580C] animate-pulse" />
             <span>1-Min Form Demo</span>
+          </div>
+        )}
+
+        {/* Top-Left Crisp High-Contrast HUD Overlay */}
+        {!compact && (
+          <div className="absolute top-2.5 left-2.5 z-20 pointer-events-none flex flex-col gap-0.5 bg-slate-900/90 border border-slate-700/80 backdrop-blur-md px-2.5 py-1.5 rounded-xl shadow-lg max-w-[170px] sm:max-w-[220px]">
+            <div className="flex items-center gap-1.5 text-[9px] font-mono font-bold text-sky-400 tracking-wider uppercase truncate">
+              <span className="w-1.5 h-1.5 rounded-full bg-sky-400 animate-pulse shrink-0" />
+              <span className="truncate">AI FORM • {formatTime(currentTimeSec)} / {formatTime(totalDuration)}</span>
+            </div>
+            <div className="text-[11px] sm:text-xs font-bold text-white tracking-wide truncate">
+              {currentPhase || 'Setup'}
+            </div>
           </div>
         )}
 
         {/* Floating Quick Action Overlay (Full Mode Only) */}
         {!compact && (
-          <div className="absolute top-3 right-3 flex items-center gap-2 z-10">
-            {/* View Angle Switcher: Front vs Side Profile */}
-            <button
-              onClick={() => setViewAngle(viewAngle === 'front' ? 'side' : 'front')}
-              className="px-2.5 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 bg-black/60 hover:bg-black/80 text-white/90 border border-white/15 backdrop-blur-md cursor-pointer shadow-md"
-              title="Toggle Front View vs Side Profile"
-            >
-              <Compass size={12} className="text-[#EA580C]" />
-              <span>{viewAngle === 'front' ? 'Side Profile' : 'Front View'}</span>
-            </button>
+          <div className="absolute top-2.5 right-2.5 flex flex-wrap items-center justify-end gap-1.5 z-20 max-w-[calc(100%-180px)] sm:max-w-[calc(100%-230px)]">
+            {headerActions}
+
+            {/* View Angle Switcher: Only displayed if exercise has front & side view implementations */}
+            {hasMultipleViews && (
+              <button
+                type="button"
+                onClick={() => setViewAngle(prev => prev === 'front' ? 'side' : 'front')}
+                className="px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all flex items-center gap-1 bg-slate-900/90 hover:bg-black text-white border border-slate-700 backdrop-blur-md cursor-pointer shadow-xs active:scale-95"
+                title={viewAngle === 'front' ? 'Switch to Side Profile' : 'Switch to Front View'}
+              >
+                <Compass size={11} className="text-[#EA580C]" />
+                <span className="hidden sm:inline">{viewAngle === 'front' ? 'Side View' : 'Front View'}</span>
+                <span className="sm:hidden">{viewAngle === 'front' ? 'Side' : 'Front'}</span>
+              </button>
+            )}
 
             {/* Form Guides Toggle */}
             <button
+              type="button"
               onClick={() => setShowFormGuides(!showFormGuides)}
-              className={`px-2.5 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 border backdrop-blur-md cursor-pointer shadow-md ${
+              className={`px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all flex items-center gap-1 border backdrop-blur-md cursor-pointer shadow-xs active:scale-95 ${
                 showFormGuides
-                  ? 'bg-sky-500/20 text-sky-400 border-sky-500/40'
-                  : 'bg-black/60 text-white/50 border-white/10'
+                  ? 'bg-sky-100 text-sky-900 border-sky-400 hover:bg-sky-200'
+                  : 'bg-white/95 text-slate-700 border-slate-200 hover:bg-white'
               }`}
               title="Toggle Form Alignment Guidelines"
             >
-              <Eye size={12} />
-              <span>Form Guides</span>
+              <Eye size={11} className={showFormGuides ? 'text-sky-700' : 'text-slate-500'} />
+              <span>Guides</span>
             </button>
 
             {/* Target Muscle Activation Glow Toggle */}
             <button
+              type="button"
               onClick={() => setHighlightMuscles(!highlightMuscles)}
-              className={`px-3 py-1.5 rounded-xl text-[10px] font-extrabold uppercase tracking-wider transition-all flex items-center gap-1.5 border backdrop-blur-md cursor-pointer shadow-md ${
+              className={`px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all flex items-center gap-1 border backdrop-blur-md cursor-pointer shadow-xs active:scale-95 ${
                 highlightMuscles
-                  ? 'bg-[#FFF7ED] text-[#15803D] border-[#E2E8F0]/50 shadow-emerald-500/20'
-                  : 'bg-black/60 text-white/50 border-white/10'
+                  ? 'bg-emerald-100 text-emerald-950 border-emerald-400 shadow-emerald-500/10 hover:bg-emerald-200'
+                  : 'bg-white/95 text-slate-700 border-slate-200 hover:bg-white'
               }`}
               title="Toggle Target Muscle Activation Glow"
             >
-              <Zap size={12} className={highlightMuscles ? 'fill-emerald-400' : ''} />
-              <span>{targetMuscle ? `${targetMuscle.toUpperCase()} GLOW` : 'MUSCLE GLOW'}</span>
+              <Zap size={11} className={highlightMuscles ? 'fill-emerald-700 text-emerald-700' : 'text-slate-500'} />
+              <span>Glow</span>
             </button>
           </div>
         )}
@@ -944,7 +949,7 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
         {!compact && !isPlaying && (
           <div
             onClick={togglePlay}
-            className="absolute inset-0 bg-black/40 backdrop-blur-[2px] flex items-center justify-center cursor-pointer group"
+            className="absolute inset-0 bg-black/25 flex items-center justify-center cursor-pointer group z-10"
           >
             <div className="w-14 h-14 rounded-full bg-[#C2410C] text-[#FFFFFF] flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform">
               <Play size={24} className="ml-1 fill-current" />
@@ -955,7 +960,7 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
 
       {/* 1-Minute Video Scrubber & Playback HUD (Full Mode Only) */}
       {!compact && (
-        <div className="bg-[#FFFFFF]/95 border-t border-white/10 px-4 py-3 flex flex-col gap-2.5">
+        <div className="bg-[#FFFFFF] border-t border-slate-200 px-4 py-3 flex flex-col gap-2.5">
           {/* Row 1: Interactive 1-Minute Scrubber Bar */}
           <div className="flex items-center gap-3">
             <div
@@ -963,11 +968,11 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
               onClick={handleSeek}
               onMouseMove={handleMouseMoveBar}
               onMouseLeave={() => setHoverTime(null)}
-              className="relative flex-1 h-2 hover:h-3 bg-[#FFFFFF]/15 rounded-full overflow-hidden cursor-pointer transition-all group/scrub"
+              className="relative flex-1 h-2 hover:h-3 bg-slate-200 rounded-full overflow-hidden cursor-pointer transition-all group/scrub"
               title="Seek through 1-minute animated video"
             >
               <div
-                className="h-full bg-gradient-to-r from-[#EA580C] via-teal-400 to-cyan-400 rounded-full transition-all duration-75 relative"
+                className="h-full bg-gradient-to-r from-[#EA580C] via-teal-500 to-cyan-500 rounded-full transition-all duration-75 relative"
                 style={{ width: `${Math.min(100, (currentTimeSec / totalDuration) * 100)}%` }}
               >
                 <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-[#FFFFFF] rounded-full shadow-md scale-0 group-hover/scrub:scale-100 transition-transform" />
@@ -985,21 +990,21 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
 
             {/* 1-Minute Counter */}
             <div className="flex items-center gap-1 shrink-0 font-mono text-xs">
-              <span className="font-bold text-white">{formatTime(currentTimeSec)}</span>
-              <span className="text-white/40">/</span>
-              <span className="text-white/70 font-bold">{formatTime(totalDuration)}</span>
-              <span className="text-[10px] font-bold text-[#15803D] bg-[#FFF7ED] px-1.5 py-0.5 rounded border border-[#E2E8F0]/20 ml-1">
+              <span className="font-bold text-[#111827]">{formatTime(currentTimeSec)}</span>
+              <span className="text-[#64748B]">/</span>
+              <span className="text-[#64748B] font-bold">{formatTime(totalDuration)}</span>
+              <span className="text-[10px] font-bold text-emerald-800 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-300 ml-1">
                 1-MIN
               </span>
             </div>
           </div>
 
           {/* Row 2: Media Controls & Phase Indicator */}
-          <div className="flex items-center justify-between gap-3 text-xs text-white/80 flex-wrap">
+          <div className="flex items-center justify-between gap-3 text-xs text-[#64748B] flex-wrap">
             <div className="flex items-center gap-1.5">
               <button
                 onClick={togglePlay}
-                className="p-1.5 rounded-lg bg-[#C2410C] text-white hover:bg-[#C2410C] transition-colors cursor-pointer"
+                className="p-1.5 rounded-lg bg-[#C2410C] text-white hover:bg-[#9A3412] transition-colors cursor-pointer shadow-sm"
                 title={isPlaying ? 'Pause' : 'Play'}
               >
                 {isPlaying ? <Pause size={15} /> : <Play size={15} className="fill-current" />}
@@ -1007,7 +1012,7 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
 
               <button
                 onClick={() => handleSkip(-10)}
-                className="p-1.5 rounded-lg bg-[#FFFFFF]/10 hover:bg-[#FFFFFF]/20 text-white/80 hover:text-white transition-colors cursor-pointer"
+                className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-900 border border-slate-200 transition-colors cursor-pointer"
                 title="Rewind 10 Seconds"
               >
                 <Rewind size={14} />
@@ -1015,7 +1020,7 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
 
               <button
                 onClick={() => handleSkip(10)}
-                className="p-1.5 rounded-lg bg-[#FFFFFF]/10 hover:bg-[#FFFFFF]/20 text-white/80 hover:text-white transition-colors cursor-pointer"
+                className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-900 border border-slate-200 transition-colors cursor-pointer"
                 title="Forward 10 Seconds"
               >
                 <FastForward size={14} />
@@ -1023,33 +1028,33 @@ export const ExerciseAnimationEngine: React.FC<ExerciseAnimationEngineProps> = (
 
               <button
                 onClick={handleRestart}
-                className="p-1.5 rounded-lg bg-[#FFFFFF]/10 hover:bg-[#FFFFFF]/20 text-white/70 hover:text-white transition-colors cursor-pointer"
+                className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-900 border border-slate-200 transition-colors cursor-pointer"
                 title="Restart 1-Minute Animation"
               >
                 <RotateCcw size={14} />
               </button>
 
-              <span className="text-[11px] font-mono text-[#15803D] font-bold ml-1.5 bg-black/30 px-2 py-0.5 rounded border border-white/10">
+              <span className="text-[11px] font-mono text-emerald-800 font-bold ml-1.5 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
                 Rep #{repsSimulated}
               </span>
             </div>
 
             {/* Current Form Phase Pill */}
-            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/40 border border-white/10 text-[11px] font-semibold text-white/90">
+            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-[11px] font-semibold text-slate-800">
               <Activity size={12} className="text-[#EA580C]" />
               <span>{currentPhase}</span>
             </div>
 
             {/* Speed Selector */}
-            <div className="flex items-center gap-1 bg-black/40 p-1 rounded-lg border border-white/10">
+            <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-lg border border-slate-200">
               {[0.5, 1.0, 1.5].map(s => (
                 <button
                   key={s}
                   onClick={() => setSpeed(s)}
                   className={`px-2 py-0.5 rounded text-[10px] font-extrabold transition-colors cursor-pointer ${
                     speed === s
-                      ? 'bg-[#C2410C] text-[#FFFFFF]'
-                      : 'text-white/60 hover:text-white'
+                      ? 'bg-[#C2410C] text-[#FFFFFF] shadow-sm'
+                      : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
                   {s}x

@@ -131,7 +131,7 @@ const MemberMyBookings = () => {
   };
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
+    <div className="space-y-6">
       <MemberTrainingTabs />
       <div className="flex justify-between items-end">
         <div>

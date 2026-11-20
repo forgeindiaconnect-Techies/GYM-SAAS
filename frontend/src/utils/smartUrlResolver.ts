@@ -92,37 +92,71 @@ const TRAINER_ROUTE_RULES: RouteKeywordRule[] = [
 ];
 
 const ADMIN_ROUTE_RULES: RouteKeywordRule[] = [
-  // Members
-  { target: '/admin/members', keywords: ['members', 'customers', 'member list'] },
-  { target: '/admin/offline-memberships', keywords: ['offline memberships', 'walk-in', 'walk in'] },
-  { target: '/admin/attendance', keywords: ['attendance', 'member attendance'] },
-  { target: '/admin/biometric', keywords: ['biometric', 'fingerprint', 'devices', 'gate'] },
-  // Trainers & Hiring
-  { target: '/admin/hiring/trainers', keywords: ['browse trainers', 'hire trainers', 'hiring trainers'] },
-  { target: '/admin/hiring/jobs', keywords: ['job postings', 'post jobs', 'hiring jobs'] },
-  { target: '/admin/hiring/hired', keywords: ['hired trainers'] },
-  { target: '/admin/trainer-schedule', keywords: ['trainer schedule', 'coach schedule', 'schedules'] },
+  // Trainer Hiring & Jobs
+  { target: '/admin/hiring/jobs/new', keywords: ['post a job', 'post-a-job', 'post job', 'post-job', 'create job', 'new job', 'add job', 'job vacancy', 'post vacancy', 'create vacancy', 'post a vacancy', 'pos', 'post'] },
+  { target: '/admin/hiring/jobs', keywords: ['manage jobs', 'manage-jobs', 'job postings', 'all jobs', 'jobs', 'hiring jobs', 'vacancies', 'job list'] },
+  { target: '/admin/hiring/applications', keywords: ['job applications', 'job-applications', 'applications', 'job candidates', 'applicants', 'trainer applications'] },
+  { target: '/admin/hiring/hired', keywords: ['hired trainers', 'hired staff', 'hired'] },
+  { target: '/admin/hiring/trainers', keywords: ['browse trainers', 'hire trainers', 'hiring trainers', 'find trainers'] },
+  { target: '/admin/hiring/shortlisted', keywords: ['shortlisted', 'shortlisted candidates', 'shortlist'] },
+  { target: '/admin/hiring/interviews', keywords: ['interviews', 'job interviews', 'candidate interviews'] },
+  { target: '/admin/hiring/requests', keywords: ['hiring requests', 'hiring-requests'] },
+
+  // Trainers & Schedule
+  { target: '/admin/trainer-schedule', keywords: ['trainer schedule', 'coach schedule', 'schedules', 'timetable'] },
+  { target: '/admin/session-bookings', keywords: ['session bookings', 'in person bookings', 'bookings'] },
+  { target: '/admin/online-sessions', keywords: ['online sessions', 'virtual sessions'] },
+  { target: '/admin/video-bookings', keywords: ['video bookings'] },
   { target: '/admin/trainers', keywords: ['trainers', 'coaches', 'staff'] },
-  // Programs & Management
-  { target: '/admin/diet-management', keywords: ['diet management', 'diet plans', 'nutrition'] },
-  { target: '/admin/workout-management', keywords: ['workout management', 'workout plans'] },
+
+  // Members & Enquiries
+  { target: '/admin/members', keywords: ['members', 'customers', 'member list', 'all members'] },
+  { target: '/admin/offline-memberships', keywords: ['offline memberships', 'walk-in', 'walk in'] },
+  { target: '/admin/enquiries', keywords: ['enquiries', 'customer enquiries', 'leads', 'inquiries'] },
+  { target: '/admin/attendance', keywords: ['attendance', 'member attendance', 'check-in', 'checkin'] },
+  { target: '/admin/biometric', keywords: ['biometric', 'fingerprint', 'devices', 'gate'] },
+  { target: '/admin/import-customers', keywords: ['import customers', 'import members', 'upload members'] },
+
+  // Gym & Operations
+  { target: '/admin/exercises', keywords: ['exercise library', 'exercises', 'library'] },
+  { target: '/admin/exercise-videos', keywords: ['exercise videos', 'workout videos', 'videos'] },
   { target: '/admin/equipment', keywords: ['equipment', 'equipments', 'machines'] },
-  { target: '/admin/membership-plans', keywords: ['membership plans', 'membership-plans', 'plans', 'pricing'] },
-  { target: '/admin/reports', keywords: ['reports', 'analytics', 'revenue reports'] },
-  // POS & Store
-  { target: '/admin/pos', keywords: ['pos', 'point of sale', 'counter sales', 'cashier'] },
-  { target: '/admin/store', keywords: ['store', 'inventory', 'shop', 'products'] },
-  // Financials & Subscription
+  { target: '/admin/membership-plans', keywords: ['membership plans', 'membership-plans', 'plans', 'pricing', 'package plans', 'packages'] },
+  { target: '/admin/payments', keywords: ['payments', 'membership payments', 'transactions', 'billing history'] },
+  { target: '/admin/ai-plans', keywords: ['ai plans', 'ai fitness plans'] },
+
+  // Store & Offline Sales
+  { target: '/admin/store/offline-sales', keywords: ['point of sale', 'counter sales', 'cashier desk', 'cashier', 'offline sales'] },
+  { target: '/admin/store/products', keywords: ['store products', 'products'] },
+  { target: '/admin/store/inventory', keywords: ['store inventory', 'inventory', 'stock'] },
+  { target: '/admin/store/orders', keywords: ['store orders', 'orders'] },
+  { target: '/admin/store/sales', keywords: ['sales history', 'store sales'] },
+  { target: '/admin/store', keywords: ['gym store', 'store', 'shop'] },
+
+  // Performance & Referrals
+  { target: '/admin/rewards-performance', keywords: ['rewards', 'performance', 'rewards-performance', 'rewards and performance'] },
+  { target: '/admin/referrals', keywords: ['referrals', 'refer and earn', 'refer-earn'] },
+  { target: '/admin/challenges', keywords: ['challenges', 'competitions'] },
+
+  // Financials & Analytics
+  { target: '/admin/revenue-analytics', keywords: ['revenue analytics', 'revenue', 'analytics', 'income analytics'] },
+  { target: '/admin/reports', keywords: ['reports', 'revenue reports'] },
   { target: '/admin/trainer-fees', keywords: ['trainer fees', 'trainer-fees'] },
   { target: '/admin/trainer-payments', keywords: ['trainer payments', 'trainer-payments', 'payroll'] },
   { target: '/admin/trainer-payments-history', keywords: ['trainer payments history', 'payroll history'] },
-  { target: '/admin/billing', keywords: ['billing', 'invoices', 'payments'] },
-  { target: '/admin/subscription', keywords: ['subscription', 'saas subscription', 'platform plan'] },
-  // Account & Dashboard
+  { target: '/admin/billing', keywords: ['billing', 'invoices'] },
+  { target: '/admin/subscription', keywords: ['subscription', 'saas subscription', 'platform plan', 'my plan'] },
+
+  // Admin & Settings
+  { target: '/admin/gym-profile', keywords: ['gym profile', 'gym details', 'my gym'] },
+  { target: '/admin/branches', keywords: ['branches', 'gym branches', 'all branches'] },
+  { target: '/admin/add-branch', keywords: ['add branch', 'new branch', 'create branch'] },
+  { target: '/admin/reviews', keywords: ['reviews', 'ratings', 'feedback'] },
   { target: '/admin/notifications', keywords: ['notifications', 'alerts'] },
-  { target: '/admin/profile', keywords: ['profile', 'gym profile', 'gym details'] },
-  { target: '/admin/settings', keywords: ['settings'] },
-  { target: '/admin/dashboard', keywords: ['dashboard', 'home'] },
+  { target: '/admin/deleted-details', keywords: ['deleted details', 'trash', 'archived'] },
+  { target: '/admin/settings', keywords: ['settings', 'preferences'] },
+  { target: '/admin/profile', keywords: ['profile', 'user profile', 'my account'] },
+  { target: '/admin/dashboard', keywords: ['dashboard', 'home', 'overview'] },
 ];
 
 const SUPER_ADMIN_ROUTE_RULES: RouteKeywordRule[] = [
@@ -184,16 +218,35 @@ const matchRule = (normalizedQuery: string, rules: RouteKeywordRule[]): string |
     }
   }
 
-  // 2. Starts with or contains exact keyword phrase
+  // 2. Exact whole phrase or word boundary match
   for (const rule of rules) {
     for (const kw of rule.keywords) {
-      if (normalizedQuery.includes(kw) || kw.includes(normalizedQuery)) {
+      if (kw.includes(' ')) {
+        // Multi-word phrase: match if normalizedQuery contains the whole phrase
+        if (normalizedQuery.includes(kw)) {
+          return rule.target;
+        }
+      } else {
+        // Single word: enforce word boundaries so short keywords (e.g. 'pos') do NOT falsely match 'post' or 'position'
+        const escaped = kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const re = new RegExp(`(^|\\s)${escaped}(\\s|$)`, 'i');
+        if (re.test(normalizedQuery)) {
+          return rule.target;
+        }
+      }
+    }
+  }
+
+  // 3. Prefix matching: if query is at least 3 characters and kw starts with query
+  for (const rule of rules) {
+    for (const kw of rule.keywords) {
+      if (normalizedQuery.length >= 3 && kw.startsWith(normalizedQuery)) {
         return rule.target;
       }
     }
   }
 
-  // 3. Word-by-word token matching
+  // 4. Word-by-word token matching
   const queryTokens = normalizedQuery.split(/\s+/).filter(t => t.length > 2);
   let bestMatch: string | null = null;
   let bestScore = 0;
@@ -201,7 +254,7 @@ const matchRule = (normalizedQuery: string, rules: RouteKeywordRule[]): string |
   for (const rule of rules) {
     for (const kw of rule.keywords) {
       const kwTokens = kw.split(/\s+/);
-      const matched = queryTokens.filter(t => kwTokens.some(kt => kt.includes(t) || t.includes(kt)));
+      const matched = queryTokens.filter(t => kwTokens.some(kt => kt === t || (kt.length > 3 && t.length > 3 && (kt.includes(t) || t.includes(kt)))));
       if (matched.length > bestScore) {
         bestScore = matched.length;
         bestMatch = rule.target;
@@ -259,20 +312,48 @@ export const resolveGlobalRoute = (
 ): string => {
   const path = (rawPath || '').toLowerCase();
 
-  // 1. If path explicitly mentions member, trainer, admin, super-admin:
-  if (path.includes('member')) return resolveMemberRoute(rawPath);
-  if (path.includes('trainer') && !path.includes('trainers')) return resolveTrainerRoute(rawPath);
-  if (path.includes('admin') && !path.includes('super-admin')) return resolveAdminRoute(rawPath);
-  if (path.includes('super-admin')) return resolveSuperAdminRoute(rawPath);
+  // 1. Unauthenticated RBAC redirect to correct portal login
+  if (!isAuthenticated || !user) {
+    if (path.includes('super-admin')) return '/login?portal=super-admin';
+    if (path.includes('member')) return '/login?portal=customer';
+    if (path.includes('admin')) return '/login?portal=gym-owner';
+    if (path.includes('trainer') && !path.includes('trainers')) return '/login?portal=trainer';
+  }
 
-  // 2. If authenticated, route based on user's role:
+  // 2. Strict Authenticated RBAC protection: prevent cross-role dashboard switching
   if (isAuthenticated && user?.role) {
     const role = user.role.toUpperCase();
-    if (role === 'MEMBER') return resolveMemberRoute(rawPath);
-    if (role === 'TRAINER') return resolveTrainerRoute(rawPath);
-    if (role === 'ADMIN' || role === 'GYM_OWNER') return resolveAdminRoute(rawPath);
-    if (role === 'SUPER_ADMIN') return resolveSuperAdminRoute(rawPath);
+    if (role === 'MEMBER') {
+      if (path.includes('super-admin') || path.includes('admin')) {
+        return '/member/dashboard';
+      }
+      return resolveMemberRoute(rawPath);
+    }
+    if (role === 'SUPER_ADMIN') {
+      if (path.includes('member')) {
+        return '/super-admin/dashboard';
+      }
+      return resolveSuperAdminRoute(rawPath);
+    }
+    if (role === 'TRAINER') {
+      if (path.includes('super-admin') || path.includes('admin') || path.includes('member')) {
+        return '/trainer/dashboard';
+      }
+      return resolveTrainerRoute(rawPath);
+    }
+    if (role === 'ADMIN' || role === 'GYM_OWNER') {
+      if (path.includes('super-admin') || path.includes('member')) {
+        return '/admin/dashboard';
+      }
+      return resolveAdminRoute(rawPath);
+    }
   }
+
+  // 3. Role-specific explicit prefixes
+  if (path.includes('super-admin')) return resolveSuperAdminRoute(rawPath);
+  if (path.includes('member')) return resolveMemberRoute(rawPath);
+  if (path.includes('trainer') && !path.includes('trainers')) return resolveTrainerRoute(rawPath);
+  if (path.includes('admin')) return resolveAdminRoute(rawPath);
 
   // 3. Public landing / marketing keywords:
   const query = normalizeQueryString(rawPath);

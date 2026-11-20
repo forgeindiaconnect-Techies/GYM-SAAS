@@ -8,6 +8,7 @@ export interface IWorkoutPlanExercise {
   duration: number; // in seconds
   restTime: number; // in seconds
   trainerNotes?: string;
+  startingWeight?: string;
 }
 
 export interface IWorkoutDay {
@@ -38,7 +39,8 @@ const workoutPlanExerciseSchema = new Schema<IWorkoutPlanExercise>(
     repetitions: { type: Number, default: 12 },
     duration: { type: Number, default: 60 },
     restTime: { type: Number, default: 30 },
-    trainerNotes: { type: String, default: '' }
+    trainerNotes: { type: String, default: '' },
+    startingWeight: { type: String, default: '' }
   },
   { _id: true }
 );

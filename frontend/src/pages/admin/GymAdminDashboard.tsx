@@ -85,10 +85,10 @@ const GymAdminDashboard = () => {
   };
 
   const cards = [
-    { title: 'Total Members', value: stats.members, icon: Users, color: 'text-[#EA580C]', bg: 'bg-[#FFF7ED] border border-[#FFEDD5]' },
-    { title: 'Active Trainers', value: stats.trainers, icon: Dumbbell, color: 'text-[#15803D]', bg: 'bg-[#FFF7ED] border border-[#E2E8F0]/30' },
-    { title: 'Pending Bookings', value: stats.bookings, icon: CalendarCheck, color: 'text-[#B45309]', bg: 'bg-amber-500/15 border border-amber-500/30' },
-    { title: 'Store Revenue', value: `₹${stats.revenue.toLocaleString('en-IN')}`, icon: TrendingUp, color: 'text-[#EA580C]', bg: 'bg-[#FFF7ED] border border-[#FFEDD5]' }
+    { title: 'Total Members', value: stats.members, icon: Users, color: 'text-[#EA580C]', bg: 'bg-[#FFF7ED] border border-[#FFEDD5]', link: '/admin/members' },
+    { title: 'Active Trainers', value: stats.trainers, icon: Dumbbell, color: 'text-[#15803D]', bg: 'bg-[#FFF7ED] border border-[#E2E8F0]/30', link: '/admin/trainers' },
+    { title: 'Pending Bookings', value: stats.bookings, icon: CalendarCheck, color: 'text-[#B45309]', bg: 'bg-amber-500/15 border border-amber-500/30', link: '/admin/session-bookings', state: { filterStatus: 'Pending' } },
+    { title: 'Store Revenue', value: `₹${stats.revenue.toLocaleString('en-IN')}`, icon: TrendingUp, color: 'text-[#EA580C]', bg: 'bg-[#FFF7ED] border border-[#FFEDD5]', link: '/admin/revenue-analytics' }
   ];
 
   if (loading) {
@@ -112,15 +112,20 @@ const GymAdminDashboard = () => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {cards.map((c, i) => (
-          <div key={i} className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-5 flex items-center space-x-4 shadow-sm hover:border-[#FFEDD5] transition-all">
-            <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${c.bg} ${c.color}`}>
+          <Link
+            key={i}
+            to={c.link}
+            state={c.state}
+            className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-5 flex items-center space-x-4 shadow-sm hover:border-[#FFEDD5] hover:shadow-md transition-all cursor-pointer group"
+          >
+            <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${c.bg} ${c.color} group-hover:scale-105 transition-transform`}>
               <c.icon size={24} />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-[#64748B] text-xs font-semibold uppercase tracking-wider truncate">{c.title}</p>
+              <p className="text-[#64748B] text-xs font-semibold uppercase tracking-wider truncate group-hover:text-[#EA580C] transition-colors">{c.title}</p>
               <h3 className="text-2xl font-bold text-[#111827] mt-0.5">{c.value}</h3>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
 

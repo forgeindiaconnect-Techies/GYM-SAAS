@@ -61,7 +61,24 @@ const MemberDashboard = () => {
   const notificationsMod = modules.notifications || { total: 0, unread: 0 };
   const reviewsMod = modules.reviews || { count: 0 };
 
+  const mems: any[] = membershipMod.memberships || [];
   const activeMembership = membershipMod.activeMembership;
+  const pendingMembership = mems.find((m: any) =>
+    m.status === 'Pending Approval' ||
+    m.status === 'Payment Verification Pending' ||
+    m.status === 'PENDING_APPROVAL'
+  ) || (user?.approvalStatus === 'PENDING' || user?.subscriptionStatus === 'Pending' ? mems[0] : null);
+
+  const isPendingApproval = Boolean(
+    pendingMembership && (
+      !activeMembership ||
+      user?.approvalStatus === 'PENDING' ||
+      user?.subscriptionStatus === 'Pending' ||
+      pendingMembership.status === 'Pending Approval' ||
+      pendingMembership.status === 'Payment Verification Pending'
+    )
+  );
+
   const aiExercises: any[] = aiAnalysis?.recommendation?.workoutPlan?.exercises || [];
 
   return (
@@ -162,7 +179,9 @@ const MemberDashboard = () => {
               <div className="min-w-0">
                 <p className="text-[11px] text-[#64748B] font-bold uppercase tracking-wider">Membership</p>
                 <p className="text-sm font-bold text-[#111827] truncate mt-0.5">
-                  {activeMembership ? activeMembership.planName : 'No active membership'}
+                  {isPendingApproval
+                    ? `${pendingMembership?.planName || 'Plan'} (Pending Approval)`
+                    : (activeMembership ? activeMembership.planName : 'No active membership')}
                 </p>
               </div>
             </div>
@@ -265,9 +284,14 @@ const MemberDashboard = () => {
                 <h3 className="text-lg font-black text-[#111827] flex items-center gap-2">
                   <Dumbbell size={18} className="text-[#EA580C]" /> AI Workout Plan &amp; Routine
                 </h3>
-                <Link to="/member/workout" className="text-xs font-bold text-[#EA580C] hover:underline">
-                  Open Workout Plan →
-                </Link>
+                <div className="flex items-center gap-3">
+                  <Link to="/member/trainer-plan" className="text-xs font-bold text-[#EA580C] hover:underline">
+                    Trainer&apos;s Plan →
+                  </Link>
+                  <Link to="/member/workout" className="text-xs font-bold text-[#64748B] hover:text-[#EA580C] hover:underline">
+                    Workout Tracker →
+                  </Link>
+                </div>
               </div>
 
               {!aiWorkout.hasPlan && !myRoutine.hasRoutine ? (
@@ -365,7 +389,15 @@ const MemberDashboard = () => {
                 <h3 className="text-base font-black text-[#111827] flex items-center gap-2 mb-3">
                   <ShieldCheck size={18} className="text-[#EA580C]" /> Membership
                 </h3>
-                {activeMembership ? (
+                {isPendingApproval ? (
+                  <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 space-y-1">
+                    <p className="font-black text-amber-800 text-base">{pendingMembership?.planName || 'Membership Plan'}</p>
+                    <p className="text-xs font-bold text-amber-700">Status: Pending Admin Approval</p>
+                    {pendingMembership?.endDate && (
+                      <p className="text-xs text-amber-600">Valid until {new Date(pendingMembership.endDate).toLocaleDateString()}</p>
+                    )}
+                  </div>
+                ) : activeMembership ? (
                   <div className="p-4 rounded-2xl bg-[#FFF7ED] border border-[#FFEDD5] space-y-1">
                     <p className="font-black text-[#C2410C] text-base">{activeMembership.planName}</p>
                     <p className="text-xs text-[#475569]">Status: {activeMembership.status}</p>

@@ -1271,49 +1271,24 @@ const SuperAdminGymOwners = () => {
                             </p>
                           )}
                         </div>
-                        <div className="pt-2 border-t border-[#F8FAFC]/60 flex items-center justify-between gap-2">
-                          <span className="text-[10px] text-[#64748B] font-semibold">Branch Approval:</span>
-                          <div className="flex items-center gap-1">
-                            {branch.status !== 'ACTIVE' && (
-                              <button
-                                type="button"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleBranchStatusChange(branch._id, 'ACTIVE');
-                                }}
-                                className="px-2 py-1 bg-[#F8FAFC] text-[#EA580C] hover:bg-[#9A3412] hover:text-white font-bold text-[10px] rounded transition-all flex items-center gap-1 cursor-pointer"
-                                title="Approve branch"
-                              >
-                                <CheckCircle size={12} /> Approve
-                              </button>
-                            )}
-                            {branch.status !== 'PENDING' && (
-                              <button
-                                type="button"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleBranchStatusChange(branch._id, 'PENDING');
-                                }}
-                                className="px-2 py-1 bg-amber-100 text-amber-800 hover:bg-amber-600 hover:text-white font-bold text-[10px] rounded transition-all flex items-center gap-1 cursor-pointer"
-                                title="Mark branch pending"
-                              >
-                                <Clock size={12} /> Pending
-                              </button>
-                            )}
-                            {branch.status !== 'SUSPENDED' && (
-                              <button
-                                type="button"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleBranchStatusChange(branch._id, 'SUSPENDED');
-                                }}
-                                className="px-2 py-1 bg-[#F8FAFC] text-[#EA580C] hover:bg-[#C2410C] hover:text-[#FFFFFF] font-bold font-bold text-[10px] rounded transition-all flex items-center gap-1 cursor-pointer"
-                                title="Suspend branch"
-                              >
-                                <ShieldAlert size={12} /> Suspend
-                              </button>
-                            )}
-                          </div>
+
+                        {/* View Details Button */}
+                        <div className="pt-2.5 border-t border-[#E2E8F0] flex items-center justify-end">
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setViewBranch({ 
+                                ...branch, 
+                                ownerName: `${viewOwner.firstName} ${viewOwner.lastName}`, 
+                                gymName: viewOwner.gymId?.name 
+                              });
+                            }}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#FFFFFF] hover:bg-[#FFF7ED] border border-[#E2E8F0] hover:border-[#FDBA74] text-[#EA580C] text-xs font-bold rounded-lg transition-colors cursor-pointer shadow-2xs group-hover:border-[#FDBA74]"
+                          >
+                            <Eye size={13} className="text-[#EA580C]" />
+                            <span>View Details</span>
+                          </button>
                         </div>
                       </div>
                     ))}

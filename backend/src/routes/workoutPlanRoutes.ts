@@ -18,6 +18,14 @@ const router = express.Router();
 router.get('/my', authenticate, getMyPublishedPlan);
 router.get('/my-plan', authenticate, getMyPublishedPlan);
 
+// Root fallback (Trainer / Customer)
+router.get('/', authenticate, (req: any, res: any) => {
+  if (req.user?.role === 'TRAINER') {
+    return getTrainerWorkoutPlans(req, res);
+  }
+  return getMyPublishedPlan(req, res);
+});
+
 // Trainer / Staff
 router.get('/trainer', authenticate, getTrainerWorkoutPlans);
 router.get('/customer/:customerId', authenticate, getCustomerWorkoutPlans);

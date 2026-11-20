@@ -67,9 +67,10 @@ export const AddExistingMemberModal: React.FC<Props> = ({ onClose, onSubmit, pla
               <div>
                 <label className="block text-sm font-bold text-[#64748B] mb-1">Phone Number *</label>
                 <input required type="tel" value={formData.phone} onChange={e => {
-                  const val = e.target.value.replace(/\D/g, '');
-                  if (val.length <= 10) setFormData({...formData, phone: val});
-                }} minLength={10} maxLength={10} pattern="\d{10}" title="Please enter exactly 10 digits" className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-2.5 outline-none focus:border-[#FDBA74] focus:bg-[#FFFFFF] invalid:[&:not(:placeholder-shown):not(:focus)]:border-red-500" placeholder="10-digit number" />
+                  const val = e.target.value.replace(/\D/g, '').slice(0, 10);
+                  if (val.length > 0 && !/^[6-9]/.test(val)) return;
+                  setFormData({...formData, phone: val});
+                }} minLength={10} maxLength={10} pattern="[6-9]\d{9}" title="Please enter 10 digits starting with 6, 7, 8, or 9" className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-2.5 outline-none focus:border-[#FDBA74] focus:bg-[#FFFFFF] invalid:[&:not(:placeholder-shown):not(:focus)]:border-red-500" placeholder="10-digit number (starts with 6-9)" />
               </div>
               <div>
                 <label className="block text-sm font-bold text-[#64748B] mb-1">Gender</label>
@@ -136,9 +137,10 @@ export const AddExistingMemberModal: React.FC<Props> = ({ onClose, onSubmit, pla
               <div>
                 <label className="block text-sm font-bold text-[#64748B] mb-1">Contact Phone</label>
                 <input type="tel" value={formData.emergencyPhone} onChange={e => {
-                  const val = e.target.value.replace(/\D/g, '');
-                  if (val.length <= 10) setFormData({...formData, emergencyPhone: val});
-                }} minLength={10} maxLength={10} pattern="\d{10}" title="Please enter exactly 10 digits" className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-2.5 outline-none focus:border-[#FDBA74] focus:bg-[#FFFFFF] invalid:[&:not(:placeholder-shown):not(:focus)]:border-red-500" placeholder="10-digit number" />
+                  const val = e.target.value.replace(/\D/g, '').slice(0, 10);
+                  if (val.length > 0 && !/^[6-9]/.test(val)) return;
+                  setFormData({...formData, emergencyPhone: val});
+                }} minLength={10} maxLength={10} pattern="[6-9]\d{9}" title="Please enter 10 digits starting with 6, 7, 8, or 9" className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-2.5 outline-none focus:border-[#FDBA74] focus:bg-[#FFFFFF] invalid:[&:not(:placeholder-shown):not(:focus)]:border-red-500" placeholder="10-digit number (starts with 6-9)" />
               </div>
               <div>
                 <label className="block text-sm font-bold text-[#64748B] mb-1">Relationship</label>

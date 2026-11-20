@@ -31,6 +31,7 @@ const BUILDER_IMAGES = [
   { src: builderImg10, alt: 'Athlete Physique 10' },
 ];
 import { useAuth } from '../contexts/AuthContext';
+import { getDashboardRoute } from '../utils/routeHelpers';
 
 const LandingPage = () => {
   const { user } = useAuth();
@@ -247,14 +248,24 @@ const LandingPage = () => {
 
           {/* Right Action Controls */}
           <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
-            <Link
-              to="/login"
-              id="nav-login"
-              className="px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-[#111827] bg-white hover:bg-orange-50 border border-[#E5E7EB] transition-all shadow-sm flex items-center gap-1.5 shrink-0 whitespace-nowrap active:scale-95"
-            >
-              <User size={15} className="text-[#EA580C] shrink-0" />
-              <span>Log In</span>
-            </Link>
+            {user ? (
+              <Link
+                to={getDashboardRoute(user)}
+                className="px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-white bg-[#EA580C] hover:bg-[#C2410C] transition-all shadow-md flex items-center gap-1.5 shrink-0 whitespace-nowrap active:scale-95"
+              >
+                <Activity size={15} className="text-white shrink-0" />
+                <span>Dashboard</span>
+              </Link>
+            ) : (
+              <Link
+                to="/login"
+                id="nav-login"
+                className="px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-[#111827] bg-white hover:bg-orange-50 border border-[#E5E7EB] transition-all shadow-sm flex items-center gap-1.5 shrink-0 whitespace-nowrap active:scale-95"
+              >
+                <User size={15} className="text-[#EA580C] shrink-0" />
+                <span>Log In</span>
+              </Link>
+            )}
 
             <Link
               to="/gyms"

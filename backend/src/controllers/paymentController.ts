@@ -16,6 +16,64 @@ export const submitPayment = async (req: AuthRequest, res: Response): Promise<vo
 
     const { gymId, branchId, planName, amount, paymentMethod, transactionId, paymentProofUrl, duration, customerBankDetails, notes } = req.body;
 
+    // ── Check active membership: prevent multiple subscription purchases within an active subscription period (BUG 1) ──
+    const now = new Date();
+
+    const existingActivePaid = await CustomerMembership.findOne({
+      userId,
+      status: CustomerMembershipStatus.ACTIVE,
+      $or: [
+        { endDate: { $exists: false } },
+        { endDate: null },
+        { endDate: { $gte: now } }
+      ],
+      $and: [
+        { status: { $ne: CustomerMembershipStatus.FREE_TRIAL } },
+        { paymentMethod: { $ne: 'Trial' } },
+        {
+          $or: [
+            { finalAmount: { $gt: 0 } },
+            { price: { $gt: 0 } }
+          ]
+        }
+      ]
+    }).sort({ createdAt: -1 });
+
+    const userDocForCheck = await User.findById(userId);
+    const hasActiveUserSubscription = Boolean(
+      userDocForCheck &&
+      (userDocForCheck.subscriptionStatus === SubscriptionStatus.ACTIVE || 
+       (userDocForCheck.subscriptionStatus as string) === 'Active' || 
+       (userDocForCheck.subscriptionStatus as string) === 'ACTIVE') &&
+      userDocForCheck.subscriptionExpiry &&
+      new Date(userDocForCheck.subscriptionExpiry) >= now &&
+      userDocForCheck.subscriptionPlan &&
+      !userDocForCheck.subscriptionPlan.toLowerCase().includes('trial')
+    );
+
+    if (existingActivePaid || hasActiveUserSubscription) {
+      res.status(400).json({
+        success: false,
+        message: "You have already paid for a subscription this month. You cannot purchase another plan until your current subscription expires.",
+        errorCode: 'ACTIVE_SUBSCRIPTION_EXISTS'
+      });
+      return;
+    }
+
+    // Check for pending verification
+    const pendingMembership = await CustomerMembership.findOne({
+      userId,
+      status: { $in: [CustomerMembershipStatus.PAYMENT_VERIFICATION_PENDING, CustomerMembershipStatus.PENDING_APPROVAL] }
+    });
+    if (pendingMembership) {
+      res.status(400).json({
+        success: false,
+        message: "You have a payment verification pending. Please wait for the gym administrator to verify your payment.",
+        errorCode: 'PAYMENT_VERIFICATION_PENDING'
+      });
+      return;
+    }
+
     const finalTxnId = transactionId || req.body.paymentReference || `TXN-${Date.now().toString().slice(-8)}${Math.floor(100 + Math.random() * 900)}`;
 
     // Create a new Payment record

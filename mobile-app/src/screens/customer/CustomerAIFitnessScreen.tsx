@@ -665,11 +665,6 @@ export const CustomerAIFitnessScreen: React.FC = () => {
           </View>
 
           <View style={styles.bioCard}>
-            <Text style={styles.bioLabel}>DIETARY PREFERENCE</Text>
-            <Text style={styles.bioValueBold}>Vegetarian</Text>
-          </View>
-
-          <View style={styles.bioCard}>
             <Text style={styles.bioLabel}>EMERGENCY CONTACT</Text>
             <Text style={styles.bioValueBold}>Selva (Brother)</Text>
           </View>
@@ -1006,25 +1001,6 @@ export const CustomerAIFitnessScreen: React.FC = () => {
                 >
                   <Text style={[styles.formOptionText, workoutDays === wd && styles.formOptionTextActive]}>
                     {wd}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </View>
-
-          {/* Dietary Preference */}
-          <View style={styles.formGroup}>
-            <Text style={styles.formLabel}>DIETARY PREFERENCE</Text>
-            <View style={styles.optionsWrap}>
-              {['Vegetarian', 'Non-Vegetarian', 'Eggetarian', 'Vegan'].map((dp) => (
-                <TouchableOpacity
-                  key={dp}
-                  style={[styles.formOptionPill, dietaryPref === dp && styles.formOptionPillActive]}
-                  onPress={() => setDietaryPref(dp)}
-                  activeOpacity={0.7}
-                >
-                  <Text style={[styles.formOptionText, dietaryPref === dp && styles.formOptionTextActive]}>
-                    {dp}
                   </Text>
                 </TouchableOpacity>
               ))}

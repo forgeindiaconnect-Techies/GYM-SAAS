@@ -9,7 +9,6 @@ import {
   CheckCircle2,
   Eye,
   EyeOff,
-  ArrowLeft,
   Lock,
   Briefcase,
   UserCheck,
@@ -595,25 +594,15 @@ export default function TrainerRegisterPage() {
     <div className="min-h-screen bg-[#FFFFFF] text-[#111827] flex flex-col items-center justify-center px-4 py-12 relative selection:bg-[#C2410C] selection:text-[#FFFFFF]">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(183,110,121,0.06)_0%,_transparent_60%)] pointer-events-none" />
 
-      {/* Top Header Navigation */}
-      <div className="w-full max-w-3xl flex items-center justify-between mb-6 z-10">
-        <Link
-          to={returnUrl ? decodeURIComponent(returnUrl) : (jobId ? `/careers?jobId=${jobId}` : '/careers')}
-          className="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#FFFFFF] bg-[#C2410C] hover:bg-[#9A3412] transition-all shadow-md shadow-orange-500/15 flex items-center gap-1.5"
-        >
-          <ArrowLeft size={16} />
-          <span>Back to Trainers Careers</span>
-        </Link>
-
-        <Link to="/" className="flex items-center space-x-2 group">
-          <div className="w-9 h-9 bg-gradient-to-br from-[#EA580C] to-[#C2410C] rounded-xl flex items-center justify-center shadow-md shadow-orange-500/15 group-hover:scale-105 transition-transform">
-            <Activity className="text-[#FFFFFF]" size={22} strokeWidth={2.5} />
-          </div>
-          <span className="text-2xl font-black tracking-tight text-[#111827] group-hover:text-[#EA580C] transition-colors">
-            Gymora
-          </span>
-        </Link>
-      </div>
+      {/* Logo */}
+      <Link to="/" className="flex items-center space-x-2.5 mb-6 group z-10">
+        <div className="w-10 h-10 bg-gradient-to-br from-[#EA580C] to-[#C2410C] rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/15 group-hover:scale-105 transition-transform">
+          <Activity className="text-[#FFFFFF]" size={22} strokeWidth={2.5} />
+        </div>
+        <span className="text-2xl font-bold tracking-tight text-[#111827] group-hover:text-[#EA580C] transition-colors">
+          Gymora
+        </span>
+      </Link>
 
       {/* Main Container Card */}
       <div className="w-full max-w-3xl bg-[#F8FAFC] border border-[#E2E8F0] rounded-3xl shadow-2xl p-6 sm:p-10 z-10 space-y-7">

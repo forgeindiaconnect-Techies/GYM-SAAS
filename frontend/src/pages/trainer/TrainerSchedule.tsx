@@ -169,7 +169,7 @@ const TrainerSchedule = () => {
   ];
 
   return (
-    <div className="max-w-6xl mx-auto space-y-5 pb-10">
+    <div className="w-full space-y-5 pb-10">
       <TrainerSchedulingTabs />
 
       {/* Header */}
@@ -360,14 +360,35 @@ const TrainerSchedule = () => {
                 </div>
               </div>
               {detailModal.mode === 'Online' && (
-                <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-3">
-                  <p className="text-xs font-bold text-[#EA580C] mb-1.5">Jitsi Meeting Room</p>
-                  <a href={detailModal.meetingLink || ('https://meet.jit.si/aigym-' + detailModal.bookingId)}
-                    target="_blank" rel="noreferrer"
-                    className="text-[#EA580C] font-semibold hover:underline text-xs flex items-center gap-1.5 break-all">
-                    <Video size={13} />
-                    {detailModal.meetingLink || ('meet.jit.si/aigym-' + detailModal.bookingId)}
-                  </a>
+                <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-3 space-y-2">
+                  <p className="text-xs font-bold text-[#EA580C]">Jitsi Meeting Room</p>
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                    <a
+                      href={detailModal.meetingLink || ('https://meet.jit.si/aigym-' + detailModal.bookingId)}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-[#EA580C] font-semibold hover:underline text-xs flex items-center gap-1.5 break-all flex-1 min-w-0"
+                    >
+                      <Video size={14} className="shrink-0" />
+                      <span className="truncate">{detailModal.meetingLink || ('meet.jit.si/aigym-' + detailModal.bookingId)}</span>
+                    </a>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const rawLink = detailModal.meetingLink || (detailModal.bookingId ? `https://meet.jit.si/aigym-${detailModal.bookingId}` : '');
+                        if (!rawLink) {
+                          alert('Meeting link is unavailable or invalid.');
+                          return;
+                        }
+                        const url = rawLink.startsWith('http') ? rawLink : `https://${rawLink}`;
+                        window.open(url, '_blank', 'noopener,noreferrer');
+                      }}
+                      className="inline-flex items-center justify-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-[#EA580C] hover:bg-[#C2410C] text-white text-xs font-bold transition-all shadow-xs shrink-0 cursor-pointer active:scale-95"
+                    >
+                      <Video size={13} />
+                      <span>Join Meeting</span>
+                    </button>
+                  </div>
                 </div>
               )}
               {detailModal.sessionNotes?.exercisesCompleted && (

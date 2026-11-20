@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Eye, EyeOff, Check, AlertCircle, Lock, Loader2 } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { Eye, EyeOff, Check, AlertCircle, Lock, Loader2, ChevronUp, ChevronDown } from 'lucide-react';
 import api from '../../utils/api';
 
 interface Step1Props {
@@ -31,7 +31,7 @@ const Step1BasicInfo: React.FC<Step1Props> = ({ form, set, errors, inputCls, sel
     setSendingOtp(true);
     setOtpError('');
     try {
-      const res = await api.post('/auth/send-otp', { email: form.email });
+      const res = await api.post('/auth/send-otp', { email: form.email, checkExisting: true, purpose: 'registration' });
       if (res.data.success) {
         setOtpSent(true);
         alert(`Verification code (OTP) sent to ${form.email}. Please check your inbox or spam folder!`);
@@ -86,6 +86,67 @@ const Step1BasicInfo: React.FC<Step1Props> = ({ form, set, errors, inputCls, sel
         if (otpInput) otpInput.focus();
       }
     }
+  };
+
+  const holdIntervalRef = useRef<any>(null);
+  const holdTimeoutRef = useRef<any>(null);
+
+  const startHold = (action: () => void) => {
+    action();
+    holdTimeoutRef.current = setTimeout(() => {
+      holdIntervalRef.current = setInterval(action, 80);
+    }, 350);
+  };
+
+  const stopHold = () => {
+    if (holdTimeoutRef.current) {
+      clearTimeout(holdTimeoutRef.current);
+      holdTimeoutRef.current = null;
+    }
+    if (holdIntervalRef.current) {
+      clearInterval(holdIntervalRef.current);
+      holdIntervalRef.current = null;
+    }
+  };
+
+  const handleApproxMembersChange = (delta: number) => {
+    const current = form.approxMembers ? parseInt(String(form.approxMembers), 10) : 0;
+    let nextVal: number;
+    if (delta > 0) {
+      if (!form.approxMembers || current <= 0) {
+        nextVal = 100;
+      } else if (current < 10) {
+        nextVal = current + 1;
+      } else {
+        nextVal = Math.min(100000, current + 10);
+      }
+    } else {
+      if (!form.approxMembers || current <= 10) {
+        nextVal = Math.max(1, current - 1);
+      } else {
+        nextVal = Math.max(1, current - 10);
+      }
+    }
+    set('approxMembers', String(nextVal));
+  };
+
+  const handleNumTrainersChange = (delta: number) => {
+    const current = form.numTrainers ? parseInt(String(form.numTrainers), 10) : 0;
+    let nextVal: number;
+    if (delta > 0) {
+      if (!form.numTrainers || current <= 0) {
+        nextVal = 5;
+      } else {
+        nextVal = Math.min(1000, current + 1);
+      }
+    } else {
+      if (!form.numTrainers || current <= 1) {
+        nextVal = 1;
+      } else {
+        nextVal = Math.max(1, current - 1);
+      }
+    }
+    set('numTrainers', String(nextVal));
   };
 
   return (
@@ -185,7 +246,9 @@ const Step1BasicInfo: React.FC<Step1Props> = ({ form, set, errors, inputCls, sel
                   handleMobileClick();
                   return;
                 }
-                set('mobile', e.target.value.replace(/\D/g, ''));
+                const val = e.target.value.replace(/\D/g, '').slice(0, 10);
+                if (val.length > 0 && !/^[6-9]/.test(val)) return;
+                set('mobile', val);
               }} 
               onClick={(e) => {
                 if (!form.emailOtpVerified) {
@@ -292,12 +355,90 @@ const Step1BasicInfo: React.FC<Step1Props> = ({ form, set, errors, inputCls, sel
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
           <div>
             <label className="block text-sm font-semibold text-[#111827] mb-2">Approx. Members *</label>
-            <input type="number" value={form.approxMembers} onChange={e => set('approxMembers', e.target.value)} placeholder="e.g. 100" className={inputCls('approxMembers')} />
+            <div className="relative">
+              <input
+                type="text"
+                readOnly
+                value={form.approxMembers}
+                placeholder="e.g. 100"
+                className={inputCls('approxMembers') + ' pr-10 cursor-pointer select-none font-medium'}
+                onClick={() => {
+                  if (!form.approxMembers) handleApproxMembersChange(1);
+                }}
+              />
+              <div className="absolute right-1.5 top-1.5 bottom-1.5 w-7 flex flex-col border border-[#E2E8F0] rounded-lg overflow-hidden bg-[#F8FAFC]">
+                <button
+                  type="button"
+                  onMouseDown={() => startHold(() => handleApproxMembersChange(1))}
+                  onMouseUp={stopHold}
+                  onMouseLeave={stopHold}
+                  onTouchStart={() => startHold(() => handleApproxMembersChange(1))}
+                  onTouchEnd={stopHold}
+                  className="flex-1 flex items-center justify-center hover:bg-[#EA580C] hover:text-white text-[#64748B] transition-colors border-b border-[#E2E8F0] cursor-pointer"
+                  title="Increase members"
+                  aria-label="Increase members"
+                >
+                  <ChevronUp size={13} className="stroke-[2.5]" />
+                </button>
+                <button
+                  type="button"
+                  onMouseDown={() => startHold(() => handleApproxMembersChange(-1))}
+                  onMouseUp={stopHold}
+                  onMouseLeave={stopHold}
+                  onTouchStart={() => startHold(() => handleApproxMembersChange(-1))}
+                  onTouchEnd={stopHold}
+                  className="flex-1 flex items-center justify-center hover:bg-[#EA580C] hover:text-white text-[#64748B] transition-colors cursor-pointer"
+                  title="Decrease members"
+                  aria-label="Decrease members"
+                >
+                  <ChevronDown size={13} className="stroke-[2.5]" />
+                </button>
+              </div>
+            </div>
             {errors.approxMembers && <p className="text-[#B91C1C] text-xs mt-1">{errors.approxMembers}</p>}
           </div>
           <div>
             <label className="block text-sm font-semibold text-[#111827] mb-2">Number of Trainers *</label>
-            <input type="number" value={form.numTrainers} onChange={e => set('numTrainers', e.target.value)} placeholder="e.g. 5" className={inputCls('numTrainers')} />
+            <div className="relative">
+              <input
+                type="text"
+                readOnly
+                value={form.numTrainers}
+                placeholder="e.g. 5"
+                className={inputCls('numTrainers') + ' pr-10 cursor-pointer select-none font-medium'}
+                onClick={() => {
+                  if (!form.numTrainers) handleNumTrainersChange(1);
+                }}
+              />
+              <div className="absolute right-1.5 top-1.5 bottom-1.5 w-7 flex flex-col border border-[#E2E8F0] rounded-lg overflow-hidden bg-[#F8FAFC]">
+                <button
+                  type="button"
+                  onMouseDown={() => startHold(() => handleNumTrainersChange(1))}
+                  onMouseUp={stopHold}
+                  onMouseLeave={stopHold}
+                  onTouchStart={() => startHold(() => handleNumTrainersChange(1))}
+                  onTouchEnd={stopHold}
+                  className="flex-1 flex items-center justify-center hover:bg-[#EA580C] hover:text-white text-[#64748B] transition-colors border-b border-[#E2E8F0] cursor-pointer"
+                  title="Increase trainers"
+                  aria-label="Increase trainers"
+                >
+                  <ChevronUp size={13} className="stroke-[2.5]" />
+                </button>
+                <button
+                  type="button"
+                  onMouseDown={() => startHold(() => handleNumTrainersChange(-1))}
+                  onMouseUp={stopHold}
+                  onMouseLeave={stopHold}
+                  onTouchStart={() => startHold(() => handleNumTrainersChange(-1))}
+                  onTouchEnd={stopHold}
+                  className="flex-1 flex items-center justify-center hover:bg-[#EA580C] hover:text-white text-[#64748B] transition-colors cursor-pointer"
+                  title="Decrease trainers"
+                  aria-label="Decrease trainers"
+                >
+                  <ChevronDown size={13} className="stroke-[2.5]" />
+                </button>
+              </div>
+            </div>
             {errors.numTrainers && <p className="text-[#B91C1C] text-xs mt-1">{errors.numTrainers}</p>}
           </div>
         </div>

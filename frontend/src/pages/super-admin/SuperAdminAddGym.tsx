@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, CheckCircle2, Send, Loader2, User, Clock, Copy, Check, ExternalLink, Mail } from 'lucide-react';
 import { addItem } from '../../utils/mockDb';
@@ -20,15 +20,33 @@ const SuperAdminAddGym = () => {
   const [copied, setCopied] = useState(false);
   const [emailDeliveryStatus, setEmailDeliveryStatus] = useState<string | null>(null);
 
+  const validateOwnerName = (name: string): string => {
+    if (!name.trim()) return 'Owner name is required';
+    if (!/^[a-zA-Z\s]+$/.test(name)) return 'Only letters are allowed';
+    return '';
+  };
+
+  const validatePhone = (phone: string): string => {
+    if (!phone.trim()) return 'Phone is required';
+    if (!/^[6-9]\d{9}$/.test(phone.trim())) {
+      return 'Enter a valid 10-digit mobile number starting with 6, 7, 8, or 9';
+    }
+    return '';
+  };
+
   const validate = () => {
     const newErrors: any = {};
-    if (!formData.ownerName.trim()) newErrors.ownerName = 'Owner name is required';
-    if (!formData.ownerEmail.trim()) newErrors.ownerEmail = 'Owner email is required';
-    else if (!/^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,6}$/.test(formData.ownerEmail.trim())) {
+    const nameErr = validateOwnerName(formData.ownerName);
+    if (nameErr) newErrors.ownerName = nameErr;
+
+    if (!formData.ownerEmail.trim()) {
+      newErrors.ownerEmail = 'Owner email is required';
+    } else if (!/^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,6}$/.test(formData.ownerEmail.trim())) {
       newErrors.ownerEmail = 'Invalid email format';
     }
-    if (!formData.ownerPhone.trim()) newErrors.ownerPhone = 'Phone is required';
-    else if (!/^\d{10}$/.test(formData.ownerPhone.trim())) newErrors.ownerPhone = 'Phone must be 10 digits';
+
+    const phoneErr = validatePhone(formData.ownerPhone);
+    if (phoneErr) newErrors.ownerPhone = phoneErr;
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -240,7 +258,15 @@ const SuperAdminAddGym = () => {
                 <input
                   type="text"
                   value={formData.ownerName}
-                  onChange={(e) => { setFormData({ ...formData, ownerName: e.target.value }); setErrors({ ...errors, ownerName: '' }); }}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setFormData({ ...formData, ownerName: val });
+                    if (val && !/^[a-zA-Z\s]+$/.test(val)) {
+                      setErrors({ ...errors, ownerName: 'Only letters are allowed' });
+                    } else {
+                      setErrors({ ...errors, ownerName: '' });
+                    }
+                  }}
                   placeholder="e.g. John Doe"
                   className={`w-full bg-[#FFFFFF] border ${errors.ownerName ? 'border-red-400' : 'border-[#E2E8F0]'} text-[#111827] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#FDBA74] transition-colors`}
                 />
@@ -264,7 +290,17 @@ const SuperAdminAddGym = () => {
                 <input
                   type="tel"
                   value={formData.ownerPhone}
-                  onChange={(e) => { setFormData({ ...formData, ownerPhone: e.target.value }); setErrors({ ...errors, ownerPhone: '' }); }}
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/\D/g, '').slice(0, 10);
+                    setFormData({ ...formData, ownerPhone: val });
+                    if (val && !/^[6-9]/.test(val)) {
+                      setErrors({ ...errors, ownerPhone: 'Enter a valid 10-digit mobile number starting with 6, 7, 8, or 9' });
+                    } else if (val.length === 10 && !/^[6-9]\d{9}$/.test(val)) {
+                      setErrors({ ...errors, ownerPhone: 'Enter a valid 10-digit mobile number starting with 6, 7, 8, or 9' });
+                    } else {
+                      setErrors({ ...errors, ownerPhone: '' });
+                    }
+                  }}
                   placeholder="10-digit mobile number"
                   maxLength={10}
                   className={`w-full bg-[#FFFFFF] border ${errors.ownerPhone ? 'border-red-400' : 'border-[#E2E8F0]'} text-[#111827] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#FDBA74] transition-colors`}

@@ -464,6 +464,7 @@ const SuperAdminInvitations = () => {
           <table className="w-full text-left text-sm text-[#64748B]">
             <thead className="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[#111827]">
               <tr>
+                <th className="px-4 py-4 font-bold text-xs uppercase tracking-wider text-center w-16 whitespace-nowrap">S.No</th>
                 <th className="px-6 py-4 font-bold text-xs uppercase tracking-wider">Gym Name</th>
                 <th className="px-6 py-4 font-bold text-xs uppercase tracking-wider">Recipient</th>
                 <th className="px-6 py-4 font-bold text-xs uppercase tracking-wider">Invite Date</th>
@@ -473,8 +474,11 @@ const SuperAdminInvitations = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-[#E2E8F0]">
-              {filteredInvites.map(invite => (
+              {filteredInvites.map((invite, index) => (
                 <tr key={invite.id} className="hover:bg-[#FFF7ED] transition-colors">
+                  <td className="px-4 py-4 text-center font-bold text-xs text-[#64748B] whitespace-nowrap">
+                    {index + 1}
+                  </td>
                   <td className="px-6 py-4">
                     <div className="font-bold text-[#111827] flex items-center space-x-2">
                       <div className="w-7 h-7 rounded-lg bg-[#FFF7ED] flex items-center justify-center text-[#EA580C] shrink-0">
@@ -575,7 +579,7 @@ const SuperAdminInvitations = () => {
               ))}
               {filteredInvites.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="text-center py-12 text-[#64748B]">
+                  <td colSpan={7} className="text-center py-12 text-[#64748B]">
                     <div className="flex flex-col items-center justify-center space-y-2">
                       <Send size={32} className="text-[#64748B]" />
                       <p className="font-semibold text-[#111827]">No invitations found</p>

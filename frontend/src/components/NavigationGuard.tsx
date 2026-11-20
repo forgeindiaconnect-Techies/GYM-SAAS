@@ -57,26 +57,92 @@ const NavigationGuard = () => {
     const currentPath = location.pathname;
     const isPublicPath = (p?: string | null) => {
       if (!p) return true;
+      if (p.includes('/checkout')) return false;
       return (
-        ['/', '/login', '/forgot-password', '/status', '/gym-owner-introduction', '/subscription-plans'].includes(p) ||
+        [
+          '/',
+          '/login',
+          '/pay',
+          '/qr-pay',
+          '/forgot-password',
+          '/status',
+          '/gym-owner-introduction',
+          '/subscription-plans',
+          '/about',
+          '/careers',
+          '/jobs',
+          '/contact',
+          '/privacy',
+          '/terms',
+          '/cancellation-refund-policy'
+        ].includes(p) ||
+        p.startsWith('/gyms') ||
         p.startsWith('/register') ||
         p.startsWith('/invite') ||
+        p.startsWith('/portal') ||
+        p.startsWith('/trainers') ||
+        p.startsWith('/training') ||
+        p.startsWith('/blog') ||
         p.startsWith('/marketplace')
       );
     };
 
     const isCurrentPublic = isPublicPath(currentPath);
 
+    const getLoginRedirect = (path: string): string => {
+      if (path.startsWith('/super-admin')) {
+        return '/login?portal=super-admin';
+      }
+      if (path.startsWith('/member')) {
+        return '/login?portal=customer';
+      }
+      if (path.startsWith('/admin')) {
+        return '/login?portal=gym-owner';
+      }
+      if (path.startsWith('/trainer')) {
+        return '/login?portal=trainer';
+      }
+      return '/login';
+    };
+
     // If user is not authenticated, only allow public routes
     if (!isAuthenticated || !user) {
       if (!isCurrentPublic) {
-        navigate('/login', { replace: true });
+        navigate(getLoginRedirect(currentPath), { replace: true, state: { from: currentPath } });
       }
       return;
     }
 
-    // If authenticated user visits public login or root page, navigate to their dashboard
-    if (currentPath === '/login' || currentPath === '/') {
+    // Role-based route authorization check
+    const isRoleAuthorizedForPath = (role?: string, path?: string): boolean => {
+      if (!path) return true;
+      const r = (role || '').toUpperCase();
+      if (path.startsWith('/super-admin')) {
+        return r === 'SUPER_ADMIN';
+      }
+      if (path.startsWith('/admin')) {
+        return r === 'ADMIN' || r === 'GYM_OWNER' || r === 'GYM_MANAGER';
+      }
+      if (path.startsWith('/member')) {
+        return r === 'MEMBER';
+      }
+      if (path.startsWith('/trainer')) {
+        return r === 'TRAINER';
+      }
+      return true; // shared or public paths
+    };
+
+    // If an authenticated user enters a cross-role path they are NOT authorized for
+    // (e.g. customer entering /super-admin or /admin in URL), immediately redirect them to their dashboard
+    if (!isRoleAuthorizedForPath(user.role, currentPath)) {
+      const target = getDashboardRoute(user);
+      sessionStorage.setItem(ACTIVE_PATH_KEY, target);
+      navigate(target, { replace: true });
+      return;
+    }
+
+    // If authenticated user visits public login page, redirect to their dashboard
+    if (currentPath === '/login') {
       const target = getDashboardRoute(user);
       markAuthorizedNavigation();
       navigate(target, { replace: true });
@@ -102,14 +168,30 @@ const NavigationGuard = () => {
     const isSamePath = savedActivePath === currentPath;
     const cameFromPublic = isPublicPath(savedActivePath);
 
-    if (isSamePath || isRecentAuthorizedNav || cameFromPublic) {
-      // Authorized navigation via button/link/menu, login transition, or same page refresh
+    const getRolePrefix = (role?: string) => {
+      if (!role) return '';
+      switch (role.toUpperCase()) {
+        case 'MEMBER': return '/member';
+        case 'TRAINER': return '/trainer';
+        case 'ADMIN':
+        case 'GYM_OWNER':
+        case 'GYM_MANAGER': return '/admin';
+        case 'SUPER_ADMIN': return '/super-admin';
+        default: return '';
+      }
+    };
+
+    const rolePrefix = getRolePrefix(user?.role);
+    const isWithinOwnDashboard = Boolean(rolePrefix && currentPath.startsWith(rolePrefix));
+
+    if (isSamePath || isRecentAuthorizedNav || cameFromPublic || isCurrentPublic || isWithinOwnDashboard) {
+      // Authorized navigation via button/link/menu, login transition, same page refresh, public route, or navigation within user's own dashboard
       sessionStorage.setItem(ACTIVE_PATH_KEY, currentPath);
       sessionStorage.removeItem(NAV_PERMITTED_KEY);
       sessionStorage.removeItem(NAV_TIMESTAMP_KEY);
-    } else if (savedActivePath && !isRecentAuthorizedNav && !cameFromPublic) {
-      // Manual address bar URL modification detected while inside a dashboard
-      // Keep the user on their previously active dashboard page as required by Bug 6
+    } else if (savedActivePath && !isRecentAuthorizedNav && !cameFromPublic && !isWithinOwnDashboard) {
+      // Cross-role dashboard switching attempt detected (e.g. member manually modifying URL to switch to /admin or /super-admin)
+      // Keep the user on their previously active dashboard page
       navigate(savedActivePath, { replace: true });
     } else {
       sessionStorage.setItem(ACTIVE_PATH_KEY, currentPath);

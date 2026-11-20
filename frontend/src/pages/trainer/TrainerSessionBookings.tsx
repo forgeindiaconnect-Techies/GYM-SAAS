@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useSearchParams, useLocation } from 'react-router-dom';
 import {
   Clock, Calendar as CalendarIcon, Video, Loader2, CheckCircle2,
   X, AlertTriangle, Users, RefreshCw, Filter, FileText, LogOut, Eye, Star
@@ -37,8 +38,20 @@ const normalizeStatus = (status: string) => {
 };
 
 const TrainerSessionBookings = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
+
+  const getInitialFilter = () => {
+    const raw = searchParams.get('filter') || searchParams.get('status') || (location.state as any)?.filterStatus || (location.state as any)?.filter;
+    if (raw) {
+      const match = STATUS_FILTERS.find(f => f.toLowerCase() === raw.toLowerCase());
+      if (match) return match;
+    }
+    return 'All';
+  };
+
   const [bookings, setBookings] = useState<any[]>([]);
-  const [filter, setFilter] = useState('All');
+  const [filter, setFilter] = useState<string>(getInitialFilter);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
@@ -53,6 +66,28 @@ const TrainerSessionBookings = () => {
     dietRecommendations: '',
     nextSessionFocus: '',
   });
+
+  useEffect(() => {
+    const raw = searchParams.get('filter') || searchParams.get('status') || (location.state as any)?.filterStatus || (location.state as any)?.filter;
+    if (raw) {
+      const match = STATUS_FILTERS.find(f => f.toLowerCase() === raw.toLowerCase());
+      if (match) setFilter(match);
+    }
+  }, [searchParams, location.state]);
+
+  const handleFilterChange = (f: string) => {
+    setFilter(f);
+    setSearchParams(prev => {
+      const next = new URLSearchParams(prev);
+      if (f === 'All') {
+        next.delete('filter');
+        next.delete('status');
+      } else {
+        next.set('filter', f);
+      }
+      return next;
+    });
+  };
 
   const fetchBookings = useCallback(async (showRefresh = false) => {
     try {
@@ -175,7 +210,7 @@ const TrainerSessionBookings = () => {
 
       <div className="flex gap-2 flex-wrap">
         {STATUS_FILTERS.map(f => (
-          <button key={f} onClick={() => setFilter(f)}
+          <button key={f} onClick={() => handleFilterChange(f)}
             className={`px-4 py-2 rounded-xl font-semibold text-sm transition-all flex items-center gap-2 border ${
               filter === f ? 'bg-[#C2410C] text-white border-[#FDBA74] shadow-sm' : 'bg-[#FFFFFF] text-[#64748B] border-[#E2E8F0] hover:bg-[#FFF7ED]'}`}>
             {f}

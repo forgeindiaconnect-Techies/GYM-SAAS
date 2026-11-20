@@ -715,7 +715,7 @@ export const getGymSessions = async (req: AuthRequest, res: Response): Promise<v
 
     const sessions = await TrainerSession.find(query)
       .populate('trainerId', 'name profilePhoto specialization trainingMode')
-      .populate('customerId', 'firstName lastName profilePhoto email')
+      .populate('customerId', 'firstName lastName profilePhoto email mobile phone height weight gender dateOfBirth experienceLevel preferredTraining preferredWorkoutTime subscriptionPlan subscriptionExpiry createdAt')
       .sort({ date: -1, startTime: -1 });
 
     const normalizedSessions = sessions.map(s => {

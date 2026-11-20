@@ -182,7 +182,7 @@ const CustomerRegisterPage = () => {
       return;
     }
     try {
-      const res = await api.post('/auth/send-otp', { email: form.email });
+      const res = await api.post('/auth/send-otp', { email: form.email, checkExisting: true, purpose: 'registration' });
       if (res.data.success) {
         setOtpSent(true);
         alert(`Verification code (OTP) sent to ${form.email}. Please check your inbox or spam folder!`);
@@ -190,7 +190,9 @@ const CustomerRegisterPage = () => {
         alert(res.data.message || 'Failed to send OTP email.');
       }
     } catch (err: any) {
-      alert(err.response?.data?.message || 'Failed to send OTP email.');
+      const msg = err.response?.data?.message || 'Failed to send OTP email.';
+      setErrors(e => ({ ...e, email: msg }));
+      alert(msg);
     }
   };
 

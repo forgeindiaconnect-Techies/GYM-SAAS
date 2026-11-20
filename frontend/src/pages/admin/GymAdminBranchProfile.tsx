@@ -17,26 +17,26 @@ const GymAdminBranchProfile = () => {
   const [planForm, setPlanForm] = useState({ name: '', price: '', annualPrice: '', duration: 'Monthly', features: '' });
 
   const defaultBranchPlans = [
-    { 
-      name: 'Starter Free', 
-      price: '0', 
+    {
+      name: 'Starter Free',
+      price: '0',
       annualPrice: '0',
-      duration: 'Monthly', 
-      features: '1 branch\n50 members\n3 trainers\n5 AI analyses\n3 AI workout generations\n3 AI diet generations\nBasic chatbot\nBasic attendance\nBasic reports\nNo multi-branch management' 
+      duration: 'Monthly',
+      features: '1 branch\n50 members\n3 trainers\n5 AI analyses\n3 AI workout generations\n3 AI diet generations\nBasic chatbot\nBasic attendance\nBasic reports\nNo multi-branch management'
     },
-    { 
-      name: 'Growth Plan', 
-      price: '2999', 
+    {
+      name: 'Growth Plan',
+      price: '2999',
       annualPrice: '29990',
-      duration: 'Monthly', 
-      features: 'Up to 3 branches\nUp to 1,000 members\n15 trainers\n20 staff\nBranch manager\nCustomer + Trainer dashboards\nComplete billing\nAttendance\nTrainer commission\nSession booking\nOnline sessions\nAI health/customer analysis\nAI workout recommendations\nAI diet recommendations\nWorkout animation/video library\nTrainer review and editing of AI output\nCustomer-trainer chat\nAI chatbot' 
+      duration: 'Monthly',
+      features: 'Up to 3 branches\nUp to 1,000 members\n15 trainers\n20 staff\nBranch manager\nCustomer + Trainer dashboards\nComplete billing\nAttendance\nTrainer commission\nSession booking\nOnline sessions\nAI health/customer analysis\nAI workout recommendations\nAI diet recommendations\nWorkout animation/video library\nTrainer review and editing of AI output\nCustomer-trainer chat\nAI chatbot'
     },
-    { 
-      name: 'Pro Plan', 
-      price: '5999', 
+    {
+      name: 'Pro Plan',
+      price: '5999',
       annualPrice: '59990',
-      duration: 'Monthly', 
-      features: 'Unlimited branches\nUnlimited members\nUnlimited trainers\nUnlimited staff\nCentralized Head Office Dashboard\nAll-branch consolidated analytics\nBranch comparison\nBranch-wise profit/revenue\nTrainer performance analytics\nAdvanced AI customer insights\nAI business insights\nAI member retention/churn prediction\nAdvanced AI chatbot\nAdvanced workout/diet AI\nUnlimited workout video/animation library\nAdvanced CRM\nAdvanced automation\nAdvanced notifications' 
+      duration: 'Monthly',
+      features: 'Unlimited branches\nUnlimited members\nUnlimited trainers\nUnlimited staff\nCentralized Head Office Dashboard\nAll-branch consolidated analytics\nBranch comparison\nBranch-wise profit/revenue\nTrainer performance analytics\nAdvanced AI customer insights\nAI business insights\nAI member retention/churn prediction\nAdvanced AI chatbot\nAdvanced workout/diet AI\nUnlimited workout video/animation library\nAdvanced CRM\nAdvanced automation\nAdvanced notifications'
     }
   ];
 
@@ -47,8 +47,8 @@ const GymAdminBranchProfile = () => {
   };
 
   const handleEditPlan = (index: number) => {
-    const plans = (editMode ? form.subscriptionPlans : branch?.subscriptionPlans)?.length 
-      ? (editMode ? form.subscriptionPlans : branch?.subscriptionPlans) 
+    const plans = (editMode ? form.subscriptionPlans : branch?.subscriptionPlans)?.length
+      ? (editMode ? form.subscriptionPlans : branch?.subscriptionPlans)
       : defaultBranchPlans;
     const planToEdit = plans?.[index];
     if (!planToEdit) return;
@@ -74,8 +74,8 @@ const GymAdminBranchProfile = () => {
 
   const handleSavePlan = (e: React.FormEvent) => {
     e.preventDefault();
-    const existingPlans = (form.subscriptionPlans || branch?.subscriptionPlans)?.length 
-      ? (form.subscriptionPlans || branch?.subscriptionPlans) 
+    const existingPlans = (form.subscriptionPlans || branch?.subscriptionPlans)?.length
+      ? (form.subscriptionPlans || branch?.subscriptionPlans)
       : defaultBranchPlans;
     if (editingPlanIndex !== null) {
       setForm((prev: any) => {
@@ -95,8 +95,8 @@ const GymAdminBranchProfile = () => {
   };
 
   const handleRemovePlan = (index: number) => {
-    const existingPlans = (form.subscriptionPlans || branch?.subscriptionPlans)?.length 
-      ? (form.subscriptionPlans || branch?.subscriptionPlans) 
+    const existingPlans = (form.subscriptionPlans || branch?.subscriptionPlans)?.length
+      ? (form.subscriptionPlans || branch?.subscriptionPlans)
       : defaultBranchPlans;
     setForm((prev: any) => {
       const plans = [...(prev.subscriptionPlans || existingPlans)];
@@ -125,6 +125,10 @@ const GymAdminBranchProfile = () => {
   }, [id]);
 
   const handleSave = async () => {
+    if (form.phone && !/^[6-9]\d{9}$/.test(form.phone)) {
+      alert('Phone number must be exactly 10 digits and start with 6, 7, 8, or 9');
+      return;
+    }
     try {
       setSaving(true);
       const res = await api.put(`/branches/${id}`, form);
@@ -150,8 +154,8 @@ const GymAdminBranchProfile = () => {
   if (loading) return <div className="flex justify-center p-12"><Loader2 className="animate-spin text-[#EA580C]" size={32} /></div>;
   if (!branch) return <div className="p-12 text-center text-[#9A3412]">Branch not found</div>;
 
-  const currentPlans = (editMode ? form.subscriptionPlans : branch.subscriptionPlans)?.length 
-    ? (editMode ? form.subscriptionPlans : branch.subscriptionPlans) 
+  const currentPlans = (editMode ? form.subscriptionPlans : branch.subscriptionPlans)?.length
+    ? (editMode ? form.subscriptionPlans : branch.subscriptionPlans)
     : defaultBranchPlans;
 
   return (
@@ -204,7 +208,7 @@ const GymAdminBranchProfile = () => {
               <div>
                 <label className="block text-sm text-[#64748B] font-medium mb-1">Branch Name</label>
                 {editMode ? (
-                  <input type="text" value={form.branchName} onChange={e => setForm({...form, branchName: e.target.value})} className="w-full border rounded-lg px-3 py-2 outline-none focus:border-[#FDBA74]" />
+                  <input type="text" value={form.branchName} onChange={e => setForm({ ...form, branchName: e.target.value })} className="w-full border rounded-lg px-3 py-2 outline-none focus:border-[#FDBA74]" />
                 ) : (
                   <p className="font-semibold text-[#111827]">{branch.branchName}</p>
                 )}
@@ -212,7 +216,21 @@ const GymAdminBranchProfile = () => {
               <div>
                 <label className="block text-sm text-[#64748B] font-medium mb-1">Phone Number</label>
                 {editMode ? (
-                  <input type="tel" maxLength={10} value={form.phone} onChange={e => setForm({...form, phone: e.target.value.replace(/\D/g, '').slice(0, 10)})} placeholder="10-digit number" className="w-full border rounded-lg px-3 py-2 outline-none focus:border-[#FDBA74]" />
+                  <input
+                    type="tel"
+                    minLength={10}
+                    maxLength={10}
+                    pattern="[6-9]\d{9}"
+                    title="Phone number must be 10 digits and start with 6, 7, 8, or 9"
+                    value={form.phone}
+                    onChange={e => {
+                      const val = e.target.value.replace(/\D/g, '').slice(0, 10);
+                      if (val.length > 0 && !/^[6-9]/.test(val)) return;
+                      setForm({ ...form, phone: val });
+                    }}
+                    placeholder="10-digit number (starts with 6-9)"
+                    className="w-full border rounded-lg px-3 py-2 outline-none focus:border-[#FDBA74]"
+                  />
                 ) : (
                   <p className="font-semibold text-[#111827]">{branch.phone || 'N/A'}</p>
                 )}
@@ -220,7 +238,7 @@ const GymAdminBranchProfile = () => {
               <div>
                 <label className="block text-sm text-[#64748B] font-medium mb-1">Email</label>
                 {editMode ? (
-                  <input type="email" value={form.email} onChange={e => setForm({...form, email: e.target.value})} className="w-full border rounded-lg px-3 py-2 outline-none focus:border-[#FDBA74]" />
+                  <input type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} className="w-full border rounded-lg px-3 py-2 outline-none focus:border-[#FDBA74]" />
                 ) : (
                   <p className="font-semibold text-[#111827]">{branch.email || 'N/A'}</p>
                 )}
@@ -237,7 +255,7 @@ const GymAdminBranchProfile = () => {
               <div>
                 <label className="block text-sm text-[#64748B] font-medium mb-1">Address</label>
                 {editMode ? (
-                  <input type="text" value={form.location?.address} onChange={e => setForm({...form, location: {...form.location, address: e.target.value}})} className="w-full border rounded-lg px-3 py-2 outline-none focus:border-[#FDBA74]" />
+                  <input type="text" value={form.location?.address} onChange={e => setForm({ ...form, location: { ...form.location, address: e.target.value } })} className="w-full border rounded-lg px-3 py-2 outline-none focus:border-[#FDBA74]" />
                 ) : (
                   <p className="font-semibold text-[#111827]">{branch.location?.address}</p>
                 )}
@@ -246,7 +264,7 @@ const GymAdminBranchProfile = () => {
                 <div>
                   <label className="block text-sm text-[#64748B] font-medium mb-1">Locality</label>
                   {editMode ? (
-                    <input type="text" value={form.location?.area} onChange={e => setForm({...form, location: {...form.location, area: e.target.value}})} className="w-full border rounded-lg px-3 py-2 outline-none focus:border-[#FDBA74]" />
+                    <input type="text" value={form.location?.area} onChange={e => setForm({ ...form, location: { ...form.location, area: e.target.value } })} className="w-full border rounded-lg px-3 py-2 outline-none focus:border-[#FDBA74]" />
                   ) : (
                     <p className="font-semibold text-[#111827]">{branch.location?.area || 'N/A'}</p>
                   )}
@@ -254,7 +272,7 @@ const GymAdminBranchProfile = () => {
                 <div>
                   <label className="block text-sm text-[#64748B] font-medium mb-1">City</label>
                   {editMode ? (
-                    <input type="text" value={form.location?.city} onChange={e => setForm({...form, location: {...form.location, city: e.target.value}})} className="w-full border rounded-lg px-3 py-2 outline-none focus:border-[#FDBA74]" />
+                    <input type="text" value={form.location?.city} onChange={e => setForm({ ...form, location: { ...form.location, city: e.target.value } })} className="w-full border rounded-lg px-3 py-2 outline-none focus:border-[#FDBA74]" />
                   ) : (
                     <p className="font-semibold text-[#111827]">{branch.location?.city}</p>
                   )}
@@ -262,7 +280,7 @@ const GymAdminBranchProfile = () => {
                 <div>
                   <label className="block text-sm text-[#64748B] font-medium mb-1">State</label>
                   {editMode ? (
-                    <input type="text" value={form.location?.state} onChange={e => setForm({...form, location: {...form.location, state: e.target.value}})} className="w-full border rounded-lg px-3 py-2 outline-none focus:border-[#FDBA74]" />
+                    <input type="text" value={form.location?.state} onChange={e => setForm({ ...form, location: { ...form.location, state: e.target.value } })} className="w-full border rounded-lg px-3 py-2 outline-none focus:border-[#FDBA74]" />
                   ) : (
                     <p className="font-semibold text-[#111827]">{branch.location?.state}</p>
                   )}
@@ -270,7 +288,7 @@ const GymAdminBranchProfile = () => {
                 <div>
                   <label className="block text-sm text-[#64748B] font-medium mb-1">Pincode</label>
                   {editMode ? (
-                    <input type="text" inputMode="numeric" maxLength={6} pattern="\d{6}" value={form.location?.pinCode || ''} onChange={e => setForm({...form, location: {...form.location, pinCode: e.target.value.replace(/\D/g, '').slice(0, 6)}})} placeholder="6-digit pincode" className="w-full border rounded-lg px-3 py-2 outline-none focus:border-[#FDBA74]" />
+                    <input type="text" inputMode="numeric" maxLength={6} pattern="\d{6}" value={form.location?.pinCode || ''} onChange={e => setForm({ ...form, location: { ...form.location, pinCode: e.target.value.replace(/\D/g, '').slice(0, 6) } })} placeholder="6-digit pincode" className="w-full border rounded-lg px-3 py-2 outline-none focus:border-[#FDBA74]" />
                   ) : (
                     <p className="font-semibold text-[#111827]">{branch.location?.pinCode}</p>
                   )}
@@ -292,21 +310,21 @@ const GymAdminBranchProfile = () => {
                 <span className="text-[#64748B]">Opening Time</span>
                 {editMode ? (
                   <div className="flex gap-1 items-center">
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       maxLength={5}
                       placeholder="HH:MM"
-                      value={form.operatingHours?.openingTime?.split(' ')[0] || ''} 
+                      value={form.operatingHours?.openingTime?.split(' ')[0] || ''}
                       onChange={e => {
                         let val = e.target.value.replace(/[^\d:]/g, '');
                         if (val.length === 2 && !val.includes(':') && e.target.value.length === 2) val += ':';
-                        setForm({...form, operatingHours: {...form.operatingHours, openingTime: `${val} ${form.operatingHours?.openingTime?.split(' ')[1] || 'AM'}`}})
-                      }} 
-                      className="w-16 border rounded-lg px-2 py-1 outline-none focus:border-[#FDBA74] text-center text-sm" 
+                        setForm({ ...form, operatingHours: { ...form.operatingHours, openingTime: `${val} ${form.operatingHours?.openingTime?.split(' ')[1] || 'AM'}` } })
+                      }}
+                      className="w-16 border rounded-lg px-2 py-1 outline-none focus:border-[#FDBA74] text-center text-sm"
                     />
-                    <select 
+                    <select
                       value={form.operatingHours?.openingTime?.split(' ')[1] || 'AM'}
-                      onChange={e => setForm({...form, operatingHours: {...form.operatingHours, openingTime: `${form.operatingHours?.openingTime?.split(' ')[0] || '06:00'} ${e.target.value}`}})}
+                      onChange={e => setForm({ ...form, operatingHours: { ...form.operatingHours, openingTime: `${form.operatingHours?.openingTime?.split(' ')[0] || '06:00'} ${e.target.value}` } })}
                       className="border rounded-lg px-1 py-1 outline-none focus:border-[#FDBA74] text-sm"
                     >
                       <option value="AM">AM</option>
@@ -321,21 +339,21 @@ const GymAdminBranchProfile = () => {
                 <span className="text-[#64748B]">Closing Time</span>
                 {editMode ? (
                   <div className="flex gap-1 items-center">
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       maxLength={5}
                       placeholder="HH:MM"
-                      value={form.operatingHours?.closingTime?.split(' ')[0] || ''} 
+                      value={form.operatingHours?.closingTime?.split(' ')[0] || ''}
                       onChange={e => {
                         let val = e.target.value.replace(/[^\d:]/g, '');
                         if (val.length === 2 && !val.includes(':') && e.target.value.length === 2) val += ':';
-                        setForm({...form, operatingHours: {...form.operatingHours, closingTime: `${val} ${form.operatingHours?.closingTime?.split(' ')[1] || 'PM'}`}})
-                      }} 
-                      className="w-16 border rounded-lg px-2 py-1 outline-none focus:border-[#FDBA74] text-center text-sm" 
+                        setForm({ ...form, operatingHours: { ...form.operatingHours, closingTime: `${val} ${form.operatingHours?.closingTime?.split(' ')[1] || 'PM'}` } })
+                      }}
+                      className="w-16 border rounded-lg px-2 py-1 outline-none focus:border-[#FDBA74] text-center text-sm"
                     />
-                    <select 
+                    <select
                       value={form.operatingHours?.closingTime?.split(' ')[1] || 'PM'}
-                      onChange={e => setForm({...form, operatingHours: {...form.operatingHours, closingTime: `${form.operatingHours?.closingTime?.split(' ')[0] || '10:00'} ${e.target.value}`}})}
+                      onChange={e => setForm({ ...form, operatingHours: { ...form.operatingHours, closingTime: `${form.operatingHours?.closingTime?.split(' ')[0] || '10:00'} ${e.target.value}` } })}
                       className="border rounded-lg px-1 py-1 outline-none focus:border-[#FDBA74] text-sm"
                     >
                       <option value="AM">AM</option>
@@ -349,7 +367,7 @@ const GymAdminBranchProfile = () => {
               <div className="flex justify-between items-center pb-2 border-b">
                 <span className="text-[#64748B]">Approx Members</span>
                 {editMode ? (
-                  <input type="number" value={form.memberCapacity || ''} onChange={e => setForm({...form, memberCapacity: e.target.value})} className="w-24 border rounded-lg px-2 py-1 outline-none focus:border-[#FDBA74] text-right" />
+                  <input type="number" value={form.memberCapacity || ''} onChange={e => setForm({ ...form, memberCapacity: e.target.value })} className="w-24 border rounded-lg px-2 py-1 outline-none focus:border-[#FDBA74] text-right" />
                 ) : (
                   <span className="font-bold text-[#111827]">{branch.memberCapacity || 'N/A'}</span>
                 )}
@@ -357,7 +375,7 @@ const GymAdminBranchProfile = () => {
               <div className="flex justify-between items-center pb-2 border-b">
                 <span className="text-[#64748B]">Total Trainers</span>
                 {editMode ? (
-                  <input type="number" value={form.trainerCapacity || ''} onChange={e => setForm({...form, trainerCapacity: e.target.value})} className="w-24 border rounded-lg px-2 py-1 outline-none focus:border-[#FDBA74] text-right" />
+                  <input type="number" value={form.trainerCapacity || ''} onChange={e => setForm({ ...form, trainerCapacity: e.target.value })} className="w-24 border rounded-lg px-2 py-1 outline-none focus:border-[#FDBA74] text-right" />
                 ) : (
                   <span className="font-bold text-[#111827]">{branch.trainerCapacity || 'N/A'}</span>
                 )}
@@ -366,7 +384,7 @@ const GymAdminBranchProfile = () => {
                 <span className="text-[#64748B] block mb-2">Working Days</span>
                 <div className="flex flex-wrap gap-2">
                   {branch.operatingHours?.workingDays?.map((d: string) => (
-                    <span key={d} className="px-2.5 py-1 bg-green-50 text-[#EA580C] text-xs font-bold rounded-lg border border-green-100">{d.substring(0,3)}</span>
+                    <span key={d} className="px-2.5 py-1 bg-green-50 text-[#EA580C] text-xs font-bold rounded-lg border border-green-100">{d.substring(0, 3)}</span>
                   ))}
                 </div>
               </div>
@@ -382,13 +400,13 @@ const GymAdminBranchProfile = () => {
               <div>
                 <span className="text-[#64748B] text-sm block mb-2">Training Mode</span>
                 {editMode ? (
-                  <select value={form.trainingMode || 'offline'} onChange={e => setForm({...form, trainingMode: e.target.value})} className="w-full border rounded-lg px-3 py-2 outline-none focus:border-[#FDBA74] capitalize">
+                  <select value={form.trainingMode || 'offline'} onChange={e => setForm({ ...form, trainingMode: e.target.value })} className="w-full border rounded-lg px-3 py-2 outline-none focus:border-[#FDBA74] capitalize">
                     <option value="offline">Offline</option>
                     <option value="online">Online</option>
                     <option value="both">Both</option>
                   </select>
                 ) : (
-                  <span className="px-3 py-1 bg-[#FFFFFF] text-white text-xs font-bold rounded-full capitalize">{branch.trainingMode}</span>
+                  <span className="px-3 py-1 bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5] text-xs font-bold rounded-full capitalize">{branch.trainingMode}</span>
                 )}
               </div>
               <div>
@@ -421,28 +439,26 @@ const GymAdminBranchProfile = () => {
             </h3>
             <p className="text-xs text-[#64748B] mt-0.5">Plans and pricing options configured for this branch.</p>
           </div>
-          
+
           <div className="flex items-center gap-3">
             <div className="bg-[#F8FAFC] p-1 rounded-xl flex items-center border border-[#E2E8F0]">
               <button
                 type="button"
                 onClick={() => setBillingCycle('monthly')}
-                className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${
-                  billingCycle === 'monthly'
-                    ? 'bg-[#C2410C] text-white shadow-xs'
-                    : 'text-[#64748B] hover:text-[#C2410C]'
-                }`}
+                className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${billingCycle === 'monthly'
+                  ? 'bg-[#C2410C] text-white shadow-xs'
+                  : 'text-[#64748B] hover:text-[#C2410C]'
+                  }`}
               >
                 Monthly Billed
               </button>
               <button
                 type="button"
                 onClick={() => setBillingCycle('annually')}
-                className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all flex items-center gap-1 ${
-                  billingCycle === 'annually'
-                    ? 'bg-[#C2410C] text-white shadow-xs'
-                    : 'text-[#64748B] hover:text-[#C2410C]'
-                }`}
+                className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all flex items-center gap-1 ${billingCycle === 'annually'
+                  ? 'bg-[#C2410C] text-white shadow-xs'
+                  : 'text-[#64748B] hover:text-[#C2410C]'
+                  }`}
               >
                 Annual Billed
                 <span className="bg-[#FFFFFF] text-[#EA580C] text-[9px] px-1.5 py-0.5 rounded font-extrabold uppercase ml-0.5">Save 20%</span>
@@ -455,7 +471,7 @@ const GymAdminBranchProfile = () => {
             )}
           </div>
         </div>
-        
+
         {!currentPlans?.length ? (
           <p className="text-sm text-[#64748B] italic py-4 text-center">No plans assigned to this branch.</p>
         ) : (
@@ -577,10 +593,10 @@ const GymAdminBranchProfile = () => {
                     value={planForm.price}
                     onChange={e => {
                       const val = e.target.value.replace(/[^0-9.]/g, '');
-                      setPlanForm({ 
-                        ...planForm, 
+                      setPlanForm({
+                        ...planForm,
                         price: val,
-                        annualPrice: val ? String(Math.round(Number(val) * 10)) : '' 
+                        annualPrice: val ? String(Math.round(Number(val) * 10)) : ''
                       });
                     }}
                     className="w-full border border-[#E2E8F0] rounded-lg px-4 py-2 outline-none focus:border-[#FDBA74]"

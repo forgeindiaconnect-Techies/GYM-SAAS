@@ -4,6 +4,8 @@ import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { clsx } from 'clsx';
 import { useAuth } from '../contexts/AuthContext';
 import api from '../utils/api';
+import GymoraConfirmModal from '../components/GymoraConfirmModal';
+import { markAuthorizedNavigation } from '../components/NavigationGuard';
 import {
   LayoutDashboard, User, CreditCard, Dumbbell,
   Utensils, Bot, CalendarCheck,
@@ -19,6 +21,7 @@ const MemberLayout = () => {
   const { user, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showExpiryWarning, setShowExpiryWarning] = useState(false);
+  const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
   const [gym, setGym] = useState<any>(null);
   const [isExpired, setIsExpired] = useState<boolean>(() => {
     return user?.subscriptionStatus === 'Expired' || user?.subscriptionStatus === 'EXPIRED';
@@ -278,7 +281,15 @@ const MemberLayout = () => {
     <>
       {/* Logo Header aligned with main header h-16 */}
       <div className="h-16 px-5 border-b border-[#E2E8F0] flex items-center justify-between shrink-0">
-        <Link to="/" className="flex items-center space-x-2.5" onClick={() => setSidebarOpen(false)}>
+        <Link
+          to="/"
+          className="flex items-center space-x-2.5 cursor-pointer"
+          onClick={(e) => {
+            e.preventDefault();
+            setSidebarOpen(false);
+            setShowLeaveConfirm(true);
+          }}
+        >
           <div className="w-9 h-9 bg-[#C2410C] text-white font-bold rounded-xl flex items-center justify-center shadow-md shadow-orange-500/20 shrink-0">
             <Activity className="text-white" size={20} />
           </div>
@@ -343,7 +354,10 @@ const MemberLayout = () => {
                     key={item.path}
                     to={item.path}
                     onMouseEnter={() => handlePrefetch(item.path)}
-                    onClick={() => setSidebarOpen(false)}
+                    onClick={() => {
+                      markAuthorizedNavigation();
+                      setSidebarOpen(false);
+                    }}
                     className={clsx(
                       'flex items-center space-x-3 px-3 py-2 rounded-xl transition-all duration-150 text-sm font-medium group',
                       isActive
@@ -461,7 +475,7 @@ const MemberLayout = () => {
       {/* Main Content */}
       <main className="flex-1 flex flex-col h-full overflow-hidden relative min-w-0 bg-[#FFFFFF]">
         {/* Header */}
-        <header className="h-16 pt-safe border-b border-[#E2E8F0] flex items-center px-3 sm:px-6 md:px-8 justify-between bg-[#FFFFFF] z-10 sticky top-0 shrink-0 text-[#111827]">
+        <header className={`h-16 pt-safe border-b border-[#E2E8F0] flex items-center px-3 sm:px-6 md:px-8 justify-between bg-[#FFFFFF] sticky top-0 shrink-0 text-[#111827] ${notifOpen ? 'z-50' : 'z-20'}`}>
           <div className="flex items-center space-x-2 sm:space-x-3">
             <button
               className="lg:hidden w-10 h-10 flex items-center justify-center text-[#64748B] hover:text-[#EA580C] transition-colors rounded-xl hover:bg-[#FFF7ED] cursor-pointer shrink-0"
@@ -494,90 +508,98 @@ const MemberLayout = () => {
 
                 {/* Notifications Dropdown */}
                 {notifOpen && (
-                  <div className="absolute right-0 mt-2 w-[calc(100vw-2rem)] sm:w-96 max-w-sm bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl shadow-xl z-50 overflow-hidden animate-fadeIn">
-                    <div className="p-3.5 border-b border-[#E2E8F0] bg-[#F8FAFC] flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <h3 className="font-bold text-[#111827] text-sm">Notifications</h3>
-                        {unreadCount > 0 && (
-                          <span className="bg-[#FFF7ED] text-[#C2410C] border border-[#FFEDD5] text-[10px] font-bold px-2 py-0.5 rounded-full">
-                            {unreadCount} new
-                          </span>
+                  <>
+                    {/* Mobile Backdrop for clean tap-outside dismissal and background dimming */}
+                    <div 
+                      className="fixed inset-0 z-40 bg-black/20 sm:hidden animate-fade-in"
+                      onClick={() => setNotifOpen(false)}
+                      aria-hidden="true"
+                    />
+                    <div className="fixed sm:absolute inset-x-3 sm:inset-x-auto sm:right-0 top-16 sm:top-12 sm:w-96 max-w-sm sm:max-w-md bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl shadow-2xl z-50 overflow-hidden animate-fadeIn">
+                      <div className="p-3.5 border-b border-[#E2E8F0] bg-[#F8FAFC] flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <h3 className="font-bold text-[#111827] text-sm">Notifications</h3>
+                          {unreadCount > 0 && (
+                            <span className="bg-[#FFF7ED] text-[#C2410C] border border-[#FFEDD5] text-[10px] font-bold px-2 py-0.5 rounded-full">
+                              {unreadCount} new
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {unreadCount > 0 && (
+                            <button
+                              onClick={markAllAsRead}
+                              className="text-[11px] font-semibold text-[#EA580C] hover:underline cursor-pointer"
+                            >
+                              Mark all read
+                            </button>
+                          )}
+                          <button
+                            type="button"
+                            onClick={() => setNotifOpen(false)}
+                            className="w-7 h-7 rounded-full bg-[#FFFFFF] border border-[#E2E8F0] text-[#64748B] hover:text-[#EA580C] hover:bg-[#FFF7ED] active:bg-[#FFEDD5] flex items-center justify-center cursor-pointer transition-colors shrink-0"
+                            title="Close notifications"
+                            aria-label="Close notifications"
+                          >
+                            <X size={14} />
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="divide-y divide-[#E2E8F0] max-h-[60vh] sm:max-h-72 overflow-y-auto">
+                        {notifications.length === 0 ? (
+                          <div className="p-6 text-center text-xs text-[#64748B]">
+                            No notifications yet.
+                          </div>
+                        ) : (
+                          notifications.slice(0, 5).map(notif => (
+                            <div
+                              key={notif._id}
+                              onClick={() => {
+                                if (!notif.isRead) markAsRead(notif._id);
+                                setNotifOpen(false);
+                                if (notif.link) navigate(notif.link);
+                                else navigate('/member/notifications');
+                              }}
+                              className={`flex items-start gap-3 px-4 py-3 hover:bg-[#FFF7ED] transition-colors cursor-pointer ${
+                                !notif.isRead ? 'bg-[#FFF7ED]/50' : ''
+                              }`}
+                            >
+                              <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 bg-[#F8FAFC] border border-[#E2E8F0]">
+                                {notif.type === 'alert' ? <AlertCircle size={15} className="text-[#B91C1C]" /> :
+                                 notif.type === 'success' ? <CheckCircle size={15} className="text-[#15803D]" /> :
+                                 notif.type === 'message' ? <MessageSquare size={15} className="text-[#C2410C]" /> :
+                                 <Bell size={15} className="text-[#EA580C]" />}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className={`text-xs font-semibold text-[#111827] truncate ${!notif.isRead ? 'font-bold' : ''}`}>
+                                  {notif.title}
+                                </p>
+                                <p className="text-[11px] text-[#64748B] mt-0.5 line-clamp-2 leading-relaxed break-words">
+                                  {notif.message}
+                                </p>
+                                <p className="text-[9px] text-[#94A3B8] mt-1">
+                                  {notif.createdAt ? new Date(notif.createdAt).toLocaleDateString() : ''}
+                                </p>
+                              </div>
+                              {!notif.isRead && (
+                                <div className="w-2 h-2 bg-[#F97316] rounded-full mt-1.5 shrink-0" />
+                              )}
+                            </div>
+                          ))
                         )}
                       </div>
-                      <div className="flex items-center gap-2">
-                        {unreadCount > 0 && (
-                          <button
-                            onClick={markAllAsRead}
-                            className="text-[11px] font-semibold text-[#EA580C] hover:underline cursor-pointer"
-                          >
-                            Mark all read
-                          </button>
-                        )}
+
+                      <div className="border-t border-[#E2E8F0] bg-[#F8FAFC]">
                         <button
-                          type="button"
-                          onClick={() => setNotifOpen(false)}
-                          className="w-7 h-7 rounded-full bg-[#FFFFFF] border border-[#E2E8F0] text-[#64748B] hover:text-[#EA580C] hover:bg-[#FFF7ED] active:bg-[#FFEDD5] flex items-center justify-center cursor-pointer transition-colors shrink-0"
-                          title="Close notifications"
-                          aria-label="Close notifications"
+                          onClick={() => { setNotifOpen(false); navigate('/member/notifications'); }}
+                          className="w-full py-2.5 text-xs font-bold text-[#C2410C] hover:underline transition-colors text-center block cursor-pointer"
                         >
-                          <X size={14} />
+                          View All Notifications →
                         </button>
                       </div>
                     </div>
-
-                    <div className="divide-y divide-[#E2E8F0] max-h-72 overflow-y-auto">
-                      {notifications.length === 0 ? (
-                        <div className="p-6 text-center text-xs text-[#64748B]">
-                          No notifications yet.
-                        </div>
-                      ) : (
-                        notifications.slice(0, 5).map(notif => (
-                          <div
-                            key={notif._id}
-                            onClick={() => {
-                              if (!notif.isRead) markAsRead(notif._id);
-                              setNotifOpen(false);
-                              if (notif.link) navigate(notif.link);
-                              else navigate('/member/notifications');
-                            }}
-                            className={`flex items-start gap-3 px-4 py-3 hover:bg-[#FFF7ED] transition-colors cursor-pointer ${
-                              !notif.isRead ? 'bg-[#FFF7ED]/50' : ''
-                            }`}
-                          >
-                            <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 bg-[#F8FAFC] border border-[#E2E8F0]">
-                              {notif.type === 'alert' ? <AlertCircle size={15} className="text-[#B91C1C]" /> :
-                               notif.type === 'success' ? <CheckCircle size={15} className="text-[#15803D]" /> :
-                               notif.type === 'message' ? <MessageSquare size={15} className="text-[#C2410C]" /> :
-                               <Bell size={15} className="text-[#EA580C]" />}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <p className={`text-xs font-semibold text-[#111827] truncate ${!notif.isRead ? 'font-bold' : ''}`}>
-                                {notif.title}
-                              </p>
-                              <p className="text-[11px] text-[#64748B] mt-0.5 line-clamp-2 leading-relaxed">
-                                {notif.message}
-                              </p>
-                              <p className="text-[9px] text-[#94A3B8] mt-1">
-                                {notif.createdAt ? new Date(notif.createdAt).toLocaleDateString() : ''}
-                              </p>
-                            </div>
-                            {!notif.isRead && (
-                              <div className="w-2 h-2 bg-[#F97316] rounded-full mt-1.5 shrink-0" />
-                            )}
-                          </div>
-                        ))
-                      )}
-                    </div>
-
-                    <div className="border-t border-[#E2E8F0] bg-[#F8FAFC]">
-                      <button
-                        onClick={() => { setNotifOpen(false); navigate('/member/notifications'); }}
-                        className="w-full py-2.5 text-xs font-bold text-[#C2410C] hover:underline transition-colors text-center block cursor-pointer"
-                      >
-                        View All Notifications →
-                      </button>
-                    </div>
-                  </div>
+                  </>
                 )}
               </div>
             )}
@@ -627,13 +649,30 @@ const MemberLayout = () => {
           </div>
         )}
 
-        <div className="flex-1 overflow-y-auto p-3.5 sm:p-5 md:p-6 lg:p-8 pb-32 sm:pb-28">
+        <div className={clsx(
+          'flex-1 overflow-y-auto p-3.5 sm:p-5 md:p-6 lg:p-8',
+          location.pathname.includes('/messages') ? 'pb-3 sm:pb-4 md:pb-6' : 'pb-32 sm:pb-28'
+        )}>
           <Outlet />
         </div>
 
         {/* Floating Context-Aware AI Chatbot */}
         <CustomerAIChatbot />
       </main>
+
+      <GymoraConfirmModal
+        isOpen={showLeaveConfirm}
+        title="Leave Dashboard?"
+        message="Do you want to leave the dashboard and go to the home page?"
+        confirmText="Continue"
+        cancelText="Cancel"
+        onConfirm={() => {
+          setShowLeaveConfirm(false);
+          markAuthorizedNavigation();
+          navigate('/');
+        }}
+        onCancel={() => setShowLeaveConfirm(false)}
+      />
     </div>
   );
 };

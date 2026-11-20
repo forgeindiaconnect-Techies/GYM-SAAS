@@ -84,11 +84,17 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     }
 
     const normalizedEmail = String(email).trim().toLowerCase();
-    const existingUser = await User.findOne({ email: normalizedEmail });
-    if (existingUser) {
-      res.status(409).json({ success: false, message: 'Email already in use', errorCode: 'EMAIL_IN_USE' });
+    const existingActiveUser = await User.findOne({ 
+      email: normalizedEmail, 
+      approvalStatus: { $ne: ApprovalStatus.DELETED } 
+    });
+    if (existingActiveUser) {
+      res.status(409).json({ success: false, message: 'Email already in use. Please sign in or use another email.', errorCode: 'EMAIL_IN_USE' });
       return;
     }
+
+    // Clean up any old soft-deleted user with this email to allow clean re-registration
+    await User.deleteMany({ email: normalizedEmail, approvalStatus: ApprovalStatus.DELETED });
 
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(password, salt);
@@ -613,6 +619,30 @@ export const registerGymOwner = async (req: Request, res: Response): Promise<voi
       }
     }
 
+    if (approxMembers !== undefined && approxMembers !== null && approxMembers !== '') {
+      const num = Number(approxMembers);
+      if (isNaN(num) || num < 1 || !Number.isInteger(num)) {
+        res.status(400).json({ success: false, message: 'Approximate members must be a positive whole number (minimum 1)' });
+        return;
+      }
+      if (num > 100000) {
+        res.status(400).json({ success: false, message: 'Approximate members cannot exceed 100,000' });
+        return;
+      }
+    }
+
+    if (numTrainers !== undefined && numTrainers !== null && numTrainers !== '') {
+      const num = Number(numTrainers);
+      if (isNaN(num) || num < 1 || !Number.isInteger(num)) {
+        res.status(400).json({ success: false, message: 'Number of trainers must be a positive whole number (minimum 1)' });
+        return;
+      }
+      if (num > 1000) {
+        res.status(400).json({ success: false, message: 'Number of trainers cannot exceed 1,000' });
+        return;
+      }
+    }
+
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       res.status(400).json({ success: false, message: 'Email already in use', errorCode: 'EMAIL_IN_USE' });
@@ -729,9 +759,12 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    if (!user.isActive) {
-      const reason = user.suspensionReason || 'suspended';
-      res.status(403).json({ success: false, message: `Your account is ${reason}`, errorCode: 'ACCOUNT_SUSPENDED' });
+    const isMatch = (await bcrypt.compare(password, user.passwordHash)) || 
+      (cleanEmail === 'vikram@gmail.com' && (password === 'Vikram@143' || password === 'password123')) || 
+      (cleanEmail === 'branch1@gmail.com' && (password === 'Branch@143' || password === 'password123')) ||
+      (cleanEmail === 'renugopal5457@gmail.com' && (password === 'Renu@123' || password === 'renu@123' || password === 'Renu@143' || password === '123456' || password === 'password123'));
+    if (!isMatch) {
+      res.status(401).json({ success: false, message: 'Invalid credentials', errorCode: 'INVALID_CREDENTIALS' });
       return;
     }
 
@@ -740,12 +773,9 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    const isMatch = (await bcrypt.compare(password, user.passwordHash)) || 
-      (cleanEmail === 'vikram@gmail.com' && (password === 'Vikram@143' || password === 'password123')) || 
-      (cleanEmail === 'branch1@gmail.com' && (password === 'Branch@143' || password === 'password123')) ||
-      (cleanEmail === 'renugopal5457@gmail.com' && (password === 'Renu@123' || password === 'renu@123' || password === 'Renu@143' || password === '123456' || password === 'password123'));
-    if (!isMatch) {
-      res.status(401).json({ success: false, message: 'Invalid credentials', errorCode: 'INVALID_CREDENTIALS' });
+    if (!user.isActive && user.role !== Role.MEMBER) {
+      const reason = user.statusDetail || (user.approvalStatus === ApprovalStatus.INACTIVE ? 'inactive' : user.suspensionReason) || 'inactive';
+      res.status(403).json({ success: false, message: `Your account is ${reason.toLowerCase()}`, errorCode: 'ACCOUNT_INACTIVE' });
       return;
     }
 
@@ -926,6 +956,13 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         ...(activeTrainerDoc ? { trainerId: String(activeTrainerDoc._id), trainerCode: activeTrainerDoc.trainerId, trainerStatus: activeTrainerDoc.status } : {}),
         isActive: user.isActive,
         approvalStatus: user.approvalStatus,
+        statusDetail: user.statusDetail || (
+          user.approvalStatus === ApprovalStatus.APPROVED ? 'Active' :
+          user.approvalStatus === ApprovalStatus.INACTIVE ? 'Inactive' :
+          user.approvalStatus === ApprovalStatus.SUSPENDED ? 'Inactive' :
+          user.approvalStatus === ApprovalStatus.REJECTED ? 'Rejected' :
+          'Pending'
+        ),
         subscriptionStatus: user.subscriptionStatus,
         subscriptionPlan: user.subscriptionPlan,
         subscriptionExpiry: user.subscriptionExpiry,
@@ -1069,6 +1106,15 @@ export const getMe = async (req: Request, res: Response): Promise<void> => {
     (userObj as any).gymName = gymName;
     (userObj as any).branchName = branchName;
     (userObj as any).branchId = user.branchId;
+    if (!(userObj as any).statusDetail) {
+      (userObj as any).statusDetail = (
+        user.approvalStatus === ApprovalStatus.APPROVED ? 'Active' :
+        user.approvalStatus === ApprovalStatus.INACTIVE ? 'Inactive' :
+        user.approvalStatus === ApprovalStatus.SUSPENDED ? 'Inactive' :
+        user.approvalStatus === ApprovalStatus.REJECTED ? 'Rejected' :
+        'Pending'
+      );
+    }
     if (trainerInfo.trainerId) (userObj as any).trainerId = trainerInfo.trainerId;
     if (trainerInfo.trainerCode) (userObj as any).trainerCode = trainerInfo.trainerCode;
     if (trainerInfo.gymId) (userObj as any).gymId = trainerInfo.gymId;
@@ -1089,13 +1135,25 @@ export const getMe = async (req: Request, res: Response): Promise<void> => {
 
 export const sendOtp = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { email } = req.body;
+    const { email, checkExisting, purpose } = req.body;
     if (!email || !/\S+@\S+\.\S+/.test(email)) {
       res.status(400).json({ success: false, message: 'Valid email is required' });
       return;
     }
 
     const cleanEmail = email.toLowerCase().trim();
+
+    // Check if email already registered for new registrations
+    if (checkExisting || purpose === 'registration' || purpose === 'register') {
+      const existingUser = await User.findOne({ 
+        email: cleanEmail,
+        approvalStatus: { $ne: ApprovalStatus.DELETED }
+      });
+      if (existingUser) {
+        res.status(400).json({ success: false, message: 'Email already in use. Please sign in or use another email.' });
+        return;
+      }
+    }
 
     // Generate random 6-digit OTP
     const generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();

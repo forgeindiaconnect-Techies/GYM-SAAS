@@ -19,6 +19,9 @@ export interface IJobVacancy extends Document {
   employmentType: 'Full-time' | 'Part-time' | 'Contract' | 'Freelance';
   location: string;
   workingHours?: string;
+  shiftType?: 'Morning' | 'Evening' | 'Night' | 'Flexible' | 'Custom';
+  shiftStartTime?: string;
+  shiftEndTime?: string;
   vacanciesCount: number;
   deadline?: Date;
   status: 'Draft' | 'Published' | 'Closed';
@@ -48,6 +51,9 @@ const jobVacancySchema = new Schema<IJobVacancy>({
   employmentType: { type: String, enum: ['Full-time', 'Part-time', 'Contract', 'Freelance'], default: 'Full-time' },
   location: { type: String, required: true, trim: true },
   workingHours: { type: String, default: '' },
+  shiftType: { type: String, enum: ['Morning', 'Evening', 'Night', 'Flexible', 'Custom', ''], default: '' },
+  shiftStartTime: { type: String, default: '' },
+  shiftEndTime: { type: String, default: '' },
   vacanciesCount: { type: Number, default: 1, min: 1 },
   deadline: { type: Date },
   status: { type: String, enum: ['Draft', 'Published', 'Closed'], default: 'Published', index: true },

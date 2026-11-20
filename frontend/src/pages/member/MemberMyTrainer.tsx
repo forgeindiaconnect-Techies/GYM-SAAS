@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Star, MapPin, Award, Calendar } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import api from '../../utils/api';
@@ -44,7 +44,7 @@ const MemberMyTrainer = () => {
 
   if (!trainer) {
     return (
-      <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-6 animate-fade-in">
+      <div className="space-y-6 animate-fade-in">
         <MemberTrainingTabs />
         <div className="p-12 text-center bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl">
           <h1 className="text-3xl font-bold text-[#111827] mb-3">No Trainer Assigned</h1>
@@ -58,7 +58,7 @@ const MemberMyTrainer = () => {
   }
 
   return (
-    <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-6 animate-fade-in">
+    <div className="space-y-6 animate-fade-in">
       <MemberTrainingTabs />
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>

@@ -748,13 +748,309 @@ export const FEATURE_REGISTRY: AssistantRouteItem[] = [
   }
 ];
 
-/* ── 5. Helper Role Checking ───────────────────────────────────────── */
+/* ── 5. Helper Role Checking & Route Resolution ─────────────────────── */
 export const isRouteAllowedForRole = (_item: AssistantRouteItem, _role: string): boolean => {
   return true; // Allow all features to be searched and discovered seamlessly
 };
 
+/**
+ * Resolves any route to an authorized, role-safe route for the current user.
+ * Prevents 403 blocks, redirect bounce-backs, white screens, and screen blinking.
+ */
+export const resolveRouteForRole = (
+  route: string,
+  userRole: string = 'MEMBER',
+  defaultLabel?: string
+): { route: string; label: string } => {
+  if (!route) return { route: '/', label: defaultLabel || 'Home' };
+
+  // External, protocol, or tel/mailto routes
+  if (route.startsWith('tel:') || route.startsWith('mailto:') || route.startsWith('http')) {
+    return { route, label: defaultLabel || route };
+  }
+
+  const role = (userRole || 'MEMBER').toUpperCase();
+
+  // Public routes accessible by all roles and unauthenticated guests
+  const isPublicRoute = (path: string): boolean => {
+    return (
+      path === '/' ||
+      path === '/about' ||
+      path === '/careers' ||
+      path === '/jobs' ||
+      path === '/contact' ||
+      path === '/privacy' ||
+      path === '/terms' ||
+      path === '/cancellation-refund-policy' ||
+      path === '/subscription-plans' ||
+      path === '/gym-owner-introduction' ||
+      path.startsWith('/register') ||
+      path.startsWith('/gyms') ||
+      path.startsWith('/trainers') ||
+      path.startsWith('/blog') ||
+      path.startsWith('/invite')
+    );
+  };
+
+  // If already a valid public route, keep it
+  if (isPublicRoute(route)) {
+    return { route, label: defaultLabel || 'View' };
+  }
+
+  // 1. SUPER_ADMIN
+  if (role === 'SUPER_ADMIN') {
+    if (route.startsWith('/super-admin')) {
+      return { route, label: defaultLabel || 'Super Admin' };
+    }
+    if (route.includes('/member') && (route.includes('dashboard') || route.includes('profile'))) {
+      if (route.includes('profile')) return { route: '/super-admin/profile', label: defaultLabel || 'Admin Profile' };
+      return { route: '/super-admin/customers', label: defaultLabel || 'Platform Customers' };
+    }
+    if (route.includes('/members') || route.includes('customer') || route.includes('import-customers')) {
+      return { route: '/super-admin/customers', label: defaultLabel || 'Platform Customers' };
+    }
+    if (route.includes('/trainers') || route.includes('trainer') || route.includes('gym-owners') || route.includes('owner')) {
+      return { route: '/super-admin/gym-owners', label: defaultLabel || 'Gym Owner Details' };
+    }
+    if (route.includes('subscription') || route.includes('pricing') || route.includes('membership-plans') || route.includes('upgrade')) {
+      return { route: '/super-admin/subscriptions', label: defaultLabel || 'SaaS Subscriptions' };
+    }
+    if (route.includes('revenue') || route.includes('payment') || route.includes('reports') || route.includes('earnings') || route.includes('fee')) {
+      return { route: '/super-admin/revenue-analytics', label: defaultLabel || 'Revenue & Analytics' };
+    }
+    if (route.includes('store') || route.includes('orders') || route.includes('products')) {
+      return { route: '/super-admin/store', label: defaultLabel || 'Gym Store' };
+    }
+    if (route.includes('equipment') || route.includes('gyms') || route.includes('branch')) {
+      return { route: '/super-admin/gyms/details', label: defaultLabel || 'All Registered Gyms' };
+    }
+    if (route.includes('enquir') || route.includes('lead')) {
+      return { route: '/super-admin/enquiries', label: defaultLabel || 'Customer Enquiries' };
+    }
+    if (route.includes('payout')) {
+      return { route: '/super-admin/payouts', label: defaultLabel || 'Commission Payouts' };
+    }
+    if (route.includes('approval')) {
+      return { route: '/super-admin/gym-approvals', label: defaultLabel || 'Gym Approvals' };
+    }
+    if (route.includes('notif')) {
+      return { route: '/super-admin/notifications', label: defaultLabel || 'Notifications' };
+    }
+    if (route.includes('settings')) {
+      return { route: '/super-admin/settings', label: defaultLabel || 'Settings' };
+    }
+    return { route: '/super-admin/dashboard', label: defaultLabel || 'Super Admin Dashboard' };
+  }
+
+  // 2. GYM_OWNER / ADMIN / GYM_MANAGER
+  if (role === 'ADMIN' || role === 'GYM_OWNER' || role === 'GYM_MANAGER') {
+    if (route.startsWith('/admin')) {
+      return { route, label: defaultLabel || 'Gym Admin' };
+    }
+    if (route.includes('customers') || route.includes('members') || route.includes('import-customers')) {
+      return { route: '/admin/members', label: defaultLabel || 'Manage Members' };
+    }
+    if (route.includes('trainers') || route.includes('trainer') || route.includes('coach')) {
+      return { route: '/admin/trainers', label: defaultLabel || 'Manage Trainers' };
+    }
+    if (route.includes('subscription') || route.includes('plans') || route.includes('membership')) {
+      return { route: '/admin/membership-plans', label: defaultLabel || 'Package Plans' };
+    }
+    if (route.includes('revenue') || route.includes('reports') || route.includes('analytics')) {
+      return { route: '/admin/revenue-analytics', label: defaultLabel || 'Revenue & Analytics' };
+    }
+    if (route.includes('payment') || route.includes('billing')) {
+      return { route: '/admin/payments', label: defaultLabel || 'Membership Payments' };
+    }
+    if (route.includes('store') || route.includes('products') || route.includes('orders')) {
+      return { route: '/admin/store', label: defaultLabel || 'Gym Store' };
+    }
+    if (route.includes('equipment')) {
+      return { route: '/admin/equipment', label: defaultLabel || 'Equipment' };
+    }
+    if (route.includes('workout') || route.includes('exercise')) {
+      return { route: '/admin/exercises', label: defaultLabel || 'Exercise Library' };
+    }
+    if (route.includes('diet') || route.includes('nutrition') || route.includes('ai-plan') || route.includes('ai-assistant')) {
+      return { route: '/admin/ai-plans', label: defaultLabel || 'AI Fitness Plans' };
+    }
+    if (route.includes('enquir') || route.includes('lead')) {
+      return { route: '/admin/enquiries', label: defaultLabel || 'Customer Enquiries' };
+    }
+    if (route.includes('schedule') || route.includes('session') || route.includes('booking')) {
+      return { route: '/admin/session-bookings', label: defaultLabel || 'Session Bookings' };
+    }
+    if (route.includes('attendance')) {
+      return { route: '/admin/attendance', label: defaultLabel || 'Attendance' };
+    }
+    if (route.includes('notif')) {
+      return { route: '/admin/notifications', label: defaultLabel || 'Notifications' };
+    }
+    if (route.includes('profile')) {
+      return { route: '/admin/gym-profile', label: defaultLabel || 'Gym Profile' };
+    }
+    return { route: '/admin/dashboard', label: defaultLabel || 'Gym Owner Dashboard' };
+  }
+
+  // 3. TRAINER
+  if (role === 'TRAINER') {
+    if (route.startsWith('/trainer')) {
+      return { route, label: defaultLabel || 'Trainer Portal' };
+    }
+    if (route.includes('member') || route.includes('client') || route.includes('customer')) {
+      return { route: '/trainer/members', label: defaultLabel || 'My Clients' };
+    }
+    if (route.includes('schedule') || route.includes('session') || route.includes('booking')) {
+      return { route: '/trainer/schedule', label: defaultLabel || 'My Schedule' };
+    }
+    if (route.includes('workout') || route.includes('exercise')) {
+      return { route: '/trainer/workout-plans', label: defaultLabel || 'Workout Plans' };
+    }
+    if (route.includes('diet') || route.includes('nutrition')) {
+      return { route: '/trainer/diet-plans', label: defaultLabel || 'Diet Plans' };
+    }
+    if (route.includes('earning') || route.includes('fee') || route.includes('payment') || route.includes('revenue')) {
+      return { route: '/trainer/my-fee', label: defaultLabel || 'My Fee & Earnings' };
+    }
+    if (route.includes('job') || route.includes('hiring') || route.includes('application')) {
+      return { route: '/trainer/jobs', label: defaultLabel || 'Find Jobs' };
+    }
+    if (route.includes('equipment')) {
+      return { route: '/trainer/equipments', label: defaultLabel || 'Gym Equipments' };
+    }
+    if (route.includes('notif')) {
+      return { route: '/trainer/notifications', label: defaultLabel || 'Notifications' };
+    }
+    if (route.includes('profile')) {
+      return { route: '/trainer/profile', label: defaultLabel || 'My Profile' };
+    }
+    return { route: '/trainer/dashboard', label: defaultLabel || 'Trainer Dashboard' };
+  }
+
+  // 4. MEMBER (Default)
+  if (role === 'MEMBER') {
+    if (route.startsWith('/member')) {
+      return { route, label: defaultLabel || 'Member Portal' };
+    }
+    if (route.includes('plan') || route.includes('subscription') || route.includes('pricing') || route.includes('membership')) {
+      return { route: '/member/subscription', label: defaultLabel || 'My Membership Plan' };
+    }
+    if (route.includes('trainer') || route.includes('coach')) {
+      return { route: '/member/find-trainers', label: defaultLabel || 'Find Personal Trainers' };
+    }
+    if (route.includes('workout') || route.includes('exercise')) {
+      return { route: '/member/workout', label: defaultLabel || 'My Workout Plan' };
+    }
+    if (route.includes('diet') || route.includes('nutrition')) {
+      return { route: '/member/diet', label: defaultLabel || 'My Diet Plan' };
+    }
+    if (route.includes('store') || route.includes('product') || route.includes('order')) {
+      return { route: '/member/store', label: defaultLabel || 'Gym Store' };
+    }
+    if (route.includes('payment') || route.includes('billing')) {
+      return { route: '/member/subscription', label: defaultLabel || 'Membership & Payments' };
+    }
+    if (route.includes('schedule') || route.includes('session') || route.includes('booking')) {
+      return { route: '/member/bookings', label: defaultLabel || 'My Bookings' };
+    }
+    if (route.includes('attendance')) {
+      return { route: '/member/attendance', label: defaultLabel || 'My Attendance' };
+    }
+    if (route.includes('notif')) {
+      return { route: '/member/notifications', label: defaultLabel || 'Notifications' };
+    }
+    if (route.includes('profile')) {
+      return { route: '/member/profile', label: defaultLabel || 'My Profile' };
+    }
+    return { route: '/member/dashboard', label: defaultLabel || 'Member Dashboard' };
+  }
+
+  return { route: isPublicRoute(route) ? route : '/', label: defaultLabel || 'Home' };
+};
+
+/**
+ * Sanitizes all actions and matched items in an assistant answer for the user's role.
+ */
+export const sanitizeAssistantAnswer = (
+  answer: AssistantAnswer,
+  userRole: string = 'MEMBER'
+): AssistantAnswer => {
+  const role = (userRole || 'MEMBER').toUpperCase();
+
+  // 1. Sanitize actions
+  const sanitizedActions: Array<{ label: string; route: string; variant?: 'primary' | 'secondary' | 'outline' }> = [];
+  const seenRoutes = new Set<string>();
+
+  for (const act of answer.actions) {
+    const resolved = resolveRouteForRole(act.route, role, act.label);
+    if (resolved && !seenRoutes.has(resolved.route)) {
+      seenRoutes.add(resolved.route);
+      sanitizedActions.push({
+        label: resolved.label || act.label,
+        route: resolved.route,
+        variant: act.variant
+      });
+    }
+  }
+
+  // Ensure every role gets at least 2 relevant, authorized actions
+  if (sanitizedActions.length < 2) {
+    if (role === 'SUPER_ADMIN') {
+      if (!seenRoutes.has('/super-admin/dashboard')) {
+        sanitizedActions.push({ label: 'Super Admin Dashboard', route: '/super-admin/dashboard' });
+      }
+      if (!seenRoutes.has('/super-admin/customers')) {
+        sanitizedActions.push({ label: 'Platform Customers', route: '/super-admin/customers' });
+      }
+    } else if (role === 'ADMIN' || role === 'GYM_OWNER' || role === 'GYM_MANAGER') {
+      if (!seenRoutes.has('/admin/dashboard')) {
+        sanitizedActions.push({ label: 'Gym Owner Dashboard', route: '/admin/dashboard' });
+      }
+      if (!seenRoutes.has('/admin/members')) {
+        sanitizedActions.push({ label: 'Manage Members', route: '/admin/members' });
+      }
+    } else if (role === 'TRAINER') {
+      if (!seenRoutes.has('/trainer/dashboard')) {
+        sanitizedActions.push({ label: 'Trainer Dashboard', route: '/trainer/dashboard' });
+      }
+      if (!seenRoutes.has('/trainer/members')) {
+        sanitizedActions.push({ label: 'My Clients', route: '/trainer/members' });
+      }
+    } else {
+      if (!seenRoutes.has('/member/dashboard')) {
+        sanitizedActions.push({ label: 'Customer Dashboard', route: '/member/dashboard' });
+      }
+      if (!seenRoutes.has('/member/subscription')) {
+        sanitizedActions.push({ label: 'My Membership Plan', route: '/member/subscription' });
+      }
+    }
+  }
+
+  // 2. Sanitize matchedItems
+  const sanitizedItems: AssistantRouteItem[] = [];
+  const seenItemRoutes = new Set<string>();
+
+  for (const item of answer.matchedItems) {
+    const resolved = resolveRouteForRole(item.route, role, item.actionLabel);
+    if (resolved && !seenItemRoutes.has(resolved.route)) {
+      seenItemRoutes.add(resolved.route);
+      sanitizedItems.push({
+        ...item,
+        route: resolved.route,
+        actionLabel: resolved.label || item.actionLabel,
+      });
+    }
+  }
+
+  return {
+    ...answer,
+    actions: sanitizedActions,
+    matchedItems: sanitizedItems
+  };
+};
+
 /* ── 6. Client Search & Ranking Engine ─────────────────────────────── */
-export const searchGymFeatures = (
+const internalSearchGymFeatures = (
   rawQuery: string,
   userRole: string = 'MEMBER'
 ): AssistantAnswer => {
@@ -1777,6 +2073,14 @@ Try searching for any of our verified gym features:
     actions,
     followUps
   };
+};
+
+export const searchGymFeatures = (
+  rawQuery: string,
+  userRole: string = 'MEMBER'
+): AssistantAnswer => {
+  const answer = internalSearchGymFeatures(rawQuery, userRole);
+  return sanitizeAssistantAnswer(answer, userRole);
 };
 
 /* ── 7. Role-Tailored Suggested Questions ──────────────────────────── */

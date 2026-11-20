@@ -330,7 +330,7 @@ const MemberAIFitness: React.FC = () => {
         </div>
 
         {/* Secondary Details Row */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
           <div className="p-3.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl">
             <span className="font-bold text-[#64748B] block text-[10px] uppercase mb-1">Training Mode &amp; Frequency</span>
             <p className="font-semibold text-[#111827]">{formData.preferredTraining} • {formData.availableWorkoutDays}</p>
@@ -339,11 +339,6 @@ const MemberAIFitness: React.FC = () => {
           <div className="p-3.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl">
             <span className="font-bold text-[#64748B] block text-[10px] uppercase mb-1">Preferred Time &amp; Gym Access</span>
             <p className="font-semibold text-[#111827]">{formData.preferredWorkoutTime}</p>
-          </div>
-
-          <div className="p-3.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl">
-            <span className="font-bold text-[#64748B] block text-[10px] uppercase mb-1">Dietary Preference</span>
-            <p className="font-semibold text-[#111827]">{formData.dietaryPreferences || 'Not specified'}</p>
           </div>
 
           <div className="p-3.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl">
@@ -792,21 +787,6 @@ const MemberAIFitness: React.FC = () => {
                 <option value="Full Commercial Gym (Weights &amp; Machines)">Full Commercial Gym (Weights &amp; Machines)</option>
                 <option value="Home Gym (Dumbbells &amp; Bands)">Home Gym (Dumbbells &amp; Bands)</option>
                 <option value="Bodyweight Only (No Equipment)">Bodyweight Only (No Equipment)</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold text-[#111827] uppercase mb-1.5">Dietary Preference</label>
-              <select
-                value={formData.dietaryPreferences}
-                onChange={e => setFormData({ ...formData, dietaryPreferences: e.target.value })}
-                className="w-full px-3.5 py-2.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs font-bold text-[#111827] outline-none focus:border-[#FDBA74]"
-              >
-                <option value="">Not specified</option>
-                <option value="Vegetarian">Vegetarian</option>
-                <option value="Non-Vegetarian">Non-Vegetarian</option>
-                <option value="Vegan">Vegan</option>
-                <option value="Eggetarian">Eggetarian</option>
               </select>
             </div>
 

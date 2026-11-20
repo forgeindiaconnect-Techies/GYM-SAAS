@@ -147,6 +147,66 @@ export const joinGym = async (req: AuthRequest, res: Response): Promise<void> =>
       packageDescription: clientDescription
     } = req.body;
 
+    // ── Check active membership: prevent multiple subscription purchases within an active subscription period (BUG 1) ──
+    const now = new Date();
+
+    // 1. Check database for existing active, successfully paid membership
+    const existingActivePaid = await CustomerMembership.findOne({
+      userId,
+      status: CustomerMembershipStatus.ACTIVE,
+      $or: [
+        { endDate: { $exists: false } },
+        { endDate: null },
+        { endDate: { $gte: now } }
+      ],
+      $and: [
+        { status: { $ne: CustomerMembershipStatus.FREE_TRIAL } },
+        { paymentMethod: { $ne: 'Trial' } },
+        {
+          $or: [
+            { finalAmount: { $gt: 0 } },
+            { price: { $gt: 0 } }
+          ]
+        }
+      ]
+    }).sort({ createdAt: -1 });
+
+    // 2. Check user record subscription status and expiration
+    const userDocForCheck = await User.findById(userId);
+    const hasActiveUserSubscription = Boolean(
+      userDocForCheck &&
+      (userDocForCheck.subscriptionStatus === SubscriptionStatus.ACTIVE || 
+       (userDocForCheck.subscriptionStatus as string) === 'Active' || 
+       (userDocForCheck.subscriptionStatus as string) === 'ACTIVE') &&
+      userDocForCheck.subscriptionExpiry &&
+      new Date(userDocForCheck.subscriptionExpiry) >= now &&
+      userDocForCheck.subscriptionPlan &&
+      !userDocForCheck.subscriptionPlan.toLowerCase().includes('trial')
+    );
+
+    if (existingActivePaid || hasActiveUserSubscription) {
+      res.status(400).json({
+        success: false,
+        message: "You have already paid for a subscription this month. You cannot purchase another plan until your current subscription expires.",
+        errorCode: 'ACTIVE_SUBSCRIPTION_EXISTS'
+      });
+      return;
+    }
+
+    // 3. Prevent duplicate payment requests if verification is already pending
+    const pendingMembership = await CustomerMembership.findOne({
+      userId,
+      status: { $in: [CustomerMembershipStatus.PAYMENT_VERIFICATION_PENDING, CustomerMembershipStatus.PENDING_APPROVAL] }
+    });
+    if (pendingMembership) {
+      res.status(400).json({
+        success: false,
+        message: "You have a payment verification pending. Please wait for the gym administrator to verify your payment.",
+        errorCode: 'PAYMENT_VERIFICATION_PENDING'
+      });
+      return;
+    }
+
     // Prevent duplicate activation if paymentReference already processed
     if (paymentReference) {
       const existingMembership = await CustomerMembership.findOne({
@@ -212,6 +272,10 @@ export const joinGym = async (req: AuthRequest, res: Response): Promise<void> =>
     } else if (planName) {
       targetPkg = await GymPackage.findOne({ gymId, name: planName, status: 'Active' });
       if (targetPkg) {
+        const plan = billingPlan === 'annual' ? 'annual' : 'monthly';
+        verifiedPrice = plan === 'annual' ? targetPkg.annualPrice : targetPkg.monthlyPrice;
+        verifiedDuration = plan === 'annual' ? '1 Year' : (targetPkg.duration && targetPkg.duration.toLowerCase().includes('month') ? targetPkg.duration : '1 Month');
+        verifiedFitnessGoal = targetPkg.fitnessGoal;
         if (Array.isArray(targetPkg.features) && targetPkg.features.length > 0) {
           verifiedFeatures = targetPkg.features;
         }
@@ -386,7 +450,42 @@ export const joinGym = async (req: AuthRequest, res: Response): Promise<void> =>
       });
 
       membership.paymentId = paymentRecord._id;
-      await membership.save();
+      // Mark active only upon successful payment confirmation (Requirement 8)
+      if (paymentRecord && paymentRecord.status === PaymentStatus.APPROVED) {
+        membership.status = isFreeTrial ? CustomerMembershipStatus.FREE_TRIAL : CustomerMembershipStatus.ACTIVE;
+        await membership.save();
+
+        // Expire previous active memberships (such as Free Trial) to prevent overlapping records (Requirement 6)
+        const previousActive = await CustomerMembership.find({
+          _id: { $ne: membership._id },
+          userId,
+          status: { $in: [CustomerMembershipStatus.ACTIVE, CustomerMembershipStatus.FREE_TRIAL] }
+        });
+        if (previousActive.length > 0) {
+          for (const prevMem of previousActive) {
+            prevMem.status = CustomerMembershipStatus.EXPIRED;
+            prevMem.endDate = new Date();
+            await prevMem.save();
+          }
+        }
+
+        await User.findByIdAndUpdate(userId, {
+          $set: {
+            approvalStatus: ApprovalStatus.APPROVED,
+            subscriptionStatus: isFreeTrial ? SubscriptionStatus.FREE_TRIAL : SubscriptionStatus.ACTIVE,
+            paymentStatus: 'Paid',
+            subscriptionPlan: planName || (isFreeTrial ? 'Free Trial' : 'Standard'),
+            subscriptionStartDate: startDate,
+            subscriptionExpiry: endDate,
+            subscriptionExpiryDate: endDate,
+            gymId: gymId,
+            branchId: branchId || undefined,
+            isActive: true
+          }
+        });
+      } else {
+        await membership.save();
+      }
 
       // Atomically deduct redeemed points if used
       if (requestedPoints > 0 && customerWallet) {
@@ -484,6 +583,34 @@ export const getMyMemberships = async (req: AuthRequest, res: Response): Promise
 
     const now = new Date();
     for (const m of memberships) {
+      // Re-synchronize endDate with the actual plan duration
+      if (m.duration && m.startDate) {
+        const durLower = m.duration.toLowerCase();
+        const start = new Date(m.startDate);
+        const expectedEnd = new Date(start);
+
+        if (m.planName?.toLowerCase().includes('trial') || durLower.includes('trial')) {
+          expectedEnd.setDate(expectedEnd.getDate() + 7);
+        } else if (durLower.includes('year')) {
+          expectedEnd.setFullYear(expectedEnd.getFullYear() + (parseInt(durLower) || 1));
+        } else if (durLower.includes('month')) {
+          expectedEnd.setMonth(expectedEnd.getMonth() + (parseInt(durLower) || 1));
+        } else if (durLower.includes('week')) {
+          expectedEnd.setDate(expectedEnd.getDate() + ((parseInt(durLower) || 1) * 7));
+        } else if (durLower.includes('day')) {
+          expectedEnd.setDate(expectedEnd.getDate() + (parseInt(durLower) || 1));
+        } else {
+          expectedEnd.setMonth(expectedEnd.getMonth() + 1);
+        }
+
+        // If stored endDate differs significantly from actual plan duration (e.g. was set to 1 year for a 1-month plan), correct it
+        const currentEnd = m.endDate ? new Date(m.endDate) : null;
+        if (!currentEnd || Math.abs((currentEnd.getTime() - expectedEnd.getTime()) / (1000 * 60 * 60 * 24)) > 5) {
+          m.endDate = expectedEnd;
+          await m.save();
+        }
+      }
+
       if (m.endDate && new Date(m.endDate) < now) {
         if (m.status === CustomerMembershipStatus.ACTIVE || m.status === CustomerMembershipStatus.FREE_TRIAL) {
           m.status = CustomerMembershipStatus.EXPIRED;

@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { 
   Video, Search, Play, Globe, Dumbbell, Sparkles, Filter, 
   CheckCircle2, Clock, X, Plus, Trash2, Check, AlertCircle, 
@@ -581,7 +581,7 @@ export const GymExerciseVideos = () => {
               onClick={() => setSelectedCategory(cat)}
               className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all whitespace-nowrap cursor-pointer shrink-0 ${
                 selectedCategory === cat
-                  ? 'bg-[#FFFFFF] text-white shadow-xs'
+                  ? 'bg-[#C2410C] text-white shadow-xs'
                   : 'bg-[#F8FAFC] border border-[#E2E8F0] text-[#64748B] hover:border-[#FFEDD5] hover:text-[#EA580C]'
               }`}
             >

@@ -9,6 +9,7 @@ import api from '../../utils/api';
 import { useAuth } from '../../contexts/AuthContext';
 import { CustomerEnquiryModal } from '../../components/CustomerEnquiryModal';
 import { isSubscriptionActive } from '../../utils/routeHelpers';
+import { markAuthorizedNavigation } from '../../components/NavigationGuard';
 
 const BADGE_CONFIG: Record<string, { icon: any; accent: string; bg: string }> = {
   'Weight Loss':       { icon: Target,    accent: '#B91C1C', bg: 'rgba(248, 113, 113,0.1)'   },
@@ -20,6 +21,50 @@ const BADGE_CONFIG: Record<string, { icon: any; accent: string; bg: string }> = 
   'CrossFit':          { icon: TrendingUp,accent: '#B45309', bg: 'rgba(251, 191, 36,0.1)'  },
   'Personal Training': { icon: Users,     accent: '#8B5CF6', bg: 'rgba(139,92,246,0.1)'  },
   'Online Coaching':   { icon: Cpu,       accent: '#0EA5E9', bg: 'rgba(14,165,233,0.1)'  },
+};
+
+const safeSetCheckoutIntent = (gymId?: string, branchId?: string, planData?: any, gymData?: any) => {
+  try {
+    const minimalGym = gymData ? {
+      _id: gymData._id,
+      name: gymData.name,
+      location: gymData.location,
+      paymentSettings: gymData.paymentSettings ? {
+        upiId: gymData.paymentSettings.upiId,
+        accountName: gymData.paymentSettings.accountName,
+      } : undefined,
+    } : null;
+
+    const minimalPlan = planData ? {
+      _id: planData._id,
+      name: planData.name,
+      price: planData.price,
+      duration: planData.duration,
+      billingCycle: planData.billingCycle,
+      features: Array.isArray(planData.features) ? planData.features.slice(0, 10) : [],
+    } : null;
+
+    const payload = JSON.stringify({
+      gymId,
+      branchId,
+      plan: minimalPlan,
+      gym: minimalGym,
+    });
+
+    try {
+      sessionStorage.setItem('checkout_intent', payload);
+    } catch {
+      try {
+        const keysToRemove: string[] = [];
+        for (let i = 0; i < sessionStorage.length; i++) {
+          const k = sessionStorage.key(i);
+          if (k && k.startsWith('@gym_cache_')) keysToRemove.push(k);
+        }
+        keysToRemove.forEach(k => sessionStorage.removeItem(k));
+        sessionStorage.setItem('checkout_intent', payload);
+      } catch {}
+    }
+  } catch {}
 };
 
 const GymDetails = () => {
@@ -156,23 +201,13 @@ const GymDetails = () => {
 
   const handleJoin = (plan: any) => {
     if (!user) {
-      // Store checkout intent so we can return here after login
-      sessionStorage.setItem('checkout_intent', JSON.stringify({ 
-        gymId: id, 
-        branchId: selectedBranch?._id,
-        plan,
-        gym
-      }));
+      // Store checkout intent safely so we can return here after login
+      safeSetCheckoutIntent(id, selectedBranch?._id, plan, gym);
       navigate('/register/customer');
     } else if (user.role !== 'MEMBER') {
       if (window.confirm(`You are currently logged in as a ${user.role}. To register as a new customer and see the registration flow, you must log out first. Log out now?`)) {
         logout();
-        sessionStorage.setItem('checkout_intent', JSON.stringify({ 
-          gymId: id, 
-          branchId: selectedBranch?._id,
-          plan,
-          gym
-        }));
+        safeSetCheckoutIntent(id, selectedBranch?._id, plan, gym);
         navigate('/register/customer');
       }
     } else {
@@ -180,10 +215,11 @@ const GymDetails = () => {
       const isTrial = planName.includes('trial') || Number(plan?.price || 0) === 0;
       if (isTrial && isSubscriptionActive(user.subscriptionStatus)) {
         alert('You already have an active membership / free trial.');
-        sessionStorage.removeItem('checkout_intent');
+        try { sessionStorage.removeItem('checkout_intent'); } catch {}
         navigate('/member/dashboard');
         return;
       }
+      markAuthorizedNavigation();
       navigate(`/gyms/${id}/checkout`, { state: { plan, gym, branch: selectedBranch } });
     }
   };
@@ -507,19 +543,19 @@ const GymDetails = () => {
             <div className="flex flex-wrap items-center gap-2 mb-6">
               <button
                 onClick={() => setReviewFilter('all')}
-                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${reviewFilter === 'all' ? 'bg-[#FFFFFF] text-white shadow-sm' : 'bg-[#FFFFFF] border border-[#E2E8F0] text-[#64748B] hover:text-[#C2410C]'}`}
+                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${reviewFilter === 'all' ? 'bg-[#EA580C] text-white shadow-sm' : 'bg-[#FFFFFF] border border-[#E2E8F0] text-[#64748B] hover:text-[#EA580C] hover:border-[#FDBA74]'}`}
               >
                 All Reviews ({reviews.length})
               </button>
               <button
                 onClick={() => setReviewFilter('trainer')}
-                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${reviewFilter === 'trainer' ? 'bg-[#FFFFFF] text-white shadow-sm' : 'bg-[#FFFFFF] border border-[#E2E8F0] text-[#64748B] hover:text-[#C2410C]'}`}
+                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${reviewFilter === 'trainer' ? 'bg-[#EA580C] text-white shadow-sm' : 'bg-[#FFFFFF] border border-[#E2E8F0] text-[#64748B] hover:text-[#EA580C] hover:border-[#FDBA74]'}`}
               >
                 Trainer Feedback ({reviews.filter((r: any) => r.type === 'trainer').length})
               </button>
               <button
                 onClick={() => setReviewFilter('gym')}
-                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${reviewFilter === 'gym' ? 'bg-[#FFFFFF] text-white shadow-sm' : 'bg-[#FFFFFF] border border-[#E2E8F0] text-[#64748B] hover:text-[#C2410C]'}`}
+                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${reviewFilter === 'gym' ? 'bg-[#EA580C] text-white shadow-sm' : 'bg-[#FFFFFF] border border-[#E2E8F0] text-[#64748B] hover:text-[#EA580C] hover:border-[#FDBA74]'}`}
               >
                 Gym Reviews ({reviews.filter((r: any) => r.type === 'gym').length})
               </button>

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
-import User, { Role, SubscriptionStatus } from '../models/User';
+import User, { Role, ApprovalStatus, SubscriptionStatus } from '../models/User';
 import { AuthRequest } from '../middlewares/auth';
 import Gym from '../models/Gym';
 import CustomerMembership, { CustomerMembershipStatus } from '../models/CustomerMembership';
@@ -22,7 +22,14 @@ export const getUsersByRole = async (req: AuthRequest, res: Response): Promise<v
 
     // Role-based filtering
     if (req.user?.role === 'GYM_OWNER' || req.user?.role === 'GYM_MANAGER') {
-      filter.gymId = req.user.gymId;
+      let resolvedGymId = req.user.gymId;
+      if (!resolvedGymId && req.user.id) {
+        const gym = await Gym.findOne({ ownerId: req.user.id });
+        if (gym) resolvedGymId = String(gym._id);
+      }
+      if (resolvedGymId) {
+        filter.gymId = resolvedGymId;
+      }
     } else if (req.user?.role === 'SUPER_ADMIN' && gymId) {
       filter.gymId = gymId;
     }
@@ -84,14 +91,65 @@ export const updateUserStatus = async (req: Request, res: Response): Promise<voi
       return;
     }
 
-    user.approvalStatus = status;
-    if (status === 'REJECTED') {
+    // Normalize incoming status string
+    let normalizedStatus: ApprovalStatus = ApprovalStatus.PENDING;
+    const s = String(status || '').toUpperCase().trim();
+    if (s === 'APPROVED' || s === 'ACTIVE' || s === 'EXISTING') {
+      normalizedStatus = ApprovalStatus.APPROVED;
+    } else if (s === 'REJECTED') {
+      normalizedStatus = ApprovalStatus.REJECTED;
+    } else if (s === 'INACTIVE') {
+      normalizedStatus = ApprovalStatus.INACTIVE;
+    } else if (s === 'SUSPENDED') {
+      normalizedStatus = ApprovalStatus.SUSPENDED;
+    } else if (s === 'DELETED') {
+      normalizedStatus = ApprovalStatus.DELETED;
+    } else {
+      normalizedStatus = ApprovalStatus.PENDING;
+    }
+
+    user.approvalStatus = normalizedStatus;
+    const customDetail = (req.body.statusDetail || '').trim();
+    user.statusDetail = customDetail || (
+      normalizedStatus === ApprovalStatus.APPROVED ? (s === 'EXISTING' ? 'Existing' : 'Active') :
+      normalizedStatus === ApprovalStatus.INACTIVE ? 'Inactive' :
+      normalizedStatus === ApprovalStatus.SUSPENDED ? 'Inactive' :
+      normalizedStatus === ApprovalStatus.REJECTED ? 'Rejected' :
+      (status === 'New' ? 'New' : 'Pending')
+    );
+
+    if (normalizedStatus === ApprovalStatus.REJECTED) {
       user.rejectionReason = reason;
       user.isActive = false;
-    } else if (status === 'SUSPENDED') {
-      (user as any).suspensionReason = reason;
+      user.subscriptionStatus = SubscriptionStatus.REJECTED;
+      user.paymentStatus = 'Rejected';
+
+      await CustomerMembership.updateMany(
+        { userId: user._id },
+        { $set: { status: CustomerMembershipStatus.REJECTED } }
+      ).catch(() => {});
+
+    } else if (normalizedStatus === ApprovalStatus.INACTIVE || normalizedStatus === ApprovalStatus.SUSPENDED) {
+      (user as any).suspensionReason = reason || 'inactive';
       user.isActive = false;
-    } else if (status === 'APPROVED') {
+      user.subscriptionStatus = SubscriptionStatus.EXPIRED;
+
+      await CustomerMembership.updateMany(
+        { userId: user._id },
+        { $set: { status: CustomerMembershipStatus.EXPIRED } }
+      ).catch(() => {});
+
+    } else if (normalizedStatus === ApprovalStatus.PENDING) {
+      user.isActive = true;
+      user.paymentStatus = 'Pending Verification';
+      user.subscriptionStatus = SubscriptionStatus.PENDING;
+
+      await CustomerMembership.updateMany(
+        { userId: user._id },
+        { $set: { status: CustomerMembershipStatus.PENDING_APPROVAL } }
+      ).catch(() => {});
+
+    } else if (normalizedStatus === ApprovalStatus.APPROVED) {
       user.isActive = true;
       user.rejectionReason = undefined;
       (user as any).suspensionReason = undefined;
@@ -101,35 +159,63 @@ export const updateUserStatus = async (req: Request, res: Response): Promise<voi
         user.subscriptionStatus = SubscriptionStatus.ACTIVE;
 
         const now = new Date();
-        const futureDate = new Date();
-        futureDate.setFullYear(futureDate.getFullYear() + 1); // 1 year active upon approval
+        try {
+          const memberships = await CustomerMembership.find({ userId: user._id });
+          if (memberships.length > 0) {
+            let latestExpiry = now;
+            for (const m of memberships) {
+              const start = m.startDate ? new Date(m.startDate) : now;
+              const durLower = (m.duration || '1 Month').toLowerCase();
+              const mEnd = new Date(start);
+              if (durLower.includes('year')) {
+                mEnd.setFullYear(mEnd.getFullYear() + (parseInt(durLower) || 1));
+              } else if (durLower.includes('month')) {
+                mEnd.setMonth(mEnd.getMonth() + (parseInt(durLower) || 1));
+              } else if (durLower.includes('week')) {
+                mEnd.setDate(mEnd.getDate() + ((parseInt(durLower) || 1) * 7));
+              } else if (durLower.includes('day')) {
+                mEnd.setDate(mEnd.getDate() + (parseInt(durLower) || 1));
+              } else {
+                mEnd.setMonth(mEnd.getMonth() + 1);
+              }
 
-        user.subscriptionExpiry = futureDate;
-        (user as any).subscriptionExpiryDate = futureDate;
+              m.status = CustomerMembershipStatus.ACTIVE;
+              m.startDate = start;
+              m.endDate = mEnd;
+              await m.save();
 
-        const memberships = await CustomerMembership.find({ userId: user._id });
-        if (memberships.length > 0) {
-          for (const m of memberships) {
-            m.status = CustomerMembershipStatus.ACTIVE;
-            m.startDate = now;
-            m.endDate = futureDate;
-            await m.save();
+              if (mEnd > latestExpiry) latestExpiry = mEnd;
+            }
+
+            user.subscriptionExpiry = latestExpiry;
+            (user as any).subscriptionExpiryDate = latestExpiry;
+          } else {
+            const targetGymId = user.gymId || (req as any).user?.gymId;
+            const defaultEnd = new Date(now);
+            defaultEnd.setMonth(defaultEnd.getMonth() + 1);
+            user.subscriptionExpiry = defaultEnd;
+            (user as any).subscriptionExpiryDate = defaultEnd;
+
+            if (targetGymId) {
+              await CustomerMembership.create({
+                userId: user._id,
+                gymId: targetGymId,
+                branchId: user.branchId || (req as any).user?.branchId,
+                planName: user.subscriptionPlan || '1-Month Membership',
+                duration: '1 Month',
+                price: 0,
+                discount: 0,
+                tax: 0,
+                finalAmount: 0,
+                paymentMethod: 'Approved by Gym Owner',
+                status: CustomerMembershipStatus.ACTIVE,
+                startDate: now,
+                endDate: defaultEnd,
+              });
+            }
           }
-        } else {
-          await CustomerMembership.create({
-            userId: user._id,
-            gymId: user.gymId,
-            branchId: user.branchId,
-            planName: user.subscriptionPlan || 'Active Membership',
-            duration: '1 Year',
-            price: 0,
-            discount: 0,
-            finalAmount: 0,
-            paymentMethod: 'Approved by Gym Owner',
-            status: CustomerMembershipStatus.ACTIVE,
-            startDate: now,
-            endDate: futureDate,
-          });
+        } catch (memErr) {
+          console.error('Membership update warning in updateUserStatus:', memErr);
         }
       } else if (user.role === Role.GYM_OWNER || user.role === Role.ADMIN) {
         // Gym owners must choose a package plan and pay before subscription is active
@@ -154,22 +240,42 @@ export const updateUserStatus = async (req: Request, res: Response): Promise<voi
         }
       }
     }
-    await user.save();
+
+    // Save with resilient fallback
+    try {
+      await user.save();
+    } catch (saveErr) {
+      console.warn('User save warning, persisting status directly:', saveErr);
+      await User.findByIdAndUpdate(user._id, {
+        $set: {
+          approvalStatus: user.approvalStatus,
+          statusDetail: user.statusDetail,
+          isActive: user.isActive,
+          paymentStatus: user.paymentStatus,
+          subscriptionStatus: user.subscriptionStatus,
+          subscriptionExpiry: user.subscriptionExpiry,
+          subscriptionExpiryDate: (user as any).subscriptionExpiryDate,
+          rejectionReason: user.rejectionReason,
+          suspensionReason: (user as any).suspensionReason,
+        }
+      });
+    }
     
     // Sync gym status whenever user (gym owner) status changes
-    if (user.role === 'GYM_OWNER' && user.gymId) {
+    if (((user.role as any) === 'GYM_OWNER' || (user.role as any) === 'ADMIN') && user.gymId) {
       let gymStatus: string;
-      if (status === 'APPROVED') gymStatus = 'ACTIVE';
-      else if (status === 'SUSPENDED') gymStatus = 'SUSPENDED';
-      else if (status === 'REJECTED') gymStatus = 'INACTIVE';
-      else gymStatus = 'PENDING'; // PENDING or other
+      if (normalizedStatus === ApprovalStatus.APPROVED) gymStatus = 'ACTIVE';
+      else if (normalizedStatus === ApprovalStatus.SUSPENDED) gymStatus = 'SUSPENDED';
+      else if (normalizedStatus === ApprovalStatus.REJECTED) gymStatus = 'INACTIVE';
+      else gymStatus = 'PENDING';
       
-      await Gym.findByIdAndUpdate(user.gymId, { status: gymStatus });
+      await Gym.findByIdAndUpdate(user.gymId, { status: gymStatus }).catch(() => {});
     }
     
     res.status(200).json({ success: true, user });
   } catch (error: any) {
-    res.status(500).json({ success: false, message: 'Server error', error: error.message });
+    console.error('updateUserStatus error:', error);
+    res.status(500).json({ success: false, message: error.message || 'Server error' });
   }
 };
 
@@ -301,6 +407,57 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
     }
 
     res.status(200).json({ success: true, user: userObj });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: 'Server error', error: error.message });
+  }
+};
+
+export const uploadProfilePhoto = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const targetUserId = req.params?.id || req.user?.id;
+    if (!targetUserId) {
+      res.status(401).json({ success: false, message: 'Unauthorized' });
+      return;
+    }
+
+    let photoUrl = '';
+
+    if (req.file) {
+      photoUrl = `/uploads/${req.file.filename}`;
+    } else if (req.body?.profilePhoto) {
+      photoUrl = req.body.profilePhoto;
+    } else if (req.body?.photo) {
+      photoUrl = req.body.photo;
+    } else if (req.body?.base64) {
+      photoUrl = req.body.base64.startsWith('data:') ? req.body.base64 : `data:image/jpeg;base64,${req.body.base64}`;
+    }
+
+    if (!photoUrl) {
+      res.status(400).json({ success: false, message: 'No image file or photo data provided' });
+      return;
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      targetUserId,
+      { $set: { profilePhoto: photoUrl } },
+      { new: true }
+    ).select('-passwordHash');
+
+    if (!updatedUser) {
+      res.status(404).json({ success: false, message: 'User not found' });
+      return;
+    }
+
+    const userObj = updatedUser.toObject();
+    (userObj as any).phone = userObj.mobile;
+    (userObj as any).id = userObj._id;
+
+    res.status(200).json({
+      success: true,
+      message: 'Profile photo updated successfully',
+      profilePhoto: photoUrl,
+      user: userObj,
+    });
   } catch (error: any) {
     res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }
@@ -573,6 +730,35 @@ export const getCustomerDashboardSummary = async (req: AuthRequest, res: Respons
     const directGymReviewsCount = gymReviewsCount[0]?.count || 0;
 
     const now = new Date();
+    // Synchronize membership endDate with actual plan duration if inconsistent
+    for (const m of (memberships as any[])) {
+      if (m.duration && m.startDate) {
+        const durLower = m.duration.toLowerCase();
+        const start = new Date(m.startDate);
+        const expectedEnd = new Date(start);
+
+        if (m.planName?.toLowerCase().includes('trial') || durLower.includes('trial')) {
+          expectedEnd.setDate(expectedEnd.getDate() + 7);
+        } else if (durLower.includes('year')) {
+          expectedEnd.setFullYear(expectedEnd.getFullYear() + (parseInt(durLower) || 1));
+        } else if (durLower.includes('month')) {
+          expectedEnd.setMonth(expectedEnd.getMonth() + (parseInt(durLower) || 1));
+        } else if (durLower.includes('week')) {
+          expectedEnd.setDate(expectedEnd.getDate() + ((parseInt(durLower) || 1) * 7));
+        } else if (durLower.includes('day')) {
+          expectedEnd.setDate(expectedEnd.getDate() + (parseInt(durLower) || 1));
+        } else {
+          expectedEnd.setMonth(expectedEnd.getMonth() + 1);
+        }
+
+        const currentEnd = m.endDate ? new Date(m.endDate) : null;
+        if (!currentEnd || Math.abs((currentEnd.getTime() - expectedEnd.getTime()) / (1000 * 60 * 60 * 24)) > 5) {
+          m.endDate = expectedEnd;
+          await CustomerMembership.updateOne({ _id: m._id }, { $set: { endDate: expectedEnd } });
+        }
+      }
+    }
+
     const activeMembership = memberships.find((m: any) =>
       (m.status === CustomerMembershipStatus.ACTIVE || m.status === CustomerMembershipStatus.FREE_TRIAL) &&
       (!m.endDate || new Date(m.endDate) >= now)

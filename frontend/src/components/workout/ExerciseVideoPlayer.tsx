@@ -293,24 +293,6 @@ export const ExerciseVideoPlayer: React.FC<ExerciseVideoPlayerProps> = ({
       ) : (
         /* State-of-the-Art Animated Biomechanical Exercise Engine */
         <div className="w-full h-full relative flex flex-col">
-          {/* Top Switcher if a real custom video was also uploaded */}
-          {!compact && normalizedVideoUrl && !hasError && (
-            <div className="absolute top-3 right-3 z-20 flex items-center gap-1 bg-black/70 backdrop-blur-md p-0.5 rounded-lg border border-white/10">
-              <button
-                onClick={() => setViewMode('video')}
-                className="px-2 py-0.5 rounded text-[10px] font-bold text-white/70 hover:text-white flex items-center gap-1 cursor-pointer"
-              >
-                <Video size={10} /> Video
-              </button>
-              <button
-                onClick={() => setViewMode('animation')}
-                className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#C2410C] text-white flex items-center gap-1 cursor-pointer"
-              >
-                <Activity size={10} /> Animation Active
-              </button>
-            </div>
-          )}
-
           <ExerciseAnimationEngine
             exerciseName={displayName}
             category={category}
@@ -320,6 +302,26 @@ export const ExerciseVideoPlayer: React.FC<ExerciseVideoPlayerProps> = ({
             compact={compact}
             isPlayingExternal={externalIsPlaying !== undefined ? externalIsPlaying : isPlaying}
             resetTrigger={resetTrigger}
+            headerActions={
+              !compact && normalizedVideoUrl && !hasError ? (
+                <div className="flex items-center gap-0.5 bg-black/80 backdrop-blur-md p-0.5 rounded-lg border border-white/15 shadow-sm">
+                  <button
+                    type="button"
+                    onClick={() => setViewMode('video')}
+                    className="px-2 py-0.5 rounded text-[10px] font-bold text-white/70 hover:text-white flex items-center gap-1 transition-colors cursor-pointer"
+                  >
+                    <Video size={10} /> Video
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setViewMode('animation')}
+                    className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#C2410C] text-white flex items-center gap-1 shadow-xs cursor-pointer"
+                  >
+                    <Activity size={10} /> Animation Active
+                  </button>
+                </div>
+              ) : null
+            }
             className="w-full h-full rounded-2xl"
           />
         </div>

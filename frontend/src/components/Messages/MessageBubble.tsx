@@ -54,35 +54,38 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
   if (message.attachments && message.attachments.length > 0) {
     attachments.push(...message.attachments);
   } else if (message.attachmentUrl) {
+    const isVoiceType = message.messageType === 'voice' || (message.fileName && message.fileName.startsWith('voice_'));
     attachments.push({
       url: message.attachmentUrl,
-      fileName: message.fileName || (message.messageType === 'voice' ? 'voice-message.webm' : 'attachment'),
-      fileType: (message.fileType as any) || (message.messageType === 'voice' ? 'audio' : 'other'),
+      fileName: message.fileName || (isVoiceType ? 'voice-message.webm' : 'attachment'),
+      fileType: (isVoiceType ? 'audio' : (message.fileType as any) || 'other'),
       fileSize: message.fileSize,
       duration: message.duration
     });
   }
 
-  const isVoice = message.messageType === 'voice' || attachments.some(a => a.fileType === 'audio');
-  const voiceAttachment = attachments.find(a => a.fileType === 'audio') || (isVoice && attachments[0]);
+  const isVoice = message.messageType === 'voice' || 
+    attachments.some(a => a.fileType === 'audio' || (a.fileName && a.fileName.startsWith('voice_'))) ||
+    Boolean(message.fileName && message.fileName.startsWith('voice_'));
+  const voiceAttachment = attachments.find(a => a.fileType === 'audio' || (a.fileName && a.fileName.startsWith('voice_'))) || (isVoice ? attachments[0] : null);
 
   return (
     <>
-      <div className={`flex gap-2.5 max-w-[85%] sm:max-w-[75%] ${isMine ? 'ml-auto flex-row-reverse' : ''}`}>
+      <div className={`flex gap-2 sm:gap-2.5 max-w-[92%] sm:max-w-[75%] min-w-0 ${isMine ? 'ml-auto flex-row-reverse' : ''}`}>
         {/* Avatar */}
-        <div className={`w-8 h-8 rounded-full flex shrink-0 items-center justify-center font-bold text-xs ${
+        <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex shrink-0 items-center justify-center font-bold text-xs ${
           isMine ? 'bg-[#C2410C] text-white shadow-xs' : 'bg-[#F8FAFC] text-[#111827]'
         }`}>
           {avatarChar}
         </div>
 
         {/* Bubble Container */}
-        <div className={`flex flex-col ${isMine ? 'items-end' : 'items-start'} max-w-full overflow-hidden`}>
-          <span className="text-[11px] font-bold text-[#64748B] mb-1 px-1">
+        <div className={`flex flex-col ${isMine ? 'items-end' : 'items-start'} max-w-full min-w-0 overflow-hidden`}>
+          <span className="text-[11px] font-bold text-[#64748B] mb-1 px-1 truncate max-w-full">
             {senderLabel}
           </span>
 
-          <div className={`p-3.5 rounded-2xl text-sm shadow-xs transition-all ${
+          <div className={`p-3 sm:p-3.5 rounded-2xl text-xs sm:text-sm shadow-xs transition-all max-w-full overflow-hidden break-words ${
             isMine
               ? 'bg-[#C2410C] text-white rounded-tr-none'
               : 'bg-[#FFFFFF] border border-[#E2E8F0] text-[#111827] rounded-tl-none'
@@ -196,7 +199,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
 
             {/* 3. Text Message content (if present) */}
             {message.message && message.message.trim().length > 0 && (
-              <p className="leading-relaxed whitespace-pre-wrap font-medium">
+              <p className="leading-relaxed whitespace-pre-wrap font-medium break-words overflow-hidden">
                 {message.message}
               </p>
             )}

@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Loader2, CheckCircle, Smartphone, QrCode, Landmark, AlertCircle } from 'lucide-react';
@@ -88,6 +88,20 @@ const MemberUpgrade = () => {
   };
 
   const handleSubmitPayment = async () => {
+    const isPaidActive = Boolean(
+      user &&
+      (user.subscriptionStatus === 'Active' || user.subscriptionStatus === 'ACTIVE') &&
+      user.subscriptionPlan &&
+      !user.subscriptionPlan.toLowerCase().includes('trial') &&
+      user.subscriptionExpiry &&
+      new Date(user.subscriptionExpiry) >= new Date()
+    );
+
+    if (isPaidActive) {
+      alert("You have already paid for a subscription this month. You cannot purchase another plan until your current subscription expires.");
+      return;
+    }
+
     let finalMethod = paymentMethod === 'bank' ? 'Bank Transfer' : 'Online';
     if (paymentMethod === 'qr' && qrApp) {
       finalMethod = qrApp;
@@ -194,7 +208,21 @@ const MemberUpgrade = () => {
                 </ul>
                 <button
                   disabled={disableFreePlan}
-                  onClick={() => setSelectedPlan(plan)}
+                  onClick={() => {
+                    const isPaidActive = Boolean(
+                      user &&
+                      (user.subscriptionStatus === 'Active' || user.subscriptionStatus === 'ACTIVE') &&
+                      user.subscriptionPlan &&
+                      !user.subscriptionPlan.toLowerCase().includes('trial') &&
+                      user.subscriptionExpiry &&
+                      new Date(user.subscriptionExpiry) >= new Date()
+                    );
+                    if (isPaidActive) {
+                      alert("You have already paid for a subscription this month. You cannot purchase another plan until your current subscription expires.");
+                      return;
+                    }
+                    setSelectedPlan(plan);
+                  }}
                   className={`w-full py-3 font-bold rounded-xl transition-colors ${
                     disableFreePlan 
                       ? 'bg-[#F8FAFC] text-[#64748B] cursor-not-allowed border border-[#E2E8F0]' 

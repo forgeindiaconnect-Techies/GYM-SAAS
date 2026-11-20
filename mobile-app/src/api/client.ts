@@ -32,9 +32,11 @@ export const BACKEND_PRESETS = [
 ];
 
 // Dynamically resolve initial backend API URL
+declare const process: any;
+
 const INITIAL_BASE_URL =
-  process.env.EXPO_PUBLIC_API_URL ||
-  (process.env.EXPO_PUBLIC_BACKEND_URL ? `${process.env.EXPO_PUBLIC_BACKEND_URL}/api` : '') ||
+  (typeof process !== 'undefined' && process.env?.EXPO_PUBLIC_API_URL) ||
+  (typeof process !== 'undefined' && process.env?.EXPO_PUBLIC_BACKEND_URL ? `${process.env.EXPO_PUBLIC_BACKEND_URL}/api` : '') ||
   LIVE_RENDER_API_URL;
 
 console.log(`[Gymora Mobile API] Initial Base URL: ${INITIAL_BASE_URL}`);

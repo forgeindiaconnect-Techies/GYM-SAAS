@@ -30,6 +30,7 @@ interface PlanExerciseItem {
   duration?: number;
   restTime: number;
   trainerNotes?: string;
+  startingWeight?: string;
 }
 
 interface WorkoutDay {
@@ -333,7 +334,7 @@ const TrainerWorkoutPlans: React.FC = () => {
 
   const updateExerciseParam = (
     exIndex: number,
-    field: 'sets' | 'repetitions' | 'duration' | 'restTime' | 'trainerNotes',
+    field: 'sets' | 'repetitions' | 'duration' | 'restTime' | 'trainerNotes' | 'startingWeight',
     value: any
   ) => {
     const updatedDays = [...workoutDays];
@@ -373,7 +374,8 @@ const TrainerWorkoutPlans: React.FC = () => {
           repetitions: String(ex.repetitions || '12'),
           duration: Number(ex.duration) || 60,
           restTime: Number(ex.restTime) || 30,
-          trainerNotes: ex.trainerNotes || ''
+          trainerNotes: ex.trainerNotes || '',
+          startingWeight: ex.startingWeight || ''
         }))
       })),
       status: publish ? 'Published' : 'Draft'
@@ -408,7 +410,24 @@ const TrainerWorkoutPlans: React.FC = () => {
             planType: 'Workout Plan',
             title: plan.planName,
             goal: plan.customerId.fitnessGoal || 'Workout Conditioning',
-            trainerFeedback: plan.description || 'Workout plan approved by your trainer and active on your dashboard.'
+            trainerFeedback: plan.description || 'Workout plan approved by your trainer and active on your dashboard.',
+            workoutDetails: {
+              days: (plan.workoutDays || []).map(day => ({
+                dayName: day.dayName,
+                focus: (day as any).focus || day.dayName,
+                exercises: (day.exercises || []).map(ex => {
+                  const exDoc = (ex.exerciseId && typeof ex.exerciseId === 'object') ? ex.exerciseId : {};
+                  return {
+                    name: (exDoc as any).name || 'Exercise',
+                    sets: Number(ex.sets) || 3,
+                    reps: String(ex.repetitions || '10-12'),
+                    duration: Number(ex.duration) || 60,
+                    rest: `${ex.restTime || 60}s`,
+                    notes: ex.trainerNotes || (exDoc as any).instructions || ''
+                  };
+                })
+              }))
+            }
           });
         } catch (_) {}
       }
@@ -912,8 +931,8 @@ const TrainerWorkoutPlans: React.FC = () => {
                               </div>
                             </div>
 
-                            {/* Parameter Controls: Sets, Reps, Rest, Duration */}
-                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-[#F8FAFC] p-3 rounded-xl border border-[#E2E8F0]">
+                            {/* Parameter Controls: Sets, Reps, Weight, Rest, Duration */}
+                            <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 bg-[#F8FAFC] p-3 rounded-xl border border-[#E2E8F0]">
                               <div>
                                 <label className="block text-[10px] font-bold uppercase text-[#64748B] mb-1">
                                   Sets
@@ -937,6 +956,19 @@ const TrainerWorkoutPlans: React.FC = () => {
                                   placeholder="e.g. 15 or 12-15"
                                   value={item.repetitions}
                                   onChange={(e) => updateExerciseParam(exIdx, 'repetitions', e.target.value)}
+                                  className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg px-2.5 py-1 text-xs font-bold text-[#111827] outline-none"
+                                />
+                              </div>
+
+                              <div>
+                                <label className="block text-[10px] font-bold uppercase text-[#64748B] mb-1">
+                                  Starting Weight
+                                </label>
+                                <input
+                                  type="text"
+                                  placeholder="e.g. 15 kg or 12-15 kg"
+                                  value={item.startingWeight || ''}
+                                  onChange={(e) => updateExerciseParam(exIdx, 'startingWeight', e.target.value)}
                                   className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg px-2.5 py-1 text-xs font-bold text-[#111827] outline-none"
                                 />
                               </div>

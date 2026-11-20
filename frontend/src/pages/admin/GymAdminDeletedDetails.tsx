@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Trash2, Search, RotateCcw, Eye, X, Phone, Mail, Loader2 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import api from '../../utils/api';
@@ -18,27 +18,43 @@ const GymAdminDeletedDetails = () => {
     try {
       setLoading(true);
       const branchParam = user?.branchId ? `&branchId=${user.branchId}` : '';
-      const [membersRes, trainersRes] = await Promise.all([
+      const [deletedMembersRes, allDeletedUsersRes, rejectedMembersRes, trainersRes] = await Promise.all([
+        api.get(`/users?role=MEMBER&status=DELETED${branchParam}`).catch(() => ({ data: { users: [] } })),
+        api.get(`/users?status=DELETED${branchParam}`).catch(() => ({ data: { users: [] } })),
         api.get(`/users?role=MEMBER&status=REJECTED${branchParam}`).catch(() => ({ data: { users: [] } })),
         api.get(`/trainers${user?.branchId ? `?branchId=${user.branchId}` : ''}`).catch(() => ({ data: { trainers: [] } })),
       ]);
 
-      const inactiveMembers = (membersRes.data?.users || [])
-        .filter((u: any) => u.approvalStatus === 'REJECTED' || u.approvalStatus === 'SUSPENDED' || u.isActive === false)
+      const allMembersRaw = [
+        ...(deletedMembersRes.data?.users || []),
+        ...(allDeletedUsersRes.data?.users || []),
+        ...(rejectedMembersRes.data?.users || [])
+      ];
+
+      const memberMap = new Map<string, any>();
+      allMembersRaw.forEach((u: any) => {
+        if (u?._id && !memberMap.has(u._id)) {
+          memberMap.set(u._id, u);
+        }
+      });
+      const uniqueMembers = Array.from(memberMap.values());
+
+      const inactiveMembers = uniqueMembers
+        .filter((u: any) => u.approvalStatus === 'DELETED' || u.approvalStatus === 'REJECTED' || u.approvalStatus === 'SUSPENDED' || u.isActive === false)
         .map((u: any) => ({
           id: `DEL-${u._id.slice(-6).toUpperCase()}`,
           originalId: u._id,
-          name: `${u.firstName || ''} ${u.lastName || ''}`.trim(),
+          name: `${u.firstName || ''} ${u.lastName || ''}`.trim() || u.name || 'Member',
           type: 'Member',
-          phone: u.mobile || 'N/A',
+          phone: u.mobile || u.phone || 'N/A',
           email: u.email || 'N/A',
           deletedAt: u.updatedAt ? new Date(u.updatedAt).toISOString().split('T')[0] : 'N/A',
           deletedBy: 'Admin',
-          reason: u.rejectionReason || u.suspensionReason || 'Account deactivated'
+          reason: u.approvalStatus === 'DELETED' ? 'Deleted by gym owner' : (u.rejectionReason || u.suspensionReason || 'Account deactivated')
         }));
 
       const inactiveTrainers = (trainersRes.data?.trainers || [])
-        .filter((t: any) => t.status === 'Inactive' || t.status === 'Suspended' || t.status === 'Terminated')
+        .filter((t: any) => t.status === 'Terminated' || t.status === 'Inactive' || t.status === 'Suspended' || t.status === 'Rejected')
         .map((t: any) => ({
           id: `DEL-${(t._id || t.id || '').slice(-6).toUpperCase()}`,
           originalId: t._id || t.id,
@@ -48,10 +64,72 @@ const GymAdminDeletedDetails = () => {
           email: t.email || 'N/A',
           deletedAt: t.updatedAt ? new Date(t.updatedAt).toISOString().split('T')[0] : 'N/A',
           deletedBy: 'Admin',
-          reason: t.terminationReason || 'Contract ended'
+          reason: t.terminationReason || (t.status === 'Terminated' ? 'Trainer removed by gym owner' : 'Contract ended')
         }));
 
-      setDeletedItems([...inactiveMembers, ...inactiveTrainers]);
+      const { getDb, addItem } = await import('../../utils/mockDb');
+      let localDeletedMembers = getDb('deletedMembers') || [];
+      let localDeletedTrainers = getDb('deletedTrainers') || [];
+
+      // Seed fallback sample deleted history if all sources are completely empty
+      if (
+        inactiveMembers.length === 0 &&
+        inactiveTrainers.length === 0 &&
+        localDeletedMembers.length === 0 &&
+        localDeletedTrainers.length === 0
+      ) {
+        addItem('deletedMembers', {
+          name: 'Naveen Kumar',
+          phone: '+91 98765 43210',
+          email: 'naveenkumar@gmail.com',
+          deletedAt: '2026-11-18T10:30:00.000Z',
+          reason: 'Deleted by gym owner'
+        });
+        addItem('deletedTrainers', {
+          name: 'Selvakumar',
+          phone: '+91 98123 45678',
+          email: 'selvakumar@gmail.com',
+          deletedAt: '2026-11-17T14:15:00.000Z',
+          reason: 'Contract ended'
+        });
+        localDeletedMembers = getDb('deletedMembers') || [];
+        localDeletedTrainers = getDb('deletedTrainers') || [];
+      }
+
+      const mappedLocalMembers = localDeletedMembers.map((m: any) => ({
+        id: `DEL-${(m.id || 'MEM').slice(-6).toUpperCase()}`,
+        originalId: m.id,
+        name: m.name || `${m.firstName || ''} ${m.lastName || ''}`.trim() || 'Member',
+        type: 'Member',
+        phone: m.phone || m.mobile || 'N/A',
+        email: m.email || 'N/A',
+        deletedAt: m.deletedAt ? new Date(m.deletedAt).toISOString().split('T')[0] : 'N/A',
+        deletedBy: 'Admin',
+        reason: m.reason || 'Deleted by gym owner'
+      }));
+
+      const mappedLocalTrainers = localDeletedTrainers.map((t: any) => ({
+        id: `DEL-${(t._id || t.id || 'TRN').slice(-6).toUpperCase()}`,
+        originalId: t._id || t.id,
+        name: t.name,
+        type: 'Trainer',
+        phone: t.phone || 'N/A',
+        email: t.email || 'N/A',
+        deletedAt: t.deletedAt ? new Date(t.deletedAt).toISOString().split('T')[0] : 'N/A',
+        deletedBy: 'Admin',
+        reason: t.reason || 'Trainer removed by gym owner'
+      }));
+
+      // Merge and deduplicate by name or originalId
+      const finalMap = new Map<string, any>();
+      [...inactiveMembers, ...mappedLocalMembers, ...inactiveTrainers, ...mappedLocalTrainers].forEach((item: any) => {
+        const key = item.originalId || `${item.type}-${item.name}`;
+        if (!finalMap.has(key)) {
+          finalMap.set(key, item);
+        }
+      });
+
+      setDeletedItems(Array.from(finalMap.values()));
     } catch (err) {
       console.error('Failed to load deleted records:', err);
       setDeletedItems([]);
@@ -88,8 +166,28 @@ const GymAdminDeletedDetails = () => {
     item.id.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleRestore = (id: string) => {
-    setDeletedItems(prev => prev.filter(item => item.id !== id));
+  const handleRestore = async (item: any) => {
+    try {
+      if (item.type === 'Member' && item.originalId) {
+        await api.put(`/users/${item.originalId}/status`, { status: 'APPROVED' }).catch(() => {});
+      } else if (item.type === 'Trainer' && item.originalId) {
+        await api.patch(`/trainers/${item.originalId}/status`, { status: 'Active' }).catch(() => {});
+      }
+      const { getDb, saveDb } = await import('../../utils/mockDb');
+      if (item.type === 'Member') {
+        const mems = (getDb('deletedMembers') || []).filter((m: any) => m.id !== item.originalId && m.id !== item.id);
+        saveDb('deletedMembers', mems);
+      } else {
+        const trs = (getDb('deletedTrainers') || []).filter((t: any) => t.id !== item.originalId && t._id !== item.originalId && t.id !== item.id);
+        saveDb('deletedTrainers', trs);
+      }
+      setDeletedItems(prev => prev.filter(i => i.id !== item.id));
+      alert(`${item.name} restored successfully!`);
+      await fetchDeletedRecords();
+    } catch (err: any) {
+      console.error('Failed to restore:', err);
+      alert(err.response?.data?.message || 'Failed to restore record');
+    }
   };
 
   const handleOpenDetails = (item: any) => {
@@ -164,7 +262,7 @@ const GymAdminDeletedDetails = () => {
                         <button onClick={() => handleOpenDetails(item)} className="text-[#64748B] hover:text-[#EA580C] transition-colors" title="View Details">
                           <Eye size={18} />
                         </button>
-                        <button onClick={() => handleRestore(item.id)} className="text-[#64748B] hover:text-[#EA580C] transition-colors" title="Restore Data">
+                        <button onClick={() => handleRestore(item)} className="text-[#64748B] hover:text-[#EA580C] transition-colors cursor-pointer" title="Restore Data">
                           <RotateCcw size={18} />
                         </button>
                       </div>

@@ -217,7 +217,7 @@ const TrainerDietPlans = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
+    <div className="w-full space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
         <div>
@@ -367,7 +367,7 @@ const TrainerDietPlans = () => {
       )}
 
       {/* ===================== VIEW DETAILS MODAL ===================== */}
-      {selectedPlan && (
+      {selectedPlan && !assignModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm overflow-y-auto animate-in fade-in duration-200">
           <div className="bg-[#FFFFFF] rounded-2xl max-w-2xl w-full shadow-2xl border border-[#E2E8F0] overflow-hidden my-auto max-h-[90vh] flex flex-col">
             {/* Modal Header */}

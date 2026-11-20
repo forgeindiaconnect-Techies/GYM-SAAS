@@ -3382,7 +3382,7 @@ export const TrainerMoreScreen: React.FC<{ initialSection?: TrainerMoreKey }> = 
       >
         <ScrollView 
           style={styles.subScroll} 
-          contentContainerStyle={[styles.subScrollContent, { gap: 14, paddingBottom: 120 }]}
+          contentContainerStyle={[styles.subScrollContent, { gap: 14, paddingBottom: 24 }]}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.primary} />}
           showsVerticalScrollIndicator={false}
         >
@@ -3854,7 +3854,7 @@ export const TrainerMoreScreen: React.FC<{ initialSection?: TrainerMoreKey }> = 
       <View style={{ flex: 1 }}>
         <ScrollView 
           style={styles.subScroll} 
-          contentContainerStyle={[styles.subScrollContent, { gap: 14, paddingBottom: 120 }]}
+          contentContainerStyle={[styles.subScrollContent, { gap: 14, paddingBottom: 24 }]}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.primary} />}
           showsVerticalScrollIndicator={false}
         >

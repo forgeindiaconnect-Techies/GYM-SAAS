@@ -74,7 +74,18 @@ const setSessionCache = (key: string, entry: CacheEntry) => {
   try {
     sessionStorage.setItem(`@gym_cache_${key}`, JSON.stringify(entry));
   } catch {
-    // Quota limits ignored
+    // If quota exceeded, clean up half of the oldest cache entries to free up space
+    try {
+      const keys: string[] = [];
+      for (let i = 0; i < sessionStorage.length; i++) {
+        const k = sessionStorage.key(i);
+        if (k && k.startsWith('@gym_cache_')) keys.push(k);
+      }
+      keys.slice(0, Math.ceil(keys.length / 2)).forEach(k => sessionStorage.removeItem(k));
+      sessionStorage.setItem(`@gym_cache_${key}`, JSON.stringify(entry));
+    } catch {
+      // Quota limits ignored
+    }
   }
 };
 
@@ -126,8 +137,19 @@ api.interceptors.response.use(
     ) {
       localStorage.removeItem('aigym_token');
       localStorage.removeItem('aigym_user');
+      sessionStorage.removeItem('aigym_token');
+      sessionStorage.removeItem('aigym_user');
+      sessionStorage.removeItem('gymora_active_path');
+      sessionStorage.removeItem('gymora_nav_permitted');
+      sessionStorage.removeItem('gymora_nav_timestamp');
       if (!window.location.pathname.startsWith('/login') && !window.location.pathname.startsWith('/register')) {
-        window.location.href = '/login';
+        const path = window.location.pathname;
+        let loginUrl = '/login';
+        if (path.startsWith('/super-admin')) loginUrl = '/login?portal=super-admin';
+        else if (path.startsWith('/member')) loginUrl = '/login?portal=customer';
+        else if (path.startsWith('/admin')) loginUrl = '/login?portal=gym-owner';
+        else if (path.startsWith('/trainer')) loginUrl = '/login?portal=trainer';
+        window.location.href = loginUrl;
       }
     }
     return Promise.reject(error);

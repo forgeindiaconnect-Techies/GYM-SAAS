@@ -62,15 +62,13 @@ export const Header: React.FC<{
         <View style={styles.controlsRow}>
 
           {/* Authenticated Role Badge */}
-          <TouchableOpacity 
+          <View 
             style={styles.roleBadge}
-            onPress={handleLogoutPress}
-            activeOpacity={0.7}
-            accessibilityLabel={`Signed in as ${getRoleLabel(activeRole)}. Tap to sign out.`}
+            accessibilityLabel={`Signed in as ${getRoleLabel(activeRole)}`}
           >
             <View style={styles.activeDot} />
             <Text style={styles.roleBadgeText}>{getRoleLabel(activeRole)}</Text>
-          </TouchableOpacity>
+          </View>
 
           {/* Header Notifications Shortcut */}
           {onOpenNotifications && (

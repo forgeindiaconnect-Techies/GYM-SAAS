@@ -17,6 +17,7 @@ export enum ApprovalStatus {
   REJECTED = 'REJECTED',
   SUSPENDED = 'SUSPENDED',
   DELETED = 'DELETED',
+  INACTIVE = 'INACTIVE',
 }
 
 export enum SubscriptionStatus {
@@ -45,6 +46,7 @@ export interface IUser extends Document {
 
   // Approval workflow
   approvalStatus: ApprovalStatus;
+  statusDetail?: string;
   rejectionReason?: string;
   suspensionReason?: string;
 
@@ -128,6 +130,7 @@ const userSchema = new Schema<IUser>(
       enum: Object.values(ApprovalStatus),
       default: ApprovalStatus.PENDING,
     },
+    statusDetail: { type: String },
     rejectionReason: { type: String },
     suspensionReason: { type: String },
 

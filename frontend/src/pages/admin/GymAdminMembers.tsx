@@ -175,10 +175,12 @@ const GymAdminMembers = () => {
             email: u.email,
             phone: u.mobile,
             plan: u.subscriptionPlan || membership?.planName || 'Starter',
-            status: u.approvalStatus === 'PENDING' ? 'Pending' :
+            status: u.statusDetail || (
+                    u.approvalStatus === 'PENDING' ? 'Pending' :
                     u.approvalStatus === 'APPROVED' ? 'Active' :
                     u.approvalStatus === 'REJECTED' ? 'Rejected' :
-                    u.approvalStatus === 'SUSPENDED' ? 'Inactive' : 'Inactive',
+                    u.approvalStatus === 'INACTIVE' ? 'Inactive' :
+                    u.approvalStatus === 'SUSPENDED' ? 'Inactive' : 'Inactive'),
             joined: new Date(u.createdAt).toISOString().split('T')[0],
             customerType: u.customerType,
             gender: u.gender,
@@ -189,6 +191,8 @@ const GymAdminMembers = () => {
             emergencyName: u.emergencyContact?.name,
             emergencyPhone: u.emergencyContact?.mobile,
             emergencyRelation: u.emergencyContact?.relationship,
+            height: u.height,
+            weight: u.weight,
             membership,
             membershipHistory,
             originalUser: u,
@@ -344,12 +348,25 @@ const GymAdminMembers = () => {
     setShowExistingModal(false);
   };
 
-  const handleDeleteMember = (id: string) => {
+  const handleDeleteMember = async (id: string) => {
     if (window.confirm('Are you sure you want to delete this member?')) {
+      const targetMember = members.find(m => m.id === id || (m as any)._id === id);
+      try {
+        await api.delete(`/users/${id}`);
+      } catch (err) {
+        console.error('Failed to delete member from server:', err);
+      }
       deleteItem('members', id);
-      setMembers(members.filter(m => m.id !== id));
+      if (targetMember) {
+        addItem('deletedMembers', {
+          ...targetMember,
+          deletedAt: new Date().toISOString(),
+          reason: 'Deleted by gym owner'
+        });
+      }
+      setMembers(members.filter(m => m.id !== id && (m as any)._id !== id));
       setStatusDropdown(null);
-      if (selectedMember?.id === id) {
+      if (selectedMember?.id === id || (selectedMember as any)?._id === id) {
         setSelectedMember(null);
       }
     }
@@ -357,18 +374,20 @@ const GymAdminMembers = () => {
 
   const handleStatusChange = async (id: string, newStatus: string) => {
     let apiStatus = 'PENDING';
-    if (newStatus === 'Active') apiStatus = 'APPROVED';
-    else if (newStatus === 'Inactive') apiStatus = 'SUSPENDED';
+    if (newStatus === 'Active' || newStatus === 'Existing') apiStatus = 'APPROVED';
+    else if (newStatus === 'Inactive') apiStatus = 'INACTIVE';
     else if (newStatus === 'Rejected') apiStatus = 'REJECTED';
+    else if (newStatus === 'Pending' || newStatus === 'New') apiStatus = 'PENDING';
 
     try {
-      const res = await api.put(`/users/${id}/status`, { status: apiStatus });
-      if (res.data.success) {
-        setMembers(members.map(m => m.id === id ? { ...m, status: newStatus } : m));
+      const res = await api.put(`/users/${id}/status`, { status: apiStatus, statusDetail: newStatus });
+      if (res.data?.success) {
+        setMembers(members.map(m => m.id === id ? { ...m, status: newStatus, originalUser: { ...m.originalUser, statusDetail: newStatus, approvalStatus: apiStatus } } : m));
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error updating status:', err);
-      alert('Failed to update member status.');
+      const msg = err.response?.data?.message || err.message || 'Failed to update member status.';
+      alert(`Failed to update member status: ${msg}`);
     } finally {
       setStatusDropdown(null);
     }
@@ -524,7 +543,7 @@ const GymAdminMembers = () => {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
         <div 
           onClick={() => setFilter('All')}
           className={`bg-[#FFFFFF] p-3.5 sm:p-4 rounded-2xl border transition-all cursor-pointer shadow-xs ${filter === 'All' ? 'border-[#FDBA74] ring-2 ring-[#F97316]/25 shadow-md shadow-orange-500/15' : 'border-[#E2E8F0] hover:border-[#FFEDD5]'}`}
@@ -562,19 +581,12 @@ const GymAdminMembers = () => {
           <div className="flex items-center space-x-1.5 text-[#64748B] mb-1.5"><XCircle size={15}/> <span className="font-semibold text-xs">Inactive</span></div>
           <span className="text-2xl font-extrabold text-[#111827]">{members.filter(m => m.status === 'Inactive').length}</span>
         </div>
-        <div 
-          onClick={() => setFilter('New')}
-          className={`bg-[#FFFFFF] p-3.5 sm:p-4 rounded-2xl border transition-all cursor-pointer shadow-xs ${filter === 'New' ? 'border-[#FDBA74] ring-2 ring-[#F97316]/25 shadow-md shadow-orange-500/15' : 'border-[#E2E8F0] hover:border-[#FFEDD5]'}`}
-        >
-          <div className="flex items-center space-x-1.5 text-[#EA580C] mb-1.5"><UserPlus size={15}/> <span className="font-semibold text-xs">New</span></div>
-          <span className="text-2xl font-extrabold text-[#111827]">{members.filter(m => m.customerType === 'NEW_CUSTOMER').length}</span>
-        </div>
       </div>
 
       {/* Filters & Search Bar */}
       <div className="flex flex-col xl:flex-row gap-3 justify-between items-stretch xl:items-center bg-[#FFFFFF] p-3 sm:p-3.5 rounded-2xl border border-[#E2E8F0] shadow-xs">
         <div className="flex items-center gap-1.5 overflow-x-auto custom-scrollbar py-0.5 min-w-0">
-          {['All', 'Active', 'Free Trial', 'Inactive', 'Pending', 'Rejected', 'New'].map(f => (
+          {['All', 'Active', 'Free Trial', 'Inactive', 'Pending', 'Rejected'].map(f => (
             <button 
               key={f}
               onClick={() => setFilter(f)}
@@ -606,6 +618,7 @@ const GymAdminMembers = () => {
           <table className="w-full text-left text-sm text-[#64748B] whitespace-nowrap min-w-[800px]">
             <thead className="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[#64748B]">
               <tr>
+                <th className="px-4 py-4 font-semibold text-center w-16">S.No</th>
                 <th className="px-6 py-4 font-semibold text-left">Member</th>
                 <th className="px-6 py-4 font-semibold text-left">Contact Details</th>
                 <th className="px-6 py-4 font-semibold text-left">Membership</th>
@@ -616,6 +629,9 @@ const GymAdminMembers = () => {
             <tbody className="divide-y divide-[#E2E8F0]">
               {filteredMembers.map((member, index) => (
                 <tr key={`${member.id}-${index}`} className="hover:bg-[#FFF7ED] transition-colors relative">
+                  <td className="px-4 py-4 align-middle text-center font-medium text-xs text-[#64748B] w-16">
+                    {index + 1}
+                  </td>
                   <td className="px-6 py-4 align-middle">
                     <div className="flex items-center space-x-3">
                       <div className="w-10 h-10 rounded-full bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5] flex items-center justify-center font-bold text-lg uppercase shrink-0">
@@ -832,7 +848,9 @@ const GymAdminMembers = () => {
                 </div>
                 <div>
                   <p className="text-xs font-bold text-[#64748B] uppercase tracking-wider mb-1">Height / Weight</p>
-                  <p className="font-semibold text-[#111827]">{selectedMember.originalUser?.height ? `${selectedMember.originalUser.height} cm` : '--'} / {selectedMember.originalUser?.weight ? `${selectedMember.originalUser.weight} kg` : '--'}</p>
+                  <p className="font-semibold text-[#111827]">
+                    {(selectedMember.originalUser?.height || selectedMember.height) ? `${selectedMember.originalUser?.height || selectedMember.height} cm` : '--'} / {(selectedMember.originalUser?.weight || selectedMember.weight) ? `${selectedMember.originalUser?.weight || selectedMember.weight} kg` : '--'}
+                  </p>
                 </div>
                 <div>
                   <p className="text-xs font-bold text-[#64748B] uppercase tracking-wider mb-1">Fitness Goal</p>
@@ -1168,7 +1186,7 @@ const GymAdminMembers = () => {
               </span>
             </div>
             <div className="p-1.5 flex flex-col gap-0.5 overflow-y-auto">
-              {['Active', 'Inactive', 'Pending', 'Rejected', 'New', 'Existing'].map((status) => {
+              {['Active', 'Inactive', 'Pending', 'Rejected', 'Existing'].map((status) => {
                 const isCurrent = statusDropdown.memberStatus === status;
                 return (
                   <button

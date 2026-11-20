@@ -132,7 +132,8 @@ const MemberWorkoutPlan: React.FC = () => {
     repetitions: String(item.repetitions || '12'),
     duration: item.duration || 60,
     restTime: item.restTime || 30,
-    trainerNotes: item.trainerNotes || ''
+    trainerNotes: item.trainerNotes || '',
+    startingWeight: item.startingWeight || item.suggestedWeight || item.exerciseId?.suggestedWeight || ''
   }));
 
   const isTrainerApproved = 
@@ -596,6 +597,11 @@ const MemberWorkoutPlan: React.FC = () => {
                                   <span className="text-[#EA580C] font-extrabold">
                                     {item.sets || 3} Sets × {item.repetitions || 12} Reps
                                   </span>
+                                  {(item.startingWeight || item.suggestedWeight || ex.suggestedWeight) && (
+                                    <span className="text-[#15803D] font-extrabold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                                      Weight: {item.startingWeight || item.suggestedWeight || ex.suggestedWeight}
+                                    </span>
+                                  )}
                                   <span>
                                     {item.duration >= 60 ? `${Math.round(item.duration / 60)}m` : `${item.duration || 60}s`} Duration
                                   </span>

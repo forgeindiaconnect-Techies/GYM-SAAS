@@ -19,12 +19,15 @@ export interface PlayerExercise {
     animationType?: 'video' | 'animation' | 'gif';
     defaultRest?: number;
     defaultDuration?: number;
+    suggestedWeight?: string;
   };
   sets: number;
   repetitions: string;
   duration?: number;
   restTime?: number;
   trainerNotes?: string;
+  startingWeight?: string;
+  suggestedWeight?: string;
 }
 
 interface MemberExercisePlayerProps {
@@ -57,6 +60,8 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
   const [repCount, setRepCount] = useState(targetReps);
   const [isPaused, setIsPaused] = useState(false);
   const [workoutElapsed, setWorkoutElapsed] = useState(0);
+  const [totalWorkoutSeconds, setTotalWorkoutSeconds] = useState(0);
+  const [accumulatedExerciseTime, setAccumulatedExerciseTime] = useState(0);
   const [restartCount, setRestartCount] = useState(0);
 
   // Rest state
@@ -85,7 +90,7 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
     setAutoAdvanceCountdown(null);
   }, [currentIdx, currentItem, configuredRest]);
 
-  // Workout Timer
+  // Workout Timer for current exercise
   useEffect(() => {
     let interval: ReturnType<typeof setInterval>;
     if (!isPaused && !isResting && !exerciseCompleted && !workoutFinished) {
@@ -95,6 +100,17 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
     }
     return () => clearInterval(interval);
   }, [isPaused, isResting, exerciseCompleted, workoutFinished]);
+
+  // Overall Total Workout Session Timer (Runs continuously across all exercises, sets & rests)
+  useEffect(() => {
+    let interval: ReturnType<typeof setInterval>;
+    if (!isPaused && !workoutFinished) {
+      interval = setInterval(() => {
+        setTotalWorkoutSeconds(prev => prev + 1);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [isPaused, workoutFinished]);
 
   // Rest Timer
   useEffect(() => {
@@ -131,6 +147,71 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
+  // Helper to determine suggested starting weight from plan, trainer, or exercise defaults
+  const getSuggestedWeight = (item?: PlayerExercise): string => {
+    const targetItem = item || currentItem;
+    if (targetItem?.startingWeight && targetItem.startingWeight.trim()) {
+      return targetItem.startingWeight.trim();
+    }
+    if ((targetItem as any)?.suggestedWeight && (targetItem as any).suggestedWeight.trim()) {
+      return (targetItem as any).suggestedWeight.trim();
+    }
+    const targetEx = targetItem?.exerciseId;
+    if ((targetEx as any)?.suggestedWeight && (targetEx as any).suggestedWeight.trim()) {
+      return (targetEx as any).suggestedWeight.trim();
+    }
+
+    // Smart default suggestion based on exercise name and category
+    const nameLower = (targetEx?.name || '').toLowerCase();
+    const catLower = (targetEx?.category || '').toLowerCase();
+
+    if (
+      nameLower.includes('plank') ||
+      nameLower.includes('push-up') ||
+      nameLower.includes('pushup') ||
+      nameLower.includes('burpee') ||
+      nameLower.includes('jumping jack') ||
+      nameLower.includes('crunch') ||
+      nameLower.includes('mountain climber')
+    ) {
+      return 'Bodyweight';
+    }
+    if (
+      nameLower.includes('dumbbell') ||
+      nameLower.includes('curl') ||
+      nameLower.includes('lateral raise') ||
+      nameLower.includes('fly')
+    ) {
+      return '7.5 – 10 kg';
+    }
+    if (
+      nameLower.includes('squat') ||
+      nameLower.includes('deadlift') ||
+      nameLower.includes('rdl') ||
+      nameLower.includes('bench press')
+    ) {
+      return '20 – 30 kg';
+    }
+    if (
+      nameLower.includes('barbell') ||
+      nameLower.includes('overhead press') ||
+      nameLower.includes('row')
+    ) {
+      return '15 – 20 kg';
+    }
+    if (
+      nameLower.includes('cable') ||
+      nameLower.includes('pulldown') ||
+      nameLower.includes('pushdown')
+    ) {
+      return '15 – 25 kg';
+    }
+    if (catLower.includes('cardio') || catLower.includes('flexibility') || catLower.includes('core')) {
+      return 'Bodyweight';
+    }
+    return '10 – 15 kg';
+  };
+
   // Complete Set handler
   const handleCompleteSet = async () => {
     if (currentSet < totalSets) {
@@ -156,6 +237,7 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
     setCompletedExerciseIdxs(prev => Array.from(new Set([...prev, currentIdx])));
     setExerciseCompleted(true);
     setIsResting(false);
+    setAccumulatedExerciseTime(prev => prev + (workoutElapsed > 0 ? workoutElapsed : 45));
 
     if (onCompleteExercise) {
       try {
@@ -196,6 +278,7 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
 
   const handleProceedToNextExercise = () => {
     setAutoAdvanceCountdown(null);
+    setAccumulatedExerciseTime(prev => prev + (workoutElapsed > 0 ? workoutElapsed : 45));
     if (currentIdx < exercises.length - 1) {
       setCurrentIdx(prev => prev + 1);
       setCurrentSet(1);
@@ -212,6 +295,7 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
 
   const handleNextExercise = () => {
     setAutoAdvanceCountdown(null);
+    setAccumulatedExerciseTime(prev => prev + (workoutElapsed > 0 ? workoutElapsed : 45));
     if (currentIdx < exercises.length - 1) {
       setCurrentIdx(prev => prev + 1);
     } else {
@@ -294,8 +378,8 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
       <div className="flex-1 overflow-y-auto flex flex-col lg:flex-row">
         {/* Left Column: Animation Video & Playback HUD */}
         <div className="lg:w-3/5 p-4 md:p-6 flex flex-col justify-between space-y-4">
-          {/* Top HUD: Set / Reps / Timer Status */}
-          <div className="grid grid-cols-3 gap-2 md:gap-4 bg-[#FFFFFF] p-3 md:p-4 rounded-2xl border border-[#E2E8F0] text-center shadow-sm">
+          {/* Top HUD: Set / Reps / Weight / Timer Status */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 md:gap-3 bg-[#FFFFFF] p-3 md:p-4 rounded-2xl border border-[#E2E8F0] text-center shadow-sm">
             {/* Set Counter */}
             <div className="flex flex-col items-center justify-center">
               <span className="text-[10px] uppercase font-bold tracking-wider text-[#64748B]">Current Set</span>
@@ -305,7 +389,7 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
             </div>
 
             {/* Repetition Counter */}
-            <div className="flex flex-col items-center justify-center border-x border-[#E2E8F0] px-2">
+            <div className="flex flex-col items-center justify-center border-l border-[#E2E8F0] px-2">
               <span className="text-[10px] uppercase font-bold tracking-wider text-[#64748B]">Target Reps</span>
               <div className="flex items-center gap-2 mt-0.5">
                 <button
@@ -328,8 +412,18 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
               </div>
             </div>
 
+            {/* Suggested Starting Weight */}
+            <div className="flex flex-col items-center justify-center border-t sm:border-t-0 sm:border-l border-[#E2E8F0] px-2 pt-2 sm:pt-0">
+              <span className="text-[10px] uppercase font-bold tracking-wider text-[#64748B]">
+                Suggested Weight
+              </span>
+              <div className="text-base sm:text-lg md:text-xl font-black font-mono text-[#EA580C] mt-0.5 truncate max-w-full">
+                {getSuggestedWeight()}
+              </div>
+            </div>
+
             {/* Countdown / Elapsed Timer */}
-            <div className="flex flex-col items-center justify-center">
+            <div className="flex flex-col items-center justify-center border-t sm:border-t-0 border-l border-[#E2E8F0] pt-2 sm:pt-0">
               <span className="text-[10px] uppercase font-bold tracking-wider text-[#64748B]">Elapsed Time</span>
               <div className="text-xl md:text-2xl font-black font-mono text-[#B45309] mt-0.5">
                 {formatTimer(workoutElapsed)}
@@ -518,6 +612,9 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
               <span className="px-2.5 py-1 rounded-lg text-xs font-bold bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5]">
                 Target: {ex.targetMuscle || 'Muscles'}
               </span>
+              <span className="px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-50 text-[#15803D] border border-emerald-200">
+                Weight: {getSuggestedWeight()}
+              </span>
               <span className="px-2.5 py-1 rounded-lg text-xs font-bold bg-amber-50 text-[#B45309] border border-amber-200">
                 {ex.difficulty || 'All Levels'}
               </span>
@@ -625,7 +722,7 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
                         </span>
                       )}
                       <span className={`text-[10px] font-mono ${isActive ? 'text-white/80' : 'text-[#64748B]'}`}>
-                        {item.sets} × {item.repetitions}
+                        {item.sets} × {item.repetitions} • {getSuggestedWeight(item)}
                       </span>
                     </div>
                   </button>
@@ -659,7 +756,15 @@ export const MemberExercisePlayer: React.FC<MemberExercisePlayerProps> = ({
               </div>
               <div>
                 <span className="text-[10px] uppercase font-bold text-[#64748B] block">Total Duration</span>
-                <span className="text-xl font-black text-[#15803D]">{formatTimer(workoutElapsed)}</span>
+                <span className="text-xl font-black text-[#15803D]">
+                  {formatTimer(
+                    totalWorkoutSeconds > 0
+                      ? totalWorkoutSeconds
+                      : (accumulatedExerciseTime + workoutElapsed) > 0
+                        ? (accumulatedExerciseTime + workoutElapsed)
+                        : Math.max(exercises.length * 60, 60)
+                  )}
+                </span>
               </div>
             </div>
 

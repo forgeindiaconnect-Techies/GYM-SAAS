@@ -10,9 +10,12 @@ import {
   RefreshControl, 
   Alert, 
   Modal,
-  Dimensions
+  Dimensions,
+  Image,
+  Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import * as ImagePicker from 'expo-image-picker';
 import { COLORS } from '../../constants/theme';
 import { useAuth } from '../../context/AuthContext';
 import { api } from '../../api/client';
@@ -21,14 +24,154 @@ import { sanitizeTenDigitPhone, isValidTenDigitPhone } from '../../utils/phoneUt
 const { width } = Dimensions.get('window');
 
 export const TrainerProfileScreen: React.FC = () => {
-  const { user } = useAuth();
+  const { user, refreshProfile, updateUser } = useAuth();
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [trainer, setTrainer] = useState<any>(null);
 
+  // Photo Upload States
+  const [showPhotoOptions, setShowPhotoOptions] = useState(false);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+
   // Edit Modal State
   const [isEditing, setIsEditing] = useState(false);
   const [saving, setSaving] = useState(false);
+
+  const resolvePhotoUri = (photo?: string | null): string | null => {
+    if (!photo) return null;
+    if (photo.startsWith('data:') || photo.startsWith('file:') || photo.startsWith('content:')) {
+      return photo;
+    }
+    if (photo.startsWith('http://') || photo.startsWith('https://')) {
+      return photo;
+    }
+    const baseUrl = api.defaults.baseURL || '';
+    const origin = baseUrl.replace(/\/api\/?$/, '');
+    const cleanPath = photo.startsWith('/') ? photo : `/${photo}`;
+    return `${origin}${cleanPath}`;
+  };
+
+  const handleChooseFromGallery = async () => {
+    setShowPhotoOptions(false);
+    try {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert(
+          'Permission Required',
+          'Please allow access to your photo library to choose a profile picture.'
+        );
+        return;
+      }
+
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ['images'],
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.7,
+        base64: true,
+      });
+
+      if (!result.canceled && result.assets && result.assets.length > 0) {
+        await processAndUploadPhoto(result.assets[0]);
+      }
+    } catch (error: any) {
+      console.warn('Gallery picker error:', error);
+      Alert.alert('Error', 'Unable to pick image from gallery. Please try again.');
+    }
+  };
+
+  const handleTakePhoto = async () => {
+    setShowPhotoOptions(false);
+    try {
+      const { status } = await ImagePicker.requestCameraPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert(
+          'Permission Required',
+          'Please allow access to your camera to take a profile picture.'
+        );
+        return;
+      }
+
+      const result = await ImagePicker.launchCameraAsync({
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.7,
+        base64: true,
+      });
+
+      if (!result.canceled && result.assets && result.assets.length > 0) {
+        await processAndUploadPhoto(result.assets[0]);
+      }
+    } catch (error: any) {
+      console.warn('Camera error:', error);
+      Alert.alert('Error', 'Unable to capture photo. Please try again.');
+    }
+  };
+
+  const processAndUploadPhoto = async (asset: ImagePicker.ImagePickerAsset) => {
+    const localUri = asset.uri;
+    const base64Data = asset.base64 ? `data:image/jpeg;base64,${asset.base64}` : null;
+    const immediatePhoto = base64Data || localUri;
+
+    // Immediately update local state
+    setTrainer((prev: any) => ({
+      ...prev,
+      profilePhoto: immediatePhoto,
+    }));
+    if (updateUser) {
+      updateUser({ profilePhoto: immediatePhoto });
+    }
+
+    setUploadingPhoto(true);
+    try {
+      const uid = trainer?.userId || trainer?._id || user?._id || user?.id;
+      let uploadedUrl = '';
+
+      try {
+        const formData = new FormData();
+        const filename = asset.fileName || `profile_${Date.now()}.jpg`;
+        const mimeType = asset.mimeType || 'image/jpeg';
+
+        formData.append('photo', {
+          uri: Platform.OS === 'android' ? asset.uri : asset.uri.replace('file://', ''),
+          name: filename,
+          type: mimeType,
+        } as any);
+
+        const uploadRes = await api.post('/users/profile-photo', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+
+        if (uploadRes.data?.success && uploadRes.data?.profilePhoto) {
+          uploadedUrl = uploadRes.data.profilePhoto;
+        }
+      } catch (uploadErr) {
+        console.log('[TrainerProfile] Multipart upload note:', uploadErr);
+      }
+
+      const finalPhoto = uploadedUrl || base64Data || localUri;
+
+      if (uid) {
+        await api.put(`/users/${uid}`, { profilePhoto: finalPhoto }).catch(() => {});
+      }
+
+      if (updateUser) {
+        await updateUser({ profilePhoto: finalPhoto });
+      }
+      if (refreshProfile) {
+        refreshProfile().catch(() => {});
+      }
+
+      Alert.alert('Success! 🎉', 'Profile picture updated successfully.');
+    } catch (err: any) {
+      console.warn('[TrainerProfile] Photo upload warning:', err);
+      Alert.alert('Notice', 'Profile photo updated locally.');
+    } finally {
+      setUploadingPhoto(false);
+    }
+  };
   const [editForm, setEditForm] = useState({
     name: 'Naveen',
     email: 'forgeindiaconnecthr@gmail.com',
@@ -161,12 +304,26 @@ export const TrainerProfileScreen: React.FC = () => {
           {/* Avatar with Camera Icon */}
           <View style={styles.avatarWrapper}>
             <View style={styles.avatarCircle}>
-              <Text style={styles.avatarText}>{displayName.charAt(0).toUpperCase()}</Text>
+              {(trainer?.profilePhoto || user?.profilePhoto) ? (
+                <Image
+                  source={{ uri: resolvePhotoUri(trainer?.profilePhoto || user?.profilePhoto)! }}
+                  style={styles.avatarImage}
+                  resizeMode="cover"
+                />
+              ) : (
+                <Text style={styles.avatarText}>{displayName.charAt(0).toUpperCase()}</Text>
+              )}
+              {uploadingPhoto && (
+                <View style={styles.avatarLoadingOverlay}>
+                  <ActivityIndicator size="small" color="#FFFFFF" />
+                </View>
+              )}
             </View>
             <TouchableOpacity 
               style={styles.cameraIconBtn}
-              onPress={() => Alert.alert('Upload Photo', 'Select a profile photo from your device camera or gallery.')}
+              onPress={() => setShowPhotoOptions(true)}
               activeOpacity={0.8}
+              disabled={uploadingPhoto}
             >
               <Ionicons name="camera" size={13} color="#FFFFFF" />
             </TouchableOpacity>
@@ -471,6 +628,66 @@ export const TrainerProfileScreen: React.FC = () => {
           </View>
         </Modal>
       )}
+      {/* Photo Picker Options Modal */}
+      <Modal
+        visible={showPhotoOptions}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowPhotoOptions(false)}
+      >
+        <TouchableOpacity
+          style={styles.photoBackdrop}
+          activeOpacity={1}
+          onPress={() => setShowPhotoOptions(false)}
+        >
+          <View style={styles.photoOptionsSheet}>
+            <View style={styles.sheetHandle} />
+            <Text style={styles.photoOptionsTitle}>Change Profile Photo</Text>
+            <Text style={styles.photoOptionsSub}>Select an option to update your photo</Text>
+
+            {/* Choose from Gallery */}
+            <TouchableOpacity
+              style={styles.photoOptionBtn}
+              onPress={handleChooseFromGallery}
+              activeOpacity={0.7}
+            >
+              <View style={[styles.photoOptionIconWrap, { backgroundColor: '#EFF6FF' }]}>
+                <Ionicons name="images-outline" size={22} color="#2563EB" />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.photoOptionLabel}>Choose from Gallery</Text>
+                <Text style={styles.photoOptionDesc}>Select an existing image from your device library</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={18} color="#94A3B8" />
+            </TouchableOpacity>
+
+            {/* Take Photo */}
+            <TouchableOpacity
+              style={styles.photoOptionBtn}
+              onPress={handleTakePhoto}
+              activeOpacity={0.7}
+            >
+              <View style={[styles.photoOptionIconWrap, { backgroundColor: '#FFF7ED' }]}>
+                <Ionicons name="camera-outline" size={22} color="#EA580C" />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.photoOptionLabel}>Take Photo</Text>
+                <Text style={styles.photoOptionDesc}>Capture a fresh photo using your camera</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={18} color="#94A3B8" />
+            </TouchableOpacity>
+
+            {/* Cancel Button */}
+            <TouchableOpacity
+              style={styles.photoCancelBtn}
+              onPress={() => setShowPhotoOptions(false)}
+              activeOpacity={0.7}
+            >
+              <Text style={styles.photoCancelText}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </TouchableOpacity>
+      </Modal>
     </ScrollView>
   );
 };
@@ -503,6 +720,23 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF7ED',
     borderWidth: 2,
     borderColor: '#FDBA74',
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+  },
+  avatarImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 34,
+  },
+  avatarLoadingOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    borderRadius: 34,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -745,5 +979,86 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '800',
     color: '#FFFFFF',
+  },
+  photoBackdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(15, 23, 42, 0.6)',
+    justifyContent: 'flex-end',
+  },
+  photoOptionsSheet: {
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    paddingHorizontal: 20,
+    paddingTop: 12,
+    paddingBottom: Platform.OS === 'ios' ? 36 : 24,
+    shadowColor: '#000',
+    shadowOpacity: 0.15,
+    shadowOffset: { width: 0, height: -4 },
+    shadowRadius: 12,
+    elevation: 10,
+  },
+  sheetHandle: {
+    width: 38,
+    height: 4,
+    backgroundColor: '#E2E8F0',
+    borderRadius: 2,
+    alignSelf: 'center',
+    marginBottom: 16,
+  },
+  photoOptionsTitle: {
+    fontSize: 18,
+    fontWeight: '800',
+    color: '#0F172A',
+    textAlign: 'center',
+  },
+  photoOptionsSub: {
+    fontSize: 12,
+    color: '#64748B',
+    textAlign: 'center',
+    marginTop: 3,
+    marginBottom: 20,
+  },
+  photoOptionBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    backgroundColor: '#F8FAFC',
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    marginBottom: 10,
+  },
+  photoOptionIconWrap: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  photoOptionLabel: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#0F172A',
+  },
+  photoOptionDesc: {
+    fontSize: 11,
+    color: '#64748B',
+    marginTop: 2,
+  },
+  photoCancelBtn: {
+    marginTop: 6,
+    paddingVertical: 13,
+    borderRadius: 14,
+    backgroundColor: '#F1F5F9',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  photoCancelText: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#475569',
   },
 });

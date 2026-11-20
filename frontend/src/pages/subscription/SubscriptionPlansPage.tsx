@@ -114,7 +114,7 @@ const SAAS_PLANS = [
     name: 'Premium',
     tagline: 'Enterprise-grade multi-branch scale',
     badge: 'ADVANCED',
-    icon: Sparkles,
+    icon: Crown,
     iconColor: 'text-[#111827]',
     iconBg: 'bg-[#F8FAFC]',
     borderColor: 'border-[#E2E8F0]',

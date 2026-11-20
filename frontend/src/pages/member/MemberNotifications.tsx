@@ -120,7 +120,9 @@ const MemberNotifications: React.FC = () => {
           </span>
           <button
             type="button"
-            onClick={() => navigate('/member')}
+            onClick={() => {
+              navigate('/member/dashboard');
+            }}
             className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#F8FAFC] hover:bg-[#E2E8F0] text-xs font-bold text-[#111827] border border-[#CBD5E1] transition-all cursor-pointer shadow-xs"
             title="Close"
           >

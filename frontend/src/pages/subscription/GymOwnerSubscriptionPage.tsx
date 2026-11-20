@@ -105,7 +105,7 @@ export const plans = [
     key: 'PREMIUM',
     name: 'Premium',
     badge: 'ADVANCED',
-    icon: Sparkles,
+    icon: Crown,
     iconBg: 'bg-[#F8FAFC]',
     iconColor: 'text-[#EA580C]',
     borderDefault: 'border-[#E2E8F0]',
@@ -215,7 +215,7 @@ const GymOwnerSubscriptionPage = () => {
         {/* ── Title ── */}
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 bg-[#FFF7ED] border border-[#FFEDD5] rounded-full px-4 py-1.5 text-[#EA580C] text-xs font-bold uppercase tracking-widest mb-5">
-            <Sparkles size={12} /> Choose Your Plan
+            <Crown size={12} /> Choose Your Plan
           </div>
           <h1 className="text-3xl md:text-5xl font-bold text-[#111827] mb-4 tracking-tight">
             Power Your Gym with <span className="text-[#EA580C]">Gymora</span>
@@ -360,11 +360,10 @@ const GymOwnerSubscriptionPage = () => {
                   )}
 
                   {/* Select indicator */}
-                  <div className={`w-full py-2.5 rounded-xl text-xs font-bold text-center transition-all border-2 ${
-                    isSelected
-                      ? `${plan.accentBar} text-white border-transparent`
-                      : `bg-[#FFFFFF] border-[#E2E8F0] text-[#64748B] hover:border-[#FDBA74] hover:text-[#EA580C]`
-                  }`}>
+                  <div className={`w-full py-2.5 rounded-xl text-xs font-bold text-center transition-all border-2 ${isSelected
+                    ? `${plan.accentBar} text-white border-transparent`
+                    : `bg-[#FFFFFF] border-[#E2E8F0] text-[#64748B] hover:border-[#FDBA74] hover:text-[#EA580C]`
+                    }`}>
                     {isSelected ? `✓ ${plan.ctaText} Selected` : plan.ctaText}
                   </div>
                 </div>
@@ -378,11 +377,10 @@ const GymOwnerSubscriptionPage = () => {
           <button
             disabled={!selectedPlan || isLoading}
             onClick={handleSelectPlan}
-            className={`px-14 py-4 rounded-2xl font-bold text-lg flex items-center gap-2 transition-all duration-200 shadow-lg ${
-              !selectedPlan || isLoading
-                ? 'bg-[#F8FAFC] text-[#64748B] cursor-not-allowed'
-                : 'bg-gradient-to-r from-[#EA580C] to-[#C2410C] text-white hover:from-[#9A3412] hover:to-[#C2410C] hover:-translate-y-0.5 shadow-orange-500/15'
-            }`}
+            className={`px-14 py-4 rounded-2xl font-bold text-lg flex items-center gap-2 transition-all duration-200 shadow-lg ${!selectedPlan || isLoading
+              ? 'bg-[#F8FAFC] text-[#64748B] cursor-not-allowed'
+              : 'bg-gradient-to-r from-[#EA580C] to-[#C2410C] text-white hover:from-[#9A3412] hover:to-[#C2410C] hover:-translate-y-0.5 shadow-orange-500/15'
+              }`}
           >
             {isLoading ? (
               <>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Platform, StatusBar as RNStatusBar, ActivityIndicator, Text, BackHandler, Alert } from 'react-native';
+import { View, StyleSheet, Platform, StatusBar as RNStatusBar, ActivityIndicator, Text, BackHandler, Alert, Linking } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 
@@ -251,72 +251,226 @@ const MainAppContent = () => {
     const route = (rawRoute || '').split('#')[0].split('?')[0].toLowerCase();
     if (!route) return;
 
+    // Comprehensive route mappings for GYM_OWNER / SUPER_ADMIN
     const ownerRoutes = {
+      // Overview & Dashboards
       '/admin/dashboard': ['overview', null],
+      '/admin': ['overview', null],
+      '/super-admin/dashboard': ['overview', null],
+      '/super-admin': ['overview', null],
+      '/member/dashboard': ['members', 'members'],
+      '/trainer/dashboard': ['trainers', 'trainers'],
+
+      // Members & Customers
       '/admin/members': ['members', 'members'],
       '/admin/import-customers': ['members', 'members'],
+      '/super-admin/customers': ['members', 'members'],
       '/admin/enquiries': ['members', 'enquiries'],
+      '/super-admin/enquiries': ['members', 'enquiries'],
+      '/super-admin/leads': ['members', 'enquiries'],
+
+      // Trainers & Hiring
       '/admin/trainers': ['trainers', 'trainers'],
-      '/admin/equipment': ['more', 'equipment'],
-      '/admin/membership-plans': ['more', 'plans'],
-      '/subscription-plans': ['more', 'plans'],
-      '/admin/store': ['more', 'store_products'],
-      '/member/store': ['more', 'store_products'],
-      '/member/store/orders': ['more', 'store_orders'],
+      '/super-admin/gym-owners': ['trainers', 'trainers'],
+      '/admin/hiring/jobs': ['trainers', 'hiring'],
+      '/admin/hiring/jobs/new': ['trainers', 'hiring'],
+      '/admin/hiring/applications': ['trainers', 'hiring'],
+      '/admin/hiring/hired': ['trainers', 'trainers'],
+      '/admin/hiring/requests': ['trainers', 'hiring'],
+      '/admin/hiring/shortlisted': ['trainers', 'hiring'],
+      '/admin/hiring/interviews': ['trainers', 'hiring'],
+      '/super-admin/invitations': ['trainers', 'hiring'],
+
+      // Finances, Analytics, Payments & Earnings
       '/admin/payments': ['finances', 'payments'],
       '/member/payments': ['finances', 'payments'],
-      '/admin/reports': ['finances', 'analytics'],
       '/admin/revenue-analytics': ['finances', 'analytics'],
+      '/admin/reports': ['finances', 'analytics'],
+      '/super-admin/revenue-analytics': ['finances', 'analytics'],
+      '/super-admin/payouts': ['finances', 'payments'],
+      '/trainer/earnings': ['finances', 'payments'],
+      '/trainer/my-fee': ['finances', 'payments'],
+      '/admin/trainer-fees': ['finances', 'payments'],
+      '/admin/trainer-payments': ['finances', 'payments'],
+      '/admin/trainer-payments-history': ['finances', 'payments'],
+
+      // Operations: Equipment, Exercises, Videos, Plans
+      '/admin/equipment': ['more', 'equipment'],
+      '/trainer/equipments': ['more', 'equipment'],
+      '/admin/exercises': ['more', 'exercises'],
+      '/admin/exercise-videos': ['more', 'videos'],
+      '/admin/ai-plans': ['more', 'exercises'],
+      '/admin/membership-plans': ['more', 'plans'],
+      '/super-admin/subscriptions': ['more', 'plans'],
+      '/subscription-plans': ['more', 'plans'],
+      '/member/subscription': ['more', 'plans'],
+      '/member/upgrade': ['more', 'plans'],
+
+      // Store: Products, Orders, Inventory, Sales
+      '/admin/store': ['more', 'store_products'],
+      '/super-admin/store': ['more', 'store_products'],
+      '/member/store': ['more', 'store_products'],
+      '/admin/store/products': ['more', 'store_products'],
+      '/admin/store/inventory': ['more', 'store_inventory'],
+      '/admin/store/orders': ['more', 'store_orders'],
+      '/member/store/orders': ['more', 'store_orders'],
+      '/admin/store/offline-sales': ['more', 'store_offline'],
+      '/admin/store/sales': ['more', 'store_history'],
+      '/admin/store/settings': ['more', 'store_overview'],
+
+      // Scheduling: Bookings, Sessions, Schedule, Attendance
+      '/admin/session-bookings': ['more', 'session_bookings'],
+      '/admin/online-sessions': ['more', 'online_sessions'],
+      '/admin/video-bookings': ['more', 'video_bookings'],
+      '/admin/trainer-schedule': ['more', 'trainer_schedule'],
+      '/trainer/schedule': ['more', 'trainer_schedule'],
+      '/admin/attendance': ['more', 'attendance'],
+      '/member/attendance': ['more', 'attendance'],
+
+      // Rewards & Referrals
+      '/admin/rewards': ['more', 'rewards'],
+      '/admin/rewards-performance': ['more', 'rewards_performance'],
+      '/admin/referrals': ['more', 'referrals'],
+      '/member/rewards': ['more', 'rewards'],
+      '/member/referrals': ['more', 'referrals'],
+
+      // Gym Profile, Branches, Subscriptions, Reviews, Notifications, Deleted
+      '/admin/branches': ['more', 'branches'],
       '/admin/gym-profile': ['more', 'gym_profile'],
       '/admin/location': ['more', 'gym_profile'],
       '/member/my-gym': ['more', 'gym_profile'],
-      '/trainer/dashboard': ['trainers', 'trainers'],
-      '/member/dashboard': ['members', 'members'],
+      '/super-admin/gyms/details': ['more', 'gym_profile'],
+      '/super-admin/gym-approvals': ['more', 'gym_profile'],
+      '/admin/subscription': ['more', 'subscription'],
+      '/admin/reviews': ['more', 'reviews'],
+      '/admin/notifications': ['more', 'notifications'],
+      '/super-admin/notifications': ['more', 'notifications'],
+      '/member/notifications': ['more', 'notifications'],
+      '/trainer/notifications': ['more', 'notifications'],
+      '/admin/deleted-details': ['more', 'deleted_details'],
+      '/super-admin/deleted': ['more', 'deleted_details'],
+      '/admin/profile': ['more', 'gym_profile'],
+      '/super-admin/profile': ['more', 'gym_profile'],
+      '/admin/settings': ['more', 'admin_settings'],
+      '/super-admin/settings': ['more', 'admin_settings'],
     };
 
+    // Comprehensive route mappings for TRAINER
     const trainerRoutes = {
+      // Dashboard & Schedule
       '/trainer/dashboard': ['home', null],
+      '/trainer': ['home', null],
+      '/admin/dashboard': ['home', null],
+      '/member/dashboard': ['clients', null],
       '/trainer/schedule': ['schedule', null],
+      '/admin/trainer-schedule': ['schedule', null],
+      '/admin/session-bookings': ['schedule', null],
+      '/admin/online-sessions': ['schedule', null],
+      '/admin/video-bookings': ['schedule', null],
+      '/member/bookings': ['schedule', null],
+      '/member/online-sessions': ['schedule', null],
+
+      // Clients / Members
+      '/trainer/members': ['clients', null],
+      '/admin/members': ['clients', null],
+      '/super-admin/customers': ['clients', null],
+
+      // Programs: Workouts, Diets, Exercises, Videos, Equipment, Completed
       '/trainer/workout-plans': ['programs', 'workout-plans'],
       '/trainer/diet-plans': ['programs', 'diet-plans'],
+      '/trainer/exercises': ['programs', 'exercises'],
+      '/admin/exercises': ['programs', 'exercises'],
+      '/trainer/exercise-videos': ['programs', 'videos'],
+      '/admin/exercise-videos': ['programs', 'videos'],
+      '/trainer/equipments': ['programs', 'equipments'],
+      '/trainer/equipment': ['programs', 'equipments'],
+      '/admin/equipment': ['programs', 'equipments'],
+      '/member/my-gym': ['programs', 'equipments'],
+      '/trainer/customer-workplan-completed': ['programs', 'customer-workplan-completed'],
+      '/member/workout': ['programs', 'workout-plans'],
+      '/member/workout-plan': ['programs', 'workout-plans'],
+      '/member/diet': ['programs', 'diet-plans'],
+      '/member/diet-plan': ['programs', 'diet-plans'],
+
+      // More: Financials, Earnings, Profile, Jobs, Feedback, Reviews, Messages, Notifications
       '/trainer/earnings': ['more', 'financials'],
+      '/trainer/my-fee': ['more', 'financials'],
+      '/admin/payments': ['more', 'financials'],
+      '/admin/revenue-analytics': ['more', 'financials'],
       '/trainer/profile': ['more', 'profile'],
+      '/trainer/ai-assistant': ['more', 'ai-assistant'],
+      '/trainer/ai-feedback': ['more', 'feedback'],
+      '/trainer/feedback': ['more', 'feedback'],
+      '/trainer/rewards': ['more', 'rewards'],
+      '/trainer/jobs': ['more', 'jobs'],
+      '/trainer/applications': ['more', 'applications'],
       '/trainer/messages': ['more', 'messages'],
       '/member/chat': ['more', 'messages'],
       '/trainer/notifications': ['more', 'notifications'],
-      '/admin/members': ['clients', null],
-      '/admin/equipment': ['programs', 'equipments'],
-      '/member/my-gym': ['programs', 'equipments'],
+      '/trainer/reviews': ['more', 'reviews'],
     };
 
+    // Comprehensive route mappings for CUSTOMER
     const customerRoutes = {
+      // Home & Dashboard
       '/member/dashboard': ['home', 'dashboard'],
+      '/member': ['home', 'dashboard'],
       '/member/my-gym': ['home', 'gym'],
+      '/admin/dashboard': ['home', 'dashboard'],
+      '/trainer/dashboard': ['training', 'trainer'],
+
+      // Training: Find Trainers, My Trainer, Bookings, Sessions, Messages
       '/member/find-trainers': ['training', 'find_trainers'],
+      '/trainers': ['training', 'find_trainers'],
+      '/trainers/directory': ['training', 'find_trainers'],
+      '/explore-trainers': ['training', 'find_trainers'],
+      '/admin/trainers': ['training', 'find_trainers'],
       '/member/trainer': ['training', 'trainer'],
       '/member/book-session': ['training', 'find_trainers'],
       '/member/bookings': ['training', 'bookings'],
+      '/trainer/schedule': ['training', 'bookings'],
       '/member/online-sessions': ['training', 'online-sessions'],
       '/member/chat': ['training', 'chat'],
+      '/trainer/messages': ['training', 'chat'],
+
+      // Fitness: Workouts, Diets, Progress, Attendance, AI
       '/member/workout': ['fitness', 'workout'],
       '/member/workout-plan': ['fitness', 'workout'],
+      '/member/workout-plans': ['fitness', 'workout'],
       '/member/workout-videos': ['fitness', 'workout'],
+      '/member/exercises': ['fitness', 'workout'],
+      '/admin/exercises': ['fitness', 'workout'],
+      '/trainer/workout-plans': ['fitness', 'workout'],
       '/member/diet': ['fitness', 'diet'],
       '/member/diet-plan': ['fitness', 'diet'],
+      '/member/diet-plans': ['fitness', 'diet'],
+      '/trainer/diet-plans': ['fitness', 'diet'],
       '/member/progress': ['fitness', 'progress'],
       '/member/attendance': ['fitness', 'attendance'],
+      '/admin/attendance': ['fitness', 'attendance'],
       '/member/ai-assistant': ['fitness', 'ai'],
+
+      // Store: Products, Cart, Orders, Payments
       '/member/store': ['store', 'store'],
+      '/admin/store': ['store', 'store'],
       '/member/store/cart': ['store', 'cart'],
       '/member/store/orders': ['store', 'orders'],
       '/member/payments': ['store', 'payments'],
+      '/admin/payments': ['store', 'payments'],
+
+      // More: Membership, Subscription, Profile, Notifications, Feedback, Reviews, Rewards, Referrals, Trainer Plan
       '/member/subscription': ['more', 'membership'],
       '/member/upgrade': ['more', 'membership'],
       '/subscription-plans': ['more', 'membership'],
+      '/admin/membership-plans': ['more', 'membership'],
       '/member/profile': ['more', 'profile'],
       '/member/notifications': ['more', 'notifications'],
       '/member/trainer-review': ['more', 'trainer-feedback'],
       '/member/session-review': ['more', 'reviews'],
+      '/member/rewards': ['more', 'rewards'],
+      '/member/referrals': ['more', 'referrals'],
+      '/member/trainer-plan': ['more', 'trainer-plan'],
+      '/member/ai-fitness': ['more', 'ai-fitness'],
     };
 
     if (activeRole === 'GYM_OWNER') {
@@ -343,9 +497,37 @@ const MainAppContent = () => {
       }
     }
 
+    // For website-only features or external web routes, provide an option to open the correct website page
+    const getWebUrl = (targetRoute) => {
+      const cleanRoute = targetRoute.startsWith('/') ? targetRoute : `/${targetRoute}`;
+      if (typeof window !== 'undefined' && window.location && window.location.origin) {
+        return `${window.location.origin}${cleanRoute}`;
+      }
+      return `http://localhost:5173${cleanRoute}`;
+    };
+
     Alert.alert(
-      'Web / Portal Feature',
-      `The details for "${rawRoute}" are displayed above in Smart Assistant. That route belongs to another portal or the web app.`
+      'Open in Website',
+      `"${rawRoute}" is available on the Gymora website portal. Would you like to open this page in your browser?`,
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Open in Browser',
+          onPress: async () => {
+            const webUrl = getWebUrl(rawRoute);
+            try {
+              const supported = await Linking.canOpenURL(webUrl);
+              if (supported) {
+                await Linking.openURL(webUrl);
+              } else {
+                await Linking.openURL(webUrl);
+              }
+            } catch (err) {
+              console.warn('[Gymora Mobile] Failed to open website page:', err);
+            }
+          }
+        }
+      ]
     );
   };
 

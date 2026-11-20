@@ -465,7 +465,7 @@ const GymAdminReferralRewardsManagement: React.FC = () => {
                     min="1"
                     value={settings.pointsPerConversionUnit}
                     onChange={(e) => setSettings({ ...settings, pointsPerConversionUnit: Math.max(1, Number(e.target.value)) })}
-                    className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-3 text-sm text-white font-bold outline-none focus:border-[#FDBA74]"
+                    className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-3 text-sm text-[#111827] font-bold outline-none focus:border-[#FDBA74]"
                   />
                   <span className="text-[10px] text-[#64748B] mt-1 block">Number of points (e.g. 100)</span>
                 </div>
@@ -479,7 +479,7 @@ const GymAdminReferralRewardsManagement: React.FC = () => {
                     min="1"
                     value={settings.currencyValuePerUnit}
                     onChange={(e) => setSettings({ ...settings, currencyValuePerUnit: Math.max(1, Number(e.target.value)) })}
-                    className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-3 text-sm text-white font-bold outline-none focus:border-[#FDBA74]"
+                    className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-3 text-sm text-[#111827] font-bold outline-none focus:border-[#FDBA74]"
                   />
                   <span className="text-[10px] text-[#64748B] mt-1 block">Rupee worth (e.g. ₹50)</span>
                 </div>
@@ -493,7 +493,7 @@ const GymAdminReferralRewardsManagement: React.FC = () => {
                     min="0"
                     value={settings.minPointsForRedemption}
                     onChange={(e) => setSettings({ ...settings, minPointsForRedemption: Math.max(0, Number(e.target.value)) })}
-                    className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-3 text-sm text-white font-bold outline-none focus:border-[#FDBA74]"
+                    className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-3 text-sm text-[#111827] font-bold outline-none focus:border-[#FDBA74]"
                   />
                   <span className="text-[10px] text-[#64748B] mt-1 block">E.g. 100 points minimum</span>
                 </div>
@@ -507,7 +507,7 @@ const GymAdminReferralRewardsManagement: React.FC = () => {
                     min="0"
                     value={settings.maxDiscountPerTransaction}
                     onChange={(e) => setSettings({ ...settings, maxDiscountPerTransaction: Math.max(0, Number(e.target.value)) })}
-                    className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-3 text-sm text-white font-bold outline-none focus:border-[#FDBA74]"
+                    className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-3 text-sm text-[#111827] font-bold outline-none focus:border-[#FDBA74]"
                   />
                   <span className="text-[10px] text-[#64748B] mt-1 block">0 for no maximum limit</span>
                 </div>
@@ -528,9 +528,9 @@ const GymAdminReferralRewardsManagement: React.FC = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                 {/* 1. Membership Plan Discount */}
-                <div className={`p-5 rounded-2xl border transition-all ${settings.enableMembershipDiscount ? 'bg-[#F8FAFC] border-[#FFEDD5]' : 'bg-[#F8FAFC] border-[#E2E8F0]'}`}>
+                <div className={`p-5 rounded-2xl border transition-all ${settings.enableMembershipDiscount ? 'bg-[#FFF7ED] border-[#FFEDD5]' : 'bg-[#F8FAFC] border-[#E2E8F0]'}`}>
                   <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-2 font-bold text-white text-sm">
+                    <div className="flex items-center gap-2 font-bold text-[#111827] text-sm">
                       <CreditCard className="text-[#EA580C]" size={18} />
                       Membership Plan Discount
                     </div>
@@ -541,21 +541,21 @@ const GymAdminReferralRewardsManagement: React.FC = () => {
                         onChange={(e) => setSettings({ ...settings, enableMembershipDiscount: e.target.checked })}
                         className="sr-only peer"
                       />
-                      <div className="w-11 h-6 bg-gray-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#C2410C]"></div>
+                      <div className="w-11 h-6 bg-[#E2E8F0] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#C2410C]"></div>
                     </label>
                   </div>
                   <p className="text-xs text-[#64748B] leading-relaxed mb-3">
                     Members can redeem points to discount membership purchases and renewals at checkout.
                   </p>
-                  <span className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${settings.enableMembershipDiscount ? 'bg-emerald-50 text-[#15803D] border border-emerald-800' : 'bg-zinc-800 text-zinc-400'}`}>
+                  <span className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${settings.enableMembershipDiscount ? 'bg-emerald-50 text-[#15803D] border border-emerald-200' : 'bg-[#F1F5F9] text-[#64748B] border border-[#E2E8F0]'}`}>
                     {settings.enableMembershipDiscount ? 'Option Enabled' : 'Option Disabled'}
                   </span>
                 </div>
 
                 {/* 2. Gym Store Purchase */}
-                <div className={`p-5 rounded-2xl border transition-all ${settings.enableStorePurchase ? 'bg-[#F8FAFC] border-[#FFEDD5]' : 'bg-[#F8FAFC] border-[#E2E8F0]'}`}>
+                <div className={`p-5 rounded-2xl border transition-all ${settings.enableStorePurchase ? 'bg-[#FFF7ED] border-[#FFEDD5]' : 'bg-[#F8FAFC] border-[#E2E8F0]'}`}>
                   <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-2 font-bold text-white text-sm">
+                    <div className="flex items-center gap-2 font-bold text-[#111827] text-sm">
                       <ShoppingBag className="text-[#EA580C]" size={18} />
                       Gym Store Purchase
                     </div>
@@ -566,21 +566,21 @@ const GymAdminReferralRewardsManagement: React.FC = () => {
                         onChange={(e) => setSettings({ ...settings, enableStorePurchase: e.target.checked })}
                         className="sr-only peer"
                       />
-                      <div className="w-11 h-6 bg-gray-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#C2410C]"></div>
+                      <div className="w-11 h-6 bg-[#E2E8F0] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#C2410C]"></div>
                     </label>
                   </div>
                   <p className="text-xs text-[#64748B] leading-relaxed mb-3">
                     Members can apply points for instant discounts on Gym Store items during online checkout.
                   </p>
-                  <span className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${settings.enableStorePurchase ? 'bg-emerald-50 text-[#15803D] border border-emerald-800' : 'bg-zinc-800 text-zinc-400'}`}>
+                  <span className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${settings.enableStorePurchase ? 'bg-emerald-50 text-[#15803D] border border-emerald-200' : 'bg-[#F1F5F9] text-[#64748B] border border-[#E2E8F0]'}`}>
                     {settings.enableStorePurchase ? 'Option Enabled' : 'Option Disabled'}
                   </span>
                 </div>
 
                 {/* 3. Other Custom Rewards */}
-                <div className={`p-5 rounded-2xl border transition-all ${settings.enableCustomRewards ? 'bg-[#F8FAFC] border-[#FFEDD5]' : 'bg-[#F8FAFC] border-[#E2E8F0]'}`}>
+                <div className={`p-5 rounded-2xl border transition-all ${settings.enableCustomRewards ? 'bg-[#FFF7ED] border-[#FFEDD5]' : 'bg-[#F8FAFC] border-[#E2E8F0]'}`}>
                   <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-2 font-bold text-white text-sm">
+                    <div className="flex items-center gap-2 font-bold text-[#111827] text-sm">
                       <Gift className="text-[#EA580C]" size={18} />
                       Other Custom Rewards
                     </div>
@@ -591,13 +591,13 @@ const GymAdminReferralRewardsManagement: React.FC = () => {
                         onChange={(e) => setSettings({ ...settings, enableCustomRewards: e.target.checked })}
                         className="sr-only peer"
                       />
-                      <div className="w-11 h-6 bg-gray-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#C2410C]"></div>
+                      <div className="w-11 h-6 bg-[#E2E8F0] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#C2410C]"></div>
                     </label>
                   </div>
                   <p className="text-xs text-[#64748B] leading-relaxed mb-3">
                     Special rewards like Personal Training Sessions, Gym Vouchers, and Fitness Accessories.
                   </p>
-                  <span className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${settings.enableCustomRewards ? 'bg-emerald-50 text-[#15803D] border border-emerald-800' : 'bg-zinc-800 text-zinc-400'}`}>
+                  <span className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${settings.enableCustomRewards ? 'bg-emerald-50 text-[#15803D] border border-emerald-200' : 'bg-[#F1F5F9] text-[#64748B] border border-[#E2E8F0]'}`}>
                     {settings.enableCustomRewards ? 'Option Enabled' : 'Option Disabled'}
                   </span>
                 </div>
@@ -625,7 +625,7 @@ const GymAdminReferralRewardsManagement: React.FC = () => {
                   value={settings.rewardInstructions}
                   onChange={(e) => setSettings({ ...settings, rewardInstructions: e.target.value })}
                   placeholder="Explain how members can earn and redeem their referral points..."
-                  className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-3.5 text-xs text-white outline-none focus:border-[#FDBA74]"
+                  className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-3.5 text-xs text-[#111827] outline-none focus:border-[#FDBA74]"
                 />
               </div>
 
@@ -638,7 +638,7 @@ const GymAdminReferralRewardsManagement: React.FC = () => {
                   value={settings.termsAndConditions || ''}
                   onChange={(e) => setSettings({ ...settings, termsAndConditions: e.target.value })}
                   placeholder="Point expiration, transferability, cancellation policies..."
-                  className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-3.5 text-xs text-white outline-none focus:border-[#FDBA74]"
+                  className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-3.5 text-xs text-[#111827] outline-none focus:border-[#FDBA74]"
                 />
               </div>
             </div>
@@ -1034,7 +1034,7 @@ const GymAdminReferralRewardsManagement: React.FC = () => {
                   value={adjustAmount}
                   onChange={(e) => setAdjustAmount(e.target.value)}
                   placeholder="e.g. 500"
-                  className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-3 text-sm text-white font-bold outline-none focus:border-[#FDBA74]"
+                  className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-3 text-sm text-[#111827] font-bold outline-none focus:border-[#FDBA74]"
                 />
               </div>
 
@@ -1048,14 +1048,14 @@ const GymAdminReferralRewardsManagement: React.FC = () => {
                   value={adjustReason}
                   onChange={(e) => setAdjustReason(e.target.value)}
                   placeholder="Required: e.g. Customer loyalty bonus, goodwill adjustment, dispute resolution..."
-                  className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-3 text-xs text-white outline-none focus:border-[#FDBA74]"
+                  className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-3 text-xs text-[#111827] outline-none focus:border-[#FDBA74]"
                 />
               </div>
 
               <div className="p-3 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0] text-xs space-y-1">
                 <div className="flex justify-between text-[#64748B]">
                   <span>Current Balance:</span>
-                  <span className="font-bold text-white">{selectedCustomer.pointsBalance} pts</span>
+                  <span className="font-bold text-[#111827]">{selectedCustomer.pointsBalance} pts</span>
                 </div>
                 <div className="flex justify-between font-bold text-[#15803D]">
                   <span>Projected Balance:</span>
@@ -1120,7 +1120,7 @@ const GymAdminReferralRewardsManagement: React.FC = () => {
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-[#F8FAFC] p-4 rounded-2xl border border-[#E2E8F0]">
                   <div>
                     <span className="text-[10px] text-[#64748B] uppercase font-bold block">Available Balance</span>
-                    <span className="text-lg font-black text-white">{customerHistory.summary.availablePoints} pts</span>
+                    <span className="text-lg font-black text-[#111827]">{customerHistory.summary.availablePoints} pts</span>
                   </div>
                   <div>
                     <span className="text-[10px] text-[#64748B] uppercase font-bold block">Equivalent Value</span>
@@ -1128,11 +1128,11 @@ const GymAdminReferralRewardsManagement: React.FC = () => {
                   </div>
                   <div>
                     <span className="text-[10px] text-[#64748B] uppercase font-bold block">Lifetime Earned</span>
-                    <span className="text-lg font-black text-white">{customerHistory.summary.totalEarned}</span>
+                    <span className="text-lg font-black text-[#111827]">{customerHistory.summary.totalEarned}</span>
                   </div>
                   <div>
                     <span className="text-[10px] text-[#64748B] uppercase font-bold block">Lifetime Redeemed</span>
-                    <span className="text-lg font-black text-rose-300">{customerHistory.summary.totalRedeemed}</span>
+                    <span className="text-lg font-black text-rose-600">{customerHistory.summary.totalRedeemed}</span>
                   </div>
                 </div>
 
@@ -1149,7 +1149,7 @@ const GymAdminReferralRewardsManagement: React.FC = () => {
                       customerHistory.transactions.map((tx: any) => (
                         <div key={tx._id} className="p-3 flex justify-between items-center text-xs">
                           <div>
-                            <div className="font-semibold text-white">{tx.description}</div>
+                            <div className="font-semibold text-[#111827]">{tx.description}</div>
                             <div className="text-[10px] text-[#64748B]">
                               {new Date(tx.createdAt).toLocaleString()} • Type: {tx.type}
                             </div>
@@ -1180,7 +1180,7 @@ const GymAdminReferralRewardsManagement: React.FC = () => {
                       customerHistory.storeRedemptions.map((ord: any) => (
                         <div key={ord._id} className="p-3 flex justify-between items-center text-xs">
                           <div>
-                            <div className="font-semibold text-white">Order #{ord.orderNumber}</div>
+                            <div className="font-semibold text-[#111827]">Order #{ord.orderNumber}</div>
                             <div className="text-[10px] text-[#64748B]">{new Date(ord.createdAt).toLocaleDateString()} • Status: {ord.status}</div>
                           </div>
                           <div className="text-right">
@@ -1225,7 +1225,7 @@ const GymAdminReferralRewardsManagement: React.FC = () => {
                   value={rewardForm.title}
                   onChange={(e) => setRewardForm({ ...rewardForm, title: e.target.value })}
                   placeholder="e.g. 1-on-1 Personal Training Session"
-                  className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-2.5 text-xs text-white outline-none focus:border-[#FDBA74]"
+                  className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-2.5 text-xs text-[#111827] outline-none focus:border-[#FDBA74]"
                 />
               </div>
 
@@ -1236,7 +1236,7 @@ const GymAdminReferralRewardsManagement: React.FC = () => {
                   value={rewardForm.description}
                   onChange={(e) => setRewardForm({ ...rewardForm, description: e.target.value })}
                   placeholder="Details about the session, voucher or accessories..."
-                  className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-3 text-xs text-white outline-none focus:border-[#FDBA74]"
+                  className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-3 text-xs text-[#111827] outline-none focus:border-[#FDBA74]"
                 />
               </div>
 
@@ -1249,7 +1249,7 @@ const GymAdminReferralRewardsManagement: React.FC = () => {
                     required
                     value={rewardForm.requiredPoints}
                     onChange={(e) => setRewardForm({ ...rewardForm, requiredPoints: Number(e.target.value) })}
-                    className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-2.5 text-xs text-white outline-none focus:border-[#FDBA74]"
+                    className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-2.5 text-xs text-[#111827] outline-none focus:border-[#FDBA74]"
                   />
                 </div>
 
@@ -1261,14 +1261,14 @@ const GymAdminReferralRewardsManagement: React.FC = () => {
                     value={rewardForm.totalQuantity}
                     onChange={(e) => setRewardForm({ ...rewardForm, totalQuantity: Number(e.target.value) })}
                     placeholder="0 = unlimited"
-                    className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-2.5 text-xs text-white outline-none focus:border-[#FDBA74]"
+                    className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-2.5 text-xs text-[#111827] outline-none focus:border-[#FDBA74]"
                   />
                 </div>
               </div>
 
               <div className="flex items-center justify-between p-3 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0]">
                 <div>
-                  <span className="text-xs font-bold text-white block">Require Owner Approval</span>
+                  <span className="text-xs font-bold text-[#111827] block">Require Owner Approval</span>
                   <span className="text-[10px] text-[#64748B] block">Hold claim as Pending until confirmed</span>
                 </div>
                 <input

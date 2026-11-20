@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import type { FormEvent } from 'react';
 import { Link, useNavigate, useSearchParams, useLocation } from 'react-router-dom';
-import { Eye, EyeOff, Activity, AlertCircle, Loader2, ShieldCheck, Building2, UserCheck } from 'lucide-react';
+import { Eye, EyeOff, Activity, AlertCircle, Loader2, ShieldCheck, Building2, UserCheck, ArrowLeft, X, Dumbbell, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { getDashboardRoute, isSubscriptionActive } from '../../utils/routeHelpers';
 import { markAuthorizedNavigation } from '../../components/NavigationGuard';
@@ -38,6 +38,7 @@ const LoginPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [showRegisterModal, setShowRegisterModal] = useState(false);
 
 
 
@@ -91,7 +92,14 @@ const LoginPage = () => {
         sessionStorage.removeItem('checkout_intent');
       }
 
-      if (user.role === 'MEMBER') {
+      const statusUpper = (user.approvalStatus || '').toUpperCase().trim();
+      const detailUpper = (((user as any).statusDetail || '') as string).toUpperCase().trim();
+      const isInactiveOrNonActive = 
+        detailUpper === 'INACTIVE' || statusUpper === 'INACTIVE' || statusUpper === 'SUSPENDED' || user.isActive === false ||
+        detailUpper === 'REJECTED' || statusUpper === 'REJECTED' ||
+        detailUpper === 'PENDING' || detailUpper === 'NEW' || statusUpper === 'PENDING';
+
+      if (user.role === 'MEMBER' && !isInactiveOrNonActive) {
         const isCompleted = res.data?.isSubscriptionCompleted || user.subscriptionStatus === 'Expired' || user.subscriptionStatus === 'EXPIRED';
         if (isCompleted) {
           navigate('/member/subscription', { replace: true, state: { expiredAlert: true } });
@@ -118,6 +126,17 @@ const LoginPage = () => {
 
   return (
     <div className="min-h-screen bg-[#FFFFFF] flex flex-col items-center justify-center px-4 py-12 sm:py-16 relative">
+      {/* Back to Home Button */}
+      <div className="absolute top-6 left-6 z-20">
+        <Link
+          to="/"
+          className="inline-flex items-center gap-2 text-xs font-bold text-[#64748B] hover:text-[#EA580C] px-3.5 py-2 rounded-xl bg-[#FFFFFF] border border-[#E2E8F0] shadow-xs hover:border-[#FFEDD5] hover:bg-[#FFF7ED] transition-all"
+        >
+          <ArrowLeft size={16} />
+          <span>Back to Home</span>
+        </Link>
+      </div>
+
       {/* Background glow */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(183,110,121,0.07)_0%,_transparent_65%)] pointer-events-none" />
 
@@ -136,6 +155,12 @@ const LoginPage = () => {
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5] mb-3">
             <ShieldCheck size={13} />
             <span>Super Admin Login</span>
+          </div>
+        )}
+        {portal === 'customer' && (
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#FFF7ED] text-[#EA580C] border border-[#FFEDD5] mb-3">
+            <UserCheck size={13} />
+            <span>Customer Login</span>
           </div>
         )}
         {portal === 'gym-owner' && (
@@ -245,15 +270,118 @@ const LoginPage = () => {
         </form>
 
         <div className="mt-6 text-center text-sm text-[#64748B]">
-          Don't have an account?{' '}
-          <Link
-            to={portal === 'trainer' ? '/register/trainer' : (portal === 'gym-owner' ? '/register/gym-owner' : '/register/customer')}
-            className="text-[#EA580C] font-semibold hover:text-[#9A3412] hover:underline transition-colors"
-          >
-            Sign Up
-          </Link>
+          <div>
+            Don't have an account?{' '}
+            <button
+              type="button"
+              onClick={() => setShowRegisterModal(true)}
+              className="text-[#EA580C] font-semibold hover:text-[#9A3412] hover:underline transition-colors cursor-pointer"
+            >
+              Sign Up
+            </button>
+          </div>
         </div>
       </div>
+
+      {/* Account Type Selection Modal */}
+      {showRegisterModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-in fade-in duration-200">
+          <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl relative space-y-5">
+            {/* Close button */}
+            <button
+              type="button"
+              onClick={() => setShowRegisterModal(false)}
+              className="absolute top-5 right-5 p-2 rounded-xl text-[#64748B] hover:text-[#111827] hover:bg-[#F1F5F9] transition-colors cursor-pointer"
+              title="Close"
+            >
+              <X size={18} />
+            </button>
+
+            <div>
+              <span className="text-[11px] font-bold text-[#EA580C] uppercase tracking-wider bg-[#FFF7ED] px-2.5 py-1 rounded-full border border-[#FFEDD5]">
+                New to Gymora
+              </span>
+              <h2 className="text-xl font-bold text-[#111827] mt-2 tracking-tight">Create Your Account</h2>
+              <p className="text-xs text-[#64748B] mt-1">Select your account type to proceed with registration:</p>
+            </div>
+
+            {/* Options Grid */}
+            <div className="space-y-3">
+              {/* Gym Owner Option */}
+              <div
+                onClick={() => {
+                  setShowRegisterModal(false);
+                  navigate('/register/gym-owner');
+                }}
+                className="group p-4 bg-[#FFFFFF] hover:bg-[#FFF7ED] border-2 border-[#E2E8F0] hover:border-[#EA580C] rounded-2xl cursor-pointer transition-all flex items-start gap-3.5 shadow-xs hover:shadow-md"
+              >
+                <div className="w-12 h-12 rounded-xl bg-[#FFF7ED] group-hover:bg-white text-[#EA580C] border border-[#FFEDD5] flex items-center justify-center shrink-0 transition-colors">
+                  <Building2 size={24} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-bold text-sm text-[#111827] group-hover:text-[#EA580C] transition-colors">
+                      Gym Owner Registration
+                    </h3>
+                    <ArrowRight size={14} className="text-[#EA580C] opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+                  </div>
+                  <p className="text-xs text-[#64748B] mt-1 leading-relaxed">
+                    Register your fitness club or gym facility, manage trainers, and scale memberships.
+                  </p>
+                </div>
+              </div>
+
+              {/* Customer / Member Option */}
+              <div
+                onClick={() => {
+                  setShowRegisterModal(false);
+                  navigate('/register/customer');
+                }}
+                className="group p-4 bg-[#FFFFFF] hover:bg-[#FFF7ED] border-2 border-[#E2E8F0] hover:border-[#EA580C] rounded-2xl cursor-pointer transition-all flex items-start gap-3.5 shadow-xs hover:shadow-md"
+              >
+                <div className="w-12 h-12 rounded-xl bg-[#FFF7ED] group-hover:bg-white text-[#EA580C] border border-[#FFEDD5] flex items-center justify-center shrink-0 transition-colors">
+                  <UserCheck size={24} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-bold text-sm text-[#111827] group-hover:text-[#EA580C] transition-colors">
+                      Customer Registration
+                    </h3>
+                    <ArrowRight size={14} className="text-[#EA580C] opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+                  </div>
+                  <p className="text-xs text-[#64748B] mt-1 leading-relaxed">
+                    Join gyms, access workout programs, tailored diet plans, and hire certified trainers.
+                  </p>
+                </div>
+              </div>
+
+              {/* Trainer Option */}
+              <div
+                onClick={() => {
+                  setShowRegisterModal(false);
+                  navigate('/register/trainer');
+                }}
+                className="group p-4 bg-[#FFFFFF] hover:bg-[#FFF7ED] border-2 border-[#E2E8F0] hover:border-[#EA580C] rounded-2xl cursor-pointer transition-all flex items-start gap-3.5 shadow-xs hover:shadow-md"
+              >
+                <div className="w-12 h-12 rounded-xl bg-[#FFF7ED] group-hover:bg-white text-[#EA580C] border border-[#FFEDD5] flex items-center justify-center shrink-0 transition-colors">
+                  <Dumbbell size={24} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-bold text-sm text-[#111827] group-hover:text-[#EA580C] transition-colors">
+                      Trainer Registration
+                    </h3>
+                    <ArrowRight size={14} className="text-[#EA580C] opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+                  </div>
+                  <p className="text-xs text-[#64748B] mt-1 leading-relaxed">
+                    Join gym rosters, conduct 1-on-1 and group personal training, manage workout & diet plans.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <p className="mt-8 text-xs text-[#64748B] z-10">&copy; {new Date().getFullYear()} Gymora Technologies. All rights reserved.</p>
     </div>

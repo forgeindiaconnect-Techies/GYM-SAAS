@@ -7,9 +7,11 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import api from '../utils/api';
+import { markAuthorizedNavigation } from './NavigationGuard';
 import { 
   searchGymFeatures, 
   getRoleSuggestedQuestions, 
+  resolveRouteForRole,
   type AssistantRouteItem 
 } from '../utils/smartAssistantEngine';
 
@@ -116,23 +118,101 @@ const renderFormattedText = (text: string) => {
   });
 };
 
+const getStorageKey = (userId?: string, customerId?: string, email?: string) => {
+  const memberIdentifier = userId || customerId || email || 'guest';
+  return `gym_smart_assistant_chat_${memberIdentifier}`;
+};
+
+const loadSavedChatHistory = (key: string): ChatMessage[] => {
+  try {
+    const rawData = localStorage.getItem(key);
+    if (!rawData) return [];
+
+    const parsed = JSON.parse(rawData);
+    if (!Array.isArray(parsed)) {
+      console.warn('[Smart Assistant] Corrupted chat history format, clearing.');
+      localStorage.removeItem(key);
+      return [];
+    }
+
+    const validMessages: ChatMessage[] = [];
+    const seenIds = new Set<string>();
+
+    for (let i = 0; i < parsed.length; i++) {
+      const item = parsed[i];
+      if (
+        item &&
+        typeof item === 'object' &&
+        (item.sender === 'user' || item.sender === 'bot') &&
+        typeof item.text === 'string'
+      ) {
+        const msgId = typeof item.id === 'string' && item.id.trim() ? item.id : `msg-${Date.now()}-${i}`;
+        if (!seenIds.has(msgId)) {
+          seenIds.add(msgId);
+          validMessages.push({
+            id: msgId,
+            sender: item.sender,
+            text: item.text,
+            timestamp: typeof item.timestamp === 'string' ? item.timestamp : '',
+            category: typeof item.category === 'string' ? item.category : undefined,
+            matchedItems: Array.isArray(item.matchedItems) ? item.matchedItems : undefined,
+            liveItems: Array.isArray(item.liveItems) ? item.liveItems : undefined,
+            actions: Array.isArray(item.actions) ? item.actions : undefined,
+            followUps: Array.isArray(item.followUps) ? item.followUps : undefined,
+            isRestricted: typeof item.isRestricted === 'boolean' ? item.isRestricted : undefined,
+          });
+        }
+      }
+    }
+
+    return validMessages;
+  } catch (err) {
+    console.error('[Smart Assistant] Failed to load chat history from localStorage:', err);
+    try {
+      localStorage.removeItem(key);
+    } catch {
+      // ignore
+    }
+    return [];
+  }
+};
+
 const GymSmartAssistant = () => {
   const { user } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
 
+  const storageKey = getStorageKey(user?.id, user?.customerId, user?.email);
+
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
-  const [isTucked, setIsTucked] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return window.innerWidth < 768;
-    }
-    return false;
-  });
   const [inputMessage, setInputMessage] = useState('');
   const [loading, setLoading] = useState(false);
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>(() => loadSavedChatHistory(storageKey));
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const hydratedKeyRef = useRef<string>(storageKey);
+
+  // Restore messages when storageKey changes (e.g. user logs in or switches member account)
+  useEffect(() => {
+    hydratedKeyRef.current = storageKey;
+    const restored = loadSavedChatHistory(storageKey);
+    setMessages(restored);
+  }, [storageKey]);
+
+  // Persist messages whenever chat history changes
+  useEffect(() => {
+    if (hydratedKeyRef.current !== storageKey) return;
+
+    try {
+      if (messages.length > 0) {
+        localStorage.setItem(storageKey, JSON.stringify(messages));
+      } else {
+        localStorage.removeItem(storageKey);
+      }
+    } catch (err) {
+      console.error('[Smart Assistant] Failed to persist chat history to localStorage:', err);
+    }
+  }, [messages, storageKey]);
 
   const userRole = (user?.role || 'MEMBER').toUpperCase();
   const pageTitle = PAGE_NAMES[location.pathname] || 'Gym Management';
@@ -148,18 +228,12 @@ const GymSmartAssistant = () => {
     }
   }, [messages, isOpen, isMinimized, loading]);
 
-  useEffect(() => {
-    const checkMobile = () => {
-      if (typeof window !== 'undefined' && window.innerWidth < 768) {
-        setIsTucked(true);
-      }
-    };
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
   const handleClearChat = () => {
+    try {
+      localStorage.removeItem(storageKey);
+    } catch (err) {
+      console.error('[Smart Assistant] Failed to clear chat history from localStorage:', err);
+    }
     setMessages([]);
     setInputMessage('');
   };
@@ -170,7 +244,10 @@ const GymSmartAssistant = () => {
       window.location.href = route;
       return;
     }
-    navigate(route);
+    markAuthorizedNavigation();
+    const resolved = resolveRouteForRole(route, userRole);
+    const targetRoute = resolved ? resolved.route : route;
+    navigate(targetRoute);
     // On mobile, collapse assistant to avoid blocking view
     if (window.innerWidth < 640) {
       setIsMinimized(true);
@@ -216,11 +293,17 @@ const GymSmartAssistant = () => {
           liveItems = res.data.items;
         }
         if (res.data.actions && Array.isArray(res.data.actions) && res.data.actions.length > 0) {
-          // Merge unique actions
-          const existingLabels = new Set(combinedActions.map(a => a.label));
+          // Merge unique role-safe actions
+          const existingRoutes = new Set(combinedActions.map(a => a.route));
           for (const a of res.data.actions) {
-            if (!existingLabels.has(a.label)) {
-              combinedActions.push(a);
+            const resolved = resolveRouteForRole(a.route, userRole, a.label);
+            if (resolved && !existingRoutes.has(resolved.route)) {
+              existingRoutes.add(resolved.route);
+              combinedActions.push({
+                label: resolved.label || a.label,
+                route: resolved.route,
+                variant: a.variant
+              });
             }
           }
         }
@@ -269,48 +352,23 @@ const GymSmartAssistant = () => {
   return (
     <>
       {/* ── Floating Action Trigger Button ── */}
-      {!isOpen && isTucked && (
+      {!isOpen && (
         <button
+          type="button"
           onClick={() => {
             setIsOpen(true);
             setIsMinimized(false);
           }}
-          className="fixed bottom-36 md:bottom-6 right-0 z-40 bg-gradient-to-r from-[#EA580C] to-[#9A3412] text-white p-2.5 rounded-l-2xl shadow-xl border-y border-l border-[#FFEDD5] cursor-pointer flex items-center justify-center transition-transform hover:-translate-x-1"
+          className="fixed bottom-6 right-6 z-40 bg-gradient-to-r from-[#EA580C] to-[#C2410C] text-white font-semibold py-2.5 px-4 rounded-full shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-2 border border-white/20 cursor-pointer group"
           title="Open Gym Smart Assistant"
           aria-label="Open Gym Smart Assistant"
         >
-          <Bot size={20} />
+          <div className="relative flex items-center justify-center">
+            <Bot size={20} className="group-hover:rotate-12 transition-transform duration-300 text-white shrink-0" />
+            <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-emerald-400 ring-2 ring-white animate-pulse" />
+          </div>
+          <span className="font-bold text-xs sm:text-sm tracking-tight text-white whitespace-nowrap">Smart Assistant</span>
         </button>
-      )}
-
-      {!isOpen && !isTucked && (
-        <div className="fixed bottom-36 md:bottom-6 right-0 md:right-6 z-40 flex items-center gap-1.5 group">
-          <button
-            onClick={() => {
-              setIsOpen(true);
-              setIsMinimized(false);
-            }}
-            className="bg-gradient-to-r from-[#EA580C] via-[#9A3412] to-[#EA580C] text-[#FFFFFF] font-bold py-2.5 px-3 md:px-4 rounded-l-2xl md:rounded-full shadow-[0_4px_25px_rgba(183,110,121,0.45)] hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-2 border-y border-l md:border-2 border-[#FFEDD5] ring-2 md:ring-4 ring-[#F97316]/25 cursor-pointer"
-            title="Open Gym Smart Assistant"
-          >
-            <div className="relative">
-              <Bot size={20} className="group-hover:rotate-12 transition-transform duration-300 text-white" />
-            </div>
-            <span className="font-bold text-xs sm:text-sm hidden sm:inline-block pr-1 tracking-tight text-white">Smart Assistant</span>
-          </button>
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              setIsTucked(true);
-            }}
-            className="w-6 h-6 rounded-full bg-white/95 hover:bg-white text-slate-600 hover:text-[#C2410C] border border-[#CBD5E1] shadow-md items-center justify-center text-xs cursor-pointer opacity-75 hover:opacity-100 transition-opacity hidden md:flex"
-            title="Tuck assistant to side"
-            aria-label="Tuck assistant to side"
-          >
-            <X size={12} />
-          </button>
-        </div>
       )}
 
       {/* ── Smart Assistant Window / Drawer ── */}
@@ -483,7 +541,10 @@ const GymSmartAssistant = () => {
                               {msg.liveItems.map(live => (
                                 <div
                                   key={live.id}
-                                  onClick={() => handleNavigate(live.route || (msg.category === 'ADMIN' ? '/super-admin/gym-owners' : '/member/dashboard'))}
+                                  onClick={() => {
+                                    const defaultRoute = userRole === 'SUPER_ADMIN' ? '/super-admin/dashboard' : (userRole === 'ADMIN' || userRole === 'GYM_OWNER') ? '/admin/dashboard' : userRole === 'TRAINER' ? '/trainer/dashboard' : '/member/dashboard';
+                                    handleNavigate(live.route || defaultRoute);
+                                  }}
                                   className="p-2 bg-[#FFFFFF] border border-[#E2E8F0] hover:border-[#FDBA74] hover:bg-[#FFF7ED] rounded-xl text-left cursor-pointer transition-all shadow-xs group"
                                 >
                                   {live.image ? (

@@ -1,8 +1,8 @@
-﻿import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { 
   Search, Send, Loader2, MessageSquare, RefreshCw, 
-  Dumbbell, Paperclip, Mic, AlertCircle, FilePlus
+  Dumbbell, Paperclip, Mic, AlertCircle, FilePlus, ArrowLeft
 } from 'lucide-react';
 import api from '../../utils/api';
 import { isSafeMediaUrl } from '../../utils/url';
@@ -203,7 +203,9 @@ const MemberMessages = () => {
     setUploadError(null);
 
     try {
-      const audioFile = new File([audioBlob], `voice_${Date.now()}.webm`, { type: audioBlob.type || 'audio/webm' });
+      const mime = audioBlob.type || 'audio/webm';
+      const ext = mime.includes('mp4') ? 'mp4' : mime.includes('ogg') ? 'ogg' : 'webm';
+      const audioFile = new File([audioBlob], `voice_${Date.now()}.${ext}`, { type: mime });
       const uploadedAttachment = await uploadSingleFile(audioFile, true, duration);
 
       const res = await api.post('/direct-messages/send', {
@@ -340,13 +342,13 @@ const MemberMessages = () => {
   );
 
   return (
-    <div className="max-w-6xl mx-auto space-y-4">
+    <div className="space-y-4 sm:space-y-6 w-full min-w-0">
       <MemberTrainingTabs />
 
       <div className="flex justify-between items-end">
         <div>
-          <h1 className="text-3xl font-bold text-[#111827] tracking-tight">Trainer Messages</h1>
-          <p className="text-[#64748B] text-sm mt-1">
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#111827] tracking-tight">Trainer Messages</h1>
+          <p className="text-[#64748B] text-xs sm:text-sm mt-0.5 sm:mt-1">
             Direct 2-way real-time communication with voice notes and file attachments.
           </p>
         </div>
@@ -356,7 +358,7 @@ const MemberMessages = () => {
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        className={`h-[calc(100vh-12rem)] bg-[#FFFFFF] border rounded-2xl shadow-sm overflow-hidden flex flex-col md:flex-row relative transition-all ${
+        className={`h-[calc(100dvh-13rem)] sm:h-[calc(100dvh-14rem)] md:h-[calc(100vh-15rem)] w-full max-w-full min-w-0 bg-[#FFFFFF] border rounded-2xl shadow-sm overflow-hidden flex flex-col md:flex-row relative transition-all ${
           isDragging ? 'border-2 border-dashed border-[#FDBA74] ring-4 ring-[#F97316]/10' : 'border-[#E2E8F0]'
         }`}
       >
@@ -372,9 +374,11 @@ const MemberMessages = () => {
         )}
 
         {/* Left Contacts Panel */}
-        <div className="w-full md:w-80 border-r border-[#E2E8F0] flex flex-col bg-[#FFFFFF]">
+        <div className={`w-full md:w-80 border-r border-[#E2E8F0] flex-col bg-[#FFFFFF] shrink-0 min-w-0 ${
+          selectedContact ? 'hidden md:flex' : 'flex'
+        }`}>
           <div className="p-3.5 border-b border-[#E2E8F0] flex items-center justify-between gap-2">
-            <div className="relative flex-1">
+            <div className="relative flex-1 min-w-0">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#64748B]" size={16} />
               <input
                 type="text"
@@ -387,7 +391,7 @@ const MemberMessages = () => {
             <button
               onClick={() => fetchContacts(false)}
               title="Refresh list"
-              className="p-2 text-[#64748B] hover:text-[#EA580C] hover:bg-[#FFF7ED] rounded-lg transition-colors cursor-pointer"
+              className="p-2 text-[#64748B] hover:text-[#EA580C] hover:bg-[#FFF7ED] rounded-lg transition-colors cursor-pointer shrink-0"
             >
               <RefreshCw size={16} />
             </button>
@@ -411,7 +415,7 @@ const MemberMessages = () => {
                   <div
                     key={contact.id}
                     onClick={() => setSelectedContact(contact)}
-                    className={`flex items-center p-4 cursor-pointer transition-colors ${
+                    className={`flex items-center p-3.5 sm:p-4 cursor-pointer transition-colors ${
                       isSelected ? 'bg-[#FFF7ED] border-l-4 border-l-[#F97316]' : 'hover:bg-[#FFF7ED]'
                     }`}
                   >
@@ -420,20 +424,20 @@ const MemberMessages = () => {
                         <img
                           src={contact.profilePhoto}
                           alt={contact.name}
-                          className="w-11 h-11 rounded-full object-cover border border-[#E2E8F0]"
+                          className="w-10 h-10 sm:w-11 sm:h-11 rounded-full object-cover border border-[#E2E8F0]"
                         />
                       ) : (
-                        <div className="w-11 h-11 bg-[#FFF7ED] rounded-full flex items-center justify-center font-bold text-[#EA580C] text-base border border-[#E2E8F0]">
+                        <div className="w-10 h-10 sm:w-11 sm:h-11 bg-[#FFF7ED] rounded-full flex items-center justify-center font-bold text-[#EA580C] text-sm sm:text-base border border-[#E2E8F0]">
                           {contact.name[0] || 'T'}
                         </div>
                       )}
-                      <span className="absolute bottom-0 right-0 w-3 h-3 bg-[#C2410C] border-2 border-white rounded-full"></span>
+                      <span className="absolute bottom-0 right-0 w-2.5 h-2.5 sm:w-3 sm:h-3 bg-[#C2410C] border-2 border-white rounded-full"></span>
                     </div>
-                    <div className="ml-3 flex-1 overflow-hidden">
-                      <div className="flex justify-between items-baseline">
+                    <div className="ml-3 flex-1 overflow-hidden min-w-0">
+                      <div className="flex justify-between items-baseline gap-2">
                         <h4 className="font-bold text-[#111827] text-sm truncate">{contact.name}</h4>
                         {contact.unreadCount && contact.unreadCount > 0 ? (
-                          <span className="bg-[#C2410C] text-white font-bold text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+                          <span className="bg-[#C2410C] text-white font-bold text-[10px] px-1.5 py-0.5 rounded-full shrink-0">
                             {contact.unreadCount}
                           </span>
                         ) : null}
@@ -451,36 +455,48 @@ const MemberMessages = () => {
         </div>
 
         {/* Right Chat Area */}
-        <div className="flex-1 flex flex-col bg-[#F8FAFC]">
+        <div className={`flex-1 min-w-0 flex-col bg-[#F8FAFC] overflow-hidden ${
+          selectedContact ? 'flex' : 'hidden md:flex'
+        }`}>
           {selectedContact ? (
             <>
               {/* Header */}
-              <div className="p-4 bg-[#FFFFFF] border-b border-[#E2E8F0] flex justify-between items-center">
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-[#FFF7ED] rounded-full flex items-center justify-center font-bold text-[#EA580C] border border-[#E2E8F0] shrink-0 overflow-hidden">
+              <div className="p-3 sm:p-4 bg-[#FFFFFF] border-b border-[#E2E8F0] flex justify-between items-center gap-2 min-w-0 shrink-0">
+                <div className="flex items-center space-x-2 sm:space-x-3 min-w-0 flex-1">
+                  {/* Mobile Back Button to return to trainers list */}
+                  <button
+                    type="button"
+                    onClick={() => setSelectedContact(null)}
+                    className="md:hidden p-1.5 -ml-1 text-[#64748B] hover:text-[#EA580C] hover:bg-[#FFF7ED] rounded-lg transition-colors cursor-pointer shrink-0"
+                    title="Back to trainers"
+                  >
+                    <ArrowLeft size={18} />
+                  </button>
+
+                  <div className="w-9 h-9 sm:w-10 sm:h-10 bg-[#FFF7ED] rounded-full flex items-center justify-center font-bold text-[#EA580C] border border-[#E2E8F0] shrink-0 overflow-hidden">
                     {isSafeMediaUrl(selectedContact.profilePhoto) ? (
                       <img src={selectedContact.profilePhoto} alt="" className="w-full h-full object-cover" />
                     ) : (
                       selectedContact.name[0] || 'T'
                     )}
                   </div>
-                  <div>
-                    <h3 className="font-bold text-[#111827]">{selectedContact.name}</h3>
-                    <p className="text-xs text-[#EA580C] font-medium">
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-bold text-[#111827] text-sm sm:text-base truncate">{selectedContact.name}</h3>
+                    <p className="text-xs text-[#EA580C] font-medium truncate">
                       {selectedContact.specialization || 'Personal Trainer'}
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <span className="text-[11px] text-[#64748B] font-semibold bg-[#F8FAFC] px-2.5 py-1 rounded-full">
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="text-[10px] sm:text-[11px] text-[#64748B] font-semibold bg-[#F8FAFC] px-2 sm:px-2.5 py-1 rounded-full whitespace-nowrap">
                     Max file size: 50MB
                   </span>
                 </div>
               </div>
 
               {/* Chat Messages List */}
-              <div className="flex-1 overflow-y-auto p-6 space-y-4">
+              <div className="flex-1 overflow-y-auto overflow-x-hidden p-3 sm:p-6 space-y-4 min-w-0 w-full">
                 {loadingMessages ? (
                   <div className="flex flex-col items-center justify-center py-12 text-[#64748B] gap-2">
                     <Loader2 size={24} className="animate-spin text-[#EA580C]" />
@@ -520,7 +536,7 @@ const MemberMessages = () => {
 
               {/* Error banner */}
               {uploadError && (
-                <div className="px-4 py-2 bg-red-50 border-t border-red-200 text-xs text-red-600 flex items-center justify-between">
+                <div className="px-4 py-2 bg-red-50 border-t border-red-200 text-xs text-red-600 flex items-center justify-between shrink-0">
                   <span className="flex items-center gap-1.5">
                     <AlertCircle size={14} /> {uploadError}
                   </span>
@@ -531,7 +547,7 @@ const MemberMessages = () => {
               )}
 
               {/* Input Area */}
-              <div className="p-3 bg-[#FFFFFF] border-t border-[#E2E8F0] flex flex-col gap-2">
+              <div className="p-2.5 sm:p-3 bg-[#FFFFFF] border-t border-[#E2E8F0] flex flex-col gap-2 shrink-0 w-full min-w-0">
                 {/* Pending attachments preview */}
                 <AttachmentPreview
                   attachments={pendingAttachments}
@@ -556,13 +572,13 @@ const MemberMessages = () => {
                     isUploading={sending}
                   />
                 ) : (
-                  <form onSubmit={handleSend} className="relative flex items-center gap-2">
+                  <form onSubmit={handleSend} className="relative flex items-center gap-1.5 sm:gap-2 w-full min-w-0">
                     {/* Attachment Paperclip Button */}
                     <button
                       type="button"
                       onClick={() => fileInputRef.current?.click()}
                       disabled={sending}
-                      className="p-2.5 text-[#64748B] hover:text-[#EA580C] hover:bg-[#FFF7ED] rounded-xl transition-colors cursor-pointer shrink-0"
+                      className="p-2 sm:p-2.5 text-[#64748B] hover:text-[#EA580C] hover:bg-[#FFF7ED] rounded-xl transition-colors cursor-pointer shrink-0"
                       title="Attach file (Images, Videos, Audio, Documents)"
                     >
                       <Paperclip size={18} />
@@ -573,7 +589,7 @@ const MemberMessages = () => {
                       type="button"
                       onClick={() => setIsRecordingVoice(true)}
                       disabled={sending}
-                      className="p-2.5 text-[#64748B] hover:text-[#EA580C] hover:bg-[#FFF7ED] rounded-xl transition-colors cursor-pointer shrink-0"
+                      className="p-2 sm:p-2.5 text-[#64748B] hover:text-[#EA580C] hover:bg-[#FFF7ED] rounded-xl transition-colors cursor-pointer shrink-0"
                       title="Record voice message"
                     >
                       <Mic size={18} />
@@ -587,7 +603,7 @@ const MemberMessages = () => {
                           ? `Add caption for ${pendingAttachments.length} attachment(s)...`
                           : `Message ${selectedContact.name}...`
                       }
-                      className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl pl-4 pr-12 py-3 text-sm focus:border-[#FDBA74] outline-none"
+                      className="w-full flex-1 min-w-0 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl pl-3 sm:pl-4 pr-11 sm:pr-12 py-2.5 sm:py-3 text-xs sm:text-sm focus:border-[#FDBA74] outline-none"
                       value={messageText}
                       onChange={(e) => setMessageText(e.target.value)}
                       disabled={sending}
@@ -597,7 +613,7 @@ const MemberMessages = () => {
                     <button
                       type="submit"
                       disabled={(!messageText.trim() && pendingAttachments.length === 0) || sending}
-                      className="absolute right-2 p-2.5 bg-[#C2410C] text-white font-bold rounded-lg hover:bg-[#9A3412] transition-colors disabled:opacity-40 cursor-pointer shadow-xs"
+                      className="absolute right-1.5 sm:right-2 p-2 sm:p-2.5 bg-[#C2410C] text-white font-bold rounded-lg hover:bg-[#9A3412] transition-colors disabled:opacity-40 cursor-pointer shadow-xs shrink-0"
                       title="Send message"
                     >
                       {sending ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}

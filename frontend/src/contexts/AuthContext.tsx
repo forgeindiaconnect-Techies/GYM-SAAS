@@ -25,6 +25,7 @@ export interface AuthUser {
   mobile?: string;
   profilePhoto?: string;
   isActive?: boolean;
+  statusDetail?: string;
   rejectionReason?: string;
   suspensionReason?: string;
 }
@@ -70,11 +71,25 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 localStorage.setItem('aigym_user', JSON.stringify(refreshed));
               }
             })
-            .catch(() => { });
+            .catch(err => {
+              if (err?.response?.status === 401 || err?.response?.status === 403) {
+                localStorage.removeItem('aigym_token');
+                localStorage.removeItem('aigym_user');
+                sessionStorage.removeItem('aigym_token');
+                sessionStorage.removeItem('aigym_user');
+                sessionStorage.removeItem('gymora_active_path');
+                sessionStorage.removeItem('gymora_nav_permitted');
+                sessionStorage.removeItem('gymora_nav_timestamp');
+                setUser(null);
+                setToken(null);
+              }
+            });
         });
       } catch {
         localStorage.removeItem('aigym_token');
         localStorage.removeItem('aigym_user');
+        sessionStorage.removeItem('aigym_token');
+        sessionStorage.removeItem('aigym_user');
       }
     }
     setIsLoading(false);
@@ -103,6 +118,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.removeItem('aigym_user');
     sessionStorage.removeItem('aigym_token');
     sessionStorage.removeItem('aigym_user');
+    sessionStorage.removeItem('gymora_active_path');
+    sessionStorage.removeItem('gymora_nav_permitted');
+    sessionStorage.removeItem('gymora_nav_timestamp');
     setUser(null);
     setToken(null);
   };

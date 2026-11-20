@@ -33,7 +33,7 @@ export const authenticate = async (req: AuthRequest, res: Response, next: NextFu
     const { isTrainerStatusActive } = await import('../utils/trainerIsolation');
 
     const dbUser: any = await User.findById(decoded.id)
-      .select('role gymId branchId customerId isActive approvalStatus subscriptionStatus')
+      .select('role gymId branchId customerId isActive approvalStatus subscriptionStatus statusDetail suspensionReason')
       .lean();
 
     if (!dbUser || dbUser.approvalStatus === ApprovalStatus.DELETED) {
@@ -41,14 +41,22 @@ export const authenticate = async (req: AuthRequest, res: Response, next: NextFu
       return;
     }
 
-    if (
+    const isMemberMeCheck = dbUser.role === Role.MEMBER && ((req.originalUrl || req.url || '').includes('/auth/me'));
+    if (!isMemberMeCheck && (
       dbUser.isActive === false ||
       dbUser.approvalStatus === ApprovalStatus.SUSPENDED ||
+      dbUser.approvalStatus === ApprovalStatus.INACTIVE ||
       dbUser.approvalStatus === ApprovalStatus.REJECTED
-    ) {
+    )) {
+      const statusText = dbUser.statusDetail || (
+        dbUser.approvalStatus === ApprovalStatus.INACTIVE ? 'inactive' :
+        dbUser.approvalStatus === ApprovalStatus.SUSPENDED ? 'inactive' :
+        dbUser.approvalStatus === ApprovalStatus.REJECTED ? 'rejected' :
+        'inactive'
+      );
       res.status(403).json({
         success: false,
-        message: 'Your account has been deactivated or suspended. Please contact your administrator.',
+        message: `Your account is currently ${statusText.toLowerCase()}. Please contact your gym administrator.`,
         errorCode: 'ACCOUNT_INACTIVE'
       });
       return;
