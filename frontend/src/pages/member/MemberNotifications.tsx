@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import clsx from 'clsx';
 import api from '../../utils/api';
+import { markAuthorizedNavigation } from '../../components/NavigationGuard';
 
 const TYPE_CONFIG: Record<string, { icon: any; color: string; bg: string; border: string }> = {
   info: { icon: Info, color: 'text-[#EA580C]', bg: 'bg-[#FFF7ED]', border: 'border-[#FFEDD5]' },
@@ -121,9 +122,10 @@ const MemberNotifications: React.FC = () => {
           <button
             type="button"
             onClick={() => {
+              markAuthorizedNavigation();
               navigate('/member/dashboard');
             }}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#F8FAFC] hover:bg-[#E2E8F0] text-xs font-bold text-[#111827] border border-[#CBD5E1] transition-all cursor-pointer shadow-xs"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#F8FAFC] hover:bg-[#E2E8F0] text-xs font-bold text-[#111827] border border-[#CBD5E1] transition-all cursor-pointer shadow-xs active:scale-95"
             title="Close"
           >
             <X size={15} className="text-[#EA580C]" />

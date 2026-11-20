@@ -124,7 +124,7 @@ const NavigationGuard = () => {
         return r === 'ADMIN' || r === 'GYM_OWNER' || r === 'GYM_MANAGER';
       }
       if (path.startsWith('/member')) {
-        return r === 'MEMBER';
+        return r === 'MEMBER' || r === 'CUSTOMER';
       }
       if (path.startsWith('/trainer')) {
         return r === 'TRAINER';
@@ -171,7 +171,8 @@ const NavigationGuard = () => {
     const getRolePrefix = (role?: string) => {
       if (!role) return '';
       switch (role.toUpperCase()) {
-        case 'MEMBER': return '/member';
+        case 'MEMBER':
+        case 'CUSTOMER': return '/member';
         case 'TRAINER': return '/trainer';
         case 'ADMIN':
         case 'GYM_OWNER':

@@ -46,7 +46,7 @@ const MemberDashboard = () => {
 
   const customerId = summary?.customerId || user?.customerId || '—';
   const selectedGym = summary?.selectedGym || null;
-  const availableTrainers: any[] = summary?.availableTrainers || [];
+  const availableTrainers: any[] = Array.isArray(summary?.availableTrainers) ? summary.availableTrainers : [];
   const modules = summary?.modules || {};
 
   const aiAnalysis = modules.aiFitnessAnalysis || { status: 'Not Started', started: false, recommendation: null };
@@ -61,7 +61,7 @@ const MemberDashboard = () => {
   const notificationsMod = modules.notifications || { total: 0, unread: 0 };
   const reviewsMod = modules.reviews || { count: 0 };
 
-  const mems: any[] = membershipMod.memberships || [];
+  const mems: any[] = Array.isArray(membershipMod.memberships) ? membershipMod.memberships : [];
   const activeMembership = membershipMod.activeMembership;
   const pendingMembership = mems.find((m: any) =>
     m.status === 'Pending Approval' ||
@@ -79,7 +79,9 @@ const MemberDashboard = () => {
     )
   );
 
-  const aiExercises: any[] = aiAnalysis?.recommendation?.workoutPlan?.exercises || [];
+  const aiExercises: any[] = Array.isArray(aiAnalysis?.recommendation?.workoutPlan?.exercises)
+    ? aiAnalysis.recommendation.workoutPlan.exercises
+    : [];
 
   return (
     <div className="space-y-6 animate-fade-in pb-28 sm:pb-24">
@@ -253,7 +255,7 @@ const MemberDashboard = () => {
                     </div>
                     {tr.expertise && (
                       <p className="text-[11px] text-[#475569] truncate">
-                        Expertise: {Array.isArray(tr.expertise) ? tr.expertise.join(' • ') : tr.expertise}
+                        Expertise: {Array.isArray(tr.expertise) ? tr.expertise.join(' • ') : (typeof tr.expertise === 'string' ? tr.expertise : String(tr.expertise))}
                       </p>
                     )}
                     <div className="flex items-center gap-2 pt-2 border-t border-[#E2E8F0]">
@@ -354,7 +356,7 @@ const MemberDashboard = () => {
                     <span className="px-2.5 py-1 rounded-lg bg-[#FFF7ED] text-[#C2410C]">Upcoming: {sessionsMod.upcomingCount}</span>
                     <span className="px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700">Completed: {sessionsMod.completedCount}</span>
                   </div>
-                  {(sessionsMod.sessions || []).slice(0, 3).map((s: any) => (
+                  {(Array.isArray(sessionsMod?.sessions) ? sessionsMod.sessions : []).slice(0, 3).map((s: any) => (
                     <div key={s._id} className="p-3 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] flex items-center justify-between text-xs">
                       <div>
                         <p className="font-bold text-[#111827]">{s.trainerId?.name || 'Trainer Session'}</p>
@@ -436,7 +438,7 @@ const MemberDashboard = () => {
                     <p className="text-xs font-bold text-[#EA580C]">
                       {paymentsMod.count} Transactions • Total ₹{paymentsMod.totalPaidAmount}
                     </p>
-                    {(paymentsMod.payments || []).slice(0, 2).map((p: any) => (
+                    {(Array.isArray(paymentsMod?.payments) ? paymentsMod.payments : []).slice(0, 2).map((p: any) => (
                       <div key={p._id} className="p-2.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] flex items-center justify-between text-xs">
                         <span className="font-semibold text-[#111827] truncate">{p.planName || 'Payment'}</span>
                         <span className="font-bold text-[#111827]">₹{p.amount}</span>

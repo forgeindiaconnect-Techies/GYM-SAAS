@@ -41,13 +41,15 @@ const ProtectedRoute = ({ children, allowedRoles, requireSubscription }: Protect
   }
 
   // Strict Role check
-  if (allowedRoles && !allowedRoles.includes(user.role)) {
+  const isMemberRole = user.role === 'MEMBER' || user.role === 'CUSTOMER';
+  const roleMatches = allowedRoles ? (allowedRoles.includes(user.role) || (allowedRoles.includes('MEMBER') && isMemberRole)) : true;
+  if (allowedRoles && !roleMatches) {
     // Customers must never access superadmin or gym admin routes; redirect to authorized dashboard
     return <Navigate to={getDashboardRoute(user)} replace />;
   }
 
   // Subscription & Approval gate for member dashboard
-  if (requireSubscription && user.role === 'MEMBER') {
+  if (requireSubscription && isMemberRole) {
     const statusUpper = (user.approvalStatus || '').toUpperCase().trim();
     const detailUpper = ((user.statusDetail || '') as string).toUpperCase().trim();
 
